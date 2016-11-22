@@ -21,7 +21,7 @@ $(function(){
 		pagination : '.swiper-pagination1'
 	});
 	var swiper = new Swiper('.swiper-container2', {
-		autoplay: 5000,//可选选项，自动滑动
+		autoplay: false,//可选选项，自动滑动
 		pagination : '.swiper-pagination2'
 	});
 
@@ -59,5 +59,16 @@ $(function(){
 		freeMode: true
 	});
 
+
+	//计算内容上下padding
+	reContPadding({main:"#main",header:"#header",footer:"#footer"});
+	function reContPadding(o){
+		var main = o.main || "#main",
+			header = o.header || null,
+			footer = o.footer || null;
+		var cont_pt = $(header).outerHeight(true),
+			cont_pb = $(footer).outerHeight(true);
+		$(main).css({paddingTop:cont_pt,paddingBottom:cont_pb});
+	}
 
 });
