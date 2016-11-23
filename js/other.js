@@ -342,52 +342,52 @@ function toshare(){
 	});
 })(mui, document);
 
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '4室及以上'
-		}, {
-			value: '',
-			text: '3室2厅2卫'
-		}, {
-			value: '',
-			text: '3室2厅1卫'
-		}, {
-			value: '',
-			text: '3室1厅1卫'
-		}, {
-			value: '',
-			text: '2室2厅2卫'
-		}, {
-			value: '',
-			text: '1室1厅1卫'
-		}, {
-			value: '',
-			text: '2室1厅1卫'
-		}, {
-			value: '',
-			text: '2室2厅1卫'
-		}, {
-			value: '',
-			text: '1室0厅1卫'
-		}, {
-			value: '',
-			text: '其他'
-		}]);
-		var showUserPickerButton = doc.getElementById('Huxing');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '4室及以上'
+//		}, {
+//			value: '',
+//			text: '3室2厅2卫'
+//		}, {
+//			value: '',
+//			text: '3室2厅1卫'
+//		}, {
+//			value: '',
+//			text: '3室1厅1卫'
+//		}, {
+//			value: '',
+//			text: '2室2厅2卫'
+//		}, {
+//			value: '',
+//			text: '1室1厅1卫'
+//		}, {
+//			value: '',
+//			text: '2室1厅1卫'
+//		}, {
+//			value: '',
+//			text: '2室2厅1卫'
+//		}, {
+//			value: '',
+//			text: '1室0厅1卫'
+//		}, {
+//			value: '',
+//			text: '其他'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('Huxing');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
 
 (function($, doc) {
 	$.init();
