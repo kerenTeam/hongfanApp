@@ -27,28 +27,29 @@
 		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		
 		<style type="text/css">
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,#theSearch{
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
 				color: #fff;
 			}
 			.mui-bar-nav{
 				box-shadow: none;
 			}
-			.dealcard, .cinemacard{
-				margin-top: 45px;
-			}
-			.dealcard .dealcard-img img{
-				height: 60px;
-				overflow: hidden;
-			}
-			#theSearch{
-				line-height: 44px;
+			.mui-icon{
+				line-height: 50px;
 			}	
-			#theSearch .iconfont{
+			.mui-icon .iconfont{
 				font-size: 18px;
 			}
-			
 			.dealcard, .cinemacard{
-				margin-top: 45px;
+				margin-top: 50px;
 			}
 			.dealcard .dealcard-img img{
 				height: 60px;
@@ -60,7 +61,7 @@
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">房产列表</h1>
-			<a class="fr" id="theSearch" href="theSearch.html"><i class="iconfont icon-sousuo"></i></a>
+			<a class="fr mui-icon" id="theSearch" href="theSearch.html"><i class="iconfont icon-sousuo"></i></a>
 		</header>	
 		<!-- screening -->
 		<div class="screening">
@@ -135,7 +136,7 @@
 				<section class="dealcard-waimai">
 					<dl class="dealcard">
 						<dd class="page-link">
-							<a href="build-detail.html">
+							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
 									<div class="brand">三室一厅</div>
@@ -155,7 +156,7 @@
 							</a>
 						</dd>
 						<dd class="page-link">
-							<a href="build-detail.html">
+							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
 									<div class="brand">三室一厅</div>
@@ -175,7 +176,7 @@
 							</a>
 						</dd>
 						<dd class="page-link">
-							<a href="build-detail.html">
+							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
 									<div class="brand">三室一厅  </div>
@@ -195,7 +196,7 @@
 							</a>
 						</dd>
 						<dd class="page-link">
-							<a href="build-detail.html">
+							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
 									<div class="brand">三室一厅  </div>
@@ -215,7 +216,7 @@
 							</a>
 						</dd>
 						<dd class="page-link">
-							<a href="build-detail.html">
+							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
 									<div class="brand">三室一厅  </div>
@@ -241,20 +242,32 @@
 	</body>
 	<script type="text/javascript">
 		(function(){
+			function openview(obj){
+				var t = obj.top || 0,b = obj.bottom || 0;
+				mui.openWindow({
+					url:obj.view,
+				    styles:{
+				      top:t,//新页面顶部位置
+				      bottom:b
+				    },
+				    waiting:{
+				      autoShow:false,//自动显示等待框，默认为true
+				    }
+				})
+			}
 			var theDetail = document.getElementsByClassName('page-link')[0];
 			theDetail.addEventListener('tap', function(){
 				openview({
-					view:'theDetail.html',
-					bottom:'0'
+					view:'build-detail.html',
 				})
 			});
-			var theSearch = document.getElementById('theSearch');
-			theSearch.addEventListener('tap', function(){
-				openview({
-					view:'theSearch.html',
-					bottom:'0'
-				})
-			});
+//			var theSearch = document.getElementById('theSearch');
+//			theSearch.addEventListener('tap', function(){
+//				openview({
+//					view:'theSearch.html',
+//					bottom:'0'
+//				})
+//			});
 		})();
 	</script>
 </html>
