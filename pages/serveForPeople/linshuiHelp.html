@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>为民服务-邻水帮帮团</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,12 +17,249 @@
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
 		<script type="text/javascript" src="../../js/swiper.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
 		<script src="../../js/mui.picker.min.js"></script>
 		<script src="../../js/mui.poppicker.js"></script>
-	<style type="text/css">
+		<script src="../../js/binaryajax.js" ></script>
+		<script src="../../js/canvasResize.js" ></script>
+		<script src="../../js/exif.js" ></script>
+		<style>
+			.mui-icon-camera:before {
+				content: '\e301'
+			}
+			@font-face {
+				font-family:Muiicons;font-weight:400;font-style:normal;src:url(fonts/mui.ttf) format('truetype')
+			}
+			.mui-icon {
+				font-family: Muiicons;
+				font-size: 24px;
+				font-weight: 400;
+				font-style: normal;
+				line-height: 1;
+				display: inline-block;
+				text-decoration: none;
+				-webkit-font-smoothing: antialiased
+			}
+			.mui-icon.mui-right:before {
+				float: right;
+				padding-left: .2em
+			}
+			*{
+			    -webkit-box-sizing: border-box;
+			            box-sizing: border-box;
+			    outline: none;
+			    -webkit-tap-highlight-color: transparent;
+			    -webkit-tap-highlight-color: transparent;
+			}
+			.mui-btn{
+			    font-size: 14px;
+			    font-weight: 400;
+			    line-height: 1.42;
+			    position: relative;
+			    display: inline-block;
+			    margin-bottom: 0;
+			    padding: 6px 12px;
+			    cursor: pointer;
+			    -webkit-transition: all;
+			            transition: all;
+			    -webkit-transition-timing-function: linear;
+			            transition-timing-function: linear;
+			    -webkit-transition-duration: .2s;
+			            transition-duration: .2s;
+			    text-align: center;
+			    vertical-align: top;
+			    white-space: nowrap;
+			    background-clip: padding-box;
+			}
+			.mui-btn-outlined.mui-btn-primary, .mui-btn-outlined.mui-btn-blue{
+			    color: #f53c42;
+			    border: 1px solid #f53c42;
+			}
+			.mui-btn-block{
+			    font-size: 18px;
+			    display: block;
+			    width: 100%;
+			    margin-bottom: 10px;
+			    padding: 15px 0;
+			}
+			.mui-table-view{
+			    position: relative;
+			    margin-top: 0;
+			    margin-bottom: 0;
+			    padding-left: 0;
+			    list-style: none;
+			}
+			.mui-table-view-cell{
+			    position: relative;
+			    overflow: hidden;
+			    padding: 11px 15px;
+			    -webkit-touch-callout: none;
+			}
+			.mui-table-view-cell > a:not(.mui-btn){
+			    position: relative;
+			    display: block;
+			    overflow: hidden;
+			    margin: -11px -15px;
+			    padding: inherit;
+			    white-space: nowrap;
+			    text-overflow: ellipsis;
+			    color: inherit;
+			}
+			.mui-popover{
+			    position: absolute;
+			    z-index: 999;
+			    display: none;
+			    width: 280px;
+			    -webkit-transition: opacity .3s;
+			            transition: opacity .3s;
+			    -webkit-transition-property: opacity;
+			            transition-property: opacity;
+			    -webkit-transform: none;
+			            transform: none;
+			    opacity: 0;
+			    border-radius: 7px;
+			    background-color: #f7f7f7;
+			    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, .1);
+			            box-shadow: 0 0 15px rgba(0, 0, 0, .1);
+			}
+			.mui-popover .mui-popover-arrow{
+			    position: absolute;
+			    z-index: 1000;
+			    top: -25px;
+			    left: 0;
+			    overflow: hidden;
+			    width: 26px;
+			    height: 26px;
+			}
+			.mui-popover .mui-popover-arrow:after{
+			    position: absolute;
+			    top: 19px;
+			    left: 0;
+			
+			    width: 26px;
+			    height: 26px;
+			
+			    content: ' ';
+			    -webkit-transform: rotate(45deg);
+			            transform: rotate(45deg);
+			
+			    border-radius: 3px;
+			    background: #f7f7f7;
+			}
+			.mui-popover .mui-popover-arrow.mui-bottom{
+			    top: 100%;
+			    left: -26px;
+			
+			    margin-top: -1px;
+			}
+			.mui-popover .mui-popover-arrow.mui-bottom:after{
+			    top: -19px;
+			    left: 0;
+			}
+			.mui-popover.mui-popover-action{
+			    bottom: 0;
+			    width: 100%;
+			    -webkit-transition: -webkit-transform .3s, opacity .3s;
+			            transition:         transform .3s, opacity .3s;
+			    -webkit-transform: translate3d(0, 100%, 0);
+			            transform: translate3d(0, 100%, 0);
+			    border-radius: 0;
+			    background: none;
+			    -webkit-box-shadow: none;
+			            box-shadow: none;
+			}
+			.mui-popover.mui-popover-action .mui-popover-arrow{
+			    display: none;
+			}
+			.mui-popover.mui-popover-action.mui-popover-bottom{
+			    position: fixed;
+			}
+			.mui-popover.mui-popover-action.mui-active{
+			    -webkit-transform: translate3d(0, 0, 0);
+			            transform: translate3d(0, 0, 0);
+			}
+			.mui-popover.mui-popover-action .mui-table-view .mui-table-view-cell:after{
+			    position: absolute;
+			    right: 0;
+			    bottom: 0;
+			    left: 0;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			            transform: scaleY(.5);
+			}
+			.mui-popover.mui-popover-action .mui-table-view small{
+			    font-weight: 400;
+			    line-height: 1.3;
+			    display: block;
+			}
+			.mui-popover.mui-active{
+			    display: block;
+			    opacity: 1;
+			}
+			.mui-popover .mui-bar ~ .mui-table-view{
+			    padding-top: 44px;
+			}
+			.mui-backdrop{
+			    position: fixed;
+			    z-index: 998;
+			}
+			header{
+				height: 50px !important;
+			}
+			header h1,.mui-bar-nav.mui-bar .mui-icon, .mui-title, #theSearch{
+				line-height: 50px !important;
+				padding: 0;
+			}
+			#header .marketPrice-header{
+				line-height: 50px;
+				text-align: center;
+				color: #fff;
+			}
+			#header span{
+				line-height: 50px;
+				display: inline-block;
+				text-align: left;
+				color: #fff;
+				position: absolute;
+			}
+			.sure {
+				margin-top: 10px;
+			}
+			.sure button{
+				width: 95%;
+				background-color: #f53c42;
+				color: #fff;
+				border: none;
+				height: 42px;
+				font-size: 16px;
+			}
+			.mui-btn-blue, .mui-btn-primary, input[type=submit]{
+				background-color: #fff !important;
+				width: 95%;
+			}
+			.mobile{
+				margin: 50px 0 30px 0;
+			}
+			
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,#theSearch{
+				color: #fff;
+			}
+			.mui-bar-nav{
+				box-shadow: none;
+			}
+			.dealcard, .cinemacard{
+				margin-top: 45px;
+			}
+			.dealcard .dealcard-img img{
+				height: 60px;
+				overflow: hidden;
+			}
+			#main{
+				padding-bottom: 60px;
+			}
+			
+			
 			.mui-bar-nav.mui-bar .mui-icon,.mui-title,#theSearch{
 				color: #fff;
 			}
@@ -40,9 +276,6 @@
 			#main{
 				margin-top: 50px;
 				padding-bottom: 50px;
-			}
-			.recharge .addtu a{
-				background-color: #00CC7D;
 			}
 			.recharge .addtu ul li{
 				border: none;
@@ -62,31 +295,40 @@
 			.mui-input-row p{
 				line-height: 30px;
 				padding:0;
-				color:#000000;
+				color:#666;
 			}
 		</style>
 	</head>
+
 	<body>
 		<!--header star-->
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">帮帮请求发布</h1>
 		</header>
-	    <!--header end-->
-	    <div class="warp warpthree clearfloat" id="main">
+		<div class="mobile">
+			<div class="w main">
+			  	<form id="frm_login" method="post" action="">
+					<input type="hidden" id="imgname" value=""/>
+					<input type="hidden" id="imgid" value=""/>
+					<br/>
+					<p>
+						<a href="#picture" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" style="padding: 5px 20px;margin: 10px auto;">
+							<i id='msg-image' class="mui-icon mui-icon-camera" style="font-size: 30px;"></i>
+							添加照片
+						</a>
+					</p>
+					<div id="simg" class="showimg"></div>
+					<div class="ui-btn-wrap sure" style="text-align: center;display: none;"> 
+						<a class="ui-btn-lg ui-btn-primary" id="submit">
+							<button type="button" class="mui-btn sure">确定</button>
+						</a> 
+					</div>
+			   </form>
+			</div>
+		</div>
+		 <div class="warp warpthree clearfloat" id="main">
 	    	<div class="recharge clearfloat">
-	    		<div class="addtu clearfloat">
-	    			<a>添加图片</a>
-	    			<div class="clearfloat fl">
-	    				<ul class="mui-row">
-	    					<li class="mui-col-xs-4 mui-col-sm-4"><img src="../../img/theList/2edmarket.jpg"/></li>
-	    					<li class="mui-col-xs-4 mui-col-sm-4"><img src="../../img/theList/2edmarket.jpg"/></li>
-	    					<li class="mui-col-xs-4 mui-col-sm-4"><img src="../../img/theList/2edmarket.jpg"/></li>
-	    					<li class="mui-col-xs-4 mui-col-sm-4"><img src="../../img/theList/2edmarket.jpg"/></li>
-	    					<li class="mui-col-xs-4 mui-col-sm-4"><img src="../../img/theList/2edmarket.jpg"/></li>
-	    				</ul>
-	    			</div>
-	    		</div>
 	    		<div class="mui-input-row">
 	    			<p>问题名称：</p>
 	    			<input type="text" name="" id="" value=""/>
@@ -101,42 +343,293 @@
 	    		</div>
 	    		<br />
 	    	</div>	    	
-	    </div>
-	    
+	   </div>
 	    <div class="renting-footer renting-footertwo clearfloat" id="footer">
 			<ul>
-				<li><a href="#">发布请求</a></li>
+				<li><a href="#">免费发布</a></li>
+			</ul>
+		</div>
+		<div id="picture" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a id="0" href="#" style="color:#8f8f94;font-size: .8em;">选择照片</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="1" href="#">拍照</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="2" href="#">从相册选择</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#picture"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		<div id="opt" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a id="3" href="#" style="color:#8f8f94;font-size: .8em;">操作</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="4" href="#">查看</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="5" href="#">删除</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#opt"><b>取消</b></a>
+				</li>
 			</ul>
 		</div>
 	</body>
-	<script type="text/javascript">
-//		(function(){
-//			
-//			function openview(obj){
-//				var t = obj.top || 0,b = obj.bottom || 0;
-//				mui.openWindow({
-//					url:obj.view,
-//				    styles:{
-//				      top:t,//新页面顶部位置
-//				      bottom:b
-//				    },
-//				    waiting:{
-//				      autoShow:false,//自动显示等待框，默认为true
-//				    }
-//				})
-//			}
-//			var theDetail = document.getElementsByClassName('page-link')[0];
-//			theDetail.addEventListener('tap', function(){
-//				openview({
-//					view:'theDetail.html',
-//				})
-//			});
-//			var theSearch = document.getElementById('theSearch');
-//			theSearch.addEventListener('tap', function(){
-//				openview({
-//					view:'theSearch.html',
-//				})
-//			});
-//		})();
-	</script>
 </html>
+<script type="text/javascript">
+	(function($, doc) {
+		$.init();
+		$.ready(function() {
+			var userPicker = new $.PopPicker();
+			userPicker.setData([{
+				value: '',
+				text: '手机'
+			}, {
+				value: '',
+				text: '台式机'
+			}, {
+				value: '',
+				text: '笔记本'
+			}, {
+				value: '',
+				text: '平板电脑'
+			}, {
+				value: '',
+				text: '家具'
+			}, {
+				value: '',
+				text: '家电'
+			}, {
+				value: '',
+				text: '数码产品'
+			}, {
+				value: '',
+				text: '单反相机'
+			}, {
+				value: '',
+				text: '摩托车'
+			}, {
+				value: '',
+				text: '其他'
+			}]);
+			var showUserPickerButton = doc.getElementById('Huxing');
+			var userResult = doc.getElementById('userResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				userPicker.show(function(items) {
+//						userResult.innerText = JSON.stringify(items[0]);
+				});
+			}, false);
+		
+		
+		});
+	})(mui, document);
+</script>
+<script>
+	$(document).ready(function () {
+		mui.plusReady(function() {
+			$("#status").fadeOut();
+			$("#preloader").delay(350).fadeOut("slow");
+		
+	  		var self = plus.webview.currentWebview();
+	  		
+	  		//确定提交
+	  		document.getElementById('submit').addEventListener('tap', function() {
+		  		imgupgrade();
+	  		});
+	  		
+	  		mui(".showimg").on('tap','.abiaoqian',function(){
+				var imgname = this.getAttribute("name");
+				var imgid = this.getAttribute("id");
+	  			document.getElementById("imgname").value = imgname;
+	  			document.getElementById("imgid").value = imgid;
+	  			//var userid = this.getAttribute("name");
+	  			//console.log(userid);
+	  		})
+		});
+	}) 
+</script>
+<script type="text/javascript" >
+	(function($, doc) {
+		var ui = {
+			body: doc.querySelector('body'),
+			footer: doc.querySelector('footer'),
+			footerLeft: doc.querySelector('.footer-left'),
+		};
+	}(mui, document));
+	//显示图片
+	var f1 = new Array();
+	var f2 = new Array();
+	var imgid = 0;
+	function showImg(url) {
+	    // 兼容以“file:”开头的情况
+	    if (0 != url.toString().indexOf("file://")) {
+	        url = "file://" + url;
+	    }
+	    var _div_ = document.getElementsByClassName("showimg")[0];
+	    var _a_=document.createElement("a");
+	    var _img_ = new Image();
+	    _img_.src = url; // 传过来的图片路径在这里用。
+	    _a_.name = url;
+	    _img_.onclick = function() {
+	    	console.log(">?");
+	    };
+	    _img_.onload = function() {
+	        var tmph = _img_.height;
+	        var tmpw = _img_.width;
+	        var isHengTu = tmpw > tmph;
+	        var max = Math.max(tmpw, tmph);
+	        var min = Math.min(tmpw, tmph);
+	        var bili = min / max;
+	        if (max > 1200) {
+	            max = 1200;
+	            min = Math.floor(bili * max);
+	        }
+	        tmph = isHengTu ? min : max;
+	        tmpw = isHengTu ? max : min;
+	        _img_.style.border = "none";
+	        _img_.style.margin = "5px 6px";
+	        _img_.style.width = "30%";
+	        _img_.style.overflow = "hidden";
+	        _img_.onload = null;
+	    	
+	        console.log(imgid+"?长度");
+	        plus.io.resolveLocalFileSystemURL(url, function(entry) {
+	            entry.file(function(file) {
+	                console.log(file.size + '--' + file.name);
+	                canvasResize(file, {
+	                    width: tmpw,
+	                    height: tmph,
+	                    crop: false,
+	                    quality: 50, //压缩质量
+	                    rotate: 0,
+	                    callback: function(data, width, height) {
+	                    	_a_.id = "imgid"+imgid;
+	                        f1.push(data);
+	                        f2.push(_a_.id);
+	                        console.log(imgid+"?长度前");
+	                        imgid = imgid+1;
+	                        console.log(imgid+"?长度后");
+	                        _img_.src = data;
+	                        _a_.href="#opt";
+	                        _a_.className="abiaoqian";
+	                        _a_.appendChild(_img_);
+	                        _div_.appendChild(_a_);
+	                        plus.nativeUI.closeWaiting();
+	                    }
+	                });
+	            });
+	        },
+	        function(e) {
+	            plus.nativeUI.closeWaiting();
+	            console.log(e.message);
+	        });
+	        
+	    };
+	};
+	
+	function imgupgrade() {
+	    //mui.toast('后台联调时启用上传功能');
+	    console.log(f1.length);
+	    for(var i = 0;i<f1.length;i++){
+	    	console.log(f1[i])
+	    }
+	    //f1 等于 图片base64数组
+	    alert("提交base64数组");
+	}
+</script>
+<script>
+	//使用H5的弹出系统选择按钮框
+	mui('body').on('shown', '.mui-popover', function(e) {
+		//console.log('shown', e.detail.id);//detail为当前popover元素
+	});
+	mui('body').on('hidden', '.mui-popover', function(e) {
+		//console.log('hidden', e.detail.id);//detail为当前popover元素
+	});
+	var info = document.getElementById("info");
+	mui('body').on('tap', '.mui-popover-action li>a', function() {
+		var a = this,
+			parent;
+		//根据点击按钮，反推当前是哪个actionsheet
+		for (parent = a.parentNode; parent != document.body; parent = parent.parentNode) {
+			if (parent.classList.contains('mui-popover-action')) {
+				if(a.id == 1){
+					if(f1.length>=5){
+						mui.toast('最多只能选择5张图片！');
+						return false;
+					}else{
+						var cmr = plus.camera.getCamera();
+						console.log("侧");
+						cmr.captureImage(function(path) {
+							plus.io.resolveLocalFileSystemURL(path, function(entry) {
+								console.log("侧"+path);
+		                        var localurl = entry.toLocalURL(); //把拍照的目录路径，变成本地url路径，例如file:///........之类的。
+		                        console.log("侧2"+localurl);
+		                        showImg(localurl);
+		                    });
+						}, function(err) {
+							mui.toast("很抱歉，获取失败 ");
+						});
+					}
+				}else if(a.id == 2){
+					if (f1.length >= 5) {
+                        mui.toast('最多只能选择5张图片！');
+                        return false;
+	                }else{
+						plus.gallery.pick(function(path) {
+							console.log(path.files.length+f1.length+"长度");
+		                    if ((path.files.length+f1.length) >=6) {
+		                        mui.toast('最多只能选择5张图片');
+		                        return false;
+		                    }
+		                    for (var i in path.files) {
+		                        showImg(path.files[i]);
+		                    }
+		                }, function(path) {
+		                    mui.toast("取消选择图片");
+		                }, {
+		                    filter: "image",
+		                    multiple: true
+		                });
+	                }
+				}else if(a.id == 5){
+					//plus.runtime.openFile(url);
+			        //f1.pop(_img_.src);
+			        var imgid = document.getElementById("imgid").value;
+			        for(var j = 0;j<f2.length;j++){
+			        	if(f2[j]==imgid){
+			        		f1.splice(j,1);
+			        		f2.splice(j,1);
+			        	}
+			        }
+			        var _div_ = document.getElementsByClassName("showimg")[0];
+			        _div_.removeChild(document.getElementById(imgid)); 
+				}else if(a.id == 4){
+					/*
+					var div = document.getElementsByClassName("showimg")[0];
+					console.log();
+					for (var i = 0;i<div.children.length;i++) {
+						if(div.children[i]){
+						}
+					}
+					*/
+					var imgname = document.getElementById("imgname").value;
+					plus.runtime.openFile(imgname);
+				}
+				break;
+			}
+		}
+		//关闭actionsheet
+		mui('#' + parent.id).popover('toggle');
+	})
+</script>
