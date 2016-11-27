@@ -15,6 +15,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>
 
@@ -82,54 +83,14 @@
 			<a class="fr shoucang mui-icon mui-icon-bars mui-pull-right" id="theSearch" href="javascript:;"></a>
 		</header>
 		<!--轮播图-->
-		<div class="mui-slider">
-			  <div class="mui-slider-group mui-slider-loop">
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/bendilunbo.png" /></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/bendilunbo.png" /></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/bendilunbo.png" /></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/bendilunbo.png" /></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/bendilunbo.png" /></a></div>
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/bendilunbo.png" /></a></div>
-			  </div>
-			 <div class="mui-slider-indicator">
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator"></div>
-            </div> 
+		<div class="mui-slider" id="focusNews">
+			  
 		</div>
 		<!--轮播图结束-->
 		<!--图文列表-->
 		<div class="infolist">
-			<ul class="mui-table-view">
-				<li class="mui-table-view-cell mui-media">
-					<a href="javascript:;">
-						<img class="mui-media-object mui-pull-right" src="../../img/54b9cae9d6bc4.jpg">
-						<div class="mui-media-body">
-							新疆财经大学党委书记崔光莲到四川省邻水实验学校考察
-							<p class='mui-ellipsis'>2016/10/20 9:56:17</p>
-						</div>
-					</a>
-				</li>
-				<li class="mui-table-view-cell mui-media">
-					<a href="javascript:;">
-						<img class="mui-media-object mui-pull-right" src="../../img/54b9cae9d6bc4.jpg">
-						<div class="mui-media-body">
-							新疆财经大学党委书记崔光莲到四川省邻水实验学校考察
-							<p class='mui-ellipsis'>2016/10/20 9:56:17</p>
-						</div>
-					</a>
-				</li>
-				<li class="mui-table-view-cell mui-media">
-					<a href="javascript:;">
-						<img class="mui-media-object mui-pull-right" src="../../img/54b9cae9d6bc4.jpg">
-						<div class="mui-media-body">
-							新疆财经大学党委书记崔光莲到四川省邻水实验学校考察
-							<p class='mui-ellipsis'>2016/10/20 9:56:17</p>
-						</div>
-					</a>
-				</li>
+			<ul class="mui-table-view" id="news">
+				
 			</ul>
 		</div>
 		<div class="editbtn">
@@ -166,16 +127,19 @@
 			mui.plusReady(function(){
 				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
 				
-				mui.ajax('user.json',{									
+				mui.ajax('../user.json',{									
 						data:{"phone":loginInfo.account},
 						dataType:'json',//服务器返回json格式数据
 						type:'post',//HTTP请求类型
 						timeout:10000,//超时时间设置为10秒；	              
 						success:function(data){
 							//console.info(userInfo,data);
-							//获取并渲染用户信息
-							var html=template("userMessageModal",data);
-							document.getElementById("userBox").innerHTML=html;
+							//获取并渲染焦点新闻信息
+							var html=template("focusNewsModal",data);
+							document.getElementById("focusNews").innerHTML=html;
+							//获取并渲染焦点热门信息
+							var html=template("newsModal",data);
+							document.getElementById("focusNews").innerHTML=html;
 						},
 						error:function(xhr,type,errorThrown){
 							//异常处理；
@@ -191,88 +155,35 @@
 			
 		</script>
 		<script type="text/html" id="newsModal">
-			<div class="tu clearfloat fl">
-			<%if(userinfo[0].username){%>
-    			<img src="<%= userinfo[0].userImg %>"/>
-    		<%}else{%>
-    			<img src="../img/touxiang.png"/>
-    		<%}%>
-    		</div>
-    		<div class="content clearfloat fl">
-    		<%if(userinfo[0].username){%>
-    			<p class="hname"><%= userinfo[0].username %></p>
-    			<p class="htel"><%= userinfo[0].userphone %></p>
-    		<%}else{%>
-    			<p class="hname"><%= userinfo[0].userphone %></p>
-    		<%}%>
-
-    			
-    		</div>
-    		<div class="h-bottom clearfloat">
-    			<samp></samp>
-    			<ul>
-    				<li>
-    					<a class="vfyue">
-	    					<p><%= userinfo[0].balance %></p>
-	    					<span>余额</span>
-    					</a>
-    				</li>
-    				<li>
-    					<a class="integral">
-	    					<p><%= userinfo[0].integral %></p>
-	    					<span>积分</span>
-    					</a>
-    				</li>
-    				<li>
-    					<a class="Vouchers">
-	    					<p><%= userinfo[0].vouchers %></p>
-	    					<span>抵用券</span>
-    					</a>
-    				</li>
-    			</ul>
-    		</div>
+			<% for(var i=0;i<news.length;i++){%>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;">
+					<img class="mui-media-object mui-pull-right" src="<%=news[i].newsimg%>">
+					<div class="mui-media-body">
+						<%= news[i].newsTitle %>
+						<p class='mui-ellipsis'><%= news[i].createTime %></p>
+					</div>
+				</a>
+			</li>
+			<%}%>
 		</script>
 		<script type="text/html" id="focusNewsModal">
-			<div class="tu clearfloat fl">
-			<%if(userinfo[0].username){%>
-    			<img src="<%= userinfo[0].userImg %>"/>
-    		<%}else{%>
-    			<img src="../img/touxiang.png"/>
-    		<%}%>
-    		</div>
-    		<div class="content clearfloat fl">
-    		<%if(userinfo[0].username){%>
-    			<p class="hname"><%= userinfo[0].username %></p>
-    			<p class="htel"><%= userinfo[0].userphone %></p>
-    		<%}else{%>
-    			<p class="hname"><%= userinfo[0].userphone %></p>
-    		<%}%>
-
-    			
-    		</div>
-    		<div class="h-bottom clearfloat">
-    			<samp></samp>
-    			<ul>
-    				<li>
-    					<a class="vfyue">
-	    					<p><%= userinfo[0].balance %></p>
-	    					<span>余额</span>
-    					</a>
-    				</li>
-    				<li>
-    					<a class="integral">
-	    					<p><%= userinfo[0].integral %></p>
-	    					<span>积分</span>
-    					</a>
-    				</li>
-    				<li>
-    					<a class="Vouchers">
-	    					<p><%= userinfo[0].vouchers %></p>
-	    					<span>抵用券</span>
-    					</a>
-    				</li>
-    			</ul>
-    		</div>
+			
+			<div class="mui-slider-group mui-slider-loop">
+			    <!--支持循环，需要重复图片节点-->
+			    
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="<%= focusNews[0].focusNewsimg %>" /></a></div>
+			    <% for(var i=0;i<focusNews.length;i++){%>
+			    <div class="mui-slider-item"><a href="#"><img src="<%= focusNews[i].focusNewsimg %>" /></a></div>
+			  	<%}%>
+			    <!--支持循环，需要重复图片节点-->
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="<%= focusNews[0].focusNewsimg %>" /></a></div>
+			</div>
+			 <div class="mui-slider-indicator">
+                <div class="mui-indicator"></div>
+                <div class="mui-indicator"></div>
+                <div class="mui-indicator"></div>
+             </div> 			
 		</script>
 	</body>
 	

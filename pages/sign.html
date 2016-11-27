@@ -139,12 +139,12 @@
 					<label>账号</label>
 					<input id='account' type="tel" class="mui-input-clear mui-input" placeholder="请输入11位的手机号">
 				</div>
-				<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-left">
+				<!--<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-left">
 					<input id='yanzhengma' type="text" class="mui-input-clear mui-input " placeholder="请输入验证码">				
 				</div>
 				<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-right">
 					<input id='yanzheng' type="button" class="mui-input-clear mui-btn mui-btn-danger" value="获取验证码">					
-				</div>
+				</div>-->
 				<div class="mui-input-row mui-block">
 					<label>密码</label>
 					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
@@ -173,7 +173,7 @@
 		<script src="../js/app.js"></script>
 		<script>
 
-//			mui.plusReady(function(){
+			mui.plusReady(function(){
 //				var denlu = document.getElementsByClassName('denlu')[0];
 //				denlu.addEventListener('tap', function(){
 //					alert('测试注册1');
@@ -192,10 +192,12 @@
 //						}
 //					});
 //				});
-//			})
+
+			})
 			
 			
 		(function($, doc) {
+			
 				$.init();
 				var regInfo={};
 				$.plusReady(function() {
@@ -245,11 +247,11 @@
 							accountBox.focus();
 							return false;
 						}
-						else if(yanzhengma.value != code){
-							$.toast('验证码有误');
-							yanzhengma.focus();
-							return false;
-						}
+//						else if(yanzhengma.value != code){
+//							$.toast('验证码有误');
+//							yanzhengma.focus();
+//							return false;
+//						}
 						else if(!reg.test(passwordBox.value)){
 							console.log(passwordBox.value);
 							$.toast('请输入合法的密码');
@@ -266,10 +268,32 @@
 							regInfo.status=0;
 							plus.storage.setItem("$regInfo",JSON.stringify(regInfo));
 							console.log(plus.storage.getItem("$regInfo"));
-							mui.openWindow({
-							    url: 'login.html?phone='+accountBox.value
+							mui.ajax(serverUrl+'/api/useraccount/register',{
+								data:{"username":accountBox.value,password:passwordBox.value},
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型
+								timeout:10000,//超时时间设置为10秒；
+								headers:{'Content-Type':'application/json'},	              
+								success:function(data){
+									alert(JSON.stringify(data));
+									console.log(data);
+									if(data.errno==0){
+										mui.openWindow({
+										    url: 'login.html?phone='+accountBox.value
+										});
+										return true;
+									}else{
+										mui.toast("注册失败！");
+										return false;
+									}
+	
+								},
+								error:function(xhr,type,errorThrown){
+									console.log(type);
+									alert(type);
+								}
 							});
-							return true;
+							
 						}
 					});
 				});
