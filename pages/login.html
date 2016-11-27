@@ -122,44 +122,42 @@
 		</style>
 
 	</head>
-
-	<body>
-		<!--<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">登录</h1>
-		</header>-->
-		<header class="mui-bar mui-bar-nav">
-		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
-		    <h1 class="mui-title">登录</h1>
-			<span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
-		</header>
-		<div class="mui-content">
-			<form id='login-form' class="mui-input-group">
-				<div class="mui-input-row">
-					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号" onchange="check1(this)">
-				</div>
-				<div class="mui-input-row">
-					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码" onchange="check2(this)">
-				</div>
-			</form>
-			<form class="mui-input-group">
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell">
-						自动登录
-						<div id="autoLogin" class="mui-switch">
-							<div class="mui-switch-handle"></div>
-						</div>
-					</li>
-				</ul>
-			</form>
-			<div class="mui-content-padded">
-				<button id='login' class="mui-btn mui-btn-block mui-btn-primary denlu">登录</button>
-				<div class="link-area"><a id='goSign'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
-				</div>
-			</div>
-			<div class="mui-content-padded oauth-area">
-
+    <body>
+        <!--<header class="mui-bar mui-bar-nav">
+            <h1 class="mui-title">登录</h1>
+        </header>-->
+        <header class="mui-bar mui-bar-nav">
+            <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
+            <h1 class="mui-title">登录</h1>
+            <span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
+        </header>
+        <div class="mui-content">
+            <form id='login-form' class="mui-input-group">
+                <div class="mui-input-row">
+                    <label>账号</label>
+                    <input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号" onchange="check1(this)">
+                </div>
+                <div class="mui-input-row">
+                    <label>密码</label>
+                    <input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码" onchange="check2(this)">
+                </div>
+            </form>
+            <form class="mui-input-group">
+                <ul class="mui-table-view mui-table-view-chevron">
+                    <li class="mui-table-view-cell">
+                        自动登录
+                        <div id="autoLogin" class="mui-switch">
+                            <div class="mui-switch-handle"></div>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+            <div class="mui-content-padded">
+                <button id='login' class="mui-btn mui-btn-block mui-btn-primary denlu">登录</button>
+                <div class="link-area"><a id='goSign'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
+                </div>
+            </div>
+            <div class="mui-content-padded oauth-area">
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -186,35 +184,43 @@
 
 		mui.plusReady(function(){
 			var account=document.getElementById("account");
-			var password=document.getElementById("password");
-			var regInfo=JSON.parse(plus.storage.getItem("$regInfo"));			
+			var password=document.getElementById("password");			
 			mui('.mui-content-padded').on('tap','#login',function(){
-				if(password.value){
+				if(!account.value || !regA.test(account.value)){
+					console.log(account.value);
+					mui.toast('密码输入错误');
+					account.focus();
+					return false;
+				}else if(!password.value || !reg.test(password.value)){
 					console.log(password.value);
 					mui.toast('密码输入错误');
 					password.focus();
 					return false;
 				}else{
-					regInfo.status=1;
-					plus.storage.setItem("$loginInfo",JSON.stringify(regInfo));
-					console.log(plus.storage.getItem("$regInfo"));
 					mui.ajax(serverUrl+'/api/useraccount/login',{
-								data:{"username":account.value,password:password.value},
+								data:{"username":account.value,"password":password.value},
 								dataType:'json',//服务器返回json格式数据
 								type:'post',//HTTP请求类型
 								timeout:10000,//超时时间设置为10秒；
-								headers:{'Content-Type':'application/json'},	              
-								success:function(data){
-									alert(JSON.stringify(data));
-									console.log(data);
+//								headers:{"Content-Type":"application/json,charset=utf-8"},	              
+								success:function(data,type,xhr){
+									plus.storage.setItem("Token",xhr.getResponseHeader('token')); 
+									console.log(data.data.return.userid);
 									if(data.errno==0){
 										plus.storage.setItem("$loginSign",JSON.stringify(account.value));
 										mui.openWindow({
-										    url: 'index.html'
+										    url: 'index.html',
+										    style:{
+										    	top:'0px',
+										    	bottom:'0px'
+										    },
+										    extras:{
+										    	userid:data.data.return.userid
+										    }
 										});
 										return true;
 									}else{
-										mui.toast("用户名或密码错误！");
+										mui.toast("用户名或密码错误！   kk");
 										return false;
 									}
 	
@@ -240,7 +246,6 @@
 			//打开忘记密码页面
 			
 		});
-				
 
 		</script>
 	</body>
