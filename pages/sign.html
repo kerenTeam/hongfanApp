@@ -116,6 +116,10 @@
 			.mui-btn-blue, .mui-btn-primary, input[type=submit]{
 				background-color: #f53c42 !important;
 			}
+			#yanzheng{
+				line-height: 40px;
+				padding:0;
+			}
 			.mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{
 				top:-5px;
 			}
@@ -124,38 +128,40 @@
 	</head>
 
 	<body>
-		<!--<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title">登录</h1>
-		</header>-->
 		<header class="mui-bar mui-bar-nav">
 		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
-		    <h1 class="mui-title">登录</h1>
+		    <h1 class="mui-title">注册</h1>
 			<span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
 		</header>
-		<div class="mui-content">
+		<div class="mui-content mui-grid-view">
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
 					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号" onchange="check1(this)">
+					<input id='account' type="tel" class="mui-input-clear mui-input" placeholder="请输入11位的手机号">
 				</div>
-				<div class="mui-input-row">
+				<!--<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-left">
+					<input id='yanzhengma' type="text" class="mui-input-clear mui-input " placeholder="请输入验证码">				
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-right">
+					<input id='yanzheng' type="button" class="mui-input-clear mui-btn mui-btn-danger" value="获取验证码">					
+				</div>-->
+				<div class="mui-input-row mui-block">
 					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码" onchange="check2(this)">
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
 			</form>
 			<form class="mui-input-group">
 				<ul class="mui-table-view mui-table-view-chevron">
 					<li class="mui-table-view-cell">
-						自动登录
-						<div id="autoLogin" class="mui-switch">
-							<div class="mui-switch-handle"></div>
-						</div>
+						<a href="#">
+							<input type="checkbox" name="allow" id="ischecked" value="" />我同意勾选宏帆app用户许可协议
+						</a>
 					</li>
 				</ul>
 			</form>
 			<div class="mui-content-padded">
-				<button id='login' class="mui-btn mui-btn-block mui-btn-primary denlu">登录</button>
-				<div class="link-area"><a id='signup'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
+				<button id='sign' class="mui-btn mui-btn-block mui-btn-primary denlu">注册</button>
+				<div class="link-area"><a id='goLogin' href="#">已有帐号?去登录</a>
 				</div>
 			</div>
 			<div class="mui-content-padded oauth-area">
@@ -163,13 +169,11 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
-		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-		<!--<script src="../js/mui.enterfocus.js"></script>-->
+		<script src="../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js"></script>
 		<script>
-			var regA = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号的验证
-			var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;//密码验证的正则表达式
-//			mui.plusReady(function(){
+
+			mui.plusReady(function(){
 //				var denlu = document.getElementsByClassName('denlu')[0];
 //				denlu.addEventListener('tap', function(){
 //					alert('测试注册1');
@@ -188,42 +192,84 @@
 //						}
 //					});
 //				});
-//			})
-		function check1(obj){
-			if (!regA.test(obj.value)) {
-				mui.toast('请进行合法的输入');
-				obj.focus();
-				return false;
-			}
-		}
-		function check2(obj){
-			if (!reg.test(obj.value)) {
-				mui.toast('请进行合法的输入');
-				obj.focus();
-				return false;
-			}
-		}
-		mui.plusReady(function(){
-			var account=document.getElementById("account");
-			var password=document.getElementById("password");
-			var regInfo=JSON.parse(plus.storage.getItem("$regInfo"));			
-			mui('.mui-content-padded').on('tap','#login',function(){
-//				if (account.value!=regInfo.account) {
-//					mui.toast('没有改用户！');
-//					account.focus();
-//					return false;
-//				}else 
-				if(password.value!=regInfo.password){
-					console.log(password.value);
-					mui.toast('密码输入错误');
-					password.focus();
-					return false;
-				}else{
-					regInfo.status=1;
-					plus.storage.setItem("$loginInfo",JSON.stringify(regInfo));
-					console.log(plus.storage.getItem("$regInfo"));
-					mui.ajax(serverUrl+'/api/useraccount/login',{
-								data:{"username":account.value,password:password.value},
+
+			})
+			
+			
+		(function($, doc) {
+			
+				$.init();
+				var regInfo={};
+				$.plusReady(function() {
+					var settings = app.getSettings();
+					var regButton = doc.getElementById('sign');//提交按钮
+					var accountBox = doc.getElementById('account');//手机号
+					var passwordBox=doc.getElementById('password');//密码
+					var check = doc.getElementById('yanzheng');//获取验证码
+					var yanzhengma = doc.getElementById('yanzhengma');//验证码
+					var checkBox = doc.getElementById('ischecked');//是否勾选
+					var regA = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;
+					var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;//密码验证的正则表达式
+					var code = '';//验证码
+					//产生验证码  
+			        for (var i = 0; i < 6; i++) {  
+			            code += parseInt(Math.random() * 9).toString();  
+			        }
+					mui('.mui-input-group').on('tap','#yanzheng', function(event) {
+						console.log(code);
+						var logininfo=JSON.parse(plus.storage.getItem("$regInfo"));	
+//						if(logininfo){
+//							$.toast("该用户已存在，去登录！")
+//							mui.openWindow({
+//							    url: 'login.html'
+//							});
+//						}else{
+							if (!regA.test(accountBox.value)) {
+								$.toast('请输入正确的手机号码');
+								accountBox.focus();
+								return false;
+							}else{
+								regInfo = {
+									account: accountBox.value,
+									code:code
+									
+								}
+								yzm(this);
+							}
+//						}
+					});
+					
+					
+					//确认
+					regButton.addEventListener('tap', function(event) {
+						if (!regA.test(accountBox.value)) {
+							$.toast('请输入正确的手机号码');
+							accountBox.focus();
+							return false;
+						}
+//						else if(yanzhengma.value != code){
+//							$.toast('验证码有误');
+//							yanzhengma.focus();
+//							return false;
+//						}
+						else if(!reg.test(passwordBox.value)){
+							console.log(passwordBox.value);
+							$.toast('请输入合法的密码');
+							passwordBox.focus();
+							return false;
+						}
+						else if(!checkBox.checked){
+							$.toast('您还没有同意用户手册');
+							checkBox.focus();
+							return false;
+						}
+						else{
+							regInfo.password="112233aa";
+							regInfo.status=0;
+							plus.storage.setItem("$regInfo",JSON.stringify(regInfo));
+							console.log(plus.storage.getItem("$regInfo"));
+							mui.ajax(serverUrl+'/api/useraccount/register',{
+								data:{"username":accountBox.value,password:passwordBox.value},
 								dataType:'json',//服务器返回json格式数据
 								type:'post',//HTTP请求类型
 								timeout:10000,//超时时间设置为10秒；
@@ -232,13 +278,12 @@
 									alert(JSON.stringify(data));
 									console.log(data);
 									if(data.errno==0){
-										plus.storage.setItem("$loginSign",JSON.stringify(account.value));
 										mui.openWindow({
-										    url: 'index.html'
+										    url: 'login.html?phone='+accountBox.value
 										});
 										return true;
 									}else{
-										mui.toast("用户名或密码错误！");
+										mui.toast("注册失败！");
 										return false;
 									}
 	
@@ -248,30 +293,39 @@
 									alert(type);
 								}
 							});
-					
-					return true;
-				}
-			});
-			//打开注册页面
-			var goLogin=document.getElementById('goLogin');
-//			goLogin.onclick=function(){
-//				openview({
-//					view:'sign.html',
-//					bottom:'0px'
-//				});
-//				return true;
-//			}
-			//打开忘记密码页面
-			var forgetPassword=document.getElementById('goLogin');
-//			forgetPassword.addEventListener('tap',function(){
-//				openview({
-//					view:'forgetPassword.html',
-//					bottom:'0px'
-//				});
-//				return true;
-//			});
-		});
+							
+						}
+					});
+				});
+				//打开登录页面
+				var goLogin=document.getElementById('goLogin');
+				goLogin.addEventListener('tap', function(){
+					openview({
+						view:'login.html',
+						bottom:'0px'
+					});
+				});
 				
+			}(mui, document));
+			var wait = 120;
+			
+	        function yzm(input) {
+					if(wait == 0) {
+						input.removeAttribute("disabled");
+						input.value = "获取验证码";
+						wait = 120;
+	
+					} else {
+	
+						input.setAttribute("disabled", true);
+						input.value = "重新发送(" + wait + ")";
+						wait--;
+						setTimeout(function() {
+								yzm(input);
+						},1000)
+					}
+	
+				}		
 
 		</script>
 	</body>
