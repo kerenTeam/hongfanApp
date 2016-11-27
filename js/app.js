@@ -1,6 +1,9 @@
 
-
+	var serverUrl='http://Aaron.lan:7200';
 (function($, owner) {
+
+	
+//	var develop='http://Aaron.lan:7200'
 	/**
 	 * 用户登录
 	 **/
