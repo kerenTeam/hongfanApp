@@ -161,7 +161,7 @@
 			</form>
 			<div class="mui-content-padded">
 				<button id='sign' class="mui-btn mui-btn-block mui-btn-primary denlu">注册</button>
-				<div class="link-area"><a id='reg' href="#">已有帐号?去登录</a>
+				<div class="link-area"><a id='goLogin' href="#">已有帐号?去登录</a>
 				</div>
 			</div>
 			<div class="mui-content-padded oauth-area">
@@ -197,7 +197,7 @@
 			
 		(function($, doc) {
 				$.init();
-				var regInfo;
+				var regInfo={};
 				$.plusReady(function() {
 					var settings = app.getSettings();
 					var regButton = doc.getElementById('sign');//提交按钮
@@ -215,13 +215,13 @@
 			        }
 					mui('.mui-input-group').on('tap','#yanzheng', function(event) {
 						console.log(code);
-						var regInfo=JSON.parse(plus.storage.getItem("$regInfo"));	
-						if(regInfo){
-							$.toast("该用户已存在，去登录！")
-							mui.openWindow({
-							    url: 'login.html'
-							});
-						}else{
+						var logininfo=JSON.parse(plus.storage.getItem("$regInfo"));	
+//						if(logininfo){
+//							$.toast("该用户已存在，去登录！")
+//							mui.openWindow({
+//							    url: 'login.html'
+//							});
+//						}else{
 							if (!regA.test(accountBox.value)) {
 								$.toast('请输入正确的手机号码');
 								accountBox.focus();
@@ -234,7 +234,7 @@
 								}
 								yzm(this);
 							}
-						}
+//						}
 					});
 					
 					
@@ -262,7 +262,7 @@
 							return false;
 						}
 						else{
-							regInfo.password=passwordBox.value;
+							regInfo.password="112233aa";
 							regInfo.status=0;
 							plus.storage.setItem("$regInfo",JSON.stringify(regInfo));
 							console.log(plus.storage.getItem("$regInfo"));
@@ -273,6 +273,15 @@
 						}
 					});
 				});
+				//打开登录页面
+				var goLogin=document.getElementById('goLogin');
+				goLogin.addEventListener('tap', function(){
+					openview({
+						view:'login.html',
+						bottom:'0px'
+					});
+				});
+				
 			}(mui, document));
 			var wait = 120;
 			
