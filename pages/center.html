@@ -129,6 +129,7 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.plusReady(function(){
@@ -196,74 +197,52 @@
 			
 			
 				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
-				
-				mui.ajax('user.json',{									
-						data:{"phone":loginInfo.account},
-						dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						timeout:10000,//超时时间设置为10秒；	              
-						success:function(data){
-							//console.info(userInfo,data);
-							//获取并渲染用户信息
-							var html=template("userMessageModal",data);
-							document.getElementById("userBox").innerHTML=html;
-							//设置
-							mui('.setUp')[0].addEventListener('tap',function(){
-								openview({
-									view:'personal/setup.html'
-								});
+				var token=plus.storage.getItem("Token");
+				var $userid=plus.storage.getItem("$userid");
+				console.log($userid);
+				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+					data:{"userid":$userid},
+//					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{"token":token},	              				
+					success:function(data,type,xhr){
+						console.log(JSON.stringify(data));
+						//获取并渲染焦点新闻信息
+						var html=template("userMessageModal",data.data[0]);
+						document.getElementById("userBox").innerHTML=html;
+						//设置
+						mui('.setUp')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/setup.html'
 							});
-			
-							//余额
-							mui('.vfyue')[0].addEventListener('tap',function(){
-								openview({
-									view:'personal/recharge.html'
-								})
+						});
+		
+						//余额
+						mui('.vfyue')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/recharge.html'
+							})
+						});
+						//积分<a href="../jfguanli.html" class="integral">
+						mui('.integral')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/jfguanli.html'
 							});
-							//积分<a href="../jfguanli.html" class="integral">
-							mui('.integral')[0].addEventListener('tap',function(){
-								openview({
-									view:'personal/jfguanli.html'
-								});
+						});
+						//抵用卷<a href="../coupon.html" class="Vouchers">
+						mui('.Vouchers')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/coupon.html'
 							});
-							//抵用卷<a href="../coupon.html" class="Vouchers">
-							mui('.Vouchers')[0].addEventListener('tap',function(){
-								openview({
-									view:'personal/coupon.html'
-								});
-							});
-							
-						},
-						error:function(xhr,type,errorThrown){
-							//异常处理；
-							console.log("获取失败！");
-							mui.toast("当前网络不好请重试");
-						}
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						console.log(type);
+						alert(type);
+					}
 				});
-//				mui.ajax(serverUrl+'/api/useraddress/addresslist',{
-//								data:{"userid":4},
-//								dataType:'json',//服务器返回json格式数据
-//								type:'post',//HTTP请求类型
-//								timeout:10000,//超时时间设置为10秒；
-//								headers:{'Content-Type':'application/json',"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDIyMTI5NH0.fhwfkVg-x08qp1JyLm1zZVmrNbh5Sbhf0NIi_w2775w"},	              
-//								success:function(data){
-////									if(data.errno==0){
-////										plus.storage.setItem("$loginSign",JSON.stringify(account.value));
-////										mui.openWindow({
-////										    url: 'index.html'
-////										});
-////										return true;
-////									}else{
-////										mui.toast("用户名或密码错误！");
-////										return false;
-////									}
-//	
-//								},
-//								error:function(xhr,type,errorThrown){
-//									console.log(type);
-//									alert(type);
-//								}
-//				});
+
 					
 			});
 			
