@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>XX列表</title>
+		<title>维修(保洁..)列表</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -16,16 +16,6 @@
 		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<script src="../../js/mui.picker.min.js"></script>
-		<script src="../../js/mui.poppicker.js"></script>
-		
-		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
-		
 		<style type="text/css">
 			.mui-bar{
 				height: 50px;
@@ -60,7 +50,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">XX列表</h1>
+		    <h1 class="mui-title" id="headtitle"></h1>
 			<a class="fr mui-icon" id="theSearch" href="theSearch.html"><i class="iconfont icon-sousuo"></i></a>
 		</header>	
 		<!-- screening -->
@@ -244,11 +234,24 @@
 (function(){
 	mui.plusReady(function(){
 		//获取上个页面传值
-		var nowweb = plus.webview.currentWebview();//当前webview对象
-		var nowname = nowweb.name;
-		if(nowname == 'Repair'){//获取维修服务对应数据
-			alert(1);
+		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
+		var headtitle = document.getElementById('headtitle');
+		switch(nowwebname){
+			case 'Repair'://维修
+			headtitle.innerHTML = '维修列表';
+			break;
+			case 'Clean'://保洁
+			headtitle.innerHTML = '保洁列表';
+			break;
+			case 'Babysister'://保姆
+			headtitle.innerHTML = '保姆列表';
+			break;
+			case 'Openclock'://开锁
+			headtitle.innerHTML = '开锁列表';
+			break;
 		}
+		
+		
 		//跳转详情
 		var theDetail = document.getElementsByClassName('page-link')[0];
 		theDetail.addEventListener('tap', function(){
@@ -256,13 +259,6 @@
 					view:'theDetail.html',
 				})
 		});
-//			var theSearch = document.getElementById('theSearch');
-//			theSearch.addEventListener('tap', function(){
-//				openview({
-//					view:'theSearch.html',
-//					bottom:'0'
-//				})
-//			});
 	});
 })();
 </script>
