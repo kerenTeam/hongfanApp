@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/> 
+	    <link rel="stylesheet" href="../../css/pickermap.css"> 
+	    <script src="../../js/jquery-1.7.1.min.js"></script>
+	    <script src="../../js/mui.min.js"></script>
+	    
+	    <title>高德地图</title>
+</head>
+<style>
+    body{
+        background-color:white;
+    }
+    .amap-logo,.amap-copyright{
+        display: none !important;
+    } 
+    .searchAdd{
+        text-decoration:none;
+    } 
+    .inline{
+        display:inline-block!important;
+    }
+   .search_page .noresult{ 
+        position:relative!important;
+
+    }
+    .search_page .noresult::after{
+       content: '换个关键词试试吧！';
+            color: rgb(0, 0, 0);
+            position: absolute;
+            font-size: .875rem;
+            top: 100%;
+            left: 0;
+            text-align: center;
+            display: inline-block;
+            width: 100%;
+
+    }
+    .noresult span{
+        display:none!important;
+    } 
+
+    .noresult {
+        position: relative; 
+        pointer-events: none;
+    }
+    .red{
+    	color: #D72D22;
+    }
+</style>
+<body>
+    <div id="light-navi-wrapper">
+        <div class="main-header"></div>
+        <div class="main-body">
+            <div class="poi-card">
+                <div class="poi-card-header"></div>
+                <div class="poi-card-main"></div>
+            </div>
+        </div>
+        <div class="main-footer"></div>
+    </div>
+    <!-- 头部 -->
+    <script type="text/template" id="picker-header" >
+        <div class="picker-index">
+            <div class="back mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="padding-left:10px;" onclick="mui.back()"><span style="vertical-align: middle;display: inline-block;height: 44px;line-height: 1;"></span></div>
+            <input type="text" class="J_commonInput" placeholder="">
+            <div class="searchBtn J_showSearch">搜索</div>
+            <div class="clearBtn J_clearInput"></div>
+            <div class="C_picker-header-txt">地图选点</div>
+        </div>
+    </script>
+    <!-- 地图 -->
+    <script type="text/template" id="map-view-template">
+        <div id="map-body" class="map-body">
+            <div id="map-view"></div>
+            <div class="marker-static"></div>
+            <!--<a id="map-locate" class="navi-icon" href="javascript:;"></a>-->
+        </div>
+    </script>
+    <script type="text/template" id="map-view-custom-template">
+        <div id="map-body" class="map-body">
+            <div id="map-view-custom"></div>
+            <div class="marker-static-custom J_returnLng_custom"></div>
+            <a id="map-locate-custom" class="navi-icon" href="javascript:;"></a>
+            <div class="picker_tips">
+                <div class="picker_tips_box">
+                    <div class="picker_custom_name">
+                        <%= paramName %>
+                    </div>
+                    <div class="picker_custom_tips">(拖动地图选择你的位置)</div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <!-- poi列表tab -->
+    <script type="text/template" id="poi-bodyTab-template"><span class="J_tab active">全部</span>
+        <% for(var j = 0;j < keywordsArray.length;j++){ %> <span class="J_tab"><%= keywordsArray[j] %></span>
+            <% } %>
+    </script>
+    <!-- poi列表 -->
+    <script type="text/template" id="poi-body-template">
+        <% if (pois && pois.length) { %> 
+	        <% for(var i = 0; i < 1; i++) { %>
+	        <div class="item J_returnLng" data-lng="<%= pois[i].location.lng %>" data-lat="<%= pois[i].location.lat %>">
+	            <a onclick="goback('<%= pois[i].address %>')" class="addredhref">
+	                <div class="txt"><span class="red inline">[当前位置]</span><span class="poicard-name inline"><%= pois[i].name %> </span> <span class="poicard-addr"><%= pois[i].address %></span></div>
+	            </a>
+	        </div>
+	        <% } %>
+	        <% for(var i = 1; i < pois.length; i++) { %>
+	        <div class="item J_returnLng" data-lng="<%= pois[i].location.lng %>" data-lat="<%= pois[i].location.lat %>">
+	            <a onclick="goback('<%= pois[i].address %>')" class="addredhref">
+	                <div class="txt"><span class="poicard-name"><%= pois[i].name %> </span> <span class="poicard-addr"><%= pois[i].address %></span></div>
+	            </a>
+	        </div>
+	        <% } %>
+        <% } %>
+    </script>
+    <!-- poi列表搜索页面 -->
+    <script type="text/template" id="poiSearch-body-template">
+        <div class="search_page_tips">
+            <% if (tips && tips.length) { %>
+                <% for(var i = 0; i < tips.length; i++) { %> 
+	            <a class="searchAdd" onclick="searchGo('<%= tips[i].district %>','<%= tips[i].name %>')">
+	                <div class="item" data-lng="<%= tips[i].location.lng %>" data-lat="<%= tips[i].location.lat %>">
+	                    <div class="txt"><span class="poicard-name"><%= tips[i].name %></span> <span class="poicard-addr"><%= tips[i].district %></span></div>
+	                </div>
+	            </a>
+                <% } %>
+            <% } %>
+		</div>
+    </script>  
+    <script> 
+
+    function queryStr() {
+        var r = window.location.search.slice(1).split("&"),
+            e = {};
+        return r.forEach(function(r) {
+            var t;
+            r && (t = r.split("="), 2 === t.length && (e[t[0]] = t[1]))
+        }), e
+    }
+    var key = queryStr().key;
+    
+    key ? ! function(r) {
+        r.write('<script src="http://webapi.amap.com/maps?v=1.3&s=rsv3&rf=h5&utm_source=litemap&key=' + key + '"><\/script>')
+    }(document) : alert("请输入有效key!");  
+ //   var pageid;
+// mui.plusReady(function(){ 
+// 	//plus.storage.clear();
+// 	pageid=plus.webview.currentWebview().pageid; 
+// // alert(pageid);
+//  if(pageid!='addAddress'){
+//  	pageid=='addAddress.html';
+//  }else{
+//  	pageid=pageid+".html";
+//  }
+// // alert(pageid);
+//  })
+//		function goback(address){
+//			var mapStorage = JSON.parse(plus.storage.getItem('$mapStorage') || '[]');
+//			var mapAddress ={}; 
+//				mapAddress.adraddress = address;
+//				mapStorage = [mapAddress];
+//				plus.storage.setItem('$mapStorage', JSON.stringify(mapStorage));
+//			   // alert(plus.storage.getItem('$mapStorage')); 
+//				var list = plus.webview.getWebviewById(pageid);
+//				// alert(list)
+//				mui.fire(list,'refreshmapstorage');
+// 				mui.back();
+//		}
+//		function searchGo(district,address){
+//			var t = district.indexOf('成都'); 
+//			if (t < 0) {  
+////				var tip = new confirmbox();
+////					tip.canshu = {
+////						nocancel:false,
+////						Prompt:'范围超出成都市不合理!',
+////					}
+////					tip.fun(); 
+//mui.toast('范围超出成都市不合理!');
+//				}else{
+//					var mapStorage = JSON.parse(plus.storage.getItem('$mapStorage') || '[]');
+//					var mapAddress ={}; 
+//						mapAddress.adraddress = address;
+//						mapStorage = [mapAddress];
+//						plus.storage.setItem('$mapStorage', JSON.stringify(mapStorage));
+//					    //alert(plus.storage.getItem('$mapStorage')); 
+//						var list = plus.webview.getWebviewById(pageid);
+//						// alert(list)
+//						mui.fire(list,'refreshmapstorage');
+//		 				mui.back();
+//				}
+//				
+//		} 
+    </script>
+    <script src="../../js/picker-d917e07e3e45f9bd1cf94efb922f82d4.js"></script>
+</body>
+
+</html>

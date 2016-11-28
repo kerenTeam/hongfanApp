@@ -2,27 +2,28 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>管理收货地址 - 素材牛模板演示</title>
+		<title>管理收货地址</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="css/common.css">
-		<link rel="stylesheet" type="text/css" href="css/index.css">
-		<link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
-		<link rel="stylesheet" href="css/reset.css">
-		<script src="js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/iscroll.js"></script>
-		<script type="text/javascript" src="js/jquery.flexslider-min.js"></script>
-		<script src="js/hmt.js" type="text/javascript"></script>
-		<script type="text/javascript" src="js/index.js"></script>
-		<script src="js/swiper.min.js" type="text/javascript" ></script>
-		<script src="js/mui.min.js" type="text/javascript"></script>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css">
+		<!--<script src="../../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>-->
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
+		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<script src="../../js/hmt.js" type="text/javascript"></script>
+		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
+		<!--<script src="../../js/swiper.min.js" type="text/javascript" ></script>-->
+		<script src="../../js/mui.min.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript"></script>
 		<!--引入模板引擎-->
-		<script src="js/artTemplate-native.js" type="text/javascript"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
 		<style type="text/css">
 			#main{
 				margin-top: 50px;
@@ -66,7 +67,7 @@
 					    		</div>
 								<span class="mradd fl">默认地址</span>
 								<div class="right fr clearfloat">
-									<a href="#" class="fr">
+									<a href="javascript:;" class="fr exterminate">
 										<i class="iconfont icon-lajixiang icon-shanchutwo"></i>
 										删除
 									</a>
@@ -80,7 +81,7 @@
 			    		</div>
 			    	</div>
 		    	<% } %>
-		    	<a href="add-address.html" class="address-add fl">
+		    	<a href="add-address.html" class="address-add fl" id="addNewAd">
 		     		添加新地址
 		     	</a>
 		    </div>
@@ -126,7 +127,7 @@
 				
 				
 				//地址详情列表
-				mui.ajax('json/address.json',{									
+				mui.ajax('../../json/address.json',{									
 //					data:{"userid":4},
 					dataType:'json',//服务器返回json格式数据
 					type:'get',//HTTP请求类型
@@ -141,16 +142,34 @@
 						var html = template('addressList-detail',addressObj);
 						document.getElementById('addressList').innerHTML = html;
 						//点击编辑跳转传参
+//						var editAdd = $('.editAdd');
 						var editAdd = document.getElementsByClassName('editAdd');
-						editAdd.addEventListener('tap', function(){
-							AddId = $(this).parents('.addlist').find('.addId').attr('name');
-							alert(AddId);
-							var url = "address-edit.html?index=A&name="+AddId;
-							openview({
-								view: url,
-							})
+						for (var j=0; j<editAdd.length; j++) {
+							editAdd[j].addEventListener('tap',function(){
+								var addId = $(this).parents('.addlist').find('.addId').attr('name');
+//								alert(addId); 
+								var url = "address-edit.html?index=A&name=" + addId;
+								window.open(url);
+							});
+						}
+						//删除确认弹框
+						var exterminate = document.getElementsByClassName('exterminate');
+						for (var m=0; m<exterminate.length; m++) {
+							exterminate[m].addEventListener('tap',function(){
+								mui.confirm('确认删除该地址？','确认删除该地址？',['取消','确认'],function (e) {
+									e.index       
+								},'div')
+							});
+						}
+						//点击添加地址跳转
+						var addNewAd = document.getElementById('addNewAd');
+						addNewAd.addEventListener('tap',function(){
+							var url = "add-address.html";
+							window.open(url);
 						});
-				
+						
+						
+						
 					},
 					error:function(xhr,type,errorThrown){
 						//异常处理；

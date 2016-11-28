@@ -13,15 +13,15 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
-		<!--<script src="../../js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>-->
-		<!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
 		<style type="text/css">
 			#userMessContainer{
 				margin-top: 50px;
 			}
-			i.container{
+			i{
 				font-style: normal;
+			}
+			i.container{
+				
 				position: relative;
 			}
 			i.imgContainer .upload{
@@ -32,33 +32,52 @@
 			#main{
 				margin-bottom: 100px;
 			}
+			select{
+				display: inline-block !important;
+				float:right !important;
+				font-size: 14px !important;
+				margin-top:10px;
+			}
+			input{
+				border:none !important;
+			}
+			.box-s{
+				padding-left:5%;
+			}
+			.muibackdrop{
+				width:80%;
+				height:100px;
+				padding:15px 50px;
+				line-height: 30px;
+				position: absolute;
+				top:20%;
+				left:10%;
+				border:1px solid #F53C42;
+				background: #ffffff;
+			}
+			.saveMessage{
+				color:#FFFFFF;
+				margin-right: 20px;
+				line-height: 50px;
+				font-size: 14px;
+			}
+			.muibackdrop{
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
 		<header class="hasManyCity hasManyCitytwo" id="header">
 			<a href="javascript:history.go(-1)" class="fl fanhui mui-action-back"><i class="iconfont icon-fanhui"></i></a>
 			<div class="header-tit">
-				管理中心
-			</div>		
-		</header>
-		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">管理中心</h1>
+				个人设置
+			</div>
+			<span class="mui-pull-right saveMessage">保存</span>
 		</header>
 		<div id="container">		
 			<div id="main">
 		    	<div class="plist clearfloat data" id="userMessContainer">
-					<ul>
-						<li class="clearfloat touxiang">
-							<a href="#">
-								<p class="fl">头像</p>
-								<i class="fr imgContainer">
-					    			<img src="../../img/570da2da9eb8f.png"/>
-					    			<div class="upload" id="upload" >上传</div>
-								</i>
-							</a>
-						</li>
-					</ul>
+					
 				</div>
 				<p class="setuptit box-s">账户设置</p>
 				<div class="plist plistwo clearfloat data">
@@ -87,7 +106,7 @@
 			</div>
 	    </div>
 	    <script type="text/html" id="userMessModal">
-			<ul>
+	    	<ul>
 				<li class="clearfloat touxiang">
 					<a href="#">
 						<p class="fl">头像</p>
@@ -103,7 +122,7 @@
 				<li class="clearfloat">
 					<a href="#">
 						<p class="fl">昵称</p>
-						<%if(userinfo[0].username){%>
+						<%if(userinfo[0].username!=null){%>
 							<input type="text" class="fr shuru" name="" id="" value="<%= userinfo[0].username %>" placeholder="" />
 			    		<%}else{%>
 							<input type="text" class="fr shuru" name="" id="" value="<%= userinfo[0].userphone %>" placeholder="" />
@@ -112,65 +131,125 @@
 				</li>
 				<li class="clearfloat">
 					<a href="#">
-						<p class="fl">手机号</p>
-						<input type="text" class="fr shuru" name="" id="" value="<%= userinfo[0].phone %>" placeholder="" />
+						<p class="fl">性别</p>
+						<%if(userinfo[0].gender!=""){%>
+							<i class="mui-pull-right chooseGender"><%= userinfo[0].gender %></i>
+			    		<%}else{%>
+			    			<i class="mui-pull-right chooseGender">请选择性别</i>
+			    		<%}%>						
 					</a>
 				</li>
 				<li class="clearfloat">
 					<a href="#">
-						<p class="fl">性别</p>
-						<span class="fr"><%= userinfo[0].gender %></span>
+						<p class="fl">用户默认地址</p>
+						<%if(userinfo[0].address!=null){%>
+						<input type="text" class="fr shuru" name="" id="" value="<%= userinfo[0].address %>" placeholder="" />
+						<%}else{%>
+						<input type="text" class="fr shuru" name="" id="" value="四川省成都市高新区" placeholder="" />	    		
+			    		<%}%>
 					</a>
-				</li>
-				<li class="clearfloat">
-					<a href="address.html">
-						<p class="fl">收货地址</p>
-						<span class="fr"><%= userinfo[0].address %></span>
-					</a>
-				</li>
+				</li>		
 			</ul>
 		</script>
 	    <div class="renting-footer renting-footertwo clearfloat" id="footer">
 			<ul>
-				<li><a href="#">确定修改</a></li>
+				<li><a class="modify">确定修改</a></li>
 			</ul>
+		</div>
+		<div class="muibackdrop">
+			<div class="mui-input-row">
+				<h5>请选择性别</h5>
+				<select name="genderChoose" class="mui-pull-right mui-input">
+					<option value="男">男</option>
+					<option value="女">女</option>
+				</select>
+			</div>
 		</div>
 	</body>
 	<!--<script src="../../js/fastclick.js"></script>-->
 	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js"></script>
 	
 	<script type="text/javascript">
 		mui.plusReady(function(){
-//				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
-				
-				mui.ajax('http://192.168.199.191:7200/api/useraccount/userinfo',{									
-						data:{userid:4}, 
-						dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						timeout:10000,//超时时间设置为10秒；	
-						beforeSend:function(xhr){
-		                	xhr.setRequestHeader("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDIzNzAwMH0.QgNrKZ55H3aobu1f1sat_fJN_k9mqRZF9dAvtoNnlvo");
-		                },	//此处设置header参数键值对
-						success:function(data){
-							//console.info(userInfo,data);
-//							console.log('data', data.data);
-							var dataobj = {};
-							dataobj.userinfo = data.data;
-							console.log(dataobj.userinfo[0]);
-							//获取并渲染用户信息
-							var html=template("userMessModal",dataobj);
-							document.getElementById("userMessContainer").innerHTML=html;
-						},
-						error:function(xhr,type,errorThrown){
-							//异常处理；
-							console.log("获取失败！");
-							mui.toast("当前网络不好请重试");
-						}
-				});
-				
-				
+			//获取用户信息
+			var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
+			var token=plus.storage.getItem("Token");
+			var $userid=plus.storage.getItem("$userid");
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{									
+					data:{"userid":$userid}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":token},
+					success:function(data){
+						var dataobj = {};
+						dataobj.userinfo = data.data;
+						//获取并渲染用户信息
+						var html=template("userMessModal",dataobj);
+						document.getElementById("userMessContainer").innerHTML=html;
+						//点击选择性别的弹窗	
+						mui('.chooseGender')[0].addEventListener("tap",function(){
+							$(".muibackdrop").fadeIn();
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						console.log("获取失败！");
+						mui.toast("当前网络不好请重试");
+					}
 			});
+			
+				
+		});
+		//上传图片
+		function appendByGallery() {
+			plus.gallery.pick(function(path) {
+
+				appendFile(path); //处理图片的地方
+			});
+		}
+		// 添加文件
+		var f1 = null;
+
+		function appendFile(path) {
+
+			var img = new Image();
+			img.src = path; // 传过来的图片路径在这里用。
+			img.onload = function() {
+				var that = this;
+				//生成比例 
+				var w = that.width,
+					h = that.height,
+					scale = w / h;
+				w = 550 || w; //480  你想压缩到多大，改这里
+				h = w / scale;
+
+				//生成canvas
+				var canvas = document.createElement('canvas');
+
+				var ctx = canvas.getContext('2d');
+
+				$(canvas).attr({
+					width: w,
+					height: h
+				});
+
+				ctx.drawImage(that, 0, 0, w, h);
+
+				var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8); //1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
+				//              alert(base64);  
+				f1 = base64.substring(23, base64.length); //去掉前面前缀 把base64数据丢过去，上传要用。
+				// f1 =base64;    
+				console.log(f1)
+
+				var pic = document.getElementById("preview");
+				pic.innerHTML = '<img src='+base64+' />'; //这里丢到img 的 src 里面就能看到效果了					
+			}
+
+		}
 	</script>
 	
 </html>
