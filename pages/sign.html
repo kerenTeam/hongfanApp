@@ -171,29 +171,7 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js"></script>
-		<script>
-
-			mui.plusReady(function(){
-//				var denlu = document.getElementsByClassName('denlu')[0];
-//				denlu.addEventListener('tap', function(){
-//					alert('测试注册1');
-//					mui.ajax('http://211.149.195.183:7221/Api/Hf_UserAPI/SignUp',{
-//						data:{"firstkey":"571eb6e8-bf1a-4f4f-b296-0af2ddf4adbc","phone":"17781694509","username":"youxd","password":"youxd","nickname":"youxd0","qq":"993900778","email":"993900778@qq.com","gender":"男"},
-//						dataType:'json',//服务器返回json格式数据
-//						type:'post',//HTTP请求类型
-//						timeout:10000,//超时时间设置为10秒；
-//						headers:{'Content-Type':'application/json'},	              
-//						success:function(data){
-//							alert(data);
-//						},
-//						error:function(xhr,type,errorThrown){
-//							console.log(type);
-//							alert(type);
-//						}
-//					});
-//				});
-
-			})
+		<script type="text/javascript">
 			
 			
 		(function($, doc) {
@@ -201,13 +179,11 @@
 				$.init();
 				var regInfo={};
 				$.plusReady(function() {
-					var settings = app.getSettings();
-					var regButton = doc.getElementById('sign');//提交按钮
-					var accountBox = doc.getElementById('account');//手机号
-					var passwordBox=doc.getElementById('password');//密码
-					var check = doc.getElementById('yanzheng');//获取验证码
-					var yanzhengma = doc.getElementById('yanzhengma');//验证码
-					var checkBox = doc.getElementById('ischecked');//是否勾选
+					var regButton = document.getElementById('sign');//提交按钮
+					
+					var check = document.getElementById('yanzheng');//获取验证码
+					var yanzhengma = document.getElementById('yanzhengma');//验证码
+					var checkBox = document.getElementById('ischecked');//是否勾选
 					var regA = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;
 					var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;//密码验证的正则表达式
 					var code = '';//验证码
@@ -242,16 +218,13 @@
 					
 					//确认
 					regButton.addEventListener('tap', function(event) {
+						var accountBox = document.getElementById('account');//手机号
+						var passwordBox=document.getElementById('password');//密码
 						if (!regA.test(accountBox.value)) {
 							$.toast('请输入正确的手机号码');
 							accountBox.focus();
 							return false;
 						}
-//						else if(yanzhengma.value != code){
-//							$.toast('验证码有误');
-//							yanzhengma.focus();
-//							return false;
-//						}
 						else if(!reg.test(passwordBox.value)){
 							console.log(passwordBox.value);
 							$.toast('请输入合法的密码');
@@ -264,22 +237,18 @@
 							return false;
 						}
 						else{
-							regInfo.password="112233aa";
-							regInfo.status=0;
-							plus.storage.setItem("$regInfo",JSON.stringify(regInfo));
-							console.log(plus.storage.getItem("$regInfo"));
 							mui.ajax(serverUrl+'/api/useraccount/register',{
-								data:{"username":accountBox.value,password:passwordBox.value},
+								data:{"username":accountBox.value,"password":passwordBox.value},
 								dataType:'json',//服务器返回json格式数据
 								type:'post',//HTTP请求类型
 								timeout:10000,//超时时间设置为10秒；
-								headers:{'Content-Type':'application/json'},	              
+//								headers:{"Content-Type":"application/json,charset=utf-8"},	              
 								success:function(data){
 									alert(JSON.stringify(data));
 									console.log(data);
 									if(data.errno==0){
 										mui.openWindow({
-										    url: 'login.html?phone='+accountBox.value
+										    url: 'login.html'
 										});
 										return true;
 									}else{

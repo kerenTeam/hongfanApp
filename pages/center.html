@@ -14,7 +14,8 @@
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/one.css">
-		
+		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		<!--header star-->
@@ -121,18 +122,6 @@
 			    					<i class="iconfont icon-jiantou1 fr"></i>
 			    				</a>
 			    			</li>
-			    			<!--<li class="box-s">
-			    				<a href="../huifu.html">
-			    					<p class="fl">我的客服</p>
-			    					<i class="iconfont icon-jiantou1 fr"></i>
-			    				</a>
-			    			</li>
-			    			<li class="box-s">
-			    				<a href="#">
-			    					<p class="fl">关于99Tobo</p>
-			    					<i class="iconfont icon-jiantou1 fr"></i>
-			    				</a>
-			    			</li>-->
 			    		</ul>
 			    	</div>			    	
 			    	<a class="center-btn db ra3 denlu">登录</a>
@@ -140,35 +129,12 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			
+			mui.plusReady(function(){
 			(function(){
-				//设置
-				mui('.setUp')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/setup.html'
-					});
-				});
-
-				//余额
-				mui('.vfyue')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/recharge.html'
-					})
-				});
-				//积分<a href="../jfguanli.html" class="integral">
-				mui('.integral')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/jfguanli.html'
-					});
-				});
-				//抵用卷<a href="../coupon.html" class="Vouchers">
-				mui('.Vouchers')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/coupon.html'
-					});
-				});
+				
 				//团购订单<a href="../order.html" class="group_Order">
 				mui('.group_Order')[0].addEventListener('tap',function(){
 					openview({
@@ -193,24 +159,6 @@
 						view:'personal/jifen-order.html'
 					});
 				});
-				//团购收藏<a href="../tuan.html" class="Group_Collection">
-				mui('.Group_Collection')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/tuan.html'
-					});
-				});
-				//百货收藏<a href="../mall.html" class="Department_Collection">
-				mui('.Department_Collection')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/mall.html'
-					});
-				});
-				// 关注商家 <a href="../remen.html" class="remen">
-				mui('.remen')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/remen.html'
-					});
-				});
 				//商家优惠卷<a href="../coupon.html" class="coupon">
 				mui('.coupon')[0].addEventListener('tap',function(){
 					openview({
@@ -229,12 +177,6 @@
 						view:'personal/member.html'
 					});
 				});
-				//积分兑换<a class="jfguanli">
-				mui('.jfguanli')[0].addEventListener('tap',function(){
-					openview({
-						view:'personal/jfguanli.html'
-					});
-				});
 				//我的发布<a class="fabu">
 				mui('.fabu')[0].addEventListener('tap',function(){
 					openview({
@@ -248,33 +190,55 @@
 						view:'login.html'
 					});
 				});
-			})();
-			
-			
-			
-			
-			mui.plusReady(function(){
-				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
-				
-				mui.ajax('user.json',{									
-						data:{"phone":loginInfo.account},
-						dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						timeout:10000,//超时时间设置为10秒；	              
-						success:function(data){
-							//console.info(userInfo,data);
-							//获取并渲染用户信息
-							var html=template("userMessageModal",data);
-							document.getElementById("userBox").innerHTML=html;
-						},
-						error:function(xhr,type,errorThrown){
-							//异常处理；
-							console.log("获取失败！");
-							mui.toast("当前网络不好请重试");
-						}
+				//设置
+				mui('.setUp')[0].addEventListener('tap',function(){
+					openview({
+						view:'personal/setup.html'
+					});
 				});
-				
-				
+			})();			
+				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
+				var token=plus.storage.getItem("Token");
+				var $userid=plus.storage.getItem("$userid");
+				console.log($userid);
+				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+					data:{"userid":$userid},
+//					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{"token":token},	              				
+					success:function(data,type,xhr){
+						console.log(JSON.stringify(data));
+						//获取并渲染焦点新闻信息
+						var html=template("userMessageModal",data.data[0]);
+						document.getElementById("userBox").innerHTML=html;
+		
+						//余额
+						mui('.vfyue')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/recharge.html'
+							})
+						});
+						//积分<a href="../jfguanli.html" class="integral">
+						mui('.integral')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/jfguanli.html'
+							});
+						});
+						//抵用卷<a href="../coupon.html" class="Vouchers">
+						mui('.Vouchers')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/coupon.html'
+							});
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						console.log(type);
+						alert(type);
+					}
+				});
+
+					
 			});
 			
 			
@@ -285,18 +249,17 @@
 		</script>
 		<script type="text/html" id="userMessageModal">
 			<div class="tu clearfloat fl">
-			<%if(userinfo[0].username){%>
-    			<img src="<%= userinfo[0].userImg %>"/>
+			<%if(avatar){%>
+    			<a class="setUp">编辑头像</a>
     		<%}else{%>
-    			<img src="../img/touxiang.png"/>
+    			<img src="<%= avatar %>"/>
     		<%}%>
     		</div>
     		<div class="content clearfloat fl">
-    		<%if(userinfo[0].username){%>
-    			<p class="hname"><%= userinfo[0].username %></p>
-    			<p class="htel"><%= userinfo[0].userphone %></p>
+    		<%if(nickname){%>
+    			<p class="htel"><%= nickname %></p>
     		<%}else{%>
-    			<p class="hname"><%= userinfo[0].userphone %></p>
+    			<p class="hname"><%= username %></p>
     		<%}%>
 
     			
@@ -305,21 +268,31 @@
     			<samp></samp>
     			<ul>
     				<li>
-    					<a class="vfyue">
-	    					<p><%= userinfo[0].balance %></p>
-	    					<span>余额</span>
-    					</a>
-    				</li>
-    				<li>
     					<a class="integral">
-	    					<p><%= userinfo[0].integral %></p>
+	    					<p><%= intergral %></p>
 	    					<span>积分</span>
     					</a>
     				</li>
     				<li>
     					<a class="Vouchers">
-	    					<p><%= userinfo[0].vouchers %></p>
+						<%if(coupon!=null) {%>
+	    					<p><%=coupon%></p>
 	    					<span>抵用券</span>
+    					<%}else{%>
+    						<p>0</p>
+    						<span>暂无抵用券</span>
+    					<%}%>
+    					</a>
+    				</li>
+    				<li>
+    					<a class="message">
+						<%if(message!=null) {%>
+	    					<p><%=message%></p>
+	    					<span>个人消息</span>
+    					<%}else{%>
+    						<p>0</p>
+    						<span>暂无消息</span>
+    					<%}%>
     					</a>
     				</li>
     			</ul>
