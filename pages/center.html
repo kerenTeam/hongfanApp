@@ -16,6 +16,15 @@
 		<link rel="stylesheet" href="../css/one.css">
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.muibackdrop{
+				display: none;
+				
+			}
+			.white{
+				color:#FFFFFF !important;
+			}
+		</style>
 	</head>
 	<body>
 		<!--header star-->
@@ -129,6 +138,7 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
@@ -200,7 +210,6 @@
 				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
 				var token=plus.storage.getItem("Token");
 				var $userid=plus.storage.getItem("$userid");
-				console.log($userid);
 				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 					data:{"userid":$userid},
 //					dataType:'json',//服务器返回json格式数据
@@ -212,13 +221,6 @@
 						//获取并渲染焦点新闻信息
 						var html=template("userMessageModal",data.data[0]);
 						document.getElementById("userBox").innerHTML=html;
-		
-						//余额
-						mui('.vfyue')[0].addEventListener('tap',function(){
-							openview({
-								view:'personal/recharge.html'
-							})
-						});
 						//积分<a href="../jfguanli.html" class="integral">
 						mui('.integral')[0].addEventListener('tap',function(){
 							openview({
@@ -230,6 +232,25 @@
 							openview({
 								view:'personal/coupon.html'
 							});
+						});
+						//消息
+						mui('.Vouchers')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/coupon.html'
+							});
+						});
+						//编辑头像
+						mui(".editImg")[0].addEventListener("tap",function(){
+							openview({
+								view:'personal/setup.html'
+							});
+							
+						});
+						//余额
+						mui('.message')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/coupon.html'
+							})
 						});
 					},
 					error:function(xhr,type,errorThrown){
@@ -248,20 +269,17 @@
 
 		</script>
 		<script type="text/html" id="userMessageModal">
-			<div class="tu clearfloat fl">
-			<%if(avatar){%>
-    			<a class="setUp">编辑头像</a>
-    		<%}else{%>
-    			<img src="<%= avatar %>"/>
-    		<%}%>
-    		</div>
-    		<div class="content clearfloat fl">
+    		<div class="content clearfloat fl mui-text-center">
     		<%if(nickname){%>
     			<p class="htel"><%= nickname %></p>
     		<%}else{%>
     			<p class="hname"><%= username %></p>
     		<%}%>
-
+			<%if(avatar!=null){%>
+				<img src="<%= avatar %>"/>
+    		<%}else{%>
+    			<a class="white editImg">编辑头像</a>
+    		<%}%>
     			
     		</div>
     		<div class="h-bottom clearfloat">
