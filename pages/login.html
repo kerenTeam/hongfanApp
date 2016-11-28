@@ -189,14 +189,13 @@
 			var password=document.getElementById("password");
 			var regInfo=JSON.parse(plus.storage.getItem("$regInfo"));			
 			mui('.mui-content-padded').on('tap','#login',function(){
-				if(password.value!=regInfo.password){
+				if(!password.value){
 					console.log(password.value);
 					mui.toast('密码输入错误');
 					password.focus();
 					return false;
 				}else{
-					regInfo.status=1;
-					plus.storage.setItem("$loginInfo",JSON.stringify(regInfo));
+					plus.storage.setItem("$loginInfo",JSON.stringify(account.value));
 					console.log(plus.storage.getItem("$regInfo"));
 					mui.ajax(serverUrl+'/api/useraccount/login',{
 						data:{"username":account.value,"password":password.value},
