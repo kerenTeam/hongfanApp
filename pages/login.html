@@ -119,6 +119,9 @@
 			.mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{
 				top:-5px;
 			}
+			#goSign, #forgetPassword{
+				color: #777;
+			}
 		</style>
 
 	</head>
@@ -136,11 +139,11 @@
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
 					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号" onchange="check1(this)">
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码" onchange="check2(this)">
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
 			</form>
 			<form class="mui-input-group">
@@ -154,7 +157,7 @@
 				</ul>
 			</form>
 			<div class="mui-content-padded">
-				<button id='login' class="mui-btn mui-btn-block mui-btn-primary denlu">登录</button>
+				<button id='confirmbtn' class="mui-btn mui-btn-block mui-btn-primary denlu">确定</button>
 				<div class="link-area"><a id='goSign'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
 				</div>
 			</div>
@@ -162,88 +165,70 @@
 
 			</div>
 		</div>
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-		<!--<script src="../js/mui.enterfocus.js"></script>-->
-		<script src="../js/app.js"></script>
-		<script type="text/javascript">
-			var regA = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号的验证
-			var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;//密码验证的正则表达式
-			function check1(obj){
-				if (!regA.test(obj.value)) {
-					mui.toast('请进行合法的输入');
-					obj.focus();
-					return false;
-				}
-			}
-			function check2(obj){
-				if (!reg.test(obj.value)) {
-					mui.toast('请进行合法的输入');
-					obj.focus();
-					return false;
-				}
-			}
-
-		mui.plusReady(function(){
-			var account=document.getElementById("account");
-			var password=document.getElementById("password");
-			var regInfo=JSON.parse(plus.storage.getItem("$regInfo"));			
-			mui('.mui-content-padded').on('tap','#login',function(){
-				if(!password.value){
-					console.log(password.value);
-					mui.toast('密码输入错误');
-					password.focus();
-					return false;
-				}else{
-					plus.storage.setItem("$loginInfo",JSON.stringify(account.value));
-					console.log(plus.storage.getItem("$regInfo"));
-					mui.ajax(serverUrl+'/api/useraccount/login',{
-						data:{"username":account.value,"password":password.value},
-						dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						timeout:10000,//超时时间设置为10秒；
-//								headers:{"Content-Type":"application/json,charset=utf-8"},	              
-						success:function(data,type,xhr){
-							plus.storage.setItem("Token",xhr.getResponseHeader('token'));
-							plus.storage.setItem("$userid",JSON.stringify(data.data.return.userid));
-							console.log(plus.storage.getItem("Token"));
-							console.log(data.data.return.userid);
-							console.log(plus.storage.getItem("$userid"));
-							console.log(JSON.stringify(data));
-							if(data.errno==0){
-								plus.storage.setItem("$loginSign",JSON.stringify(account.value));
-								mui.back();
-								return true;
-							}else{
-								mui.toast("用户名或密码错误!");
-								return false;
-							}
-
-						},
-						error:function(xhr,type,errorThrown){
-							console.log(type);
-							alert(type);
-						}
-					});
-					
-					return true;
+<script src="../js/mui.min.js"></script>
+<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/app.js"></script>
+<script type="text/javascript">
+(function(){
+	
+	var account = document.getElementById('account');
+	var password = document.getElementById('password'),
+	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
+	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
+	
+	mui('#confirmbtn')[0].addEventListener('tap',function(){
+		if(!reg_phone.test(account.value)){
+			console.log(account.value);
+			//account.focus();
+			mui.toast('请输入正确的手机号码 !');
+		}else if(!reg_pass.test(password.value)){
+			mui.toast('请输入6-12位数字和字母组合密码 !');
+			//password.focus();
+		}else{
+			//alert(account.value);
+			//alert(password.value);
+			mui.ajax(serverUrl+'/api/useraccount/login',{
+				data:{"phone":account.value,"password":password.value},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				success:function(data,type,xhr){
+					console.log('登录返回'+JSON.stringify(data));
+					if(data.errno==0){
+						var mytoken = xhr.getResponseHeader('token');//替换默认token存入缓存
+						mui.plusReady(function(){
+							//登录成功, 缓存中如果oldtoken和myToken相同则在登陆状态
+							plus.storage.setItem("myToken",mytoken);
+							plus.storage.setItem("oldToken",mytoken);
+							plus.storage.setItem("userid",JSON.stringify(data.data.return.userid));
+							var index = plus.webview.getLaunchWebview();
+							mui.fire(index,'gohome',{hrefid:'center'});
+							plus.webview.currentWebview().close();
+							plus.webview.getWebviewById('login.html').close();
+							//触发跳转页面刷新
+							mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+							mui.toast('登录成功');
+						})
+					}else{
+						mui.toast(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败');
 				}
 			});
-			//打开注册页面
-			var goLogin=document.getElementById('goSign');
-			goSign.addEventListener('tap',function(){
-				openview({
-					view:'sign.html',
-					bottom:'0px'
-				});
-				return true;
-			});
-			//打开忘记密码页面
-			
+		}
+		
+	})
+	//打开登录页面
+	var goLogin=document.getElementById('goSign');
+	goLogin.addEventListener('tap', function(){
+		openview({
+			view:'sign.html',
 		});
-				
-
-		</script>
+	});
+})();
+</script>
 	</body>
 
 </html>
