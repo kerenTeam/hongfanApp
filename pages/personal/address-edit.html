@@ -13,22 +13,42 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script src="../../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
 		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
 		<script src="../../js/hmt.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<!--<script src="../../js/swiper.min.js" type="text/javascript" ></script>-->
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
+		<style type="text/css">
+			.mui-bar-nav{
+				box-shadow: none;
+			}
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+			.hasManyCitytwo .baocun{
+				font-size: 0.12rem;
+			}
+			#main{
+				margin-top: 50px;
+			}
+			.toggle--off{
+				background-color: #f53c42 !important;
+			}
+		</style>
 	</head>
 	<body>
-		<header class="hasManyCity hasManyCitytwo" id="header">
-			<a href="javascript:history.go(-1)" class="fl fanhui"><i class="iconfont icon-fanhui"></i></a>
-			<div class="header-tit">
-				编辑当前地址
+		<!--header star-->
+		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
+		    <div class="header-tit">
+				新增地址
 			</div>
 			<a href="#" class="fr baocun">保存</a>
 		</header>
@@ -54,12 +74,6 @@
 								<i class="fr iconfont icon-jiantou1"></i>
 							</a>
 						</li>
-						<!--<li class="clearfloat">
-							<a href="#">
-								<p class="fl">街道</p>
-								<i class="fr iconfont icon-jiantou1"></i>
-							</a>
-						</li>-->
 					</ul>
 				</div>
 				<textarea id="address" rows="4" cols="" placeholder="" class="textare box-s"></textarea>
@@ -76,12 +90,8 @@
       	mui.init();
 		mui.plusReady(function(){
 			//获取url传参
-			function getString(name){
-				var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-				var r = window.location.search.substr(1).match(reg);
-				if(r!=null)return  unescape(r[2]); return null;
-			}
-			addId = getString("name");
+			addId = plus.webview.currentWebview().name;
+			
 			//地址详情列表
 			mui.ajax('../../json/address.json',{									
 	//				data:{"phone":""},
