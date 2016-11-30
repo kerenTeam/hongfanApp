@@ -185,12 +185,15 @@
 			mui.toast('请输入6-12位数字和字母组合密码 !');
 			//password.focus();
 		}else{
+			//alert(account.value);
+			//alert(password.value);
 			mui.ajax(serverUrl+'/api/useraccount/login',{
 				data:{"phone":account.value,"password":password.value},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				success:function(data,type,xhr){
+					console.log('登录返回'+JSON.stringify(data));
 					if(data.errno==0){
 						var mytoken = xhr.getResponseHeader('token');//替换默认token存入缓存
 						mui.plusReady(function(){
@@ -202,7 +205,7 @@
 							mui.fire(index,'gohome',{hrefid:'center'});
 							plus.webview.currentWebview().close();
 							plus.webview.getWebviewById('login.html').close();
-							//触发条状页面刷新
+							//触发跳转页面刷新
 							mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
 							mui.toast('登录成功');
 						})
