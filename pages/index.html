@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<title>封面首页外</title>
@@ -36,7 +35,7 @@
 				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>
 				<span class="mui-tab-label">购物车</span>
 			</a>
-			<a class="mui-tab-item" href="center.html">
+			<a class="mui-tab-item" href="center.html" id="center">
 				<span class="mui-icon mui-icon-person"></span>
 				<span class="mui-tab-label">我的</span>
 			</a>
@@ -50,23 +49,33 @@
 				top: '0px',
 				bottom: '51px'
 			};
-			
 			var aniShow = {};
-			
-			 //创建子页面，首个选项卡页面显示，其它均隐藏；
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				var loginSign=plus.storage.getItem("$loginSign");
-				if(!loginSign){
-					mui.openWindow({
-					    url: 'login.html',
-					    style:{
-					    	top:'0px',
-					    	bottom:'0px'
-					    }
+				//设置默认token
+				if(!plus.storage.getItem('myToken')){//没有用户token
+					alert('没有登录者token');
+					mui.ajax(serverUrl+'/api/useraccount/login',{
+						data:{"phone":11111111111,"password":11111111111},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						success:function(data,type,xhr){
+							plus.storage.setItem("oldToken",xhr.getResponseHeader('token')); 
+						},
+						error:function(xhr,type,errorThrown){
+							alert('获取默认token响应失败');
+						}
 					});
+				}else{
+					alert('有用户token');
+					//alert('默认'+plus.storage.getItem('oldToken'));
+//					plus.storage.setItem("oldToken",plus.storage.getItem('myToken'));
 				}
+				//alert('老的 '+ plus.storage.getItem('oldToken'));
+				//alert('我的 '+ plus.storage.getItem('myToken'));
 				var self = plus.webview.currentWebview();
-				for (var i = 0; i < 3; i++) {
+				for (var i = 0; i < 4; i++) {
 					var temp = {};
 					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
 					if (i > 0) {
@@ -103,8 +112,9 @@
 				activeTab = targetTab;
 			});
 			 //自定义事件，模拟点击“首页选项卡”
-			document.addEventListener('gohome', function() {
-				var defaultTab = document.getElementById("defaultTab");
+			document.addEventListener('gohome', function(obj) {
+				var hrefid=obj.detail.hrefid;
+				var defaultTab = document.getElementById(hrefid);
 				//模拟首页点击
 				mui.trigger(defaultTab, 'tap');
 				//切换选项卡高亮
