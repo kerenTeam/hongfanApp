@@ -13,13 +13,9 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
-		<!--<script src="../../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>-->
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
 		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
 		<script src="../../js/hmt.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<!--<script src="../../js/swiper.min.js" type="text/javascript" ></script>-->
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<script src="../../js/app.js" type="text/javascript"></script>
 		<!--引入模板引擎-->
@@ -28,16 +24,86 @@
 			#main{
 				margin-top: 50px;
 			}
+			.mui-bar-nav{
+				box-shadow: none;
+			}
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+			
+			
+			/*默认地址勾选*/
+			
+			
+			
+			/*消息提示框*/
+			dialog{
+				background-color: #fff !important;
+			}
 		</style>
 	</head>
 	<body>
-		<header class="hasManyCity hasManyCitytwo" id="header">
-			<a href="javascript:history.go(-1)" class="fl fanhui"><i class="iconfont icon-fanhui"></i></a>
-			<div class="header-tit">
+		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
+		    <div class="header-tit">
 				管理收货地址
 			</div>
 		</header>
-		<div id="addressList"></div>
+		<div id="addressList">
+			
+			
+			<!--test-->
+			<!--<div id="main" class="mui-clearfix contaniner">
+		    	<div class="addlist clearfloat">
+		    		<div class="top clearfloat box-s">
+		    			<ul>
+		    				<li>
+		    					<span class="fl addId" name="<%= addressLi[i].id %>"></span>
+		    					<span class="fr"></span>
+		    				</li>
+		    				<li>
+		    					
+		    				</li>
+		    			</ul>
+		    		</div>
+		    		<div class="bottom clearfloat box-s">
+		    			<section class="shopcar clearfloat">
+		    				<div class="list listtwo clearfloat">
+								<div class="xuan xuantwo clearfloat fl">
+				    				<div class="radio" > 
+									    <label>
+									        <input type="checkbox" name="sex" value="" />
+									        <div class="option"></div>
+									    </label>
+									</div>
+				    		</div>
+							<span class="mradd fl">默认地址</span>
+							<div class="right fr clearfloat">
+								<a href="javascript:;" class="fr exterminate">
+									<i class="iconfont icon-lajixiang icon-shanchutwo"></i>
+									删除
+								</a>
+								<a href="javascript:;" class="fr editAdd">
+									<i class="iconfont icon-bianji bianjittt"></i>
+									编辑
+								</a>							
+							</div>
+							</div>
+						</section>
+		    		</div>
+		    	</div>
+		    </div>-->
+			<!--test-->
+			
+			
+			
+		</div>
 	    <!--模板铺数据-->
 		<script id="addressList-detail" type="text/html">
 			<div id="main" class="mui-clearfix contaniner">
@@ -142,21 +208,22 @@
 						var html = template('addressList-detail',addressObj);
 						document.getElementById('addressList').innerHTML = html;
 						//点击编辑跳转传参
-//						var editAdd = $('.editAdd');
 						var editAdd = document.getElementsByClassName('editAdd');
 						for (var j=0; j<editAdd.length; j++) {
 							editAdd[j].addEventListener('tap',function(){
 								var addId = $(this).parents('.addlist').find('.addId').attr('name');
-//								alert(addId); 
-								var url = "address-edit.html?index=A&name=" + addId;
-								window.open(url);
+								openview({
+									view:'address-edit.html',
+									extrasobj:{name:addId}
+								})
+
 							});
 						}
 						//删除确认弹框
 						var exterminate = document.getElementsByClassName('exterminate');
 						for (var m=0; m<exterminate.length; m++) {
 							exterminate[m].addEventListener('tap',function(){
-								mui.confirm('确认删除该地址？','确认删除该地址？',['取消','确认'],function (e) {
+								mui.confirm('确认删除该地址？','',['取消','确认'],function (e) {
 									e.index       
 								},'div')
 							});
@@ -167,9 +234,6 @@
 							var url = "add-address.html";
 							window.open(url);
 						});
-						
-						
-						
 					},
 					error:function(xhr,type,errorThrown){
 						//异常处理；
@@ -177,9 +241,6 @@
 						mui.toast("当前网络不好请重试");
 					}
 				});
-				
-				
-				
 			})
 	    </script>
 	</body>	

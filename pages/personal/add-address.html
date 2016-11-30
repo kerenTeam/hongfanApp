@@ -14,11 +14,8 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
+		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
 		<script src="../../js/hmt.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<!--<script src="../../js/swiper.min.js" type="text/javascript" ></script>-->
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
@@ -33,12 +30,34 @@
 			.chooseAd{
 				text-align: left !important;
 			}
+			.mui-bar-nav{
+				box-shadow: none;
+			}
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+			.hasManyCitytwo .baocun{
+				font-size: 0.12rem;
+			}
+			#main{
+				margin-top: 50px;
+			}
+			.toggle--off{
+				background-color: #f53c42 !important;
+			}
 		</style>
 	</head>
 	<body>
-		<header class="hasManyCity hasManyCitytwo" id="header">
-			<a href="javascript:history.go(-1)" class="fl fanhui"><i class="iconfont icon-fanhui"></i></a>
-			<div class="header-tit">
+		<!--header star-->
+		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
+		    <div class="header-tit">
 				新增地址
 			</div>
 			<a href="#" class="fr baocun">保存</a>
@@ -67,12 +86,6 @@
 								<i class="fr iconfont icon-jiantou1"></i>
 							</a>
 						</li>
-						<!--<li class="clearfloat">
-							<a href="#">
-								<p class="fl">街道</p>
-								<i class="fr iconfont icon-jiantou1"></i>
-							</a>
-						</li>-->
 					</ul>
 				</div>
 				<textarea name="" rows="4" cols="" placeholder="请填写详细地址，不少于5个字" class="textare box-s"></textarea>
@@ -87,11 +100,11 @@
       	mui.init();
 			mui.plusReady(function(){
 				//点击添加地址跳转
-//				var addNewAd = document.getElementById('addNewAd');
-//				addNewAd.addEventListener('tap',function(){
-//					var url = "add-address.html";
-//					window.open(url);
-//				});
+				var jiantou1 = document.getElementsByClassName('icon-jiantou1')[0];
+				jiantou1.addEventListener('tap',function(){
+					var url = "mMap.html";
+					window.open(url);
+				});
 				var longitude,longitude;
 				//地图定位
 				var watchId;
@@ -121,9 +134,9 @@
 					//alert(position.addresses);
 					longitude=(position.coords.longitude).toFixed(6);
 					latitude=(position.coords.latitude).toFixed(6);
-					// alert("当前位置的纬度："+latitude+" 经度："+longitude);
+//					 alert("当前位置的纬度："+latitude+" 经度："+longitude);
 					//alert(position.addresses)
-					$('#mapAddress input').val(position.addresses)
+//					$('#mapAddress input').val(position.addresses)
 				}
 				// 通过定位模块获取位置信息 
 				function getGeocode(){
