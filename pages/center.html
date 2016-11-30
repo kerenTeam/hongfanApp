@@ -16,6 +16,31 @@
 		<link rel="stylesheet" href="../css/one.css">
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.muibackdrop{
+				display: none;
+				
+			}
+			.white{
+				color:#FFFFFF !important;
+			}
+			.editImg{
+				position: relative;
+			}
+			.editImg .onshow{
+				position: absolute;
+				top:0;
+				bottom:0;
+				left:0;
+				right: 0;
+				font-style:normal;
+				color:#333
+			}
+			.box-ss{
+				text-align: center;
+				margin:0 auto;padding-left:22%;
+			}
+		</style>
 	</head>
 	<body>
 		<!--header star-->
@@ -30,9 +55,59 @@
 	    <div id="container" class="ymt">		
 			<div id="main">
 			    <div class="warp clearfloat">
-			    	<div class="h-top clearfloat box-s" id="userBox">
+			    	<div class="h-top clearfloat box-s box-ss" id="userBox">
 			    		
 			    	</div>
+			    	<!--用户信息渲染模板-->
+			    	<script type="text/html" id="userMessageModal">
+			    		<div class="content clearfloat fl mui-text-center">
+			    			<%if(avatar!=null){%>
+							<img src="<%= avatar %>"/>
+			    		<%}else{%>
+			    			<a class="white editImg"><img src="../img/10.png"/><i class="onshow">编辑头像</i></a>
+			    		<%}%>
+			    		<%if(nickname){%>
+			    			<p class="htel"><%= nickname %></p>
+			    		<%}else{%>
+			    			<p class="hname"><%= username %></p>
+			    		<%}%>
+						
+			    			
+			    		</div>
+			    		<div class="h-bottom clearfloat">
+			    			<samp></samp>
+			    			<ul>
+			    				<li>
+			    					<a class="integral">
+				    					<p><%= intergral %></p>
+				    					<span>积分</span>
+			    					</a>
+			    				</li>
+			    				<li>
+			    					<a class="Vouchers">
+									<%if(coupon!=null) {%>
+				    					<p><%=coupon%></p>
+				    					<span>抵用券</span>
+			    					<%}else{%>
+			    						<p>0</p>
+			    						<span>暂无抵用券</span>
+			    					<%}%>
+			    					</a>
+			    				</li>
+			    				<li>
+			    					<a class="message">
+									<%if(message!=null) {%>
+				    					<p><%=message%></p>
+				    					<span>个人消息</span>
+			    					<%}else{%>
+			    						<p>0</p>
+			    						<span>暂无消息</span>
+			    					<%}%>
+			    					</a>
+			    				</li>
+			    			</ul>
+			    		</div>
+					</script>
 			    	<div class="cash clearfloat">
 			    		<div class="cash-tit clearfloat box-s">
 			    			我的订单
@@ -112,12 +187,12 @@
 			    			</li>
 			    			<li class="box-s">
 			    				<a href="#">
-			    					<p class="fl">我的消息</p>
+			    					<p class="fl">我的会员卡</p>
 			    					<i class="iconfont icon-jiantou1 fr"></i>
 			    				</a>
 			    			</li>
 			    			<li class="box-s">
-			    				<a>
+			    				<a class="myAddress">
 			    					<p class="fl">我的地址</p>
 			    					<i class="iconfont icon-jiantou1 fr"></i>
 			    				</a>
@@ -129,6 +204,7 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
@@ -196,11 +272,16 @@
 						view:'personal/setup.html'
 					});
 				});
+				//我的地址
+				mui('.myAddress')[0].addEventListener('tap',function(){
+					openview({
+						view:'personal/address.html'
+					});
+				});
 			})();			
 				var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
 				var token=plus.storage.getItem("Token");
 				var $userid=plus.storage.getItem("$userid");
-				console.log($userid);
 				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 					data:{"userid":$userid},
 //					dataType:'json',//服务器返回json格式数据
@@ -208,17 +289,10 @@
 					timeout:10000,//超时时间设置为10秒；
 					headers:{"token":token},	              				
 					success:function(data,type,xhr){
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						//获取并渲染焦点新闻信息
 						var html=template("userMessageModal",data.data[0]);
 						document.getElementById("userBox").innerHTML=html;
-		
-						//余额
-						mui('.vfyue')[0].addEventListener('tap',function(){
-							openview({
-								view:'personal/recharge.html'
-							})
-						});
 						//积分<a href="../jfguanli.html" class="integral">
 						mui('.integral')[0].addEventListener('tap',function(){
 							openview({
@@ -231,6 +305,26 @@
 								view:'personal/coupon.html'
 							});
 						});
+						//消息
+						mui('.Vouchers')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/coupon.html'
+							});
+						});
+						//编辑头像
+						mui(".editImg")[0].addEventListener("tap",function(){
+							openview({
+								view:'personal/setup.html'
+							});
+							
+						});
+						//消息中心
+						mui('.message')[0].addEventListener('tap',function(){
+							openview({
+								view:'personal/coupon.html'
+							})
+						});
+						
 					},
 					error:function(xhr,type,errorThrown){
 						console.log(type);
@@ -247,57 +341,7 @@
 			
 
 		</script>
-		<script type="text/html" id="userMessageModal">
-			<div class="tu clearfloat fl">
-			<%if(avatar){%>
-    			<a class="setUp">编辑头像</a>
-    		<%}else{%>
-    			<img src="<%= avatar %>"/>
-    		<%}%>
-    		</div>
-    		<div class="content clearfloat fl">
-    		<%if(nickname){%>
-    			<p class="htel"><%= nickname %></p>
-    		<%}else{%>
-    			<p class="hname"><%= username %></p>
-    		<%}%>
-
-    			
-    		</div>
-    		<div class="h-bottom clearfloat">
-    			<samp></samp>
-    			<ul>
-    				<li>
-    					<a class="integral">
-	    					<p><%= intergral %></p>
-	    					<span>积分</span>
-    					</a>
-    				</li>
-    				<li>
-    					<a class="Vouchers">
-						<%if(coupon!=null) {%>
-	    					<p><%=coupon%></p>
-	    					<span>抵用券</span>
-    					<%}else{%>
-    						<p>0</p>
-    						<span>暂无抵用券</span>
-    					<%}%>
-    					</a>
-    				</li>
-    				<li>
-    					<a class="message">
-						<%if(message!=null) {%>
-	    					<p><%=message%></p>
-	    					<span>个人消息</span>
-    					<%}else{%>
-    						<p>0</p>
-    						<span>暂无消息</span>
-    					<%}%>
-    					</a>
-    				</li>
-    			</ul>
-    		</div>
-		</script>
+		
 	</body>
 
 </html>

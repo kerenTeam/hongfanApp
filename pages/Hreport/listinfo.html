@@ -12,17 +12,31 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/icons-extra.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/one.css"/>
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>
 
 		<script src="../../js/swiper.min.js" type="text/javascript" ></script>
 		<script type="text/javascript" src="../../js/index.js"></script>-->
 		<style type="text/css">
+		.normalSize{
+			font-size: 14px !important;
+		}
+		i{
+			font-style: normal;
+		}
+		.smallSize{
+			font-size: 12px !important;
+		}
+		.smallSize i{
+			font-size: 12px !important;
+		}
 			.infocon h4{
 				padding: 20px 0;
 			}
@@ -32,24 +46,37 @@
 			.mui-bar .mui-icon{
 				font-size: 24px !important;
 			}
+			.infomidd{
+				width:100%;
+				padding:0 2%;
+				
+			}
 			.infomidd p {
-				margin: 10px;
-				text-indent: 30px;
+				text-align: left;
 				font-size: 15px;
 				line-height: 20px;
 			}
 			
 			.fixfoot{
-				height: 50px;
+				height: 60px;
 				background-color: #F53C42;
 				position: fixed;
 				bottom: 0px;
 			}
-			.fixfoot_le p {
+			.fixfoot_le input {
 				background-color: rgba(255,255,255,0.3);
+				margin-top:10px;
+				margin-left:10px;
+				height:35px;
 				border-radius: 20px;
 				border: none;
 				color: #fff;
+			}
+			.fixfoot_le input:-ms-input-placeholder{
+				color:#FFFFFF;
+			}
+			.fixfoot_le input::-webkit-input-placeholder{
+				color:#FFFFFF;
 			}
 			.fixfoot_le{
 				width: 70%;
@@ -62,8 +89,56 @@
 				font-size: 28px;
 			}
 			.ymt{
-				padding: 0 15px 80px 15px;
+				padding: 0 10px 10px 10px;
+				text-align: center;
 			}
+			.ymt h4{
+				margin:0;
+				padding:0;
+				padding-top:15px;
+			}
+			.infomidd .imgSize{
+				width:100%;
+				box-sizing: border-box;
+				margin:0 auto;
+			}
+			.devide{
+				margin:0 !important;
+				width:100% !important;				
+				background: #F4F4F4;
+				color:#F53C42;
+				height:30px;
+				line-height: 30px;
+				padding:0 5px;
+				clear: both;
+				text-align: left;
+			}
+			.mui-table-view-cell a img{
+				width:30px !important;
+				height: 30px !important;
+				border:1px solid #FFFFFF;
+				border-radius: 50%;
+			}
+			.mui-table-view .mui-media-object {
+				min-width:30px;
+				height:30px;
+			
+			}
+			p{
+				white-space: normal;
+			}
+			.lineHeight{
+				display: block;
+				line-height:20px !important;
+			}
+			.sendComment{
+				color:#FFFFFF;
+				font-size: 14px;
+			}
+			.graytext{
+				color:#999 !important;
+			}
+			
 		</style>
 	</head>
 
@@ -73,34 +148,132 @@
 		    <h1 class="mui-title">详情</h1>
 			<a href="setup.html" class="fr shoucang sousuo mui-icon"><i class="iconfont icon-fenxiang"></i></a>
 		</header>
-		<div class="infocon ymt ymb">
-			<h4>文章标题 文章标题</h4>
-			<div class="infomidd">
-				<img src="../../img/21.jpg"/>
-				<p>
-					  开设地方新闻及论坛板块，公司需到重庆网监局备案，网信办备案。转载地方新闻，与四川新闻网媒体对接，并至邻水当地宣传部备案。现已开始相应工作。
-					开设地方新闻及论坛板块，公司需到重庆网监局备案，网信办备案。转载地方新闻，与四川新闻网媒体对接，并至邻水当地宣传部备案。现已开始相应工作。
-						开设地方新闻及论坛板块，公司需到重庆网监局备案，网信办备案。转载地方新闻，与四川新闻网媒体对接，并至邻水当地宣传部备案。现已开始相应工作。
-
+		<div class="ymb">
+			<div class="infocon ymt" id="messageBox">
+				
+			</div>
+			<!--新闻详情 模板渲染-->
+			<script type="text/html" id="newsModal">
+				<h4><%=title%></h4>
+				<div class="infomidd">
+					
+					<p>
+					<%=content %>
+					</p>
+					<img class="imgSize" src="<%=pic%>"/>
+					<p class="graytext smallSize"><span class="mui-pull-left">发布人：老年协会</span><span class="mui-pull-right">发布时间：<%=create_time%></span></p>					
+				</div>
+				<p class="devide">全部评论
+					<span class='smallSize mui-pull-right gray'><i class="mui-icon-extra mui-icon-extra-comment newsComment">&nbsp;<%=recommend%> &nbsp;</i><i class="mui-icon-extra mui-icon-extra-like newsLike"></i>&nbsp;<%=red_heart%></span>
+				
 				</p>
-				<img src="../../img/21.jpg"/>
-				<p>
-					  开设地方新闻及论坛板块，公司需到重庆网监局备案，网信办备案。转载地方新闻，与四川新闻网媒体对接，并至邻水当地宣传部备案。现已开始相应工作。
-					开设地方新闻及论坛板块，公司需到重庆网监局备案，网信办备案。转载地方新闻，与四川新闻网媒体对接，并至邻水当地宣传部备案。现已开始相应工作。
-						开设地方新闻及论坛板块，公司需到重庆网监局备案，网信办备案。转载地方新闻，与四川新闻网媒体对接，并至邻水当地宣传部备案。现已开始相应工作。
-
-				</p>
+			</script>
+			<div class="commentList">
+				
+				<ul class="mui-table-view" id="commentList">
+					<li class="mui-table-view-cell">
+						<div class="lineHeight">
+							<img class="mui-media-object mui-pull-left" src="../../img/10.png">
+							<div class="mui-media-body normalSize">
+								<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
+								幸福
+								<p class='smallSize'>11.28 11:39</p>
+	
+								<p class="black">
+									这是楼主的评论。这是楼主的评论。这是楼主的评论。
+								</p>
+								<div class="responseBox">
+									<p class="black">
+										<i class="redcolor">烛光回复@幸福：</i>
+										这是楼主的回复。
+									</p>
+								</div>
+							</div>
+							
+						</div>
+					</li>
+					<li class="mui-table-view-cell">
+						<div class="lineHeight">
+							<img class="mui-media-object mui-pull-left" src="../../img/10.png">
+							<div class="mui-media-body normalSize">
+								<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
+								幸福
+								<p class='smallSize'>11.28 11:39</p>
+	
+								<p class="black">
+									这是楼主的评论。这是楼主的评论。这是楼主的评论。
+								</p>
+								<div class="responseBox">
+									<p class="black">
+										<i class="redcolor">烛光回复@幸福：</i>
+										这是楼主的回复。
+									</p>
+								</div>
+							</div>
+							
+						</div>
+						
+					</li>
+					<li class="mui-table-view-cell mui-media">
+						<div class="lineHeight">
+							<img class="mui-media-object mui-pull-left" src="../../img/10.png">
+							<div class="mui-media-body normalSize">
+								<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
+								幸福
+								<p class='smallSize'>11.28 11:39</p>
+	
+								<p class="black">
+									这是楼主的评论。这是楼主的评论。这是楼主的评论。
+								</p>
+								<div class="responseBox">
+									<p class="black">
+										<i class="redcolor">烛光回复@幸福：</i>
+										这是楼主的回复。
+									</p>
+								</div>
+							</div>
+							
+						</div>
+					</li>
+					<!--新增评论 渲染-->
+					<script type="text/html" id="addCommentModal">
+						<li class="mui-table-view-cell">
+							<div class="lineHeight">
+								<img class="mui-media-object mui-pull-left" src="../../img/10.png">
+								<div class="mui-media-body normalSize">
+									<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
+									<%if(nickname){%>
+						    			<%= nickname %>
+						    		<%}else{%>
+						    			<%= username %>
+						    		<%}%>
+									<p class='smallSize'>11.28 11:39</p>
+		
+									<p class="black">
+										<%= commentContent %>
+									</p>
+									<div class="responseBox">
+										<p class="black">
+											<i class="redcolor">烛光回复@幸福：</i>
+											这是楼主的回复。
+										</p>
+									</div>
+								</div>
+								
+							</div>							
+						</li>
+					</script>
+				</ul>
 			</div>
 		</div>
 		<div class="fixfoot">
 			<div class="fixfoot_le">
-				<p>写评论...</p>
+				<input type="text" class="normalSize" name="" id="commentBox" value="" placeholder="写评论..." />
 			</div>
 			<div class="fixfoot_ri">
 				<table>
 					<tr>
-						<td><span class="mui-icon mui-icon-chatbubble"></span></td>
-						<td><span class="mui-icon mui-icon-star"></span></td>
+						<td class="sendComment">发送</td>
 					</tr>
 				</table>
 			</div>
@@ -120,6 +293,54 @@
 					})
 				})
 			}
+			
+			mui.plusReady(function(){
+				var currWebview=plus.webview.currentWebview();
+				var newsId=currWebview.newsId;
+				var token=plus.storage.getItem("Token");
+				//家乡报道的新闻获取
+				mui.ajax(serverUrl+'/api/localreport/localreport',{
+					data:{"currentPage":1,"endPage":3},
+//					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{"token":token},	 
+					success:function(data,type,xhr){
+						for(var i=0;i<data.data.length;i++){
+							if(data.data[i].id==newsId){
+								data.data[i].create_time=data.data[i].create_time.split('.')[0].split('T')[0]+' '+data.data[i].create_time.split('.')[0].split('T')[1];
+								var html=template("newsModal",data.data[i]);	
+								document.getElementById("messageBox").innerHTML=html;							
+							}
+						}
+						//点击评论
+						mui(".devide").on('tap','.newsComment',function(){
+							$("#commentBox").focus();
+							$(this).html(parseInt((this).html())+1);
+							
+						});	
+						//添加评论
+					},
+					error:function(xhr,type,errorThrown){
+						console.log(type);
+					}
+				});
+				//新闻的评论的获取
+				mui.ajax(serverUrl+'/api/localreport/comment',{
+					data:{"reportsID":newsId},
+//					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{"token":token},	 
+					success:function(data,type,xhr){
+						//console.log(JSON.stringify(data));	
+					},
+					error:function(xhr,type,errorThrown){
+						console.log(type);
+					}
+				});
+				
+			})
 		</script>
 	</body>
 	

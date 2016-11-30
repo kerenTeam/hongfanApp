@@ -12,6 +12,9 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>		
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
@@ -106,7 +109,7 @@
 		<!--图文列表模板开始-->
 		<script type="text/html" id="newsModal">
 			<% for(var i=0;i<data.length;i++){%>
-			<li class="mui-table-view-cell mui-media">
+			<li class="mui-table-view-cell mui-media openDetail" data-id="<%=data[i].id%>">
 				<a href="javascript:;">
 					<img class="mui-media-object mui-pull-right" src="<%=data[i].pic%>">
 					<div class="mui-media-body">
@@ -121,9 +124,7 @@
 		<div class="editbtn">
 			<img src="../../img/bianjibtn.svg"/>
 		</div>
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+		
 		<script type="text/javascript">
 			var infolist = mui('.infolist div');
 			
@@ -150,17 +151,24 @@
 					timeout:10000,//超时时间设置为10秒；
 					headers:{"token":token},	              					
 					success:function(data,type,xhr){
-						//console.log(JSON.stringify(data));
 						//获取并渲染焦点新闻信息
 						var html=template("focusNewsModal",data.data[0]);
 						document.getElementById("focusNews").innerHTML=html;
-
+						mui(".mui-table-view").on("tap",'.openDetail',function(){
+							var newsId=this.getAttribute("data-id");
+							console.log(newsId);
+							openview({
+								view:'listinfo.html',
+								extrasobj:{newsId:newsId}
+							});
+						})
 					},
 					error:function(xhr,type,errorThrown){
 						console.log(type);
 						alert(type);
 					}
 				});
+				//家乡报道的新闻获取
 				mui.ajax(serverUrl+'/api/localreport/localreport',{
 					data:{"currentPage":1,"endPage":3},
 //					dataType:'json',//服务器返回json格式数据
@@ -168,12 +176,13 @@
 					timeout:10000,//超时时间设置为10秒；
 					headers:{"token":token},	 
 					success:function(data,type,xhr){
-						//console.log(JSON.stringify(data));
 						//获取并渲染焦点热门信息
-						var html=template("newsModal",data);
 						for(var i=0;i<data.data.length;i++){
-							data.data[i].create_time.split('T')[0];
+							data.data[i].create_time=data.data[i].create_time.split('.')[0].split('T')[0]+' '+data.data[i].create_time.split('.')[0].split('T')[1];
 						}
+//						console.log(JSON.stringify(data));
+						var html=template("newsModal",data);
+						
 						document.getElementById("news").innerHTML=html;
 						
 					},
