@@ -39,7 +39,7 @@
 			.dealcard-waimai {padding-top: 15px;
 			}
 			#upload{ 
-				text-align: center;
+				text-align: center;margin-bottom: 30px;font-size: 15px;
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
@@ -107,15 +107,15 @@
 			break;
 			case 'Clean'://保洁数据
 			headtitle.innerHTML = '保洁列表';
-			Loading(2,1,7);//加载数据
+			Loading(2,1,7);//加载数据,包括上滑加载
 			break;
 			case 'Babysister'://保姆数据
 			headtitle.innerHTML = '保姆列表';
-			Loading(3,1,7);//加载数据
+			Loading(3,1,7);//加载数据,包括上滑加载
 			break;
 			case 'Openclock'://开锁数据
 			headtitle.innerHTML = '开锁列表';
-			Loading(4,1,7);//加载数据
+			Loading(4,1,7);//加载数据,包括上滑加载
 			break;
 		}
 		//加载方法
@@ -128,24 +128,50 @@
 				headers:{"token":oldtoken}, 
 				success:function(data){
 					if(data.errno == 0){
+						//console.log(data);
 						var dataobj = {};
-						dataobj.list = data.data.data;
+						dataobj.list = data.data.data; 
 						//获取并渲染用户信息
 						var html=template("infolist",dataobj);
 						document.getElementById("infolistdiv").innerHTML += html;
 						mui("#upload")[0].innerHTML = "上滑加载 ";
-						//当前页数小于总页数
-						if(CcurrentPage<data.data.totalPages){
-							//上滑加载
-							console.log('小于');
-							document.addEventListener('swipeup',function(){
+						//上滑加载
+						document.addEventListener('swipeup',function(){
+							var nowpage = ++CcurrentPage;
+							if(nowpage<=data.data.totalPages){
 								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-								Loading(Ctype_name,++CcurrentPage,CnumsPerPage);
-							})
-						}else{
-							mui("#upload")[0].innerHTML = "没有数据了";
-						}
-						
+								console.log('可以请求数据');
+								console.log(nowpage);
+								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+									data:{type_name:Ctype_name,currentPage:nowpage,numsPerPage:CnumsPerPage}, 
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型 
+									timeout:10000,//超时时间设置为10秒；	
+									headers:{"token":oldtoken}, 
+									success:function(data){
+										if(data.errno == 0){
+											//console.log(data);
+											var dataobj = {};
+											dataobj.list = data.data.data; 
+											//获取并渲染用户信息
+											var html=template("infolist",dataobj);
+											document.getElementById("infolistdiv").innerHTML += html;
+											mui("#upload")[0].innerHTML = "上滑加载 ";
+											
+										}else{
+											mui.toast("获取数据失败");
+										}
+										plus.nativeUI.closeWaiting();//关闭等待框
+									},
+									error:function(xhr,type,errorThrown){
+										plus.nativeUI.closeWaiting();//关闭等待框
+										mui.toast("当前网络不好请重试");
+									}
+								});
+							}else{
+								mui("#upload")[0].innerHTML = "没有数据了";
+							}
+						})
 					}else{
 						mui.toast("获取数据失败");
 					}
