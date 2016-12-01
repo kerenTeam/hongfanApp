@@ -40,13 +40,11 @@
 			}
 			.denlu{font-size: 16px;
 			}
-			.h-bottom{
-				background-color: #932427 !important;
+			.h-bottom{background-color: #932427 !important;
 			}
-			.brief{
-				margin-left: 38%;
-				margin-top: -10%;
+			.brief{margin-left: 38%;margin-top: -10%;
 			}
+			
 		</style>
 	</head>
 	<body>
@@ -152,7 +150,7 @@
 			    				<li>
 			    					<a class="wmai-order">
 			    						<img src="../img/group2.png"/>
-			    						<span>我的快速</span>
+			    						<span>我的快递</span>
 			    					</a>
 			    				</li>
 			    				<li>
@@ -215,7 +213,7 @@
 			    				</a>
 			    			</li>
 			    			<li class="box-s">
-			    				<a>
+			    				<a class="Membercard"> 
 			    					<p class="fl">我的会员卡</p>
 			    					<i class="iconfont icon-jiantou1 fr"></i>
 			    				</a>
@@ -252,7 +250,7 @@
 					if(plus.storage.getItem('myToken')){
 						Sstate = true;//如果存在myToken则是登录状态
 					}
-					alert('登录状态' + Sstate);
+					//alert('登录状态' + Sstate);
 					//取用户数据
 					if(Sstate){
 						mui.ajax(serverUrl+'/api/useraccount/userinfo',{
@@ -294,6 +292,11 @@
 									plus.storage.removeItem('myToken');
 									plus.storage.removeItem('userid');
 									Refresh();
+									plus.nativeUI.showWaiting('退出中 ...',{width:'100px',height:'80px'});
+									var time2 = setTimeout(function(){
+										plus.nativeUI.closeWaiting();
+										mui.toast('退出成功 !');
+									},500)
 								});
 							},
 							error:function(xhr,type,errorThrown){
@@ -481,6 +484,10 @@
 								view:'login.html'
 							});
 						}
+					});
+					//Membercard
+					mui('.Membercard')[0].addEventListener('tap',function(){ 
+						plus.nativeUI.showWaiting('加载中',{width:'100px',height:'80px'});
 					});
 				}//刷新	
 			});
