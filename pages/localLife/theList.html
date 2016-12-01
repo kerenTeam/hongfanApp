@@ -15,35 +15,35 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		
 		<style type="text/css">
-			.mui-bar{
-				height: 50px;
+			.mui-bar{height: 50px;
 			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
+			.mui-title,.mui-icon{line-height: 50px;
 			}
-			.mui-bar .mui-icon{
-				padding: 0;
+			.mui-bar .mui-icon{padding: 0;
 			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{color: #fff;
 			}
-			.mui-bar-nav{
-				box-shadow: none;
+			.mui-bar-nav{box-shadow: none;
 			}
-			.mui-icon{
-				line-height: 50px;
+			.mui-icon{line-height: 50px;
 			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
+			.mui-icon .iconfont{font-size: 18px;
 			}
-			#container{
-				margin-top: 53px;
+			#container{margin-top: 53px;
 			}
-			.dealcard .dealcard-img img{
-				height: 60px;
+			.dealcard .dealcard-img img{height: 60px;
 				overflow: hidden;
+			}
+			.dealcard-waimai {padding-top: 15px;
+			}
+			#upload{ 
+				text-align: center;
+			}
+			#upload img{width: 60px;margin-top: -15px;
+			}
+			.dealcard-waimai {margin-bottom: 20px;
 			}
 		</style>
 	</head>
@@ -53,83 +53,18 @@
 		    <h1 class="mui-title" id="headtitle"></h1>
 			<a class="fr mui-icon" id="theSearch" href="theSearch.html"><i class="iconfont icon-sousuo"></i></a>
 		</header>	
-		<!-- screening -->
-		<div class="screening">
-		    <ul>
-		        <li class="Brand">全部分类</li>
-		        <li class="Regional">全城</li>
-		        <li class="Sort">智能排序</li>
-		    </ul>
-		</div>
-		<!-- End screening -->		
-		<!-- Category -->
-		<div class="Category-eject">
-		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="Categorytw(this)">全部商家</li>
-		        <li onclick="Categorytw(this)">维修</li>
-		        <li onclick="Categorytw(this)">保洁</li>
-		        <li onclick="Categorytw(this)">开锁</li>
-		        <li onclick="Categorytw(this)">保姆</li>
-		    </ul>
-		    <ul class="Category-t" id="Categoryt">
-		        <li onclick="Categorytw(this)">维修</li>
-		        <li onclick="Categorytw(this)">保洁</li>
-		        <li onclick="Categorytw(this)">开锁</li>
-		        <li onclick="Categorytw(this)">保姆</li>
-		    </ul>
-		</div>
-		<!-- End Category -->
-		<!-- grade -->
-		<div class="grade-eject">
-		    <ul class="grade-w" id="gradew">
-		        <li onclick="gradet(this)">全重庆</li>
-		        <li onclick="gradet(this)">主城九区</li>
-		        <li onclick="gradet(this)">郊区</li>
-		        <li onclick="gradet(this)">县（含自治县）</li>
-		    </ul>
-		    <ul class="grade-t" id="gradet">
-		        <li onclick="gradet(this)">全重庆</li>
-		        <li onclick="gradet(this)">主城九区</li>
-		        <li onclick="gradet(this)">郊区</li>
-		        <li onclick="gradet(this)">县（含自治县）</li>
-		    </ul>
-		    <ul class="grade-s" id="grades">
-		        <li onclick="grades(this)">全主城九区</li>
-		        <li onclick="grades(this)">渝中区</li>
-		        <li onclick="grades(this)">大渡口区</li>
-		        <li onclick="grades(this)">江北区</li>
-		        <li onclick="grades(this)">沙坪坝区</li>
-		        <li onclick="grades(this)">九龙坡区</li>
-		        <li onclick="grades(this)">南岸区</li>
-		        <li onclick="grades(this)">北碚区</li>
-		        <li onclick="grades(this)">渝北区</li>
-		        <li onclick="grades(this)">巴南区</li>
-		        <li onclick="grades(this)">经济技术开发区</li>
-		    </ul>
-		</div>
-		<!-- End grade -->
-		<!-- Category -->
-		<div class="Sort-eject Sort-height">
-		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="Sorts(this)">智能排序</li>
-		        <li onclick="Sorts(this)">离我最近</li>
-		        <li onclick="Sorts(this)">好评优先</li>
-		        <li onclick="Sorts(this)">最新发布</li>
-		        <li onclick="Sorts(this)">人气优先</li>
-		        <li onclick="Sorts(this)">价格最低</li>
-		        <li onclick="Sorts(this)">价格最高</li>
-		    </ul>
-		</div>
-		<!-- End Category -->
+		
 		<div id="container">		
 			<div id="main">
 				<section class="dealcard-waimai">
-					<dl class="dealcard">
-						<dd class="page-link">
+					<dl class="dealcard" id="infolistdiv"></dl>
+					<script type="text/html" id="infolist">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd class="page-link" onclick="opendetails()">
 							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/service.jpg" alt=""> </div>
+								<div class="dealcard-img imgbox"> <img src="<%= list[i].logo%>" alt=""> </div>
 								<div class="dealcard-block-right">
-									<div class="brand">维修保洁</div>
+									<div class="brand"><%= list[i].name%></div>
 									<div class="title ">
 										<span class="star">
 											<i class="full"></i>
@@ -140,96 +75,21 @@
 										</span>
 									</div>
 									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
+										<span> <%= list[i].address%></span>
 									</div>
 								</div>
 							</a>
 						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/service.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">维修保洁</div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/service.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">维修保洁  </div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/service.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">维修保洁  </div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/service.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">维修保洁  </div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-					</dl>
+						<%}%>	
+					</script>
 				</section>
+				<div class="upload text-center text-xs gray" id="upload"></div>
 			</div>
 		</div>
+		
 	</body>
+<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/app.js"></script>	
 <script type="text/javascript">
 (function(){
@@ -237,60 +97,75 @@
 		//获取上个页面传值
 		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
 		var headtitle = document.getElementById('headtitle');
+		var oldtoken = plus.storage.getItem('oldToken');
+		
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		switch(nowwebname){
-			case 'Repair'://维修
-			headtitle.innerHTML = '维修列表';
+			case 'Repair'://维修数据 
+			headtitle.innerHTML = '维修列表'; 
+			Loading(1,1,7);//加载数据,包括上滑加载
 			break;
-			case 'Clean'://保洁
+			case 'Clean'://保洁数据
 			headtitle.innerHTML = '保洁列表';
+			Loading(2,1,7);//加载数据
 			break;
-			case 'Babysister'://保姆
+			case 'Babysister'://保姆数据
 			headtitle.innerHTML = '保姆列表';
+			Loading(3,1,7);//加载数据
 			break;
-			case 'Openclock'://开锁
+			case 'Openclock'://开锁数据
 			headtitle.innerHTML = '开锁列表';
+			Loading(4,1,7);//加载数据
 			break;
 		}
-		//获取用户信息
-		var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
-		var token=plus.storage.getItem("Token");
-		var userid=plus.storage.getItem("$userid");
-		mui.ajax(serverUrl+'/api/localservice/localservice',{									
-				data:{type_name:"'月嫂'",currentPage:1,endPage:5}, 
+		//加载方法
+		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
+			mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+				data:{type_name:Ctype_name,currentPage:CcurrentPage,numsPerPage:CnumsPerPage}, 
 				dataType:'json',//服务器返回json格式数据
 				type:'post',//HTTP请求类型 
 				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":token}, 
+				headers:{"token":oldtoken}, 
 				success:function(data){
-					alert(JSON.stringify(data));
-					
-					
-//					var dataobj = {};
-//					dataobj.userinfo = data.data;
-//					//获取并渲染用户信息
-//					var html=template("userMessModal",dataobj);
-//					document.getElementById("userMessContainer").innerHTML=html;
-//					//点击选择性别的弹窗	
-//					mui('.chooseGender')[0].addEventListener("tap",function(){
-//						$(".muibackdrop").fadeIn();
-//					});
+					if(data.errno == 0){
+						var dataobj = {};
+						dataobj.list = data.data.data;
+						//获取并渲染用户信息
+						var html=template("infolist",dataobj);
+						document.getElementById("infolistdiv").innerHTML += html;
+						mui("#upload")[0].innerHTML = "上滑加载 ";
+						//当前页数小于总页数
+						if(CcurrentPage<data.data.totalPages){
+							//上滑加载
+							console.log('小于');
+							document.addEventListener('swipeup',function(){
+								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+								Loading(Ctype_name,++CcurrentPage,CnumsPerPage);
+							})
+						}else{
+							mui("#upload")[0].innerHTML = "没有数据了";
+						}
+						
+					}else{
+						mui.toast("获取数据失败");
+					}
+					plus.nativeUI.closeWaiting();//关闭等待框
 				},
 				error:function(xhr,type,errorThrown){
-					//异常处理；
-					console.log("获取失败！");
+					plus.nativeUI.closeWaiting();//关闭等待框
 					mui.toast("当前网络不好请重试");
 				}
-		});
+			});
+		}
 		
-		
-		//跳转详情
-		var theDetail = document.getElementsByClassName('page-link')[0];
-		theDetail.addEventListener('tap', function(){
-				openview({
-					view:'theDetail.html',
-				})
-		});
-	});
+	});//plusReady
 })();
+
+//跳转详情
+function opendetails(){
+	openview({
+		view:'theDetail.html',
+	})
+}
 </script>
 </html>
