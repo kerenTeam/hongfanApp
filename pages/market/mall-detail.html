@@ -173,26 +173,32 @@
 			<div id="main">		
 				<div class="warp warptwo clearfloat">
 					<div class="detail clearfloat">
-						<!--轮播图-->
-						<div class="mui-slider">
-							  <div class="mui-slider-group mui-slider-loop">
-							    <!--支持循环，需要重复图片节点-->
-							    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/21.jpg"></a></div>
-							    <div class="mui-slider-item"><a href="#"><img src="../../img/21.jpg"></a></div>
-							    <div class="mui-slider-item"><a href="#"><img src="../../img/21.jpg"></a></div>
-							    <div class="mui-slider-item"><a href="#"><img src="../../img/21.jpg"></a></div>
-							    <div class="mui-slider-item"><a href="#"><img src="../../img/21.jpg"></a></div>
-							    <!--支持循环，需要重复图片节点-->
-							    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/21.jpg"></a></div>
-							  </div>
-							 <div class="mui-slider-indicator">
-				                <div class="mui-indicator"></div>
-				                <div class="mui-indicator"></div>
-				                <div class="mui-indicator"></div>
-				                <div class="mui-indicator mui-active"></div>
-				            </div> 
-						</div>
-						<!--轮播图结束-->
+						<div id="moll_info"></div>
+						<script type="text/html" id="infoTpl">
+							<!--轮播图-->
+							<div class="mui-slider">
+								  <div class="mui-slider-group mui-slider-loop">
+								    <!--支持循环，需要重复图片节点-->
+								    <div class="mui-slider-item mui-slider-item-duplicate">
+								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>"></a>
+								    </div>
+								    <% for(var i=0;i<infoData.length;i++){ %>
+								    <div class="mui-slider-item">
+								    	<a>
+								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>">
+								    	</a>
+								    </div>
+								    	<% } %>
+								    <!--支持循环，需要重复图片节点-->
+								    <div class="mui-slider-item mui-slider-item-duplicate">
+								    	<a>
+								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>"></a></div>
+								  </div>
+								 
+							</div>
+							<!--轮播图结束-->
+						
+						</script>
 						<div class="top clearfloat box-s">
 							<div class="shang clearfloat">
 								<div class="zuo clearfloat fl">
@@ -233,9 +239,14 @@
 								</p>
 							</div>					
 						</div>
+						
 						<div class="farmtc clearfloat mt10">
 							<p class="bt box-s">商品评价</p>
 						</div>
+						<div id="moll_comment"></div>
+						<script type="text/html" id="commentTpl">
+							
+						</script>
 						<ul class="farm clearfloat Cul">
 							<li class="mui-row Cli">
 								<div class="mui-col-sm-3 mui-col-xs-3 user-head">
@@ -399,13 +410,54 @@
 		  <a href="shopcar.html" class="shop-btn db">确定</a>
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		var choose = $('.choose');
 		$('.choose').find('li').click(function(){
 			$(this).addClass('cur');
 			$(this).siblings().removeClass('cur');
 		})
-		
+		mui.plusReady(function(){
+			//获取token
+			var token=plus.storage.getItem("oldToken");
+			//获取页面传值 商品id
+			var goodId = plus.webview.currentWebview().goodsId;
+			 alert(goodId)
+			//请求商品详情
+			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
+					data: {goodsId:goodId},
+					dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型 
+						timeout:10000,//超时时间设置为10秒；	
+						headers:{"token":token}, 
+						success:function(data){
+							 alert( data.data.goodsInfo.introduce) 
+							 
+							var dataobj =eval("("+data.data.goodsInfo.good_pic+")"); ;
+							var commentobj = data.data.comments;
+							var content = data.data.comments
+							//banner
+							var infoObj = {}
+								infoObj.myUrl = serverimgUrl;
+								infoObj.infoData = dataobj
+		                    document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
+		                    //详情
+		                  //  $(".rentingtop~p").html(data.data.goodsInfo.introduce)
+		                    //评论
+		                    var cemmentObj = {}
+								cemmentObj.myUrl = serverimgUrl;
+								cemmentObj.cemmentData = commentobj
+		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",infoObj);
+		                   
+						},  
+						error:function(xhr,type,errorThrown){
+							//异常处理；
+							console.log("获取失败！");
+							mui.toast("当前网络不好请重试");
+						}
+				}); 
+		})
 	</script>
 
 </html>
