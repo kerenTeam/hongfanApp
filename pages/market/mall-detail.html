@@ -74,7 +74,7 @@
 				text-align: right;
 			}
 			.goBack{
-				position: absolute;
+				position: fixed;
 				left: 15px;
 				top: 15px;
 				background-color: rgba(0,0,0,0.5);
@@ -163,6 +163,156 @@
 			.footerone .left ul li{
 				width: 100%;
 			}
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			} 
+			.comment{
+				display: block;
+			}
 		</style>
 	</head>
 	<body>
@@ -199,10 +349,13 @@
 							<!--轮播图结束-->
 						
 						</script>
-						<div class="top clearfloat box-s">
+						
+						<div id="gdBrief"></div>
+						<script type="text/html" id="briefTpl">
+							<div class="top clearfloat box-s">
 							<div class="shang clearfloat">
 								<div class="zuo clearfloat fl">
-									小米MAX智能安卓6.4吋大屏手机双卡指纹识别Xiaomi/小米 小米Max
+									<%=brief.title%>
 								</div>
 								<div class="you clearfloat fr">
 									<i class="iconfont icon-fenxiang"></i>
@@ -210,33 +363,41 @@
 								</div>
 							</div>
 							<div class="xia clearfloat">
-								<p class="jifen fl box-s"><sub>￥</sub><samp>2999</samp></p>
+								<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
 							</div>
 							<div class="xia">
 								 <div class="mui-row">
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
-							            <p class="box-s">快递：0.00元</p>
+							            <p class="box-s">快递：<%=brief.fee_start_1%>元</p>
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-							            <p class="box-s">销量：42笔</p>
+							            <p class="box-s">销量：<%=brief.sales%>笔</p>
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
-							            <p class="box-s">重庆邻水</p>
+							            <p class="box-s">重庆</p>
 							        </div>
 							  	</div>
 							</div>
 							
 						</div>
+						</script>
+						
 						<div class="farmtc clearfloat mt10">
 							<p class="bt box-s">商品详情</p>
 						</div>
 						<div class="farm clearfloat">
 							<div class="top rentingtop clearfloat box-s">
-								<p>
-									小米Max，是2016年5月10日小米发布的新款旗舰手机，6.44英寸屏，厚7.5毫米。发布背景两天以来在微博、小
-									米社区和MIUI论坛共有24.5万人参与小米大屏手机的命名投票活动，最终小米Max以116294票成为用户最喜爱的
-									名字。 小米Max搭载6.44英寸巨... 
-								</p>
+								<div id="textInfo"></div>
+								<script type="text/html" id="textTpl">
+									<p>
+										<%if(text.introduce==''){%>
+											<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无详情介绍</div>
+											<%}else{%>
+									 <%=text.introduce%>
+									 <%}%>
+									</p> 
+								</script>
+								
 							</div>					
 						</div>
 						
@@ -245,50 +406,47 @@
 						</div>
 						<div id="moll_comment"></div>
 						<script type="text/html" id="commentTpl">
+							<ul class="farm clearfloat Cul">
+								<%if(cemmentData.length==0){%>
+									<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
+									<%}else{%>
+											<%for(var i=0;i<cemmentData.length;i++){%>
+											<li class="mui-row Cli">
+												<div class="mui-col-sm-2 mui-col-xs-2 user-head">
+													<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
+											    		<img src="../../img/10.png" class="radius comtPic" alt="" />
+											    	 <%}else{%> 
+													<img src="<%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
+
+													<%}%>
+												</div>
+												<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
+							                        <div class="am-comment-author left">
+							                        	<p><b class="black"><%=cemmentData[i].nickname%></b></p>
+							                        </div>
+							                        <time class="text-sm right gray">
+							                            <%=cemmentData[i].seller_ctime%>
+							                        </time>
+							                        <div class="clear"></div>
+								                   	<p class="comment"><%=cemmentData[i].seller_comment%></p>
+							                        <div class="clear"></div>
+								                    <div class="padding-h-xs mui-row">
+								                    	
+													<%if(cemmentData[i].comment_pic.length!=0){%>
+								                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
+								                    	<img src="<%=cemmentData[i].comment_pic[j].comment_pic%>" class="inlineBlock mui-col-sm-3 mui-col-xs-3" data-preview-group="<%=i+1%>" />
+								                    	<%}%>	 
+								                    	<%}%>
+								                    </div>
+												</div>
+											</li> 
+											<%}%>
+											<%}%> 
+								
 							
-						</script>
-						<ul class="farm clearfloat Cul">
-							<li class="mui-row Cli">
-								<div class="mui-col-sm-3 mui-col-xs-3 user-head">
-									<img src="../../img/10.png" class="radius comtPic" alt="" />
-								</div>
-								<div class="comtContent Cright mui-col-sm-9 mui-col-xs-9">
-			                        <div class="am-comment-author left">
-			                        	<p><b class="black">我是小小</b></p>
-			                        </div>
-			                        <time class="text-sm right gray">
-			                            2016-11-29
-			                        </time>
-				                   	<p class="comment">说的对地方大大叔大法师打发打发斯蒂芬都是沙发沙发大大大大是飞洒的发生的发生地方都是</p>
-				                    <div class="padding-h-xs mui-row">
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    </div>
-								</div>
-							</li>
-							<li class="mui-row Cli">
-								<div class="mui-col-sm-3 mui-col-xs-3 user-head">
-									<img src="../../img/10.png" class="radius comtPic" alt="" />
-								</div>
-								<div class="comtContent Cright mui-col-sm-9 mui-col-xs-9">
-			                        <div class="am-comment-author left">
-			                        	<p><b class="black">我是小小</b></p>
-			                        </div>
-			                        <time class="text-sm right gray">
-			                            2016-11-29
-			                        </time>
-				                   	<p class="comment">说的对地方大大叔大法师打发打发斯蒂芬都是沙发沙发大大大大是飞洒的发生的发生地方都是</p>
-				                    <div class="padding-h-xs mui-row">
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    	<img src="../../img/market/test.jpg" class="inlineBlock mui-col-sm-4 mui-col-xs-4" alt=""  data-preview-src="" data-preview-group="1" />
-				                    </div>
-								</div>
-							</li>
 						</ul>
+						</script>
+						
 					</div>
 				</div>
 			</div>
@@ -321,7 +479,9 @@
 		
 		<!--这里是弹出购物车内容-->
 		<div class="am-share">
-		<div class="am-share-footer">
+			<div id="cartBox"></div>
+			<script type="text/html" id="boxTpl">
+				<div class="am-share-footer">
 			<span class="share_btn">
 				<img src="../../img/chahao.png"/>
 			</span>
@@ -331,68 +491,34 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
-		     			<img src="../../img/market/test.jpg"/>
+		     			<img src="<%=choose.thumb%>"/>
 		     		</div>
 		     		<div class="you clearfloat fl">
-		     			<p class="tit">小米Max</p>
-		     			<span>2998购物币+700积分</span>
+		     			<p class="tit overflow_clear"><%=choose.title%></p>
+		     			<span>￥<b id="priceChange"><%=choose.price%></b></span>
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
-		     		<div class="middle clearfloat">
-		     		<p>颜色分类</p>
-		     		<div class="xia clearfloat choose">
-		     			<ul>
-			     			<li class="ra3 cur">金色</li>
-			     			<li class="ra3">灰色</li>
-			     		</ul>
-		     		</div>		     		
-		     	</div>
-		     	<div class="middle clearfloat">
-		     		<p>机身内存</p>
-		     		<div class="xia clearfloat choose">
-		     			<ul>
-			     			<li class="ra3 cur">128G</li>
-			     			<li class="ra3">16G</li>
-			     		</ul>
-		     		</div>		     		
-		     	</div>
-		     	<div class="middle clearfloat">
-		     		<p>机身内存</p>
-		     		<div class="xia clearfloat choose">
-		     			<ul>
-			     			<li class="ra3 cur">128G</li>
-			     			<li class="ra3">16G</li>
-			     		</ul>
-		     		</div>		     		
-		     	</div>
-		     	<div class="middle clearfloat">
-		     		<p>机身内存</p>
-		     		<div class="xia clearfloat choose">
-		     			<ul>
-			     			<li class="ra3 cur">128G</li>
-			     			<li class="ra3">16G</li>
-			     		</ul>
-		     		</div>		     		
-		     	</div>
-		     	<div class="middle clearfloat">
-		     		<p>机身内存</p>
-		     		<div class="xia clearfloat choose">
-		     			<ul>
-			     			<li class="ra3 cur">128G</li>
-			     			<li class="ra3">16G</li>
-			     		</ul>
-		     		</div>		     		
-		     	</div>
-		     	<div class="middle clearfloat">
-		     		<p>机身内存</p>
-		     		<div class="xia clearfloat choose">
-		     			<ul>
-			     			<li class="ra3 cur">128G</li>
-			     			<li class="ra3">16G</li>
-			     		</ul>
-		     		</div>		     		
-		     	</div>
+		     		<%if(choose.parameter.length!=0){%> 
+		     			<%for(var i=0;i<choose.parameter.length;i++){%>
+		     				<div class="middle clearfloat">
+					     			
+					     		<p><%=choose.parameter[i].parameter_name%></p>
+					     		<div class="xia clearfloat choose">
+					     			<ul>
+					     				<%if(choose.parameter[i].child_value.length!=0){%>
+					     					<%for(var j=0;j<choose.parameter[i].child_value.length;j++){%>
+					     						
+					     							<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+					     						 
+					     						<%}%>
+					     					<%}%> 
+						     		</ul>
+					     		</div>		     		
+					     	</div>
+		     				<%}%>
+		     				<%}%>
+		     
 		     	<div class="bottom clearfloat">
 		     		<p class="fl">购买数量</p>
 		     		<div class="you clearfloat fr">
@@ -407,23 +533,21 @@
 		     	
 		     </div>		     
 		  </div>
-		  <a href="shopcar.html" class="shop-btn db">确定</a>
+		  <a onclick="cartStorage('','','',)" class="shop-btn db">确定</a>
+			</script>
+		
 		</div>
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript">
-		var choose = $('.choose');
-		$('.choose').find('li').click(function(){
-			$(this).addClass('cur');
-			$(this).siblings().removeClass('cur');
-		})
+	<script src="../../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/mui.imageViewer.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript"> 
 		mui.plusReady(function(){
 			//获取token
 			var token=plus.storage.getItem("oldToken");
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId;
-			 alert(goodId)
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
 					data: {goodsId:goodId},
@@ -432,32 +556,80 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
 						success:function(data){
-							 alert( data.data.goodsInfo.introduce) 
-							 
-							var dataobj =eval("("+data.data.goodsInfo.good_pic+")"); ;
+							if(data.errno==0){
+							alert( data.data.goodsInfo.parameter);
+							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
 							var commentobj = data.data.comments;
-							var content = data.data.comments
+							//var content = data.data.comments
 							//banner
 							var infoObj = {}
 								infoObj.myUrl = serverimgUrl;
-								infoObj.infoData = dataobj
-		                    document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
+								infoObj.infoData = dataobj;
+		                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
+		                      var gallery = mui(".mui-slider");
+										gallery.slider({
+											interval: 3000 //设置自动轮播周期为3s
+										});
+		                    //简介
+		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
+		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
+		                     //选择弹框
+		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
+		                     mui(".mui-numbox").numbox();
+		                     var priceChange =parseInt($("#priceChange").html());
+		                     $('.choose').each(function(){
+		                     	var chooseli = $(this).find("li");
+		                     	
+		                     		var oldstep=0;
+		                     	chooseli.each(function(){
+		                     		if($(this).attr("data-Inventory")==0){
+				                     		$(this).css("display","block")
+				                     	}
+				                     	if($(this).attr("data-priceStep")==0){
+				                     		$(this).addClass("cur");
+				                     		oldstep = $(this).attr("data-priceStep");
+				                     	}  
+				                     	
+		                     	})
+		                     	chooseli.click(function(){
+											$(this).addClass('cur');
+											$(this).siblings().removeClass('cur');
+				                     	var newstep = $(this).attr("data-priceStep");	
+				                     	 alert(oldstep+" "+newstep+"price"+priceChange)
+				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
+				                     	 $('#priceChange').html(priceChange)
+										})
+		                     	
+		                     })
+		                    
 		                    //详情
-		                  //  $(".rentingtop~p").html(data.data.goodsInfo.introduce)
+		                    document.getElementById("textInfo").innerHTML=template("textTpl",{text:data.data.goodsInfo});
 		                    //评论
 		                    var cemmentObj = {}
+		                    for(var i = 0;i < commentobj.length;i++){
+										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10);
+										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
+									}
 								cemmentObj.myUrl = serverimgUrl;
-								cemmentObj.cemmentData = commentobj
-		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",infoObj);
+								cemmentObj.cemmentData = commentobj;
+								
+		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
+		                    
+				//评论
+				 //mui.previewImage();
+							}else{
+								mui.toast("网络不好请重试！")
+							}
+							 
 		                   
 						},  
 						error:function(xhr,type,errorThrown){
 							//异常处理；
 							console.log("获取失败！");
-							mui.toast("当前网络不好请重试");
+							mui.toast("当前网络不好请重试"); 
 						}
 				}); 
-		})
+		}) 
 	</script>
 
 </html>
