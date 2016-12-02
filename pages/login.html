@@ -45,22 +45,18 @@
 			.mui-content-padded {
 				margin-top: 25px;
 			}
-			
 			.mui-btn {
 				padding: 10px;
 			}
-			
 			.link-area {
 				display: block;
 				margin-top: 25px;
 				text-align: center;
 			}
-			
 			.spliter {
 				color: #bbb;
 				padding: 0px 8px;
 			}
-			
 			.oauth-area {
 				position: absolute;
 				bottom: 20px;
@@ -70,7 +66,6 @@
 				padding: 0px;
 				margin: 0px;
 			}
-			
 			.oauth-area .oauth-btn {
 				display: inline-block;
 				width: 50px;
@@ -83,11 +78,9 @@
 				border: solid 1px #ddd;
 				border-radius: 25px;
 			}
-			
 			.oauth-area .oauth-btn:active {
 				border: solid 1px #aaa;
 			}
-			
 			.oauth-area .oauth-btn.disabled {
 				background-color: #ddd;
 			}
@@ -117,10 +110,25 @@
 				background-color: #f53c42 !important;
 			}
 			.mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{
-				top:-5px;
+				top:0px;
+			}
+			.mui-icon-clear{
+				display: none !important;
 			}
 			#goSign, #forgetPassword{
 				color: #777;
+			}
+			.cannotbtn{
+				background-color: #e2a6a7 !important;
+			}
+			.mui-input-group .mui-input-row {height: 50px !important;
+			}
+			.mui-input-row label {padding: 16px 15px !important;
+			}
+			input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea{
+				height: 50px;
+			}
+			.ui-page-login, body {height: auto;
 			}
 		</style>
 
@@ -135,29 +143,21 @@
 		    <h1 class="mui-title">登录</h1>
 			<span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
 		</header>
-		<div class="mui-content">
+		<div class="mui-content" style="margin-top: 10px;">
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
 					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+					<input id='account' type="number" class="mui-input-clear mui-input" placeholder="请输入账号">
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
 					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
 			</form>
-			<form class="mui-input-group">
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell">
-						自动登录
-						<div id="autoLogin" class="mui-switch">
-							<div class="mui-switch-handle"></div>
-						</div>
-					</li>
-				</ul>
-			</form>
-			<div class="mui-content-padded">
-				<button id='confirmbtn' class="mui-btn mui-btn-block mui-btn-primary denlu">确定</button>
+			
+			<div class="mui-content-padded" style="margin-top: 50px;">
+				
+				<button id='confirmbtn' class="mui-btn mui-btn-block mui-btn-primary denlu cannotbtn">确定</button>
 				<div class="link-area"><a id='goSign'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
 				</div>
 			</div>
@@ -170,23 +170,31 @@
 <script src="../js/app.js"></script>
 <script type="text/javascript">
 (function(){
-	
 	var account = document.getElementById('account');
 	var password = document.getElementById('password'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
+	//输入验证按钮状态
+	password.oninput = account.oninput = verification;
+	function verification(){
+		if(reg_pass.test(password.value) && reg_phone.test(account.value)){
+			mui('.denlu')[0].className = mui('.denlu')[0].className.replace(' cannotbtn','');
+		}else if(mui('.denlu')[0].className.indexOf('cannotbtn') == -1){
+			mui('.denlu')[0].className += ' cannotbtn';
+		}
+	}
 	
-	mui('#confirmbtn')[0].addEventListener('tap',function(){
+	mui('#confirmbtn')[0].addEventListener('click',function(){
 		if(!reg_phone.test(account.value)){
-			console.log(account.value);
-			//account.focus();
+			account.focus(); 
 			mui.toast('请输入正确的手机号码 !');
 		}else if(!reg_pass.test(password.value)){
 			mui.toast('请输入6-12位数字和字母组合密码 !');
-			//password.focus();
+			password.focus();
 		}else{
 			//alert(account.value);
 			//alert(password.value);
+			plus.nativeUI.showWaiting('登录中 ...',{width:'100px',height:'80px'});
 			mui.ajax(serverUrl+'/api/useraccount/login',{
 				data:{"phone":account.value,"password":password.value},
 				dataType:'json',
@@ -200,20 +208,32 @@
 							//登录成功, 缓存中如果oldtoken和myToken相同则在登陆状态
 							plus.storage.setItem("myToken",mytoken);
 							plus.storage.setItem("oldToken",mytoken);
-							plus.storage.setItem("userid",JSON.stringify(data.data.return.userid));
-							var index = plus.webview.getLaunchWebview();
-							mui.fire(index,'gohome',{hrefid:'center'});
-							plus.webview.currentWebview().close();
-							plus.webview.getWebviewById('login.html').close();
+							console.log(data.data);
+							plus.storage.setItem("userid",JSON.stringify(data.data.return.user_id));
 							//触发跳转页面刷新
 							mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-							mui.toast('登录成功');
+							if(plus.webview.getWebviewById('sign.html')){
+								plus.webview.getWebviewById('sign.html').close();
+							}
+							var time2 = setTimeout(function(){
+								plus.webview.currentWebview().close();
+								var index = plus.webview.getLaunchWebview();
+								mui.fire(index,'gohome',{hrefid:'center'});
+								plus.nativeUI.closeWaiting();
+								mui.toast('登录成功 !');
+							},500)
 						})
 					}else{
-						mui.toast(data.errmsg);
+						plus.nativeUI.closeWaiting();
+						switch(data.errmsg){
+							case 'LOGIN_ERROR':
+							mui.toast('账户和密码不匹配  !'); 
+							break;
+						}
 					}
 				},
 				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
 					alert('响应失败');
 				}
 			});

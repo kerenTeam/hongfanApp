@@ -36,7 +36,7 @@
 				top: 6px;
 			}
 			.mui-content-padded {
-				margin-top: 25px;
+				margin-top: 3px;
 			}
 			.mui-btn {
 				padding: 10px;
@@ -71,67 +71,77 @@
 				border: solid 1px #ddd;
 				border-radius: 25px;
 			}
-			.oauth-area .oauth-btn:active {
-				border: solid 1px #aaa;
+			.oauth-area .oauth-btn:active {border: solid 1px #aaa;
 			}
-			.oauth-area .oauth-btn.disabled {
-				background-color: #ddd;
+			.oauth-area .oauth-btn.disabled {background-color: #ddd;
 			}
-			.mui-bar{
-				height: 50px;
+			.mui-bar{height: 50px;
 				background-color: #f53c42;
 			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
+			.mui-title,.mui-icon{line-height: 50px;
 			}
-			.mui-bar .mui-icon{
-				padding: 0;
+			.mui-bar .mui-icon{padding: 0;
 			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{color: #fff;
 			}
-			.mui-bar-nav{
-				box-shadow: none;
+			.mui-bar-nav{box-shadow: none;
 			}
-			.mui-icon{
-				line-height: 50px;
+			.mui-icon{line-height: 50px;
 			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
+			.mui-icon .iconfont{font-size: 18px;
 			}
-			.mui-btn-blue, .mui-btn-primary, input[type=submit]{
-				background-color: #f53c42 !important;
+			.mui-btn-blue, .mui-btn-primary, input[type=submit]{background-color: #f53c42 !important;
 			}
-			#yanzheng{
-				line-height: 40px;
+			#yanzheng{line-height: 40px;
 				padding:0;
 			}
-			.agreement1{
-				padding: 10px;text-align: center;
+			.agreement1{padding: 10px;text-align: center;
 			}
-			.agreement1 label{
-				color: #555;font-size: 14px;
+			.agreement1 span{color: #555;font-size: 14px;
 			}
-			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before{
-				font-size: 20px;
+			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before{font-size: 17px;
 			}
 			.mui-checkbox input[type=checkbox], .mui-radio input[type=radio]{
 				position: static; 
 			}
-			.mui-checkbox label, .mui-radio label{
-				padding-right: 0px;width: auto !important;
+			.mui-checkbox label, .mui-radio label{padding-right: 0px;width: auto !important;
 			}
-			.mui-checkbox.mui-left label, .mui-radio.mui-left label{
-				padding: 0;padding-top: 10px;
+			.mui-checkbox.mui-left label, .mui-radio.mui-left label{padding: 0;padding-top: 10px;
 			}
 			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea{
 				float: none;
 			}
 			.mui-btn-block{padding: 12px 0;}
 			.mui-input-row .mui-input-clear~.mui-icon-clear, .mui-input-row .mui-input-password~.mui-icon-eye, .mui-input-row .mui-input-speech~.mui-icon-speech{
-				top: -5px;
+				top: 0px;
 			}
-			#goLogin{color: #777;}
+			.mui-icon-clear{
+				display: none !important;
+			}
+			#goLogin{color: #777;} 
+			.cannotbtn{background-color: #e2a6a7 !important;
+			}
+			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+			    color: #3f8ada;
+			}
+			.mui-input-group .mui-input-row {height: 50px !important;
+			}
+			.mui-input-row label {padding: 16px 15px !important;
+			}
+			input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea{
+				height: 50px;
+			}
+			.mui-btn {padding: 10px;
+			}
+			.ui-page-login, body {height: auto;
+			}
+			#VeCode{
+			    padding-right: 200px;
+			}
+			.VeCode_wrap{position: relative;
+			}
+			.VeCode_wrap span{position: absolute;display: inline-block;line-height: 50px;right: 10px;
+			}
 		</style>
 	</head>
 
@@ -142,29 +152,29 @@
 			<span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
 		</header>
 		
-		<div class="mui-content mui-grid-view">
+		<div class="mui-content mui-grid-view" style="margin-top: 10px;">
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
 					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入手机号">
+					<input id='account' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
 				</div>
-				<!--<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-left">
-					<input id='yanzhengma' type="text" class="mui-input-clear mui-input " placeholder="请输入验证码">				
+				<!--验证码-->
+				<div class="mui-input-row mui-block VeCode_wrap">
+					<span id="VeCodenum">获取验证码</span>
+					<input id='VeCode' type="number" class="mui-input-clear mui-input" placeholder="请输入验证码">
 				</div>
-				<div class="mui-col-sm-6 mui-col-xs-6 mui-pull-right">
-					<input id='yanzheng' type="button" class="mui-input-clear mui-btn mui-btn-danger" value="获取验证码">					
-				</div>-->
+				
 				<div class="mui-input-row mui-block">
 					<label>密码</label>
 					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
 			</form>
 			<div class="mui-input-row mui-checkbox agreement1 mui-left">
-			  <label>我同意勾选宏帆app用户许可协议</label>
-			  <input name="checkbox1" value="Item 1" type="checkbox" checked> 
+			  <span>我同意勾选宏帆app用户许可协议</span>
+			  <input name="checkbox1" value="Item 1" type="checkbox" checked id="hook"> 
 			</div>
 			<div class="mui-content-padded">
-				<button id='confirmbtn' class="mui-btn-block mui-btn-primary denlu">确定</button>
+				<button id='confirmbtn' class="mui-btn-block mui-btn-primary denlu cannotbtn">确定</button>
 				<div class="link-area" id='goLogin'>已有帐号?去登录</div>
 			</div>
 			<div class="mui-content-padded oauth-area">
@@ -180,17 +190,60 @@
 	var password = document.getElementById('password'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
-	
-	mui('#confirmbtn')[0].addEventListener('tap',function(){
+	//点击发送验证码
+	var code = '';//验证码
+	mui('#VeCodenum')[0].addEventListener('tap',function(){
+		if(this.className.indexOf('unable') == -1 && reg_phone.test(account.value)){
+			//产生验证码  
+	        for (var i = 0; i < 6; i++) {  
+	            code += parseInt(Math.random() * 9).toString();  
+	        }
+			this.className += 'unable';
+			var that = this;
+			var i = 60; 
+			this.style.color = 'red';
+			this.innerHTML = '60秒后重试';
+			var timeyan = setInterval(function(){
+				i--;
+				that.innerHTML = i+'秒后重试';
+				if(i==0){ 
+					clearInterval(timeyan);
+					that.innerHTML = '获取验证码';
+					that.style.color = '#000'; 
+					that.className = that.className.replace('unable','');
+				}
+			},1000)
+			
+		}else{
+			mui.toast('请输入正确的手机号 !');
+		}
+	})
+	//输入验证按钮状态(包括点击勾勾)
+	mui('#VeCode')[0].oninput = mui('#hook')[0].onclick = password.oninput = account.oninput = verification;
+	function verification(){
+		if(reg_pass.test(password.value) && reg_phone.test(account.value) && mui('#hook')[0].checked && mui('#VeCode')[0].value){
+			mui('.denlu')[0].className = mui('.denlu')[0].className.replace(' cannotbtn','');
+		}else if(mui('.denlu')[0].className.indexOf('cannotbtn') == -1){
+			mui('.denlu')[0].className += ' cannotbtn';
+		}
+	}
+	//提交接口
+	mui('#confirmbtn')[0].addEventListener('click',function(){
+		console.log('验证码'+code);
 		if(!reg_phone.test(account.value)){
 			console.log(account.value);
-			//account.focus();
+			account.focus();
 			mui.toast('请输入正确的手机号码 !');
-			
+		}else if(mui('#VeCode')[0].value != code || mui('#VeCode')[0].value == ''){
+			mui.toast('验证码错误 !');
+			mui('#VeCode')[0].focus();
 		}else if(!reg_pass.test(password.value)){
 			mui.toast('请输入6-12位数字和字母组合密码 !');
-			//password.focus();
+			password.focus();
+		}else if(!mui('#hook')[0].checked){
+			mui.toast('你还没有勾选协议 !');
 		}else{
+			plus.nativeUI.showWaiting('登录中 ...',{width:'100px',height:'80px'});
 			mui.ajax(serverUrl+'/api/useraccount/register',{
 					data:{"phone":account.value,"password":password.value},
 					dataType:'json',
@@ -212,28 +265,39 @@
 											//登录成功, 缓存中如果oldtoken和myToken相同则在登陆状态
 											plus.storage.setItem("myToken",mytoken);
 											plus.storage.setItem("oldToken",mytoken);
-											plus.storage.setItem("userid",JSON.stringify(data.data.return.userid));
-											var index = plus.webview.getLaunchWebview();
-											mui.fire(index,'gohome',{hrefid:'center'});
-											plus.webview.currentWebview().close();
-											plus.webview.getWebviewById('login.html').close();
-											//触发条状页面刷新
+											plus.storage.setItem("userid",JSON.stringify(data.data.return.user_id));
+											//触发跳转页面刷新
 											mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-											mui.toast('登录成功');
+											plus.webview.getWebviewById('login.html').close();
+											var time2 = setTimeout(function(){
+												plus.webview.currentWebview().close();
+												var index = plus.webview.getLaunchWebview();
+												mui.fire(index,'gohome',{hrefid:'center'});
+												plus.nativeUI.closeWaiting();
+												mui.toast('登录成功 !');
+											},500)
 										})
 									}else{
-										mui.toast(data.errmsg);
+										plus.nativeUI.closeWaiting();
+										mui.toast(data.errmsg);//登录提示
 									}
 								},
 								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting();
 									alert('响应失败');
 								}
 							});
 						}else{
-							mui.toast(data.errmsg);
+							plus.nativeUI.closeWaiting();
+							switch(data.errmsg){//注册提示
+								case 'Already exists this account!':
+								mui.toast('此号码已经注册 !'); 
+								break;
+							}
 						}
 					},
 					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
 						alert('响应失败');
 				}
 			});

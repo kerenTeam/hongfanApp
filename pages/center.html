@@ -40,13 +40,11 @@
 			}
 			.denlu{font-size: 16px;
 			}
-			.h-bottom{
-				background-color: #932427 !important;
+			.h-bottom{background-color: #932427 !important;
 			}
-			.brief{
-				margin-left: 38%;
-				margin-top: -10%;
+			.brief{margin-left: 38%;margin-top: -10%;
 			}
+			
 		</style>
 	</head>
 	<body>
@@ -152,7 +150,7 @@
 			    				<li>
 			    					<a class="wmai-order">
 			    						<img src="../img/group2.png"/>
-			    						<span>我的快速</span>
+			    						<span>我的快递</span>
 			    					</a>
 			    				</li>
 			    				<li>
@@ -215,7 +213,7 @@
 			    				</a>
 			    			</li>
 			    			<li class="box-s">
-			    				<a>
+			    				<a class="Membercard"> 
 			    					<p class="fl">我的会员卡</p>
 			    					<i class="iconfont icon-jiantou1 fr"></i>
 			    				</a>
@@ -247,54 +245,64 @@
 				function Refresh(){//刷新
 					//获取缓存
 					var myuserid = plus.storage.getItem('userid');
-					var mytoken = plus.storage.getItem('oldToken');
+					var oldtoken = plus.storage.getItem('oldToken');
 					var Sstate = false;
 					if(plus.storage.getItem('myToken')){
 						Sstate = true;//如果存在myToken则是登录状态
 					}
-					alert('登录状态' + Sstate);
+					//alert('登录状态' + Sstate);
 					//取用户数据
 					if(Sstate){
 						mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 							data:{"userid":myuserid},
-							type:'post',//HTTP请求类型
-							timeout:10000,//超时时间设置为10秒；
-							headers:{"token":mytoken},	              				
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldtoken},	              				
 							success:function(data,type,xhr){
 								//alert(mytoken);
-								//alert(JSON.stringify(data));
-								var objdata = {};
-								objdata.list = data.data;
-								var html=template("userMessageModal",objdata);
-								document.getElementById("userBox").innerHTML=html;
-								document.getElementById('Signout').style.display = 'block';
-								//添加事件监听
-								mui('.myInfo')[0].addEventListener('tap',function(){
-									openview({
-										view:'personal/setup.html'
+								console.log(JSON.stringify(data));
+								if(data.errno == 0){
+									var objdata = {};
+									objdata.list = data.data;
+									var html=template("userMessageModal",objdata);
+									document.getElementById("userBox").innerHTML=html;
+									document.getElementById('Signout').style.display = 'block';
+									//添加事件监听
+									mui('.myInfo')[0].addEventListener('tap',function(){
+										openview({
+											view:'personal/setup.html'
+										});
 									});
-								});
-								mui('.integral')[0].addEventListener('tap',function(){
-									openview({
-										view:'personal/jifen-order.html'
+									mui('.integral')[0].addEventListener('tap',function(){
+										openview({
+											view:'personal/jifen-order.html'
+										});
 									});
-								});
-								mui('.Vouchers')[0].addEventListener('tap',function(){
-									openview({
-										view:'personal/coupon.html'
+									mui('.Vouchers')[0].addEventListener('tap',function(){
+										openview({
+											view:'personal/coupon.html'
+										});
 									});
-								});
-								mui('.message')[0].addEventListener('tap',function(){
-									openview({
-										view:'personal/coupon.html'
+									mui('.message')[0].addEventListener('tap',function(){
+										openview({
+											view:'personal/coupon.html'
+										});
 									});
-								});
-								//退出登录
-								mui('#Signout')[0].addEventListener('tap',function(){
-									plus.storage.removeItem('myToken');
-									plus.storage.removeItem('userid');
-									Refresh();
-								});
+									//退出登录
+									mui('#Signout')[0].addEventListener('tap',function(){
+										plus.storage.removeItem('myToken');
+										plus.storage.removeItem('userid');
+										Refresh();
+										plus.nativeUI.showWaiting('退出中 ...',{width:'100px',height:'80px'});
+										var time2 = setTimeout(function(){
+											plus.nativeUI.closeWaiting();
+											mui.toast('退出成功 !');
+										},500)
+									});
+								}else{
+									mui.toast('获取用户信息失败');
+									console.log(data.errmsg);
+								}
 							},
 							error:function(xhr,type,errorThrown){
 								alert('响应失败  !');
@@ -481,6 +489,10 @@
 								view:'login.html'
 							});
 						}
+					});
+					//Membercard
+					mui('.Membercard')[0].addEventListener('tap',function(){ 
+						plus.nativeUI.showWaiting('加载中',{width:'100px',height:'80px'});
 					});
 				}//刷新	
 			});
