@@ -38,9 +38,6 @@
 			}
 			
 			
-			/*默认地址勾选*/
-			
-			
 			
 			/*消息提示框*/
 			dialog{
@@ -112,11 +109,11 @@
 			    		<div class="top clearfloat box-s">
 			    			<ul>
 			    				<li>
-			    					<span class="fl addId" name="<%= addressLi[i].id %>"><%= addressLi[i].person %></span>
+			    					<span class="fl addId" name="<%= addressLi[i].id %>"><%= addressLi[i].nickname %></span>
 			    					<span class="fr"><%= addressLi[i].phone %></span>
 			    				</li>
 			    				<li>
-			    					<%= addressLi[i].city %><%= addressLi[i].area %><%= addressLi[i].address %>
+			    					<%= addressLi[i].province %><%= addressLi[i].city %><%= addressLi[i].area %><%= addressLi[i].address %>
 			    				</li>
 			    			</ul>
 			    		</div>
@@ -152,96 +149,77 @@
 		     	</a>
 		    </div>
 		</script>
-		<!--模板引擎获取数据-->
-		<script type="text/javascript" charset="utf-8">
-	      	mui.init();
-			mui.plusReady(function(){
-//				//地址详情列表
-//				mui.ajax('http://192.168.199.191:7200/api/useraddress/addresslist',{									
-//					data:{"userid":4},
-//					dataType:'json',//服务器返回json格式数据
-//					type:'post',//HTTP请求类型
-//					timeout:1000,//超时时间设置为10秒；
-//					beforeSend:function(xhr){
-//		                xhr.setRequestHeader("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");//此处设置header参数键值对
-//		            },
-//					success:function(data){
-//						var addressArray = data.hf_user_address;
-//						var addressObj = {};
-//						addressObj.addressLi = addressArray;
-//						var html = template('addressList-detail',addressObj);
-//						document.getElementById('addressList').innerHTML = html;
-//						
-//						//点击编辑跳转传参
-//						var editAdd = document.getElementById('editAdd');
-//						editAdd.addEventListener('tap', function(){
-//							AddId = $(this).parents('.addlist').find('#addId').attr('name');
-//							var url = "address-edit.html?index=A&name="+AddId;
-//							openview({
-//								view: url,
-//							})
-//						});
-//				
-//					},
-//					error:function(xhr,type,errorThrown){
-//						//异常处理；
-//						console.log("获取失败！");
-//						mui.toast("当前网络不好请重试");
-//					}
+	    <script type="text/javascript">
+		mui.init();
+		mui.plusReady(function(){
+			
+			//点击进入详情
+//			var goodsItem = document.getElementsByClassName('goodsItem');
+//			for (var j=0; j<goodsItem.length; j++) {
+////				var addId = $(this).parents('.addlist').find('.addId').attr('name');
+//				goodsItem[j].addEventListener('tap',function(){
+//					openview({
+//						view:'mall-detail.html',
+////						extrasobj:{name:addId}
+//					})
 //				});
-					
-				
-				
-				//地址详情列表
-				mui.ajax('../../json/address.json',{									
-//					data:{"userid":4},
-					dataType:'json',//服务器返回json格式数据
-					type:'get',//HTTP请求类型
-					timeout:1000,//超时时间设置为10秒；
-//					beforeSend:function(xhr){
-//		                xhr.setRequestHeader("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9");//此处设置header参数键值对
-//		            },
-					success:function(data){
-						var addressArray = data.hf_user_address;
-						var addressObj = {};
-						addressObj.addressLi = addressArray;
-						var html = template('addressList-detail',addressObj);
-						document.getElementById('addressList').innerHTML = html;
-						//点击编辑跳转传参
-						var editAdd = document.getElementsByClassName('editAdd');
-						for (var j=0; j<editAdd.length; j++) {
-							editAdd[j].addEventListener('tap',function(){
-								var addId = $(this).parents('.addlist').find('.addId').attr('name');
-								openview({
-									view:'address-edit.html',
-									extrasobj:{name:addId}
-								})
-
-							});
-						}
-						//删除确认弹框
-						var exterminate = document.getElementsByClassName('exterminate');
-						for (var m=0; m<exterminate.length; m++) {
-							exterminate[m].addEventListener('tap',function(){
-								mui.confirm('确认删除该地址？','',['取消','确认'],function (e) {
-									e.index       
-								},'div')
-							});
-						}
-						//点击添加地址跳转
-						var addNewAd = document.getElementById('addNewAd');
-						addNewAd.addEventListener('tap',function(){
-							var url = "add-address.html";
-							window.open(url);
+//			}
+			
+//			
+			//数据渲染
+//			var oldToken = plus.storage.getItem('oldToken');
+			var oldToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDU5NDA2MiwiZXhwIjoxNDgwNjAxMjYyfQ.aXfPfu12r3iO2jkOipSnzvcYspjhuzDPaXHZjncSI8c";
+//			alert(oldToken);
+			console.log(oldToken);
+			mui.ajax(serverUrl+'/api/useraccount/addresslist',{
+				data:{userid : 148},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					alert(JSON.stringify(data.data));
+					var addressObj = {};
+					addressObj.addressLi = data.data;
+					var html = template('addressList-detail',addressObj);
+					document.getElementById('addressList').innerHTML = html;
+					//点击编辑跳转传参
+					var editAdd = document.getElementsByClassName('editAdd');
+					for (var j=0; j<editAdd.length; j++) {
+						editAdd[j].addEventListener('tap',function(){
+							var addId = $(this).parents('.addlist').find('.addId').attr('name');
+							openview({
+								view:'address-edit.html',
+								extrasobj:{name:addId}
+							})
 						});
-					},
-					error:function(xhr,type,errorThrown){
-						//异常处理；
-						console.log("获取失败！");
-						mui.toast("当前网络不好请重试");
 					}
-				});
-			})
-	    </script>
+					//删除确认弹框
+					var exterminate = document.getElementsByClassName('exterminate');
+					for (var m=0; m<exterminate.length; m++) {
+						exterminate[m].addEventListener('tap',function(){
+							mui.confirm('确认删除该地址？','',['取消','确认'],function (e) {
+								e.index       
+							},'div')
+						});
+					}
+					//点击添加地址跳转
+					var addNewAd = document.getElementById('addNewAd');
+					addNewAd.addEventListener('tap',function(){
+						var url = "add-address.html";
+						window.open(url);
+					});
+				},
+				
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+			
+			
+		})();
+		
+		
+	</script>
 	</body>	
 </html>

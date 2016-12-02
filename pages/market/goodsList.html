@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 	<head>
 		<meta charset="UTF-8">
 		<title>商品列表</title>
@@ -10,19 +9,19 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href=" ../../css/common.css">
-		<link rel="stylesheet" type="text/css" href=" ../../css/index.css">
-		<link rel="stylesheet" type="text/css" href=" ../../css/mui.min.css"/>
-		<link rel="stylesheet" href=" ../../css/reset.css">
-		<script src=" ../../js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src=" ../../js/jquery.min.js"></script>
-		<script type="text/javascript" src=" ../../js/iscroll.js"></script>
-		<script type="text/javascript" src=" ../../js/jquery.flexslider-min.js"></script>
-		<script src=" ../../js/hmt.js" type="text/javascript"></script>
-		<script type="text/javascript" src=" ../../js/index.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css">
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script src=" ../../js/swiper.min.js" type="text/javascript" ></script>
-
+		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
+		<script src=" ../../js/hmt.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript" ></script>
+		
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
 		<style type="text/css">
 			.mui-bar{
 				height: 50px;
@@ -40,7 +39,7 @@
 			
 			/*这一页*/
 			.grade-eject, .Category-eject, .Sort-eject{
-				height: 72px;
+				height: 80px;
 			}
 			div.screening>ul>li{
 				border-left: 1px solid #eee !important;
@@ -95,6 +94,13 @@
 			.dealcard .dealcard-brand, .cinemacard .cinemacard-brand{
 				font-size: 16px;
 			}
+			.dealcard .dealcard-brand{
+				width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				display: block;
+			}
 			.dealcard .title span, .dealcard .price span {
 				font-size: .1rem;
 			}
@@ -129,6 +135,9 @@
 			dl.list .db{
 				height: 50px;
 			}
+			.grade-eject>ul>li, .Category-eject>ul>li, .Sort-eject>ul>li{
+				line-height: 40px;
+			}
 		</style>
 	</head>
 	<body>
@@ -138,7 +147,6 @@
 				商品列表
 			</div>
 		</header>
-		<!-- screening -->
 		<div class="screening">
 		    <ul>
 		        <li class="Brand">综合</li>
@@ -146,162 +154,159 @@
 		        <li class="Sort">价格</li>
 		    </ul>
 		</div>
-		<!-- End screening -->		
-		<!-- Category -->
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="Categorytw(this)">新品</li>
-		        <li onclick="Categorytw(this)">评价</li>
+		        <li onclick="order('create_time','asc')">新品</li>
+		        <li onclick="order('comments','asc')">评价</li>
 		    </ul>
 		</div>
-		<!-- End Category -->
-		<!-- grade -->
 		<div class="grade-eject">
 		    <ul class="grade-w" id="gradew">
-		        <li onclick="grade1(this)">从高到低</li>
-		        <li onclick="grade1(this)">从低到高</li>
+		        <li onclick="order('sales','asc')">从高到低</li>
 		    </ul>
 		</div>
-		<!-- End grade -->
-		<!-- Category -->
 		<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="Sorts(this)">从低到高</li>
-		        <li onclick="Sorts(this)">从高到低</li>
+		        <li onclick="order('price','desc')">从低到高</li>
+		        <li onclick="order('price','asc')">从高到低</li>
 		    </ul>
 		</div>
-		<!-- End Category -->
 		<div id="container">		
 			<div id="main">
 				<div class="guess-like">
-					<dl class="list">
-						<dd class="goodsItem">
-							<a href="javascript:;" class="react">
-								<div class="dealcard">
-									<div class="dealcard-img imgbox">
-										<img src=" ../../img/market/test.JPG"/>
-									</div>
-									<div class="dealcard-block-right">
-										<div class="dealcard-brand single-line">小米MAX</div>
-										<div class="title text-block bage">
-											<span class="mui-badge mui-badge-primary">64G</span>
-											<span class="mui-badge mui-badge-primary">128G</span>
-											<span class="mui-badge mui-badge-primary">64G</span>
-										</div>
-										<div class="price mui-row">
-											<div class="mui-col-sm-4 mui-col-xs-4">
-												<span class="strong-color">￥</span>
-												<span class="strong">49.9</span>
-											</div>
-											<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价10条</span>
-											<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售50293</span>
-										</div>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="goodsItem">
-							<a href="javascript:;" class="react">
-								<div class="dealcard">
-									<div class="dealcard-img imgbox">
-										<img src=" ../../img/market/test.JPG"/>
-									</div>
-									<div class="dealcard-block-right">
-										<div class="dealcard-brand single-line">小米MAX</div>
-										<div class="title text-block bage">
-											<span class="mui-badge mui-badge-primary">64G</span>
-											<span class="mui-badge mui-badge-primary">128G</span>
-											<span class="mui-badge mui-badge-primary">64G</span>
-										</div>
-										<div class="price mui-row">
-											<div class="mui-col-sm-4 mui-col-xs-4">
-												<span class="strong-color">￥</span>
-												<span class="strong">49.9</span>
-											</div>
-											<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价10条</span>
-											<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售50293</span>
-										</div>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="goodsItem">
-							<a href="javascript:;" class="react">
-								<div class="dealcard">
-									<div class="dealcard-img imgbox">
-										<img src=" ../../img/market/test.JPG"/>
-									</div>
-									<div class="dealcard-block-right">
-										<div class="dealcard-brand single-line">小米MAX</div>
-										<div class="title text-block bage">
-											<span class="mui-badge mui-badge-primary">64G</span>
-											<span class="mui-badge mui-badge-primary">128G</span>
-											<span class="mui-badge mui-badge-primary">64G</span>
-										</div>
-										<div class="price mui-row">
-											<div class="mui-col-sm-4 mui-col-xs-4">
-												<span class="strong-color">￥</span>
-												<span class="strong">49.9</span>
-											</div>
-											<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价10条</span>
-											<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售50293</span>
-										</div>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="goodsItem">
-							<a href="javascript:;" class="react">
-								<div class="dealcard">
-									<div class="dealcard-img imgbox">
-										<img src="../../img/market/test.JPG">
-									</div>
-									<div class="dealcard-block-right">
-										<div class="dealcard-brand single-line">小米MAX</div>
-										<div class="title text-block bage">
-											<span class="mui-badge mui-badge-primary">64G</span>
-											<span class="mui-badge mui-badge-primary">128G</span>
-											<span class="mui-badge mui-badge-primary">64G</span>
-										</div>
-										<div class="price mui-row">
-											<div class="mui-col-sm-4 mui-col-xs-4">
-												<span class="strong-color">￥</span>
-												<span class="strong">49.9</span>
-											</div>
-											<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价10条</span>
-											<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售50293</span>
-										</div>
-									</div>
-								</div>
-							</a>
-						</dd>
+					<dl class="list" id="goodsList">
 						<dd class="db">
 							<a class="react " href="javascript:;">
 								<div class="moreone">加载更多</div>
 							</a>
 						</dd>
 					</dl>
-		
 				</div>
 			</div>
 		</div>
+		
+		<!--模板渲染数据-->
+		<script id="goodsList-detail" type="text/html">
+			<% for(var i=0;i<list.length;i++){ %>
+				<dd class="goodsItem">
+					<a href="javascript:;" class="react" onclick="goInfo(<%= list[i].goods_id %>)">
+						<div class="dealcard">
+							<div class="dealcard-img imgbox">
+								<img src="<%= list[i].thumb %>"/>
+							</div>
+							<div class="dealcard-block-right">
+								<div class="dealcard-brand single-line"><%= list[i].title %></div>
+								<div class="title text-block bage">
+									<span class="mui-badge mui-badge-primary">64G</span>
+									<span class="mui-badge mui-badge-primary">128G</span>
+									<span class="mui-badge mui-badge-primary">64G</span>
+								</div>
+								<div class="price mui-row">
+									<div class="mui-col-sm-4 mui-col-xs-4">
+										<span class="strong-color">￥</span>
+										<span class="strong"><%= list[i].price %></span>
+									</div>
+									<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价<%= list[i].comments %>条</span>
+									<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售<%= list[i].sales %></span>
+								</div>
+							</div>
+						</div>
+					</a>
+				</dd>
+			<% } %>
+		</script>
 	</body>
-	<script src="../../ ../../js/other.js" type="text/javascript" charset="utf-8"></script>
+
 	<script type="text/javascript">
 		mui.init();
+		
 		mui.plusReady(function(){
+			
 			//点击进入详情
-			var goodsItem = document.getElementsByClassName('goodsItem');
-			for (var j=0; j<goodsItem.length; j++) {
-//				var addId = $(this).parents('.addlist').find('.addId').attr('name');
-				goodsItem[j].addEventListener('tap',function(){
-					openview({
-						view:'mall-detail.html',
-//						extrasobj:{name:addId}
-					})
-				});
+//			var goodsItem = document.getElementsByClassName('goodsItem');
+//			for (var j=0; j<goodsItem.length; j++) {
+////				var addId = $(this).parents('.addlist').find('.addId').attr('name');
+//				goodsItem[j].addEventListener('tap',function(){
+//					openview({
+//						view:'mall-detail.html',
+////						extrasobj:{name:addId}
+//					})
+//				});
+//			}
+			
+
+			
+			//获取缓存
+			var myToken = plus.storage.getItem('oldToken');
+			if(plus.storage.getItem('myToken')){
+				Sstate = true;//如果存在myToken则是登录状态
+				var oldToken = plus.storage.getItem('oldToken');
+				console.log(oldToken);
+			}else{
+//				var oldToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDY1ODk2NiwiZXhwIjoxNDgwNjY2MTY2fQ.gpPgFPhU2icllndYdgMrCXx63bCZCF3_eZe_YJ6MF88';
+				
 			}
+		
+			
+//			var oldToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDY1ODk2NiwiZXhwIjoxNDgwNjY2MTY2fQ.gpPgFPhU2icllndYdgMrCXx63bCZCF3_eZe_YJ6MF88';
+			
+			
+			//数据渲染
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
+				data:{currentPage:1,numsPerPage:3,recommend:1,storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc'},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					alert(JSON.stringify(data));
+					var objdata = {};
+					objdata.list = data.data.return.data;
+					var html=template("goodsList-detail",objdata);
+					document.getElementById("goodsList").innerHTML=html;
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+			
+			//按照选择排序
+			window.order = function(orderType,sequence){
+//				alert(orderType);
+				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
+					data:{currentPage:1,numsPerPage:3,recommend:1,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+//						alert(JSON.stringify(data));
+						var objdata = {};
+						objdata.list = data.data.return.data;
+						var html=template("goodsList-detail",objdata);
+						document.getElementById("goodsList").innerHTML=html;
+					},
+					error:function(xhr,type,errorThrown){
+						alert('响应失败  !');
+					}
+				});
+				$('.Category-eject').removeClass('grade-w-roll');
+				$('.Sort-eject').removeClass('grade-w-roll');
+				$('.grade-eject').removeClass('grade-w-roll');
+			}
+			
+			//跳转详情
+			window.goInfo =  function(goodsId){
+				//alert(goodsId)
+				 openview({
+				 	view:"mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
+			
 		})();
+		
+		
 	</script>
 
 </html>
