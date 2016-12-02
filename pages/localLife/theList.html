@@ -138,10 +138,9 @@
 						//上滑加载
 						document.addEventListener('swipeup',function(){
 							var nowpage = ++CcurrentPage;
-							if(nowpage<=data.data.totalPages){
+							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
 								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 								console.log('可以请求数据');
-								console.log(nowpage);
 								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
 									data:{type_name:Ctype_name,currentPage:nowpage,numsPerPage:CnumsPerPage}, 
 									dataType:'json',//服务器返回json格式数据
@@ -150,21 +149,20 @@
 									headers:{"token":oldtoken}, 
 									success:function(data){
 										if(data.errno == 0){
-											//console.log(data);
 											var dataobj = {};
 											dataobj.list = data.data.data; 
 											//获取并渲染用户信息
 											var html=template("infolist",dataobj);
 											document.getElementById("infolistdiv").innerHTML += html;
 											mui("#upload")[0].innerHTML = "上滑加载 ";
-											
 										}else{
+											--CcurrentPage;//请求失败,继续请求当前页
 											mui.toast("获取数据失败");
 										}
 										plus.nativeUI.closeWaiting();//关闭等待框
 									},
 									error:function(xhr,type,errorThrown){
-										plus.nativeUI.closeWaiting();//关闭等待框
+										--CcurrentPage;//请求失败,继续请求当前页
 										mui.toast("当前网络不好请重试");
 									}
 								});
