@@ -13,14 +13,19 @@
 		<link rel="stylesheet" type="text/css" href=" ../../css/index.css">
 		<link rel="stylesheet" type="text/css" href=" ../../css/mui.min.css"/>
 		<link rel="stylesheet" href=" ../../css/reset.css">
-		<script src=" ../../js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src=" ../../js/jquery.min.js"></script>
-		<script type="text/javascript" src=" ../../js/iscroll.js"></script>
-		<script type="text/javascript" src=" ../../js/jquery.flexslider-min.js"></script>
+		<!--<script type="text/javascript" src=" ../../js/iscroll.js"></script>-->
+		<!--<script type="text/javascript" src=" ../../js/jquery.flexslider-min.js"></script>-->
 		<script src=" ../../js/hmt.js" type="text/javascript"></script>
-		<script type="text/javascript" src=" ../../js/index.js"></script>
+		<!--<script type="text/javascript" src=" ../../js/index.js"></script>-->
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script src=" ../../js/swiper.min.js" type="text/javascript" ></script>
+		<!--<script src=" ../../js/swiper.min.js" type="text/javascript" ></script>-->
+		<script type="text/javascript" src="../../js/app.js"></script>
+		
+		<!--引用模板引擎-->
+		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
+		
+		
 		<style type="text/css">
 			.mui-bar{
 				height: 50px;
@@ -32,16 +37,11 @@
 			.mui-bar .mui-icon{
 				padding: 0;
 			}
-			#main{
+			#storeItem{
 				margin-top: 60px;
 			}
 			
 			/*这一页*/
-			.mui-card-header>img:first-child{
-				width: 100%;
-				height: 100%;
-				max-height: 160px;
-			}
 			.mui-card-header.mui-card-media{
 				display: inline-block;
 			}
@@ -71,6 +71,12 @@
 				border: 1px solid #ddd;
 				color: #999;
 			}
+			.imgItem{
+				width: 100% !important; 
+				padding: 6px 2%;
+				max-height: 160px;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 	<body>
@@ -81,32 +87,22 @@
 			</div>
 		</header>
 		
-		<div id="main">
-			<div class="mui-card">
-				<div class="mui-card-header mui-card-media">
-					<img src="../../img/market/M-Banner.jpg"/>
+		<div id="storeItem"></div>
+		
+		<script type="text/html" id="storeItem-detail">
+			<% for(var i=0;i<recommentLi.length;i++){ %>
+				<div class="mui-card">
+					<img class="imgItem" src="<%= recommentImg[i] %>"/>
+					<div class="mui-card-footer">
+						<p>
+							<img src="<%= recommentLi[i].logo %>"/>
+							<span class="banch"><%= recommentLi[i].barnd_name %></span>
+						</p>
+						<button onclick="openStore(<%= recommentLi[i].store_id %>)">查看详情</button>
+					</div>
 				</div>
-				<div class="mui-card-footer">
-					<p>
-						<img src="../../img/market/logo.png"/>
-						<span class="banch">TOMMY HILFIGER</span>
-					</p>
-					<button>查看详情</button>
-				</div>
-			</div>
-			<div class="mui-card">
-				<div class="mui-card-header mui-card-media">
-					<img src="../../img/market/M-Banner.jpg"/>
-				</div>
-				<div class="mui-card-footer">
-					<p>
-						<img src="../../img/market/logo.png"/>
-						<span class="banch">TOMMY HILFIGER</span>
-					</p>
-					<button>查看详情</button>
-				</div>
-			</div>
-		</div>
+			<% } %>
+		</script>
 		
 	</body>
 	<script src="../../ ../../js/other.js" type="text/javascript" charset="utf-8"></script>
@@ -114,16 +110,50 @@
 		mui.init();
 		mui.plusReady(function(){
 			//点击进入详情
-			var goodsItem = document.getElementsByClassName('goodsItem');
-			for (var j=0; j<goodsItem.length; j++) {
-//				var addId = $(this).parents('.addlist').find('.addId').attr('name');
-				goodsItem[j].addEventListener('tap',function(){
-					openview({
-//						view:'mall-detail.html',
-//						extrasobj:{name:addId}
-					})
-				});
+			window.openStore = function(store_id){
+				openview({
+//					view:'mall-detail.html',
+//					extrasobj:{name:store_id}
+				})
 			}
+			
+			
+			//数据渲染
+			var oldToken = plus.storage.getItem('oldToken');
+			
+			console.log(oldToken);
+			mui.ajax(serverUrl +'/api/mall/storelist',{
+				data:{currentPage:1,numsPerPage:2,commercial_type_name:0,subcommercial_type_name:0},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					var img = [];
+					for (var i=0;i<data.data.length;i++) {
+						var imgItem = JSON.parse(data.data[i].pic)[0].picImg;
+						img.push(imgItem);
+					}
+//					alert(JSON.parse(data.data[0]));
+					var recommentObj = {};
+					recommentObj.recommentLi = data.data;
+					recommentObj.recommentImg = img;
+					var html2 = template('storeItem-detail',recommentObj);
+					document.getElementById('storeItem').innerHTML = html2;
+					
+					
+					//轮播图
+					//获得slider插件对象
+					var gallery = mui('.mui-slider');
+					gallery.slider({
+					  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+					});
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+			
 		})();
 	</script>
 </html>
