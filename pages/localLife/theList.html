@@ -60,7 +60,7 @@
 					<dl class="dealcard" id="infolistdiv"></dl>
 					<script type="text/html" id="infolist">
 						<% for(var i=0; i<list.length; i++){%>
-							<dd class="page-link" onclick="opendetails()">
+							<dd class="page-link" onclick="opendetails(<%= list[i].id%>)">
 							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="<%= list[i].logo%>" alt=""> </div>
 								<div class="dealcard-block-right">
@@ -128,13 +128,18 @@
 				headers:{"token":oldtoken}, 
 				success:function(data){
 					if(data.errno == 0){
-						//console.log(data);
+						console.log(data);
 						var dataobj = {};
 						dataobj.list = data.data.data; 
 						//获取并渲染用户信息
 						var html=template("infolist",dataobj);
 						document.getElementById("infolistdiv").innerHTML += html;
-						mui("#upload")[0].innerHTML = "上滑加载 ";
+						if(data.data.totalPages){
+							mui("#upload")[0].innerHTML = "上滑加载 ";
+						}else{
+							mui("#upload")[0].innerHTML = "没有数据了 ";
+						}
+						
 						//上滑加载
 						document.addEventListener('swipeup',function(){
 							var nowpage = ++CcurrentPage;
@@ -186,9 +191,10 @@
 })();
 
 //跳转详情
-function opendetails(){
+function opendetails(id){
 	openview({
 		view:'theDetail.html',
+		extrasobj:{name:id}
 	})
 }
 </script>
