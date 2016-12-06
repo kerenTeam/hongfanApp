@@ -532,8 +532,7 @@
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.imageViewer.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript"> 
-	 
+	<script type="text/javascript">  
 		mui.plusReady(function(){ 
 			var shopId;
 			//获取token
@@ -566,7 +565,7 @@
 		                    //简介
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
-		                      shopId=data.data.goodsInfo.storeid;
+		                      shopId=data.data.goodsInfo.storeid;        
 		                     //选择弹框
 		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
 		                     mui(".mui-numbox").numbox();
@@ -676,9 +675,11 @@
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
 		                    		//webview 购物车页面 刷新
-		                    		var index = plus.webview.getLaunchWebview();            		
-									mui.fire(index,'gohome',{hrefid:'cart'});
-		                    		alert(1)
+		                    		  //获得列表界面的webview
+									var list= plus.webview.getWebviewById('cart.html');
+									//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+									mui.fire(list,'refresh');
+		                    		//alert(1)
 
 		                    		}else{
 		                    			orderStorage =[];
