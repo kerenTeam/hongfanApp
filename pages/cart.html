@@ -26,8 +26,8 @@
 		<div style="height:50px;"></div>
 		<div id="cartData"></div>
 		<script type="text/html" id="cartTpl">
-			<%if(cates.length==0){%>
-				<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>
+			<%if(goodsList.length==0){%>
+				<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>
 				<%}else{%>
 					<%for(var i =0;i<cates.length;i++){%>
 						<dl class="cart"> 
@@ -38,12 +38,12 @@
  		<%for(var j =0;j<goodsList.length;j++){%>
  			<% if(goodsList[j].shopName ==  cates[i]){%>
 			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
+				<div class="mui-checkbox"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>"  type="checkbox"></div>
 				<a class="goodsPic"><img src="<%=goodsList[j].goodsImg%>" /></a>
 				<div class="goodsInfor">
 					<h2>
     <a><%=goodsList[j].goodsName%></a>
-    <span class="num"><%=goodsList[j].goodsNum%></span>
+    <span class="num"><%=goodsList[j].goodsnum%></span>
    </h2>
 					<div class="priceArea">
 						<div class="extraBrief"><%=goodsList[j].goodText%></div>
@@ -53,13 +53,13 @@
 					<div class="numberWidget">
 						<div class="mui-numbox" data-numbox-min='1'>
 							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" value="<%=goodsList[j].goodsNum%>" type="number" />
+							<input class="mui-input-numbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" value="<%=goodsList[j].goodsnum%>" type="number" />
 							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
 						</div>
 
 					</div>
 				</div>
-				<a class="delBtn">删除</a>
+				<a class="delBtn" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>">删除</a>
 			</dd>
 			<%}%>
 			<%}%>
@@ -89,17 +89,23 @@
 	
 			mui.init()
 	mui.plusReady(function(){
+		window.addEventListener('gohome',function(event){
+					plus.webview.currentWebview().reload();
+				});
     cartload();
     function cartload(){
-    	//购物车 缓存
+    	//购物车 缓存 
         var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
-        console.log(cartStorage);
-         // cartStorage = [{"goodsId":"1","storeid":"1","shopName":"dsd","goodsName":"华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待","goodsImg":"","goodsPrice":"2","goodsPostfee":"12","goodsNum":3,"goodText":"颜色:黑色; 内存:32G; 运存:3G; 版本:美版; "},{"goodsId":"2","storeid":"1","shopName":"dsd","goodsName":"华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待","goodsImg":"","goodsPrice":"2","goodsPostfee":"12","goodsNum":3,"goodText":"颜色:黑色; 内存:32G; 运存:3G; 版本:美版; "},{"goodsId":"2","storeid":"2","shopName":"dsddd","goodsName":"华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待","goodsImg":"","goodsPrice":"2","goodsPostfee":"12","goodsNum":3,"goodText":"颜色:黑色; 内存:32G; 运存:3G; 版本:美版; "}]
+        alert(plus.storage.getItem('$cartStorage'));
        //订单缓存
         var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]'); 
         console.log(cartStorage.length+" "+plus.storage.getItem('$cartStorage'));
         console.log(orderStorage.length); 
-        var data = {};
+        if(cartStorage.length==0){
+        	$(".editAll").css("display","none");
+        	$(".btmNav").css("display","none");
+        } 
+        	 var data = {};
 			data.goodsList = cartStorage;
 			var arr = [];
 			for(var i = 0; i < cartStorage.length; i++) {
@@ -109,9 +115,11 @@
 			 alert('cates' + data.cates);
 			var html2 = template('cartTpl', data);
 			document.getElementById('cartData').innerHTML = html2;
-        mui(".mui-numbox").numbox();
+        	mui(".mui-numbox").numbox();
+         
+       
     }
-		
+		 
         var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>"
 				//计算购物车数量
 			ddAll();
@@ -150,23 +158,38 @@
 			});
 			//删除 单个
 			$(".delBtn").click(function() {
-				var curCart = $(this).parentsUntil("#cartData");
+				var delThis=$(this);
+				var delID=$(this).attr("data-id");
+				var deltext=$(this).attr("data-goodstext");
+				mui.confirm('确认删除这件商品吗？', '客官', ['取消', '确定'], function(e) {
+						if(e.index == 1) {  
+							var curCart = delThis.parentsUntil("#cartData");
+							delThis.parent().remove(); 
+							//删除这一条缓存
+						    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+							for(var i=0;i<cartStorage.length;i++){
+								if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText ){
+									alert(1)
+									cartStorage.splice(i, 1);
+								}
+							}
+							//判断该组商品是否删除完 
+							if(curCart.find("dd").length == 0) {
+								$(curCart).remove();
+								if($('.cart').length == 0) {
+									$('aside input').attr("checked", false);
+									$("body").append(tipsCont);
+								}
+							}
+							ddAll();
+							countFuc();
+							plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+							alert(plus.storage.getItem('$cartStorage')) 
+						}
 
-				$(this).parent().remove();
-				//判断该组商品是否删除完
-
-				if(curCart.find("dd").length == 0) {
-					$(curCart).remove();
-					if($('.cart').length == 0) {
-						$('aside input').attr("checked", false);
-						$("body").append(tipsCont);
-					}
-				}
-				ddAll();
-				countFuc();
-
+				}) 
 			});
-			//删除全部 
+			//删除选中的全部 
 			$(".delBtnAll").click(function() {
 				var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
 				if(ALLcheckLength == 0) {
@@ -175,6 +198,21 @@
 					mui.confirm('确认删除这' + ALLcheckLength + '件商品吗？', '客官', ['取消', '确定'], function(e) {
 						if(e.index == 1) {
 							var delThis = $("dd").find("input[type='checkbox']:checked").parentsUntil("dl");
+							//删除选中的 购物车 缓存 
+							$("dd").find("input[type='checkbox']:checked").each(function(){
+								var delID=$(this).attr("data-id");
+								var deltext=$(this).attr("data-goodstext");
+								//删除这一条缓存
+							    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+								for(var i=0;i<cartStorage.length;i++){
+									if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText ){
+										alert(1)
+										cartStorage.splice(i, 1);
+									}
+								}
+								plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+							alert(plus.storage.getItem('$cartStorage'))
+							})
 							delThis.remove();
 							allCart();
 							ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
@@ -188,10 +226,7 @@
 							if($('dd').length == 0) {
 								$("body").append(tipsCont);
 							}
-							//购物车 缓存
-        				//var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-							plus.storage.removeItem("$cartStorage");
-							//alert(plus.storage.getItem('$cartStorage'))
+							
 						}
 
 					})
@@ -272,11 +307,22 @@
 			$('.mui-numbox input').on('change', function() {
 					//alert(totalFen);
 					var number = $(this).val(); //当前数量
+					var goodsid = $(this).attr("data-id");//当前视商品id
+					var goodstext = $(this).attr("data-goodstext");//当前商品属性
 					var curPrice = $(this).parentsUntil("dd").find(".price").html();
-					$(this).parentsUntil("dd").find(".num").html(number);
-					//判断当前是否勾选
-					//var currCheck = $(this).parentsUntil("dl").find("input[type='checkbox']"); 
+					$(this).parentsUntil("dd").find(".num").html(number); 
 					countFuc();
+					//更新此商品数量缓存
+					  cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+							for(var i=0;i<cartStorage.length;i++){
+								if(goodsid==cartStorage[i].goodsId && goodstext==cartStorage[i].goodText ){
+									 cartStorage[i].goodsnum = number;
+								}
+							}
+					plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+							alert(plus.storage.getItem('$cartStorage'))
+							
+					
 				})
 				//计算总价和总数量
 			function countFuc() {

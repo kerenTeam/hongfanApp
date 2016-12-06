@@ -453,7 +453,7 @@
 			<div class="left clearfloat fl">
 				<ul>
 					<li>
-						<a href="#">
+						<a onclick="goShop()">
 							<i class="iconfont icon-shangcheng"></i>
 							<p>商城</p>
 						</a>
@@ -489,7 +489,7 @@
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
-		     		<%if(choose.parameter.length!=0){%> 
+		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
 		     				<div class="middle clearfloat textType">
 					     			
@@ -533,16 +533,14 @@
 	<script src="../../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.imageViewer.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript"> 
-	alert("gdfgdsf")
-		mui.plusReady(function(){
-			alert("gdfgdsf")
+	 
+		mui.plusReady(function(){ 
+			var shopId;
 			//获取token
-			var token=plus.storage.getItem("oldToken");
-			alert(token)
+			var token=plus.storage.getItem("oldToken"); 
 			console.log(token)
 			//获取页面传值 商品id
-			var goodId = plus.webview.currentWebview().goodsId;
-			alert(goodId);
+			var goodId = plus.webview.currentWebview().goodsId; 
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
 					data: {goodsId:goodId},
@@ -550,9 +548,9 @@
 						type:'post',//HTTP请求类型 
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
-						success:function(data){
-							alert(data)
+						success:function(data){ 
 							if(data.errno==0){ 
+							//	alert(JSON.stringify(data.data.goodsInfo))
 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
 							var commentobj = data.data.comments;
 							//var content = data.data.comments
@@ -568,6 +566,7 @@
 		                    //简介
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
+		                      shopId=data.data.goodsInfo.storeid;
 		                     //选择弹框
 		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
 		                     mui(".mui-numbox").numbox();
@@ -598,8 +597,7 @@
 		                     			
 		                     			oldstep=0;
 		                     		}
-				                     	 newstep = $(this).attr("data-priceStep");	
-				                     	 alert(oldstep+" "+newstep+"price"+priceChange) 
+				                     	 newstep = $(this).attr("data-priceStep");	 
 											$(this).addClass('cur');
 											$(this).siblings().removeClass('cur'); 
 				                     	 priceChange=priceChange+parseFloat(newstep)-parseFloat(oldstep);
@@ -621,7 +619,7 @@
 								
 		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
 		                    	
-		                   // plus.storage.clear();
+		                   // plus.storage.removeItem('$cartStorage');
 		                    //购物车 缓存
 		                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
 		                   //订单缓存
@@ -635,12 +633,11 @@
 		                    		var goodsImg = obj.getAttribute("data-gdImg");
 		                    		var goodsPrice = obj.getAttribute("data-gdprice");
 		                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
-		                    		var goodsNum = parseFloat($(".mui-input-numbox").val());
+		                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
 		                    		var goodText=''; 
 		                    		$('.textType').each(function(){
 		                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+"; ";
-		                    		}) 
-		                    		alert(goodText);
+		                    		})  
 		                    		
 		                    		//当前商品对象
 										var cartObj={};
@@ -651,7 +648,7 @@
 		                    		cartObj.goodsImg=goodsImg;
 		                    		cartObj.goodsPrice=goodsPrice;
 		                    		cartObj.goodsPostfee=goodsPostfee;
-		                    		cartObj.goodsNum=goodsNum;
+		                    		cartObj.goodsnum=goodsnum;
 		                    		cartObj.goodText=goodText;
 		                    		
 		                    		
@@ -661,7 +658,7 @@
 									for(var i = 0; i < cartStorage.length; i++) {
 										if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) { 
 											 
-												cartStorage[i].goodsNum+= goodsNum; 
+												cartStorage[i].goodsnum=parseInt(cartStorage[i].goodsnum)+parseInt(goodsnum); 
 											flag = false;
 											break;
 										} else {
@@ -676,16 +673,21 @@
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
 		                    		$(".am-share").removeClass("am-modal-active");
-		                    		$(".sharebg ").removeClass("sharebg-active")
-		                    		alert(plus.storage.getItem("$cartStorage"));
+		                    		$(".sharebg ").removeClass("sharebg-active");
+		                    		mui.toast("已成功加入购物车");
+		                    		//webview 购物车页面 刷新
+		                    		var index = plus.webview.getLaunchWebview();            		
+									mui.fire(index,'gohome',{hrefid:'cart'});
+		                    		alert(1)
+
 		                    		}else{
-		                    			orderStorage ==[];
+		                    			orderStorage =[];
 		                    			orderStorage.push(cartObj);
 		                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-//		                    			openview({
-//										 	view:"market-order.html",
-//		                    			}
-//										 })
+		                    			alert(plus.storage.getItem("$orderStorage"));
+		                    			openview({
+										 	view:"market-order.html", 
+										 })
 		                    		}
 		                    		
 		                    		
@@ -708,6 +710,13 @@
 							mui.toast("当前网络不好请重试"); 
 						}
 				}); 
+				//跳转商家详情
+				window.goShop = function(){ 
+						openview({
+							view:"shophome.html",
+							extrasobj:{storeId:shopId}
+						})
+					}
 		}) 
 	</script>
 
