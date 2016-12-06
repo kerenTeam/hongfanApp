@@ -183,21 +183,21 @@
 							<div class="mui-slider-group mui-slider-loop">
 								<!--支持循环，需要重复图片节点-->
 								<div class="mui-slider-item">
-									<a data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
+									<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
 										<img src="<%=myUrl%><%=bannerData[bannerData.length-1].bannerPic%>" />
 									</a>
 								</div>
 								<% for(var i=0;i<bannerData.length;i++){ %>
 					
 								<div class="mui-slider-item">
-									<a data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
+									<a onclick="bannerGo('<%=bannerData[i].url%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
 										<img src="<%=myUrl%><%=bannerData[i].bannerPic%>" />
 									</a>
 								</div>
 								<% } %>
 								<!--支持循环，需要重复图片节点-->
 								<div class="mui-slider-item mui-slider-item-duplicate">
-									<a data-url="<%=bannerData[0].url%>" data-id = "0">
+									<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
 										<img src="<%=myUrl%><%=bannerData[0].bannerPic%>" />
 									</a>
 								</div>
@@ -232,10 +232,10 @@
 						</div>
 						<div class="sy_recmd_list_box choicenessWrap">
 							<ul>
-								<li class="sy_recmd_list">
+								<li class="sy_recmd_list" id="storeRcmd">
 									<div class="box">
 										<div class="pub_img">
-											<a><img src="../../img/market/market-cloth.jpg" width="145" height="145"></a>
+											<a href="javascript:;"><img src="../../img/market/market-cloth.jpg" width="145" height="145"></a>
 										</div>
 										<div class="choiceness">
 											<p class="overflow_clear"><img src="../../img/market/store.png"/>达人探店</p>
@@ -309,7 +309,7 @@
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/app.js"></script>	
 	<script type="text/javascript">
-  
+
 		//分类跳转详情
 		function goList(catId){
 			 openview({
@@ -326,17 +326,13 @@
 				 	extrasobj:{goodsId:goodsId}
 				 })
 			}
-			//打开待开发页面
-			mui(".box").on('tap','.pub_img',function(){
-				mui.openWindow({
-				    url:'jindaikaifa.html',
-				    id:'jindaikaifa',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    }
-				});
-		});
+			 
+		mui("#storeRcmd")[0].addEventListener('tap',function(){
+			openview({
+				 	view:"storeList.html"
+				 })
+		})
+		
 		
 		mui.plusReady(function(){
 			//获取token
@@ -361,6 +357,14 @@
 										gallery.slider({
 											interval: 3000 //设置自动轮播周期为3s
 										});
+										
+										  //banner跳转
+							  function bannerGo(url){
+							  	alert(url)
+							  	openview({
+											 	view:url,
+											 })
+							  }
 						}else{
 							mui.toast("网络不好请重试！");
 						}
@@ -465,6 +469,7 @@
 						error:function(xhr,type,errorThrown){
 							//异常处理；
 							console.log("获取失败！");
+							plus.nativeUI.closeWaiting();
 							mui.toast("当前网络不好请重试");
 						}
 				}); 

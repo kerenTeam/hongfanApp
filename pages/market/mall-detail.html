@@ -542,6 +542,7 @@
 			console.log(token)
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId; 
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
 					data: {goodsId:goodId},
@@ -551,6 +552,7 @@
 						headers:{"token":token}, 
 						success:function(data){
 							if(data.errno==0){ 
+								plus.nativeUI.closeWaiting();
 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
 							var commentobj = data.data.comments;
 							//var content = data.data.comments
@@ -689,6 +691,7 @@
 				//评论
 				 //mui.previewImage();
 							}else{
+								plus.nativeUI.closeWaiting();
 								mui.toast("网络不好请重试！")
 							}
 							 
@@ -696,6 +699,7 @@
 						},  
 						error:function(xhr,type,errorThrown){
 							//异常处理； 
+							plus.nativeUI.closeWaiting();
 							mui.toast("当前网络不好请重试"); 
 						}
 				}); 
