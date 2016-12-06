@@ -94,7 +94,7 @@
 			    		</div>
 			    	</div>
 		    	<% } %>
-		    	<a href="add-address.html" class="address-add fl" id="addNewAd">
+		    	<a href="add-address.html" class="address-add fl" id="addNewAd" name="<%= addressLi[0].user_id %>">
 		     		添加新地址
 		     	</a>
 		    </div>
@@ -123,7 +123,6 @@
 				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					alert(JSON.stringify(data.data));
 					var addressObj = {};
 					addressObj.addressLi = data.data;
 					var html = template('addressList-detail',addressObj);
@@ -146,9 +145,14 @@
 					}
 					//点击添加地址跳转
 					var addNewAd = document.getElementById('addNewAd');
+					var userId = $('#addNewAd').attr('name');
+					
+					alert(userId);
 					addNewAd.addEventListener('tap',function(){
-						var url = "add-address.html";
-						window.open(url);
+						openview({
+							view:'add-address.html',
+							extrasobj:{adId:userId}
+						});
 					});
 				},
 				

@@ -205,8 +205,9 @@ function Sorts(sbj){
     sbj.style.borderBottom = "solid 1px #ff7c08"
 }
 
-
-function toshare(){
+var goNum;
+function toshare(num){
+	goNum = num;
 	$(".am-share").addClass("am-modal-active");	
 	if($(".sharebg").length>0){
 		$(".sharebg").addClass("sharebg-active");
