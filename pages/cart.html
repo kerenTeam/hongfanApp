@@ -24,28 +24,36 @@
 			<a class="fr baocun editAll">编辑</a>
 		</header>
 		<div style="height:50px;"></div>
-		<dl class="cart">
+		<div id="cartData"></div>
+		<script type="text/html" id="cartTpl">
+			<%if(cates.length==0){%>
+				<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>
+				<%}else{%>
+					<%for(var i =0;i<cates.length;i++){%>
+						<dl class="cart"> 
 			<dt><div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
-				<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> 宏帆旗舰</div>
+				<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> <%=cates[i]%></div>
   <a class="edit">| 编辑</a>
  </dt>
+ 		<%for(var j =0;j<goodsList.length;j++){%>
+ 			<% if(goodsList[j].shopName ==  cates[i]){%>
 			<dd>
 				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" /></a>
+				<a class="goodsPic"><img src="<%=goodsList[j].goodsImg%>" /></a>
 				<div class="goodsInfor">
 					<h2>
-    <a>新鲜小黄鱼特惠</a>
-    <span class="num">1</span>
+    <a><%=goodsList[j].goodsName%></a>
+    <span class="num"><%=goodsList[j].goodsNum%></span>
    </h2>
 					<div class="priceArea">
-						<div class="extraBrief">限购：4件</div>
-						<strong>￥<span class="price">3.00</span></strong>
+						<div class="extraBrief"><%=goodsList[j].goodText%></div>
+						<strong>￥<span class="price"><%=goodsList[j].goodsPrice%></span></strong>
 
 					</div>
 					<div class="numberWidget">
 						<div class="mui-numbox" data-numbox-min='1'>
 							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
+							<input class="mui-input-numbox" value="<%=goodsList[j].goodsNum%>" type="number" />
 							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
 						</div>
 
@@ -53,151 +61,13 @@
 				</div>
 				<a class="delBtn">删除</a>
 			</dd>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" tppabs="http://www.17sucai.com/preview/183822/2016-05-05/freshHtml/upload/goods009.jpg" /></a>
-				<div class="goodsInfor">
-					<h2>
-    <a>豆腐干2kg装</a>
-    <span class="num">1</span>
-   </h2>
-					<div class="priceArea">
-						<div class="extraBrief">口味：xxxxx</div>
-						<strong>￥<span class="price">1.00</span></strong>
-
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
-						</div>
-					</div>
-				</div>
-				<a class="delBtn">删除</a>
-			</dd>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" tppabs="http://www.17sucai.com/preview/183822/2016-05-05/freshHtml/upload/goods007.jpg" /></a>
-				<div class="goodsInfor">
-					<h2>
-    <a>优质牛肉vdssafdasdasddfadfasdfas撒的发生的发生的特价</a>
-    <span class="num">1</span>
-   </h2>
-					<div class="priceArea">
-						<div class="extraBrief">口味：xxxxx</div>
-						<strong>￥<span class="price">1.00</span></strong>
-
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
-						</div>
-					</div>
-				</div>
-				<a class="delBtn">删除</a>
-			</dd>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" tppabs="http://www.17sucai.com/preview/183822/2016-05-05/freshHtml/upload/goods007.jpg" /></a>
-				<div class="goodsInfor">
-					<h2>
-    <a>优质牛肉vdssafdasdasddfadfasdfas撒的发生的发生的特价</a>
-    <span class="num">1</span>
-   </h2>
-					<div class="priceArea">
-						<div class="extraBrief">口味：xxxxx</div>
-						<strong>￥<span class="price">2.00</span></strong>
-
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
-						</div>
-					</div>
-				</div>
-				<a class="delBtn">删除</a>
-			</dd>
+			<%}%>
+			<%}%>
 		</dl>
-
-		<dl class="cart">
-			<dt><div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
-				<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> 宏帆旗舰</div>
-  <a class="edit">| 编辑</a>
- </dt>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" /></a>
-				<div class="goodsInfor">
-					<h2>
-    <a>新鲜小黄鱼特惠</a>
-    <span class="num">1</span>
-   </h2>
-					<div class="priceArea">
-						<strong>￥<span class="price">1.00</span></strong>
-
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
-						</div>
-
-					</div>
-				</div>
-				<a class="delBtn">删除</a>
-			</dd>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" tppabs="http://www.17sucai.com/preview/183822/2016-05-05/freshHtml/upload/goods009.jpg" /></a>
-				<div class="goodsInfor">
-					<h2>
-    <a>豆腐干2kg装</a>
-    <span class="num">1</span>
-   </h2>
-					<div class="priceArea">
-						<div class="extraBrief">dasa</div>
-						<strong>￥<span class="price">1.00</span></strong>
-
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
-						</div>
-					</div>
-				</div>
-				<a class="delBtn">删除</a>
-			</dd>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" type="checkbox"></div>
-				<a class="goodsPic"><img src="../img/market/zara.jpg" tppabs="http://www.17sucai.com/preview/183822/2016-05-05/freshHtml/upload/goods007.jpg" /></a>
-				<div class="goodsInfor">
-					<h2>
-    <a>优质牛肉vdssafdasdasddfadfasdfas撒的发生的发生的特价</a>
-    <span class="num">1</span>
-   </h2>
-					<div class="priceArea">
-						<strong>￥<span class="price">4.00</span></strong>
-
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
-						</div>
-					</div>
-				</div>
-				<a class="delBtn">删除</a>
-			</dd>
-		</dl>
+						<%}%>
+					<%}%>
+		</script>
+		
 
 		<!--bottom nav-->
 		<div style="height:1rem;"></div>
@@ -212,14 +82,37 @@
 
 		<script type="text/javascript" src="../js/jquery_cart.js"></script>
 		<script src="../js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init()
-		</script>
+		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+		 
 	</body>
 	<script>
-		$(document).ready(function() {
-		 
-			var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>"
+	
+			mui.init()
+	mui.plusReady(function(){
+    cartload();
+    function cartload(){
+    	//购物车 缓存
+        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
+        console.log(cartStorage);
+//      cartStorage = [{"goodsId":"1","storeid":"1","shopName":"dsd","goodsName":"华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待","goodsImg":"","goodsPrice":"2","goodsPostfee":"12","goodsNum":3,"goodText":"颜色:黑色; 内存:32G; 运存:3G; 版本:美版; "},{"goodsId":"2","storeid":"1","shopName":"dsd","goodsName":"华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待","goodsImg":"","goodsPrice":"2","goodsPostfee":"12","goodsNum":3,"goodText":"颜色:黑色; 内存:32G; 运存:3G; 版本:美版; "},{"goodsId":"2","storeid":"2","shopName":"dsddd","goodsName":"华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待华为 HUAWEI nova 4GB+64GB版 香槟金（白）移动联通电信4G手机 双卡双待","goodsImg":"","goodsPrice":"2","goodsPostfee":"12","goodsNum":3,"goodText":"颜色:黑色; 内存:32G; 运存:3G; 版本:美版; "}]
+       //订单缓存
+        var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]'); 
+        console.log(cartStorage.length+" "+plus.storage.getItem('$cartStorage'));
+        console.log(orderStorage.length); 
+        var data = {};
+			data.goodsList = cartStorage;
+			var arr = [];
+			for(var i = 0; i < cartStorage.length; i++) {
+				arr.push(cartStorage[i].shopName);
+			}
+			data.cates = arr.unique1();
+			 alert('cates' + data.cates);
+			var html2 = template('cartTpl', data);
+			document.getElementById('cartData').innerHTML = html2;
+        mui(".mui-numbox").numbox();
+    }
+		
+        var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>"
 				//计算购物车数量
 			ddAll();
 
@@ -230,13 +123,13 @@
 			$(".edit").toggle(function() {
 				$(this).parent().siblings("dd").find(".delBtn").fadeIn();
 				$(this).html("完成");
-				$(this).parentsUntil("body").find(".numberWidget").show();
-				$(this).parentsUntil("body").find(".priceArea").hide();
+				$(this).parentsUntil("#cartData").find(".numberWidget").show();
+				$(this).parentsUntil("#cartData").find(".priceArea").hide();
 			}, function() {
 				$(this).parent().siblings("dd").find(".delBtn").fadeOut();
 				$(this).html("| 编辑");
-				$(this).parentsUntil("body").find(".numberWidget").hide();
-				$(this).parentsUntil("body").find(".priceArea").show();
+				$(this).parentsUntil("#cartData").find(".numberWidget").hide();
+				$(this).parentsUntil("#cartData").find(".priceArea").show();
 			});
 			//编辑所有
 			$(".editAll").toggle(function() {
@@ -257,7 +150,7 @@
 			});
 			//删除 单个
 			$(".delBtn").click(function() {
-				var curCart = $(this).parentsUntil("body");
+				var curCart = $(this).parentsUntil("#cartData");
 
 				$(this).parent().remove();
 				//判断该组商品是否删除完
@@ -295,6 +188,10 @@
 							if($('dd').length == 0) {
 								$("body").append(tipsCont);
 							}
+							//购物车 缓存
+        				//var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+							plus.storage.removeItem("$cartStorage");
+							//alert(plus.storage.getItem('$cartStorage'))
 						}
 
 					})
@@ -314,7 +211,7 @@
 			$('dl dt .mui-checkbox').click(function() {
 
 					if($(this).find("input").is(':checked')) {
-						$(this).parentsUntil("body").find("input").attr("checked", true);
+						$(this).parentsUntil("#cartData").find("input").attr("checked", true);
 						var allLength = $("dd").length;
 						var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
 						if(ALLcheckLength == allLength) {
@@ -332,7 +229,7 @@
 						}
 
 					} else {
-						$(this).parentsUntil("body").find("input").attr("checked", false);
+						$(this).parentsUntil("#cartData").find("input").attr("checked", false);
 						$('aside input').attr("checked", false);
 					}
 
@@ -341,16 +238,16 @@
 				//单个 选择
 			$('dl dd .mui-checkbox').click(function() {
 					var allLength = $("dd").length;
-					var length = $(this).parentsUntil("body").find("dd").length;
-					var checkLength = $(this).parentsUntil("body").find("input[type='checkbox']:checked").length;
+					var length = $(this).parentsUntil("#cartData").find("dd").length;
+					var checkLength = $(this).parentsUntil("#cartData").find("input[type='checkbox']:checked").length;
 					var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
 					if($(this).find("input").prop('checked') == false) {
-						$(this).parentsUntil("body").find(".groupCheck").attr("checked", false);
+						$(this).parentsUntil("#cartData").find(".groupCheck").attr("checked", false);
 						$('aside input').attr("checked", false);
 						countFuc();
 					} else {
 						if(length == checkLength){
-							$(this).parentsUntil("body").find(".groupCheck").attr("checked", true);
+							$(this).parentsUntil("#cartData").find(".groupCheck").attr("checked", true);
 						}
 						if(ALLcheckLength == allLength) {
 							$('aside input').attr("checked", true);
@@ -389,7 +286,7 @@
 						//价格  
 						var price = parseFloat($(this).parentsUntil('dl').find('.price').html());
 						//当前数量
-						var num = parseInt($(this).parentsUntil('body').find("input[type='number']").val());
+						var num = parseInt($(this).parentsUntil('#cartData').find("input[type='number']").val());
 						pay += num * price;
 						fen += num;
 					})
@@ -407,7 +304,26 @@
 					mui.toast("您选中了" + ALLcheckLength + "件商品")
 				}
 			})
-		});
+        
+	}) 
+	
+	Array.prototype.unique1 = function() {
+				var res = [this[0]];
+				for(var i = 1; i < this.length; i++) {
+					var repeat = false;
+					for(var j = 0; j < res.length; j++) {
+						if(this[i] == res[j]) {
+							repeat = true;
+							break;
+						}
+					}
+					if(!repeat) {
+						res.push(this[i]);
+					}
+				}
+				return res;
+			}
+	
 	</script>
 
 </html>

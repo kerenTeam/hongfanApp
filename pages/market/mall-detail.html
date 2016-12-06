@@ -461,8 +461,8 @@
 				</ul>
 			</div>
 			<div class="right clearfloat fl">
-				<span class="btn fl addBtn" onClick="toshare()">加入购物车</span>
-				<a href="self-torder.html" class="btn btnone fl">立即购买</a>
+				<span class="btn fl addBtn" onClick="toshare(1)">加入购物车</span>
+				<a onClick="toshare(2)" class="btn btnone fl">立即购买</a>
 			</div>
 		</div>
 		<!--footerone end-->
@@ -491,7 +491,7 @@
 		     	<div class="Mscroll">
 		     		<%if(choose.parameter.length!=0){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
-		     				<div class="middle clearfloat">
+		     				<div class="middle clearfloat textType">
 					     			
 					     		<p><%=choose.parameter[i].parameter_name%></p>
 					     		<div class="xia clearfloat choose">
@@ -523,7 +523,7 @@
 		     	
 		     </div>		     
 		  </div>
-		  <a onclick="cartStorage('','','',)" class="shop-btn db">确定</a>
+		  <a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.fee_start_1%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
 		
 		</div>
@@ -533,11 +533,16 @@
 	<script src="../../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.imageViewer.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript"> 
+	alert("gdfgdsf")
 		mui.plusReady(function(){
+			alert("gdfgdsf")
 			//获取token
 			var token=plus.storage.getItem("oldToken");
+			alert(token)
+			console.log(token)
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId;
+			alert(goodId);
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
 					data: {goodsId:goodId},
@@ -546,8 +551,8 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
 						success:function(data){
-							if(data.errno==0){
-							alert( data.data.goodsInfo.parameter);
+							alert(data)
+							if(data.errno==0){ 
 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
 							var commentobj = data.data.comments;
 							//var content = data.data.comments
@@ -566,31 +571,42 @@
 		                     //选择弹框
 		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
 		                     mui(".mui-numbox").numbox();
-		                     var priceChange =parseInt($("#priceChange").html());
+		                     var priceChange =parseFloat($("#priceChange").html());
 		                     $('.choose').each(function(){
 		                     	var chooseli = $(this).find("li");
 		                     	
-		                     		var oldstep=0;
+		                     		var oldstep=0,newstep=0;
 		                     	chooseli.each(function(){
 		                     		if($(this).attr("data-Inventory")==0){
 				                     		$(this).css("display","block")
 				                     	}
 				                     	if($(this).attr("data-priceStep")==0){
 				                     		$(this).addClass("cur");
-				                     		oldstep = $(this).attr("data-priceStep");
+				                     		 
 				                     	}  
+				                    if($(this).parentsUntil(".choose").find(".cur")){
+		                     			oldstep =parseFloat($(this).parentsUntil(".choose").find(".cur").attr("data-priceStep"));
+		                     		}else{
+		                     			oldstep =0;
+		                     		}
 				                     	
 		                     	})
-		                     	chooseli.click(function(){
+		                     	chooseli.click(function(){ 
+		                     		if($(this).parentsUntil(".choose").find(".cur").length!=0){
+		                     			oldstep =parseFloat($(this).parentsUntil(".choose").find(".cur").attr("data-priceStep"));
+		                     		}else{
+		                     			
+		                     			oldstep=0;
+		                     		}
+				                     	 newstep = $(this).attr("data-priceStep");	
+				                     	 alert(oldstep+" "+newstep+"price"+priceChange) 
 											$(this).addClass('cur');
-											$(this).siblings().removeClass('cur');
-				                     	var newstep = $(this).attr("data-priceStep");	
-				                     	 alert(oldstep+" "+newstep+"price"+priceChange)
-				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
+											$(this).siblings().removeClass('cur'); 
+				                     	 priceChange=priceChange+parseFloat(newstep)-parseFloat(oldstep);
 				                     	 $('#priceChange').html(priceChange)
 										})
 		                     	
-		                     })
+		                     })  
 		                    
 		                    //详情
 		                    document.getElementById("textInfo").innerHTML=template("textTpl",{text:data.data.goodsInfo});
@@ -604,7 +620,81 @@
 								cemmentObj.cemmentData = commentobj;
 								
 		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
-		                    
+		                    	
+		                   // plus.storage.clear();
+		                    //购物车 缓存
+		                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
+		                   //订单缓存
+		                    var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]'); 
+		                    window.cartStorageF=function(obj){
+		                     	if($('.cur').length == $(".choose").length){ 
+		                    		var shopName = obj.getAttribute("data-shop");
+		                    		var goodsId = obj.getAttribute("data-gdId");
+		                    		var storeid = obj.getAttribute("data-shopId");
+		                    		var goodsName = obj.getAttribute("data-gdName");
+		                    		var goodsImg = obj.getAttribute("data-gdImg");
+		                    		var goodsPrice = obj.getAttribute("data-gdprice");
+		                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
+		                    		var goodsNum = parseFloat($(".mui-input-numbox").val());
+		                    		var goodText=''; 
+		                    		$('.textType').each(function(){
+		                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+"; ";
+		                    		}) 
+		                    		alert(goodText);
+		                    		
+		                    		//当前商品对象
+										var cartObj={};
+		                    		cartObj.goodsId=goodsId;
+		                    		cartObj.shopName=shopName;
+		                    		cartObj.storeid=storeid;
+		                    		cartObj.goodsName=goodsName;
+		                    		cartObj.goodsImg=goodsImg;
+		                    		cartObj.goodsPrice=goodsPrice;
+		                    		cartObj.goodsPostfee=goodsPostfee;
+		                    		cartObj.goodsNum=goodsNum;
+		                    		cartObj.goodText=goodText;
+		                    		
+		                    		
+		                    		if(goNum ==1){
+		                    			if(cartStorage.length != 0) {
+									var flag = false;
+									for(var i = 0; i < cartStorage.length; i++) {
+										if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) { 
+											 
+												cartStorage[i].goodsNum+= goodsNum; 
+											flag = false;
+											break;
+										} else {
+											flag = true;
+										}
+									}
+									if(flag) {
+		                    		cartStorage.push(cartObj); 
+									}
+								} else { 
+		                    		cartStorage.push(cartObj); 
+								}  
+		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+		                    		$(".am-share").removeClass("am-modal-active");
+		                    		$(".sharebg ").removeClass("sharebg-active")
+		                    		alert(plus.storage.getItem("$cartStorage"));
+		                    		}else{
+		                    			orderStorage ==[];
+		                    			orderStorage.push(cartObj);
+		                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
+//		                    			openview({
+//										 	view:"market-order.html",
+//		                    			}
+//										 })
+		                    		}
+		                    		
+		                    		
+		                    		
+		                    		
+		                    	}else{
+		                    		mui.toast("请选择商品属性");
+		                    	}
+		                    }
 				//评论
 				 //mui.previewImage();
 							}else{
@@ -614,8 +704,7 @@
 		                   
 						},  
 						error:function(xhr,type,errorThrown){
-							//异常处理；
-							console.log("获取失败！");
+							//异常处理； 
 							mui.toast("当前网络不好请重试"); 
 						}
 				}); 

@@ -187,9 +187,12 @@
 		
 		<!--模板渲染数据-->
 		<script id="goodsList-detail" type="text/html">
-			<% for(var i=0;i<list.length;i++){ %>
+			<%if(list.length==0){%>
+				<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
+			<%}else{%>
+				<% for(var i=0;i<list.length;i++){ %>
 				<dd class="goodsItem">
-					<a href="javascript:;" class="react" onclick="goInfo(<%= list[i].goods_id %>)">
+					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
 								<img src="<%= list[i].thumb %>"/>
@@ -214,6 +217,8 @@
 					</a>
 				</dd>
 			<% } %>
+			<%}%>
+			
 		</script>
 	</body>
 
@@ -223,6 +228,8 @@
 			
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
+			//获取页面传值 商品分类id
+			var goodcatId = plus.webview.currentWebview().goodscatId; 
 //			var myToken = plus.storage.getItem('oldToken');
 //			if(plus.storage.getItem('myToken')){
 //				Sstate = true;//如果存在myToken则是登录状态
@@ -232,40 +239,56 @@
 			
 			//数据渲染
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-				data:{currentPage:1,numsPerPage:3,recommend:1,storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc'},
+				data:{currentPage:1,numsPerPage:3,categoryid:goodcatId,recommend:1,storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc'},
 				dataType:'json',
 				type:'post',
 				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data));
+					 //alert(JSON.stringify(data));
+					if(data.errno!=1000){
+						
 					var objdata = {};
 					objdata.list = data.data.return.data;
 					var html=template("goodsList-detail",objdata);
 					document.getElementById("goodsList").innerHTML=html;
+					}else{
+						var objdata = {};
+					objdata.list = [];
+					var html=template("goodsList-detail",objdata);
+					document.getElementById("goodsList").innerHTML=html;
+					}
 				},
 				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
+					console.log('响应失败  !');
 				}
 			});
 			
 			//按照选择排序
 			window.order = function(orderType,sequence){
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data:{currentPage:1,numsPerPage:3,recommend:1,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
+					data:{currentPage:1,numsPerPage:3,categoryid:goodcatId,recommend:1,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
 					dataType:'json',
 					type:'post',
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 //						alert(JSON.stringify(data));
+						if(data.errno!=1000){
+						
+					var objdata = {};
+					objdata.list = data.data.return.data;
+					var html=template("goodsList-detail",objdata);
+					document.getElementById("goodsList").innerHTML=html;
+					}else{
 						var objdata = {};
-						objdata.list = data.data.return.data;
-						var html=template("goodsList-detail",objdata);
-						document.getElementById("goodsList").innerHTML=html;
+					objdata.list =  [];
+					var html=template("goodsList-detail",objdata);
+					document.getElementById("goodsList").innerHTML=html;
+					}
 					},
 					error:function(xhr,type,errorThrown){
-						alert('响应失败  !');
+						console.log('响应失败  !');
 					}
 				});
 				$('.Category-eject').removeClass('grade-w-roll');
@@ -274,7 +297,7 @@
 			}
 			
 			//跳转详情
-			window.goInfo =  function(goodsId){
+			window.goInfo =  function(goodsId){ 
 				 openview({
 				 	view:"mall-detail.html",
 				 	extrasobj:{goodsId:goodsId}

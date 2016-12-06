@@ -206,7 +206,8 @@ function Sorts(sbj){
 }
 
 
-function toshare(){
+function toshare(num){
+	var goNum = num;
 	$(".am-share").addClass("am-modal-active");	
 	if($(".sharebg").length>0){
 		$(".sharebg").addClass("sharebg-active");
