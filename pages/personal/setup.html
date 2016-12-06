@@ -14,38 +14,28 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<style type="text/css">
-			#userMessContainer{
-				margin-top: 50px;
+			#userMessContainer{margin-top: 50px;
 			}
-			i{
-				font-style: normal;
+			i{ont-style: normal;
 			}
-			i.container{
-				
-				position: relative;
+			i.container{position: relative;
 			}
-			i.imgContainer .upload{
-				position: absolute;
+			i.imgContainer .upload{position: absolute;
 				top:0;left:0;bottom:0;right:0;
 				z-index:999;
 			}
-			#main{
-				margin-bottom: 100px;
+			#main{margin-bottom: 100px;
 			}
-			select{
-				display: inline-block !important;
+			select{display: inline-block !important;
 				float:right !important;
 				font-size: 14px !important;
 				margin-top:10px;
 			}
-			input{
-				border:none !important;
+			input{border:none !important;
 			}
-			.box-s{
-				padding-left:5%;
+			.box-s{padding-left:5%;
 			}
-			.muibackdrop{
-				width:80%;
+			.muibackdrop{width:80%;
 				height:100px;
 				padding:15px 50px;
 				line-height: 30px;
@@ -55,27 +45,33 @@
 				border:1px solid #F53C42;
 				background: #ffffff;
 			}
-			.saveMessage{
-				color:#FFFFFF;
+			.saveMessage{color:#FFFFFF;
 				margin-right: 20px;
 				line-height: 50px;
 				font-size: 14px;
 			}
-			.muibackdrop{
-				display: none;
+			.muibackdrop{display: none;
 			}
-			.selectbtn{
-				float: right !important;
+			.selectbtn{float: right !important;
 				width: 17%;
 				margin: 0;
 			}
-			.data ul li .shuru{
-				margin-bottom: 0;
+			.data ul li .shuru{margin-bottom: 0;
 			}
-			.data ul li img {
-			    height: 50px;
+			.data ul li img {height: 50px;
 			    width: 50px;
 			    border-radius: 50%;
+			}
+			.wx_type_img{position: relative;
+			}
+			.wx_type_img input#imgUpload{margin: 0;cursor: pointer;position: absolute;top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+				filter: alpha(opacity=0);
+			}
+			#imgUpload{display: none;
 			}
 		</style>
 	</head>
@@ -85,7 +81,7 @@
 			<div class="header-tit">
 				个人设置
 			</div>
-			<span class="mui-pull-right saveMessage">保存</span>
+			<span class="mui-pull-right saveMessage" id="Preservation">保存</span>
 		</header>
 		<div id="container">		
 			<div id="main">
@@ -94,41 +90,40 @@
 						<li class="clearfloat touxiang">
 							<a>
 								<p class="fl">头像</p>
-								<!--<i class="fr">
-								<div class="text-center gray" id="preview" onclick="appendByGallery()">上传</div>
-								</i>-->
-								<input type="file" name="" id="" value="" />
+								<label>
+									<span class="fr">
+										<div class="text-center gray" id="preview">上传</div>
+									</span>
+									<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
+								</label>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">昵称</p>
-								<input type="text" class="fr shuru" name="" id="" value="点击编辑" placeholder="" />
+								<input type="text" class="fr shuru" name="" id="mynickname" value="" placeholder="点击编辑" />
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">性别</p>
-				    			<select class="mui-btn mui-btn-block selectbtn">
+				    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn">
 									<option value="item-1">点击选择</option>
 									<option value="item-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;男</option> 
 									<option value="item-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;女</option>
 								</select>
 							</a>
 						</li>
-						<li class="clearfloat">
+						<!--<li class="clearfloat">
 							<a href="#">
 								<p class="fl">用户默认地址</p>
-								<input type="text" class="fr shuru" name="" id="" value="点击编辑" placeholder="" />	    		
+								<input type="text" class="fr shuru" name="" id="addressinput" value="" placeholder="点击编辑" />	    		
 							</a>
-						</li>		
+						</li>		-->
 					</ul>
 				</div>
 			</div>
 	    </div>
-	    <script type="text/html" id="userMessModal">
-	    	
-		</script>
 		<div class="muibackdrop">
 			<div class="mui-input-row">
 				<h5>请选择性别</h5>
@@ -139,88 +134,141 @@
 			</div>
 		</div>
 	</body>
-	<script src="../../js/jquery.min.js"></script>
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js"></script>
-	
 	<script type="text/javascript">
 		mui.plusReady(function(){
-			
-			//获取用户信息
-			var loginInfo=JSON.parse(plus.storage.getItem("$loginInfo"));	
-			var token=plus.storage.getItem("Token");
-			var $userid=plus.storage.getItem("$userid");
-			mui.ajax(serverUrl+'/api/useraccount/userinfo',{									
-					data:{"userid":$userid}, 
-					dataType:'json',//服务器返回json格式数据
-					type:'post',//HTTP请求类型
-					timeout:10000,//超时时间设置为10秒；	
-					headers:{"token":token},
-					success:function(data){
-						var dataobj = {};
-						dataobj.userinfo = data.data;
-						//获取并渲染用户信息
-						var html=template("userMessModal",dataobj);
-//						document.getElementById("userMessContainer").innerHTML=html;
-						//点击选择性别的弹窗	
-						
-					},
-					error:function(xhr,type,errorThrown){
-						//异常处理；
-						console.log("获取失败！");
-						mui.toast("当前网络不好请重试");
+			var myuserid = plus.storage.getItem('userid');
+			var oldtoken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data){
+					console.log('获取用户数据返回'+JSON.stringify(data));
+					if(data.errno == 0){
+						console.log(data.data[0]);
+						mui('#mynickname')[0].value =data.data[0].nickname;
+						switch (data.data[0].gender){//Nextbtn
+							case '男':
+							mui('#Nextbtn')[0].getElementsByTagName('option')[1].selected = true;
+							break;
+							case '女':
+							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
+							break;
+							case null:
+							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
+							break;
+						}
+					}else{
+						mui.toast('获取信息失败');
+						console.log(data.errmsg);
 					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast('响应失败  !');
+				}
 			});
-			
-				
-		});
-		//上传图片
-		function appendByGallery() {
-			plus.gallery.pick(function(path) {
-
-				appendFile(path); //处理图片的地方
-			});
-		}
-		// 添加文件
-		var f1 = null;
-
-		function appendFile(path) {
-
-			var img = new Image();
-			img.src = path; // 传过来的图片路径在这里用。
-			img.onload = function() {
-				var that = this;
-				//生成比例 
-				var w = that.width,
-					h = that.height,
-					scale = w / h;
-				w = 550 || w; //480  你想压缩到多大，改这里
-				h = w / scale;
-
-				//生成canvas
-				var canvas = document.createElement('canvas');
-
-				var ctx = canvas.getContext('2d');
-
-				$(canvas).attr({
-					width: w,
-					height: h
-				});
-
-				ctx.drawImage(that, 0, 0, w, h);
-
-				var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8); //1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
-				//              alert(base64);  
-				f1 = base64.substring(23, base64.length); //去掉前面前缀 把base64数据丢过去，上传要用。
-				// f1 =base64;    
-				console.log(f1)
-
-				var pic = document.getElementById("preview");
-				pic.innerHTML = '<img src='+base64+' />'; //这里丢到img 的 src 里面就能看到效果了					
+		})
+		var filepic = {};
+		//保存数据
+		mui('#Preservation')[0].addEventListener('tap',function(){
+			var mynickname = mui('#mynickname')[0].value;
+			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
+			if(!filepic.name){
+				mui.toast('请上传头像');
+			}else if(mynickname == ''){
+				mui.toast('请填写昵称');
+			}else if(Nextbtnval == '点击选择'){
+				mui.toast('请选择性别'); 
+			}else{
+				mui.plusReady(function(){
+					var myuserid = plus.storage.getItem('userid');
+					var oldtoken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/useraccount/updateuserdata',{
+						data:{avatar:filepic,userid:myuserid,nickname:mynickname,gender:Nextbtnval[Nextbtnval.length-1]},
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldtoken},	              				
+						success:function(data){
+							console.log('修改用户数据返回'+JSON.stringify(data));
+							if(data.errno == 0){
+								mui.toast('修改成功');
+								//触发跳转页面刷新
+								mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+								plus.webview.currentWebview().close();
+							}else{
+								mui.toast('修改失败');
+								console.log(data.errmsg);
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast('响应失败  !');
+						}
+					});
+				})
 			}
+			
+		
+		})
+		
+		//上传文件方法	
+		function previewImage(file) {
+			var MAXWIDTH = 350;
+			var MAXHEIGHT = 249;
+			var div = findPreview(file.parentNode);
+			if(file.files && file.files[0]) {
+				filepic = file.files[0];
+				div.innerHTML = '<img id=imghead>';
+				var img = div.lastChild;
+				img.onload = function() {
+					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+					img.width = rect.width;
+					img.height = rect.height;
+				}
+				var reader = new FileReader();
+				reader.onload = function(evt) {
+					img.src = evt.target.result;
+				}
+				reader.readAsDataURL(file.files[0]);
+			}
+		}
 
+		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+			var param = {
+				top: 0,
+				left: 0,
+				width: width,
+				height: height
+			};
+			if(width > maxWidth || height > maxHeight) {
+				rateWidth = width / maxWidth;
+				rateHeight = height / maxHeight;
+	
+				if(rateWidth > rateHeight) {
+					param.width = maxWidth;
+					param.height = Math.round(height / rateWidth);
+				} else {
+					param.width = Math.round(width / rateHeight);
+					param.height = maxHeight;
+				}
+			}
+	
+			param.left = Math.round((maxWidth - param.width) / 2);
+			param.top = Math.round((maxHeight - param.height) / 2);
+			return param;
+		}
+		function findPreview(parent) {
+			var childs = parent.childNodes;
+			for(var i = 0; i < childs.length; i++) {
+				if(childs[i].id == "preview")
+					return childs[i];
+			}
+			return div = document.getElementById('preview');
 		}
 	</script>
+	
 	
 </html>
