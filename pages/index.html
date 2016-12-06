@@ -61,8 +61,7 @@
 						type:'post',
 						timeout:10000,
 						success:function(data,type,xhr){
- 
-							console.log('登录返回'+JSON.stringify(data)); 
+							console.log('默认账号登录返回'+JSON.stringify(data)); 
 							plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
 						},
 						error:function(xhr,type,errorThrown){
@@ -71,11 +70,23 @@
 					});
 				}else{
 					alert('有登录者token');
-					//alert('默认'+plus.storage.getItem('oldToken'));
-//					plus.storage.setItem("oldToken",plus.storage.getItem('myToken'));
+					var Acc_pass = JSON.parse(plus.storage.getItem("Acc_pass"));
+					//根据缓存密码自动登录, 重新获取Token
+					mui.ajax(serverUrl+'/api/useraccount/login',{
+						data:{"phone":Acc_pass[0],"password":Acc_pass[1]},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						success:function(data,type,xhr){
+							console.log('自动登录返回'+JSON.stringify(data)); 
+							plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
+						},
+						error:function(xhr,type,errorThrown){
+							alert('获取自动登录token响应失败');
+						}
+					});
+					
 				}
-				//alert('老的 '+ plus.storage.getItem('oldToken'));
-				//alert('我的 '+ plus.storage.getItem('myToken'));
 				var self = plus.webview.currentWebview();
 				for (var i = 0; i < 4; i++) {
 					var temp = {};

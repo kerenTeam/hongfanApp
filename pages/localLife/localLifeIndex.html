@@ -47,7 +47,8 @@
 						<div class="swiper-container swiper-container2">
 							<div class="swiper-wrapper tuangouwidth">
 								<div class="swiper-slide">
-									<ul class="icon-list">
+									<ul class="icon-list" id="columndiv">
+										<!--没有数据显示-->
 										<li class="icon">
 											<a class="repair">
 												<span class="icon-circle orange">												
@@ -113,11 +114,25 @@
 											</a>
 										</li>
 									</ul>
+									<!--有数据显示-->
+									<script type="text/html" id="column">
+										<% for(var i=0; i<list.length; i++){%>
+											<li class="icon">
+												<a class="<%= classnames[i]%>">
+													<span class="icon-circle bluegray" style="background-color:<%= list[i].icon_color%>;">
+														<img src="<%= myurl%><%= list[i].icon%>">
+													</span>
+													<span class="icon-desc"><%= list[i].name%></span>
+												</a>
+											</li>
+										<% }%>	
+									</script>
 								</div>
 								<div class="swiper-slide">
-									<ul class="icon-list">
+									<ul class="icon-list" id="columndiv2">
+										<!--没有数据显示-->
 										<li class="icon">
-											<a href="self.html" class="laywer">
+											<a class="laywer">
 												<span class="icon-circle blue3">
 													<img src="../../img/localLife/falv.svg">
 												</span>
@@ -125,15 +140,27 @@
 											</a>
 										</li>
 										<li class="icon">
-											<a href="self.html" class="morepart">
+											<a class="morepart">
 												<span class="icon-circle xiguared">
 													<img src="../../img/localLife/more.svg">
 												</span>
 												<span class="icon-desc">更多...</span>
 											</a>
 										</li>
-										
 									</ul>
+									<!--有数据显示-->
+									<script type="text/html" id="column2">
+										<% for(var i=8; i<list.length; i++){%>
+											<li class="icon">
+												<a class="supermarket">
+													<span class="icon-circle bluegray">
+														<img src="../../img/localLife/chaoshi.svg">
+													</span>
+													<span class="icon-desc">超市比价</span>
+												</a>
+											</li>
+										<% }%>	
+									</script>
 								</div>
 							</div>
 							<div class="swiper-pagination swiper-pagination2">
@@ -151,56 +178,19 @@
 							<a href="remen.html" class="gray smallSize mui-pull-right">更多&gt;&gt;</a>
 						</div>
 							<div class="overyou locatLabel_switch swiper-container5 swiper-container-horizontal swiper-container-free-mode swiper-container-android">
-								<div class="swiper-wrapper">
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/5799a2e198bdd.jpg" width="" height="">
-											<p class="txt_center overflow_clear">跳蚤市场</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/localLife/modify.jpg" width="" height="">
-											<p class="txt_center overflow_clear">安装服务</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/5799a2e198bdd.jpg" width="" height="">
-											<p class="txt_center overflow_clear">跳蚤市场</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/localLife/modify.jpg" width="" height="">
-											<p class="txt_center overflow_clear">安装服务</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/5799a2e198bdd.jpg" width="" height="">
-											<p class="txt_center overflow_clear">跳蚤市场</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/localLife/modify.jpg" width="" height="">
-											<p class="txt_center overflow_clear">安装服务</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/5799a2e198bdd.jpg" width="" height="">
-											<p class="txt_center overflow_clear">跳蚤市场</p>
-										</a>
-									</div>
-									<div class="box swiper-slide">
-										<a href="#">
-											<img src="../../img/localLife/modify.jpg" width="" height="">
-											<p class="txt_center overflow_clear">安装服务</p>
-										</a>
-									</div>
-								</div>
+								<!--广告数据-->
+								<div class="swiper-wrapper" id="Advdiv"></div>
+								<script type="text/html" id="Adv">
+									<% for(var i=0; i<list.length; i++){%>
+										<div class="box swiper-slide">
+											<a href="#">
+												<img src="<%= list[i].pic%>" width="" height="" onclick="fun1()">
+												<p class="txt_center overflow_clear"><%= list[i].titlt%></p>
+											</a>
+										</div>
+									<% }%>	
+								</script>
+								
 							</div>
 	
 						</div>
@@ -248,12 +238,78 @@
 		</div>
 	</body>
 	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script> 
 		//滑动栏目的轮播
 		var mySwiper = new Swiper('.swiper-container',{
 			pagination : '.swiper-pagination'
 		});
+		
 		mui.plusReady(function(){
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});	
+		var oldtoken = plus.storage.getItem('oldToken');
+			//栏目数据
+			mui.ajax(serverUrl+'/api/localservice/localservicecates',{
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data){
+					//alert(mytoken);
+					console.log('获取栏目返回'+JSON.stringify(data));
+					if(data.errno == 0){ 
+						var objdata = {};
+						objdata.list = data.data;
+						objdata.classnames = ['repair','cleaning','babysister','house','tiaozao','openclock','express','supermarket']
+						objdata.myurl = serverimgUrl;
+//						console.log(objdata.list);
+						var html = template("column",objdata);
+						document.getElementById("columndiv").innerHTML=html;
+						var html2 = template("column2",objdata);
+						document.getElementById("columndiv2").innerHTML=html2;
+						plus.nativeUI.closeWaiting();
+						//添加监听
+						Monitor();
+					}else{
+						mui.toast('获取用户信息失败');
+						plus.nativeUI.closeWaiting();
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('响应失败  !');
+				}
+			});
+			//广告数据
+			mui.ajax(serverUrl+'/api/localservice/localservicead',{
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data){
+					//alert(mytoken);
+					console.log('获取栏目返回'+JSON.stringify(data));
+					if(data.errno == 0){ 
+						var objdata = {};
+						objdata.list = data.data;
+//						console.log(objdata.list);
+						var html = template("Adv",objdata);
+						document.getElementById("Advdiv").innerHTML=html;
+						plus.nativeUI.closeWaiting();
+					}else{
+						mui.toast('获取用户信息失败');
+						plus.nativeUI.closeWaiting();
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('响应失败  !');
+				}
+			});
+		})//plusready
+		Monitor();
+		function Monitor(){
 			//打开维修页面
 			mui('.repair')[0].addEventListener('tap',function(){
 				openview({ 
@@ -283,159 +339,44 @@
 				})
 			});
 			
-			
 			//打开房产资讯页面
-			mui(".icon").on('tap','.house',function(){
-				mui.openWindow({
-				    url:'buildList.html',
-				    id:'buildList',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    },
-				    extras:{
-				      
-				    },
-				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				    },
-				    waiting:{
-				      autoShow:true,//自动显示等待框，默认为true
-				      title:'正在加载...',//等待对话框上显示的提示内容
-				      options:{
-				      }
-				    }
+			mui('.house')[0].addEventListener('tap',function(){
+				openview({ 
+					view:'buildList.html',
 				})
-				
 			});
 			//打开跳蚤市场页面
-			mui(".icon").on('tap','.tiaozao',function(){
-				mui.openWindow({
-				    url:'2edMarket.html',
-				    id:'2edMarket',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    },
-				    extras:{
-				      
-				    },
-				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				    },
-				    waiting:{
-				      autoShow:true,//自动显示等待框，默认为true
-				      title:'正在加载...',//等待对话框上显示的提示内容
-				      options:{
-				      }
-				    }
+			mui('.tiaozao')[0].addEventListener('tap',function(){
+				openview({ 
+					view:'2edMarket.html',
 				})
-				
 			});
-			
 			//打开快递上门页面
-			mui(".icon").on('tap','.express',function(){
-				mui.openWindow({
-				    url:'delivery.html',
-				    id:'delivery',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    },
-				    extras:{
-				      
-				    },
-				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				    },
-				    waiting:{
-				      autoShow:true,//自动显示等待框，默认为true
-				      title:'正在加载...',//等待对话框上显示的提示内容
-				      options:{
-				      }
-				    }
-
+			mui('.express')[0].addEventListener('tap',function(){
+				openview({ 
+					view:'delivery.html',
 				})
 			});
 			//打开超市比价页面
-			mui(".icon").on('tap','.supermarket',function(){
-				mui.openWindow({
-				    url:'marketPrice.html',
-				    id:'marketPrice',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    },
-				    extras:{
-				      
-				    },
-				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				    },
-				    waiting:{
-				      autoShow:true,//自动显示等待框，默认为true
-				      title:'正在加载...',//等待对话框上显示的提示内容
-				      options:{
-				      }
-				    }
+			mui('.supermarket')[0].addEventListener('tap',function(){
+				openview({ 
+					view:'marketPrice.html',
 				})
-				
 			});
-			//打开律师咨询页面
-			mui(".icon").on('tap','.laywer',function(){
-				mui.openWindow({
-				    url:'../lawyerList.html',
-				    id:'lawyerList',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    },
-				    extras:{
-				      
-				    },
-				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				    },
-				    waiting:{
-				      autoShow:true,//自动显示等待框，默认为true
-				      title:'正在加载...',//等待对话框上显示的提示内容
-				      options:{
-				      }
-				    }
-				})
-				
-			});
-			//打开更多的页面
-			mui(".icon").on('tap','.morepart',function(){
-				mui.openWindow({
-				    url:'../jindaikaifa.html',
-				    id:'jindaikaifa',
-				    styles:{
-				      top:0,//新页面顶部位置
-				      bottom:0,//新页面底部位置
-				    },
-				    extras:{
-				      
-				    },
-				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				    },
-				    waiting:{
-				      autoShow:true,//自动显示等待框，默认为true
-				      title:'正在加载...',//等待对话框上显示的提示内容
-				      options:{
-				      }
-				    }
-				})
-				
-			});
-		})
+		}
+		//打开律师咨询页面
+		mui('.laywer')[0].addEventListener('tap',function(){
+			alert(1);
+			openview({ 
+				view:'lawyerList.html',
+			})
+		});
+		//打开更多的页面
+		mui('.morepart')[0].addEventListener('tap',function(){
+			openview({ 
+				view:'../jindaikaifa.html',
+			})
+		});
 		
 	</script>
 </html>

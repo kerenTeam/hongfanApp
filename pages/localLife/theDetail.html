@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>XX详情</title>
+		<title>维修(保洁..)详情</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -13,14 +13,10 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
-		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		
 		<style type="text/css">
 			/*banner底部导航*/
-			.mui-slider-indicator .mui-indicator{
-				width: 10px;
+			.mui-slider-indicator .mui-indicator{width: 10px;
 				height: 10px;
 				border-radius: 8px;
 				background: black;
@@ -30,57 +26,41 @@
 				border: none;
 				box-shadow: none;
 			}
-			.mui-slider-indicator .mui-active.mui-indicator{
-				background-color: rgba(245,60,66,0.8);
+			.mui-slider-indicator .mui-active.mui-indicator{background-color: rgba(245,60,66,0.8);
 				box-shadow: none;
 				opacity: 1;
 				border: none;
 			}
-			.mui-bar{
-				height: 50px;
+			.mui-bar{height: 50px;
 			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
+			.mui-title,.mui-icon{line-height: 50px;
 			}
-			.mui-bar .mui-icon{
-				padding: 0;
+			.mui-bar .mui-icon{padding: 0;
 			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{color: #fff;
 			}
-			.mui-bar-nav{
-				box-shadow: none;
+			.mui-bar-nav{box-shadow: none;
 			}
-			.mui-icon{
-				line-height: 50px;
+			.mui-icon{line-height: 50px;
 			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
+			.mui-icon .iconfont{font-size: 18px;
 			}
-			.dealcard, .cinemacard{
-				margin-top: 50px;
+			.dealcard, .cinemacard{margin-top: 50px;
 			}
-			.dealcard .dealcard-img img{
-				height: 60px;
+			.dealcard .dealcard-img img{height: 60px;
 				overflow: hidden;
 			}
-		 	.shoucang .iconfont{
-				font-size: 18px;
+		 	.shoucang .iconfont{font-size: 18px;
 			}
 			
-			#main{
-				margin-top: 50px;
+			#main{margin-top: 50px;
 			}
-			.dealcard, .cinemacard{
-				margin-top: 45px;
+			.dealcard, .cinemacard{margin-top: 45px;
 			}
-			.dealcard, .cinemacard{
-				margin-top: 45px;
+			.dealcard, .cinemacard{margin-top: 45px;
 			}
 			
-			.farm .bottom ul li{
-				text-overflow: ellipsis;
-				white-space: nowrap;
+			.farm .bottom ul li{text-overflow: ellipsis;white-space: nowrap;
 				overflow: hidden;
 				display: block;
 				width: 100%;
@@ -97,35 +77,33 @@
 		
 		<!--详情内容-->
 		<div id="container">		
-			<div id="main">
+			<div id="main"></div>
+			<script type="text/html" id="details">
 				<div class="deal">
 					<!--轮播图-->
 					<div class="mui-slider">
 						  <div class="mui-slider-group mui-slider-loop">
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/theList/service-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/service-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/service-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/service-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/service-detail.jpg"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[pic.length-1].banner%>"></a></div>
+						    <% for(var i=0; i<pic.length; i++) {%>
+						    	<div class="mui-slider-item"><a><img src="<%= pic[i].banner%>"></a></div>
+						    <% }%>	
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/theList/service-detail.jpg"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[0].banner%>"></a></div>
 						  </div>
-						 <div class="mui-slider-indicator">
+						 <!--<div class="mui-slider-indicator">
 			                <div class="mui-indicator"></div>
 			                <div class="mui-indicator"></div>
 			                <div class="mui-indicator"></div>
 			                <div class="mui-indicator mui-active"></div>
-			            </div> 
+			            </div> -->
 					</div>
 					<!--轮播图结束-->
 					<div class="farm clearfloat">
 						<div class="top rentingtop clearfloat box-s">
-							<p>
-								重庆乐百家家电维修服务有限公司
-							</p>
+							<p><%= list[0].name%></p>
 							<p class="time">
-								更新：2016-01-01&nbsp;15:42&nbsp;
+								更新：<%= list[0].create_time%>
 								浏览：413人
 							</p>
 						</div>
@@ -133,7 +111,7 @@
 							<ul>
 								<li>
 									<p class="fl">所在地：</p>
-									江北区
+									<%= list[0].address%>
 								</li>
 								<li>
 									<p class="fl">服务内容：</p>
@@ -141,15 +119,15 @@
 								</li>
 								<li>
 									<p class="fl">服务范围：</p>
-									江北 沙坪坝 九龙坡 
+									<%= list[0].service_cope%>
 								</li>
 								<li>
 									<p class="fl">联系电话：</p>
-									199 9999 9999
+									<%= list[0].phone%>
 								</li>
 								<li>
 									<p class="fl">联系人：</p>
-									李小姐
+									<%= list[0].link_man%>
 								</li>
 							</ul>
 						</div>
@@ -159,9 +137,9 @@
 							<div class="merchant">
 								<div class="biz-detail">
 									<a class="react" href="#" title="">
-										<h5 class="title single-line">重庆乐百家家电维修服务有限公司</h5>
+										<h5 class="title single-line"><%= list[0].name%></h5>
 
-										<div class="address single-line">江北区区黄山路与怀宁路交口1912街区1号楼</div>
+										<div class="address single-line"><%= list[0].address%></div>
 									</a>
 								</div>
 								<div class="biz-call">
@@ -178,50 +156,58 @@
 				</div>
 				<div class="farm clearfloat">
 					<div class="top rentingtop clearfloat box-s">
-						<p>
-							服务内容：冰箱维修、加氟；！热水器维修、安装；空调​‌‌​‌‌维修/拆装、移机、加雪种、清洗洗衣机维修；电视维修、安装、油烟机维修；燃气灶维修等厨房家电维修、电脑维修、开锁<br>
-							注：主城区全程范围<br>
-							为了保证维修质量，每个类别都是专修（比如空调部，师傅专修空调），我们是专业的家电维修公司，全国连锁企业，售后保修更有保障！<br>
-							
-							
-							（一）空调部：空调安装，钻孔，移机，加氟，维修，保养，清洗等服务,各种品牌空调均可。空调安装（拆装）、空调移机（移位）、空调加氟（充氟、补充制冷剂）空调清洗等。<br>
-							
-							（二）冰箱部：对各种制冷设备的维修、加氟、补漏等服务。美国通用GE冰箱维修、安装各种用途的冷库，包括维修、维护、保养、清洗、设计、安装、机组迁移等服务。<br>
-							
-							（三）电视机部：液晶-等离子-背投电视维修，普通电视维修，多年电视维修经验，正规厂家配件。<br>
-							
-							（四）热水器部：专业电热水器，燃气热水器，太阳能热水器维修。热水器打不着火的原因很多，电压、水压、气压出了问题，都可能打不着火，而且，也不排除热水器内部零件坏了的可能。<br>
-							
-							（五）洗衣机部：专业维修各品牌滚筒洗衣机-波轮洗衣机-搅拌洗衣机。<br>
-							
-							（六）蒸饭车、加湿器、咖啡机<br>
-							
-							
-							我们的承诺<br>
-							承诺一、我公司专业技术人员上门先检查故障；再报所需费用；双方同意；较后维修排除故障；不修不收维修费，使您无后顾之忧。<br>
-							承诺二、消费透明，严格按照统一核定的价目表收费，避免维修师傅乱收费损坏客户利益。<br>
-							承诺三、在选用配件方面，严把质量关，正规厂家配件，严格执行国家保修规定，保修期内出现同一问题免费维修。杜绝使用假冒伪劣配件。<br>
-							承诺四、在维修或安装作业方面，严格按维修程序及操作规程执行，确保维修质量。<br>
-							承诺五、所有经我中心修好的机器一律实行保修，维修好后给客户填写保修单。保修期为3个月至1年，在保修期内如因维修质量或配件质量问题造成用户的机器再次出现故障，一律由我中心负责免费维修（制冷设备单纯添加制冷剂除外）。<br>
-							
-							
-							我们的维修质量可以保证，修后给客户提供保修单。客服定期回访，出示收费标准，杜绝乱收费的情况。欢迎来电咨询！<br>
-						</p>
+						<p><%= list[0].content%></p>
 					</div>					
 				</div>
-			</div>
+			</script>
 		</div>
 		
 		
 		
 	</body>
+	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		mui.init();
-		mui.ready(function() {
-			var gallery = mui('.mui-slider');//轮播图
-			gallery.slider({
-				  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			//获取数据
+			var oldtoken = plus.storage.getItem('oldToken');
+			var nowid = plus.webview.currentWebview().name;
+			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
+				data:{"sericeId":nowid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	               				
+				success:function(data){
+					//alert(mytoken);
+					console.log('获取用户数据返回'+JSON.stringify(data));
+					if(data.errno == 0){
+						var objdata = {};
+						objdata.list = data.data;
+						objdata.pic = JSON.parse(objdata.list[0].pic);//轮播图
+						console.log(objdata.pic);
+						var html=template("details",objdata);
+						document.getElementById("main").innerHTML=html;
+						plus.nativeUI.closeWaiting();
+						//轮播图
+						var gallery = mui('.mui-slider');
+						gallery.slider({
+						  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+						});
+					}else{
+						mui.toast('获取用户信息失败');
+						plus.nativeUI.closeWaiting();
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					alert('响应失败  !');
+				}
 			});
 		})
+		
+		
 	</script>
 </html>

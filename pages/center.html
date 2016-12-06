@@ -36,7 +36,7 @@
 			}
 			.box-ss{text-align: left;
 			}
-			.myInfo{width: 25%;margin: 0 6%;border-radius: 50%;
+			.myInfo{width: 80px;height:80px;margin: 0 6%;border-radius: 50%;
 			}
 			.denlu{font-size: 16px;
 			}
@@ -112,12 +112,16 @@
 			    	<script type="text/html" id="userMessageModal">
 			    		<div class="content clearfloat fl">
 			    			<a class="white">
-			    				<img src="../img/morentouxiang.jpg" class="myInfo"/>
-				    			<span class="denlu"><%= list[0].group_name%></span>
+			    				<% if(list[0].avatar){%> 
+			    					<img src="../img/morentouxiang.jpg" class="myInfo"/>
+			    				<% }else{%>
+			    					<img src="../img/morentouxiang.jpg" class="myInfo"/>
+			    				<% }%>	
+				    			<span class="denlu"><%= list[0].nickname%></span>
 				    			<p class="brief"><%= list[0].phone%></p>
 			    			</a>
 			    		</div>
-			    		<div class="h-bottom clearfloat">
+			    		<div class="h-bottom clearfloat"> 
 			    			<ul>
 			    				<li class="integral">
 			    					<p><%= list[0].intergral%></p>
@@ -246,24 +250,19 @@
 					//获取缓存
 					var myuserid = plus.storage.getItem('userid');
 					var oldtoken = plus.storage.getItem('oldToken');
-					var Sstate = false;
-					if(plus.storage.getItem('myToken')){
-						Sstate = true;//如果存在myToken则是登录状态
-					}
-					//alert('登录状态' + Sstate);
 					//取用户数据
-					if(Sstate){
+					if(plus.storage.getItem('myToken')){
 						mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 							data:{"userid":myuserid},
 							type:'post',
 							timeout:10000,
 							headers:{"token":oldtoken},	              				
 							success:function(data,type,xhr){
-								//alert(mytoken);
-								console.log(JSON.stringify(data));
+								console.log('获取用户数据返回'+JSON.stringify(data));
 								if(data.errno == 0){
 									var objdata = {};
 									objdata.list = data.data;
+									objdata.url = serverimgUrl;
 									var html=template("userMessageModal",objdata);
 									document.getElementById("userBox").innerHTML=html;
 									document.getElementById('Signout').style.display = 'block';
@@ -292,6 +291,7 @@
 									mui('#Signout')[0].addEventListener('tap',function(){
 										plus.storage.removeItem('myToken');
 										plus.storage.removeItem('userid');
+										plus.storage.removeItem('Acc_pass');
 										Refresh();
 										plus.nativeUI.showWaiting('退出中 ...',{width:'100px',height:'80px'});
 										var time2 = setTimeout(function(){
@@ -317,7 +317,7 @@
 					
 					//团购订单
 					mui('.group_Order')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/order.html'
 							});
@@ -330,7 +330,7 @@
 					});
 					//商场订单
 					mui('.Market_oder')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/sc-order.html'
 							});
@@ -343,7 +343,7 @@
 					});
 					//酒店预约
 					mui('.Hotel_m')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/hotel-order.html'
 							});
@@ -356,7 +356,7 @@
 					});
 					//积分兑换
 					mui('.integral_oder')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/jifen-order.html'
 							});
@@ -369,7 +369,7 @@
 					});
 					//商家优惠
 					mui('.coupon')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/coupon.html'
 							});
@@ -382,7 +382,7 @@
 					});
 					//商家优惠卷2
 					mui('.coupon')[1].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/coupon.html'
 							});
@@ -395,7 +395,7 @@
 					});
 					//我的会员
 					mui('.member2')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/member.html'
 							});
@@ -408,7 +408,7 @@
 					});
 					//我的发布
 					mui('.fabu')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/fabu.html'
 							});
@@ -427,7 +427,7 @@
 					});
 					//设置
 					mui('.myInfo')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/setup.html'
 							});
@@ -440,7 +440,7 @@
 					});
 					//我的地址
 					mui('.myAddress')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/address.html'
 							});
@@ -453,7 +453,7 @@
 					});
 					//积分
 					mui('.integral')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/jfguanli.html'
 							});
@@ -466,7 +466,7 @@
 					});
 					//抵用卷
 					mui('.Vouchers')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/coupon.html'
 							});
@@ -479,7 +479,7 @@
 					});
 					//消息中心
 					mui('.message')[0].addEventListener('tap',function(){
-						if(Sstate){
+						if(plus.storage.getItem('myToken')){
 							openview({
 								view:'personal/coupon.html'
 							});
