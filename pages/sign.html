@@ -142,8 +142,12 @@
 			}
 			.VeCode_wrap span{position: absolute;display: inline-block;line-height: 50px;right: 10px;
 			}
+			#Vediv{position: relative;
+			}
+			.Veb{position: absolute;bottom: 0;left: 16px;font-weight: normal;color: red;font-size: 10px;
+			} 
 		</style>
-	</head>
+	</head> 
 
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -159,9 +163,10 @@
 					<input id='account' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
 				</div>
 				<!--验证码-->
-				<div class="mui-input-row mui-block VeCode_wrap">
+				<div class="mui-input-row mui-block VeCode_wrap" id="Vediv">
 					<span id="VeCodenum">获取验证码</span>
 					<input id='VeCode' type="number" class="mui-input-clear mui-input" placeholder="请输入验证码">
+					<b class="Veb" style="display: none;">验证码错误</b>
 				</div>
 				
 				<div class="mui-input-row mui-block">
@@ -191,33 +196,48 @@
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
 	//点击发送验证码
-	var code = '';//验证码
-	mui('#VeCodenum')[0].addEventListener('tap',function(){
-		if(this.className.indexOf('unable') == -1 && reg_phone.test(account.value)){
-			//产生验证码  
-	        for (var i = 0; i < 6; i++) {  
-	            code += parseInt(Math.random() * 9).toString();  
-	        }
-			this.className += 'unable';
-			var that = this;
-			var i = 60; 
-			this.style.color = 'red';
-			this.innerHTML = '60秒后重试';
-			var timeyan = setInterval(function(){
-				i--;
-				that.innerHTML = i+'秒后重试';
-				if(i==0){ 
-					clearInterval(timeyan);
-					that.innerHTML = '获取验证码';
-					that.style.color = '#000'; 
-					that.className = that.className.replace('unable','');
-				}
-			},1000)
-			
-		}else{
-			mui.toast('请输入正确的手机号 !');
+	//var code = '';//验证码
+	mui('#VeCodenum')[0].addEventListener('tap',codefun);
+	function codefun(){ 
+		if(this.className.indexOf('unable') == -1){//可点
+			if(reg_phone.test(account.value)){ 
+				//产生验证码 ,弃用
+//		        for (var i = 0; i < 6; i++) {  
+//		            code += parseInt(Math.random() * 9).toString();   
+//		        }
+				//发送验证码 
+				mui.ajax(serverUrl+'/api/useraccount/smscode',{
+					data:{phone:account.value},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					success:function(data){
+						console.log('发送验证码返回'+JSON.stringify(data));
+					}, 
+					error:function(xhr,type,errorThrown){
+						mui.toast('发送验证码响应失败');
+					}
+				});
+				this.className += 'unable';
+				var that = this;
+				var i = 60; 
+				this.style.color = 'red';
+				this.innerHTML = '60秒后重试';
+				var timeyan = setInterval(function(){
+					i--;
+					that.innerHTML = i+'秒后重试';
+					if(i==0){ 
+						clearInterval(timeyan);
+						that.innerHTML = '获取验证码';
+						that.style.color = '#000'; 
+						that.className = that.className.replace('unable','');
+					}
+				},1000)
+			}else{
+				mui.toast('请输入正确的手机号 ');
+			}
 		}
-	})
+	}
 	//输入验证按钮状态(包括点击勾勾)
 	mui('#VeCode')[0].oninput = mui('#hook')[0].onclick = password.oninput = account.oninput = verification;
 	function verification(){
@@ -227,25 +247,47 @@
 			mui('.denlu')[0].className += ' cannotbtn';
 		}
 	}
+	//验证验证码
+	mui('#VeCode')[0].onchange = function(){
+		if(reg_phone.test(account.value)){
+			mui.ajax(serverUrl+'/api/useraccount/verifysms',{ 
+				data:{smsCode:mui('#VeCode')[0].value}, 
+				dataType:'json',  
+				type:'post',
+				timeout:10000,
+				success:function(data){ 
+					console.log('验证验证码返回'+JSON.stringify(data));
+					if(data.errno==0){ 
+						mui('.Veb')[0].style.display = 'none'; 
+					}else{
+						mui('.Veb')[0].style.display = 'inline-block';
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast('验证验证码响应失败');
+					
+				}
+			});
+		}
+		 
+	}
 	//提交接口
 	mui('#confirmbtn')[0].addEventListener('click',function(){
-		console.log('验证码'+code);
 		if(!reg_phone.test(account.value)){
-			console.log(account.value);
 			account.focus();
-			mui.toast('请输入正确的手机号码 !');
-		}else if(mui('#VeCode')[0].value != code || mui('#VeCode')[0].value == ''){
-			mui.toast('验证码错误 !');
+			mui.toast('请输入正确的手机号码 ');
+		}else if(mui('#VeCode')[0].value == ''){
+			mui.toast('请输入验证码 ');
 			mui('#VeCode')[0].focus();
 		}else if(!reg_pass.test(password.value)){
-			mui.toast('请输入6-12位数字和字母组合密码 !');
+			mui.toast('请输入6-12位数字和字母组合密码 ');
 			password.focus();
 		}else if(!mui('#hook')[0].checked){
-			mui.toast('你还没有勾选协议 !');
+			mui.toast('你还没有勾选协议 ');
 		}else{
 			plus.nativeUI.showWaiting('登录中 ...',{width:'100px',height:'80px'});
-			mui.ajax(serverUrl+'/api/useraccount/register',{
-					data:{"phone":account.value,"password":password.value},
+			mui.ajax(serverUrl+'/api/useraccount/register',{//注册
+					data:{"phone":account.value,"password":password.value,smsCode:mui('#VeCode')[0].value},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -277,7 +319,7 @@
 												var index = plus.webview.getLaunchWebview();
 												mui.fire(index,'gohome',{hrefid:'center'});
 												plus.nativeUI.closeWaiting();
-												mui.toast('登录成功 !');
+												mui.toast('登录成功 ');
 											},500)
 										})
 									}else{
@@ -287,21 +329,21 @@
 								},
 								error:function(xhr,type,errorThrown){
 									plus.nativeUI.closeWaiting();
-									alert('响应失败');
+									alert('登录响应失败');
 								}
 							});
 						}else{
 							plus.nativeUI.closeWaiting();
 							switch(data.errmsg){//注册提示
 								case 'Already exists this account!':
-								mui.toast('此号码已经注册 !'); 
+								mui.toast('此号码已经注册 '); 
 								break;
 							}
 						}
 					},
 					error:function(xhr,type,errorThrown){
 						plus.nativeUI.closeWaiting();
-						alert('响应失败');
+						alert('注册响应失败');
 				}
 			});
 		}
