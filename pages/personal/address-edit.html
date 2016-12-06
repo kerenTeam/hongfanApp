@@ -13,15 +13,25 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
+		<!--App自定义的css-->
+		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
 		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/app.js" type="text/javascript"></script>
-		
 		<!--引入模板引擎-->
-		<!--<script src="../../js/artTemplate-native.js" type="text/javascript"></script>-->
+		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
 		<style type="text/css">
+			.data ul li i{
+				position: absolute;
+				right: 10px;
+			}
+			.data ul li .shuru{
+				margin-bottom: 0;
+			}
+			.chooseAd{
+				text-align: left !important;
+			}
 			.mui-bar-nav{
 				box-shadow: none;
 			}
@@ -43,6 +53,26 @@
 			.toggle--off{
 				background-color: #f53c42 !important;
 			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			#showCityPicker3{
+				position: absolute;
+				right: 10px;
+				line-height: 50px;
+				border: none;
+				padding: 0;
+			}
+			.ui-alert{
+				padding: 0;
+				line-height: 50px;
+				text-align: left;
+				text-indent: 20px;
+				font-size: 16px;
+			}
 		</style>
 	</head>
 	<body>
@@ -52,7 +82,7 @@
 		    <div class="header-tit">
 				编辑地址
 			</div>
-			<a href="#" class="fr baocun">保存</a>
+			<a href="#" class="fr baocun" onclick="save()">保存</a>
 		</header>
 		<div id="container">
 		    <div id="main" class="mui-clearfix add-address">
@@ -73,7 +103,8 @@
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">所在地区</p>
-								<i class="fr iconfont icon-jiantou1"></i>
+								<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+								<div id='cityResult3' class="ui-alert"><span id="province"></span><span id="city"></span><span id="area"></span></div>
 							</a>
 						</li>
 					</ul>
@@ -82,19 +113,21 @@
  			</div>
 		    	<div class="address-btn clearfloat">
 		    		<span class="szwmr fl">设为默认</span>
-		    		<a href="#" class="toggle toggle--on fr"></a>
+		    		<a href="#" class="toggle toggle--on fr" id="acquiescence"></a>
 		    	</div>
 		    </div>
 		</div>
 	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/mui.picker.min.js"></script>
+	<script src="../../js/mui.poppicker.js"></script>
+	<script src="../../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
 	<!--模板引擎获取数据-->
 	<script type="text/javascript" charset="utf-8">
       	mui.init();
 		mui.plusReady(function(){
-			//获取url传参
+			//获取address_id
 			addId = plus.webview.currentWebview().name;
-			
-			//地址详情列表
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			
@@ -108,13 +141,56 @@
 					var thisAddArray = data.data;
 					for (var k = 0; k < thisAddArray.length; k++) {
 						if(thisAddArray[k].id == addId){
-							$('#person').attr('placeholder',thisAddArray[k].nickname);
-							$('#phone').attr('placeholder',thisAddArray[k].phone);
+							$('#person').attr('value',thisAddArray[k].nickname);
+							$('#phone').attr('value',thisAddArray[k].phone);
 							$('#address').attr('placeholder',thisAddArray[k].address);
+							$('#province').html(thisAddArray[k].province);
+							$('#city').html(thisAddArray[k].city);
+							$('#area').html(thisAddArray[k].area);
+							
+							//点击保存修改地址
+							window.save = function(){
+								var newPerson = document.getElementById('person').value;
+								var newPhone = document.getElementById('phone').value;
+								var newAddress = document.getElementById('address').value;
+								var newProvince = document.getElementById('province').innerHTML;
+								var newCity = document.getElementById('city').innerHTML;
+								var newArea = document.getElementById('area').innerHTML;
+								alert($('#acquiescence').attr('class'));
+								//默认状态判断
+								if($('#acquiescence').hasClass('toggle--off')){
+									var newState = 0;
+								}else{
+									var newState = 1;
+								}
+								var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+								if(!reg_phone.test(newPhone)){
+									$('#phone').focus(); 
+									mui.toast('请输入正确的手机号码 !');
+								}else if(newAddress == ''){
+									$('#newAddress').focus(); 
+									mui.toast('详细地址不能为空!');
+								}else{
+									alert(newPerson+newPhone+newAddress+newProvince+newCity+newArea);
+									alert(newProvince + newAddress);
+									mui.ajax(serverUrl+'/api/useraccount/updateaddress',{
+										data:{person: newPerson,phone: newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state: newState,address: newAddress,address_id:addId},
+										dataType:'json',
+										type:'post',
+										timeout:1000,
+										headers:{"token":oldToken},	 
+										success:function(data,type,xhr){
+											alert("保存成功！");
+										},
+										error:function(xhr,type,errorThrown){
+											alert('响应失败  !');
+										}
+									});
+								}
+							}
 						}
 					}
 				},
-				
 				error:function(xhr,type,errorThrown){
 					alert('响应失败  !');
 				}
@@ -123,6 +199,30 @@
 			
 		})();
     </script>
+    <!--地址三级联动-->
+    <script>
+		(function($, doc) {
+			$.init();
+			$.ready(function() {
+				//地址选择三级联动
+				var cityPicker3 = new $.PopPicker({
+					layer: 3
+				});
+				cityPicker3.setData(cityData3);
+				var showCityPickerButton = doc.getElementById('showCityPicker3');
+				var cityResult3 = doc.getElementById('cityResult3');
+				showCityPickerButton.addEventListener('tap', function(event) {
+					cityPicker3.show(function(items) {
+						doc.getElementById('province').innerText = (items[0] || {}).text;
+						doc.getElementById('city').innerText =  (items[1] || {}).text;
+						doc.getElementById('area').innerText = (items[2] || {}).text;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+			});
+		})(mui, document);
+	</script>
 	<!--默认按钮-->
 	<script type="text/javascript">
 	$('.toggle').click(function(e){
