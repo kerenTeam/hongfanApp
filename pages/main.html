@@ -96,6 +96,47 @@
 				height: 100%;
 				overflow: hidden;
 			}
+			/*广告图片样式*/
+			.activity{
+				position: relative;
+			}
+			.act_l{
+				height: 100%;
+			}
+			.act_r{
+				height: 100%;
+			}
+			.act_top{
+				height: 50%;
+				overflow: hidden;
+				top: 0;
+				right: 0;
+				position: absolute;
+				width: 60%;
+			}
+			.act_l_b{
+				position: absolute;
+				bottom: 0;
+				height: 50%;
+				overflow: hidden;
+			}
+			.act_b_l, .act_b_r{
+				width: 50%;
+				height: 100%;
+				overflow: hidden;
+			}
+			.hotImg{
+				height: 170px;
+				max-height: 170px;
+				min-height: 170px;
+				overflow: hidden;
+			}
+			/*加载*/
+			#upload{ 
+				text-align: center;margin-bottom: 30px;font-size: 15px;
+			}
+			#upload img{width: 60px;margin-top: -15px;
+			}
 		</style>
 	</head>
 
@@ -109,7 +150,7 @@
 					<span>请输入您想找的内容</span>
 				</a>
 			</div>
-			<div id="" class="qrcodeBtn"></div>
+			<a href="market/storeList.html"><div id="" class="qrcodeBtn"></div></a>
 		</header>
 		
 		<div id="container">		
@@ -144,7 +185,7 @@
 							<img src="../img/rexiao.png"/>
 						</div>
 						<div class="act_r">
-							<div class="">
+							<div class="act_top">
 								<img src="../img/qingcan.png"/>
 							</div>
 							<div class="act_l_b clearfix">
@@ -162,70 +203,13 @@
 						<span class="left">热门推荐</span>
 						<a href="#" class="fr morethree">更多&gt;&gt;</a>
 					</div>
-					<div class="sy_recmd">
-						<div class="sy_recmd_list_box">
-							<ul>
-								<li class="sy_recmd_list">
-									<div class="box">
-										<div class="pub_img">
-											<a><img src="../img/19.jpg" width="145" height="145"></a>
-										</div>
-										<div class="pub_wz">
-											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-											<p class="fr price"><span class="black9">已售50</span></p>
-											<div class="nr_box">
-												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-											</div>
-										</div>
-									</div>
-								</li>
-								<li class="sy_recmd_list">
-									<div class="box">
-										<div class="pub_img">
-											<a><img src="../img/19.jpg" width="145" height="145"></a>
-										</div>
-										<div class="pub_wz">
-											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-											<p class="fr price"><span class="black9">已售50</span></p>
-											<div class="nr_box">
-												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-											</div>
-										</div>
-									</div>
-								</li>
-								<li class="sy_recmd_list">
-									<div class="box">
-										<div class="pub_img">
-											<a><img src="../img/19.jpg" width="145" height="145"></a>
-										</div>
-										<div class="pub_wz">
-											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-											<p class="fr price"><span class="black9">已售50</span></p>
-											<div class="nr_box">
-												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-											</div>
-										</div>
-									</div>
-								</li>
-								<li class="sy_recmd_list">
-									<div class="box">
-										<div class="pub_img">
-											<a><img src="../img/19.jpg" width="145" height="145"></a>
-										</div>
-										<div class="pub_wz">
-											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-											<p class="fr price"><span class="black9">已售50</span></p>
-											<div class="nr_box">
-												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-											</div>
-										</div>
-									</div>
-								</li>
-								
-							</ul>
-							<div class="clear"></div>
-						</div>
+					<div class="sy_recmd_list_box">
+						<ul>
+							<div id="moll_recommend"></div>
+						</ul>
+						<div class="clear"></div>
 					</div>
+					<div class="upload text-center text-xs gray" id="upload"></div>
 				</div>
 			</div>
 		</div>
@@ -256,7 +240,7 @@
 				<img src="<%= recommentLi[0].pic %>"/>
 			</div>
 			<div class="act_r">
-				<div class="">
+				<div class="act_top">
 					<img src="<%= recommentLi[1].pic %>"/>
 				</div>
 				<div class="act_l_b clearfix">
@@ -268,6 +252,30 @@
 					</div>
 				</div>
 			</div>
+		</script>
+		
+		<!--热门推荐-->
+		<script type="text/html" id="recommendTpl">
+			<%if(recommendData.length==0){%>
+				暂无推荐商品
+			<%}else{%>
+				<%for(var i=0;i<recommendData.length;i++){%>
+					<li class="sy_recmd_list">
+						<div class="box">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
+							</div>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
+								<p class="fr price"><span class="black9">已售<%=recommendData[i].sales%></span></p>
+								<div class="nr_box">
+									<p class="fl fontcl2">¥<%=recommendData[i].price%><sub class="black9">[优惠活动]</sub></p>
+								</div>
+							</div>
+						</div>
+					</li> 
+				<%}%>
+			<%}%>
 		</script>
 		
 		
@@ -325,15 +333,15 @@
 				});
 			});
 			//打开待开发页面
-			mui(".pub_img")[0].addEventListener('tap',function(){
-				openview({
-						view:'jindaikaifa.html'
-				});
-			});
+//			mui(".pub_img")[0].addEventListener('tap',function(){
+//				openview({
+//						view:'jindaikaifa.html'
+//				});
+//			});
 			
 			//数据渲染
 			var oldToken = plus.storage.getItem('oldToken');
-//			var oldToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDY3NzEyNCwiZXhwIjoxNDgwNjg0MzI0fQ.TIuLmHHJAPuZweAaAr1JeQ-cClLSTzEzM_X2-mLXoPs";
+			
 			
 //			console.log(oldToken);
 			mui.ajax(serverUrl +'/api/index/indexheaderdata',{
@@ -365,6 +373,76 @@
 					alert('响应失败  !');
 				}
 			});
+			
+			
+			//热门推荐 数据渲染 
+			var currentPage =1, numsPerPage=4;
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":oldToken}, 
+					success:function(data){
+//						alert(JSON.stringify(data))
+						//获取并渲染  eval("("+data1+")");
+						//var dataobj= eval("("+data.data.banner+")"); 
+						if(data.errno==0){
+						plus.nativeUI.closeWaiting();//关闭等待框
+						var dataobj = data.data.return.data
+						var recommendObj = {}
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = dataobj
+	                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+	                    mui("#upload")[0].innerHTML = "加载更多";
+	                   	//上滑加载
+						document.addEventListener('swipeup',function(){
+						var nowpage = ++currentPage;
+						if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
+							mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+							console.log('可以请求数据');
+							mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
+								data:{currentPage:nowpage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型 
+								timeout:10000,//超时时间设置为10秒；	
+								headers:{"token":oldToken}, 
+								success:function(data){
+									if(data.errno == 0){
+										var dataobj = data.data.return.data
+										var recommendObj = {}
+											recommendObj.myUrl = serverimgUrl;
+											recommendObj.recommendData = dataobj
+					                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+					                    mui("#upload")[0].innerHTML = "上滑加载 ";
+									}else{
+										--currentPage;//请求失败,继续请求当前页
+										plus.nativeUI.closeWaiting();
+										mui.toast("获取数据失败");
+									}
+									plus.nativeUI.closeWaiting();//关闭等待框
+								},
+								error:function(xhr,type,errorThrown){
+									--currentPage;//请求失败,继续请求当前页
+									mui.toast("当前网络不好请重试");
+								}
+							});
+						}else{
+							mui("#upload")[0].innerHTML = "没有数据了";
+						}
+					})	
+						}else{
+							plus.nativeUI.closeWaiting();
+							mui.toast("获取数据失败");
+						}
+						
+					}, 
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						console.log("获取失败！");
+						mui.toast("当前网络不好请重试");
+					}
+			}); 
 			
 		
 		

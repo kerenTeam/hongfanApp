@@ -402,10 +402,10 @@
 						</div>
 						<div id="moll_comment"></div>
 						<script type="text/html" id="commentTpl">
-							<ul class="farm clearfloat Cul">
-								<%if(cemmentData.length==0){%>
-									<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
-									<%}else{%>
+								<ul class="farm clearfloat Cul">
+									<%if(cemmentData.length==0){%>
+										<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
+										<%}else{%>
 											<%for(var i=0;i<cemmentData.length;i++){%>
 											<li class="mui-row Cli">
 												<div class="mui-col-sm-2 mui-col-xs-2 user-head">
@@ -413,7 +413,7 @@
 											    		<img src="../../img/10.png" class="radius comtPic" alt="" />
 											    	 <%}else{%> 
 													<img src="<%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
-
+	
 													<%}%>
 												</div>
 												<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
@@ -432,17 +432,14 @@
 								                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
 								                    	<img src="<%=cemmentData[i].comment_pic[j].comment_pic%>" class="inlineBlock mui-col-sm-3 mui-col-xs-3" data-preview-group="<%=i+1%>" />
 								                    	<%}%>	 
-								                    	<%}%>
-								                    </div>
-												</div>
-											</li> 
-											<%}%>
-											<%}%> 
-								
-							
-						</ul>
+							                    	<%}%>
+							                    </div>
+											</div>
+										</li> 
+									<%}%>
+								<%}%> 
+							</ul>
 						</script>
-						
 					</div>
 				</div>
 			</div>
@@ -453,7 +450,7 @@
 			<div class="left clearfloat fl">
 				<ul>
 					<li>
-						<a onclick="goShop()">
+						<a href="#">
 							<i class="iconfont icon-shangcheng"></i>
 							<p>商城</p>
 						</a>
@@ -461,8 +458,8 @@
 				</ul>
 			</div>
 			<div class="right clearfloat fl">
-				<span class="btn fl addBtn" onClick="toshare(1)">加入购物车</span>
-				<a onClick="toshare(2)" class="btn btnone fl">立即购买</a>
+				<span class="btn fl addBtn" onClick="toshare()">加入购物车</span>
+				<a href="self-torder.html" class="btn btnone fl">立即购买</a>
 			</div>
 		</div>
 		<!--footerone end-->
@@ -489,26 +486,22 @@
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
-		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
+		     		<%if(choose.parameter.length!=0){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
-		     				<div class="middle clearfloat textType">
-					     			
+		     				<div class="middle clearfloat">
 					     		<p><%=choose.parameter[i].parameter_name%></p>
 					     		<div class="xia clearfloat choose">
 					     			<ul>
 					     				<%if(choose.parameter[i].child_value.length!=0){%>
 					     					<%for(var j=0;j<choose.parameter[i].child_value.length;j++){%>
-					     						
-					     							<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
-					     						 
-					     						<%}%>
-					     					<%}%> 
+				     							<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+				     						<%}%>
+				     					<%}%> 
 						     		</ul>
 					     		</div>		     		
 					     	</div>
-		     				<%}%>
-		     				<%}%>
-		     
+		     			<%}%>
+		     		<%}%>
 		     	<div class="bottom clearfloat">
 		     		<p class="fl">购买数量</p>
 		     		<div class="you clearfloat fr">
@@ -523,23 +516,22 @@
 		     	
 		     </div>		     
 		  </div>
-		  <a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.fee_start_1%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+		  <a onclick="cartStorage('','','',)" class="shop-btn db">确定</a>
 			</script>
-		
 		</div>
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.imageViewer.js" type="text/javascript" charset="utf-8"></script>
+ 
 	<script type="text/javascript">  
 		mui.plusReady(function(){ 
-			var shopId;
+			var shopId; 
 			//获取token
-			var token=plus.storage.getItem("oldToken"); 
-			console.log(token)
+			var token=plus.storage.getItem("oldToken");
 			//获取页面传值 商品id
-			var goodId = plus.webview.currentWebview().goodsId; 
+			var goodId = plus.webview.currentWebview().goodsId;
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
 					data: {goodsId:goodId},
@@ -547,9 +539,9 @@
 						type:'post',//HTTP请求类型 
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
-						success:function(data){ 
-							if(data.errno==0){ 
-							//	alert(JSON.stringify(data.data.goodsInfo))
+						success:function(data){
+							if(data.errno==0){
+							alert( data.data.goodsInfo.parameter);
 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
 							var commentobj = data.data.comments;
 							//var content = data.data.comments
@@ -564,46 +556,36 @@
 										});
 		                    //简介
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
-		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
-		                      shopId=data.data.goodsInfo.storeid;        
+		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
+		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
 		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
 		                     mui(".mui-numbox").numbox();
-		                     var priceChange =parseFloat($("#priceChange").html());
+		                     var priceChange =parseInt($("#priceChange").html());
 		                     $('.choose').each(function(){
 		                     	var chooseli = $(this).find("li");
 		                     	
-		                     		var oldstep=0,newstep=0;
+		                     		var oldstep=0;
 		                     	chooseli.each(function(){
 		                     		if($(this).attr("data-Inventory")==0){
 				                     		$(this).css("display","block")
 				                     	}
 				                     	if($(this).attr("data-priceStep")==0){
 				                     		$(this).addClass("cur");
-				                     		 
+				                     		oldstep = $(this).attr("data-priceStep");
 				                     	}  
-				                    if($(this).parentsUntil(".choose").find(".cur")){
-		                     			oldstep =parseFloat($(this).parentsUntil(".choose").find(".cur").attr("data-priceStep"));
-		                     		}else{
-		                     			oldstep =0;
-		                     		}
 				                     	
 		                     	})
-		                     	chooseli.click(function(){ 
-		                     		if($(this).parentsUntil(".choose").find(".cur").length!=0){
-		                     			oldstep =parseFloat($(this).parentsUntil(".choose").find(".cur").attr("data-priceStep"));
-		                     		}else{
-		                     			
-		                     			oldstep=0;
-		                     		}
-				                     	 newstep = $(this).attr("data-priceStep");	 
+		                     	chooseli.click(function(){
 											$(this).addClass('cur');
-											$(this).siblings().removeClass('cur'); 
-				                     	 priceChange=priceChange+parseFloat(newstep)-parseFloat(oldstep);
+											$(this).siblings().removeClass('cur');
+				                     	var newstep = $(this).attr("data-priceStep");	
+				                     	 alert(oldstep+" "+newstep+"price"+priceChange)
+				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
 				                     	 $('#priceChange').html(priceChange)
 										})
 		                     	
-		                     })  
+		                     })
 		                    
 		                    //详情
 		                    document.getElementById("textInfo").innerHTML=template("textTpl",{text:data.data.goodsInfo});
@@ -617,6 +599,7 @@
 								cemmentObj.cemmentData = commentobj;
 								
 		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
+ 
 		                    	
 		                   // plus.storage.removeItem('$cartStorage');
 		                    //购物车 缓存
@@ -698,26 +681,19 @@
 		                    		mui.toast("请选择商品属性");
 		                    	}
 		                    }
+ 
 				//评论
 				 //mui.previewImage();
 							}else{
 								mui.toast("网络不好请重试！")
 							}
-							 
-		                   
 						},  
 						error:function(xhr,type,errorThrown){
-							//异常处理； 
+							//异常处理；
+							console.log("获取失败！");
 							mui.toast("当前网络不好请重试"); 
 						}
 				}); 
-				//跳转商家详情
-				window.goShop = function(){ 
-						openview({
-							view:"shophome.html",
-							extrasobj:{storeId:shopId}
-						})
-					}
 		}) 
 	</script>
 

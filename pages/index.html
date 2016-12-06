@@ -53,41 +53,46 @@
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				//设置默认token
-				if(!plus.storage.getItem('myToken')){//没有用户token
-					alert('没有登录者token');
-					mui.ajax(serverUrl+'/api/useraccount/login',{
-						data:{"phone":11111111111,"password":123456},
-						dataType:'json',
-						type:'post',
-						timeout:10000,
-						success:function(data,type,xhr){
-							console.log('默认账号登录返回'+JSON.stringify(data)); 
-							plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
-						},
-						error:function(xhr,type,errorThrown){
-							alert('获取默认token响应失败');
-						}
-					});
-				}else{
-					alert('有登录者token');
-					var Acc_pass = JSON.parse(plus.storage.getItem("Acc_pass"));
-					//根据缓存密码自动登录, 重新获取Token
-					mui.ajax(serverUrl+'/api/useraccount/login',{
-						data:{"phone":Acc_pass[0],"password":Acc_pass[1]},
-						dataType:'json',
-						type:'post',
-						timeout:10000,
-						success:function(data,type,xhr){
-							console.log('自动登录返回'+JSON.stringify(data)); 
-							plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
-						},
-						error:function(xhr,type,errorThrown){
-							alert('获取自动登录token响应失败');
-						}
-					});
-					
-				}
+				Sign();
+				clearInterval(timeSign);
+				var timeSign = setInterval(Sign,7200000);//两小时自动更新一次token
+				function Sign(){//登录方法
+					//设置默认token
+					if(!plus.storage.getItem('myToken')){//没有用户token
+						alert('没有登录者token');
+						mui.ajax(serverUrl+'/api/useraccount/login',{
+							data:{"phone":11111111111,"password":123456},
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							success:function(data,type,xhr){
+								console.log('默认账号登录返回'+JSON.stringify(data)); 
+								plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
+							},
+							error:function(xhr,type,errorThrown){
+								alert('获取默认token响应失败');
+							}
+						});
+					}else{
+						alert('有登录者token');
+						var Acc_pass = JSON.parse(plus.storage.getItem("Acc_pass"));
+						//根据缓存密码自动登录, 重新获取Token
+						mui.ajax(serverUrl+'/api/useraccount/login',{
+							data:{"phone":Acc_pass[0],"password":Acc_pass[1]},
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							success:function(data,type,xhr){
+								console.log('自动登录返回'+JSON.stringify(data)); 
+								plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
+							},
+							error:function(xhr,type,errorThrown){
+								alert('获取自动登录token响应失败');
+							}
+						});
+					}
+				}//登录方法结束
+				
 				var self = plus.webview.currentWebview();
 				for (var i = 0; i < 3; i++) {
 					var temp = {};
@@ -101,6 +106,8 @@
 					self.append(sub);
 				}
 			});
+			
+			
 			 //当前激活选项
 			var activeTab = subpages[0];
 			 //选项卡点击事件
@@ -121,14 +128,15 @@
 					var temp = {};
 					temp[targetTab] = "true";
 					mui.extend(aniShow,temp);
-					plus.webview.show(targetTab,"fade-in",300);
+					plus.webview.show(targetTab,"fade-in",300); 
+//					plus.webview.show(targetTab);
 				}
 				//隐藏当前;
 				plus.webview.hide(activeTab);
 				//更改当前活跃的选项卡
 				activeTab = targetTab;
 			});
-			 //自定义事件，模拟点击“首页选项卡”
+			//自定义事件，模拟点击“首页选项卡”
 			document.addEventListener('gohome', function(obj) {
 				var hrefid=obj.detail.hrefid;
 				var defaultTab = document.getElementById(hrefid);
