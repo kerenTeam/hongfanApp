@@ -19,7 +19,11 @@
 		<!--<script type="text/javascript" src="../js/iscroll.js"></script>--> 
 		<script src="../js/swiper.min.js" type="text/javascript" ></script>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
 		<!--<script type="text/javascript" src="../js/index.js"></script>-->
+		
+		<!--引入模板引擎-->
+		<script src="../js/artTemplate-native.js"></script>
 		<style type="text/css">
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
@@ -79,6 +83,19 @@
 			.onetable p{
 				font-size: 13px;
 			}
+			
+			/*banner*/
+			.mui-slider-item img{
+				width: 100%;
+				min-height: 144px;
+				max-height: 200px;
+				overflow: hidden;
+			}
+			
+			.act_l img,.act_r img,.act_b_l img,.act_b_r img{
+				height: 100%;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 
@@ -99,24 +116,7 @@
 			<div id="main">
 				<div id="scroller">
 					<!--轮播图-->
-					<div class="mui-slider">
-						  <div class="mui-slider-group mui-slider-loop">
-						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../img/banner.JPG" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../img/banner.JPG" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../img/banner.JPG" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../img/banner.JPG" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../img/banner.JPG" /></a></div>
-						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../img/banner.JPG" /></a></div>
-						  </div>
-						 <div class="mui-slider-indicator">
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator mui-active"></div>
-			            </div> 
-					</div>
+					<div class="mui-slider" id="banner"></div>
 					<!--轮播图结束-->
 					<div class="onetable">
 						<table> 
@@ -139,8 +139,8 @@
 						</table>
 					</div>
 					<div class="bor"></div>	
-					<div class="activity clearfix">
-						<div class="act_l" id="haha">
+					<div class="activity clearfix" id="recomment">
+						<!--<div class="act_l" id="haha">
 							<img src="../img/rexiao.png"/>
 						</div>
 						<div class="act_r">
@@ -155,7 +155,7 @@
 									<img src="../img/xingkuanr.png"/>
 								</div>
 							</div>
-						</div>
+						</div>-->
 					</div>
 					<!--推荐列表-->
 					<div class="sy_title mb10">
@@ -163,85 +163,128 @@
 						<a href="#" class="fr morethree">更多&gt;&gt;</a>
 					</div>
 					<div class="sy_recmd">
-							<div class="sy_recmd_list_box">
-								<ul>
-									<li class="sy_recmd_list">
-										<div class="box">
-											<div class="pub_img">
-												<a><img src="../img/19.jpg" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-												<p class="fr price"><span class="black9">已售50</span></p>
-												<div class="nr_box">
-													<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-												</div>
+						<div class="sy_recmd_list_box">
+							<ul>
+								<li class="sy_recmd_list">
+									<div class="box">
+										<div class="pub_img">
+											<a><img src="../img/19.jpg" width="145" height="145"></a>
+										</div>
+										<div class="pub_wz">
+											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
+											<p class="fr price"><span class="black9">已售50</span></p>
+											<div class="nr_box">
+												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
 											</div>
 										</div>
-									</li>
-									<li class="sy_recmd_list">
-										<div class="box">
-											<div class="pub_img">
-												<a><img src="../img/19.jpg" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-												<p class="fr price"><span class="black9">已售50</span></p>
-												<div class="nr_box">
-													<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-												</div>
+									</div>
+								</li>
+								<li class="sy_recmd_list">
+									<div class="box">
+										<div class="pub_img">
+											<a><img src="../img/19.jpg" width="145" height="145"></a>
+										</div>
+										<div class="pub_wz">
+											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
+											<p class="fr price"><span class="black9">已售50</span></p>
+											<div class="nr_box">
+												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
 											</div>
 										</div>
-									</li>
-									<li class="sy_recmd_list">
-										<div class="box">
-											<div class="pub_img">
-												<a><img src="../img/19.jpg" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-												<p class="fr price"><span class="black9">已售50</span></p>
-												<div class="nr_box">
-													<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-												</div>
+									</div>
+								</li>
+								<li class="sy_recmd_list">
+									<div class="box">
+										<div class="pub_img">
+											<a><img src="../img/19.jpg" width="145" height="145"></a>
+										</div>
+										<div class="pub_wz">
+											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
+											<p class="fr price"><span class="black9">已售50</span></p>
+											<div class="nr_box">
+												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
 											</div>
 										</div>
-									</li>
-									<li class="sy_recmd_list">
-										<div class="box">
-											<div class="pub_img">
-												<a><img src="../img/19.jpg" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
-												<p class="fr price"><span class="black9">已售50</span></p>
-												<div class="nr_box">
-													<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
-												</div>
+									</div>
+								</li>
+								<li class="sy_recmd_list">
+									<div class="box">
+										<div class="pub_img">
+											<a><img src="../img/19.jpg" width="145" height="145"></a>
+										</div>
+										<div class="pub_wz">
+											<h3 class="overflow_clear"><a href="#">vivo智能手机</a></h3>
+											<p class="fr price"><span class="black9">已售50</span></p>
+											<div class="nr_box">
+												<p class="fl fontcl2">¥2555<sub class="black9">[优惠活动]</sub></p>
 											</div>
 										</div>
-									</li>
-									
-								</ul>
-								<div class="clear"></div>
-							</div>
+									</div>
+								</li>
+								
+							</ul>
+							<div class="clear"></div>
 						</div>
+					</div>
 				</div>
-				
 			</div>
 		</div>
+		
+		<!--模板引擎渲染数据-->
+		<!--banner-->
+		<script type="text/html" id="banner-detail">
+			<div class="mui-slider-group mui-slider-loop">
+			    <!--支持循环，需要重复图片节点-->
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= url %><%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
+				<% for(var i=0;i<bannerLi.length;i++){ %>
+			    	<div class="mui-slider-item"><a><img src="<%= url %><%= bannerLi[i].bannerPic %>" /></a></div>
+			     <% } %>
+			    <!--支持循环，需要重复图片节点-->
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= url %><%= bannerLi[0].bannerPic %>" /></a></div>
+			</div>
+			<div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+				<% for(var i=0;i<bannerLi.length-1;i++){ %>
+			    	<div class="mui-indicator"></div>
+			    <% } %>
+            </div> 
+		</script>
+		
+		<!--广告-->
+		<script type="text/html" id="recomment-detail">
+			<div class="act_l" id="haha">
+				<img src="<%= recommentLi[0].pic %>"/>
+			</div>
+			<div class="act_r">
+				<div class="">
+					<img src="<%= recommentLi[1].pic %>"/>
+				</div>
+				<div class="act_l_b clearfix">
+					<div class="act_b_l">
+						<img src="<%= recommentLi[2].pic %>"/>
+					</div>
+					<div class="act_b_r">
+						<img src="../img/xingkuanr.png"/>
+					</div>
+				</div>
+			</div>
+		</script>
+		
+		
+		
+		
 	
 	<script type="text/javascript">
-		(function(){
-			document.getElementById("haha").addEventListener('tap', function() {
-				mui.confirm('MUI是个好框架，确认？', 'Hello MUI', ['取消', '确定'], function(e) {
-					if (e.index == 1) {
-						alert('你确定了');
-					} else {
-						alert('取消le');
-					}
-				}) 
-			},'div');
+		mui.plusReady(function(){
+//			document.getElementById("haha").addEventListener('tap', function() {
+//				mui.confirm('MUI是个好框架，确认？', 'Hello MUI', ['取消', '确定'], function(e) {
+//					if (e.index == 1) {
+//						alert('你确定了');
+//					} else {
+//						alert('取消le');
+//					}
+//				}) 
+//			},'div');
 			
 			//跳转页面
 			var locallife = document.getElementsByClassName('locallife')[0];
@@ -251,7 +294,7 @@
 			var market = document.getElementsByClassName('market')[0];
 			locallife.addEventListener('tap', function(){
 				openview({
-					view:'localLife/localLifeIndex.html',
+					view:'localLife/localLifeIndex.html'
 				});
 			});
 			h_report.addEventListener('tap', function(){
@@ -274,24 +317,55 @@
 					view:'market/market-Center.html',
 				});
 			});
-		//轮播图
-		//获得slider插件对象
-		var gallery = mui('.mui-slider');
-		gallery.slider({
-		  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
-		});
-		//打开搜索页面
-		mui('.openSearch')[0].addEventListener('tap',function(){
-			openview({
-					view:'localLife/theSearch.html'
+			
+			//打开搜索页面
+			mui('.openSearch')[0].addEventListener('tap',function(){
+				openview({
+						view:'localLife/theSearch.html'
+				});
 			});
-		});
-		//打开待开发页面
-		mui(".pub_img")[0].addEventListener('tap',function(){
-			openview({
-					view:'jindaikaifa.html'
+			//打开待开发页面
+			mui(".pub_img")[0].addEventListener('tap',function(){
+				openview({
+						view:'jindaikaifa.html'
+				});
 			});
-		});
+			
+			//数据渲染
+			var oldToken = plus.storage.getItem('oldToken');
+//			var oldToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MDY3NzEyNCwiZXhwIjoxNDgwNjg0MzI0fQ.TIuLmHHJAPuZweAaAr1JeQ-cClLSTzEzM_X2-mLXoPs";
+			
+//			console.log(oldToken);
+			mui.ajax(serverUrl +'/api/index/indexheaderdata',{
+//				data:{userid : 148},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					var bannerObj = {};
+					var recommentObj = {};
+					bannerObj.bannerLi = JSON.parse(data.data.banner[0].banner);
+					recommentObj.recommentLi = eval("(" +data.data.recomment[0].content +")");
+//					alert(JSON.parse(data.data.recomment[0].content));
+					bannerObj.url = serverimgUrl;
+					var html = template('banner-detail',bannerObj);
+					document.getElementById('banner').innerHTML = html;
+					var html2 = template('recomment-detail',recommentObj);
+					document.getElementById('recomment').innerHTML = html2;
+					
+					//轮播图
+					//获得slider插件对象
+					var gallery = mui('.mui-slider');
+					gallery.slider({
+					  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+					});
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+			
 		
 		
 		})();
