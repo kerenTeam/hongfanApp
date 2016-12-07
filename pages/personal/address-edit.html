@@ -126,13 +126,14 @@
 	<script type="text/javascript" charset="utf-8">
       	mui.init();
 		mui.plusReady(function(){
-			//获取address_id
-			addId = plus.webview.currentWebview().name;
+			
 			//获取缓存
+			var adId = plus.webview.currentWebview().adId;
+			var userId = plus.webview.currentWebview().userId;
 			var oldToken = plus.storage.getItem('oldToken');
 			
 			mui.ajax(serverUrl+'/api/useraccount/addresslist',{
-				data:{userid : 148},
+				data:{userid : userId},
 				dataType:'json',
 				type:'post',
 				timeout:1000,
@@ -140,7 +141,7 @@
 				success:function(data,type,xhr){
 					var thisAddArray = data.data;
 					for (var k = 0; k < thisAddArray.length; k++) {
-						if(thisAddArray[k].id == addId){
+						if(thisAddArray[k].id == adId){
 							$('#person').attr('value',thisAddArray[k].nickname);
 							$('#phone').attr('value',thisAddArray[k].phone);
 							$('#address').attr('placeholder',thisAddArray[k].address);
@@ -156,7 +157,7 @@
 								var newProvince = document.getElementById('province').innerHTML;
 								var newCity = document.getElementById('city').innerHTML;
 								var newArea = document.getElementById('area').innerHTML;
-								alert($('#acquiescence').attr('class'));
+//								alert($('#acquiescence').attr('class'));
 								//默认状态判断
 								if($('#acquiescence').hasClass('toggle--off')){
 									var newState = 0;
@@ -171,16 +172,19 @@
 									$('#newAddress').focus(); 
 									mui.toast('详细地址不能为空!');
 								}else{
-									alert(newPerson+newPhone+newAddress+newProvince+newCity+newArea);
-									alert(newProvince + newAddress);
+//									alert(adId);
 									mui.ajax(serverUrl+'/api/useraccount/updateaddress',{
-										data:{person: newPerson,phone: newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state: newState,address: newAddress,address_id:addId},
+										data:{person: newPerson,phone: newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state: newState,address: newAddress,address_id:adId},
 										dataType:'json',
 										type:'post',
 										timeout:1000,
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){
 											alert("保存成功！");
+											openview({
+												view:'address.html',
+												extrasobj:{userId:userId}
+											});
 										},
 										error:function(xhr,type,errorThrown){
 											alert('响应失败  !');
