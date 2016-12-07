@@ -1,0 +1,92 @@
+diff a/pages/market/mall-detail.html b/pages/market/mall-detail.html	(rejected hunks)
+@@ -453,7 +450,7 @@
+ 			<div class="left clearfloat fl">
+ 				<ul>
+ 					<li>
+-						<a onclick="goShop()">
++						<a href="#">
+ 							<i class="iconfont icon-shangcheng"></i>
+ 							<p>商城</p>
+ 						</a>
+@@ -461,8 +458,8 @@
+ 				</ul>
+ 			</div>
+ 			<div class="right clearfloat fl">
+-				<span class="btn fl addBtn" onClick="toshare(1)">加入购物车</span>
+-				<a onClick="toshare(2)" class="btn btnone fl">立即购买</a>
++				<span class="btn fl addBtn" onClick="toshare()">加入购物车</span>
++				<a href="self-torder.html" class="btn btnone fl">立即购买</a>
+ 			</div>
+ 		</div>
+ 		<!--footerone end-->
+@@ -547,9 +539,9 @@
+ 						type:'post',//HTTP请求类型 
+ 						timeout:10000,//超时时间设置为10秒；	
+ 						headers:{"token":token}, 
+-						success:function(data){ 
+-							if(data.errno==0){ 
+-							//	alert(JSON.stringify(data.data.goodsInfo))
++						success:function(data){
++							if(data.errno==0){
++							alert( data.data.goodsInfo.parameter);
+ 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
+ 							var commentobj = data.data.comments;
+ 							//var content = data.data.comments
+@@ -564,46 +556,36 @@
+ 										});
+ 		                    //简介
+ 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
+-		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
+-		                      shopId=data.data.goodsInfo.storeid;        
++		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
++		                      shopId=data.data.goodsInfo.storeid;     
+ 		                     //选择弹框
+ 		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
+ 		                     mui(".mui-numbox").numbox();
+-		                     var priceChange =parseFloat($("#priceChange").html());
++		                     var priceChange =parseInt($("#priceChange").html());
+ 		                     $('.choose').each(function(){
+ 		                     	var chooseli = $(this).find("li");
+ 		                     	
+-		                     		var oldstep=0,newstep=0;
++		                     		var oldstep=0;
+ 		                     	chooseli.each(function(){
+ 		                     		if($(this).attr("data-Inventory")==0){
+ 				                     		$(this).css("display","block")
+ 				                     	}
+ 				                     	if($(this).attr("data-priceStep")==0){
+ 				                     		$(this).addClass("cur");
+-				                     		 
++				                     		oldstep = $(this).attr("data-priceStep");
+ 				                     	}  
+-				                    if($(this).parentsUntil(".choose").find(".cur")){
+-		                     			oldstep =parseFloat($(this).parentsUntil(".choose").find(".cur").attr("data-priceStep"));
+-		                     		}else{
+-		                     			oldstep =0;
+-		                     		}
+ 				                     	
+ 		                     	})
+-		                     	chooseli.click(function(){ 
+-		                     		if($(this).parentsUntil(".choose").find(".cur").length!=0){
+-		                     			oldstep =parseFloat($(this).parentsUntil(".choose").find(".cur").attr("data-priceStep"));
+-		                     		}else{
+-		                     			
+-		                     			oldstep=0;
+-		                     		}
+-				                     	 newstep = $(this).attr("data-priceStep");	 
++		                     	chooseli.click(function(){
+ 											$(this).addClass('cur');
+-											$(this).siblings().removeClass('cur'); 
+-				                     	 priceChange=priceChange+parseFloat(newstep)-parseFloat(oldstep);
++											$(this).siblings().removeClass('cur');
++				                     	var newstep = $(this).attr("data-priceStep");	
++				                     	 alert(oldstep+" "+newstep+"price"+priceChange)
++				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
+ 				                     	 $('#priceChange').html(priceChange)
+ 										})
+ 		                     	
+-		                     })  
++		                     })
+ 		                    
+ 		                    //详情
+ 		                    document.getElementById("textInfo").innerHTML=template("textTpl",{text:data.data.goodsInfo});

@@ -89,14 +89,15 @@
 	
 			mui.init()
 	mui.plusReady(function(){
-		window.addEventListener('gohome',function(event){
-					plus.webview.currentWebview().reload();
+		window.addEventListener('refresh',function(event){ 
+					cartload();
 				});
-    cartload();
+				 
+    				cartload();
+				 
     function cartload(){
     	//购物车 缓存 
-        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
-        alert(plus.storage.getItem('$cartStorage'));
+        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
        //订单缓存
         var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]'); 
         console.log(cartStorage.length+" "+plus.storage.getItem('$cartStorage'));
@@ -112,15 +113,11 @@
 				arr.push(cartStorage[i].shopName);
 			}
 			data.cates = arr.unique1();
-			 alert('cates' + data.cates);
 			var html2 = template('cartTpl', data);
 			document.getElementById('cartData').innerHTML = html2;
         	mui(".mui-numbox").numbox();
          
-       
-    }
-		 
-        var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>"
+       	var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>"
 				//计算购物车数量
 			ddAll();
 
@@ -169,7 +166,6 @@
 						    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
 							for(var i=0;i<cartStorage.length;i++){
 								if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText ){
-									alert(1)
 									cartStorage.splice(i, 1);
 								}
 							}
@@ -184,7 +180,6 @@
 							ddAll();
 							countFuc();
 							plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-							alert(plus.storage.getItem('$cartStorage')) 
 						}
 
 				}) 
@@ -206,12 +201,10 @@
 							    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
 								for(var i=0;i<cartStorage.length;i++){
 									if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText ){
-										alert(1)
 										cartStorage.splice(i, 1);
 									}
 								}
 								plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-							alert(plus.storage.getItem('$cartStorage'))
 							})
 							delThis.remove();
 							allCart();
@@ -320,7 +313,6 @@
 								}
 							}
 					plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-							alert(plus.storage.getItem('$cartStorage'))
 							
 					
 				})
@@ -347,9 +339,18 @@
 				if(ALLcheckLength == 0) {
 					mui.toast("您还未选择要删除的商品哦！")
 				} else {
-					mui.toast("您选中了" + ALLcheckLength + "件商品")
+					//mui.toast("您选中了" + ALLcheckLength + "件商品")
+					orderStorage =[];
+        			orderStorage.push(cartObj);
+        			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
+        			openview({
+					 	view:"market-order.html", 
+					 })
 				}
 			})
+    }
+		 
+        
         
 	}) 
 	
