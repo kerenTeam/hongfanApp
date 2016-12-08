@@ -59,7 +59,7 @@
 				bottom: 0;
 			}
 			#main{
-				padding-bottom: 80px;
+				padding-bottom: 30px;
 			}
 			#thePlus{
 				position: fixed;
@@ -73,6 +73,15 @@
 				border-radius: 50%;
 				box-shadow: 0 0 10px #555;
 			}
+			#upload{ 
+				text-align: center;margin: 30px;font-size: 15px;
+			}
+			#upload img{width: 60px;margin-top: -15px;
+			} 
+			.branddiv{display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;}
 		</style>
 	</head>
 	<body>
@@ -131,8 +140,8 @@
 		<div id="container">		
 			<div id="main">
 				<section class="dealcard-waimai">
-					<dl class="dealcard">
-						<dd class="page-link">
+					<dl class="dealcard" id="infolistdiv">
+						<!--<dd class="page-link">
 							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/2edmarket.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
@@ -146,69 +155,29 @@
 									</div>
 								</div>
 							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/2edmarket.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">九成新手机</div>
-									<div class="title ">
-										真机实拍/180天质保/顺丰包邮
-									</div>
-									<div class="coupon ">
-										<p><sub>￥</sub>2000<sub>起</sub></p>
-										<span>已售19</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/2edmarket.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">九成新手机</div>
-									<div class="title ">
-										真机实拍/180天质保/顺丰包邮
-									</div>
-									<div class="coupon">
-										<p><sub>￥</sub>2000<sub>起</sub></p>
-										<span>已售19</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/2edmarket.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">九成新手机</div>
-									<div class="title ">
-										真机实拍/180天质保/顺丰包邮
-									</div>
-									<div class="coupon ">
-										<p><sub>￥</sub>2000<sub>起</sub></p>
-										<span>已售19</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/2edmarket.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">九成新手机</div>
-									<div class="title ">
-										真机实拍/180天质保/顺丰包邮
-									</div>
-									<div class="coupon ">
-										<p><sub>￥</sub>2000<sub>起</sub></p>
-										<span>已售19</span>
-									</div>
-								</div>
-							</a>
-						</dd>
+						</dd>-->
 					</dl>
+					<script type="text/html" id="infolist">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd class="page-link" onclick="opendetails(<%= list[i].id%>)"> 
+								<a href="javascript:;">
+									<div class="dealcard-img imgbox"> <img src="<%= list[i].list_pic%>" alt=""> </div>
+									<div class="dealcard-block-right">
+										<div class="brand branddiv"><%= list[i].title%></div>
+										<div class="title ">
+											<%= list[i].address%>
+										</div>
+										<div class="coupon ">
+											<p><sub>￥</sub><%= list[i].price%><sub>起</sub></p>
+											<span><%= list[i].colour%></span>
+										</div>
+									</div>
+								</a>
+							</dd>
+						<%}%>	 
+					</script>
 				</section>
+				<div class="upload text-center text-xs gray" id="upload"></div>
 			</div>
 		</div>
 		
@@ -216,27 +185,112 @@
 		<a href="javascript:;"><span class="mui-icon mui-icon-plus" id="thePlus"></span></a>
 	</body>
 	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript">
-		(function(){
-			var theDetail = document.getElementsByClassName('page-link')[0];
-			theDetail.addEventListener('tap', function(){
-				openview({
-					view:'theDetail.html',
-				})
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+(function(){
+	mui.plusReady(function(){
+		var oldtoken = plus.storage.getItem('oldToken');
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		Loading(1,1,7);//加载数据,包括上滑加载
+		//加载方法
+		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
+			mui.ajax(serverUrl+'/api/localservice/usedmarketlist',{ 									
+				data:{currentPage:1,
+					  numsPerPage:2,
+			  		  type:10,
+					  price:'',
+					  is_business:'',
+					  orderType:'1',
+					  desc:''}, 
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型 
+				timeout:10000,//超时时间设置为10秒；	
+				headers:{"token":oldtoken}, 
+				success:function(data){
+					console.log(JSON.stringify(data));
+					if(data.errno == 0){
+						console.log(data);
+						var dataobj = {};
+						dataobj.list = data.data.data; 
+						//获取并渲染用户信息
+						var html=template("infolist",dataobj);
+						document.getElementById("infolistdiv").innerHTML += html;
+						if(data.data.totalPages){
+							mui("#upload")[0].innerHTML = " ";
+						}else{
+							mui("#upload")[0].innerHTML = "没有数据了 ";
+						}
+						
+						//滚动到底部加载
+						$(window).scroll(function(){
+						　　var scrollTop = $(this).scrollTop();
+						　　var scrollHeight = $(document).height();
+						　　var windowHeight = $(this).height();
+						　　if(scrollTop + windowHeight == scrollHeight){
+							//加载下一部分
+							var nowpage = ++CcurrentPage;
+							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+								console.log('可以请求数据');
+								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+									data:{currentPage:1,
+									  numsPerPage:2,
+							  		  type:10,
+									  price:'',
+									  is_business:'',
+									  orderType:'1',
+									  desc:''}, 
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型 
+									timeout:10000,//超时时间设置为10秒；	
+									headers:{"token":oldtoken}, 
+									success:function(data){
+										if(data.errno == 0){
+											var dataobj = {};
+											dataobj.list = data.data.data; 
+											//获取并渲染用户信息
+											var html=template("infolist",dataobj);
+											document.getElementById("infolistdiv").innerHTML += html;
+											mui("#upload")[0].innerHTML = "上滑加载 ";
+										}else{
+											--CcurrentPage;//请求失败,继续请求当前页
+											mui.toast("获取数据失败");
+										}
+										plus.nativeUI.closeWaiting();//关闭等待框
+									},
+									error:function(xhr,type,errorThrown){
+										--CcurrentPage;//请求失败,继续请求当前页
+										mui.toast("当前网络不好请重试");
+									}
+								});
+							}else{
+								mui("#upload")[0].innerHTML = "没有数据了";
+							}
+							//加载下一部分结束
+							　　}
+						});
+					}else{
+						mui.toast("获取数据失败");
+					}
+					plus.nativeUI.closeWaiting();//关闭等待框
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui.toast("当前网络不好请重试");
+				}
 			});
-			var theSearch = document.getElementById('theSearch');
-			theSearch.addEventListener('tap', function(){
-				openview({
-					view:'theSearch.html',
-				})
-			});
-			var thePlus = document.getElementById('thePlus');
-			thePlus.addEventListener('tap', function(){
-				openview({
-					view:'2edPublish.html',
-				})
-			});
-			
-		})();
-	</script>
+		}
+	})
+	
+})();
+//跳转详情
+function opendetails(id){
+	openview({
+		view:'Fleadetails.html',
+		extrasobj:{name:id}
+	})
+}
+</script>
 </html>

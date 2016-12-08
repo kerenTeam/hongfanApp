@@ -64,6 +64,8 @@
 				line-height: 49px;
 				border: none;
 				padding: 0;
+				text-align: right;
+				width: 20%;
 			}
 			.data ul li span{
 				line-height: 49px;
@@ -203,14 +205,13 @@
 				}else{
 					var newState = 1;
 				}
-				
 				var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
-				if(!reg_phone.test(newPhone)){
-					$('#phone').focus(); 
-					mui.toast('请输入正确的手机号码 !');
-				}else if(newPerson == ''){
+				if(newPerson == ''){
 					$('#person').focus(); 
 					mui.toast('收货人不能为空!');
+				}else if(!reg_phone.test(newPhone)){
+					$('#phone').focus(); 
+					mui.toast('请输入正确的手机号码 !');
 				}else if(newAddress == ''){
 					mui.toast('所在地区不能为空!');
 				}else if(newAddress == ''){
@@ -226,10 +227,25 @@
 						timeout:1000,
 						headers:{"token":oldToken},	 
 						success:function(data,type,xhr){
-//							alert(JSON.stringify(data))
-							alert("保存成功！");
-							plus.webview.currentWebview().close();//关闭当前页面
-							mui.fire(plus.webview.getWebviewById('address.html'),'refreshAd');//打开指定页面
+ 
+							var newId = data.data;
+							//修改地址默认状态
+							mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
+								data:{userid:userId,address_id:newId,state:newState},
+								dataType:'json',
+								type:'post',
+								timeout:1000,
+								headers:{"token":oldToken},	 
+								success:function(data,type,xhr){
+//										alert(JSON.stringify(data))
+									alert("保存成功！");
+									plus.webview.currentWebview().close();//关闭当前页面
+									mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+								},
+								error:function(xhr,type,errorThrown){
+									alert('响应失败  !');
+								}
+							}); 
 						},
 						error:function(xhr,type,errorThrown){
 							alert('响应失败  !');

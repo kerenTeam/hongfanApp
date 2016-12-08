@@ -172,6 +172,7 @@
 	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 (function(){
 mui.plusReady(function(){
@@ -202,13 +203,18 @@ mui.plusReady(function(){
 					var html=template("buildlist",dataobj);
 					document.getElementById("buildlistdiv").innerHTML += html;
 					if(data.data.totalPages){
-						mui("#upload")[0].innerHTML = "上滑加载 ";
+						mui("#upload")[0].innerHTML = " ";
 					}else{
 						mui("#upload")[0].innerHTML = "没有数据了 ";
 					}
 					
-					//上滑加载
-					document.addEventListener('swipeup',function(){
+					//滚动到底部加载
+					$(window).scroll(function(){
+					　　var scrollTop = $(this).scrollTop();
+					　　var scrollHeight = $(document).height();
+					　　var windowHeight = $(this).height();
+					　　if(scrollTop + windowHeight == scrollHeight){
+						//加载下一部分
 						var nowpage = ++CcurrentPage;
 						if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
 							mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
@@ -248,7 +254,9 @@ mui.plusReady(function(){
 						}else{
 							mui("#upload")[0].innerHTML = "没有数据了";
 						}
-					})
+						//加载下一部分结束
+							　　}
+						});
 				}else{
 					mui.toast("获取数据失败");
 				}

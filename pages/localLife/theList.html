@@ -91,6 +91,7 @@
 <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/app.js"></script>	
+<script src="../../js/jquery.min.js"></script>	
 <script type="text/javascript">
 (function(){
 	mui.plusReady(function(){
@@ -134,46 +135,54 @@
 						var html=template("infolist",dataobj);
 						document.getElementById("infolistdiv").innerHTML += html;
 						if(data.data.totalPages){
-							mui("#upload")[0].innerHTML = "上滑加载 ";
+							mui("#upload")[0].innerHTML = "";
 						}else{
 							mui("#upload")[0].innerHTML = "没有数据了 ";
 						}
 						
-						//上滑加载
-						document.addEventListener('swipeup',function(){
-							var nowpage = ++CcurrentPage;
-							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
-								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-								console.log('可以请求数据');
-								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-									data:{type_name:Ctype_name,currentPage:nowpage,numsPerPage:CnumsPerPage}, 
-									dataType:'json',//服务器返回json格式数据
-									type:'post',//HTTP请求类型 
-									timeout:10000,//超时时间设置为10秒；	
-									headers:{"token":oldtoken}, 
-									success:function(data){
-										if(data.errno == 0){
-											var dataobj = {};
-											dataobj.list = data.data.data; 
-											//获取并渲染用户信息
-											var html=template("infolist",dataobj);
-											document.getElementById("infolistdiv").innerHTML += html;
-											mui("#upload")[0].innerHTML = "上滑加载 ";
-										}else{
+						//滚动到底部加载
+						$(window).scroll(function(){
+						　　var scrollTop = $(this).scrollTop();
+						　　var scrollHeight = $(document).height();
+						　　var windowHeight = $(this).height();
+						　　if(scrollTop + windowHeight == scrollHeight){
+								//加载下一部分
+							  var nowpage = ++CcurrentPage;
+								if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+									console.log('可以请求数据');
+									mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+										data:{type_name:Ctype_name,currentPage:nowpage,numsPerPage:CnumsPerPage}, 
+										dataType:'json',//服务器返回json格式数据
+										type:'post',//HTTP请求类型 
+										timeout:10000,//超时时间设置为10秒；	
+										headers:{"token":oldtoken}, 
+										success:function(data){
+											if(data.errno == 0){
+												var dataobj = {};
+												dataobj.list = data.data.data; 
+												//获取并渲染用户信息
+												var html=template("infolist",dataobj);
+												document.getElementById("infolistdiv").innerHTML += html;
+												mui("#upload")[0].innerHTML = "上滑加载 ";
+											}else{
+												--CcurrentPage;//请求失败,继续请求当前页
+												mui.toast("获取数据失败");
+											}
+											plus.nativeUI.closeWaiting();//关闭等待框
+										},
+										error:function(xhr,type,errorThrown){
 											--CcurrentPage;//请求失败,继续请求当前页
-											mui.toast("获取数据失败");
+											mui.toast("当前网络不好请重试");
 										}
-										plus.nativeUI.closeWaiting();//关闭等待框
-									},
-									error:function(xhr,type,errorThrown){
-										--CcurrentPage;//请求失败,继续请求当前页
-										mui.toast("当前网络不好请重试");
-									}
-								});
-							}else{
-								mui("#upload")[0].innerHTML = "没有数据了";
-							}
-						})
+									});
+								}else{
+									mui("#upload")[0].innerHTML = "没有数据了";
+								}
+								//加载下一部分结束
+							　　}
+						});
+						
 					}else{
 						mui.toast("获取数据失败");
 					}
