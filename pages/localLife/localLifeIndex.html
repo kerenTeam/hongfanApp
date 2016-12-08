@@ -39,6 +39,9 @@
 			.mui-table-view li{padding-left: 0;padding-right: 10px;}
 			.mui-table-view-cell:after{left: 0;}
 			.icon-list .icon-circle{border-radius: 50%;}
+			#more{background-color:#fff;text-align: center;height: 50px;line-height: 30px;
+			font-size: 14px; }
+			#more img{margin-left:5px;width: 16px;margin-top: -3px;}
 		</style>    
 	</head>
 	<body>
@@ -135,7 +138,7 @@
 										<% }%>	
 									</script>
 								</div>
-								<div class="swiper-slide">
+								<div class="swiper-slide swiper_part2" >
 									<ul class="icon-list" id="columndiv2">
 										<!--没有数据显示-->
 										<li class="icon">
@@ -170,7 +173,7 @@
 									</script>
 								</div>
 							</div>
-							<div class="swiper-pagination swiper-pagination2">
+							<div class="swiper-pagination swiper-pagination2 diandian">
 							</div>
 						</div>
 					</section>
@@ -207,7 +210,7 @@
 							<div class="sy_limit_buy mb10">
 								<div class="sy_title">
 								<span class="left">热门推荐&nbsp;&nbsp;&nbsp;&nbsp;</span>
-								<a  class="gray smallSize mui-pull-right">更多 &gt;</a>
+								<!--<a  class="gray smallSize mui-pull-right">更多 &gt;</a>-->
 							</div>
 							<ul class="mui-table-view">
 								<li class="mui-table-view-cell mui-media">
@@ -238,6 +241,9 @@
 									</a>
 								</li>
 							</ul>
+						</div>
+						<div id="more">
+							更多推荐 <img src="../../img/more.svg"/> 
 						</div>
 					</div>
 				</div>
@@ -273,8 +279,15 @@
 //						console.log(objdata.list);
 						var html = template("column",objdata);
 						document.getElementById("columndiv").innerHTML=html;
-						var html2 = template("column2",objdata);
-						document.getElementById("columndiv2").innerHTML=html2;
+						if(data.data.length > 8){//显示下一轮数据
+							var html2 = template("column2",objdata);
+							document.getElementById("columndiv2").innerHTML=html2; 
+						}else{
+							mui('.tuangouwidth')[0].removeChild(mui('.swiper_part2')[0]);
+							mui('.tuangouwidth')[0].style.webkitTransform = 'translate3d(0px, 0, 0)';
+							mui('.diandian')[0].style.display = 'none';
+						}
+						
 						plus.nativeUI.closeWaiting();
 						//添加监听
 						Monitor();
