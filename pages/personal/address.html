@@ -14,7 +14,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
 		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<script src="../../js/app.js" type="text/javascript"></script>
@@ -113,7 +112,7 @@
 		    </div>
 		</script>
 		
-		<a href="add-address.html" class="address-add fl" id="addNewAd" onclick="addAd(<%= addressLi[0].user_id %>)">
+		<a href="javascript:;" class="address-add fl" id="addNewAd" onclick="addAd()">
      		添加新地址
      	</a>
      	
@@ -124,11 +123,9 @@
 			//添加刷新监听
 			document.addEventListener('refreshAd', function() {
 				RefreshAd();
-				alert("刷新");
+//				alert("刷新");
 				console.log('刷新数据');
 			})
-//			alert(JSON.stringify(plus.webview.currentWebview()));
-			
 			
 			//判断是否登录并获取缓存token
 			if(plus.storage.getItem('myToken')){
@@ -151,7 +148,8 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-	//					alert(JSON.stringify(data.data));
+//						alert(JSON.stringify(data.data[0].userid));
+						plus.storage.setItem("userid",userId);//userId做缓存
 						var addressObj = {};
 						addressObj.addressLi = data.data;
 						var html = template('addressList-detail',addressObj);
@@ -162,35 +160,11 @@
 							var checked = $(thisobj).find('input').attr("checked");
 							var thisAdId = $(thisobj).find('input').attr("id");
 							
-							if(typeof(checked)=="undefined"){
-								for(w = 0;w < $('.radio').length;w ++){
-									var otherState = $('.radio').eq(w).find('input').attr('checked');
-//									alert(otherState);
-									var otherId= $('.radio').eq(w).find('input').attr('id');
-									if(typeof(otherState)=="undefined"){
-//										
-									}else{
-//										alert(otherId);
-										mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
-											data:{address_id:otherId,state:0},
-											dataType:'json',
-											type:'post',
-											timeout:1000,
-											headers:{"token":oldToken},	 
-											success:function(data,type,xhr){
-												alert(JSON.stringify(data))
-											},
-											error:function(xhr,type,errorThrown){
-												alert('响应失败  !');
-											}
-										});
-									}
-								}
+							if(typeof(checked)=="undefined"){//本来不是默认地址
 								$('.radio').find('input').removeAttr('checked');//移除其他勾选
 								$(thisobj).find('input').prop('checked',true);//勾选当前
-//								alert("不是默认，改为默认");
 								mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
-									data:{address_id:thisAdId,state:1},
+									data:{userid:userId,address_id:thisAdId,state:1},
 									dataType:'json',
 									type:'post',
 									timeout:1000,
@@ -202,11 +176,10 @@
 										alert('响应失败  !');
 									}
 								});
-							}else{
+							}else{//本来是默认地址
 								$(thisobj).find('input').removeAttr('checked');
-//								alert('是默认，改为不是默认');
 								mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
-									data:{address_id:thisAdId,state:0},
+									data:{userid:userId,address_id:thisAdId,state:0},
 									dataType:'json',
 									type:'post',
 									timeout:1000,
@@ -239,12 +212,9 @@
 										timeout:1000,
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){
-											alert(JSON.stringify(data))
+//											alert(JSON.stringify(data))
 											alert("删除成功！");
-											openview({
-												view:'address.html',
-												extrasobj:{userId:userId}
-											});
+											mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
 										},
 										error:function(xhr,type,errorThrown){
 											alert('响应失败  !');
@@ -254,10 +224,9 @@
 							})
 						}
 						//点击添加地址跳转
-						window.addAd = function(userId){
+						window.addAd = function(){
 							openview({
-								view:'add-address.html',
-								extrasobj:{userId:userId}
+								view:'add-address.html'
 							});
 						}
 					},
@@ -266,12 +235,7 @@
 					}
 				});
 			}
-			
-			
-			
 		})();
-		
-		
 	</script>
 	</body>	
 </html>
