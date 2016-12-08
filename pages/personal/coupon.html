@@ -219,6 +219,13 @@
 						<div class="tab-pal">
 							<div class="coupons clearfloat box-s" id="allC"></div>
 						</div>
+						<div class="tab-pal">
+							<div class="coupons clearfloat box-s" id="ableC"></div>
+						</div>	
+						<div class="tab-pal">
+							<div class="coupons clearfloat box-s" id="disableC"></div>
+						</div>
+						<!--全部-->
 						<script type="text/html" id="allC-detail">
 							<% for(var i=0;i<allLi.length;i++){ %>
 								<div class="list clearfloat fl">
@@ -264,40 +271,83 @@
 								</div>
 							<% } %>
 						</script>
+						<!--未使用-->
+						<script type="text/html" id="ableC-detail">
+							<% for(var i=0;i<allLi.length;i++){ %>
+								<% if(allLi[i].user_coupon_state == 1){ %>
+									<div class="list clearfloat fl">
+										<div class="left clearfloat fl">
+											<% if(allLi[i].type_id == 2){ %>
+												<%= allLi[i].discount*10 %><span>折</span>
+											<% }else if(allLi[i].type_id == 1){ %>
+												<span>¥</span><%= allLi[i].coupon_amount %>
+											<% }else{ %>
+												<%= allLi[i].coupon_amount %>
+											<% } %>
+										</div>
+										<div class="right clearfloat fl box-s">
+											<p class="tit">
+												<%= allLi[i].name %>
+											</p>
+											<% if(allLi[i].type_id == 3){ %>
+												<p class="time">
+													<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
+														满<%= allLi[i].salerule.rule1 %>可使用活动券抵扣<%= allLi[i].salerule.rule2 %>
+													<%} %>
+												</p>
+											<% }else{ %>
+												<p class="time">&nbsp;</p>
+											<% } %>
+											<p class="time">
+												有效时间：<%= allLi[i].create_time.split('T')[0] %>到<%= allLi[i].vaild_date %>
+											</p>
+										</div>
+										<div class="qrcode mui-content-padded">
+											<img src="<%= allLi[i].qrcode %>" data-preview-src="" data-preview-group="1" />
+										</div>
+									</div>
+								<% } %>
+							<% } %>
+						</script>
+						<!--已使用-->
+						<script type="text/html" id="disableC-detail">
+							<% for(var i=0;i<allLi.length;i++){ %>
+								<% if(allLi[i].user_coupon_state == 0){ %>
+									<div class="list clearfloat fl">
+										<div class="left  leftwo clearfloat fl">
+											<% if(allLi[i].type_id == 2){ %>
+												<%= allLi[i].discount*10 %><span>折</span>
+											<% }else if(allLi[i].type_id == 1){ %>
+												<span>¥</span><%= allLi[i].coupon_amount %>
+											<% }else{ %>
+												<%= allLi[i].coupon_amount %>
+											<% } %>
+										</div>
+										<div class="right clearfloat fl box-s">
+											<p class="tit">
+												<%= allLi[i].name %>
+											</p>
+											<% if(allLi[i].type_id == 3){ %>
+												<p class="time">
+													<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
+														满<%= allLi[i].salerule.rule1 %>可使用活动券抵扣<%= allLi[i].salerule.rule2 %>
+													<%} %>
+												</p>
+											<% }else{ %>
+												<p class="time">&nbsp;</p>
+											<% } %>
+											<p class="time">
+												有效时间：<%= allLi[i].create_time.split('T')[0] %>到<%= allLi[i].vaild_date %>
+											</p>
+										</div>
+										<div class="qrcode mui-content-padded">
+											<img src="../../img/21.jpg" data-preview-src="" data-preview-group="1" />
+										</div>
+									</div>
+								<% } %>
+							<% } %>
+						</script>
 						<!--<div class="tab-pal">
-							<div class="coupons clearfloat box-s">
-								<div class="list clearfloat fl">
-									<div class="left clearfloat fl">
-										<span>¥</span>10
-									</div>
-									<div class="right clearfloat fl box-s">
-										<p class="tit">
-											单笔订单满100元使用
-										</p>
-										<p class="time">
-											有效时间：2016.11.01-2016.11.30
-										</p>
-										<p class="time">
-											有效时间：2016.11.01-2016.11.30
-										</p>
-									</div>
-								</div>
-								<div class="list clearfloat fl">
-									<div class="left clearfloat fl">
-										<span>¥</span>10
-									</div>
-									<div class="right clearfloat fl box-s">
-										<p class="tit">
-											单笔订单满100元使用
-										</p>
-										<p class="time">
-											有效时间：2016.11.01-2016.11.30
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>-->
-						<div class="tab-pal">
 							<div class="coupons clearfloat box-s">
 								<div class="list clearfloat fl">
 									<div class="left leftwo clearfloat fl">
@@ -316,7 +366,7 @@
 									</div>
 								</div>
 							</div>
-						</div>	
+						</div>	-->
 					</div>
 				</div>
 			</div>
@@ -353,8 +403,8 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						alert(JSON.stringify(data.data));
-						alert(eval("("+ data.data[2].salerule +")").rule[0]);
+//						alert(JSON.stringify(data.data));
+//						alert(eval("("+ data.data[2].salerule +")").rule[0]);
 						for(var m=0; m < data.data; m++){ 
 							alert(1)
 							if(data.data[m].salerule==null){
@@ -370,6 +420,10 @@
 						allC.allLi = data.data;
 						var html = template('allC-detail',allC);
 						document.getElementById('allC').innerHTML = html;
+						var html2 = template('ableC-detail',allC);
+						document.getElementById('ableC').innerHTML = html2;
+						var html3 = template('disableC-detail',allC);
+						document.getElementById('disableC').innerHTML = html3;
 						
 					},
 					error:function(xhr,type,errorThrown){
