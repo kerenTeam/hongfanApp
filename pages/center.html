@@ -212,7 +212,16 @@
 							success:function(data,type,xhr){
 								console.log('获取用户数据返回'+JSON.stringify(data));
 								if(data.errno == 0){
-									mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
+									//显示昵称
+									if(data.data[0].nickname != ' '){ 
+										if(data.data[0].nickname.indexOf('null') == -1){
+											mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
+										}else{
+											mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+										}
+									}else{
+										mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+									}
 								}else{
 									mui.toast('获取用户信息失败');
 									console.log(data.errmsg);
