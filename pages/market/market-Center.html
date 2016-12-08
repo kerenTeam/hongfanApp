@@ -164,6 +164,17 @@
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
+			.gocart{
+				position: fixed;
+				right: 0.2rem;
+				bottom: 0.2rem;
+				width: 0.5rem;
+				background-color: white;
+				border-radius: 50%;
+				border: 0;
+				box-sizing: border-box;
+				z-index: 99;
+			}
 		</style>
 	</head>
 	<body>
@@ -172,8 +183,9 @@
 		    <div class="header-tit">
 				购物中心
 			</div>
-		</header>
-		<div id="container">		
+		</header> 
+			<img src="../../img/center/gocart.png" class="gocart" alt="" /> 
+		<div id="container">
 			<div id="main">
 				<div id="scroller">
 					<div id="banner"></div>
@@ -335,6 +347,23 @@
 		
 		
 		mui.plusReady(function(){
+			//去购物车
+			document.getElementsByClassName("gocart")[0].addEventListener('tap',function () {
+			//当前页
+	 		     	plus.webview.close(plus.webview.getWebviewById('market-Center'));
+					  
+			    //获得主页面的webview
+			    var main = plus.webview.getLaunchWebview();
+			    //触发主页面的gohome事件
+			    mui.fire(main,'gohome',{hrefid:'cart'}); 
+			    setTimeout(function(){
+			    	main.show();
+			    	mui.back();
+			    	plus.webview.currentWebview().close();
+			    },200);
+			});
+			
+			
 			//获取token
 			var token=plus.storage.getItem("oldToken");
 		   //alert(oldtoken)

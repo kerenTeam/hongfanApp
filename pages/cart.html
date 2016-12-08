@@ -27,44 +27,46 @@
 		<div id="cartData"><mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark></div>
 		<script type="text/html" id="cartTpl">
 			<%if(goodsList.length==0){%>
-				<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>
-				<%}else{%>
-						<%for(var i =0;i<cates.length;i++){%>
-							<dl class="cart"> 
-							<dt>
-								<div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
-								<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> <%=cates[i]%></div>
-							  	<a class="edit">| 编辑</a>
-						 	</dt>
- 				<%for(var j =0;j<goodsList.length;j++){%>
- 					<% if(goodsList[j].shopName ==  cates[i]){%>
-			<dd>
-				<div class="mui-checkbox"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>"  type="checkbox"></div>
-				<a class="goodsPic"><img src="<%=goodsList[j].goodsImg%>" /></a>
-				<div class="goodsInfor">
-					<h2> 
+			<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>
+			<%}else{%>
+			<%for(var i =0;i<cates.length;i++){%>
+			<dl class="cart">
+				<dt><div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
+				<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> <%=cates[i]%></div>
+  <a class="edit">| 编辑</a>
+ </dt>
+				<%for(var j =0;j<goodsList.length;j++){%>
+				<% if(goodsList[j].shopName ==  cates[i]){%>
+				<dd>
+					<div class="mui-checkbox"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].storeid%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-num="<%=goodsList[j].goodsnum%>" type="checkbox"></div>
+					<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>')"><img src="<%=goodsList[j].goodsImg%>" /></a>
+					<div class="goodsInfor"> <!--onclick="goGoods('<%=goodsList[j].goodsId%>')"-->
+						<h2> 
+
     <a><%=goodsList[j].goodsName%></a>
     <span class="num"><%=goodsList[j].goodsnum%></span>
    </h2>
-					<div class="priceArea">
-						<div class="extraBrief"><%=goodsList[j].goodText%></div>
-						<strong>￥<span class="price"><%=goodsList[j].goodsPrice%></span></strong>
+						<div class="priceArea">
+							<div class="extraBrief">
+								<%=goodsList[j].goodText%>
+							</div>
+							<strong>￥<span class="price"><%=goodsList[j].goodsPrice%></span></strong>
 
-					</div>
-					<div class="numberWidget">
-						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-							<input class="mui-input-numbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" value="<%=goodsList[j].goodsnum%>" type="number" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
 						</div>
+						<div class="numberWidget">
+							<div class="mui-numbox" data-numbox-min='1'>
+								<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
+								<input class="mui-input-numbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" value="<%=goodsList[j].goodsnum%>" type="number" />
+								<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+							</div>
 
+						</div>
 					</div>
-				</div>
-				<a class="delBtn" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>">删除</a>
-			</dd>
-			<%}%>
-			<%}%>
-		</dl>
+					<a class="delBtn" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>">删除</a>
+				</dd>
+				<%}%>
+				<%}%>
+			</dl>
 						<%}%>
 							<!--bottom nav-->
 		<div style="height:1rem;"></div>
@@ -77,7 +79,7 @@
 			</a>
 		</aside>
 					<%}%>
-		</script>
+		</script> 
 		
 
 	
@@ -85,9 +87,13 @@
 		<script type="text/javascript" src="../js/jquery_cart.js"></script>
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-		 
+
 	</body>
+ 
 	<script> 
+	
+	
+	
 	mui.plusReady(function(){ 
 		window.addEventListener('refresh',function(event){ 
 	   		alert(1);
@@ -117,36 +123,38 @@
 			var html2 = template('cartTpl', data);
 			document.getElementById('cartData').innerHTML = html2;
         	mui(".mui-numbox").numbox();
-         	   if(cartStorage.length==0){//没有隐藏
-        	alert('没有缓存'); 
+         	   if(cartStorage.length==0){//没有隐藏  
+        	mui(".cartNum")[0].style.display = 'none'; 
         	mui('#bianji')[0].style.display = 'none';
         	mui('#dibu')[0].style.display = 'none';
-//      	$(".editAll").css("display","none");
-//      	$(".btmNav").css("display","none");
-        }else{ 
-        	alert('有缓存');
+        }else{  
         	mui('#bianji')[0].style.display = 'inline-block';
-        	mui('#dibu')[0].style.display = '-webkit-box';
-//      	 $(".editAll").css("display","block");  
-//      	  $(".goOrder").css("display","block");  
+        	mui('#dibu')[0].style.display = '-webkit-box'; 
+        	mui(".cartNum")[0].style.display = 'block'; 
         } 
        	var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>"
 				//计算购物车数量
 			ddAll();
 
 			function ddAll() {
-				$(".cartNum span").html($("dd").length);
+				var all = $("dd").length
+				$(".cartNum span").html(all);
+				if(all==0){
+					$(".cartNum").css("display","none");
+				}else{
+					$(".cartNum").css("display","inline-block");
+				}
 			}
 			//show or hide:delBtn
 			$(".edit").toggle(function() {
 				$(this).parent().siblings("dd").find(".delBtn").fadeIn();
 				$(this).html("完成");
-				$(this).parentsUntil("#cartData").find(".numberWidget").show();
+				$(this).parentsUntil("#cartData").find(".numberWidget").show(); 
 				$(this).parentsUntil("#cartData").find(".priceArea").hide();
 			}, function() {
 				$(this).parent().siblings("dd").find(".delBtn").fadeOut();
 				$(this).html("| 编辑");
-				$(this).parentsUntil("#cartData").find(".numberWidget").hide();
+				$(this).parentsUntil("#cartData").find(".numberWidget").hide(); 
 				$(this).parentsUntil("#cartData").find(".priceArea").show();
 			});
 			//编辑所有
@@ -352,45 +360,92 @@
 				$(".totalNum").html(fen);
 				$(".totalMoney").html(pay);
 			}
-			//下单
-			var goOrder = mui(".goOrder")[0];
-			goOrder.addEventListener("tap", function() {
-				var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
-				if(ALLcheckLength == 0) {
-					mui.toast("您还未选择要购买的商品哦！")
-				} else {
-					  mui.toast("您选中了" + ALLcheckLength + "件商品")
- 					orderStorage =[];
-//      			orderStorage.push(cartObj);
-//      			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
-        			openview({
-					 	view:"market/market-order.html", 
-					 })
-				}
-			})
-    }
-		 
-        
-        
-	}) 
-	
-	Array.prototype.unique1 = function() {
-				var res = [this[0]];
-				for(var i = 1; i < this.length; i++) {
-					var repeat = false;
-					for(var j = 0; j < res.length; j++) {
-						if(this[i] == res[j]) {
-							repeat = true;
-							break;
+				//下单
+				var goOrder = mui(".goOrder")[0];
+				goOrder.addEventListener("tap", function() {
+					 
+					
+					var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
+					if(ALLcheckLength == 0) {
+						mui.toast("您还未选择要购买的商品哦！")
+					} else {
+						
+						if(plus.storage.getItem('myToken')){ 
+							 
+							mui.toast("您选中了" + ALLcheckLength + "件商品")
+								//订单缓存
+							var orderStorage = [];
+							$("dd").find("input[type='checkbox']:checked").each(function(){
+								var orderObj = {};
+								orderObj.goodsId = $(this).attr("data-id");
+								orderObj.goodsnum = $(this).attr("data-num");
+								orderObj.goodText = $(this).attr("data-goodstext");
+								orderObj.shopId = $(this).attr("data-shopId"); 
+								orderObj.shopName = $(this).attr("data-shop");
+								orderObj.goodsName = $(this).attr("data-gdName");
+								orderObj.goodsImg = $(this).attr("data-gdImg");
+								orderObj.goodsPrice = $(this).attr("data-gdprice");
+								orderObj.goodsPostfee = $(this).attr("data-gdPostfee");
+								orderStorage.push(orderObj) 
+								
+								
+							})
+							plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
+							alert(JSON.stringify(orderStorage))
+							openview({
+								view: "market/market-order.html",
+							})
+						}else{//没登陆直接打开登录页面
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
 						}
+						
+						
+						
 					}
-					if(!repeat) {
-						res.push(this[i]);
+				})
+			}
+    
+    
+    		//进店铺详情
+			$('.shopName').click(function(){ 
+				var shopId = $(this).parent().next().find(".mui-checkbox input").attr("data-shopId");
+				 openview({
+						view:'market/shophome.html', 
+						extrasobj:{storeId:shopId}
+					})
+			})
+			
+
+		})
+			//进商品详情
+			function goGoods(gid){
+				openview({
+				 	view:"market/mall-detail.html",
+				 	extrasobj:{goodsId:gid}
+				 })
+			}
+			$('.numberWidget,.mui-numbox button,.mui-numbox input').click(function(){
+				event.stopPropagation()
+			})
+		Array.prototype.unique1 = function() {
+			var res = [this[0]];
+			for(var i = 1; i < this.length; i++) {
+				var repeat = false;
+				for(var j = 0; j < res.length; j++) {
+					if(this[i] == res[j]) {
+						repeat = true;
+						break;
 					}
 				}
-				return res;
+				if(!repeat) {
+					res.push(this[i]);
+				}
 			}
-	
+			return res;
+		}
 	</script>
 
 </html>

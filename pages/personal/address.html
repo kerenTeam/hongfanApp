@@ -41,9 +41,16 @@
 			dialog{
 				background-color: #fff !important;
 			}
-			
 			.address-add{
 				margin-top: 50px;
+			}
+			.addlist{
+				border-bottom: none !important;
+				border-top: none !important;
+				margin-bottom: 4%;
+			}
+			.addlist .top{
+				border-bottom: 1px solid #efeff4 !important;
 			}
 		</style>
 	</head>
@@ -53,9 +60,9 @@
 		    <div class="header-tit">
 				管理收货地址
 			</div>
-			<a href="#" class="fr baocun" onclick="save()">保存</a>
 		</header>
 		<div id="addressList"></div>
+		</div>
 	    <!--模板铺数据-->
 		<script id="addressList-detail" type="text/html">
 			<div id="main" class="mui-clearfix contaniner">
@@ -76,12 +83,12 @@
 			    			<section class="shopcar clearfloat">
 			    				<div class="list listtwo clearfloat">
 									<div class="xuan xuantwo clearfloat fl">
-					    				<div class="radio" > 
+					    				<div class="radio" onclick="changeState(this)"> 
 										    <label>
-										    	<% if(addressLi[i].state == 0){ %>
-										        	<input type="checkbox" name="sex" value="" checked/>
+										    	<% if(addressLi[i].state == 1){ %>
+										        	<input type="checkbox" name="sex" value="" checked id="<%= addressLi[i].id %>" />
 										        <% }else{ %>
-													<input type="checkbox" name="sex" value="" />
+													<input type="checkbox" name="sex" value="" id="<%= addressLi[i].id %>" />
 												<% } %>
 										        <div class="option"></div>
 										    </label>
@@ -106,7 +113,7 @@
 		    </div>
 		</script>
 		
-		<a href="add-address.html" class="address-add fl" id="addNewAd" name="<%= addressLi[0].user_id %>">
+		<a href="add-address.html" class="address-add fl" id="addNewAd" onclick="addAd(<%= addressLi[0].user_id %>)">
      		添加新地址
      	</a>
      	
@@ -114,7 +121,15 @@
 		mui.init();
 		mui.plusReady(function(){
 			
-			//数据渲染
+			//添加刷新监听
+			document.addEventListener('refreshAd', function() {
+				RefreshAd();
+				alert("刷新");
+				console.log('刷新数据');
+			})
+//			alert(JSON.stringify(plus.webview.currentWebview()));
+			
+			
 			//判断是否登录并获取缓存token
 			if(plus.storage.getItem('myToken')){
 				var oldToken = plus.storage.getItem('oldToken');
@@ -125,69 +140,133 @@
 				})
 			}
 			var userId = plus.webview.currentWebview().userId;
-//			alert(userId);
-//			console.log(oldToken);
-			mui.ajax(serverUrl+'/api/useraccount/addresslist',{
-				data:{userid : userId},
-				dataType:'json',
-				type:'post',
-				timeout:1000,
-				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){
-					alert(JSON.stringify(data.data));
-					var addressObj = {};
-					addressObj.addressLi = data.data;
-					var html = template('addressList-detail',addressObj);
-					document.getElementById('addressList').innerHTML = html;
-					//点击编辑跳转传参
-					window.editAd = function(AdId){
-						openview({
-						 	view:"address-edit.html",
-						 	extrasobj:{adId:AdId,userId:userId}
-						})
-					}
-					//删除确认弹框
-					var exterminate = document.getElementsByClassName('exterminate');
-					window.deleteAd = function(AdIdD){
-						mui.confirm('确认删除该地址？','',['取消','确认'],function (e) {
-							if(e.index == 1) { 
-								mui.ajax(serverUrl+'/api/useraccount/deleteaddress',{
-									data:{address_id:AdIdD,state:1},
+			var pageid = plus.webview.currentWebview().pageid;
+			RefreshAd();
+
+			function RefreshAd(){
+				mui.ajax(serverUrl+'/api/useraccount/addresslist',{
+					data:{userid : userId},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+	//					alert(JSON.stringify(data.data));
+						var addressObj = {};
+						addressObj.addressLi = data.data;
+						var html = template('addressList-detail',addressObj);
+						document.getElementById('addressList').innerHTML = html;
+						
+						//点击修改默认地址
+						window.changeState = function(thisobj){
+							var checked = $(thisobj).find('input').attr("checked");
+							var thisAdId = $(thisobj).find('input').attr("id");
+							
+							if(typeof(checked)=="undefined"){
+								for(w = 0;w < $('.radio').length;w ++){
+									var otherState = $('.radio').eq(w).find('input').attr('checked');
+//									alert(otherState);
+									var otherId= $('.radio').eq(w).find('input').attr('id');
+									if(typeof(otherState)=="undefined"){
+//										
+									}else{
+//										alert(otherId);
+										mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
+											data:{address_id:otherId,state:0},
+											dataType:'json',
+											type:'post',
+											timeout:1000,
+											headers:{"token":oldToken},	 
+											success:function(data,type,xhr){
+												alert(JSON.stringify(data))
+											},
+											error:function(xhr,type,errorThrown){
+												alert('响应失败  !');
+											}
+										});
+									}
+								}
+								$('.radio').find('input').removeAttr('checked');//移除其他勾选
+								$(thisobj).find('input').prop('checked',true);//勾选当前
+//								alert("不是默认，改为默认");
+								mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
+									data:{address_id:thisAdId,state:1},
 									dataType:'json',
 									type:'post',
 									timeout:1000,
 									headers:{"token":oldToken},	 
 									success:function(data,type,xhr){
-										alert(JSON.stringify(data))
-										alert("删除成功！");
-										openview({
-											view:'address.html',
-											extrasobj:{userId:userId}
-										});
+//										alert(JSON.stringify(data))
+									},
+									error:function(xhr,type,errorThrown){
+										alert('响应失败  !');
+									}
+								});
+							}else{
+								$(thisobj).find('input').removeAttr('checked');
+//								alert('是默认，改为不是默认');
+								mui.ajax(serverUrl+'/api/useraccount/stateaddress',{
+									data:{address_id:thisAdId,state:0},
+									dataType:'json',
+									type:'post',
+									timeout:1000,
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){
+//										alert(JSON.stringify(data))
 									},
 									error:function(xhr,type,errorThrown){
 										alert('响应失败  !');
 									}
 								});
 							}
-						})
+						}
+						//点击编辑跳转传参
+						window.editAd = function(AdId){
+							openview({
+							 	view:"address-edit.html",
+							 	extrasobj:{adId:AdId,userId:userId}
+							})
+						}
+						//删除确认弹框
+						var exterminate = document.getElementsByClassName('exterminate');
+						window.deleteAd = function(AdIdD){
+							mui.confirm('确认删除该地址？','',['取消','确认'],function (e) {
+								if(e.index == 1) { 
+									mui.ajax(serverUrl+'/api/useraccount/deleteaddress',{
+										data:{address_id:AdIdD,state:0},
+										dataType:'json',
+										type:'post',
+										timeout:1000,
+										headers:{"token":oldToken},	 
+										success:function(data,type,xhr){
+											alert(JSON.stringify(data))
+											alert("删除成功！");
+											openview({
+												view:'address.html',
+												extrasobj:{userId:userId}
+											});
+										},
+										error:function(xhr,type,errorThrown){
+											alert('响应失败  !');
+										}
+									});
+								}
+							})
+						}
+						//点击添加地址跳转
+						window.addAd = function(userId){
+							openview({
+								view:'add-address.html',
+								extrasobj:{userId:userId}
+							});
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						alert('响应失败  !');
 					}
-
-					
-					//点击添加地址跳转
-					var addNewAd = $('#addNewAd');
-					addNewAd.addEventListener('tap',function(){
-						openview({
-							view:'add-address.html',
-							extrasobj:{userId:userId}
-						});
-					});
-				},
-				
-				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
-				}
-			});
+				});
+			}
+			
 			
 			
 		})();

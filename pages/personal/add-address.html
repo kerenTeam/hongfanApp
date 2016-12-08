@@ -84,6 +84,17 @@
 			.data ul li{
 				height: 50px;
 			}
+			.plist ul li{
+				border-bottom: 1px solid #efeff4;
+			}
+			.address-btn{
+				border-top: none;
+				border-bottom: none;
+				margin-top: 4%;
+			}
+			.add-address .textare{
+				border-bottom: none;
+			}
 		</style>
 	</head>
 
@@ -146,9 +157,9 @@
 					var cityResult3 = doc.getElementById('cityResult3');
 					showCityPickerButton.addEventListener('tap', function(event) {
 						cityPicker3.show(function(items) {
-							doc.getElementById('province').innerText = (items[0] || {}).text;
-							doc.getElementById('city').innerText =  (items[1] || {}).text;
-							doc.getElementById('area').innerText = (items[2] || {}).text;
+							doc.getElementById('province').innerText = (items[0] || {}).text + " ";
+							doc.getElementById('city').innerText =  (items[1] || {}).text + " ";
+							doc.getElementById('area').innerText = (items[2] || {}).text + " ";
 							//返回 false 可以阻止选择框的关闭
 							//return false;
 						});
@@ -186,6 +197,12 @@
 				var newProvince = document.getElementById('province').innerHTML;
 				var newCity = document.getElementById('city').innerHTML;
 				var newArea = document.getElementById('area').innerHTML;
+				//默认状态判断
+				if($('#acquiescence').hasClass('toggle--off')){
+					var newState = 0;
+				}else{
+					var newState = 1;
+				}
 				
 				var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 				if(!reg_phone.test(newPhone)){
@@ -196,14 +213,7 @@
 					mui.toast('详细地址不能为空!');
 				}else{
 					
-					//默认状态判断
-					if($('#acquiescence').hasClass('toggle--off')){
-						var newState = 0;
-					}else{
-						var newState = 1;
-					}
 	//				alert(userId);
-
 					mui.ajax(serverUrl+'/api/useraccount/addaddress',{
 						data:{userid: userId,person:newPerson,phone:newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state:newState,address:newAddress},
 						dataType:'json',
@@ -211,12 +221,11 @@
 						timeout:1000,
 						headers:{"token":oldToken},	 
 						success:function(data,type,xhr){
-							alert(JSON.stringify(data))
+//							alert(JSON.stringify(data))
 							alert("保存成功！");
-							openview({
-								view:'address.html',
-								extrasobj:{userId:userId}
-							});
+							plus.webview.currentWebview().close();//关闭当前页面
+//							alert(JSON.stringify(plus.webview.getWebviewById('personal/address.html')));
+							mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
 						},
 						error:function(xhr,type,errorThrown){
 							alert('响应失败  !');
