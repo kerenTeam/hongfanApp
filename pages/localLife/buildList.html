@@ -15,46 +15,30 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<script src="../../js/mui.picker.min.js"></script>
-		<script src="../../js/mui.poppicker.js"></script>
 		
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
-		
+		<!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
 		<style type="text/css">
-			.mui-bar{
-				height: 50px;
+			.mui-bar{height: 50px;
 			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
+			.mui-title,.mui-icon{line-height: 50px;
 			}
-			.mui-bar .mui-icon{
-				padding: 0;
+			.mui-bar .mui-icon{padding: 0;
 			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{color: #fff;
 			}
-			.mui-bar-nav{
-				box-shadow: none;
+			.mui-bar-nav{box-shadow: none;
 			}
-			.mui-icon{
-				line-height: 50px;
+			.mui-icon{line-height: 50px;
 			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
+			.mui-icon .iconfont{font-size: 18px;
 			}
-			.dealcard, .cinemacard{
-				margin-top: 50px;
+			.dealcard, .cinemacard{margin-top: 50px;
 			}
-			.dealcard .dealcard-img img{
-				height: 60px;
-				overflow: hidden;
+			.dealcard .dealcard-img img{height: 60px;overflow: hidden;
 			}
+			#upload{text-align: center;margin: 30px;font-size: 15px;
+			}
+			#upload img{width: 60px;margin-top: -15px;}
 		</style>
 	</head>
 	<body>
@@ -134,8 +118,8 @@
 		<div id="container">		
 			<div id="main">
 				<section class="dealcard-waimai">
-					<dl class="dealcard">
-						<dd class="page-link">
+					<dl class="dealcard" id="buildlistdiv">
+						<!--<dd class="page-link">
 							<a href="javascript:;">
 								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
 								<div class="dealcard-block-right">
@@ -154,120 +138,149 @@
 									</div>
 								</div>
 							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">三室一厅</div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">三室一厅  </div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">三室一厅  </div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
-						<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/build-detail.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">三室一厅  </div>
-									<div class="title ">
-										<span class="star">
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="full"></i>
-											<i class="half"></i>
-											<i></i>
-										</span>
-									</div>
-									<div class="price"> 
-										<span> 24小时 服务诚信商家</span>
-									</div>
-								</div>
-							</a>
-						</dd>
+						</dd>-->
 					</dl>
+					<script type="text/html" id="buildlist">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd class="page-link" onclick="opendetails(<%= list[i].house_id%>)">
+							<a href="javascript:;">
+								<div class="dealcard-img imgbox"> <img src="<%= list[i].list_pic%>" alt=""> </div>
+								<div class="dealcard-block-right">
+									<div class="brand"><%= list[i].name%></div>
+									<div class="title ">
+										<span class="star">
+											<i class="full"></i>
+											<i class="full"></i>
+											<i class="full"></i>
+											<i class="half"></i>
+											<i></i>
+										</span>
+									</div>
+									<div class="price"> 
+										<span> <%= list[i].area_address%></span>
+									</div>
+								</div>
+							</a>
+						</dd>
+						<%}%>	
+					</script>
 				</section>
+				<div class="upload text-center text-xs gray" id="upload"></div>
 			</div>
 		</div>
 	</body>
+	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		(function(){
-			function openview(obj){
-				var t = obj.top || 0,b = obj.bottom || 0;
-				mui.openWindow({
-					url:obj.view,
-				    styles:{
-				      top:t,//新页面顶部位置
-				      bottom:b
-				    },
-				    waiting:{
-				      autoShow:false,//自动显示等待框，默认为true
-				    }
-				})
+(function(){
+mui.plusReady(function(){
+	var oldtoken = plus.storage.getItem('oldToken');
+	plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+	Loading(1,1,7);//加载数据,包括上滑加载
+	//加载方法
+	function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
+		mui.ajax(serverUrl+'/api/localservice/houselist',{ 									
+			data:{currentPage:1,
+				  numsPerPage:5,
+				  house_type:1,
+				  house_layout:'', 
+				  avg_price:'',
+				  house_area:300,
+				  orderType:1,
+				  descOrasc:''}, 
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型 
+			timeout:10000,//超时时间设置为10秒；	
+			headers:{"token":oldtoken}, 
+			success:function(data){
+				if(data.errno == 0){
+					console.log(data);
+					var dataobj = {};
+					dataobj.list = data.data.data; 
+					//获取并渲染用户信息
+					var html=template("buildlist",dataobj);
+					document.getElementById("buildlistdiv").innerHTML += html;
+					if(data.data.totalPages){
+						mui("#upload")[0].innerHTML = "上滑加载 ";
+					}else{
+						mui("#upload")[0].innerHTML = "没有数据了 ";
+					}
+					
+					//上滑加载
+					document.addEventListener('swipeup',function(){
+						var nowpage = ++CcurrentPage;
+						if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+							mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+							console.log('可以请求数据');
+							mui.ajax(serverUrl+'/api/localservice/houselist',{ 									
+								data:{currentPage:1,
+									  numsPerPage:5,
+									  house_type:1,
+									  house_layout:'',
+									  avg_price:'',
+									  house_area:300,
+									  orderType:1,
+									  descOrasc:''},  
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型 
+								timeout:10000,//超时时间设置为10秒；	
+								headers:{"token":oldtoken}, 
+								success:function(data){
+									if(data.errno == 0){
+										var dataobj = {};
+										dataobj.list = data.data.data; 
+										//获取并渲染用户信息
+										var html=template("buildlist",dataobj);
+										document.getElementById("buildlistdiv").innerHTML += html;
+										mui("#upload")[0].innerHTML = "上滑加载 ";
+									}else{
+										--CcurrentPage;//请求失败,继续请求当前页
+										mui.toast("获取数据失败");
+									}
+									plus.nativeUI.closeWaiting();//关闭等待框
+								},
+								error:function(xhr,type,errorThrown){
+									--CcurrentPage;//请求失败,继续请求当前页
+									mui.toast("当前网络不好请重试");
+								}
+							});
+						}else{
+							mui("#upload")[0].innerHTML = "没有数据了";
+						}
+					})
+				}else{
+					mui.toast("获取数据失败");
+				}
+				plus.nativeUI.closeWaiting();//关闭等待框
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting();//关闭等待框
+				mui.toast("当前网络不好请重试");
 			}
-			var theDetail = document.getElementsByClassName('page-link')[0];
-			theDetail.addEventListener('tap', function(){
-				openview({
-					view:'build-detail.html',
-				})
-			});
-//			var theSearch = document.getElementById('theSearch');
-//			theSearch.addEventListener('tap', function(){
+		});
+	}
+});
+	
+	
+	
+	
+	
+	
+	
+//			var theDetail = document.getElementsByClassName('page-link')[0];
+//			theDetail.addEventListener('tap', function(){
 //				openview({
-//					view:'theSearch.html',
-//					bottom:'0'
+//					view:'build-detail.html',
 //				})
 //			});
-		})();
+})();
+//跳转详情
+function opendetails(id){
+	openview({
+		view:'build-detail.html', 
+		extrasobj:{name:id}
+	})
+}
 	</script>
 </html>

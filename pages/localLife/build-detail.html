@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>XX详情</title>
+		<title>房产详情</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -13,16 +13,10 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		
 		<style type="text/css">
 			/*banner底部导航*/
-			.mui-slider-indicator .mui-indicator{
-				width: 10px;
+			.mui-slider-indicator .mui-indicator{width: 10px;
 				height: 10px;
 				border-radius: 8px;
 				background: black;
@@ -32,45 +26,41 @@
 				border: none;
 				box-shadow: none;
 			}
-			.mui-slider-indicator .mui-active.mui-indicator{
-				background-color: rgba(245,60,66,0.8);
+			.mui-slider-indicator .mui-active.mui-indicator{background-color: rgba(245,60,66,0.8);
 				box-shadow: none;
 				opacity: 1;
 				border: none;
 			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.shoucang .iconfont{
-				color: #fff;
+			.mui-bar{height: 50px;
 			}
-			.mui-bar-nav{
-				box-shadow: none;
+			.mui-title,.mui-icon{line-height: 50px;
 			}
-			.mui-bar{
-				height: 50px;
+			.mui-bar .mui-icon{padding: 0;
 			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{color: #fff;
 			}
-			.mui-bar .mui-icon{
-				padding: 0;
+			.mui-bar-nav{box-shadow: none;
 			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
-			}
-			.mui-bar-nav{
-				box-shadow: none;
-			}
-			.mui-icon{
-				line-height: 50px;
+			.mui-icon{line-height: 50px;
 			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
+			.mui-icon .iconfont{font-size: 18px;
 			}
-			#main{
-				margin-top: 50px;
+			.dealcard, .cinemacard{margin-top: 50px;
 			}
-			.farm .bottom ul li{
-				text-overflow: ellipsis;
-				white-space: nowrap;
+			.dealcard .dealcard-img img{height: 60px;
+				overflow: hidden;
+			}
+		 	.shoucang .iconfont{font-size: 18px;
+			}
+			
+			#main{margin-top: 50px;
+			}
+			.dealcard, .cinemacard{margin-top: 45px;
+			}
+			.dealcard, .cinemacard{margin-top: 45px;
+			}
+			
+			.farm .bottom ul li{text-overflow: ellipsis;white-space: nowrap;
 				overflow: hidden;
 				display: block;
 				width: 100%;
@@ -87,64 +77,80 @@
 		
 		<!--详情内容-->
 		<div id="container">		
-			<div id="main">
+			<div id="main"></div>
+			<script type="text/html" id="details">
 				<div class="deal">
 					<!--轮播图-->
 					<div class="mui-slider">
 						  <div class="mui-slider-group mui-slider-loop">
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/theList/build-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/build-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/build-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/build-detail.jpg"></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../../img/theList/build-detail.jpg"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[pic.length-1].picImg%>"></a></div>
+						    <% for(var i=0; i<pic.length; i++) {%>
+						    	<div class="mui-slider-item"><a><img src="<%= pic[i].picImg%>"></a></div> 
+						    <% }%>	
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/theList/build-detail.jpg"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[0].picImg%>"></a></div>
 						  </div>
-						 <div class="mui-slider-indicator">
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator mui-active"></div>
-			            </div> 
+			            <div class="mui-slider-indicator">
+							<div class="mui-indicator mui-active"></div>
+							<% for(var i=0;i<pic.length-1;i++){ %>
+						    	<div class="mui-indicator"></div>
+						    <% } %>
+			            </div>
 					</div>
 					<!--轮播图结束-->
 					<div class="farm clearfloat">
 						<div class="top rentingtop clearfloat box-s">
-							<p>
-								重庆乐百家家电维修服务有限公司
-							</p>
+							<p><%= list.name%></p>
 							<p class="time">
-								更新：2016-01-01&nbsp;15:42&nbsp;
-								浏览：413人
+								发布时间：<%= list.create_time%>
+								<!--浏览：413人-->
 							</p>
 						</div>
 						<div class="bottom clearfloat box-s">
 							<ul>
 								<li>
-									<p class="fl">区域：</p>
-									重庆江北区
+									<p class="fl">小区名称：</p>
+									<%= list.quarters%>
 								</li>
 								<li>
-									<p class="fl">售价：</p>
-									1500000
+									<p class="fl">小区地址：</p>
+									<%= list.area_address%>
 								</li>
 								<li>
+									<p class="fl">平均售价：</p>
+									<%= list.avg_price%>
+								</li>
+								<li>
+									<p class="fl">中介名称：</p>
+									<%= list.intermediary_name%>
+								</li>
+								<li>
+									<p class="fl">电话：</p>
+									<%= list.phone%>
+								</li> 
+								<li> 
 									<p class="fl">户型：</p>
-									三室两厅
+									<%= list.house_layout%>
+								</li>
+								<li>
+									<p class="fl">地址：</p>
+									<%= list.address%>
 								</li>
 								<li>
 									<p class="fl">面积：</p>
-									150㎡
+									<%= list.house_area%>
 								</li>
 								<li>
-									<p class="fl">联系电话：</p>
-									18888888888
+									<p class="fl">价格：</p>
+									<%= list.price%>
 								</li>
-								<li>
-									<p class="fl">联系人：</p>
-									李小姐
-								</li>
+								<%if(list.house_type){%>
+									<li>
+										<p class="fl">房间类型：</p>
+										<%= list.house_type%>
+									</li>
+								<%}%>
 							</ul>
 						</div>
 					</div>
@@ -153,13 +159,13 @@
 							<div class="merchant">
 								<div class="biz-detail">
 									<a class="react" href="#" title="">
-										<h5 class="title single-line">重庆江北区三室两厅</h5>
+										<h5 class="title single-line"><%= list.name%></h5>
 
-										<div class="address single-line">江北区区黄山路与怀宁路交口1912街区1号楼</div>
+										<div class="address single-line"><%= list.address%></div>
 									</a>
 								</div>
 								<div class="biz-call">
-									<a class="react phone" href="javascript:void(0);" tell="">
+									<a class="react phone" href="tel:<%= list.phone%>"> 
 										<i class="text-icon">✆</i>
 									</a>
 								</div>
@@ -168,30 +174,65 @@
 					</dl>							
 				</div>
 				<div class="farmtc clearfloat mt10">
-					<p class="bt box-s">服务简介</p>
+					<p class="bt box-s">房屋简介</p>
 				</div>
 				<div class="farm clearfloat">
 					<div class="top rentingtop clearfloat box-s">
-						<p>
-							重庆江北区兴园小区XXX栋11楼320对外销售，两室一厅一厨一卫，水电气齐全，冰箱洗衣机空调精装，领包入住。
-						</p>
+						<p><%= list.content%></p>
 					</div>					
 				</div>
-			</div>
+			</script>
 		</div>
 		
 		
 		
 	</body>
+	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		mui.init();
-		mui.ready(function() {
-			//轮播图
-			//获得slider插件对象
-			var gallery = mui('.mui-slider');
-			gallery.slider({
-				  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			//获取数据
+			var oldtoken = plus.storage.getItem('oldToken');
+			var nowid = plus.webview.currentWebview().name;
+			mui.ajax(serverUrl+'/api/localservice/houseinfo',{
+				data:{house_id:nowid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	               				
+				success:function(data){
+					//alert(mytoken);
+					console.log('获取数据返回'+JSON.stringify(data));
+					if(data.errno == 0){
+						var objdata = {};
+						console.log(data.data); 
+						data.data.create_time = data.data.create_time.split('T')[0]
+						objdata.list = data.data; 
+						
+						objdata.pic = JSON.parse(objdata.list.pic);//轮播图
+						console.log(objdata.pic);
+						var html=template("details",objdata);
+						document.getElementById("main").innerHTML=html;
+						plus.nativeUI.closeWaiting();
+						//轮播图
+						var gallery = mui('.mui-slider');
+						gallery.slider({
+						  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+						});
+					}else{
+						mui.toast('获取用户信息失败');
+						plus.nativeUI.closeWaiting();
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					alert('响应失败  !');
+				}
 			});
 		})
+		
+		
 	</script>
 </html>

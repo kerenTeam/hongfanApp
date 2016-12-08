@@ -91,20 +91,20 @@
 						    <!--支持循环，需要重复图片节点-->
 						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[0].banner%>"></a></div>
 						  </div>
-						 <!--<div class="mui-slider-indicator">
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator mui-active"></div>
-			            </div> -->
+			            <div class="mui-slider-indicator">
+							<div class="mui-indicator mui-active"></div>
+							<% for(var i=0;i<pic.length-1;i++){ %>
+						    	<div class="mui-indicator"></div>
+						    <% } %>
+			            </div>
 					</div>
 					<!--轮播图结束-->
 					<div class="farm clearfloat">
 						<div class="top rentingtop clearfloat box-s">
 							<p><%= list[0].name%></p>
 							<p class="time">
-								更新：<%= list[0].create_time%>
-								浏览：413人
+								发布时间：<%= list[0].create_time%>
+								<!--浏览：413人-->
 							</p>
 						</div>
 						<div class="bottom clearfloat box-s">
@@ -143,7 +143,7 @@
 									</a>
 								</div>
 								<div class="biz-call">
-									<a class="react phone" href="javascript:void(0);" tell="">
+									<a class="react phone" href="tel:<%= list[0].phone%>"> 
 										<i class="text-icon">✆</i>
 									</a>
 								</div>
@@ -181,10 +181,12 @@
 				headers:{"token":oldtoken},	               				
 				success:function(data){
 					//alert(mytoken);
-					console.log('获取用户数据返回'+JSON.stringify(data));
+					console.log('获取数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						var objdata = {};
-						objdata.list = data.data;
+						data.data[0].create_time = data.data[0].create_time.split('T')[0]
+						objdata.list = data.data; 
+						
 						objdata.pic = JSON.parse(objdata.list[0].pic);//轮播图
 						console.log(objdata.pic);
 						var html=template("details",objdata);

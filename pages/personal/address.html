@@ -113,7 +113,7 @@
 		    </div>
 		</script>
 		
-		<a href="add-address.html" class="address-add fl" id="addNewAd" onclick="addAd(<%= addressLi[0].user_id %>)">
+		<a href="javascript:;" class="address-add fl" id="addNewAd" onclick="addAd()">
      		添加新地址
      	</a>
      	
@@ -124,11 +124,9 @@
 			//添加刷新监听
 			document.addEventListener('refreshAd', function() {
 				RefreshAd();
-				alert("刷新")
+//				alert("刷新");
 				console.log('刷新数据');
 			})
-//			alert(JSON.stringify(plus.webview.currentWebview()));
-			
 			
 			//判断是否登录并获取缓存token
 			if(plus.storage.getItem('myToken')){
@@ -151,7 +149,8 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-	//					alert(JSON.stringify(data.data));
+//						alert(JSON.stringify(data.data[0].userid));
+						var userId = plus.storage.setItem("userid",JSON.stringify(data.data[0].userid));//userId做缓存
 						var addressObj = {};
 						addressObj.addressLi = data.data;
 						var html = template('addressList-detail',addressObj);
@@ -254,10 +253,9 @@
 							})
 						}
 						//点击添加地址跳转
-						window.addAd = function(userId){
+						window.addAd = function(){
 							openview({
-								view:'add-address.html',
-								extrasobj:{userId:userId}
+								view:'add-address.html'
 							});
 						}
 					},

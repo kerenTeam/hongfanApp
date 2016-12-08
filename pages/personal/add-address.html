@@ -105,7 +105,7 @@
 		    <div class="header-tit">
 				新增地址
 			</div>
-			<a href="#" class="fr baocun" onclick="save()">保存</a>
+			<a href="javascript:;" class="fr baocun" onclick="save()">保存</a>
 		</header>
 		<div id="container">
 		    <div id="main" class="mui-clearfix add-address">
@@ -184,7 +184,7 @@
 		mui.plusReady(function(){
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
-			var userId = plus.webview.currentWebview().userId;
+			var userId = plus.storage.getItem("userid");
 			
 //    		alert(userId);
 			//点击保存新增地址
@@ -197,24 +197,28 @@
 				var newProvince = document.getElementById('province').innerHTML;
 				var newCity = document.getElementById('city').innerHTML;
 				var newArea = document.getElementById('area').innerHTML;
+				//默认状态判断
+				if($('#acquiescence').hasClass('toggle--off')){
+					var newState = 0;
+				}else{
+					var newState = 1;
+				}
 				
 				var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 				if(!reg_phone.test(newPhone)){
 					$('#phone').focus(); 
 					mui.toast('请输入正确的手机号码 !');
+				}else if(newPerson == ''){
+					$('#person').focus(); 
+					mui.toast('收货人不能为空!');
+				}else if(newAddress == ''){
+					mui.toast('所在地区不能为空!');
 				}else if(newAddress == ''){
 					$('#newAddress').focus(); 
 					mui.toast('详细地址不能为空!');
 				}else{
 					
-					//默认状态判断
-					if($('#acquiescence').hasClass('toggle--off')){
-						var newState = 0;
-					}else{
-						var newState = 1;
-					}
-	//				alert(userId);
-
+					alert(userId);
 					mui.ajax(serverUrl+'/api/useraccount/addaddress',{
 						data:{userid: userId,person:newPerson,phone:newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state:newState,address:newAddress},
 						dataType:'json',
