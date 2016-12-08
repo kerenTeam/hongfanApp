@@ -21,27 +21,28 @@
 			<div class="header-tit">
 				购物车<span class="cartNum">(<span>0</span>)</span>
 			</div>
-			<a class="fr baocun editAll">编辑</a>
+			<a class="fr baocun editAll" id="bianji">编辑</a>
 		</header>
 		<div style="height:50px;"></div>
-		<div id="cartData"></div>
+		<div id="cartData"><mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark></div>
 		<script type="text/html" id="cartTpl">
 			<%if(goodsList.length==0){%>
-				<!--<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>-->
+				<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>
 				<%}else{%>
-					<%for(var i =0;i<cates.length;i++){%>
-						<dl class="cart"> 
-			<dt><div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
-				<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> <%=cates[i]%></div>
-  <a class="edit">| 编辑</a>
- </dt>
- 		<%for(var j =0;j<goodsList.length;j++){%>
- 			<% if(goodsList[j].shopName ==  cates[i]){%>
+						<%for(var i =0;i<cates.length;i++){%>
+							<dl class="cart"> 
+							<dt>
+								<div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
+								<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png"> <%=cates[i]%></div>
+							  	<a class="edit">| 编辑</a>
+						 	</dt>
+ 				<%for(var j =0;j<goodsList.length;j++){%>
+ 					<% if(goodsList[j].shopName ==  cates[i]){%>
 			<dd>
 				<div class="mui-checkbox"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>"  type="checkbox"></div>
 				<a class="goodsPic"><img src="<%=goodsList[j].goodsImg%>" /></a>
 				<div class="goodsInfor">
-					<h2>
+					<h2> 
     <a><%=goodsList[j].goodsName%></a>
     <span class="num"><%=goodsList[j].goodsnum%></span>
    </h2>
@@ -65,46 +66,49 @@
 			<%}%>
 		</dl>
 						<%}%>
-					<%}%>
-		</script>
-		
-
-		<!--bottom nav-->
+							<!--bottom nav-->
 		<div style="height:1rem;"></div>
-		<aside class="btmNav">
-			<a style="position: relative;">
+		<aside class="btmNav" id="dibu">
+			<a class="dp" style="position: relative;">
 				<div class="mui-checkbox botCheck"><input name="checkbox" id="totalCheck" type="checkbox"></div>合计：￥<span class="totalMoney">0</span></a>
-			<a class="goOrder" style="background:#f53c42;color:white;text-shadow:none;">立即下单<span class="totalVisi">(<span class="totalNum">0</span>)</span>
+			<a class="goOrder dp" style="background:#f53c42;color:white;text-shadow:none;">立即下单<span class="totalVisi">(<span class="totalNum">0</span>)</span>
 			</a>
 			<a class="delBtnAll" style="background:#ff6910;color:white;text-shadow:none;display: none;">删除</span>
 			</a>
 		</aside>
+					<%}%>
+		</script>
+		
+
+	
 
 		<script type="text/javascript" src="../js/jquery_cart.js"></script>
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		 
 	</body>
-	<script>
-	
-			mui.init()
-	mui.plusReady(function(){
+	<script> 
+	mui.plusReady(function(){ 
 		window.addEventListener('refresh',function(event){ 
-					cartload();
-				});
+	   		alert(1);
+			cartload(); 
+		});
 				 
-    				cartload();
-				 
+	cartload();
     function cartload(){
     	//购物车 缓存 
-        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
+        
+     
+//      console.log(cartStorage.length)
        //订单缓存
         var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]'); 
-        console.log(cartStorage.length+" "+plus.storage.getItem('$cartStorage'));
-        console.log(orderStorage.length); 
-         
-        	 var data = {};
-			data.goodsList = cartStorage;
+//      console.log(cartStorage.length+" "+plus.storage.getItem('$cartStorage'));
+//      console.log(orderStorage.length);
+       
+       
+        	var data = {};
+			data.goodsList = cartStorage; 
 			var arr = [];
 			for(var i = 0; i < cartStorage.length; i++) {
 				arr.push(cartStorage[i].shopName);
@@ -113,8 +117,20 @@
 			var html2 = template('cartTpl', data);
 			document.getElementById('cartData').innerHTML = html2;
         	mui(".mui-numbox").numbox();
-         
-       	var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;'>购物车为空！</mark>"
+         	   if(cartStorage.length==0){//没有隐藏
+        	alert('没有缓存'); 
+        	mui('#bianji')[0].style.display = 'none';
+        	mui('#dibu')[0].style.display = 'none';
+//      	$(".editAll").css("display","none");
+//      	$(".btmNav").css("display","none");
+        }else{ 
+        	alert('有缓存');
+        	mui('#bianji')[0].style.display = 'inline-block';
+        	mui('#dibu')[0].style.display = '-webkit-box';
+//      	 $(".editAll").css("display","block");  
+//      	  $(".goOrder").css("display","block");  
+        } 
+       	var tipsCont = "<mark style='display:block;background:none;text-align:center;color:grey;padding-top: 30%;'>购物车为空！</mark>"
 				//计算购物车数量
 			ddAll();
 
@@ -155,10 +171,9 @@
 				var delThis=$(this);
 				var delID=$(this).attr("data-id");
 				var deltext=$(this).attr("data-goodstext");
-				mui.confirm('确认删除这件商品吗？', '客官', ['取消', '确定'], function(e) {
+				mui.confirm('确认删除这件商品吗？', '提示', ['取消', '确定'], function(e) {
 						if(e.index == 1) {  
-							var curCart = delThis.parentsUntil("#cartData");
-							delThis.parent().remove(); 
+							
 							//删除这一条缓存
 						    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
 							for(var i=0;i<cartStorage.length;i++){
@@ -166,28 +181,33 @@
 									cartStorage.splice(i, 1);
 								}
 							}
+							plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+							var curCart = delThis.parentsUntil("#cartData");
+							delThis.parent().remove(); 
 							//判断该组商品是否删除完 
 							if(curCart.find("dd").length == 0) {
-								$(curCart).remove();
-								if($('.cart').length == 0) {
+								 curCart.remove(); 
+								if($('.cart').length==0) {
+									 alert($('.cart').length)
 									$('aside input').attr("checked", false);
-									//$("body").append(tipsCont);
+									mui('#bianji')[0].style.display = 'none';
+        							mui('#dibu')[0].style.display = 'none';
+									mui('#cartData')[0].innerHTML = tipsCont;
 								}
 							}
 							ddAll();
 							countFuc();
-							plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
 						}
 
 				}) 
 			});
 			//删除选中的全部 
-			$(".delBtnAll").click(function() {
+			$(".delBtnAll")[0].onclick = function() { 
 				var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
 				if(ALLcheckLength == 0) {
 					mui.toast("您还未选择要删除的商品哦！")
-				} else { 
-					mui.confirm('确认删除这' + ALLcheckLength + '件商品吗？', '客官', ['取消', '确定'], function(e) {
+				} else {  
+					mui.confirm('确认删除这' + ALLcheckLength + '件商品吗？', '提示', ['取消', '确定'], function(e) {
 						if(e.index == 1) {
 							var delThis = $("dd").find("input[type='checkbox']:checked").parentsUntil("dl");
 							//删除选中的 购物车 缓存 
@@ -200,11 +220,17 @@
 									if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText ){
 										cartStorage.splice(i, 1);
 									}
-								}
+								} 
 								plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-							})  
+							})
 							delThis.remove();
 							allCart();
+							if($('.cart').length==0){
+								$('aside input').attr("checked", false);
+									mui('#bianji')[0].style.display = 'none';
+        							mui('#dibu')[0].style.display = 'none';
+									mui('#cartData')[0].innerHTML = tipsCont;
+							}
 							ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
 
 							ddAll();
@@ -212,17 +238,14 @@
 							if(ALLcheckLength == 0) {
 								$('aside input').attr("checked", false);
 
-							}
-							if($('dd').length == 0) {
-								//$("body").append(tipsCont);
-							}
+							} 
 							
-						}
+						} 
 
 					})
 				}
 
-			});
+			};
 			//遍历 单组下面的商品
 			function allCart() {
 				$(".cart").each(function() {
@@ -334,14 +357,14 @@
 			goOrder.addEventListener("tap", function() {
 				var ALLcheckLength = $("dd").find("input[type='checkbox']:checked").length;
 				if(ALLcheckLength == 0) {
-					mui.toast("您还未选择要删除的商品哦！")
+					mui.toast("您还未选择要购买的商品哦！")
 				} else {
-					//mui.toast("您选中了" + ALLcheckLength + "件商品")
-					orderStorage =[];
-        			orderStorage.push(cartObj);
-        			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
+					  mui.toast("您选中了" + ALLcheckLength + "件商品")
+ 					orderStorage =[];
+//      			orderStorage.push(cartObj);
+//      			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
         			openview({
-					 	view:"market-order.html", 
+					 	view:"market/market-order.html", 
 					 })
 				}
 			})
