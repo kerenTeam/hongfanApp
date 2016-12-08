@@ -119,6 +119,9 @@
 				border-bottom: 1px solid #eee;
 				margin: 10px;
 			}
+			.Cli:last-child{
+				border-bottom: none;
+			}
 			.zuo{
 				color: #000 !important;
 			}
@@ -630,7 +633,7 @@
 		                    		})  
 		                    		
 		                    		//当前商品对象
-										var cartObj={};
+									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
 		                    		cartObj.shopName=shopName;
 		                    		cartObj.storeid=storeid;
@@ -672,13 +675,25 @@
 									mui.fire(list,'refresh'); 
 
 		                    		}else{
-		                    			orderStorage =[];
-		                    			orderStorage.push(cartObj);
-		                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-		                    			alert(plus.storage.getItem("$orderStorage"))
-		                    			openview({
-										 	view:"market-order.html", 
-										 })
+		                    			
+		                    			if(plus.storage.getItem('myToken')){ 
+											orderStorage =[];
+			                    			orderStorage.push(cartObj);
+			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
+			                    			//alert(plus.storage.getItem("$orderStorage"));
+			                    			
+			                    			openview({
+											 	view:"market-order.html", 
+											 })
+										}else{//没登陆直接打开登录页面
+											mui.toast('请登录');
+											openview({
+												view:'../login.html'
+											});
+										}
+		                    			
+		                    			
+		                    			
 		                    		}
 		                    		
 		                    		
