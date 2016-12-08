@@ -14,9 +14,17 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
 		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
+		<style type="text/css">
+			.coupons .list .right {
+				padding: 4% 0 5% 3%;
+			}
+		</style>
 	</head>
 	<body>
 		<!--header star-->
@@ -39,49 +47,42 @@
 					</div>
 					<div class="tab-bd">
 						<div class="tab-pal">
-							<div class="coupons clearfloat box-s">
-								<div class="list clearfloat fl">
-									<div class="left clearfloat fl">
-										<span>¥</span>10
-									</div>
-									<div class="right clearfloat fl box-s">
-										<p class="tit">
-											单笔订单满100元使用
-										</p>
-										<p class="time">
-											有效时间：2016.11.01-2016.11.30
-										</p>
-									</div>
-								</div>
-								<div class="list clearfloat fl">
-									<div class="left clearfloat fl">
-										<span>¥</span>10
-									</div>
-									<div class="right clearfloat fl box-s">
-										<p class="tit">
-											单笔订单满100元使用
-										</p>
-										<p class="time">
-											有效时间：2016.11.01-2016.11.30
-										</p>
-									</div>
-								</div>
-								<div class="list clearfloat fl">
-									<div class="left leftwo clearfloat fl">
-										<span>¥</span>10
-									</div>
-									<div class="right clearfloat fl box-s">
-										<p class="tit">
-											单笔订单满100元使用
-										</p>
-										<p class="time">
-											有效时间：2016.11.01-2016.11.30
-										</p>
-									</div>
-								</div>
-							</div>
+							<div class="coupons clearfloat box-s" id="allC"></div>
 						</div>
-						<div class="tab-pal">
+						<script type="text/html" id="allC-detail">
+							<% for(var i=0;i<allLi.length;i++){ %>
+								<div class="list clearfloat fl">
+									<% if(allLi[i].user_coupon_state == 1){ %>
+										<div class="left clearfloat fl">
+											<% if(allLi[i].type_id == 2){ %>
+												<%= allLi[i].discount*10 %><span>折</span>
+											<% }else if(allLi[i].type_id == 1){ %>
+												<span>¥</span><%= allLi[i].coupon_amount %>
+											<% }else{ %>
+												<%= allLi[i].coupon_amount %>
+											<% } %>
+										</div>
+									<% }else{ %>
+										<div class="left leftwo clearfloat fl">
+											<% if(allLi[i].type_id == 2){ %>
+												<%= allLi[i].discount*10 %><span>折</span>
+											<% }else{ %>
+												<span>¥</span><%= allLi[i].coupon_amount %>
+											<% } %>
+										</div>
+									<% } %>
+									<div class="right clearfloat fl box-s">
+										<p class="tit">
+											<%= allLi[i].name %>
+										</p>
+										<p class="time">
+											有效时间：<%= allLi[i].create_time.split('T')[0] %>到<%= allLi[i].vaild_date %>
+										</p>
+									</div>
+								</div>
+							<% } %>
+						</script>
+						<!--<div class="tab-pal">
 							<div class="coupons clearfloat box-s">
 								<div class="list clearfloat fl">
 									<div class="left clearfloat fl">
@@ -90,6 +91,9 @@
 									<div class="right clearfloat fl box-s">
 										<p class="tit">
 											单笔订单满100元使用
+										</p>
+										<p class="time">
+											有效时间：2016.11.01-2016.11.30
 										</p>
 										<p class="time">
 											有效时间：2016.11.01-2016.11.30
@@ -110,7 +114,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</div>-->
 						<div class="tab-pal">
 							<div class="coupons clearfloat box-s">
 								<div class="list clearfloat fl">
@@ -135,6 +139,45 @@
 		<script src="../../js/jquery.SuperSlide.2.1.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });
+		</script>
+		
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				//判断是否登录并获取缓存token
+				if(plus.storage.getItem('myToken')){
+					var oldToken = plus.storage.getItem('oldToken');
+				}else{
+					mui.toast('请登录！');
+					openview({
+						view:'../login.html'
+					})
+				}
+				var userId = plus.storage.getItem("userid");
+	
+				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
+					data:{userid : userId},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						alert(JSON.stringify(data.data));
+						alert(JSON.parse(data.data[2].salerule));
+						var data.data[2].salerule = eval("("+ data.data[2].salerule +"")
+						var allC = {};
+						allC.allLi = data.data;
+						var html = template('allC-detail',allC);
+						document.getElementById('allC').innerHTML = html;
+						
+					},
+					error:function(xhr,type,errorThrown){
+						alert('响应失败  !');
+					}
+				});
+			})();
+			
+			
 		</script>
 	</body>
 </html>
