@@ -10,7 +10,7 @@
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
-		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text.plist ul li/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<!--App自定义的css-->
@@ -62,9 +62,12 @@
 			#showCityPicker3{
 				position: absolute;
 				right: 10px;
-				line-height: 50px;
+				line-height: 49px;
 				border: none;
 				padding: 0;
+			}
+			.data ul li span{
+				line-height: 49px;
 			}
 			.ui-alert{
 				padding: 0;
@@ -72,6 +75,26 @@
 				text-align: left;
 				text-indent: 20px;
 				font-size: 16px;
+			}
+			.data ul li .shuru{
+				line-height: 16px;
+				text-align: left;
+				width: 76%;
+				height: 49px;
+			}
+			.data ul li{
+				height: 50px;
+			}
+			.plist ul li{
+				border-bottom: 1px solid #efeff4;
+			}
+			.address-btn{
+				border-top: none;
+				border-bottom: none;
+				margin-top: 4%;
+			}
+			.add-address .textare{
+				border-bottom: none;
 			}
 		</style>
 	</head>
@@ -142,12 +165,17 @@
 					var thisAddArray = data.data;
 					for (var k = 0; k < thisAddArray.length; k++) {
 						if(thisAddArray[k].id == adId){
-							$('#person').attr('value',thisAddArray[k].nickname);
+//							alert(JSON.stringify(thisAddArray[k]));
+							$('#person').attr('value',thisAddArray[k].person);
 							$('#phone').attr('value',thisAddArray[k].phone);
-							$('#address').attr('placeholder',thisAddArray[k].address);
-							$('#province').html(thisAddArray[k].province);
-							$('#city').html(thisAddArray[k].city);
+							$('#address').html(thisAddArray[k].address);
+							$('#province').html(thisAddArray[k].province + " ");
+							$('#city').html(thisAddArray[k].city + " ");
 							$('#area').html(thisAddArray[k].area);
+							if(thisAddArray[k].state==1){
+								$('#acquiescence').removeClass('toggle--on');
+								$('#acquiescence').addClass('toggle--off');
+							}
 							
 							//点击保存修改地址
 							window.save = function(){
@@ -160,9 +188,9 @@
 //								alert($('#acquiescence').attr('class'));
 								//默认状态判断
 								if($('#acquiescence').hasClass('toggle--off')){
-									var newState = 0;
-								}else{
 									var newState = 1;
+								}else{
+									var newState = 0;
 								}
 								var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 								if(!reg_phone.test(newPhone)){
@@ -181,10 +209,8 @@
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){
 											alert("保存成功！");
-											openview({
-												view:'address.html',
-												extrasobj:{userId:userId}
-											});
+											plus.webview.currentWebview().close();//关闭当前页面
+											mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
 										},
 										error:function(xhr,type,errorThrown){
 											alert('响应失败  !');
@@ -217,9 +243,9 @@
 				var cityResult3 = doc.getElementById('cityResult3');
 				showCityPickerButton.addEventListener('tap', function(event) {
 					cityPicker3.show(function(items) {
-						doc.getElementById('province').innerText = (items[0] || {}).text;
-						doc.getElementById('city').innerText =  (items[1] || {}).text;
-						doc.getElementById('area').innerText = (items[2] || {}).text;
+						doc.getElementById('province').innerText = (items[0] || {}).text + " ";
+						doc.getElementById('city').innerText =  (items[1] || {}).text + " ";
+						doc.getElementById('area').innerText = (items[2] || {}).text + " ";
 						//返回 false 可以阻止选择框的关闭
 						//return false;
 					});
