@@ -65,6 +65,8 @@
 				line-height: 49px;
 				border: none;
 				padding: 0;
+				text-align: right;
+				width: 20%;
 			}
 			.data ul li span{
 				line-height: 49px;
@@ -176,7 +178,6 @@
 								$('#acquiescence').removeClass('toggle--on');
 								$('#acquiescence').addClass('toggle--off');
 							}
-							
 							//点击保存修改地址
 							window.save = function(){
 								var newPerson = document.getElementById('person').value;
@@ -185,7 +186,6 @@
 								var newProvince = document.getElementById('province').innerHTML;
 								var newCity = document.getElementById('city').innerHTML;
 								var newArea = document.getElementById('area').innerHTML;
-//								alert($('#acquiescence').attr('class'));
 								//默认状态判断
 								if($('#acquiescence').hasClass('toggle--off')){
 									var newState = 1;
@@ -200,15 +200,15 @@
 									$('#newAddress').focus(); 
 									mui.toast('详细地址不能为空!');
 								}else{
-//									alert(adId);
+									//修改地址
 									mui.ajax(serverUrl+'/api/useraccount/updateaddress',{
-										data:{person: newPerson,phone: newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state: newState,address: newAddress,address_id:adId},
+										data:{userid:userId,person: newPerson,phone: newPhone,province:newProvince,city:newCity,area:newArea,x_y:'123.354,56.89',state: newState,address: newAddress,address_id:adId},
 										dataType:'json',
 										type:'post',
 										timeout:1000,
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){
-											alert("保存成功！");
+											alert("修改地址成功");
 											plus.webview.currentWebview().close();//关闭当前页面
 											mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
 										},
