@@ -194,6 +194,9 @@
 			.qrcode img{
 				width: 100%;
 			}
+			.activeImg img{
+				width: 40%;
+			}
 		</style>
 	</head>
 	<body>
@@ -228,41 +231,49 @@
 						<!--全部-->
 						<script type="text/html" id="allC-detail">
 							<% for(var i=0;i<allLi.length;i++){ %>
-								<div class="list clearfloat fl">
+								<div class="list clearfloat fl" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)">
 									<% if(allLi[i].user_coupon_state == 1){ %>
-										<div class="left clearfloat fl">
-											<% if(allLi[i].type_id == 2){ %>
+										<% if(allLi[i].typeid == 2){ %>
+											<div class="left clearfloat fl">
 												<%= allLi[i].discount*10 %><span>折</span>
-											<% }else if(allLi[i].type_id == 1){ %>
+											</div>
+										<% }else if(allLi[i].typeid == 1){ %>
+											<div class="left clearfloat fl">
 												<span>¥</span><%= allLi[i].coupon_amount %>
-											<% }else{ %>
-												<%= allLi[i].coupon_amount %>
-											<% } %>
-										</div>
+											</div>
+										<% }else{ %>
+											<div class="left clearfloat fl activeImg">
+												<img src="../../img/active.png"/>
+											</div>
+										<% } %>
 									<% }else{ %>
-										<div class="left leftwo clearfloat fl">
-											<% if(allLi[i].type_id == 2){ %>
+										<% if(allLi[i].typeid == 2){ %>
+											<div class="left leftwo clearfloat fl">
 												<%= allLi[i].discount*10 %><span>折</span>
-											<% }else{ %>
+											</div>
+										<% }else if(allLi[i].typeid == 1){ %>
+											<div class="left leftwo clearfloat fl">
 												<span>¥</span><%= allLi[i].coupon_amount %>
-											<% } %>
-										</div>
+											</div>
+										<% }else{ %>
+											<div class="left leftwo clearfloat fl activeImg">
+												<img src="../../img/active.png"/>
+											</div>
+										<% } %>
 									<% } %>
 									<div class="right clearfloat fl box-s">
 										<p class="tit">
 											<%= allLi[i].name %>
 										</p>
-										<% if(allLi[i].type_id == 3){ %>
-											<p class="time">
-												<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
-													满<%= allLi[i].salerule.rule1 %>可使用活动券抵扣<%= allLi[i].salerule.rule2 %>
-												<%} %>
-											</p>
-										<% }else{ %>
-											<p class="time">&nbsp;</p>
-										<% } %>
 										<p class="time">
-											有效时间：<%= allLi[i].create_time.split('T')[0] %>到<%= allLi[i].vaild_date %>
+											<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
+												满<%= allLi[i].salerule1 %>可使用活动券抵扣<%= allLi[i].salerule2 %>
+											<%}else{%>
+												无限制
+											<%} %>
+										</p>
+										<p class="time">
+											有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
 										</p>
 									</div>
 									<div class="qrcode mui-content-padded">
@@ -275,31 +286,33 @@
 						<script type="text/html" id="ableC-detail">
 							<% for(var i=0;i<allLi.length;i++){ %>
 								<% if(allLi[i].user_coupon_state == 1){ %>
-									<div class="list clearfloat fl">
-										<div class="left clearfloat fl">
-											<% if(allLi[i].type_id == 2){ %>
+									<div class="list clearfloat fl" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)">
+										<% if(allLi[i].typeid == 2){ %>
+											<div class="left clearfloat fl">
 												<%= allLi[i].discount*10 %><span>折</span>
-											<% }else if(allLi[i].type_id == 1){ %>
+											</div>
+										<% }else if(allLi[i].typeid == 1){ %>
+											<div class="left clearfloat fl">
 												<span>¥</span><%= allLi[i].coupon_amount %>
-											<% }else{ %>
-												<%= allLi[i].coupon_amount %>
-											<% } %>
-										</div>
+											</div>
+										<% }else{ %>
+											<div class="left clearfloat fl activeImg">
+												<img src="../../img/active.png"/>
+											</div>
+										<% } %>
 										<div class="right clearfloat fl box-s">
 											<p class="tit">
 												<%= allLi[i].name %>
 											</p>
-											<% if(allLi[i].type_id == 3){ %>
-												<p class="time">
-													<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
-														满<%= allLi[i].salerule.rule1 %>可使用活动券抵扣<%= allLi[i].salerule.rule2 %>
-													<%} %>
-												</p>
-											<% }else{ %>
-												<p class="time">&nbsp;</p>
-											<% } %>
 											<p class="time">
-												有效时间：<%= allLi[i].create_time.split('T')[0] %>到<%= allLi[i].vaild_date %>
+												<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
+													满<%= allLi[i].salerule1 %>可使用活动券抵扣<%= allLi[i].salerule2 %>
+												<%}else{%>
+													无限制
+												<%} %>
+											</p>
+											<p class="time">
+												有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
 											</p>
 										</div>
 										<div class="qrcode mui-content-padded">
@@ -313,35 +326,37 @@
 						<script type="text/html" id="disableC-detail">
 							<% for(var i=0;i<allLi.length;i++){ %>
 								<% if(allLi[i].user_coupon_state == 0){ %>
-									<div class="list clearfloat fl">
-										<div class="left  leftwo clearfloat fl">
-											<% if(allLi[i].type_id == 2){ %>
+									<div class="list clearfloat fl" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)">
+										<% if(allLi[i].typeid == 2){ %>
+											<div class="left leftwo clearfloat fl">
 												<%= allLi[i].discount*10 %><span>折</span>
-											<% }else if(allLi[i].type_id == 1){ %>
+											</div>
+										<% }else if(allLi[i].typeid == 1){ %>
+											<div class="left leftwo clearfloat fl">
 												<span>¥</span><%= allLi[i].coupon_amount %>
-											<% }else{ %>
-												<%= allLi[i].coupon_amount %>
-											<% } %>
-										</div>
+											</div>
+										<% }else{ %>
+											<div class="left leftwo clearfloat fl activeImg" >
+												<img src="../../img/active.png"/>
+											</div>
+										<% } %>
 										<div class="right clearfloat fl box-s">
 											<p class="tit">
 												<%= allLi[i].name %>
 											</p>
-											<% if(allLi[i].type_id == 3){ %>
-												<p class="time">
-													<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
-														满<%= allLi[i].salerule.rule1 %>可使用活动券抵扣<%= allLi[i].salerule.rule2 %>
-													<%} %>
-												</p>
-											<% }else{ %>
-												<p class="time">&nbsp;</p>
-											<% } %>
 											<p class="time">
-												有效时间：<%= allLi[i].create_time.split('T')[0] %>到<%= allLi[i].vaild_date %>
+												<% if(allLi[i].salerule!=null && allLi[i].salerule!=''){ %>
+													满<%= allLi[i].salerule1 %>可使用活动券抵扣<%= allLi[i].salerule2 %>
+												<%}else{%>
+													无限制
+												<%} %>
+											</p>
+											<p class="time">
+												有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
 											</p>
 										</div>
 										<div class="qrcode mui-content-padded">
-											<img src="../../img/21.jpg" data-preview-src="" data-preview-group="1" />
+											<img src="<%= allLi[i].qrcode %>" data-preview-src="" data-preview-group="1" />
 										</div>
 									</div>
 								<% } %>
@@ -395,7 +410,8 @@
 					})
 				}
 				var userId = plus.storage.getItem("userid");
-	
+				
+				console.log(oldToken);
 				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
 					data:{userid : userId},
 					dataType:'json',
@@ -403,19 +419,17 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-//						alert(JSON.stringify(data.data));
-//						alert(eval("("+ data.data[2].salerule +")").rule[0]);
-						for(var m=0; m < data.data.length; m++){ 
-							alert(1)
+ 
+//						alert(JSON.stringify(data));
+						for(var m=0; m < data.data.length; m++){  
 							if(data.data[m].salerule==null){
 							 	data.data[m].salerule=null;
 							}else{	
-								data.data[m].salerule.rule1= eval("("+ data.data[m].salerule +")").rule[0];
-								data.data[m].salerule.rule2= eval("("+data.data[m].salerule+")").rule[1];
+								data.data[m].salerule1= eval("("+ data.data[m].salerule +")").overflowValue;
+								data.data[m].salerule2= eval("("+data.data[m].salerule+")").cutValue;
 							}
 							 
 						}   
-//						var data.data[2].salerule = eval("("+ data.data[2].salerule +"")
 						var allC = {};
 						allC.allLi = data.data;
 						var html = template('allC-detail',allC);
@@ -424,15 +438,21 @@
 						document.getElementById('ableC').innerHTML = html2;
 						var html3 = template('disableC-detail',allC);
 						document.getElementById('disableC').innerHTML = html3;
-						
+
+						//点击进入券的详情
+						window.Cdetail = function(Cid){
+							openview({
+								view:'coupon-detail.html',
+								extrasobj:{couponId:Cid}
+							});
+						}
 					},
 					error:function(xhr,type,errorThrown){
 						alert('响应失败  !');
 					}
 				});
+				
 			})();
-			
-			
 		</script>
 	</body>
 </html>
