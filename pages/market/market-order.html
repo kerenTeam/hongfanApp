@@ -286,7 +286,7 @@
 								</div>
 							</li>
 							<%}else{%>
-							<li onclick="goAddr()">
+							<li onclick="goAddr()" data-id="<%=obj[0].id%>">
 								<div class="mui-row orderRow">
 									<div class="mui-col-sm-1 mui-col-xs-1">
 										<span class="mui-icon mui-icon-location middle-icon"></span>
@@ -314,7 +314,7 @@
 							</dd>
 							<%for(var j =0;j<goodsList.length;j++){%>
 							<% if(goodsList[j].shopName ==  cates[i]){%>
-							<dd class="dd-padding kv-line-r mui-row goodsWrap" onclick="goInfo('<%=goodsList[j].goodsId%>')">
+							<dd class="dd-padding kv-line-r mui-row goodsWrap"> <!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
 								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=goodsList[j].goodsImg%>"/></h6>
 								<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8 goods">
 									<p>
@@ -331,7 +331,12 @@
 							<%}%>
 							<dd class="dd-padding kv-line-r">
 								<h6>配送方式</h6>
-								<p class="jifen">快递 免邮</p>
+								<%if(arrpostFee[i]==0){%>
+									<p class="jifen">快递 免邮</p>
+									<%}else{%>
+										<p class="jifen">快递<%=arrpostFee[i]%>元</p>
+										<%}%>
+								
 							</dd>
 
 							<dd class="dd-padding kv-line-r mui-row tipsWrap">
@@ -343,7 +348,7 @@
 							<dd class="kv-line-r dd-padding priceWrap">
 								<p>
 									<sub>共计<span class="groupNum"><%=arrNum[i]%></span>件商品&nbsp;&nbsp;小计:<b style="color: #ff5f32;">￥</b></sub>
-									<span class="J_total-price groupMoney"><%=arrMoney[i]%></span>
+									<span class="J_total-price groupMoney" data-id="<%=arrpostFee[i]%>"><%=arrMoney[i]%></span>
 								</p>
 							</dd>
 						</dl>
@@ -371,9 +376,9 @@
 										</dd>
 										<%}else{%>
 											<dd class="dd-padding kv-line-r">
-												<h6>使用积分：</h6>
-												<p class="jifen">无可用积分</p>
-											</dd>
+											<h6>无可用积分</h6>
+												<div class="mui-checkbox"><input name="checkbox" disabled class="groupCheck" type="checkbox"></div>
+										</dd>
 											<%}%>
 									
 								</script>
@@ -392,20 +397,24 @@
 	<script src="../../js/app.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
-		function goInfo(gid) {
-			openview({
-				view: "mall-detail.html",
-				extrasobj: {
-					goodsId: gid
-				}
-			})
-		}
+//		function goInfo(gid) {
+//			openview({
+//				view: "mall-detail.html",
+//				extrasobj: {
+//					goodsId: gid
+//				}
+//			})
+//		}
+		var myuserid;
 		mui.plusReady(function() {
+			window.addEventListener('readdstorage', function(event) {
+				orderAdd()
+			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
 			//alert(plus.storage.getItem('$orderStorage'))
 				//获取缓存
-			var myuserid = plus.storage.getItem('userid');
+			  myuserid = plus.storage.getItem('userid');
 			console.log(myuserid)
 			var oldtoken = plus.storage.getItem('oldToken');
 
@@ -414,7 +423,10 @@
 				width: '100px',
 				height: '80px'
 			});
-			mui.ajax(serverUrl + '/api/useraccount/addresslist', {
+			
+			orderAdd();
+			function orderAdd(){
+				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
 				data: {
 					userid: myuserid,
 					state: 1
@@ -426,21 +438,44 @@
 					"token": oldtoken
 				},
 				success: function(data, type, xhr) {
-					if(data.errno == 0) {
+					if(data.errno == 0) { 
 						plus.nativeUI.closeWaiting()
 						//alert(JSON.stringify(data.data))
-						var addrObj = {}
-						addrObj.obj = data.data;
+						var addrObj = {};
+						if(plus.storage.getItem("$addressStorage")){
+							alert(plus.storage.getItem("$addressStorage"))
+							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
+						}else{
+							addrObj.obj = data.data; 
+						}
+							
 						document.getElementById("add_info").innerHTML = template("addrTpl", addrObj);
+						plus.storage.removeItem("$addressStorage")
 						//订单数据模板
 						var data = {};
 						data.goodsList = orderStorage;
-						var arr =[],arrNum=[],arrMoney =[];
+						var arr =[],arrNum=[],arrMoney =[],arrpostFee=[];
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
 						//alert(arr.length)
 						data.cates = arr.unique1();
+						 
+						for(var i= 0;i<data.cates.length;i++){
+							//分组小计
+							var groupPostfee=0;
+							 for(var j = 0;j<orderStorage.length;j++){
+							 	 
+							 	if(orderStorage[j].goodsPostfee!=0){
+							 		groupPostfee=orderStorage[j].goodsPostfee;
+							 		break;
+							 	}else{
+							 		groupPostfee = 0;
+							 	}
+							 }
+							 arrpostFee.push(groupPostfee);
+						}
+						 
 						for(var i= 0;i<data.cates.length;i++){
 							//分组小计
 							var groupNum=0,groupMoney=0;
@@ -449,10 +484,12 @@
 							 		groupNum+=parseFloat(orderStorage[j].goodsnum);
 							 		groupMoney+=parseFloat(orderStorage[j].goodsPrice)*parseFloat(orderStorage[j].goodsnum); 
 							 	} 
-							 }
+							 } 
 							 arrNum.push(groupNum);
-							 arrMoney.push(groupMoney);
+							 arrMoney.push(parseFloat(groupMoney)+parseFloat(arrpostFee[i]));
 						}
+
+						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
 						data.arrMoney=arrMoney;
 						var html = template('orderData', data);
@@ -460,7 +497,8 @@
 						 //订单总价
 						 var totalPay=0;
 						 $(".groupMoney").each(function(){
-						 	totalPay+=parseFloat($(this).html())
+						 	
+						 	totalPay+=parseFloat($(this).html());
 						 })
 						 $("#submit_order").html(totalPay)
 					}
@@ -471,6 +509,9 @@
 					mui.toast("网络不好请重试")
 				}
 			});
+			}
+			
+			
 			//获取积分
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 				data:{"userid":myuserid},
@@ -482,6 +523,10 @@
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						   intergral = data.data[0].intergral;
+						  // alert(intergral)
+						   if(intergral==null){
+						   	intergral=0;
+						   }
 						 document.getElementById("coupon").innerHTML=template('couponTpl', {intergral:intergral});
 					}else{
 						mui.toast('获取用户信息失败');
@@ -503,13 +548,49 @@
 				}
 			});
 			
+			//获取抵用券
+			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
+					data:{userid : myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){
+						alert(JSON.stringify(data));
+//						alert(eval("("+ data.data[2].salerule +")").rule[0]);
+						for(var m=0; m < data.data; m++){ 
+							alert(1)
+							if(data.data[m].salerule==null){
+							 	data.data[m].salerule=null;
+							}else{	
+								data.data[m].salerule.rule1= eval("("+ data.data[m].salerule +")").rule[0];
+								data.data[m].salerule.rule2= eval("("+data.data[m].salerule+")").rule[1];
+							}
+							 
+						}   
+//						var data.data[2].salerule = eval("("+ data.data[2].salerule +"")
+						var allC = {};
+						allC.allLi = data.data;
+						var html = template('allC-detail',allC);
+						document.getElementById('allC').innerHTML = html;
+						var html2 = template('ableC-detail',allC);
+						document.getElementById('ableC').innerHTML = html2;
+						var html3 = template('disableC-detail',allC);
+						document.getElementById('disableC').innerHTML = html3;
+						
+					},
+					error:function(xhr,type,errorThrown){
+						alert('响应失败  !');
+					}
+				});
+			
 		})
 		
 		//进入地址页面
 		function goAddr(){ 
 			openview({
 				view:"../personal/address.html",
-				extrasobj:{pageid:"market-order"}
+				extrasobj:{pageid:"market-order",userId:myuserid}
 			})
 		}
 		//goPay
