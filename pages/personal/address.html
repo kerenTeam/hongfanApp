@@ -51,6 +51,9 @@
 			.addlist .top{
 				border-bottom: 1px solid #efeff4 !important;
 			}
+			.adhover:hover{
+				background-color: #eee;
+			}
 		</style>
 	</head>
 	<body>
@@ -117,19 +120,7 @@
      	</a>
      	
 	    <script type="text/javascript">
-		 mui.init({
-				beforeback: function() {
-		
-					//获得列表界面的webview
-					var list = plus.webview.getWebviewById('market-order'); 
-						mui.fire(list,'refreshaddressstorage');
-						// mui.fire(list,'refreshBySigin'); 
-						//按返回键添加自定义监听关闭父页面遮罩 
-						var personal = plus.webview.getWebviewById('personal.html');
-						mui.fire(personal,'addMaskhide');
-						return true;
-				}
-			});
+		 
 	
 		mui.plusReady(function(){
 			
@@ -172,7 +163,9 @@
 						
 						if(pageid){ 
 							$(".addlist .bottom").css("display","none");
-							$(".addlist").click(function(){  
+							$(".addlist").click(function(){
+								$(this).css("background","#eee")
+								$(this).addClass("adhover")
 								var addressStorage = JSON.parse(plus.storage.getItem('$addressStorage') || '[]');
 								var defultAddress ={};
 									defultAddress.id = $(this).attr("data-addid");
@@ -191,7 +184,7 @@
 								 var list = plus.webview.getWebviewById('market/market-order.html');  
  									plus.webview.currentWebview().close();//关闭当前页面
 								 	mui.fire(list,'readdstorage');
-								 	alert(2)
+								 	//alert(2)
 							})
 						}
 						
