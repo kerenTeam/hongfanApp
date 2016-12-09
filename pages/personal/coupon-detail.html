@@ -44,6 +44,21 @@
 			.member .list .bottom{
 				border-top: 1px solid #efeff4;
 			}
+			
+			
+			.title{
+				text-align: center;
+				line-height: 35px;
+			}
+			.limit{
+				text-align: left;
+				padding-left: 10%;
+				line-height: 16px;
+				margin: 12px 0;
+			}
+			.limit p{
+				font-size: 12px !important;
+			}
 		</style>
 	</head>
 	<body>
@@ -58,28 +73,29 @@
 	    <div id="container">		
 			<div id="main">
 				<div class="member clearfloat box-s" id="memberList">
-					<!--<div class="list clearfloat fl box-s">
+					<div class="list clearfloat fl box-s">
+						<div class="title">
+							<p>去哪儿网</p>
+							<h3>20元活动券</h3>
+							<div class="limit">
+								<p>使用条件：满100减20</p>
+								<p>可用时间：2015-5-15到2017-5-30</p>
+							</div>
+							
+						</div>
 						<div class="top clearfloat box-s">
 							<div class="zuo clearfloat fl">
 								<img src="../../img/tou.png"/>
 							</div>
 						</div>
-						<div class="top clearfloat box-s second">
-							<p class="tit fl">金卡</p>
-							<span class="fr">9.8折</span>
-						</div>
-						<div class="bottom clearfloat box-s">
-							<p class="fl">全场8.8折</p>
-							<span class="fr">金卡</span>
-						</div>
 						
-					</div>-->
+					</div>
 				</div>
 			</div>
 		</div>
 		
 		<!--渲染数据-->
-		<script type="text/html" id="memberList-detail">
+		<!--<script type="text/html" id="memberList-detail">
 			<% for(var i=0;i<memberLi.length;i++){ %>
 				<div class="list clearfloat fl box-s">
 						<div class="top clearfloat box-s">
@@ -98,7 +114,7 @@
 						</div>
 					</div>
 			<% } %>
-		</script>
+		</script>-->
 	</body>
 	<!--模板引擎获取数据-->
 	<script type="text/javascript" charset="utf-8">
@@ -113,6 +129,7 @@
 					view:'../login.html'
 				})
 			}
+			alert(oldToken);
 			var myuserid = plus.storage.getItem('userid');
 //			var oldtoken = plus.storage.getItem('oldToken');
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
@@ -121,7 +138,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	              				
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data[0].card_id));
+					alert(JSON.stringify(data.data[0].card_id));
 					var carId = JSON.stringify(data.data[0].card_id);
 					mui.ajax(serverUrl+'/api/useraccount/mycard ',{
 						data:{"card_id":carId},
@@ -129,11 +146,11 @@
 						timeout:10000,
 						headers:{"token":oldToken},	              				
 						success:function(data,type,xhr){
-//							alert(JSON.stringify(data.data));
+							alert(JSON.stringify(data.data));
 							var memberObj = {};
 							memberObj.memberLi = data.data;
-							var html = template('memberList-detail', memberObj);
-							document.getElementById('memberList').innerHTML = html;
+//							var html = template('memberList-detail', memberObj);
+//							document.getElementById('memberList').innerHTML = html;
 						},
 						error:function(xhr,type,errorThrown){
 							alert('响应失败  !');

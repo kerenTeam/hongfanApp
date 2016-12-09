@@ -395,7 +395,8 @@
 					})
 				}
 				var userId = plus.storage.getItem("userid");
-	
+				
+				console.log(oldToken);
 				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
 					data:{userid : userId},
 					dataType:'json',
@@ -403,27 +404,27 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-//						alert(JSON.stringify(data.data));
+						alert(JSON.stringify(data));
 //						alert(eval("("+ data.data[2].salerule +")").rule[0]);
-						for(var m=0; m < data.data; m++){ 
-							alert(1)
-							if(data.data[m].salerule==null){
-							 	data.data[m].salerule=null;
-							}else{	
-								data.data[m].salerule.rule1= eval("("+ data.data[m].salerule +")").rule[0];
-								data.data[m].salerule.rule2= eval("("+data.data[m].salerule+")").rule[1];
-							}
-							 
-						}   
+//						for(var m=0; m < data.data; m++){ 
+//							alert(1)
+//							if(data.data[m].salerule==null){
+//							 	data.data[m].salerule=null;
+//							}else{	
+//								data.data[m].salerule.rule1= eval("("+ data.data[m].salerule +")").rule[0];
+//								data.data[m].salerule.rule2= eval("("+data.data[m].salerule+")").rule[1];
+//							}
+//							 
+//						}   
 //						var data.data[2].salerule = eval("("+ data.data[2].salerule +"")
-						var allC = {};
-						allC.allLi = data.data;
-						var html = template('allC-detail',allC);
-						document.getElementById('allC').innerHTML = html;
-						var html2 = template('ableC-detail',allC);
-						document.getElementById('ableC').innerHTML = html2;
-						var html3 = template('disableC-detail',allC);
-						document.getElementById('disableC').innerHTML = html3;
+//						var allC = {};
+//						allC.allLi = data.data;
+//						var html = template('allC-detail',allC);
+//						document.getElementById('allC').innerHTML = html;
+//						var html2 = template('ableC-detail',allC);
+//						document.getElementById('ableC').innerHTML = html2;
+//						var html3 = template('disableC-detail',allC);
+//						document.getElementById('disableC').innerHTML = html3;
 						
 					},
 					error:function(xhr,type,errorThrown){
