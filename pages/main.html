@@ -439,7 +439,11 @@
 	                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 	                    mui("#upload")[0].innerHTML = "加载更多";
 	                   	//上滑加载
-						document.addEventListener('swipeup',function(){
+						$(window).scroll(function(){
+						　　var scrollTop = $(this).scrollTop();
+						　　var scrollHeight = $(document).height();
+						　　var windowHeight = $(this).height();
+						　　if(scrollTop + windowHeight == scrollHeight){
 						var nowpage = ++currentPage;
 						if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
 							mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
@@ -457,7 +461,7 @@
 											recommendObj.myUrl = serverimgUrl;
 											recommendObj.recommendData = dataobj
 					                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
-					                    mui("#upload")[0].innerHTML = "上滑加载 ";
+					                    mui("#upload")[0].innerHTML = "";
 									}else{
 										--currentPage;//请求失败,继续请求当前页
 										plus.nativeUI.closeWaiting();
@@ -473,7 +477,9 @@
 						}else{
 							mui("#upload")[0].innerHTML = "没有数据了";
 						}
-					})	
+						//加载下一部分结束
+							　　}
+						});
 						}else{
 							plus.nativeUI.closeWaiting();
 							mui.toast("获取数据失败");

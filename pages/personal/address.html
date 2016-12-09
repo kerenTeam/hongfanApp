@@ -82,7 +82,7 @@
 		<script id="addressList-detail" type="text/html">
 			<div id="main" class="mui-clearfix contaniner">
 			 	<% for(var i=0;i<addressLi.length;i++){ %>
-			    	<div class="addlist clearfloat">
+			    	<div class="addlist clearfloat" data-addid="<%= addressLi[i].id %>" data-person="<%= addressLi[i].person %>" data-phone="<%= addressLi[i].phone %>" data-pv="<%= addressLi[i].province %>" data-ct="<%= addressLi[i].city %>" data-ar="<%= addressLi[i].area %>" data-adi="<%= addressLi[i].address %>">
 			    		<div class="top clearfloat box-s">
 			    			<ul>
 			    				<li>
@@ -136,7 +136,20 @@
 		
      	
 	    <script type="text/javascript">
-		mui.init();
+		 mui.init({
+				beforeback: function() {
+		
+					//获得列表界面的webview
+					var list = plus.webview.getWebviewById('market-order'); 
+						mui.fire(list,'refreshaddressstorage');
+						// mui.fire(list,'refreshBySigin'); 
+						//按返回键添加自定义监听关闭父页面遮罩 
+						var personal = plus.webview.getWebviewById('personal.html');
+						mui.fire(personal,'addMaskhide');
+						return true;
+				}
+			});
+	
 		mui.plusReady(function(){
 			
 			//添加刷新监听
@@ -157,6 +170,8 @@
 			}
 			var userId = plus.webview.currentWebview().userId;
 			var pageid = plus.webview.currentWebview().pageid;
+			//alert(pageid);
+			
 			RefreshAd();
 
 			function RefreshAd(){
@@ -173,6 +188,31 @@
 						addressObj.addressLi = data.data;
 						var html = template('addressList-detail',addressObj);
 						document.getElementById('addressList').innerHTML = html;
+						
+						if(pageid){ 
+							$(".addlist .bottom").css("display","none");
+							$(".addlist").click(function(){  
+								var addressStorage = JSON.parse(plus.storage.getItem('$addressStorage') || '[]');
+								var defultAddress ={};
+									defultAddress.id = $(this).attr("data-addid");
+									defultAddress.person = $(this).attr("data-person");
+									defultAddress.phone = $(this).attr("data-phone");
+									defultAddress.province = $(this).attr("data-pv");
+									defultAddress.city = $(this).attr("data-ct");
+									defultAddress.area = $(this).attr("data-ar");
+									defultAddress.address = $(this).attr("data-adi");
+								
+									addressStorage = [defultAddress];
+									plus.storage.setItem('$addressStorage', JSON.stringify(addressStorage));
+								
+								 alert(plus.storage.getItem('$addressStorage'));
+								
+								 var list = plus.webview.getWebviewById('market/market-order.html');  
+ 									plus.webview.currentWebview().close();//关闭当前页面
+								 	mui.fire(list,'readdstorage');
+								 	alert(2)
+							})
+						}
 						
 						//点击修改默认地址
 						window.changeState = function(thisobj){
@@ -252,8 +292,10 @@
 					error:function(xhr,type,errorThrown){
 						alert('响应失败  !');
 					}
-				});
+				}); 
 			}
+			
+			
 		})();
 	</script>
 	</body>	
