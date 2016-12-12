@@ -37,7 +37,7 @@
 				font-size: 18px;
 			}
 			.dealcard, .cinemacard{
-				margin-top: 50px;
+				margin-top: 45px;
 			}
 			.dealcard .dealcard-img img{
 				height: 60px;
@@ -52,8 +52,8 @@
 				font-size: 12px;
 			}
 			.coupon p{
-				margin: 10px 0 15px;
-				color: #f53c42;
+				margin: 10px 0 3px;
+				
 			}
 			sub{
 				bottom: 0;
@@ -82,6 +82,10 @@
 				-webkit-box-orient: vertical;
 				-webkit-line-clamp: 2;
 				overflow: hidden;}
+			.dealcard .title{margin-top: 0;}
+			.dealcard .coupon span {
+			    bottom: 6px;color: #f53c42;
+			}
 		</style>
 	</head>
 	<body>
@@ -90,7 +94,6 @@
 		    <h1 class="mui-title">跳蚤市场</h1>
 			<a class="fr shoucang mui-icon" id="theSearch" href="javascript:;"><i class="iconfont icon-sousuo"></i></a>
 		</header>	
-		<!-- screening -->
 		<div class="screening">
 		    <ul>
 		        <li class="Brand">类别</li>
@@ -98,42 +101,29 @@
 		        <li class="Sort">个人</li>
 		    </ul>
 		</div>
-		<!-- End screening -->		
-		<!-- Category -->
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="Categorytw(this)">全部类别</li>
-		        <li onclick="Categorytw(this)">手机</li>
-		        <li onclick="Categorytw(this)">台式机</li>
-		        <li onclick="Categorytw(this)">笔记本</li>
-		        <li onclick="Categorytw(this)">平板电脑</li>
-		        <li onclick="Categorytw(this)">家具</li>
-		        <li onclick="Categorytw(this)">家电</li>
-		        <li onclick="Categorytw(this)">数码产品</li>
-		        <li onclick="Categorytw(this)">单反相机</li>
+		        <li onclick="Loading(1,7,'','','','','price')">全部</li>
+		        <li onclick="Loading(1,7,5,'','','','price');">电脑</li>
+		        <li onclick="Loading(1,7,6,'','','','price');">手机</li>
+		        <li onclick="Loading(1,7,10,'','','','price');">童装</li>
 		    </ul>
 		</div>
-		<!-- End Category -->
-		<!-- grade -->
 		<div class="grade-eject">
 		    <ul class="grade-w" id="gradew">
-		        <li onclick="gradet(this)">全部</li>
-		        <li onclick="gradet(this)">100元以下</li>
-		        <li onclick="gradet(this)">100-200元</li>
-		        <li onclick="gradet(this)">200-500元</li>
+		        <li onclick="Loading(1,7,'','','','','price')">全部</li>
+		        <li onclick="Loading(1,7,'','',100,'','price');">100元以下</li>
+		        <li onclick="Loading(1,7,'',100,1000,'','price');">100-1000元</li>
+		        <li onclick="Loading(1,7,'',1000,5000,'','price');">1000-5000元</li>
 		    </ul>
 		</div>
 		<!-- End grade -->
 		<!-- Category -->
 		<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="Sorts(this)">智能排序</li>
-		        <li onclick="Sorts(this)">离我最近</li>
-		        <li onclick="Sorts(this)">好评优先</li>
-		        <li onclick="Sorts(this)">最新发布</li>
-		        <li onclick="Sorts(this)">人气优先</li>
-		        <li onclick="Sorts(this)">价格最低</li>
-		        <li onclick="Sorts(this)">价格最高</li>
+		        <li onclick="Loading(1,7,'','','','','price')">全部</li>
+		        <li onclick="Loading(1,7,'','','',1,'price')">个人</li>
+		        <li onclick="Loading(1,7,'','','',0,'price')">商家</li>
 		    </ul>
 		</div>
 		<!-- End Category -->
@@ -168,8 +158,8 @@
 											<%= list[i].address%>
 										</div>
 										<div class="coupon ">
-											<p><sub>￥</sub><%= list[i].price%><sub>起</sub></p>
-											<span><%= list[i].colour%></span>
+											<p>电话: <%= list[i].phone%></p>
+											<span><sub>￥</sub><%= list[i].price%><sub>起</sub></span>
 										</div>
 									</div>
 								</a>
@@ -184,107 +174,125 @@
 		<!--发布-->
 		<a href="javascript:;"><span class="mui-icon mui-icon-plus" id="thePlus"></span></a>
 	</body>
+	<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+	<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-(function(){
-	mui.plusReady(function(){
-		var oldtoken = plus.storage.getItem('oldToken');
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		Loading(1,1,7);//加载数据,包括上滑加载
-		//加载方法
-		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
-			mui.ajax(serverUrl+'/api/localservice/usedmarketlist',{ 									
-				data:{currentPage:1,
-					  numsPerPage:2,
-			  		  type:10,
-					  price:'',
-					  is_business:'',
-					  orderType:'1',
-					  desc:''}, 
-				dataType:'json',//服务器返回json格式数据
-				type:'post',//HTTP请求类型 
-				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":oldtoken}, 
-				success:function(data){
-					console.log(JSON.stringify(data));
-					if(data.errno == 0){
-						console.log(data);
-						var dataobj = {};
-						dataobj.list = data.data.data; 
-						//获取并渲染用户信息
-						var html=template("infolist",dataobj);
-						document.getElementById("infolistdiv").innerHTML += html;
-						if(data.data.totalPages){
-							mui("#upload")[0].innerHTML = " ";
-						}else{
-							mui("#upload")[0].innerHTML = "没有数据了 ";
-						}
-						
-						//滚动到底部加载
-						$(window).scroll(function(){
-						　　var scrollTop = $(this).scrollTop();
-						　　var scrollHeight = $(document).height();
-						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight == scrollHeight){
-							//加载下一部分
-							var nowpage = ++CcurrentPage;
-							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
-								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-								console.log('可以请求数据');
-								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-									data:{currentPage:1,
-									  numsPerPage:2,
-							  		  type:10,
-									  price:'',
-									  is_business:'',
-									  orderType:'1',
-									  desc:''}, 
-									dataType:'json',//服务器返回json格式数据
-									type:'post',//HTTP请求类型 
-									timeout:10000,//超时时间设置为10秒；	
-									headers:{"token":oldtoken}, 
-									success:function(data){
-										if(data.errno == 0){
-											var dataobj = {};
-											dataobj.list = data.data.data; 
-											//获取并渲染用户信息
-											var html=template("infolist",dataobj);
-											document.getElementById("infolistdiv").innerHTML += html;
-											mui("#upload")[0].innerHTML = "上滑加载 ";
-										}else{
-											--CcurrentPage;//请求失败,继续请求当前页
-											mui.toast("获取数据失败");
-										}
-										plus.nativeUI.closeWaiting();//关闭等待框
-									},
-									error:function(xhr,type,errorThrown){
-										--CcurrentPage;//请求失败,继续请求当前页
-										mui.toast("当前网络不好请重试");
-									}
-								});
-							}else{
-								mui("#upload")[0].innerHTML = "没有数据了";
-							}
-							//加载下一部分结束
-							　　}
-						});
-					}else{
-						mui.toast("获取数据失败");
-					}
-					plus.nativeUI.closeWaiting();//关闭等待框
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
-					mui.toast("当前网络不好请重试");
-				}
-			});
-		}
+	Loading(1,7,'','','','','price');//加载数据,包括上滑加载
+	//添加刷新监听
+	document.addEventListener('refresh', function() {
+		Loading(1,7,'','','','','price');//加载数据,包括上滑加载
+		console.log('刷新数据');
+		alert('刷新数据');
 	})
+	//加载方法
+	function Loading(gin1,gin2,gin3,gin4,gin44,gin5,gin6){
+		document.getElementById("infolistdiv").innerHTML = '';
+		$('.Category-eject').removeClass('grade-w-roll');
+		$('.Sort-eject').removeClass('grade-w-roll');
+		$('.grade-eject').removeClass('grade-w-roll');
+		mui.plusReady(function(){
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		var oldtoken = plus.storage.getItem('oldToken');
+		mui.ajax(serverUrl+'/api/localservice/usedmarketlist',{ 									
+			data:{currentPage:gin1,
+				numsPerPage:gin2,
+				type:gin3,
+				price_Starting:gin4,
+				price_point:gin44,
+				is_business:gin5,
+				orderType:gin6},
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型 
+			timeout:10000,//超时时间设置为10秒；	
+			headers:{"token":oldtoken}, 
+			success:function(data){
+				console.log(JSON.stringify(data));
+				if(data.errno == 0){
+					console.log(data);
+					var dataobj = {};
+					dataobj.list = data.data.data; 
+					//获取并渲染用户信息
+					var html=template("infolist",dataobj);
+					document.getElementById("infolistdiv").innerHTML += html;
+					if(data.data.totalPages){
+						mui("#upload")[0].innerHTML = " ";
+					}else{
+						mui("#upload")[0].innerHTML = "没有数据了 ";
+					}
+					
+					//滚动到底部加载
+					$(window).scroll(function(){
+					　　var scrollTop = $(this).scrollTop();
+					　　var scrollHeight = $(document).height();
+					　　var windowHeight = $(this).height();
+					　　if(scrollTop + windowHeight == scrollHeight){
+						//加载下一部分
+						var nowpage = ++gin1;
+						if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+							mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+							console.log('可以请求数据');
+							mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+								data:{currentPage:gin1,
+									numsPerPage:gin2,
+									type:gin3,
+									price_Starting:gin4,
+									price_point:gin44,
+									is_business:gin5,
+									orderType:gin6}, 
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型 
+								timeout:10000,//超时时间设置为10秒；	
+								headers:{"token":oldtoken}, 
+								success:function(data){
+									if(data.errno == 0){
+										var dataobj = {};
+										dataobj.list = data.data.data; 
+										//获取并渲染用户信息
+										var html=template("infolist",dataobj);
+										document.getElementById("infolistdiv").innerHTML += html;
+										mui("#upload")[0].innerHTML = "上滑加载 ";
+									}else{
+										--gin1;//请求失败,继续请求当前页
+										mui.toast("获取数据失败");
+									}
+									plus.nativeUI.closeWaiting();//关闭等待框
+								},
+								error:function(xhr,type,errorThrown){
+									--gin1;//请求失败,继续请求当前页
+									mui.toast("当前网络不好请重试");
+								}
+							});
+						}else{
+							mui("#upload")[0].innerHTML = "没有数据了";
+						}
+						//加载下一部分结束
+						　　}
+					});
+				}else{
+					mui.toast("获取数据失败");
+				}
+				plus.nativeUI.closeWaiting();//关闭等待框
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting();//关闭等待框
+				mui.toast("当前网络不好请重试");
+			}
+		});
+	});	
+	}
+		
 	
-})();
+	
+//发布按钮
+mui('#thePlus')[0].onclick = function(){
+	openview({
+	 	view:'new_ershou.html',  
+	})
+}
 //跳转详情
 function opendetails(id){
 	openview({

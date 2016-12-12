@@ -45,6 +45,19 @@
 			}
 			.dealcard-waimai {margin-bottom: 20px;
 			}
+			.dealcard .title span{left: 0;}
+			#thePlus{
+				position: fixed;
+				bottom: 10px;
+				left: 50%;
+				display: block;
+				margin-left: -25px;
+				font-size: 50px;
+				background-color: #f53c42;
+				color: #fff;
+				border-radius: 50%;
+				box-shadow: 0 0 10px #555;
+			}
 		</style>
 	</head>
 	<body>
@@ -66,13 +79,14 @@
 								<div class="dealcard-block-right">
 									<div class="brand"><%= list[i].name%></div>
 									<div class="title ">
-										<span class="star">
+										<span>服务时间: <%= list[i].open_time%></span>
+										<!--<span class="star">
 											<i class="full"></i>
 											<i class="full"></i>
 											<i class="full"></i>
 											<i class="half"></i>
 											<i></i>
-										</span>
+										</span>-->
 									</div>
 									<div class="price"> 
 										<span> <%= list[i].address%></span>
@@ -81,12 +95,13 @@
 							</a>
 						</dd>
 						<%}%>	
-					</script>
+					</script> 
 				</section>
 				<div class="upload text-center text-xs gray" id="upload"></div>
 			</div>
 		</div>
-		
+		<!--发布-->
+		<a href="javascript:;"><span class="mui-icon mui-icon-plus" id="thePlus"></span></a>
 	</body>
 <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
@@ -197,7 +212,12 @@
 		
 	});//plusReady
 })();
-
+//发布按钮
+mui('#thePlus')[0].onclick = function(){
+	openview({
+	 	view:'publish.html',  
+	})
+}
 //跳转详情
 function opendetails(id){
 	openview({

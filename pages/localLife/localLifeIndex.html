@@ -42,6 +42,9 @@
 			#more{background-color:#fff;text-align: center;height: 50px;line-height: 30px;
 			font-size: 14px; }
 			#more img{margin-left:5px;width: 16px;margin-top: -3px;}
+			.null{text-align: center;}
+			.null img{margin-top: 7%;width: 30%;margin-bottom: 3%;}
+			
 		</style>    
 	</head>
 	<body>
@@ -57,73 +60,7 @@
 						<div class="swiper-container swiper-container2">
 							<div class="swiper-wrapper tuangouwidth">
 								<div class="swiper-slide">
-									<ul class="icon-list" id="columndiv">
-										<!--没有数据显示-->
-										<li class="icon">
-											<a class="repair">
-												<span class="icon-circle orange">												
-													<img src="../../img/localLife/weixiu.svg">
-												</span>
-												<span class="icon-desc">维修服务</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="cleaning">
-												<span class="icon-circle purple">
-													<img src="../../img/localLife/baojie.svg">
-												</span>
-												<span class="icon-desc">保洁</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="babysister">
-												<span class="icon-circle blue">
-													<img src="../../img/localLife/yueshao.svg">
-												</span>
-												<span class="icon-desc">保姆月嫂</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="openclock">
-												<span class="icon-circle green">
-													<img src="../../img/localLife/kaisuo.svg">
-												</span>
-												<span class="icon-desc">开锁</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="house">
-												<span class="icon-circle red">
-													<img src="../../img/localLife/fangchan.svg">
-												</span>
-												<span class="icon-desc">房产资讯</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="tiaozao">
-												<span class="icon-circle blue1">												
-													<img src="../../img/localLife/tiaozao.svg">
-												</span>
-												<span class="icon-desc">跳蚤市场</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="express">
-												<span class="icon-circle green1">
-													<img src="../../img/localLife/kuaidi.svg">
-												</span>
-												<span class="icon-desc">快递上门</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="supermarket">
-												<span class="icon-circle bluegray">
-													<img src="../../img/localLife/chaoshi.svg">
-												</span>
-												<span class="icon-desc">超市比价</span>
-											</a>
-										</li>
-									</ul>
+									<ul class="icon-list" id="columndiv"></ul>
 									<!--有数据显示-->
 									<script type="text/html" id="column">
 										<% for(var i=0; i<list.length; i++){%>
@@ -141,22 +78,8 @@
 								<div class="swiper-slide swiper_part2" >
 									<ul class="icon-list" id="columndiv2">
 										<!--没有数据显示-->
-										<li class="icon">
-											<a class="laywer">
-												<span class="icon-circle blue3">
-													<img src="../../img/localLife/falv.svg">
-												</span>
-												<span class="icon-desc">法律咨询</span>
-											</a>
-										</li>
-										<li class="icon">
-											<a class="morepart">
-												<span class="icon-circle xiguared">
-													<img src="../../img/localLife/more.svg">
-												</span>
-												<span class="icon-desc">更多...</span>
-											</a>
-										</li>
+										<img src="../../img/nullinfo.svg">
+										<p>没有了</p>	
 									</ul>
 									<!--有数据显示-->
 									<script type="text/html" id="column2">
@@ -283,8 +206,7 @@
 							var html2 = template("column2",objdata);
 							document.getElementById("columndiv2").innerHTML=html2; 
 						}else{
-							mui('.tuangouwidth')[0].removeChild(mui('.swiper_part2')[0]);
-							mui('.tuangouwidth')[0].style.webkitTransform = 'translate3d(0px, 0, 0)';
+							mui('#columndiv2')[0].className = 'null';
 							mui('.diandian')[0].style.display = 'none';
 						}
 						
@@ -295,10 +217,14 @@
 						mui.toast('获取用户信息失败');
 						plus.nativeUI.closeWaiting();
 						console.log(data.errmsg);
+						mui('#columndiv2')[0].className = 'null';
+						mui('.diandian')[0].style.display = 'none';
 					}
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting();
+					mui('#columndiv2')[0].className = 'null';
+					mui('.diandian')[0].style.display = 'none';
 					mui.toast('响应失败  !');
 				}
 			});
