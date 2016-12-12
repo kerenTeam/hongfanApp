@@ -50,7 +50,9 @@
 			}
 			.addlist .top{
 				border-bottom: 1px solid #efeff4 !important;
-			}
+			} 
+			.adhover:hover{
+				background-color: #eee; 
 			.exterminate,.exterminate i,.editAd,.editAd i{
 				color: #999 !important;
 			}
@@ -64,7 +66,7 @@
 				margin-top: 0.1rem;
 			}
 			.shopcar{
-				padding-bottom: 01px !important;
+				padding-bottom: 01px !important; 
 			}
 		</style>
 	</head>
@@ -135,8 +137,8 @@
 		<!--</div>-->
 		
      	
-	    <script type="text/javascript">
-		mui.init();
+	    <script type="text/javascript"> 
+		mui.init(); 
 		mui.plusReady(function(){
 			
 			//添加刷新监听
@@ -172,8 +174,34 @@
 						var addressObj = {};
 						addressObj.addressLi = data.data;
 						var html = template('addressList-detail',addressObj);
-						document.getElementById('addressList').innerHTML = html;
-						
+						document.getElementById('addressList').innerHTML = html; 
+						if(pageid){ 
+							$(".addlist .bottom").css("display","none");
+							$(".addlist").click(function(){
+								$(this).css("background","#eee")
+								$(this).addClass("adhover")
+								var addressStorage = JSON.parse(plus.storage.getItem('$addressStorage') || '[]');
+								var defultAddress ={};
+									defultAddress.id = $(this).attr("data-addid");
+									defultAddress.person = $(this).attr("data-person");
+									defultAddress.phone = $(this).attr("data-phone");
+									defultAddress.province = $(this).attr("data-pv");
+									defultAddress.city = $(this).attr("data-ct");
+									defultAddress.area = $(this).attr("data-ar");
+									defultAddress.address = $(this).attr("data-adi");
+								
+									addressStorage = [defultAddress];
+									plus.storage.setItem('$addressStorage', JSON.stringify(addressStorage));
+								
+								 alert(plus.storage.getItem('$addressStorage'));
+								
+								 var list = plus.webview.getWebviewById('market/market-order.html');  
+ 									plus.webview.currentWebview().close();//关闭当前页面
+								 	mui.fire(list,'readdstorage');
+								 	//alert(2)
+							})
+						}
+						 
 						//点击修改默认地址
 						window.changeState = function(thisobj){
 							var checked = $(thisobj).find('input').attr("checked");
