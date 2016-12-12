@@ -14,14 +14,63 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
 		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript"></script>
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
 		<style type="text/css">
+			.account{
+				/*background-color: #f53c42;*/
+			}
 			.account .top{
-				background-color: #932427 !important;
+				background-color: #fff;
+				border-bottom: 1px solid #f53c42;
+				color: #666;
+			}
+			.account .top ul li{
+				color: #f53c42;
+			}
+			#container{
+				background-color: #EFEFF4;
+			}
+			.bottom{
+				line-height: 70px !important;
+				font-size: 20px !important;
+			}
+			.account .list{
+				padding-left: 0;
+			}
+			.account .list .shang ul li{
+				padding: 0 3%;
+			}
+			.account .list .shang ul li:first-child{
+				width: 30%;
+			}
+			.account .list .shang ul li{
+				width: 35%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.account .list .bottom{
+				padding-left: 3%;
+			}
+			#userScore{
+				font-size: 24px !important;
+				color: #fe6e1e;
+			}
+			.account .list .bottom p{
+				color: #666;
+				line-height: 24px;
+				padding-top: 30px;
+				padding-bottom: 10px;
+			}
+			#thisTime{
+				font-size: 13px;
+				line-height: 20px;
+				padding-top: 35px;
+				color: #999;
 			}
 		</style>
 	</head>
@@ -40,13 +89,11 @@
 			    		<div class="top clearfloat">
 			    			<ul>
 			    				<li class="box-s">操作时间</li>
-			    				<li>进出账</li>
-			    				<li>积分</li>
+			    				<li style="text-align: left;">操作详情</li>
+			    				<li style="text-align: right;padding-right: 10px;">操作积分</li>
 			    			</ul>
 			    		</div>
-			    		<div class="list clearfloat box-s" id="operationList">
-			    			
-			    		</div>	    		
+			    		<div class="list clearfloat box-s" id="operationList"></div>
 			    	</div>
 			    </div>
 			</div>
@@ -57,57 +104,75 @@
 			<% for(var i=0;i<scoreList.length;i++){ %>
 				<div class="shang clearfloat">
 					<ul>
-	    				<li class="box-s"><%= scoreList[i].creta_time %></li>
-	    				<li><%= scoreList[i].notice %></li>
-	    				<li><%= scoreList[i].change %></li>
+	    				<li class="box-s"><%= scoreList[i].create_time.split('T')[0] %></li>
+	    				<li style="text-align: left;"><%= scoreList[i].notice %></li>
+	    				<li style="text-align: right;"><%= scoreList[i].intergral_float %></li>
 	    			</ul>
 				</div>
 			<% } %>
-			<div class="bottom clearfloat">
-				<span class="fl">2016-07-10 13:29:47</span>
-				<p class="fr">剩余积分：<span id="userScore"></span></p>
-			</div>
+			<div class="list clearfloat box-s">
+				<div class="bottom clearfloat">
+					<span class="fl" id="thisTime"></span>
+					<p class="fr">剩余积分：<span id="userScore"></span></p>
+				</div>
+			</div>	 
 		</script>
 	</body>
 	<!--模板引擎获取数据-->
 	<script type="text/javascript" charset="utf-8">
       	mui.init();
 		mui.plusReady(function(){
-			//积分变化详情列表
-			mui.ajax('../../json/score.json',{									
-	//				data:{"phone":""},
-				dataType:'json',//服务器返回json格式数据
-				type:'get',//HTTP请求类型
-				timeout:1000,//超时时间设置为10秒；	              
-				success:function(data){
-					var scoreArray = data.hf_user_intergral;
+			//判断是否登录并获取缓存token
+			if(plus.storage.getItem('myToken')){
+				var oldToken = plus.storage.getItem('oldToken');
+			}else{
+				mui.toast('请登录！');
+				openview({
+					view:'../login.html'
+				})
+			}
+			var myuserid = plus.storage.getItem('userid');
+			console.log(oldToken);
+			//积分列表
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	              				
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data));
 					var scoreObj = {};
-					scoreObj.scoreList = scoreArray;
+					scoreObj.scoreList = data.data;
 					var html = template('operationList-detail', scoreObj);
 					document.getElementById('operationList').innerHTML = html;
+					
+					//获取当前时间
+					var date = new Date();
+					var time = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + '时';
+					$('#thisTime').html(time);
+//					alert(time);
 				},
 				error:function(xhr,type,errorThrown){
-					//异常处理；
-					console.log("获取失败！");
-					mui.toast("当前网络不好请重试");
+					alert('响应失败  !');
+				}
+			});
+
+			//积分余额
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	              				
+				success:function(data,type,xhr){
+					$('#userScore').html(data.data[0].intergral);
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
 				}
 			});
 			
-			//积分余额
-			mui.ajax('../../json/user.json',{									
-	//				data:{"phone":""},
-				dataType:'json',//服务器返回json格式数据
-				type:'get',//HTTP请求类型
-				timeout:1000,//超时时间设置为10秒；	              
-				success:function(data){
-					document.getElementById('userScore').innerHTML = data.userinfo[0].integral;
-				},
-				error:function(xhr,type,errorThrown){
-					//异常处理；
-					console.log("获取失败！");
-					mui.toast("当前网络不好请重试");
-				}
-			});
+			
+			
 		})
     </script>
 </html>

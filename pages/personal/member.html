@@ -15,17 +15,34 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/hmt.js" type="text/javascript"></script>
-		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
+		
 		<style type="text/css">
 			.member .list .top .zuo{
-				width: 100px;
+				width: 100%;
 				border-radius: 0;
+				height: auto;
 				-webkit-border-radius: 0;
 			}
 			.member .list .top .zuo img{
-				max-height: 60px;
-				max-width: 100px;
+				max-height: none;
+				max-width: 100%;
+			}
+			.member .list{
+				height: inherit;
+			}
+			.member .list .top p.tit {
+				font-size: 17px;
+				margin-left: 5%;
+			}
+			.second{
+				padding-top: 10px !important;
+			}
+			.member .list .bottom{
+				border-top: 1px solid #efeff4;
 			}
 		</style>
 	</head>
@@ -40,35 +57,94 @@
 	    <!--header end-->
 	    <div id="container">		
 			<div id="main">
-				<div class="member clearfloat box-s">
-					<div class="list clearfloat fl box-s">
+				<div class="member clearfloat box-s" id="memberList">
+					<!--<div class="list clearfloat fl box-s">
 						<div class="top clearfloat box-s">
 							<div class="zuo clearfloat fl">
 								<img src="../../img/tou.png"/>
 							</div>
+						</div>
+						<div class="top clearfloat box-s second">
 							<p class="tit fl">金卡</p>
 							<span class="fr">9.8折</span>
 						</div>
 						<div class="bottom clearfloat box-s">
-							<p class="tit fl">全场8.8折</p>
+							<p class="fl">全场8.8折</p>
 							<span class="fr">金卡</span>
 						</div>
-					</div>
-					<div class="list clearfloat fl box-s">
-						<div class="top clearfloat box-s">
-							<div class="zuo clearfloat fl">
-								<img src="../../img/tou.png"/>
-							</div>
-							<p class="tit fl">银卡</p>
-							<span class="fr">9.8折</span>
-						</div>
-						<div class="bottom clearfloat box-s">
-							<p class="tit fl">全场9.8折</p>
-							<span class="fr">银卡</span>
-						</div>
-					</div>
+						
+					</div>-->
 				</div>
 			</div>
 		</div>
+		
+		<!--渲染数据-->
+		<script type="text/html" id="memberList-detail">
+			<% for(var i=0;i<memberLi.length;i++){ %>
+				<div class="list clearfloat fl box-s">
+						<div class="top clearfloat box-s">
+							<div class="zuo clearfloat fl">
+								<img src="<%= memberLi[i].pic %>"/>
+							</div>
+							
+						</div>
+						<div class="top clearfloat box-s second">
+							<p class="tit fl"><%= memberLi[i].name %></p>
+							<span class="fr"><%= memberLi[i].discount*10 %>折</span>
+						</div>
+						<div class="bottom clearfloat box-s">
+							<p class="fl">入会日期：<%= memberLi[i].create_time.split('T')[0] %></p>
+							<span class="fr">等级：<%= memberLi[i].level %>级</span>
+						</div>
+					</div>
+			<% } %>
+		</script>
 	</body>
+	<!--模板引擎获取数据-->
+	<script type="text/javascript" charset="utf-8">
+      	mui.init();
+		mui.plusReady(function(){
+			//判断是否登录并获取缓存token
+			if(plus.storage.getItem('myToken')){
+				var oldToken = plus.storage.getItem('oldToken');
+			}else{
+				mui.toast('请登录！');
+				openview({
+					view:'../login.html'
+				})
+			}
+			var myuserid = plus.storage.getItem('userid');
+//			var oldtoken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	              				
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data[0].card_id));
+					var carId = JSON.stringify(data.data[0].card_id);
+					mui.ajax(serverUrl+'/api/useraccount/mycard ',{
+						data:{"card_id":carId},
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},	              				
+						success:function(data,type,xhr){
+//							alert(JSON.stringify(data.data));
+							var memberObj = {};
+							memberObj.memberLi = data.data;
+							var html = template('memberList-detail', memberObj);
+							document.getElementById('memberList').innerHTML = html;
+						},
+						error:function(xhr,type,errorThrown){
+							alert('响应失败  !');
+						}
+					});
+					
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+		})
+    </script>
 </html>

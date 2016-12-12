@@ -111,7 +111,12 @@
 			.addTitle {
 				line-height: 30px;
 			}
-			
+			.quanc{
+				
+				width:0.3rem;
+				margin-right: 0.1rem;
+				display: none;
+			}
 			dl.list .dd-paddingtwo {
 				padding: .08rem .15rem .08rem .15rem;
 			}
@@ -257,6 +262,33 @@
 			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
 			    color: rgb(245, 60, 66);
 			}
+			.mui-card{
+				margin: 0;
+			}
+			.checkQuan{
+				padding: 2px 15px;
+			    border: 1px solid #f53c42;
+			    border-radius: 5px;
+			    line-height: 18px;
+			    margin: 5px 0;
+			    position: relative;
+			}
+			.checkQuan .mui-col-sm-3{
+				width: 28%;
+				padding: 12px 5px;
+    			border-right: 1px dotted #f53c42;
+			}
+			.checkQuan .mui-col-sm-9{
+				width: 72%;
+				    padding: 12px 15px;
+			}
+			.cred{
+				color:#f53c42 ;
+			}
+			.dateLimit{
+				font-size: 12px;
+			}
+			 
 		</style>
 	</head>
 
@@ -286,17 +318,17 @@
 								</div>
 							</li>
 							<%}else{%>
-							<li onclick="goAddr()">
+							<li onclick="goAddr()" data-id="<%=obj[0].id%>">
 								<div class="mui-row orderRow">
 									<div class="mui-col-sm-1 mui-col-xs-1">
 										<span class="mui-icon mui-icon-location middle-icon"></span>
 									</div>
 									<div class="mui-col-sm-11 mui-col-xs-11">
 										<strong>									
-													<p>收货人：<%=obj[0].person%><span class="phoneNum"><%=obj[0].phone%></span></p>
-													<p class="address">收货地址：<%=obj[0].province%><%=obj[0].city%><%=obj[0].area%><%=obj[0].address%></p>
-													<div class="fr"><i class="ico_arrow middle-icon"></i></div>
-												</strong>
+											<p>收货人：<%=obj[0].person%><span class="phoneNum"><%=obj[0].phone%></span></p>
+											<p class="address">收货地址：<%=obj[0].province%><%=obj[0].city%><%=obj[0].area%><%=obj[0].address%></p>
+											<div class="fr"><i class="ico_arrow middle-icon"></i></div>
+										</strong>
 									</div>
 								</div>
 							</li>
@@ -314,7 +346,7 @@
 							</dd>
 							<%for(var j =0;j<goodsList.length;j++){%>
 							<% if(goodsList[j].shopName ==  cates[i]){%>
-							<dd class="dd-padding kv-line-r mui-row goodsWrap" onclick="goInfo('<%=goodsList[j].goodsId%>')">
+							<dd class="dd-padding kv-line-r mui-row goodsWrap"> <!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
 								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=goodsList[j].goodsImg%>"/></h6>
 								<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8 goods">
 									<p>
@@ -331,7 +363,12 @@
 							<%}%>
 							<dd class="dd-padding kv-line-r">
 								<h6>配送方式</h6>
-								<p class="jifen">快递 免邮</p>
+								<%if(arrpostFee[i]==0){%>
+									<p class="jifen">快递 免邮</p>
+									<%}else{%>
+										<p class="jifen">快递<%=arrpostFee[i]%>元</p>
+										<%}%>
+								
 							</dd>
 
 							<dd class="dd-padding kv-line-r mui-row tipsWrap">
@@ -343,7 +380,7 @@
 							<dd class="kv-line-r dd-padding priceWrap">
 								<p>
 									<sub>共计<span class="groupNum"><%=arrNum[i]%></span>件商品&nbsp;&nbsp;小计:<b style="color: #ff5f32;">￥</b></sub>
-									<span class="J_total-price groupMoney"><%=arrMoney[i]%></span>
+									<span class="J_total-price groupMoney" data-id="<%=arrpostFee[i]%>"><%=arrMoney[i]%></span>
 								</p>
 							</dd>
 						</dl>
@@ -353,14 +390,56 @@
 					</script>
 					
 						<dl class="list">
-							<dd>
-								<a class="react" href="#">
-									<div class="more moretwo more-weak comment-headline">
-										抵用券
-										<span class="more-after ">使用抵用券</span>
-									</div>
-								</a>
+							<div id="quanData"></div>
+							<script type="text/html" id="quanTpl">
+								<%if(allLi.length!=0){%>
+									
+									<dd>
+								<div class="mui-card">
+										<ul class="mui-table-view">
+											
+											<li class="mui-table-view-cell mui-collapse">
+												<a class="mui-navigate-right" style="border-bottom: 1px solid #eee;" href="#">抵用券  <b class="minuMoney cred" style="display: none;">-￥<span id="minuMoney"></span></b><span class="fr" style="margin-right: 15px;">选择</span></a>
+												<div class="mui-collapse-content">
+													<% for(var i=0;i<allLi.length;i++){ %>
+								 						<%if(allLi[i].typeid==1){%>
+								 							<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].salerule.cutValue%>">
+															 <div class="mui-col-sm-3">
+															 	<div>￥<big><b><%=allLi[i].salerule.cutValue%></b></big></div>
+															 	<div><small>满<span><%=allLi[i].salerule.overflowValue%></span>使用</small></div>
+															 </div>
+															 <div class="mui-col-sm-9">
+															 	<div class="cred"><big><%=allLi[i].name%></big> 全场满<span><%=allLi[i].salerule.overflowValue%></span>减<span><%=allLi[i].salerule.cutValue%></span></div>
+															 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
+															 </div>
+															 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" alt="" /></div>
+														</div> 
+								 							<%}else{%>
+								 							<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].discount%>">
+															 <div class="mui-col-sm-3">
+															 	<div><big><b><%=allLi[i].discount*10%></b></big>折</div>
+															 	<div><small>满<span><%=allLi[i].salerule.overflowValue%></span>使用</small></div>
+															 </div>
+															 <div class="mui-col-sm-9">
+															 	<div class="cred"><big><%=allLi[i].name%></big> 全场满<span><%=allLi[i].salerule.overflowValue%></span>打<span><%=allLi[i].discount*10%></span>折</div>
+															 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
+															 </div>
+															 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" alt="" /></div>
+														</div> 
+								 								<%}%>
+													<%}%> 
+												</div>
+											</li>
+										</ul>
+									</div>  
+									
 							</dd>
+									
+										
+								<%}%>
+								
+							</script>
+							
 					
 							<div id="coupon"></div>
 								<script type="text/html" id="couponTpl">
@@ -371,9 +450,9 @@
 										</dd>
 										<%}else{%>
 											<dd class="dd-padding kv-line-r">
-												<h6>使用积分：</h6>
-												<p class="jifen">无可用积分</p>
-											</dd>
+											<h6>无可用积分</h6>
+												<div class="mui-checkbox"><input name="checkbox" disabled class="groupCheck" type="checkbox"></div>
+										</dd>
 											<%}%>
 									
 								</script>
@@ -392,20 +471,34 @@
 	<script src="../../js/app.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
-		function goInfo(gid) {
-			openview({
-				view: "mall-detail.html",
-				extrasobj: {
-					goodsId: gid
+//		function goInfo(gid) {
+//			openview({
+//				view: "mall-detail.html",
+//				extrasobj: {
+//					goodsId: gid
+//				}
+//			})
+//		}
+			mui.init({
+				beforeback: function() {
+		
+					//获得列表界面的webview
+					var list = plus.webview.getWebviewById('cart.html'); 
+						mui.fire(list,'refresh');
+						return true;
 				}
-			})
-		}
+			});
+		var myuserid,allGroup=0,quan=0,jf=0;
 		mui.plusReady(function() {
+			window.addEventListener('readdstorage', function(event) {
+				alert(1)
+				orderAdd()
+			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
 			//alert(plus.storage.getItem('$orderStorage'))
 				//获取缓存
-			var myuserid = plus.storage.getItem('userid');
+			  myuserid = plus.storage.getItem('userid');
 			console.log(myuserid)
 			var oldtoken = plus.storage.getItem('oldToken');
 
@@ -414,7 +507,10 @@
 				width: '100px',
 				height: '80px'
 			});
-			mui.ajax(serverUrl + '/api/useraccount/addresslist', {
+			
+			orderAdd();
+			function orderAdd(){
+				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
 				data: {
 					userid: myuserid,
 					state: 1
@@ -426,21 +522,44 @@
 					"token": oldtoken
 				},
 				success: function(data, type, xhr) {
-					if(data.errno == 0) {
+					if(data.errno == 0) { 
 						plus.nativeUI.closeWaiting()
 						//alert(JSON.stringify(data.data))
-						var addrObj = {}
-						addrObj.obj = data.data;
+						var addrObj = {};
+						if(plus.storage.getItem("$addressStorage")){
+							alert(plus.storage.getItem("$addressStorage"))
+							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
+						}else{
+							addrObj.obj = data.data; 
+						}
+							
 						document.getElementById("add_info").innerHTML = template("addrTpl", addrObj);
+						plus.storage.removeItem("$addressStorage")
 						//订单数据模板
 						var data = {};
 						data.goodsList = orderStorage;
-						var arr =[],arrNum=[],arrMoney =[];
+						var arr =[],arrNum=[],arrMoney =[],arrpostFee=[];
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
 						//alert(arr.length)
 						data.cates = arr.unique1();
+						 
+						for(var i= 0;i<data.cates.length;i++){
+							//分组小计
+							var groupPostfee=0;
+							 for(var j = 0;j<orderStorage.length;j++){
+							 	 
+							 	if(orderStorage[j].goodsPostfee!=0){
+							 		groupPostfee=orderStorage[j].goodsPostfee;
+							 		break;
+							 	}else{
+							 		groupPostfee = 0;
+							 	}
+							 }
+							 arrpostFee.push(groupPostfee);
+						}
+						 
 						for(var i= 0;i<data.cates.length;i++){
 							//分组小计
 							var groupNum=0,groupMoney=0;
@@ -449,20 +568,27 @@
 							 		groupNum+=parseFloat(orderStorage[j].goodsnum);
 							 		groupMoney+=parseFloat(orderStorage[j].goodsPrice)*parseFloat(orderStorage[j].goodsnum); 
 							 	} 
-							 }
+							 } 
 							 arrNum.push(groupNum);
-							 arrMoney.push(groupMoney);
+							 arrMoney.push(parseFloat(groupMoney)+parseFloat(arrpostFee[i]));
 						}
+						
+						//分组商品总价
+						for(var i=0;i<arrMoney.length;i++){
+							allGroup+=parseFloat(arrMoney[i])
+							
+						}
+						alert("allGroup "+allGroup)
+						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
 						data.arrMoney=arrMoney;
+						
 						var html = template('orderData', data);
 						document.getElementById('orderTpl').innerHTML = html;
 						 //订单总价
 						 var totalPay=0;
-						 $(".groupMoney").each(function(){
-						 	totalPay+=parseFloat($(this).html())
-						 })
-						 $("#submit_order").html(totalPay)
+						  
+						 $("#submit_order").html(allGroup)
 					}
 				},
 				error: function(xhr, type, errorThrown) {
@@ -471,6 +597,9 @@
 					mui.toast("网络不好请重试")
 				}
 			});
+			}
+			
+			
 			//获取积分
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 				data:{"userid":myuserid},
@@ -482,34 +611,124 @@
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						   intergral = data.data[0].intergral;
+						  // alert(intergral)
+						   if(intergral==null){
+						   	intergral=0;
+						   }
 						 document.getElementById("coupon").innerHTML=template('couponTpl', {intergral:intergral});
 					}else{
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
 					}
-					$(".mui-checkbox").click(function(){ 
+					$("#coupon .mui-checkbox").click(function(){ 
 						
-							if($(this).find("input").prop('checked') == true){
-								var nowPAY = parseFloat($("#submit_order").html())-parseFloat(intergral);
-								$("#submit_order").html(nowPAY)
-							}else{
-								var nowPAY = parseFloat($("#submit_order").html())+parseFloat(intergral);
-								$("#submit_order").html(nowPAY)
+							if($(this).find("input").prop('checked') == true){ 
+								jf=parseFloat(intergral); 
+							}else{ 
+								jf=0; 
 							}
+							var nowPAY = allGroup-jf-quan;
+								if(nowPAY<=0){
+									nowPAY=0;
+								}
+							$("#submit_order").html(nowPAY)
 						})
 				},
 				error:function(xhr,type,errorThrown){
 					alert('响应失败  !');
 				}
 			});
-			
+			var d = new Date();
+			var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+			 str = formatDate(str, "yyyy-MM-dd");
+ 				alert(str)
+			//获取抵用券
+			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
+					data:{userid : myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){
+						alert(JSON.stringify(data.data));
+						var allC = {};
+						var tpldata=[];
+						
+						for(var i=0;i<data.data.length;i++){
+							
+							 
+							if(data.data[i].user_coupon_state==1 && (data.data[i].typeid==1||data.data[i].typeid==2)){
+								
+								if(data.data[i].end_date!=null){
+										data.data[i].end_date=formatDate(data.data[i].end_date, "yyyy-MM-dd");
+								} 
+								if(data.data[i].begin_date!=null){
+									data.data[i].begin_date=formatDate(data.data[i].begin_date, "yyyy-MM-dd");
+								} 
+								if(data.data[i].salerule!=null){ 
+									data.data[i].salerule = eval("("+data.data[i].salerule+")");
+									if(parseFloat(data.data[i].salerule.overflowValue)<=allGroup){  
+										if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
+										    tpldata.push(data.data[i])
+											}
+									} 
+								}else{
+									if(data.data[i].begin_date<=str<=data.data[i].end_date){ 
+										    tpldata.push(data.data[i])
+											}
+								}
+								
+							}
+						} 
+						allC.allLi = tpldata;
+						var html = template('quanTpl',allC);
+						document.getElementById('quanData').innerHTML = html; 
+						$(".checkQuan").click(function(){
+					var qid = $(this).attr("data-id");
+					alert("qid "+qid)
+					var qminus =$(this).attr("data-minus");
+					alert("qminus "+qminus) 
+					$(this).siblings().find(".quanc").css("display","none");
+					quan=0;
+					if($(this).find(".quanc").css("display")=="block"){ 
+						$(this).find(".quanc").css("display","none");
+						$("#minuMoney").html(0);
+						$(".minuMoney").css("display","none"); 
+						
+					}else{
+						$(this).find(".quanc").css("display","block");
+						if(qid==1){
+							quan=parseFloat(qminus)
+						}
+						if(qid==2){
+							quan =parseFloat(allGroup*(1-parseFloat(qminus))).toFixed(2);
+						}
+						$("#minuMoney").html(quan); 
+						$(".minuMoney").css("display","inline-block"); 
+						
+					}
+					var nowPAY = allGroup-jf-quan;
+						if(nowPAY<=0){
+							nowPAY=0;
+						}
+					$("#submit_order").html(nowPAY)
+				})
+					},
+					error:function(xhr,type,errorThrown){
+						alert('响应失败  !');
+					}
+				});
+				//优惠券计算
+				
+				
+				 
 		})
 		
 		//进入地址页面
 		function goAddr(){ 
 			openview({
 				view:"../personal/address.html",
-				extrasobj:{pageid:"market-order"}
+				extrasobj:{pageid:"market-order",userId:myuserid}
 			})
 		}
 		//goPay
@@ -535,6 +754,37 @@
 			}
 			return res;
 		}
+		
+		//格式化时间戳
+		function formatDate(v, format) {
+		    if (!v) return "";
+		    var d = v;
+		    if (typeof v === 'string') {
+		        if (v.indexOf("/Date(") > -1)
+		            d = new Date(parseInt(v.replace("/Date(", "").replace(")/", ""), 10));
+		        else
+		            d = new Date(Date.parse(v.replace(/-/g, "/").replace("T", " ").split(".")[0]));//.split(".")[0] 用来处理出现毫秒的情况，截取掉.xxx，否则会出错
+		    }
+		    var o = {
+		        "M+": d.getMonth() + 1,  //month
+		        "d+": d.getDate(),       //day
+		        "h+": d.getHours(),      //hour
+		        "m+": d.getMinutes(),    //minute
+		        "s+": d.getSeconds(),    //cond
+		        "q+": Math.floor((d.getMonth() + 3) / 3),  //quarter
+		        "S": d.getMilliseconds() //millisecond
+		    };
+		    if (/(y+)/.test(format)) {
+		        format = format.replace(RegExp.$1, (d.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    }
+		    for (var k in o) {
+		        if (new RegExp("(" + k + ")").test(format)) {
+		            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+		        }
+		    }
+		    return format;
+		};
+
 	</script>
 
 </html>

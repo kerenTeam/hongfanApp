@@ -6,12 +6,12 @@ $(function() {
 	});
 });
 
-$(document).ready(function () {
-	$('.flexslider').flexslider({
-        directionNav: true,
-        pauseOnAction: false,
-   });
-}); 
+//$(document).ready(function () {
+//	$('.flexslider').flexslider({
+//      directionNav: true,
+//      pauseOnAction: false,
+// });
+//}); 
 
 $(document).ready(function() {
 	$(window).scroll(function() {
@@ -223,125 +223,125 @@ function toshare(num){
 		},300);
 	})
 }
+//
+//
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '现金'
+//		}, {
+//			value: '',
+//			text: '现金+积分'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('showUserPickerthree');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
 
-
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '现金'
-		}, {
-			value: '',
-			text: '现金+积分'
-		}]);
-		var showUserPickerButton = doc.getElementById('showUserPickerthree');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
-
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '车型级别一'
-		}, {
-			value: '',
-			text: '车型级别二'
-		}]);
-		var showUserPickerButton = doc.getElementById('showUserPickerone');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
-
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '宝马'
-		}, {
-			value: '',
-			text: '奥迪'
-		}, {
-			value: '',
-			text: '奔驰'
-		}]);
-		var showUserPickerButton = doc.getElementById('showUserPickertwo');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
-
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '安徽省'
-		}, {
-			value: '',
-			text: '湖北省'
-		}]);
-		var showUserPickerButton = doc.getElementById('showUserPickerfour');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
-
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '商圈一'
-		}, {
-			value: '',
-			text: '商圈二'
-		}]);
-		var showUserPickerButton = doc.getElementById('showUserPickerfive');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '车型级别一'
+//		}, {
+//			value: '',
+//			text: '车型级别二'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('showUserPickerone');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
+//
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '宝马'
+//		}, {
+//			value: '',
+//			text: '奥迪'
+//		}, {
+//			value: '',
+//			text: '奔驰'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('showUserPickertwo');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
+//
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '安徽省'
+//		}, {
+//			value: '',
+//			text: '湖北省'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('showUserPickerfour');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
+//
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '商圈一'
+//		}, {
+//			value: '',
+//			text: '商圈二'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('showUserPickerfive');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
 
 //(function($, doc) {
 //	$.init();
@@ -390,99 +390,99 @@ function toshare(num){
 //	});
 //})(mui, document);
 
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '限70平米以下'
-		}, {
-			value: '',
-			text: '70平米-90平米'
-		}, {
-			value: '',
-			text: '90平米-110平米'
-		}, {
-			value: '',
-			text: '110平米-150平米'
-		}, {
-			value: '',
-			text: '150平米以上'
-		}]);
-		var showUserPickerButton = doc.getElementById('Mianji');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '限70平米以下'
+//		}, {
+//			value: '',
+//			text: '70平米-90平米'
+//		}, {
+//			value: '',
+//			text: '90平米-110平米'
+//		}, {
+//			value: '',
+//			text: '110平米-150平米'
+//		}, {
+//			value: '',
+//			text: '150平米以上'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('Mianji');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
 
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '30万以下'
-		}, {
-			value: '',
-			text: '30万-40万'
-		}, {
-			value: '',
-			text: '40万-50万'
-		}, {
-			value: '',
-			text: '50万-70万'
-		}, {
-			value: '',
-			text: '70万-90万'
-		}, {
-			value: '',
-			text: '90万-120万'
-		}, {
-			value: '',
-			text: '120万以上'
-		}]);
-		var showUserPickerButton = doc.getElementById('Shoujia');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '30万以下'
+//		}, {
+//			value: '',
+//			text: '30万-40万'
+//		}, {
+//			value: '',
+//			text: '40万-50万'
+//		}, {
+//			value: '',
+//			text: '50万-70万'
+//		}, {
+//			value: '',
+//			text: '70万-90万'
+//		}, {
+//			value: '',
+//			text: '90万-120万'
+//		}, {
+//			value: '',
+//			text: '120万以上'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('Shoujia');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
 
 
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		var userPicker = new $.PopPicker();
-		userPicker.setData([{
-			value: '',
-			text: '微信'
-		}, {
-			value: '',
-			text: '支付宝'
-		}]);
-		var showUserPickerButton = doc.getElementById('Zhifu');
-		var userResult = doc.getElementById('userResult');
-		showUserPickerButton.addEventListener('tap', function(event) {
-			userPicker.show(function(items) {
-				userResult.innerText = JSON.stringify(items[0]);
-			});
-		}, false);
-	
-	
-	});
-})(mui, document);
+//(function($, doc) {
+//	$.init();
+//	$.ready(function() {
+//		var userPicker = new $.PopPicker();
+//		userPicker.setData([{
+//			value: '',
+//			text: '微信'
+//		}, {
+//			value: '',
+//			text: '支付宝'
+//		}]);
+//		var showUserPickerButton = doc.getElementById('Zhifu');
+//		var userResult = doc.getElementById('userResult');
+//		showUserPickerButton.addEventListener('tap', function(event) {
+//			userPicker.show(function(items) {
+//				userResult.innerText = JSON.stringify(items[0]);
+//			});
+//		}, false);
+//	
+//	
+//	});
+//})(mui, document);
 
 
 
