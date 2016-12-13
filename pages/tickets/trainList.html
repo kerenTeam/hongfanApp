@@ -1,0 +1,418 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>机票列表</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<script src=" ../../js/hmt.js" type="text/javascript"></script>
+		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" ></script>
+		
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
+		<!--日历选择插件-->
+		<link href="../../css/calendar.css" rel="stylesheet" />
+		<script src="../../js/calendar.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.mui-bar{
+				height: 50px;
+				box-shadow: none;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+			
+			/*这一页*/
+			.grade-eject, .Category-eject, .Sort-eject{
+				height: 164px;
+			}
+			div.screening>ul>li{
+				border-left: 1px solid #eee !important;
+			}
+			dl.list dt, dl.list dd{
+				border-bottom: 1px solid #eee;
+				background-color: #fff;
+				margin-bottom: 4%;
+				box-shadow: 0px 0px 6px #ccc;
+				margin: 10px;
+			}
+			.guess-like,dl.list{
+				border-bottom: 1px solid #eee;
+				background-color: #EFEFF4;
+			}
+			.right{
+				text-align: right;
+			}
+			.middle{
+				text-align: center;
+			}
+			.strong-color{
+				color: #f53c42 !important;
+			}
+			.Lgray{
+				font-size: 12px !important;
+				color: #999 !important;
+				margin-top: 14px;
+			}
+			.mui-badge-blue, .mui-badge-primary{
+				background-color: #fff;
+				border: 1px solid #999;
+				color: #999 !important;
+			}
+			
+			.moreone{
+				line-height: 50px;
+			}
+			dl.list .db>.react{
+				padding: 0;
+				margin: 0;
+			}
+			dl.list .db{
+				height: 50px;
+			}
+			.grade-eject>ul>li, .Category-eject>ul>li, .Sort-eject>ul>li{
+				line-height: 40px;
+			}
+			
+			/*这一页*/
+			.timeBox{
+				position: relative;
+			}
+			.timeBox p{
+				font-size: 24px;
+				color: #333;
+				line-height: 22px;
+			}
+			.timeBox .ad{
+				font-size: 12px;
+				color: #999;
+				font-weight: normal;
+				line-height: 24px;
+			}
+			.timeBox .bage{
+				position: absolute;
+				font-size: 12px;
+				line-height: 10px;
+				right: 15px;
+				top: 10px;
+				color: #666;
+			}
+			.price{
+				text-align: right;
+				font-size: 24px;
+				line-height: 30px;
+				color: #f53c42;
+			}
+			.airTip p{
+				text-align: right;
+				line-height: 24px;
+				font-size: 12px !important;
+			}
+			.Achange {
+				color: #333;
+			}
+			.Achange span{
+				color: #ff5601;
+				font-size: 14px !important;
+			}
+			.inputWrap{
+				border: none;
+				border-radius: 3px;
+				color: #666;
+				line-height: 50px;
+				background-color: rgba(255,255,255,0.8);
+				margin: 10px 0;
+			}
+			.ad img{
+				width: 15%;
+				margin-top: -3px;
+			}
+			.dot{
+				background-color: #bfbfbf;
+				width: 5px;
+				height: 5px;
+				padding: 4px;
+				margin: 0 5px;
+				border-radius: 50%;
+				display: inline-block;
+			}
+			.line{
+				width: 3px;
+				height: 10px;
+				position: absolute;
+				left: 8px;
+				top: 35px;
+				background-color: #ddd;
+			}
+			/*这一页*/
+			.timeBox{
+				position: relative;
+			}
+			.timeBox p{
+				font-size: 24px;
+				color: #333;
+				line-height: 22px;
+			}
+			.timeBox .ad{
+				font-size: 12px;
+				color: #999;
+				font-weight: normal;
+				line-height: 20px;
+			}
+			.timeBox .bage{
+				position: absolute;
+				font-size: 12px;
+				line-height: 10px;
+				right: 15px;
+				top: 10px;
+				color: #666;
+			}
+			.price{
+				text-align: right;
+				font-size: 24px;
+				line-height: 30px;
+				color: #f53c42;
+			}
+			.airTip p{
+				text-align: right;
+				line-height: 24px;
+				font-size: 12px !important;
+			}
+			.Achange {
+				color: #333;
+			}
+			.Achange span{
+				color: #ff5601;
+				font-size: 14px !important;
+			}
+			.order-bottom{
+				background-color: #f7f7f7;
+				border-top: 1px solid #f7f7f7;
+				text-align: right;
+				height: 40px;
+				line-height: 40px;
+			}
+			.order-bottom p{
+				font-size: 12px;
+				line-height: 40px !important;
+			}
+			.inputWrap{
+				border: none;
+				border-radius: 3px;
+				color: #666;
+				line-height: 50px;
+				background-color: rgba(255,255,255,0.8);
+				margin: 10px 0;
+			}
+			.head{
+				background-color: #FFC900;
+				margin-top: 86px;
+			}
+			.hLeft{
+				text-align: right;
+				padding: 5px 20px 5px 10px;
+			}
+			.hLeft span{
+				display: inline-block;
+				float: left;
+				font-size: 16px;
+				line-height: 40px;
+			}
+			.hMiddle{
+				text-align: center;
+			}
+			.hRight{
+				text-align: left;
+				padding: 5px 10px 5px 20px;
+			}
+			.hRight span{
+				display: inline-block;
+				float: right;
+				font-size: 16px;
+				line-height: 40px;
+			}
+			.iconWrap{
+				position: relative;
+			}
+			.iconWrap input{
+				border: none;
+				width: 100%;
+				margin: 5px 0;
+				font-size: 16px;
+				text-indent: 20px;
+			}
+			.cIcon{
+				position: absolute;
+				top: 12px;
+				right: 4%;
+				width: 12%;
+			}
+			.guess-like{
+				padding-top: 0;
+			}
+			div.screening>ul{
+				border-bottom: none;
+			}
+			/*header样式*/
+			.mui-bar-nav {
+				background-color: #FFF !important;
+			}
+			.hasManyCitytwo .header-tit{
+				color: #333;
+			}
+			.hasManyCitytwo .fanhui{
+				color: #333;
+			}
+			div.screening{
+				border-top: 1px solid #EFEFF4;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
+		    <div class="header-tit">
+				成都 - 邻水
+			</div>
+		</header>
+		<div class="head">
+			<div class="mui-row">
+			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
+					<div class="timeBox">
+						<span class="mui-icon mui-icon-arrowleft"></span>
+						<p class="ad black">前一天</p>
+						<p class="ad black">￥360</p>
+					</div>
+		       	</div>
+		        <div class="mui-col-sm-6 mui-col-xs-6 hMiddle">
+		        	<div class="timeBox iconWrap">
+			        	<input type="text" class="calendars" hours hours-past value="全年"><br>
+			        	<img src="../../img/tickets/calender.png"/ class="cIcon">
+					</div>
+		        </div>
+		         <div class="mui-col-sm-3 mui-col-xs-3 hRight">
+					<div class="timeBox">
+						<span class="mui-icon mui-icon-arrowright"></span>
+						<p class="ad black">后一天</p>
+						<p class="ad black">￥390</p>
+					</div>
+		       	</div>
+			</div>
+		</div>
+		<div class="screening">
+		    <ul>
+		        <li class="Brand">时间排序</li>
+		        <li class="Regional">车型</li>
+		        <li class="Sort">筛选</li>
+		    </ul>
+		</div>
+		<div class="Category-eject">
+		    <ul class="Category-w" id="Categorytw">
+		        <li>最早发车</li>
+		        <li>最晚发车</li>
+		    </ul>
+		</div>
+		<div class="grade-eject">
+		    <ul class="grade-w" id="gradew">
+		        <li>全部车型</li>
+		        <li>高铁动车（G/D/C）</li>
+		        <li>特快直达（T/Z）</li>
+		        <li>其他车型</li>
+		    </ul>
+		</div>
+		<div class="Sort-eject Sort-height">
+		    <ul class="Sort-Sort" id="Sort-Sort">
+		        <li>不限</li>
+		        <li>硬座</li>
+		        <li>硬卧</li>
+		        <li>软卧</li>
+		        <li>二等座</li>
+		        <li>一等座</li>
+		        <li>其他</li>
+		    </ul>
+		</div>	
+		<div id="main">
+			<div class="guess-like">
+				<dl class="list" id="goodsList">
+					<dd class="goodsItem" onclick="goTrain()">
+						<a class="react mui-row">
+							<div class="mui-col-sm-4 mui-col-xs-4">
+								<div class="timeBox">
+									<p class="ad black">D314</p>
+									<p>22:40 </p>
+									<p class="ad">08：55次日</p>
+								</div>
+					       </div>
+					        <div class="mui-col-sm-4 mui-col-xs-4">
+					        	<div class="timeBox">
+									<p class="ad black"><img src="../../img/tickets/time.png"/> 11时47分</p>
+									<p class="ad black"><span class="dot"></span>成都东</p>
+									<div class="line"></div>
+									<p class="ad black"><span class="dot"></span>邻水</p>
+									
+								</div>
+					        </div>
+					        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
+					        	<p><span class="price"><sub>￥</sub>342</span></p>
+					        	<p class="Achange">二等座</p>
+					        	<p>53张</p>
+					        </div>
+						</a>
+					</dd>
+					<dd class="goodsItem" onclick="goTrain()">
+						<a class="react mui-row">
+							<div class="mui-col-sm-4 mui-col-xs-4">
+								<div class="timeBox">
+									<p class="ad black">D314</p>
+									<p>22:40 </p>
+									<p class="ad">08：55次日</p>
+								</div>
+					       </div>
+					        <div class="mui-col-sm-4 mui-col-xs-4">
+					        	<div class="timeBox">
+									<p class="ad black"><img src="../../img/tickets/time.png"/> 11时47分</p>
+									<p class="ad black"><span class="dot"></span>成都东</p>
+									<div class="line"></div>
+									<p class="ad black"><span class="dot"></span>邻水</p>
+									
+								</div>
+					        </div>
+					        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
+					        	<p><span class="price"><sub>￥</sub>342</span></p>
+					        	<p class="Achange">二等座</p>
+					        	<p>53张</p>
+					        </div>
+						</a>
+					</dd>
+					<dd class="db">
+						<a class="react " href="javascript:;">
+							<div class="moreone">加载更多</div>
+						</a>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		window.goTrain = function(){
+			openview({ 
+				view:'trainDetail.html'
+			})
+		}
+	</script>
+</html>
