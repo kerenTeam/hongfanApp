@@ -1753,7 +1753,7 @@
 	var i = n(27),
 		r = function() {
 			function t() {
-				this.nav = document.querySelector(".nav"), this.title = this.nav.querySelector(".nav-title"), this.back = $(".nav-back"), this.bindBackEvent()
+//				this.nav = document.querySelector(".nav"), this.title = this.nav.querySelector(".nav-title"), this.back = $(".nav-back"), this.bindBackEvent()
 			}
 			return t.prototype.show = function() {
 				this.nav.style.display = "block"
