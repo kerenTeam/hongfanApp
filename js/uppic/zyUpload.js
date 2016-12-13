@@ -16,9 +16,9 @@
 			var self = this;  // 保存组件对象
 			
 			var defaults = {
-					width            : "700px",  					// 宽度
+					width            : "100% !important",  					// 宽度
 					height           : "400px",  					// 宽度
-					itemWidth        : "140px",                     // 文件项的宽度
+					itemWidth        : "100%",                     // 文件项的宽度
 					itemHeight       : "120px",                     // 文件项的高度
 					url              : "fileUploadAction!execute",  	// 上传文件的路径
 					multiple         : true,  						// 是否可以多个文件上传
@@ -62,21 +62,14 @@
 	            	html += '						<input id="fileImage" type="file" size="30" name="fileselect[]" '+multiple+'>';
 	            	html += '					</div>';
 	            	html += '				</div>';
-					html += '				<span id="fileDragArea" class="upload_drag_area">或者将文件拖到此处</span>';
+//					html += '				<span id="fileDragArea" class="upload_drag_area">或者将文件拖到此处</span>';
 					html += '			</div>';
-		            html += '			<div class="status_bar">';
-		            html += '				<div id="status_info" class="info">选中0张文件，共0B。</div>';
-		            html += '				<div class="btns">';
-		            html += '					<div class="webuploader_pick">继续选择</div>';
-		            html += '					<div class="upload_btn">开始上传</div>';
-		            html += '				</div>';
-		            html += '			</div>';
 					html += '			<div id="preview" class="upload_preview"></div>';
 					html += '		</div>';
 					html += '		<div class="upload_submit">';
 					html += '			<button type="button" id="fileSubmit" class="upload_submit_btn">确认上传文件</button>';
 					html += '		</div>';
-					html += '		<div id="uploadInf" class="upload_inf"></div>';
+//					html += '		<div id="uploadInf" class="upload_inf"></div>';
 					html += '	</div>';
 					html += '</form>';
 				}else{
