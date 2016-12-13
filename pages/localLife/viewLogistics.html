@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>订单跟踪 </title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/hmt.js" type="text/javascript"></script> 
+		<script src="../../js/app.js" type="text/javascript"></script> 
+		<script src="../../js/artTemplate-native.js" type="text/javascript"></script> 
+		
+	</head>
+	<style type="text/css">
+		.green{
+			background: none;
+			color: forestgreen;
+		}
+		.track .state ul li:not(:first-child) {
+		    color: #444444;
+		    font-size: .13rem;
+		    line-height: .22rem;
+		    color: gray;
+		}
+	</style>
+	<body>
+		<header class="hasManyCity hasManyCitytwo" id="header">
+			<a class="fl fanhui mui-action-back"><i class="iconfont icon-fanhui"></i></a>
+			<div class="header-tit">
+				订单跟踪
+			</div>		
+		</header>
+	    <div id="main" class="mui-clearfix"></div>
+	    <script type="text/html" id="main-detail">
+	    	<div class="track clearfloat">
+	    		<div class="state clearfloat box-s mui-row">
+	    			<div class="mui-col-xs-3">
+	    				<img src="../../img/car.png" style="width: 0.8rem;" alt="" />
+	    			</div>
+	    			<div class="mui-col-xs-9">
+	    				<ul>
+		    				<li class="wlState">物流状态：
+		    					<span class="green">
+		    						<% if(State == 2){%>
+		    							运输中
+		    						<% }else if(State == 3){%>
+		    							已签收
+		    						<% }else if(State == 4){%>
+		    							问题件
+		    						<% } %>
+			    				</span>
+		    				</li>
+		    				<li>快递公司：<%= ShipperCode %></li>
+		    				<li>运单编号：<%= LogisticCode %></li>
+		    			</ul>
+	    			</div>
+	    			
+	    		</div>
+	    		<div class="warning clearfloat box-s">
+	    			<div class="ctent clearfloat box-s">
+	    				温馨提示：亲爱的用户，由于标准目前存在不确定性，部分商品会无法正常发货，请您耐心等候。
+	    			</div> 
+	    		</div>
+	    		<% if(State == 1){%>
+	    			<div class="warning clearfloat box-s">
+		    			<div class="ctent clearfloat box-s">
+		    				<img src="../../img/send.png" class="fl" style="width: 0.4rem;margin-right: 5px;"  alt="" />
+		    				<a href="tel:15708434450" class="fr"><img src="../../img/wlphone.png" style="width: 0.3rem;"  alt="" /></a>
+		    				<span>派送员</span><br>
+		    				<span style="color: black;">华阳中和xxxxx</span></div> 
+		    		</div>
+				<% } %>
+	    		<div class="process clearfloat box-s">
+	    			<% for(var i=0;i<tracesLi.length;i++){ %>
+		    			<div class="list clearfloat">
+		    				<i class="iconfont dian2"></i>
+		    				<div class="you clearfloat">
+		    					<p class="tit"><%= tracesLi[i].AcceptTime %></p>
+		    					<p class="time"><%= tracesLi[i].AcceptStation %></p>
+		    				</div>
+		    			</div>
+		    		<% } %>
+	    		</div>
+	    	</div>
+	    </script>
+	</body>
+	<!--模板引擎获取数据-->
+	<script type="text/javascript" charset="utf-8">
+      	mui.init();
+		mui.plusReady(function(){
+			
+			//获取缓存
+			var deliveryNo = plus.webview.currentWebview().deliveryNo;
+			var shipper = plus.webview.currentWebview().shipper;
+			var oldToken = plus.storage.getItem('oldToken');
+//			console.log(oldToken);
+//			alert(shipper+deliveryNo);
+			mui.ajax(serverUrl+'/api/kdniao/getordertraces',{
+				data:{orderCode:deliveryNo,shipperCode:shipper,logisticCode:deliveryNo},
+//				data:{orderCode:422080143401,shipperCode:'ZTO',logisticCode:422080143401},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data));
+//					alert(JSON.stringify(data.data.Traces.length));
+					var TracesObj = {};
+					    TracesObj.tracesLi = data.data.Traces;
+					    TracesObj.State = data.data.State;
+					    TracesObj.LogisticCode = data.data.LogisticCode;
+					    TracesObj.ShipperCode = data.data.ShipperCode;
+					var html = template('main-detail',TracesObj);
+					document.getElementById('main').innerHTML = html; 
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+			
+			
+		})();
+    </script>
+</html>
