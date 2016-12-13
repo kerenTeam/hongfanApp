@@ -27,6 +27,9 @@
 		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		
 		<style type="text/css">
+		 .mui-search:before{
+		 	top:58%;
+		 }
 			.mui-bar{
 				height: 50px;
 			}
@@ -52,7 +55,8 @@
 			.theSearch{
 				width: 100%;
 				background-color: #fff;
-				margin-top: 60px;
+				margin-top: 50px;
+				padding-top: 1px;
 			}
 			.mui-input-row .mui-btn+input, .mui-input-row label+input, .mui-input-row:last-child{
 				margin: 10px;
@@ -60,6 +64,16 @@
 			input[type=search]{
 				margin-bottom: 10px;
 			}
+			.mui-icon-search,.mui-icon-arrowright{
+				color: #ddd;
+				vertical-align: middle;
+			}
+			 .searchOut{
+			 	display: none;
+			 	position: fixed;
+			 	top: 89px;
+			 	width: 100%;
+			 }
 		</style>
 	</head>
 
@@ -70,7 +84,7 @@
 		</header>	
 		<div class="theSearch">
 			<div class="mui-input-row mui-search">
-			    <input type="search" class="mui-input-clear" placeholder="">
+			    <input type="search" id="words" class="mui-input-clear" placeholder="">
 			</div>
 		</div>
 		<div id="container">
@@ -106,35 +120,83 @@
 			<section class="historyBox" style="">
 				<div class="title">搜索历史</div>
 				<ul>
-					<li class="link-url">食物</li>
+					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
 					<li class="clear">清除搜索记录</li>
 				</ul>
 			</section>
-		
+		 </div>
+		 <!--搜索结果-->
+		    <section class="historyBox searchOut" style=""> 
+				<ul>
+					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
+				</ul>
+			</section>
 	</body>
 	<script type="text/javascript">
 		(function(){
-			function openview(obj){
-				var t = obj.top || 0,b = obj.bottom || 0;
-				mui.openWindow({
-					url:obj.view,
-				    styles:{
-				      top:t,//新页面顶部位置
-				      bottom:b
-				    },
-				    waiting:{
-				      autoShow:false,//自动显示等待框，默认为true
-				    }
-				})
-			}
-			var theBack = document.getElementById('theBack');
-			theBack.addEventListener('tap', function(){
-				openview({
-					view:'theList.html',
-					bottom:'0'
-				})
-			});
-			
+			$("input").on('input',function(){
+				if($("input").val()!=''){ 
+				$("#container").css("display","none");
+				$(".searchOut").css("display","block");
+				}else{
+					$("#container").css("display","block");
+				$(".searchOut").css("display","none");
+				}
+				
+				if(searchStorage.length != 0) {
+						var flag = false;
+						for(var i = 0; i < searchStorage.length; i++) {
+							if(searchStorage[i] == words) {
+								
+								searchStorage[i] = words;
+								flag = false;
+								break;
+							} else {
+								flag = true;
+							}
+						}
+						if(flag) {
+							searchStorage.push(words);
+						}
+					} else { 
+						searchStorage.push(words);
+						
+					} 
+					plus.storage.setItem('$searchStorage', JSON.stringify(searchStorage)); 
+					alert("执行搜索")
+			})
+			$(".mui-icon-clear:before,.mui-icon-close-filled:before").on('click',function(){ 
+				alert(1)
+					$("#container").css("display","block");
+				$(".searchOut").css("display","none"); 
+			})
+ 
+ 			//缓存记录
+			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
+			 //alert(searchStorage.length)
+			var recordObj = {};
+				recordObj.data= searchStorage;
+			var htmlrecord = template('recordTpt', recordObj);
+			//搜索某一条 缓存 
+			  $('.searchli').click(function(e){
+			   	e.preventDefault();
+			   	alert("执行搜索")
+			  })
+			  
+			//输入搜索
+//			document.getElementById('words').addEventListener('change', function() {
+//				$('.searchRecord').css('display','none');
+//				var words = this.parentNode.getElementsByTagName('input')[0].value;
+//				if(words == '') {
+//					mui.toast("请输入食材或菜名");
+//				} else {
+//					
+//				}
+//			});
 		})();
 	</script>
 </html>

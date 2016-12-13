@@ -399,7 +399,7 @@
 										<ul class="mui-table-view">
 											
 											<li class="mui-table-view-cell mui-collapse">
-												<a class="mui-navigate-right" style="border-bottom: 1px solid #eee;" href="#">抵用券  <b class="minuMoney cred" style="display: none;">-￥<span id="minuMoney"></span></b><span class="fr" style="margin-right: 15px;">选择</span></a>
+												<a class="mui-navigate-right" style="border-bottom: 1px solid #eee;padding: 15px;" href="#">抵用券  <b class="minuMoney cred" style="display: none;">-￥<span id="minuMoney"></span></b><span class="fr" style="margin-right: 15px;">选择</span></a>
 												<div class="mui-collapse-content">
 													<% for(var i=0;i<allLi.length;i++){ %>
 								 						<%if(allLi[i].typeid==1){%>
@@ -682,44 +682,45 @@
 						} 
 						allC.allLi = tpldata;
 						var html = template('quanTpl',allC);
-						document.getElementById('quanData').innerHTML = html; 
+						document.getElementById('quanData').innerHTML = html;
+						
+						
+				//优惠券计算
 						$(".checkQuan").click(function(){
-					var qid = $(this).attr("data-id");
-					alert("qid "+qid)
-					var qminus =$(this).attr("data-minus");
-					alert("qminus "+qminus) 
-					$(this).siblings().find(".quanc").css("display","none");
-					quan=0;
-					if($(this).find(".quanc").css("display")=="block"){ 
-						$(this).find(".quanc").css("display","none");
-						$("#minuMoney").html(0);
-						$(".minuMoney").css("display","none"); 
-						
-					}else{
-						$(this).find(".quanc").css("display","block");
-						if(qid==1){
-							quan=parseFloat(qminus)
-						}
-						if(qid==2){
-							quan =parseFloat(allGroup*(1-parseFloat(qminus))).toFixed(2);
-						}
-						$("#minuMoney").html(quan); 
-						$(".minuMoney").css("display","inline-block"); 
-						
-					}
-					var nowPAY = allGroup-jf-quan;
-						if(nowPAY<=0){
-							nowPAY=0;
-						}
-					$("#submit_order").html(nowPAY)
-				})
+							var qid = $(this).attr("data-id");
+							alert("qid "+qid)
+							var qminus =$(this).attr("data-minus");
+							alert("qminus "+qminus) 
+							$(this).siblings().find(".quanc").css("display","none");
+							quan=0;
+							if($(this).find(".quanc").css("display")=="block"){ 
+								$(this).find(".quanc").css("display","none");
+								$("#minuMoney").html(0);
+								$(".minuMoney").css("display","none"); 
+								
+							}else{
+								$(this).find(".quanc").css("display","block");
+								if(qid==1){
+									quan=parseFloat(qminus)
+								}
+								if(qid==2){
+									quan =parseFloat(allGroup*(1-parseFloat(qminus))).toFixed(2);
+								}
+								$("#minuMoney").html(quan); 
+								$(".minuMoney").css("display","inline-block"); 
+								
+							}
+							var nowPAY = allGroup-jf-quan;
+								if(nowPAY<=0){
+									nowPAY=0;
+								}
+							$("#submit_order").html(nowPAY)
+						})
 					},
 					error:function(xhr,type,errorThrown){
 						alert('响应失败  !');
 					}
-				});
-				//优惠券计算
-				
+				}); 
 				
 				 
 		})

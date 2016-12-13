@@ -12,14 +12,15 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
-		<link rel="stylesheet" href="../../css/reset.css">
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
 		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<style type="text/css">
 			.notice .tab-hd,.orderbh,dl.list dt, dl.list dd,dl.list{
 				border-bottom: 1px solid #eee;
+				box-sizing: border-box;
+				-webkit-box-sizing: border-box;
 			}
 			.notice .tab-bd .tab-pal{
 				border-top: 1px solid #eee;
@@ -27,6 +28,10 @@
 			}
 			.notice .tab-bd .tab-pal dl{
 				background-color: #efeff4;
+			}
+			.notice li.active{
+				border-bottom: 3px solid red;
+				box-sizing: border-box;
 			}
 			dl.list dt, dl.list dd, dl.list{
 				margin-bottom: 4%;
@@ -76,10 +81,17 @@
 			}
 			.react{
 				height: 105px !important;
+				margin-bottom: 2px;
+			}
+			.react:last-child{
+				margin-bottom: 0;
 			}
 			.dealcard .dealcard-img{
 				height: 90px;
 				overflow: hidden;
+			}
+			.dealcard-img img{
+				height: 100%;
 			}
 			.dealcard .dealcard-brand, .cinemacard .cinemacard-brandP,.dealcard .title span, .dealcard .price span{
 				font-size: 14px;
@@ -100,7 +112,7 @@
 			}
 			.state{
 				color: #ff5601 !important;
-				font-size: 14px !important;
+				font-size: 12px !important;
 			}
 			.tip{
 				border-bottom: 1px solid #EFEFF4;
@@ -109,6 +121,31 @@
 			.tip p{
 				color: #333;
 			}
+			.tab-nav{
+				  overflow-x: scroll !important;
+				    width: 120%;
+				    /*height: 0.5rem!important;*/
+				    white-space: nowrap;
+			}
+			.tab-hdtwo{
+				overflow-x: scroll;
+				white-space: nowrap;
+			}
+			.notice .tab-hdtwo li {
+			    width: 16%;
+			    display: inline-block;
+			    white-space: nowrap;
+		    }
+		    ::-webkit-scrollbar {
+				width: 0!important;
+				opacity: 1!important;
+			}
+			.poi-name{
+				word-break: break-all;
+				white-space: normal;
+				font-size: 14px;
+			}
+			
 		</style>
 	</head>
 	<body>
@@ -120,338 +157,265 @@
 		</header>
 		
 		<div id="container">		
-			<div id="main">
-				<div class="notice">
+			<div id="main"> 
+				<div id="orderData">
+					<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" />
+					<span style="display:block;text-align: center;padding: 20px;">您还没有相关的订单</span></div>
+					<script type="text/html" id="orderTpl">
+						<div class="notice">
 					<div class="tab-hd tab-hdtwo">
 						<ul class="tab-nav">
-						  <li>全部</li>
-						  <li>待付款</li>
-						  <li>已付款</li>
-						  <li>已完成</li>
-						  <li>退款/售后</li>
+						  <li class="active" data-statusId="-1">全部</li>
+						  <li data-statusId="0">待付款</li>
+						  <li data-statusId="1">待发货</li>
+						  <li data-statusId="2">待收货</li>
+						  <li data-statusId="3">待评价</li>
+						  <li data-statusId="4">退款</li>
 						</ul>
 					</div>
 					<div class="tab-bd">
 						<div class="tab-pal">
-							<dl class="list listtwo list-in">						
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">交易成功</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>									
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a class="fr confirm">评价</a>
-										<a href="#" class="fr">删除订单</a>
-									</div>
-								</dd>
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">卖家已发货</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>									
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a class="fr confirm">确认收货</a>
-										<a class="fr">查看物流</a>
-									</div>
-								</dd>
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">交易关闭</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>									
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a href="#" class="fr">删除订单</a>
-									</div>
-								</dd>
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">交易成功</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>
-																					
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a class="fr confirm">评价</a>
-										<a href="#" class="fr">删除订单</a>
-										<a href="#" class="fr">查看物流</a>
-									</div>
-								</dd>
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">已退款</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>
-												</div>								
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s">								
-										<a href="#" class="fr">删除订单</a>
-									</div>
-								</dd>
-							</dl>
-						</div>
-						<div class="tab-pal">
-							<dl class="list listtwo list-in">						
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">交易关闭</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>									
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a href="#" class="fr">删除订单</a>
-									</div>
-								</dd>
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">待付款</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>									
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a class="fr confirm">付款</a>
-										<a href="#" class="fr">删除订单</a>
-									</div>
-								</dd>
-							</dl>
-						</div>
-						<div class="tab-pal">
-							<dl class="list listtwo list-in">							
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">交易成功</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>
-																					
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a class="fr confirm">评价</a>
-										<a href="#" class="fr">删除订单</a>
-										<a href="#" class="fr">查看物流</a>
-									</div>
-								</dd>
-							</dl>
-						</div>	
-						<div class="tab-pal">
-							<dl class="list listtwo list-in">	
-								<dd>
-									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">交易成功</span>
-									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat" onclick="openDetail()"onclick="openDetail()">
-											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
-											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
-													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>	
-												</div>
-																					
-											</div>
-										</div>
-									</a>
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共1件商品&nbsp;合计：￥</sub>125.00<sub>(含运费)</sub></p>
-									</div>
-									<div class="order-bottom clearfloat box-s">
-										<a class="fr confirm">评价</a>
-										<a href="#" class="fr">删除订单</a>
-										<a href="#" class="fr">查看物流</a>
-									</div>
-								</dd>
-							</dl>
-						</div>	
-						<div class="tab-pal">
 							<dl class="list listtwo list-in">
-								<dd>
+								
+								<%for(var i =0;i<orderData.length;i++){%>
+									<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 									<div class="orderbh clearfloat box-s">
-										订单编号20164546151515
-										<span class="fr state">已退款</span>
+										订单编号<%=orderData[i].order_id%>
+										<span class="fr state"><%=state[orderData[i].order_status]%></span>
 									</div>
-									<a href="#" class="react">
-										<div class="dealcard dealcardtwo clearfloat" onclick="openDetail()"onclick="openDetail()">
+									<%for(var j =0;j<orderData[i].goods_data.length;j++){%>
+									<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
+										<div class="dealcard dealcardtwo clearfloat">
 											<div class="dealcard-img imgbox">
-												<img src="../../img/54b9cae9d6bc4.jpg">
+												<img src="<%=orderData[i].goods_data[j].thumb%>">
 											</div>
 											<div class="dealcard-block-right dealcard-block-righttwo">
 												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3">这里是商品名称这里是商品名称</span>
+													<span class="poi-name icon-count-3"><%=orderData[i].goods_data[j].title%></span>
 													<div class="price pricetwo">
-														<p>¥125</p>
-														<p class="num">×120</p>	
-													</div>
-												</div>								
+														<p>¥<%=orderData[i].goods_data[j].price%></p>
+														<p class="num">×<%=orderData[i].goods_data[j].nums%></p>	
+													</div>	
+												</div>									
 											</div>
 										</div>
 									</a>
-									<div class="order-bottom clearfloat box-s">								
-										<a href="#" class="fr">删除订单</a>
+									<%}%> 
+									<div class="order-bottom clearfloat box-s tip">
+										<p><sub>共<%=orderData[i].num%>件商品&nbsp;合计:￥</sub><%=orderData[i].amount%><sub>
+											<%if(orderData[i].fee==0){%>
+												(不含运费)
+												<%}else{%>
+													(含运费)
+													<%}%>
+											</sub></p>
 									</div>
+									<%if(orderData[i].order_status==0){%>
+										<div class="order-bottom clearfloat box-s">
+											<a onclick="goOrder('<%=orderData[i].order_id%>')" class="fr confirm">付款</a>
+											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">取消订单</a>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==1){%>
+										<div class="order-bottom clearfloat box-s">
+											<a onclick="tuiOrder('<%=orderData[i].order_id%>')" class="fr confirm">申请退款</a>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==2){%>
+										<div class="order-bottom clearfloat box-s">
+											<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
+											<a onclick="viewLogistics('<%=orderData[i].order_id%>')" class="fr">查看物流</a>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==3){%>
+										<div class="order-bottom clearfloat box-s">
+											<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
+											<a onclick="viewLogistics('<%=orderData[i].order_id%>')" class="fr">查看物流</a>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==4){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<span class="fr">交易金额:<%=orderData[i].amount%>  退款金额：￥<%=orderData[i].amount%></span>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==5){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<span class="fr">退款成功</span>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==6){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">删除订单</a>
+										</div>
+									<%}%> 
 								</dd>
+								<%}%>
+								<div id="noOrder"></div>
 							</dl>
-						</div>	
+						</div>
+						
 					</div>
-				</div>								
+				</div>
+					</script>
+				
+												
 			</div>
 		</div>
-	</body>
-	<script src="../../js/jquery.SuperSlide.2.1.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript">
-		jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });
-	</script>
+	</body>  
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		window.openDetail = function(){
 			openview({
 //			 	view:"address-edit.html"
 			})
 		}
+		
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
+			var myuserid = plus.storage.getItem('userid');
+			//加载订单 
+			plus.nativeUI.showWaiting('加载中 ...', {
+				width: '100px',
+				height: '80px'
+			});
+				mui.ajax(serverUrl+'/api/mall/orderlist',{
+				data:{userid:5},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){ 
+					plus.nativeUI.closeWaiting(); 
+					if(data.errno==0){
+						if(data.data.length!=0){
+							alert(JSON.stringify(data.data))
+							alert(data.data[0].goods_data);  
+							for(var i=0;i<data.data.length;i++){ 
+								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
+							}
+							
+							var obj={}; 
+							 obj.orderData=data.data;
+							 obj.state = ['等待买家付款' ,'买家已付款','卖家已发货','交易成功','退款中','退款成功','交易关闭'];
+							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
+							$('.tab-nav li').click(function(){ 
+								var statusId=$(this).attr("data-statusId"); 
+								$(this).addClass("active");
+								$(this).siblings().removeClass("active");
+								if(statusId==-1){
+									$("dd").css("display","block")
+								}
+								if(statusId==0){
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==0){
+										$(this).css("display","block");
+										$(this).siblings().css("display","none");
+									}
+									}) 
+								}
+								if(statusId==1){
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==1){
+										$(this).css("display","block");
+										$(this).siblings().css("display","none");
+									}
+									}) 
+								}
+								if(statusId==2){
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==2){
+										$(this).css("display","block");
+										$(this).siblings().css("display","none");
+									}
+									}) 
+								}
+								if(statusId==3){
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==3){
+										$(this).css("display","block");
+										$(this).siblings().css("display","none");
+									}
+									}) 
+								}
+								if(statusId==4){
+									$("dd").css("display","none");
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==4 || status==5){
+										 $(this).css("display","block");
+									}
+//									else{
+//										$("#noOrder").html('<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">您还没有相关的订单</span>');
+//
+//									}
+									
+									}) 
+								}
+							})
+						}
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting()
+					alert('响应失败  !');
+				}
+			}); 
+			
+			//数组去重
+		Array.prototype.unique1 = function() {
+			var res = [this[0]];
+			for(var i = 1; i < this.length; i++) {
+				var repeat = false;
+				for(var j = 0; j < res.length; j++) {
+					if(this[i] == res[j]) {
+						repeat = true;
+						break;
+					}
+				}
+				if(!repeat) {
+					res.push(this[i]);
+				}
+			}
+			return res;
+		}
+		    
+			window.orderInfo=function(orderId){
+				openview({
+					view:'orderDetail.html', 
+					extrasobj:{orderId:orderId}
+				})
+			}
+			window.delOrder=function(id){
+				alert("取消订单"+id)
+			}
+			window.goOrder=function(id){
+				alert("付款"+id)
+			}
+			window.goComment=function(orderId){
+				alert("评论"+orderId);
+				openview({
+					view:'comment.html', 
+					extrasobj:{orderId:orderId}
+				})
+			}
+			window.viewLogistics=function(id){
+				alert("查看物流"+id)
+				openview({
+					view:'viewLogistics.html', 
+					extrasobj:{orderId:id}
+				})
+			}
+			window.orderConfirm=function(id){
+				alert("确认收货"+id)
+			}
+			window.tuiOrder=function(id){
+				alert("申请退款"+id)
+			}
+		})
 	</script>
 </html>
