@@ -84,7 +84,7 @@
 		</header>	
 		<div class="theSearch">
 			<div class="mui-input-row mui-search">
-			    <input type="search" class="mui-input-clear" placeholder="">
+			    <input type="search" id="words" class="mui-input-clear" placeholder="">
 			</div>
 		</div>
 		<div id="container">
@@ -146,32 +146,57 @@
 					$("#container").css("display","block");
 				$(".searchOut").css("display","none");
 				}
+				
+				if(searchStorage.length != 0) {
+						var flag = false;
+						for(var i = 0; i < searchStorage.length; i++) {
+							if(searchStorage[i] == words) {
+								
+								searchStorage[i] = words;
+								flag = false;
+								break;
+							} else {
+								flag = true;
+							}
+						}
+						if(flag) {
+							searchStorage.push(words);
+						}
+					} else { 
+						searchStorage.push(words);
+						
+					} 
+					plus.storage.setItem('$searchStorage', JSON.stringify(searchStorage)); 
+					alert("执行搜索")
 			})
-			$(".mui-icon-clear").on('click',function(){ 
+			$(".mui-icon-clear:before,.mui-icon-close-filled:before").on('click',function(){ 
+				alert(1)
 					$("#container").css("display","block");
 				$(".searchOut").css("display","none"); 
 			})
-//			function openview(obj){
-//				var t = obj.top || 0,b = obj.bottom || 0;
-//				mui.openWindow({
-//					url:obj.view,
-//				    styles:{
-//				      top:t,//新页面顶部位置
-//				      bottom:b
-//				    },
-//				    waiting:{
-//				      autoShow:false,//自动显示等待框，默认为true
-//				    }
-//				})
-//			}
-//			var theBack = document.getElementById('theBack');
-//			theBack.addEventListener('tap', function(){
-//				openview({
-//					view:'theList.html',
-//					bottom:'0'
-//				})
+ 
+ 			//缓存记录
+			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
+			 //alert(searchStorage.length)
+			var recordObj = {};
+				recordObj.data= searchStorage;
+			var htmlrecord = template('recordTpt', recordObj);
+			//搜索某一条 缓存 
+			  $('.searchli').click(function(e){
+			   	e.preventDefault();
+			   	alert("执行搜索")
+			  })
+			  
+			//输入搜索
+//			document.getElementById('words').addEventListener('change', function() {
+//				$('.searchRecord').css('display','none');
+//				var words = this.parentNode.getElementsByTagName('input')[0].value;
+//				if(words == '') {
+//					mui.toast("请输入食材或菜名");
+//				} else {
+//					
+//				}
 //			});
-			
 		})();
 	</script>
 </html>
