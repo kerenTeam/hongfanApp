@@ -418,10 +418,10 @@
 								 							<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].discount%>">
 															 <div class="mui-col-sm-3">
 															 	<div><big><b><%=allLi[i].discount*10%></b></big>折</div>
-															 	<div><small>满<span><%=allLi[i].salerule.overflowValue%></span>使用</small></div>
+															 	<div><small>全场通用</small></div>
 															 </div>
 															 <div class="mui-col-sm-9">
-															 	<div class="cred"><big><%=allLi[i].name%></big> 全场满<span><%=allLi[i].salerule.overflowValue%></span>打<span><%=allLi[i].discount*10%></span>折</div>
+															 	<div class="cred"><big><%=allLi[i].name%></big> 全场打<span><%=allLi[i].discount*10%></span>折</div>
 															 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
 															 </div>
 															 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" alt="" /></div>
@@ -488,7 +488,7 @@
 						return true;
 				}
 			});
-		var myuserid,allGroup=0,quan=0,jf=0;
+		var myuserid,allGroup=0,quan=0,jf=0,orderSubmitData=[],arr =[],arrNum=[],arrMoney =[],arrpostFee=[],shopID=[];;
 		mui.plusReady(function() {
 			window.addEventListener('readdstorage', function(event) {
 				alert(1)
@@ -496,7 +496,7 @@
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
-			//alert(plus.storage.getItem('$orderStorage'))
+			 alert(plus.storage.getItem('$orderStorage'))
 				//获取缓存
 			  myuserid = plus.storage.getItem('userid');
 			console.log(myuserid)
@@ -538,15 +538,19 @@
 						//订单数据模板
 						var data = {};
 						data.goodsList = orderStorage;
-						var arr =[],arrNum=[],arrMoney =[],arrpostFee=[];
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
 						//alert(arr.length)
 						data.cates = arr.unique1();
-						 
+						for(var i = 0; i < orderStorage.length; i++) {
+							shopID.push(orderStorage[i].shopId);
+						} 
+						
+						shopID = shopID.unique1();  
+						 // alert(JSON.stringify(shopID))
 						for(var i= 0;i<data.cates.length;i++){
-							//分组小计
+							//分组邮费小计
 							var groupPostfee=0;
 							 for(var j = 0;j<orderStorage.length;j++){
 							 	 
@@ -561,7 +565,7 @@
 						}
 						 
 						for(var i= 0;i<data.cates.length;i++){
-							//分组小计
+							//分组 金额 和 数量 小计
 							var groupNum=0,groupMoney=0;
 							 for(var j = 0;j<orderStorage.length;j++){
 							 	if(orderStorage[j].shopName ==  data.cates[i]){
@@ -578,10 +582,31 @@
 							allGroup+=parseFloat(arrMoney[i])
 							
 						}
+						
+						//分商店  订单数据 小计
+						
+						for(var i= 0;i<shopID.length;i++){ 
+							var orderList={};
+							    orderList.storeid=shopID[i];
+							    orderList.postFee = arrpostFee[i];
+							    orderList.totalNum = arrNum[i];
+							    orderList.totalMoney = arrMoney[i];
+							    orderList.goodsData =[]; 
+						 	for(var j = 0;j<orderStorage.length;j++){
+						 	 if(orderStorage[j].shopId == shopID[i]){
+						 	 	orderList.goodsData.push(orderStorage[j])
+						 	 }
+						 	 
+						 	}
+							 orderSubmitData.push(orderList);
+						}
+						
+							 console.log("orderSubmitData "+JSON.stringify(orderSubmitData))
+						
 						alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
-						data.arrMoney=arrMoney;
+						data.arrMoney=arrMoney; 
 						
 						var html = template('orderData', data);
 						document.getElementById('orderTpl').innerHTML = html;
@@ -722,7 +747,13 @@
 					}
 				}); 
 				
-				 
+				//goPay
+				function goPay(){
+					alert()
+//					openview({
+//						view:"pay.html"
+//					})
+				}
 		})
 		
 		//进入地址页面
@@ -732,12 +763,7 @@
 				extrasobj:{pageid:"market-order",userId:myuserid}
 			})
 		}
-		//goPay
-		function goPay(){
-			openview({
-				view:"pay.html"
-			})
-		}
+		
 		//数组去重
 		Array.prototype.unique1 = function() {
 			var res = [this[0]];

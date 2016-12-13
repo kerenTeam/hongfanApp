@@ -117,15 +117,28 @@
 					</li>
 				</ul>
 			</section>
-			<section class="historyBox" style="">
-				<div class="title">搜索历史</div>
-				<ul>
-					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
-					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
-					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
-					<li class="clear">清除搜索记录</li>
-				</ul>
-			</section>
+			
+			<!--搜索历史-->
+			
+			<div id="record"></div>
+				<script id="recordTpt" type="text/html">
+					<%if(data.length==0){%>
+						<!--<div class="searchRecord">
+							&nbsp;&nbsp;搜索记录:无
+						</div> -->
+						<%}else{%>
+							<section class="historyBox" style="">
+								<div class="title">搜索历史</div>
+								<ul>
+									<%for(var i=data.length-1;i>=0;i--){%>
+										<li class="link-url"><span class="mui-icon mui-icon-search"></span> <%=data[i]%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+									<%}%>
+									 <li class="clear clearStr">清除搜索记录</li>
+								</ul>
+							</section> 
+							<%}%>
+					
+				</script> 
 		 </div>
 		 <!--搜索结果-->
 		    <section class="historyBox searchOut" style=""> 
@@ -136,18 +149,19 @@
 				</ul>
 			</section>
 	</body>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		(function(){
-			$("input").on('input',function(){
+			
+			mui.plusReady(function(){
+				//缓存记录
+			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
+			
+			$("input").on('change',function(){
+				alert(2)
 				if($("input").val()!=''){ 
-				$("#container").css("display","none");
-				$(".searchOut").css("display","block");
-				}else{
-					$("#container").css("display","block");
-				$(".searchOut").css("display","none");
-				}
-				
-				if(searchStorage.length != 0) {
+					var words=$("input").val();
+					if(searchStorage.length != 0) {
 						var flag = false;
 						for(var i = 0; i < searchStorage.length; i++) {
 							if(searchStorage[i] == words) {
@@ -168,6 +182,13 @@
 					} 
 					plus.storage.setItem('$searchStorage', JSON.stringify(searchStorage)); 
 					alert("执行搜索")
+					alert(JSON.stringify(searchStorage))
+					$("#container").css("display","none");
+					$(".searchOut").css("display","block");
+				}else{
+					$("#container").css("display","block");
+					$(".searchOut").css("display","none");
+				} 
 			})
 			$(".mui-icon-clear:before,.mui-icon-close-filled:before").on('click',function(){ 
 				alert(1)
@@ -175,17 +196,24 @@
 				$(".searchOut").css("display","none"); 
 			})
  
- 			//缓存记录
-			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
+ 			
 			 //alert(searchStorage.length)
 			var recordObj = {};
 				recordObj.data= searchStorage;
 			var htmlrecord = template('recordTpt', recordObj);
-			//搜索某一条 缓存 
-			  $('.searchli').click(function(e){
-			   	e.preventDefault();
-			   	alert("执行搜索")
-			  })
+			    document.getElementById('record').innerHTML = htmlrecord;
+			     mui('.clearStr')[0].addEventListener('tap',function(){
+				 	//alert(22)
+				 	plus.storage.removeItem("$searchStorage");
+				 	mui("#record")[0].style.display="none"
+				 })
+				//搜索某一条 缓存 
+				  $('.searchli').click(function(e){
+				   	e.preventDefault();
+				   	alert("执行搜索")
+				  })
+				})
+			
 			  
 			//输入搜索
 //			document.getElementById('words').addEventListener('change', function() {
