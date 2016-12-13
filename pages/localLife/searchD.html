@@ -11,17 +11,13 @@
 		<meta name="format-detection" content="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.picker.min.js"></script>
-		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/app.js"></script>
-		
-		
 		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			.mui-bar{
@@ -39,23 +35,50 @@
 				font-weight: bold;
 			}
 			#main{
-				margin-top: 70px;
-				background-color: #fff;
+				margin-top: 50px;
+				background-color: #EFEFF4;
 			}
 			#main p{
 				line-height: 20px;
 				border-left:3px solid #1296db;
-				margin-top: 5px;
 				padding-left: 20px;
-				margin: 5px !important;
-			}
-			.pWrap{
-				padding-top: 5px;
+				margin: 3px !important;
 			}
 			#main input{
 				border: none;
 				padding: 20px;
 				font-size: 16px;
+				width: 100%;
+				z-index: 999;
+			}
+			#showCityPicker{
+				position: absolute;
+				right: 10px;
+				border: none;
+				padding: 0;
+				text-align: right;
+				width: 75%;
+				color: #666;
+				margin-top: -10px;
+				background-color: rgba(0,0,0,0);
+			}
+			#cityResult{
+				line-height: 22px;
+				font-size: 14px;
+				display: inline-block;
+				float: right;
+				margin-right: 50px;
+				color: #666;
+			}
+			dl.list{
+				padding: 10px 0;
+				border-bottom: 1px solid #EFEFF4;
+			}
+			dl.list{
+				border-top: 1px solid #EFEFF4;
+			}
+			.name{
+				display: inline-block;
 			}
 		</style>
 	</head>
@@ -68,26 +91,99 @@
 			<a href="javascript:;" class="fr baocun" onclick="searchD()">查询</a>
 		</header>
 		<div id="main">
-			<div class="pWrap">
-				<p class="black title">运单号</p>
-			</div>
-	        <input type="" name="" id="deliveryNo" value="" class="phone" placeholder="请输入单号"/>
-		</div>
+			<dl class="list" id="goodsList">
+				<dd class="goodsItem">
+					<div class="pWrap">
+			        	<p class="black name">快递公司</p>
+			        	<button id='showCityPicker' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+						<div id='cityResult' class="ui-alert"></div>
+					</div>
+				</dd>
+			</dl>
+			<dl class="list" id="goodsList">
+				<dd class="goodsItem">
+					<div class="pWrap">
+						<p class="black title">运单号</p>
+					</div>
+					<input type="" name="" id="deliveryNo" value="" class="phone" placeholder="请输入单号"/>
+				</dd>
+			</dl>
+	</div>
 	</body>
-	<script type="text/javascript">
-	(function($, doc) {
-		$.init();
-		$.ready(function() {
-			//查询快递单号
-			window.searchD = function(){
-				var deliveryNo = $('#deliveryNo').val();
-				alert();
-				openview({ 
-					view:'.html'
-				})
-			}
-		});
-	})(mui, document);
+	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/mui.picker.min.js"></script>
+	<script src="../../js/mui.poppicker.js"></script>
+	<script src="../../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		(function($, doc) {
+			$.init();
+			$.ready(function() {
+				//分类选择
+				var userPicker = new $.PopPicker();
+				userPicker.setData([{
+					value: 'SF',
+					text: '顺丰速运'
+				}, {
+					value: 'ZTO',
+					text: '中通快递'
+				},{
+					value: 'DBL',
+					text: '德邦'
+				},{
+					value: 'KYWL',
+					text: '跨越速运'
+				},{
+					value: 'ZJS',
+					text: '宅急送'
+				},{
+					value: 'YD',
+					text: '韵达快递'
+				},{
+					value: 'EMS',
+					text: '邮政EMS'
+				}, {
+					value: 'STO',
+					text: '申通快递'
+				},{
+					value: 'HTKY',
+					text: '百世快递'
+				},{
+					value: 'UC',
+					text: '优速快递'
+				},{
+					value: 'YTO',
+					text: '圆通快递'
+				}]);
+				var showUserPickerButton = doc.getElementById('showCityPicker');
+				var userResult = doc.getElementById('cityResult');
+				showUserPickerButton.addEventListener('tap', function(event) {
+					userPicker.show(function(items) {
+						userResult.innerText = items[0].text;
+						doc.getElementById('deliveryNo').name = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+				
+				
+				//查询快递单号
+				window.searchD = function(){
+//					alert(1);
+					var deliveryNo = doc.getElementById('deliveryNo').value;
+					var shipper = doc.getElementById('deliveryNo').name;
+//					alert(shipper);
+//					alert(deliveryNo);
+					openview({ 
+						view:'viewLogistics.html',
+						extrasobj:{deliveryNo:deliveryNo,shipper:shipper}
+					})
+					
+				}
+//				window.focus = function(){
+//					this.focus()
+//				}
+			});
+		})(mui, document);
 	</script>
 
 </html>
