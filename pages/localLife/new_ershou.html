@@ -326,7 +326,8 @@
 		    .uppics div.onepic img{width: 50px;}
 		    .uppics div.onepic input{width: 0;height: 0;position: absolute;outline: none;}
 		    #uppics2{text-align: left;white-space: nowrap;overflow-x: scroll;}
-		    #uppics2 div{display: inline-block;width: 120px;height:120px;vertical-align: middle;position: relative;text-align: center;padding: 10px;}
+		    #uppics2 div{display: inline-block;width: 120px;height:120px;vertical-align: middle;position: relative;text-align: center;padding: 10px;
+		    background-color: #eee;margin-right: 6px;}
 		    #uppics2 .onepic{width: 120px;background-color: #eee;}
 		    #uppics2 .picimg{width: 100%;}
 		    .picimg1{width: 25px;position: absolute;right: 0px;top: 2px;}
@@ -431,7 +432,14 @@
     var Apic = [];//存放图片数组
     var Indexes = 0;//当前删除
     onepic.onclick = function(){
-        var file_input = document.getElementById('file_input');
+    	var file_input = document.getElementById('file_input');
+    	if(Apic.length<=4){
+    		if(Apic.length ==4){
+    			file_input.style.display = 'none';
+    		}else{
+    			file_input.style.display = 'inline-block';
+    		}
+			
         uppics.id = 'uppics2';
         var imgnode = document.createElement("div");
         clearInterval(time1);
@@ -461,6 +469,10 @@
                 file_input.value = '';
             }
         },500)
+       }else{
+       	file_input.style.display = 'none';
+       	mui.toast('最多选择五张');
+       }
     }
 	//选择图片结束
 	
@@ -475,8 +487,8 @@
 				mui.toast('请输入正确的手机号');
 				mui('#Bphone')[0].focus();
 			}else{
-				if(!Apic[0]){
-					mui.toast('请至少选择一张图片');
+				if(Apic.length<2){
+					mui.toast('请至少选择两张图片');
 				}else{
 					for (var i=0; i<Ynulls.length; i++) {
 						if(!Ynulls[i].value){
@@ -486,11 +498,16 @@
 						}
 						if(i==Ynulls.length-1){
 							plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
-							
 							//发送数据
 							var formD = new FormData();
-							console.log(Apic);
 							formD.append('list_pic',Apic[0]);
+							if(Apic.length>1){
+								console.log('图片张数'+Apic.length); 
+								for (var j=1; j<Apic.length; j++) {
+									console.log('添加banner');
+									formD.append('banner_pic',Apic[j]);
+								} 
+							}
 							formD.append('userid',myuserid);
 							formD.append('title',mui('#Bname')[0].value);
 							formD.append('phone',mui('#Bphone')[0].value);
@@ -507,7 +524,20 @@
 		        				if (xhr.readyState===4) {
 		        					if (xhr.status===200) {
 		        						plus.nativeUI.closeWaiting();//关闭等待框
-		        						console.log(xhr.responseText);
+		        						var dataobj = JSON.parse(xhr.responseText);
+		        						console.log(dataobj);
+		        						if(dataobj.errno == 0){
+		        							mui.toast('发布成功');	
+		        							//触发跳转页面刷新
+		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
+											mui.fire(plus.webview.getWebviewById('2edMarket.html'),'refresh');
+											var time2 = setTimeout(function(){
+												plus.webview.currentWebview().close();
+												plus.nativeUI.closeWaiting();
+											},500)
+		        						}else{
+		        							mui.toast('发布失败');	
+		        						}
 		        					}
 		        				}
 					        }
