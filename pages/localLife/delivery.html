@@ -108,7 +108,7 @@
 				width: 90%;
 				margin-top: 10px;
 			}
-			#showCityPicker3,#showCityPicker,#showCityPicker2{
+			#showCityPicker3,#showCityPicker,#showCityPicker2,#payWayPicker{
 				position: absolute;
 				right: 10px;
 				line-height: 49px;
@@ -124,7 +124,7 @@
 				font-size: 14px;
 				width: 100%;
 			}
-			#cityResult3,#cityResult,#cityResult2{
+			#cityResult3,#cityResult,#cityResult2,#payWay{
 				line-height: 50px;
 				font-size: 14px;
 				display: inline-block;
@@ -135,8 +135,10 @@
 			.goods{
 				display: inline-block;
 			}
-			#cityResult{
-				
+			
+			button, input, optgroup, select, textarea {
+			 font: inherit; 
+			 color: inherit; 
 			}
 			
 		</style>
@@ -166,7 +168,7 @@
 							<span class="mui-icon mui-icon-person"></span>
 				       </div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
-				        	<input type="" name="" id="sendName" value="" class="phone" placeholder="请输入姓名"/>
+				        	<input id="sendName" class="phone" placeholder="请输入姓名" value=""/>
 				        </div>
 					</a>
 				</dd>
@@ -176,7 +178,7 @@
 							<span class="mui-icon mui-icon-phone"></span>
 				       </div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
-				        	<input type="" name="" id="sendMobile " value="" class="phone" placeholder="请输入电话号码"/>
+				        	<input id="sendMobile" class="phone" placeholder="请输入电话号码"/>
 				        </div>
 					</a>
 				</dd>
@@ -194,9 +196,9 @@
 				</dd>
 				<dd class="goodsItem">
 					<a class="react mui-row">
-						<div class="mui-col-sm-1 mui-col-xs-1">&nbsp;</div>
+						<div class="mui-col-sm-1 mui-col-xs-1"></div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
-				        	<input type="" name="" id="sendAddress" value="" class="phone" placeholder="请输入详细地址"/>
+				        	<input id="sendAd" class="phone" placeholder="请输入详细地址"/>
 				        </div>
 					</a>
 				</dd>
@@ -218,7 +220,7 @@
 							<span class="mui-icon mui-icon-person"></span>
 				       </div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
-				        	<input type="" name="" id="receiveName" value="" class="phone" placeholder="请输入姓名"/>
+				        	<input id="receiveName" class="phone" placeholder="请输入姓名"/>
 				        </div>
 					</a>
 				</dd>
@@ -228,7 +230,7 @@
 							<span class="mui-icon mui-icon-phone"></span>
 				       </div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
-				        	<input type="" name="" id="receiveMobile " value="" class="phone" placeholder="请输入电话号码"/>
+				        	<input id="receiveMobile" class="phone" placeholder="请输入电话号码"/>
 				        </div>
 					</a>
 				</dd>
@@ -246,9 +248,9 @@
 				</dd>
 				<dd class="goodsItem">
 					<a class="react mui-row">
-						<div class="mui-col-sm-1 mui-col-xs-1">&nbsp;</div>
+						<div class="mui-col-sm-1 mui-col-xs-1"></div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
-				        	<input type="" name="" id="receiveAddress" value="" class="phone" placeholder="请输入详细地址"/>
+				        	<input id="receiveAddress" class="phone" placeholder="请输入详细地址"/>
 				        </div>
 					</a>
 				</dd>
@@ -262,7 +264,21 @@
 				        <div class="mui-col-sm-11 mui-col-xs-11">
 				        	<p class="black goods">物品</p>
 				        	<button id='showCityPicker' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
-							<div id='cityResult' class="ui-alert"><span id="province"></span><span id="city"></span><span id="area"></span></div>
+							<div id='cityResult' class="ui-alert"></div>
+				        </div>
+					</a>
+				</dd>
+			</dl>
+			<dl class="list" id="goodsList">
+				<dd class="goodsItem">
+					<a class="react mui-row">
+						<div class="mui-col-sm-1 mui-col-xs-1">
+							<img src="../../img/tickets/pay.png" class="delete"/>
+				       	</div>
+				        <div class="mui-col-sm-11 mui-col-xs-11">
+				        	<p class="black goods">支付方式</p>
+				        	<button id='payWayPicker' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+							<div id='payWay' class="ui-alert"></div>
 				        </div>
 					</a>
 				</dd>
@@ -271,7 +287,7 @@
 	    
 	     <div class="renting-footer renting-footertwo clearfloat" id="footer" onclick="send()">
 			<ul>
-				<li><a href="#">我要寄件</a></li>
+				<li>我要寄件</li>
 			</ul>
 		</div>
 	</body>
@@ -316,7 +332,7 @@
 		(function($, doc) {
 			$.init();
 			$.ready(function() {
-				//分类选择
+				//物品分类选择
 				var userPicker = new $.PopPicker();
 				userPicker.setData([{
 					text: '日用品'
@@ -340,6 +356,26 @@
 						//return false;
 					});
 				}, false);
+				
+				//支付方式分类选择
+				var payWayPicker = new $.PopPicker();
+				payWayPicker.setData([{
+					value: 1,
+					text: '寄方付'
+				}, {
+					value: 2,
+					text: '收方付'
+				}]);
+				var paywayPicker = doc.getElementById('payWayPicker');
+				var payResult = doc.getElementById('payWay');
+				paywayPicker.addEventListener('tap', function(event) {
+					payWayPicker.show(function(items) {
+						payResult.innerText = items[0].text;
+						doc.getElementById('receiveAddress').name = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
 			});
 		})(mui, document);
 	</script>
@@ -350,49 +386,72 @@
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			var Shipper = plus.webview.currentWebview().ShipperCode;
-//			alert(Shipper);
 			
 			window.send = function(){
-//				alert(Shipper);
 				//获取所需数据
-				var GoodsName = $('#cityResult').html();
-				var sendAddress = $('sendAddress').val();
-				var sendProvince = $('#province').val();
-				var sendCity = $('#city').val();
-				var sendArea = $('#area').val();
-				var sendMobile = $('#sendMobile').val();
+				var GoodsName = $('#cityResult').text();
 				var sendName = $('#sendName').val();
+				var sendMobile = $('#sendMobile').val();
+				var sendProvince = $('#province').text();
+				var sendCity = $('#city').text();
+				var sendArea = $('#area').text();
+				var sendAd = document.getElementById('sendAd').value;
+				var receiveName = document.getElementById('receiveName').value;
+				var receiveMobile = document.getElementById('receiveMobile').value;
+				var receiveProvince = $('#province2').text();
+				var receiveCity = $('#city2').text();
+				var receiveArea = $('#area2').text();
 				var receiveAddress = $('#receiveAddress').val();
-				var receiveProvince = $('#province2').val();
-				var receiveCity = $('#city2').val();
-				var receiveArea = $('#area2');
-				var receiveMobile = $('#receiveMobile').val();
-				var receiveName = $('#receiveName').val();
+				var PayType = document.getElementById('receiveAddress').name;
+//				alert(sendProvince+sendArea+sendCity+receiveProvince+receiveArea+receiveCity);
+//				alert(GoodsName);
+//				alert(sendAd+sendMobile+sendName+receiveMobile+receiveName+receiveAddress);
+//				alert(PayType);
 				
-				alert(Shipper);
-				alert();
+				//判断是否合法
+				var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+				if(GoodsName == ''){
+					mui.toast('请选择物品分类!');
+				}else if(sendName == ''){
+					$('#sendName').focus(); 
+					mui.toast('请输入寄件人姓名!');
+				}else if(!reg_phone.test(sendMobile)){
+					$('#sendMobile').focus(); 
+					mui.toast('请输入正确的寄件人电话!');
+				}else if(sendProvince == ''){
+					mui.toast('请选择寄件人地址!');
+				}else if(sendAd == ''){
+					$('#sendAd').focus(); 
+					mui.toast('请输入寄件人详细地址!');
+				}else if(receiveName == ''){
+					$('#receiveName').focus(); 
+					mui.toast('请输入收件人姓名!');
+				}else if(!reg_phone.test(receiveMobile)){
+					$('#receiveMobile').focus(); 
+					mui.toast('请输入正确的收件人电话!');
+				}else if(receiveProvince == ''){
+					mui.toast('请选择收件人地址!');
+				}else if(receiveAddress == ''){
+					$('#receiveAddress').focus(); 
+					mui.toast('请输入收件人详细地址!');
+				}else if(PayType == ''){
+					mui.toast('请选择支付方式!');
+				}else{
+					mui.ajax(serverUrl+'/api/kdniao/postexpress',{
+						data:{CallBack:'',GoodsCode:'',GoodsDesc:'',GoodsName:GoodsName ,GoodsPrice:'',Goodsquantity:'',GoodsVol:'',GoodsWeight:'',Cost:'',CustomerName:'',CustomerPwd:'',EndDate:'',ExpType:1,IsNotice:'',IsReturnPrintTemplate:'',LogisticCode:'',MemberID:'',MonthCode:'',OtherCost:'',PayType:PayType,Quantity:'',Receiver_Address:receiveAddress ,Receiver_CityName:receiveCity ,Receiver_ExpAreaName:receiveArea ,Receiver_Mobile:receiveMobile ,Receiver_Name:receiveName ,Receiver_ProvinceName:receiveProvince ,Remark:'',Sender_Address:sendArea ,Sender_CityName:sendCity ,Sender_ExpAreaName:'',Sender_Mobile:sendMobile ,Sender_Name:sendName ,Sender_ProvinceName:sendProvince,SendSite:'',ShipperCode:Shipper,StartDate:'',Volume:'',Weight:''},
+						dataType:'json',
+						type:'post',
+						timeout:1000,
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){
+							alert(JSON.stringify(data))
+						},
+						error:function(xhr,type,errorThrown){
+							alert('响应失败  !');
+						}
+					});
+				}
 			}
-			
-			
-		
-			
-			
-			
-//			
-//			mui.ajax(serverUrl+'/api/kdniao/postexpress',{
-//				data:{"CallBack":"","Commodity":[{"GoodsCode":"","GoodsDesc":"","GoodsName":"鞋子","GoodsPrice":"","Goodsquantity":"1","GoodsVol":"","GoodsWeight":"1.0"}],"Cost":"","CustomerName":"testyd","CustomerPwd":"testydpwd","EndDate":"","ExpType":"1","IsNotice":"0","IsReturnPrintTemplate":"1","LogisticCode":"","MemberID":"","MonthCode":"","OrderCode":"1000745320654","OtherCost":"","PayType":"1","Quantity":"","Receiver":{"Address":"三里屯街道雅秀大厦","CityName":"北京","ExpAreaName":"朝阳区","Mobile":"15018442396","Name":"Yann","ProvinceName":"北京"},"Remark":"","Sender":{"Address":"明珠路73号","CityName":"上海","ExpAreaName":"青浦区","Mobile":"15018442396","Name":"Taylor","ProvinceName":"上海"},"SendSite":"","ShipperCode":"YD","StartDate":"","Volume":"","Weight":""},
-//				dataType:'json',
-//				type:'post',
-//				timeout:1000,
-//				headers:{"token":oldToken},	 
-//				success:function(data,type,xhr){
-//					var thisAddArray = data.data;
-//				},
-//				error:function(xhr,type,errorThrown){
-//					alert('响应失败  !');
-//				}
-//			});
-			
 			
 		})();
     </script>
