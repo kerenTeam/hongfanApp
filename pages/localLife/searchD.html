@@ -88,7 +88,6 @@
 		    <div class="header-tit">
 				查快递
 			</div>
-			<a href="javascript:;" class="fr baocun" onclick="searchD()">查询</a>
 		</header>
 		<div id="main">
 			<dl class="list" id="goodsList">
@@ -108,6 +107,11 @@
 					<input type="" name="" id="deliveryNo" value="" class="phone" placeholder="请输入单号"/>
 				</dd>
 			</dl>
+			<div class="add">
+				<a href="javascript:;" class="address-add fl" id="addNewAd" onclick="searchD()">
+		     		查询
+		     	</a>
+			</div>
 	</div>
 	</body>
 	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
@@ -168,15 +172,22 @@
 				
 				//查询快递单号
 				window.searchD = function(){
-//					alert(1);
 					var deliveryNo = doc.getElementById('deliveryNo').value;
 					var shipper = doc.getElementById('deliveryNo').name;
-//					alert(shipper);
-//					alert(deliveryNo);
-					openview({ 
-						view:'viewLogistics.html',
-						extrasobj:{deliveryNo:deliveryNo,shipper:shipper}
-					})
+					//判断是否合法
+					if(shipper == ''){
+						mui.toast('请选择快递公司!');
+					}else if(deliveryNo == ''){
+						$('#deliveryNo').focus(); 
+						mui.toast('运单号不能为空!');
+					}else{
+//						alert(shipper);
+//						alert(deliveryNo);
+						openview({ 
+							view:'deliveryTrace.html',
+							extrasobj:{deliveryNo:deliveryNo,shipper:shipper}
+						})
+					}
 					
 				}
 //				window.focus = function(){
