@@ -318,7 +318,7 @@
 								</div>
 							</li>
 							<%}else{%>
-							<li onclick="goAddr()" data-id="<%=obj[0].id%>">
+							<li onclick="goAddr()" id="addid" data-id="<%=obj[0].id%>" data-name="<%=obj[0].person%>" data-address="<%=obj[0].province%><%=obj[0].city%><%=obj[0].area%><%=obj[0].address%>" data-phone="<%=obj[0].phone%>">
 								<div class="mui-row orderRow">
 									<div class="mui-col-sm-1 mui-col-xs-1">
 										<span class="mui-icon mui-icon-location middle-icon"></span>
@@ -371,7 +371,7 @@
 								
 							</dd>
 
-							<dd class="dd-padding kv-line-r mui-row tipsWrap">
+							<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
 								<h6 class="addTitle mui-col-sm-1 mui-col-xs-2">备注：</h6>
 								<div class="clearfloat fr mui-col-sm-11 mui-col-xs-10 goods">
 									<input type="text" id="" value="" placeholder="选填（对本次交易的说明）" class="tips" />
@@ -403,28 +403,44 @@
 												<div class="mui-collapse-content">
 													<% for(var i=0;i<allLi.length;i++){ %>
 								 						<%if(allLi[i].typeid==1){%>
-								 							<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].salerule.cutValue%>">
-															 <div class="mui-col-sm-3">
-															 	<div>￥<big><b><%=allLi[i].salerule.cutValue%></b></big></div>
-															 	<div><small>满<span><%=allLi[i].salerule.overflowValue%></span>使用</small></div>
-															 </div>
-															 <div class="mui-col-sm-9">
-															 	<div class="cred"><big><%=allLi[i].name%></big> 全场满<span><%=allLi[i].salerule.overflowValue%></span>减<span><%=allLi[i].salerule.cutValue%></span></div>
-															 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
-															 </div>
-															 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" alt="" /></div>
-														</div> 
+								 							<%if(allLi[i].salerule.overflowValue!=0){%>
+								 								<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].salerule.cutValue%>">
+																	 <div class="mui-col-sm-3">
+																	 	<div>￥<big><b><%=allLi[i].salerule.cutValue%></b></big></div>
+																	 	<div><small>满<span><%=allLi[i].salerule.overflowValue%></span>使用</small></div>
+																	 </div>
+																	 <div class="mui-col-sm-9">
+																	 	<div class="cred"><big><%=allLi[i].name%></big> 全场满<span><%=allLi[i].salerule.overflowValue%></span>减<span><%=allLi[i].salerule.cutValue%></span></div>
+																	 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
+																	 </div>
+																	 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
+																</div> 
+								 								<%}else{%>
+								 									<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].salerule.cutValue%>">
+																		 <div class="mui-col-sm-3">
+																		 	<div>￥<big><b><%=allLi[i].salerule.cutValue%></b></big></div>
+																		 	<div><small>全场通用</small></div>
+																		 </div>
+																		 <div class="mui-col-sm-9">
+																		 	<div class="cred"><big><%=allLi[i].name%></big> 全场通用减<span><%=allLi[i].salerule.cutValue%></span></div>
+																		 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
+																		 </div>
+																		 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
+																	</div> 
+								 									
+								 									<%}%>
+								 							
 								 							<%}else{%>
 								 							<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].discount%>">
 															 <div class="mui-col-sm-3">
 															 	<div><big><b><%=allLi[i].discount*10%></b></big>折</div>
-															 	<div><small>满<span><%=allLi[i].salerule.overflowValue%></span>使用</small></div>
+															 	<div><small>全场通用</small></div>
 															 </div>
 															 <div class="mui-col-sm-9">
-															 	<div class="cred"><big><%=allLi[i].name%></big> 全场满<span><%=allLi[i].salerule.overflowValue%></span>打<span><%=allLi[i].discount*10%></span>折</div>
+															 	<div class="cred"><big><%=allLi[i].name%></big> 全场打<span><%=allLi[i].discount*10%></span>折</div>
 															 	<div class="dateLimit"><%=allLi[i].begin_date%> ~ <%=allLi[i].end_date%>内有效</div>
 															 </div>
-															 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" alt="" /></div>
+															 <div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
 														</div> 
 								 								<%}%>
 													<%}%> 
@@ -488,18 +504,17 @@
 						return true;
 				}
 			});
-		var myuserid,allGroup=0,quan=0,jf=0;
+		var myuserid,allGroup=0,quan=0,jf=0,orderSubmitData=[],arr =[],arrNum=[],arrMoney =[],arrpostFee=[],shopID=[];;
 		mui.plusReady(function() {
 			window.addEventListener('readdstorage', function(event) {
-				alert(1)
+				//alert(1)
 				orderAdd()
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
-			//alert(plus.storage.getItem('$orderStorage'))
+			  console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
 				//获取缓存
-			  myuserid = plus.storage.getItem('userid');
-			console.log(myuserid)
+			  myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken');
 
 			//加载默认地址
@@ -527,7 +542,7 @@
 						//alert(JSON.stringify(data.data))
 						var addrObj = {};
 						if(plus.storage.getItem("$addressStorage")){
-							alert(plus.storage.getItem("$addressStorage"))
+							//alert(plus.storage.getItem("$addressStorage"))
 							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
 						}else{
 							addrObj.obj = data.data; 
@@ -538,15 +553,20 @@
 						//订单数据模板
 						var data = {};
 						data.goodsList = orderStorage;
-						var arr =[],arrNum=[],arrMoney =[],arrpostFee=[];
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
 						//alert(arr.length)
 						data.cates = arr.unique1();
-						 
+						for(var i = 0; i < orderStorage.length; i++) {
+							shopID.push(orderStorage[i].shopId);
+						} 
+						
+						shopID = shopID.unique1();  
+						data.shopID = shopID;
+						 // alert(JSON.stringify(shopID))
 						for(var i= 0;i<data.cates.length;i++){
-							//分组小计
+							//分组邮费小计
 							var groupPostfee=0;
 							 for(var j = 0;j<orderStorage.length;j++){
 							 	 
@@ -561,7 +581,7 @@
 						}
 						 
 						for(var i= 0;i<data.cates.length;i++){
-							//分组小计
+							//分组 金额 和 数量 小计
 							var groupNum=0,groupMoney=0;
 							 for(var j = 0;j<orderStorage.length;j++){
 							 	if(orderStorage[j].shopName ==  data.cates[i]){
@@ -578,10 +598,31 @@
 							allGroup+=parseFloat(arrMoney[i])
 							
 						}
-						alert("allGroup "+allGroup)
+						
+						//分商店  订单数据 小计
+						
+						for(var i= 0;i<shopID.length;i++){ 
+							var orderList={};
+							    orderList.storeid=shopID[i];
+							    orderList.postFee = arrpostFee[i];
+							    orderList.totalNum = arrNum[i];
+							    orderList.totalMoney = arrMoney[i];
+							    orderList.goodsData =[]; 
+						 	for(var j = 0;j<orderStorage.length;j++){
+						 	 if(orderStorage[j].shopId == shopID[i]){
+						 	 	orderList.goodsData.push(orderStorage[j])
+						 	 }
+						 	 
+						 	}
+							 orderSubmitData.push(orderList);
+						}
+						
+							// alert("orderSubmitData "+JSON.stringify(orderSubmitData))
+						
+						//alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
-						data.arrMoney=arrMoney;
+						data.arrMoney=arrMoney; 
 						
 						var html = template('orderData', data);
 						document.getElementById('orderTpl').innerHTML = html;
@@ -640,8 +681,8 @@
 			});
 			var d = new Date();
 			var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
-			 str = formatDate(str, "yyyy-MM-dd");
- 				alert(str)
+			 str = formatDate(str, "yyyy.MM.dd");
+ 				//alert(str)
 			//获取抵用券
 			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
 					data:{userid : myuserid},
@@ -650,7 +691,7 @@
 					timeout:1000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){
-						alert(JSON.stringify(data.data));
+						//alert("dfdsgfdgf  "+JSON.stringify(data.data));
 						var allC = {};
 						var tpldata=[];
 						
@@ -660,12 +701,13 @@
 							if(data.data[i].user_coupon_state==1 && (data.data[i].typeid==1||data.data[i].typeid==2)){
 								
 								if(data.data[i].end_date!=null){
-										data.data[i].end_date=formatDate(data.data[i].end_date, "yyyy-MM-dd");
+										data.data[i].end_date=formatDate(data.data[i].end_date, "yyyy.MM.dd");
 								} 
 								if(data.data[i].begin_date!=null){
-									data.data[i].begin_date=formatDate(data.data[i].begin_date, "yyyy-MM-dd");
+									data.data[i].begin_date=formatDate(data.data[i].begin_date, "yyyy.MM.dd");
 								} 
-								if(data.data[i].salerule!=null){ 
+								if(data.data[i].salerule!=''){ 
+									
 									data.data[i].salerule = eval("("+data.data[i].salerule+")");
 									if(parseFloat(data.data[i].salerule.overflowValue)<=allGroup){  
 										if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
@@ -673,7 +715,8 @@
 											}
 									} 
 								}else{
-									if(data.data[i].begin_date<=str<=data.data[i].end_date){ 
+//									data.data[i].salerule = eval("("+data.data[i].salerule+")");
+									if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
 										    tpldata.push(data.data[i])
 											}
 								}
@@ -688,9 +731,9 @@
 				//优惠券计算
 						$(".checkQuan").click(function(){
 							var qid = $(this).attr("data-id");
-							alert("qid "+qid)
+							//alert("qid "+qid)
 							var qminus =$(this).attr("data-minus");
-							alert("qminus "+qminus) 
+							//alert("qminus "+qminus) 
 							$(this).siblings().find(".quanc").css("display","none");
 							quan=0;
 							if($(this).find(".quanc").css("display")=="block"){ 
@@ -721,8 +764,122 @@
 						alert('响应失败  !');
 					}
 				}); 
+				//goPay
+				window.goPay=function(){
+					plus.nativeUI.showWaiting('加载中 ...', {
+							width: '100px',
+							height: '80px'
+						});
+					if($("#addid")){
+						//地址
+						var MYaddress = {};
+						var addressid =$("#addid").attr("data-id");
+						MYaddress.people = $("#addid").attr("data-name");
+						MYaddress.addressNow = $("#addid").attr("data-address");
+						MYaddress.phoneNow =  $("#addid").attr("data-phone");
+						//alert("addressid "+addressid);
+						//买家留言
+						var noticeData=[];  
+						$(".tipsWrap").each(function(){
+							var notice = $(this).find("input").val();
+							for(var i=0;i<orderSubmitData.length;i++){
+								orderSubmitData[i].sendAddress = MYaddress;
+								if(orderSubmitData[i].storeid == $(this).attr("data-id")){
+									orderSubmitData[i].notice = notice;
+								}
+							}
+							if(notice!=''){
+								var noticeObj={};
+								noticeObj.shopId = $(this).attr("data-id");
+								noticeObj.notice = notice;
+								noticeData.push(noticeObj)
+							}
+							
+							
+						});
+						
+					//	alert(JSON.stringify("noticeData "+noticeData));
+						//alert("orderSubmitData ewrew"+JSON.stringify(orderSubmitData))
+						//优惠券id
+						var coupon_id='';
+						$(".quanc").each(function(){
+							if($(this).css("display")=="block"){
+								coupon_id =$(this).attr("data-id");
+							}
+						})
+						//积分使用
+						var isIntergal=0;
+						if($("#coupon").find("input[type='checkbox']:checked").length==1){
+							//alert("yes");
+							isIntergal=1
+						}else{
+							//alert("no")
+							isIntergal=0;
+						}
+						var goodsdata = JSON.stringify(orderSubmitData);
+						var notice = JSON.stringify(noticeData);
+						//alert(goodsdata)
+						//提交
+						console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
+		 					mui.ajax(serverUrl+'/api/mall/neworder',{
+								data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
+								dataType:'json',
+								type:'post',
+								timeout:1000,
+								headers:{"token":oldtoken},	 
+								success:function(data,type,xhr){
+									//购物车 缓存 
+        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+        							//alert(cartStorage)
+        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
+									//删除 购物车里 提交的这一条数据 
+									console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
+									for(var i=0;i<orderStorage.length;i++){
+										
+										for(var j=0;j<cartStorage.length;j++){
+											if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
+												 cartStorage.splice(j,1)
+											}
+											//break;
+										}
+										
+										
+									}
+									alert("ooooo "+JSON.stringify(cartStorage))
+									plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
+									var list = plus.webview.getWebviewById('cart.html'); 
+											mui.fire(list,'refresh'); 
+									plus.nativeUI.closeWaiting(); 
+									alert(JSON.stringify(data))
+									if(data.errno==0){
+									//	alert(JSON.stringify(data.data))
+										var payMent = data.data.payment;
+										var order_id=  data.data.order_id;
+										//alert("payMent "+payMent + " order_id"+order_id);
+										openview({
+											view:"../market/pay.html",
+											extrasobj:{payMent:payMent,order_id:order_id}
+										})
+//										var list = plus.webview.getWebviewById('cart.html'); 
+//											mui.fire(list,'refresh'); 
+//										plus.webview.currentWebview().close();
+									}else{
+										plus.nativeUI.closeWaiting()
+									   // alert(JSON.stringify(data.data))
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting()
+									console.log('响应失败  !');
+								}
+							});
+					}else{ 
+						mui.toast("您还未选择收货地址哟！")
+					}
+					 
+					
+				}
 				
-				 
 		})
 		
 		//进入地址页面
@@ -732,12 +889,7 @@
 				extrasobj:{pageid:"market-order",userId:myuserid}
 			})
 		}
-		//goPay
-		function goPay(){
-			openview({
-				view:"pay.html"
-			})
-		}
+		
 		//数组去重
 		Array.prototype.unique1 = function() {
 			var res = [this[0]];

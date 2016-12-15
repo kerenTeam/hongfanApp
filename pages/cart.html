@@ -109,6 +109,7 @@
     	//购物车 缓存 
         var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
         
+        //alert("goodProp"+cartStorage[0].goodProp)
      
 //      console.log(cartStorage.length)
        //订单缓存
@@ -119,6 +120,7 @@
        
         	var data = {};
 			data.goodsList = cartStorage; 
+			//alert("goodProp"+data.goodsList[0].goodProp)
 			var arr = [];
 			for(var i = 0; i < cartStorage.length; i++) {
 				arr.push(cartStorage[i].shopName);
@@ -381,11 +383,17 @@
 							mui.toast("您选中了" + ALLcheckLength + "件商品")
 								//订单缓存
 							var orderStorage = [];
-							$("dd").find("input[type='checkbox']:checked").each(function(){
+							$("dd").find("input[type='checkbox']:checked").each(function(){ 
 								var orderObj = {};
 								orderObj.goodsId = $(this).attr("data-id");
 								orderObj.goodsnum = parseInt($(this).parentsUntil('#cartData').find("input[type='number']").val());
 								orderObj.goodText = $(this).attr("data-goodstext");
+								
+								for(var i=0;i<cartStorage.length;i++){
+									if(orderObj.goodsId == cartStorage[i].goodsId && orderObj.goodText==cartStorage[i].goodText){
+										orderObj.goodProp = cartStorage[i].goodProp;
+									}
+								} 
 								orderObj.shopId = $(this).attr("data-shopId"); 
 								orderObj.shopName = $(this).attr("data-shop");
 								orderObj.goodsName = $(this).attr("data-gdName");

@@ -21,6 +21,7 @@
 				border-bottom: 1px solid #eee;
 				box-sizing: border-box;
 				-webkit-box-sizing: border-box;
+				overflow-y: hidden;
 			}
 			.notice .tab-bd .tab-pal{
 				border-top: 1px solid #eee;
@@ -30,7 +31,7 @@
 				background-color: #efeff4;
 			}
 			.notice li.active{
-				border-bottom: 3px solid red;
+				border-bottom: 2px solid red;
 				box-sizing: border-box;
 			}
 			dl.list dt, dl.list dd, dl.list{
@@ -180,21 +181,21 @@
 								<%for(var i =0;i<orderData.length;i++){%>
 									<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 									<div class="orderbh clearfloat box-s">
-										订单编号<%=orderData[i].order_id%>
+										<span onclick="goShop('<%=orderData[i].storeid%>')"><img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" alt="" /> <%=orderData[i].goods_data[0].goodsData[0].shopName%></span>
 										<span class="fr state"><%=state[orderData[i].order_status]%></span>
 									</div>
-									<%for(var j =0;j<orderData[i].goods_data.length;j++){%>
+									<%for(var j =0;j<orderData[i].goods_data[0].goodsData.length;j++){%>
 									<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
 										<div class="dealcard dealcardtwo clearfloat">
 											<div class="dealcard-img imgbox">
-												<img src="<%=orderData[i].goods_data[j].thumb%>">
+												<img src="<%=orderData[i].goods_data[0].goodsData[j].goodsImg%>">
 											</div>
 											<div class="dealcard-block-right dealcard-block-righttwo">
 												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3"><%=orderData[i].goods_data[j].title%></span>
+													<span class="poi-name icon-count-3"><%=orderData[i].goods_data[0].goodsData[j].goodsName%></span>
 													<div class="price pricetwo">
-														<p>¥<%=orderData[i].goods_data[j].price%></p>
-														<p class="num">×<%=orderData[i].goods_data[j].nums%></p>	
+														<p>¥<%=orderData[i].goods_data[0].goodsData[j].goodsPrice%></p>
+														<p class="num">×<%=orderData[i].goods_data[0].goodsData[j].goodsnum%></p>	
 													</div>	
 												</div>									
 											</div>
@@ -202,50 +203,56 @@
 									</a>
 									<%}%> 
 									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共<%=orderData[i].num%>件商品&nbsp;合计:￥</sub><%=orderData[i].amount%><sub>
-											<%if(orderData[i].fee==0){%>
+										<p><sub>共<%=orderData[i].goods_data[0].totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data[0].totalMoney%><sub>
+											<%if(orderData[i].goods_data[0].postFee==0){%>
 												(不含运费)
 												<%}else{%>
-													(含运费)
+													(含运费<%=orderData[i].goods_data[0].postFee%>)
 													<%}%>
 											</sub></p>
 									</div>
-									<%if(orderData[i].order_status==0){%>
+									<%if(orderData[i].order_status==1){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="goOrder('<%=orderData[i].order_id%>')" class="fr confirm">付款</a>
 											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">取消订单</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==1){%>
+									<%if(orderData[i].order_status==2){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="tuiOrder('<%=orderData[i].order_id%>')" class="fr confirm">申请退款</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==2){%>
+									<%if(orderData[i].order_status==3){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
 											<a onclick="viewLogistics('<%=orderData[i].order_id%>')" class="fr">查看物流</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==3){%>
+									<%if(orderData[i].order_status==4){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
 											<a onclick="viewLogistics('<%=orderData[i].order_id%>')" class="fr">查看物流</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==4){%>
+									<%if(orderData[i].order_status==5){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<span class="fr">已评价</span>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==6 || orderData[i].order_status==7){%>
 										<div class="order-bottom clearfloat box-s"> 
 											<span class="fr">交易金额:<%=orderData[i].amount%>  退款金额：￥<%=orderData[i].amount%></span>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==5){%>
-										<div class="order-bottom clearfloat box-s"> 
-											<span class="fr">退款成功</span>
-										</div>
-									<%}%>
-									<%if(orderData[i].order_status==6){%>
+									<%if(orderData[i].order_status==8){%>
 										<div class="order-bottom clearfloat box-s"> 
 											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">删除订单</a>
+											<span class="fr">退款成功</span>
+										</div>
+									<%}%> 
+									<%if(orderData[i].order_status==9){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">删除订单</a> 
 										</div>
 									<%}%> 
 								</dd>
@@ -274,13 +281,14 @@
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken');
 			var myuserid = plus.storage.getItem('userid');
+			alert(myuserid)
 			//加载订单 
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
 				height: '80px'
 			});
 				mui.ajax(serverUrl+'/api/mall/orderlist',{
-				data:{userid:5},
+				data:{userid:myuserid},
 				dataType:'json',
 				type:'post',
 				timeout:1000,
@@ -288,16 +296,17 @@
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
+						
 						if(data.data.length!=0){
-							alert(JSON.stringify(data.data))
-							alert(data.data[0].goods_data);  
+							 
+							alert(JSON.stringify(data.data));  
 							for(var i=0;i<data.data.length;i++){ 
 								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
 							}
-							
+							// alert(JSON.stringify(data.data[0].goods_data.goodsData[0]))
 							var obj={}; 
 							 obj.orderData=data.data;
-							 obj.state = ['等待买家付款' ,'买家已付款','卖家已发货','交易成功','退款中','退款成功','交易关闭'];
+							 obj.state = ['','等待买家付款','买家已付款','买家已付款','卖家已发货','交易成功','退款中','退款成功','交易关闭'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
 							$('.tab-nav li').click(function(){ 
 								var statusId=$(this).attr("data-statusId"); 
@@ -309,7 +318,7 @@
 								if(statusId==0){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==0){
+									if(status==1){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -318,7 +327,7 @@
 								if(statusId==1){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==1){
+									if(status==2){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -327,7 +336,7 @@
 								if(statusId==2){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==2){
+									if(status==3){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -336,7 +345,7 @@
 								if(statusId==3){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==3){
+									if(status==4){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -346,7 +355,7 @@
 									$("dd").css("display","none");
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==4 || status==5){
+									if(status==7 || status==8){
 										 $(this).css("display","block");
 									}
 //									else{
@@ -358,11 +367,14 @@
 								}
 							})
 						}
+					}else{
+						plus.nativeUI.closeWaiting()
+					    alert(JSON.stringify(data.data))
 					}
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting()
-					alert('响应失败  !');
+					console.log('响应失败  !');
 				}
 			}); 
 			
@@ -383,7 +395,12 @@
 			}
 			return res;
 		}
-		    
+		    window.goShop=function(id){
+				openview({
+					view:'../market/shophome.html', 
+					extrasobj:{storeId:id}
+				})
+			}
 			window.orderInfo=function(orderId){
 				openview({
 					view:'orderDetail.html', 

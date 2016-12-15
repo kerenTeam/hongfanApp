@@ -562,6 +562,7 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
 						success:function(data){
+							alert(JSON.stringify(data))
 							if(data.errno==0){ 
 								plus.nativeUI.closeWaiting();
 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
@@ -637,10 +638,15 @@
 		                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
 		                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
 		                    		var goodText=''; 
+		                    		var goodProp=[];
 		                    		$('.textType').each(function(){
-		                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+"; ";
+		                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+";";
+		                    			var prop = {};
+		                    			prop.parameter_name=$(this).find("p").html();
+		                    			prop.child_parameter_name=$(this).find(".cur").html();
+		                    			goodProp.push(prop)
 		                    		})  
-		                    		
+		                    		//alert(JSON.stringify(goodProp))
 		                    		//当前商品对象
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
@@ -652,7 +658,7 @@
 		                    		cartObj.goodsPostfee=goodsPostfee;
 		                    		cartObj.goodsnum=goodsnum;
 		                    		cartObj.goodText=goodText;
-		                    		
+		                    		cartObj.goodProp=goodProp;
 		                    		
 		                    		if(goNum ==1){
 		                    			if(cartStorage.length != 0) {
@@ -674,6 +680,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+		                    		alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
@@ -689,7 +696,7 @@
 											orderStorage =[];
 			                    			orderStorage.push(cartObj);
 			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-			                    			//alert(plus.storage.getItem("$orderStorage"));
+			                    		 //alert(plus.storage.getItem("$orderStorage"));
 			                    			
 			                    			openview({
 											 	view:"market-order.html", 

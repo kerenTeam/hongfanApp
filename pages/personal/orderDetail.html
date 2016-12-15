@@ -191,4 +191,29 @@
 			 	<button class="fr">取消订单</button> 
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var orderId = plus.webview.currentWebview().orderId;
+			var oldtoken = plus.storage.getItem('oldToken');
+			alert(orderId);
+			mui.ajax(serverUrl+'/api/mall/orderinfo',{
+				data:{order_id:orderId},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){ 
+					plus.nativeUI.closeWaiting();
+					alert(JSON.stringify(data)) ;
+			 
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting()
+					console.log('响应失败  !');
+				}
+			});
+		})
+	</script>
 </html>

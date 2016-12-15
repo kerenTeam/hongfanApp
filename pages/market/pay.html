@@ -19,7 +19,9 @@
 			.zhifulist li:last-child{border: none;}
 			.zhifulist li img{position: absolute;width: 30px;margin-left:-40px;top: 18px;}
 			.zhifulist li h4{font-size: 16px;margin-bottom: 5px;}
-			.allmoney{font-size: 18px;padding: 20px;margin-left: 30px;color: red;}
+			.allmoney{font-size: 18px;padding: 20px;}
+			.all1{border-bottom: 1px solid #eee;margin:0 10px;}
+			.mui-btn-block {font-size: 18px;display: block;width: 90%;margin-bottom: 10px;padding: 8px 0;margin: 20px auto 0;}
 		</style>
 	</head>
 	<body>
@@ -32,8 +34,13 @@
 		
 		<div id="container" style="margin-top: 50px;">		
 			<div id="main">
-				<div class="allmoney"> 
-					总计 :￥100 
+				<div class="zhifulist" style="margin-bottom:20px;">
+					<div class="allmoney all1" style="text-align: center;"> 
+						<img src="../../img/market/waitPay.svg" style="width: 5rem;display: block;text-align:center;margin:auto;vertical-align: middle;margin-bottom: 1rem;" alt="" />总计 :￥<span id="payMoney"></span>
+					</div> 
+					<div class="allmoney" style="font-size: 12px;padding-left: 10px;"> 
+						订单号 :<span id="orderId" style="display: inline-block;word-break: break-all;"></span>
+					</div>
 				</div>
 				<div class="zhifulist">
 					<ul>
@@ -54,13 +61,41 @@
 						</li>
 					</ul>
 				</div>
+				
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">模拟支付</button>
 			</div>
 		</div>
 	</body>
 <script src="../../js/mui.min.js"></script> 
+<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-var pays={};
-mui.plusReady(function() {
+var pays={}; 
+
+mui.plusReady(function() { 
+
+//	mui(".fanhui")[0].addEventListener("tap",function(){ 
+//		if(plus.webview.getWebviewById("market/market-order.html")){
+//			plus.webview.getWebviewById("market/market-order.html").close(); 
+//		}else{
+//			plus.webview.getWebviewById("market-order.html").close(); 
+//		}
+//		
+//		openview({
+//			view:'../personal/sc-order.html',
+//			extrasobj:{pageId:"pay"}
+//		}) 
+//		plus.webview.currentWebview().close();
+//	})
+
+
+	//获取缓存
+	var myuserid = plus.storage.getItem('userid'); 
+	var oldtoken = plus.storage.getItem('oldToken');
+	var orderId = plus.webview.currentWebview().order_id;
+	console.log(orderId)
+	var payMent = plus.webview.currentWebview().payMent;
+	document.getElementById('payMoney').innerHTML = payMent;
+	document.getElementById('orderId').innerHTML = orderId;
 	//系统检测获取支付通道
 	plus.payment.getChannels(function(channels){
 		console.log(JSON.stringify(channels));
@@ -82,6 +117,34 @@ mui.plusReady(function() {
 	},function(e){
 		plus.nativeUI.alert("支付失败，请重试",null,"提示");
 	});
+	alert(oldtoken+" "+ orderId)
+	 mui(document.body).on('tap', '.mui-btn', function(e) {
+	 	plus.nativeUI.showWaiting(); 
+	 	mui.ajax(serverUrl+'/api/mall/pay',{
+				data:{order_id:orderId},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){ 
+					plus.nativeUI.closeWaiting();
+					alert(JSON.stringify(data)) ;
+					 mui.toast("支付成功"); 
+					  
+					openview({
+						view:"../personal/sc-order.html"
+					})
+					 plus.webview.getWebviewById("market/market-order.html").close();
+					 plus.webview.currentWebview().close();
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting()
+					console.log('响应失败  !');
+				}
+			});
+        });
+	
+	
 	// 检测是否安装支付服务
 	function checkServices(pc){ 
 		if(!pc.serviceReady){
@@ -103,6 +166,9 @@ mui.plusReady(function() {
 	}
 	//系统检测获取支付通道结束
 });
+
+
+
 // 支付方法
 function payfun(id){
 	var varpay;
