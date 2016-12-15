@@ -115,24 +115,33 @@
 		var headtitle = document.getElementById('headtitle');
 		var oldtoken = plus.storage.getItem('oldToken');
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		switch(nowwebname){
-			case 'Repair'://维修数据 
-			headtitle.innerHTML = '维修列表'; 
-			Loading(1,1,7);//加载数据,包括上滑加载
-			break;
-			case 'Clean'://保洁数据
-			headtitle.innerHTML = '保洁列表';
-			Loading(2,1,7);//加载数据,包括上滑加载
-			break;
-			case 'Babysister'://保姆数据
-			headtitle.innerHTML = '保姆列表';
-			Loading(3,1,7);//加载数据,包括上滑加载
-			break;
-			case 'Openclock'://开锁数据
-			headtitle.innerHTML = '开锁列表';
-			Loading(4,1,7);//加载数据,包括上滑加载
-			break;
+		//添加刷新监听
+		document.addEventListener('refresh', function() {
+			reload();//加载数据,包括上滑加载
+			console.log('刷新数据');
+		})
+		reload();
+		function reload(){
+			switch(nowwebname){
+				case 'Repair'://维修数据 
+				headtitle.innerHTML = '维修列表'; 
+				Loading(1,1,7);//加载数据,包括上滑加载
+				break;
+				case 'Clean'://保洁数据
+				headtitle.innerHTML = '保洁列表';
+				Loading(2,1,7);//加载数据,包括上滑加载
+				break;
+				case 'Babysister'://保姆数据
+				headtitle.innerHTML = '保姆列表';
+				Loading(3,1,7);//加载数据,包括上滑加载
+				break;
+				case 'Openclock'://开锁数据
+				headtitle.innerHTML = '开锁列表';
+				Loading(4,1,7);//加载数据,包括上滑加载
+				break;
+			}
 		}
+		
 		//加载方法
 		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
 			mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
@@ -209,15 +218,24 @@
 				}
 			});
 		}
-		
+		//发布按钮
+		mui('#thePlus')[0].onclick = function(){
+			if(plus.storage.getItem('myToken')){ 
+				openview({
+					view:'new_service.html',
+					extrasobj:{name:nowwebname}
+				})
+			}else{//没登陆直接打开登录页面
+				mui.toast('请登录');
+				openview({
+					view:'../login.html'
+				});
+			}
+		} 
+	
 	});//plusReady
 })();
-//发布按钮
-mui('#thePlus')[0].onclick = function(){
-	openview({
-	 	view:'publish.html',  
-	})
-}
+
 //跳转详情
 function opendetails(id){
 	openview({
