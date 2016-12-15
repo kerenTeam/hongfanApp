@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>跳蚤市场发布</title>
+		<title>新增服务</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -339,7 +339,7 @@
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
-				跳蚤市场发布
+				新增服务
 			</div>
 			<a class="fr baocun" id="Releasebtn">发布</a> 
 		</header>
@@ -359,28 +359,33 @@
 					<ul>
 						<li class="clearfloat">
 							<a href="#">
-								<p class="fl">宝贝名称</p>
+								<p class="fl">服务名称</p>
 								<input type="text" class="fr shuru Ynull" name="" id="Bname" value="" placeholder="请输入宝贝名称" />
 							</a>
 						</li>
-						<!--<li class="clearfloat">
-							<a href="#">
-								<p class="fl">联系人</p>
-								<input type="text" class="fr shuru Ynull" name="" id="phone" value="" placeholder="请输入联系人" />
-							</a>
-						</li>-->
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">电话</p>
 								<input type="text" class="fr shuru Ynull" name="" id="Bphone" value="" placeholder="请输入电话" />
 							</a>
 						</li>
+						<li class="clearfloat">
+							<a href="#">
+								<p class="fl">称谓</p>
+								<input type="text" class="fr shuru Ynull" name="" id="Bcall" value="" placeholder="请输入称谓" />
+							</a>
+						</li>
 						<textarea name="" rows="4" id="Binfo" placeholder="请填写描述" class="textare box-s Ynull"></textarea>
-						<li class="clearfloat" id="Bclass">
-							<a href="javascript:;" id="mapAddress">
-								<p class="fl">分类</p>
-								<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
-								<div id='cityResult3' class="ui-alert"></div>
+						<li class="clearfloat">
+							<a href="#">
+								<p class="fl">服务时段</p>
+								<input type="text" class="fr shuru Ynull" name="" id="Btime" value="" placeholder="请输入服务时段" />
+							</a>
+						</li>
+						<li class="clearfloat">
+							<a href="#">
+								<p class="fl">服务范围</p>
+								<input type="text" class="fr shuru Ynull" name="" id="Brange" value="" placeholder="请输入服务范围" />
 							</a>
 						</li>
 						<li class="clearfloat">
@@ -391,28 +396,11 @@
 						</li>
 						<li class="clearfloat">
 							<a href="#">
-								<p class="fl">原价</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bo_price" value="" placeholder="请输入原件" />
-							</a>
-						</li>
-						<li class="clearfloat">
-							<a href="#">
 								<p class="fl">地址</p>
 								<input type="text" class="fr shuru Ynull" name="" id="Baddress" value="" placeholder="请输入地址" />
 							</a>
 						</li>
-						<li class="clearfloat">
-							<a href="#">
-								<p class="fl">品牌</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bbrand" value="" placeholder="请输入品牌" />
-							</a>
-						</li>
-						<li class="clearfloat">
-							<a href="#">
-								<p class="fl">颜色</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bcolor" value="" placeholder="请输入颜色" />
-							</a>
-						</li>
+						
 					</ul>
 				</div>
 
@@ -476,9 +464,29 @@
     }
 	//选择图片结束
 	
-	//上传部分
+	
 	var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 	mui.plusReady(function(){
+		//接受上页面参数
+		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
+		var type_name;
+		switch(nowwebname){
+			case 'Repair'://维修数据
+			type_name = 1;
+			break;
+			case 'Clean'://保洁数据
+			type_name = 2;
+			break;
+			case 'Babysister'://保姆数据
+			type_name = 3;
+			break;
+			case 'Openclock'://开锁数据
+			type_name = 4;
+			break;
+		}
+		//获取上个页面参数结束
+		
+		//上传部分
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
 		mui('#Releasebtn')[0].onclick = function(){
@@ -500,7 +508,7 @@
 							plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
 							//发送数据
 							var formD = new FormData();
-							formD.append('list_pic',Apic[0]);
+							formD.append('logo',Apic[0]);
 							if(Apic.length>1){
 								console.log('图片张数'+Apic.length); 
 								for (var j=1; j<Apic.length; j++) {
@@ -509,32 +517,33 @@
 								} 
 							}
 							formD.append('userid',myuserid);
-							formD.append('title',mui('#Bname')[0].value);
-							formD.append('phone',mui('#Bphone')[0].value);
+							formD.append('name',mui('#Bname')[0].value);
+							formD.append('type_name',type_name);
+//							formD.append('star',mui('#Bphone')[0].value);
 							formD.append('content',mui('#Binfo')[0].value);
-							formD.append('type',1);
-							formD.append('price',mui('#Bprice')[0].value);
-							formD.append('original_price',mui('#Bo_price')[0].value);
+							formD.append('open_time',mui('#Btime')[0].value);
 							formD.append('address',mui('#Baddress')[0].value);
-							formD.append('brand',mui('#Bbrand')[0].value);
-							formD.append('colour',mui('#Bcolor')[0].value);
-							var xhr = new XMLHttpRequest(); 
-		        			xhr.open('POST',serverUrl+'/api/localservice/usedpublish');
+							formD.append('service_cope',mui('#Brange')[0].value);
+							formD.append('link_man',mui('#Bcall')[0].value);
+							formD.append('phone',mui('#Bphone')[0].value);
+							formD.append('price',mui('#Bprice')[0].value);
+							var xhr = new XMLHttpRequest(); 	
+		        			xhr.open('POST',serverUrl+'/api/localservice/addlocalservice');
 		        			xhr.onreadystatechange = function(){ 
 		        				if (xhr.readyState===4) {
 		        					if (xhr.status===200) {
 		        						plus.nativeUI.closeWaiting();//关闭等待框
 		        						var dataobj = JSON.parse(xhr.responseText);
-		        						console.log(dataobj);
+		        						console.log(xhr.responseText);
 		        						if(dataobj.errno == 0){
 		        							mui.toast('发布成功');	
 		        							//触发跳转页面刷新
 		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-											mui.fire(plus.webview.getWebviewById('2edMarket.html'),'refresh');
+											mui.fire(plus.webview.getWebviewById('theList.html'),'refresh');
 											var time2 = setTimeout(function(){
 												plus.webview.currentWebview().close();
 												plus.nativeUI.closeWaiting();
-											},500)
+											},500) 
 		        						}else{
 		        							mui.toast('发布失败');	
 		        						}
@@ -552,33 +561,7 @@
 		}
 	})
 </script>
-<script>
-	(function($, doc) {
-		$.init();
-		$.ready(function() {
-			//分类选择
-			var userPicker = new $.PopPicker();
-			userPicker.setData([{
-				text: '家用电器'
-			}, {
-				text: '手机电脑'
-			}, {
-				text: '衣服'
-			}, {
-				text: '食品'
-			}]);
-			var showUserPickerButton = doc.getElementById('showCityPicker3');
-			var userResult = doc.getElementById('cityResult3');
-			showUserPickerButton.addEventListener('tap', function(event) {
-				userPicker.show(function(items) {
-					userResult.innerText = items[0].text;
-					//返回 false 可以阻止选择框的关闭
-					//return false;
-				});
-			}, false);
-		});
-	})(mui, document);
-</script>
+
 	</body>
 
 </html>
