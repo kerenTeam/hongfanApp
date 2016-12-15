@@ -69,8 +69,24 @@
 <script src="../../js/mui.min.js"></script> 
 <script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-var pays={};
+var pays={}; 
+
 mui.plusReady(function() { 
+
+//	mui(".fanhui")[0].addEventListener("tap",function(){ 
+//		if(plus.webview.getWebviewById("market/market-order.html")){
+//			plus.webview.getWebviewById("market/market-order.html").close(); 
+//		}else{
+//			plus.webview.getWebviewById("market-order.html").close(); 
+//		}
+//		
+//		openview({
+//			view:'../personal/sc-order.html',
+//			extrasobj:{pageId:"pay"}
+//		}) 
+//		plus.webview.currentWebview().close();
+//	})
+
 
 	//获取缓存
 	var myuserid = plus.storage.getItem('userid'); 
@@ -112,7 +128,14 @@ mui.plusReady(function() {
 				headers:{"token":oldtoken},	 
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting();
-					alert(JSON.stringify(data)) 
+					alert(JSON.stringify(data)) ;
+					 mui.toast("支付成功"); 
+					  
+					openview({
+						view:"../personal/sc-order.html"
+					})
+					 plus.webview.getWebviewById("market/market-order.html").close();
+					 plus.webview.currentWebview().close();
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting()

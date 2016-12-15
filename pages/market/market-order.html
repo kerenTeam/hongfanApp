@@ -318,7 +318,7 @@
 								</div>
 							</li>
 							<%}else{%>
-							<li onclick="goAddr()" id="addid" data-id="<%=obj[0].id%>">
+							<li onclick="goAddr()" id="addid" data-id="<%=obj[0].id%>" data-name="<%=obj[0].person%>" data-address="<%=obj[0].province%><%=obj[0].city%><%=obj[0].area%><%=obj[0].address%>" data-phone="<%=obj[0].phone%>">
 								<div class="mui-row orderRow">
 									<div class="mui-col-sm-1 mui-col-xs-1">
 										<span class="mui-icon mui-icon-location middle-icon"></span>
@@ -512,10 +512,9 @@
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
-			// alert(plus.storage.getItem('$orderStorage'))
+			  console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
 				//获取缓存
-			  myuserid = plus.storage.getItem('userid');
-			console.log(myuserid)
+			  myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken');
 
 			//加载默认地址
@@ -682,7 +681,7 @@
 			});
 			var d = new Date();
 			var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
-			 str = formatDate(str, "yyyy-MM-dd");
+			 str = formatDate(str, "yyyy.MM.dd");
  				//alert(str)
 			//获取抵用券
 			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
@@ -702,10 +701,10 @@
 							if(data.data[i].user_coupon_state==1 && (data.data[i].typeid==1||data.data[i].typeid==2)){
 								
 								if(data.data[i].end_date!=null){
-										data.data[i].end_date=formatDate(data.data[i].end_date, "yyyy-MM-dd");
+										data.data[i].end_date=formatDate(data.data[i].end_date, "yyyy.MM.dd");
 								} 
 								if(data.data[i].begin_date!=null){
-									data.data[i].begin_date=formatDate(data.data[i].begin_date, "yyyy-MM-dd");
+									data.data[i].begin_date=formatDate(data.data[i].begin_date, "yyyy.MM.dd");
 								} 
 								if(data.data[i].salerule!=''){ 
 									
@@ -772,19 +771,31 @@
 							height: '80px'
 						});
 					if($("#addid")){
-						//地址id
+						//地址
+						var MYaddress = {};
 						var addressid =$("#addid").attr("data-id");
+						MYaddress.people = $("#addid").attr("data-name");
+						MYaddress.addressNow = $("#addid").attr("data-address");
+						MYaddress.phoneNow =  $("#addid").attr("data-phone");
 						//alert("addressid "+addressid);
 						//买家留言
-						var noticeData=[];
+						var noticeData=[];  
 						$(".tipsWrap").each(function(){
 							var notice = $(this).find("input").val();
+							for(var i=0;i<orderSubmitData.length;i++){
+								orderSubmitData[i].sendAddress = MYaddress;
+								if(orderSubmitData[i].storeid == $(this).attr("data-id")){
+									orderSubmitData[i].notice = notice;
+								}
+							}
 							if(notice!=''){
 								var noticeObj={};
 								noticeObj.shopId = $(this).attr("data-id");
 								noticeObj.notice = notice;
 								noticeData.push(noticeObj)
 							}
+							
+							
 						});
 						
 					//	alert(JSON.stringify("noticeData "+noticeData));
@@ -805,17 +816,41 @@
 							//alert("no")
 							isIntergal=0;
 						}
+						var goodsdata = JSON.stringify(orderSubmitData);
+						var notice = JSON.stringify(noticeData);
+						//alert(goodsdata)
 						//提交
 						console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
 		 					mui.ajax(serverUrl+'/api/mall/neworder',{
-								data:{userid:myuserid,addressid:addressid,goodsdata:orderSubmitData,notice:noticeData,coupon_id:coupon_id,isIntergal:isIntergal},
+								data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
 								dataType:'json',
 								type:'post',
 								timeout:1000,
 								headers:{"token":oldtoken},	 
-								success:function(data,type,xhr){ 
+								success:function(data,type,xhr){
+									//购物车 缓存 
+        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+        							//alert(cartStorage)
+        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
+									//删除 购物车里 提交的这一条数据 
+									console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
+									for(var i=0;i<orderStorage.length;i++){
+										
+										for(var j=0;j<cartStorage.length;j++){
+											if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
+												 cartStorage.splice(j,1)
+											}
+											//break;
+										}
+										
+										
+									}
+									alert("ooooo "+JSON.stringify(cartStorage))
+									plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
+									var list = plus.webview.getWebviewById('cart.html'); 
+											mui.fire(list,'refresh'); 
 									plus.nativeUI.closeWaiting(); 
-									
+									alert(JSON.stringify(data))
 									if(data.errno==0){
 									//	alert(JSON.stringify(data.data))
 										var payMent = data.data.payment;
@@ -825,7 +860,9 @@
 											view:"../market/pay.html",
 											extrasobj:{payMent:payMent,order_id:order_id}
 										})
-										
+//										var list = plus.webview.getWebviewById('cart.html'); 
+//											mui.fire(list,'refresh'); 
+//										plus.webview.currentWebview().close();
 									}else{
 										plus.nativeUI.closeWaiting()
 									   // alert(JSON.stringify(data.data))
