@@ -211,42 +211,48 @@
 													<%}%>
 											</sub></p>
 									</div>
-									<%if(orderData[i].order_status==0){%>
+									<%if(orderData[i].order_status==1){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="goOrder('<%=orderData[i].order_id%>')" class="fr confirm">付款</a>
 											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">取消订单</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==1){%>
+									<%if(orderData[i].order_status==2){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="tuiOrder('<%=orderData[i].order_id%>')" class="fr confirm">申请退款</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==2){%>
+									<%if(orderData[i].order_status==3){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
 											<a onclick="viewLogistics('<%=orderData[i].order_id%>')" class="fr">查看物流</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==3){%>
+									<%if(orderData[i].order_status==4){%>
 										<div class="order-bottom clearfloat box-s">
 											<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
 											<a onclick="viewLogistics('<%=orderData[i].order_id%>')" class="fr">查看物流</a>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==4){%>
+									<%if(orderData[i].order_status==5){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<span class="fr">已评价</span>
+										</div>
+									<%}%>
+									<%if(orderData[i].order_status==6 || orderData[i].order_status==7){%>
 										<div class="order-bottom clearfloat box-s"> 
 											<span class="fr">交易金额:<%=orderData[i].amount%>  退款金额：￥<%=orderData[i].amount%></span>
 										</div>
 									<%}%>
-									<%if(orderData[i].order_status==5){%>
-										<div class="order-bottom clearfloat box-s"> 
-											<span class="fr">退款成功</span>
-										</div>
-									<%}%>
-									<%if(orderData[i].order_status==6){%>
+									<%if(orderData[i].order_status==8){%>
 										<div class="order-bottom clearfloat box-s"> 
 											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">删除订单</a>
+											<span class="fr">退款成功</span>
+										</div>
+									<%}%> 
+									<%if(orderData[i].order_status==9){%>
+										<div class="order-bottom clearfloat box-s"> 
+											<a onclick="delOrder('<%=orderData[i].order_id%>')" class="fr">删除订单</a> 
 										</div>
 									<%}%> 
 								</dd>
@@ -300,7 +306,7 @@
 							// alert(JSON.stringify(data.data[0].goods_data.goodsData[0]))
 							var obj={}; 
 							 obj.orderData=data.data;
-							 obj.state = ['等待买家付款' ,'买家已付款','卖家已发货','交易成功','退款中','退款成功','交易关闭'];
+							 obj.state = ['','等待买家付款','买家已付款','买家已付款','卖家已发货','交易成功','退款中','退款成功','交易关闭'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
 							$('.tab-nav li').click(function(){ 
 								var statusId=$(this).attr("data-statusId"); 
@@ -312,7 +318,7 @@
 								if(statusId==0){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==0){
+									if(status==1){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -321,7 +327,7 @@
 								if(statusId==1){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==1){
+									if(status==2){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -330,7 +336,7 @@
 								if(statusId==2){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==2){
+									if(status==3){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -339,7 +345,7 @@
 								if(statusId==3){
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==3){
+									if(status==4){
 										$(this).css("display","block");
 										$(this).siblings().css("display","none");
 									}
@@ -349,7 +355,7 @@
 									$("dd").css("display","none");
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==4 || status==5){
+									if(status==7 || status==8){
 										 $(this).css("display","block");
 									}
 //									else{

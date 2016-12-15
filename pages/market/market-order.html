@@ -512,10 +512,9 @@
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
-			// alert(plus.storage.getItem('$orderStorage'))
+			  console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
 				//获取缓存
-			  myuserid = plus.storage.getItem('userid');
-			console.log(myuserid)
+			  myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken');
 
 			//加载默认地址
@@ -779,12 +778,19 @@
 						var noticeData=[];
 						$(".tipsWrap").each(function(){
 							var notice = $(this).find("input").val();
+							for(var i=0;i<orderSubmitData.length;i++){
+								if(orderSubmitData[i].storeid == $(this).attr("data-id")){
+									orderSubmitData[i].notice = notice;
+								}
+							}
 							if(notice!=''){
 								var noticeObj={};
 								noticeObj.shopId = $(this).attr("data-id");
 								noticeObj.notice = notice;
 								noticeData.push(noticeObj)
 							}
+							
+							
 						});
 						
 					//	alert(JSON.stringify("noticeData "+noticeData));
@@ -805,17 +811,41 @@
 							//alert("no")
 							isIntergal=0;
 						}
+						var goodsdata = JSON.stringify(orderSubmitData);
+						var notice = JSON.stringify(noticeData);
+						//alert(goodsdata)
 						//提交
 						console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
 		 					mui.ajax(serverUrl+'/api/mall/neworder',{
-								data:{userid:myuserid,addressid:addressid,goodsdata:orderSubmitData,notice:noticeData,coupon_id:coupon_id,isIntergal:isIntergal},
+								data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
 								dataType:'json',
 								type:'post',
 								timeout:1000,
 								headers:{"token":oldtoken},	 
-								success:function(data,type,xhr){ 
+								success:function(data,type,xhr){
+									//购物车 缓存 
+        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+        							//alert(cartStorage)
+        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
+									//删除 购物车里 提交的这一条数据 
+									console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
+									for(var i=0;i<orderStorage.length;i++){
+										
+										for(var j=0;j<cartStorage.length;j++){
+											if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
+												 cartStorage.splice(j,1)
+											}
+											//break;
+										}
+										
+										
+									}
+									alert("ooooo "+JSON.stringify(cartStorage))
+									plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
+									var list = plus.webview.getWebviewById('cart.html'); 
+											mui.fire(list,'refresh'); 
 									plus.nativeUI.closeWaiting(); 
-									
+									alert(JSON.stringify(data))
 									if(data.errno==0){
 									//	alert(JSON.stringify(data.data))
 										var payMent = data.data.payment;
@@ -825,7 +855,9 @@
 											view:"../market/pay.html",
 											extrasobj:{payMent:payMent,order_id:order_id}
 										})
-										
+//										var list = plus.webview.getWebviewById('cart.html'); 
+//											mui.fire(list,'refresh'); 
+//										plus.webview.currentWebview().close();
 									}else{
 										plus.nativeUI.closeWaiting()
 									   // alert(JSON.stringify(data.data))
