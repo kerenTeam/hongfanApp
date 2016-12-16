@@ -186,7 +186,6 @@
 	document.addEventListener('refresh', function() {
 		Loading(1,7,'','','','','price');//加载数据,包括上滑加载
 		console.log('刷新数据');
-		alert('刷新数据');
 	})
 	//加载方法
 	function Loading(gin1,gin2,gin3,gin4,gin44,gin5,gin6){
@@ -290,9 +289,16 @@
 	
 //发布按钮
 mui('#thePlus')[0].onclick = function(){
-	openview({
-	 	view:'new_ershou.html',  
-	})
+	if(plus.storage.getItem('myToken')){ 
+		openview({
+		 	view:'new_ershou.html',  
+		})
+	}else{//没登陆直接打开登录页面
+		mui.toast('请登录');
+		openview({
+			view:'../login.html'
+		});
+	}
 }
 //跳转详情
 function opendetails(id){
