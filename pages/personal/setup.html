@@ -114,11 +114,6 @@
 								</select>
 							</a>
 						</li>
-						<li class="clearfloat">
-							<div id="uploadForm">
-							   <input id="pic" type="file" multiple="multiple" name="file" />
-							</div>
-						</li>
 						<!--<li class="clearfloat">
 							<a href="#">
 								<p class="fl">用户默认地址</p>
@@ -149,28 +144,6 @@
 	<script src="../../js/artTemplate-native.js"></script>
 	<!--<script src="../../js/jquery.min.js"></script>-->
 	<script type="text/javascript">
-		mui('#header1')[0].onclick = function(){
-			selfile();
-		}
-		function selfile() 	{ 		
-	        var fd = new FormData();  	
-	        var pic = document.getElementById("pic").files[0]; 		 	
-	        fd.append('pic',pic);  		
-	        fd.append('name','张三');  		
-//	        fd.pic = pic;  		
-	        var xhr = new XMLHttpRequest(); 	
-	        xhr.open('POST','http://192.168.199.191:7200/api/useraccount/abcdefg',true); 	
-	    	xhr.onreadystatechange = function(){ 		
-	                if(this.readyState ==4)
-	                { 		
-//	                    document.getElementById('debug').innerHTML = this.responseText;
-						
-	                }
-	        } 
-	        console.log(fd);
-	        xhr.setRequestHeader("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ4MTI4NjkzNiwiZXhwIjoxNDgxMjk0MTM2fQ.Qv6IgYH3XLIsCtieSx1AtAd-G37zIqLv5_KQYfl2aYY");
-	        xhr.send(fd); 
-    	}
 		mui.plusReady(function(){
 			
 			//退出登录
@@ -198,8 +171,9 @@
 				success:function(data){
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
-						//显示头像
-						mui('#preview')[0].innerHTML = '<img id="imghead" src="http://v1.qzone.cc/avatar/201407/19/14/53/53ca15e92008c204.jpg%21200x200.jpg" width="50" height="50">';
+						if(data.data[0].avatar){ //显示头像
+							mui('#preview')[0].innerHTML = '<img id="imghead" src="'+pictarget+data.data[0].avatar+'" width="50" height="50">';
+						}
 						//显示昵称
 						if(data.data[0].nickname != ' '){ 
 							if(data.data[0].nickname.indexOf('null') == -1){
@@ -232,42 +206,49 @@
 		})
 		var filepic = {};
 		//保存数据
-		mui('#Preservation')[0].addEventListener('tap',function(){
+		mui('#Preservation')[0].addEventListener('tap',function(){ 
+			alert(1); 
 			plus.nativeUI.showWaiting('保存中 ...',{width:'100px',height:'80px'});
 			var mynickname = mui('#mynickname')[0].value || null;
 			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
 			var touxiang = mui('#imgUpload')[0].files[0] || {};
 			
-			var formData = new FormData();
-			formData.file=$('#file')[0].files[0];
-			console.log(touxiang);
-			
 			mui.plusReady(function(){ 
 				var myuserid = plus.storage.getItem('userid');
 				var oldtoken = plus.storage.getItem('oldToken');
-				mui.ajax(serverUrl+'/api/useraccount/updateuserdata',{
-					data:{avatar:touxiang,userid:myuserid,nickname:mynickname,gender:Nextbtnval[Nextbtnval.length-1]},
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},	              				
-					success:function(data){
-						console.log('修改用户数据返回'+JSON.stringify(data));
-						if(data.errno == 0){
-							mui.toast('修改成功');
-							//触发跳转页面刷新
-							mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-							//plus.webview.currentWebview().close();
-						}else{
-							mui.toast('修改失败');
-							console.log(data.errmsg);
-						}
-						plus.nativeUI.closeWaiting();	
-					},
-					error:function(xhr,type,errorThrown){
-						plus.nativeUI.closeWaiting();
-						mui.toast('响应失败 ');
-					}
-				});
+				
+				var fd = new FormData(); 
+				if(touxiang.name){
+					fd.append('avatar',touxiang);
+				}
+		        fd.append('userid',myuserid);  		
+		        fd.append('nickname',mynickname);  		
+		        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
+		        var xhr = new XMLHttpRequest(); 	
+		        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
+		    	xhr.onreadystatechange = function(){
+		    		if (xhr.readyState===4) {
+    					if (xhr.status===200) {
+    						plus.nativeUI.closeWaiting();//关闭等待框
+    						var dataobj = JSON.parse(xhr.responseText);
+    						console.log('修改'+xhr.responseText);
+    						if(dataobj.errno == 0){
+    							mui.toast('修改成功');	
+    							//触发跳转页面刷新
+								mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+								var time2 = setTimeout(function(){
+									plus.webview.currentWebview().close();
+								},500)
+    						}else{
+    							mui.toast('保存失败');	
+    						}
+    					}else{
+    						mui.toast('响应失败');	
+    					}
+    				}
+		        } 
+		        xhr.setRequestHeader("token",oldtoken);
+		        xhr.send(fd);
 			})
 		
 		})

@@ -469,6 +469,8 @@
 	mui.plusReady(function(){
 		//接受上页面参数
 		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
+		var Bnowid = plus.webview.currentWebview().Bname;
+		var Btype = plus.webview.currentWebview().Btype;
 		var type_name;
 		switch(nowwebname){
 			case 'Repair'://维修数据
@@ -495,10 +497,8 @@
 				mui.toast('请输入正确的手机号');
 				mui('#Bphone')[0].focus();
 			}else{
-				if(Apic.length<2){
-					mui.toast('请至少选择两张图片');
-				}else{
-					for (var i=0; i<Ynulls.length; i++) {
+				 if(Bnowid){//修改上传
+			 		for (var i=0; i<Ynulls.length; i++) {
 						if(!Ynulls[i].value){
 							Ynulls[i].focus();
 							mui.toast('请输入'+Ynulls[i].placeholder);
@@ -508,14 +508,15 @@
 							plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
 							//发送数据
 							var formD = new FormData();
-							formD.append('logo',Apic[0]);
-							if(Apic.length>1){
-								console.log('图片张数'+Apic.length); 
-								for (var j=1; j<Apic.length; j++) {
-									console.log('添加banner');
-									formD.append('banner_pic',Apic[j]);
-								} 
-							}
+//							formD.append('logo',Apic[0]);
+//							if(Apic.length>1){
+//								console.log('图片张数'+Apic.length); 
+//								for (var j=1; j<Apic.length; j++) {
+//									console.log('添加banner');
+//									formD.append('banner_pic',Apic[j]);
+//								} 
+//							}
+							formD.append('my_local_service',Bnowid);
 							formD.append('userid',myuserid);
 							formD.append('name',mui('#Bname')[0].value);
 							formD.append('type_name',type_name);
@@ -528,22 +529,20 @@
 							formD.append('phone',mui('#Bphone')[0].value);
 							formD.append('price',mui('#Bprice')[0].value);
 							var xhr = new XMLHttpRequest(); 	
-		        			xhr.open('POST',serverUrl+'/api/localservice/addlocalservice');
+		        			xhr.open('POST',serverUrl+'/api/localservice/updatelocalservice');
 		        			xhr.onreadystatechange = function(){ 
 		        				if (xhr.readyState===4) {
 		        					if (xhr.status===200) {
 		        						plus.nativeUI.closeWaiting();//关闭等待框
 		        						var dataobj = JSON.parse(xhr.responseText);
-		        						console.log(xhr.responseText);
+		        						console.log(dataobj);
 		        						if(dataobj.errno == 0){
-		        							mui.toast('发布成功');	
+		        							mui.toast('修改成功');	
 		        							//触发跳转页面刷新
-		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-											mui.fire(plus.webview.getWebviewById('theList.html'),'refresh');
+											mui.fire(plus.webview.getWebviewById('personal/my-publish.html'),'refresh',{Btype:Btype});
 											var time2 = setTimeout(function(){
 												plus.webview.currentWebview().close();
-												plus.nativeUI.closeWaiting();
-											},500) 
+											},500)
 		        						}else{
 		        							mui.toast('发布失败');	
 		        						}
@@ -554,11 +553,106 @@
 		        			xhr.send(formD);
 						} 
 					}
+				 }else{
+					if(Apic.length<2){
+						mui.toast('请至少选择两张图片');
+					}else{
+						for (var i=0; i<Ynulls.length; i++) {
+							if(!Ynulls[i].value){
+								Ynulls[i].focus();
+								mui.toast('请输入'+Ynulls[i].placeholder);
+								break; 
+							}
+							if(i==Ynulls.length-1){
+								plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
+								//发送数据
+								var formD = new FormData();
+								formD.append('logo',Apic[0]);
+								if(Apic.length>1){
+									console.log('图片张数'+Apic.length); 
+									for (var j=1; j<Apic.length; j++) {
+										console.log('添加banner');
+										formD.append('banner_pic',Apic[j]);
+									} 
+								}
+								formD.append('userid',myuserid);
+								formD.append('name',mui('#Bname')[0].value);
+								formD.append('type_name',type_name);
+	//							formD.append('star',mui('#Bphone')[0].value);
+								formD.append('content',mui('#Binfo')[0].value);
+								formD.append('open_time',mui('#Btime')[0].value);
+								formD.append('address',mui('#Baddress')[0].value);
+								formD.append('service_cope',mui('#Brange')[0].value);
+								formD.append('link_man',mui('#Bcall')[0].value);
+								formD.append('phone',mui('#Bphone')[0].value);
+								formD.append('price',mui('#Bprice')[0].value);
+								var xhr = new XMLHttpRequest(); 	
+			        			xhr.open('POST',serverUrl+'/api/localservice/addlocalservice');
+			        			xhr.onreadystatechange = function(){ 
+			        				if (xhr.readyState===4) {
+			        					if (xhr.status===200) {
+			        						plus.nativeUI.closeWaiting();//关闭等待框
+			        						var dataobj = JSON.parse(xhr.responseText);
+			        						console.log(xhr.responseText);
+			        						if(dataobj.errno == 0){
+			        							mui.toast('发布成功');	
+			        							//触发跳转页面刷新
+			        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
+												mui.fire(plus.webview.getWebviewById('theList.html'),'refresh');
+												var time2 = setTimeout(function(){
+													plus.webview.currentWebview().close();
+													plus.nativeUI.closeWaiting();
+												},500) 
+			        						}else{
+			        							mui.toast('发布失败');	
+			        						}
+			        					}
+			        				}
+						        }
+			        			xhr.setRequestHeader("token",oldtoken);
+			        			xhr.send(formD);
+							} 
+						}
+					}
 				}
-				
 			}
 			
 		}
+	})
+	//编辑显示既有部分
+	mui.plusReady(function(){
+		if(plus.webview.currentWebview().Bname){
+			var Bnowid = plus.webview.currentWebview().Bname;
+			//显示信息
+			var oldtoken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
+				data:{sericeId:Bnowid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	               				
+				success:function(data){
+					console.log('获取修改数据返回'+JSON.stringify(data)); 
+					if(data.errno == 0){
+						mui('#Bname')[0].value = data.data[0].name;
+						mui('#Binfo')[0].value = data.data[0].content;
+						mui('#Btime')[0].value = data.data[0].open_time;
+						mui('#Baddress')[0].value = data.data[0].address;
+						mui('#Brange')[0].value = data.data[0].service_cope;
+						mui('#Bcall')[0].value = data.data[0].link_man;
+						mui('#Bphone')[0].value = data.data[0].phone;
+						mui('#Bprice')[0].value = data.data[0].price;
+					}else{  
+						mui.toast('获取用户信息失败');
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast('响应失败  !');
+				}
+			});
+		}
+		
+		
 	})
 </script>
 

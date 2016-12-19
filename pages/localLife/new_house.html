@@ -551,6 +551,42 @@
 			
 		}
 	})
+//编辑显示既有部分
+	mui.plusReady(function(){
+		if(plus.webview.currentWebview().Bname){
+			var Bnowid = plus.webview.currentWebview().Bname;
+			//显示信息
+			var oldtoken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
+				data:{sericeId:Bnowid}, 
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	               				
+				success:function(data){
+					console.log('获取修改数据返回'+JSON.stringify(data)); 
+					if(data.errno == 0){
+						mui('#Bname')[0].value = data.data.name;
+						mui('#Bphone')[0].value = data.data.phone;
+						mui('#Binfo')[0].value = data.data.content;
+						mui('#cityResult3')[0].innerHTML = data.data.type_name;
+						mui('#Bprice')[0].value = data.data.price;
+						mui('#Bo_price')[0].value = data.data.original_price;
+						mui('#Baddress')[0].value = data.data.address;
+						mui('#Bbrand')[0].value = data.data.brand;
+						mui('#Bcolor')[0].value = data.data.colour;
+					}else{
+						mui.toast('获取用户信息失败');
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast('响应失败  !');
+				}
+			});
+		}
+		
+		
+	})
 </script>
 <script>
 	(function($, doc) {
