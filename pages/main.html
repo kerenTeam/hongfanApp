@@ -375,31 +375,24 @@
 						view:'localLife/theSearch.html'
 				});
 			});
-			//打开待开发页面
-//			mui(".pub_img")[0].addEventListener('tap',function(){
-//				openview({
-//						view:'jindaikaifa.html'
-//				});
-//			});
-			
 			//数据渲染
 			var oldToken = plus.storage.getItem('oldToken');
-			console.log(serverimgUrl);
+//			console.log(serverimgUrl);
 			
 //			console.log(oldToken);
 			mui.ajax(serverUrl +'/api/index/indexheaderdata',{
 //				data:{userid : 148},
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+//				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					var bannerObj = {};
 					var recommentObj = {};
 					bannerObj.bannerLi = JSON.parse(data.data.banner[0].banner);
-					//alert(data.data.recomment[0].content)
 					recommentObj.recommentLi = eval("(" +data.data.recomment[0].content +")");
-//					alert(JSON.parse(data.data.recomment[0].content));
+					
+//					alert(JSON.parse(data.data.recomment[0]));
 					bannerObj.url = serverimgUrl;
 					var html = template('banner-detail',bannerObj);
 					document.getElementById('banner').innerHTML = html;
@@ -428,7 +421,7 @@
 					timeout:10000,//超时时间设置为10秒；	
 					headers:{"token":oldToken}, 
 					success:function(data){
-//						alert(JSON.stringify(data))
+//						alert(JSON.stringify(data));
 						//获取并渲染  eval("("+data1+")");
 						//var dataobj= eval("("+data.data.banner+")"); 
 						if(data.errno==0){
