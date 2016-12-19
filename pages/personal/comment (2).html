@@ -3,14 +3,22 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>问题反馈</title> 
+		<title>评论晒单</title> 
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css"> 
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/feedback.css" />
+		<link href="../../css/zyUpload.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<!--<script src="../../js/hmt.js" type="text/javascript"></script>-->
+		<script src="../../js/mui.min.js" type="text/javascript"></script>
+		<script src="../../js/app.js" type="text/javascript"></script>
+		<script src="../../js/feedback.js" type="text/javascript" charset="utf-8"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
 	</head>
 	<style type="text/css">
-	 
+		 
 		.mui-icon-star{
 			font-size: 26px;
 			color: #f53c42!important;
@@ -65,7 +73,7 @@
 	    #uppics2 .onepic{width: 120px;background-color: #fff;}
 	    #uppics2 .picimg{width: 100%;}
 	    .picimg1{width: 25px;position: absolute;right: 0px;top: 2px;}
-</style>
+	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
@@ -75,7 +83,7 @@
 		<div class="mui-content">
 			<div class="mui-content-padded">
 				<div class="vm"> 
-					<img style="width:5rem;vertical-align: middle;" alt="" id="comPic" />
+					<img src="../../img/vege.jpg" style="width:5rem;vertical-align: middle;" id="comPic" />
 					<span>评分</span>
 					<div class="icons mui-inline" style="margin-left: 6px;vertical-align: middle;display: inline;">
 						<i data-index="1" class="mui-icon mui-icon-star"></i>
@@ -91,26 +99,33 @@
 			<div class="row mui-input-row">
 				<textarea id='comment' class="mui-input-clear question" placeholder="请详细描述你的问题和意见..."></textarea>
 			</div>
-			
-			<div style="display: none;">图片(选填,提供问题截图,总大小10M以下)</div>
-				<div id='image-list' class="image-list" style="display: none;"></div>
-			</div>
-			
-			<!--上传图片-->
-			<div class="uppics clearfix">
-		        <div class="onepic" >
-		            <input type="file" id="file_input"/> 
-		            <img src="../../img/zhaoxiangji.svg">
-		            <p>添加图片</p>
-		        </div>
-		    </div>
-			<!--上传图片结束-->
 		</div>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.min.js"></script>
-		<script src="../../js/feedback.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/app.js" type="text/javascript"></script>
+		<!--上传图片-->
+		<div class="uppics clearfix">
+	        <div class="onepic" >
+	            <input type="file" id="file_input"/> 
+	            <img src="../../img/zhaoxiangji.svg">
+	            <p>添加图片</p>
+	        </div>
+	    </div>
+		<!--上传图片结束-->
+		
 		<script type="text/javascript">
+//			mui.init({
+//				var old_back = mui.back;
+//				mui.back = function(){
+//				  var btn = ["确定","取消"];
+//				  mui.confirm('确认放弃评价？','',btn,function(e){
+//				    if(e.index==0){
+//				    	//执行mui封装好的窗口关闭逻辑；
+//				    	old_back();
+//				    }
+//				  });
+//				}
+//			});
+			mui('.mui-scroll-wrapper').scroll();
+		</script>
+		<!--<script type="text/javascript">
 			//选择图片
 			var onepic = document.getElementsByClassName('onepic')[0];
 		    var uppics = document.getElementsByClassName('uppics')[0];
@@ -164,7 +179,83 @@
 			//选择图片结束
 			
 			//上传部分
-			
+		//	var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+		//	mui.plusReady(function(){
+		//		var oldtoken = plus.storage.getItem('oldToken');
+		//		var myuserid = plus.storage.getItem('userid');
+		//		mui('#Releasebtn')[0].onclick = function(){
+		//			var Ynulls = mui('.Ynull');
+		//			if(!reg_phone.test(mui('#Bphone')[0].value)){
+		//				mui.toast('请输入正确的手机号');
+		//				mui('#Bphone')[0].focus();
+		//			}else{
+		//				if(Apic.length<2){
+		//					mui.toast('请至少选择两张图片');
+		//				}else{
+		//					for (var i=0; i<Ynulls.length; i++) {
+		//						if(!Ynulls[i].value){
+		//							Ynulls[i].focus();
+		//							mui.toast('请输入'+Ynulls[i].placeholder);
+		//							break; 
+		//						}
+		//						if(i==Ynulls.length-1){
+		//							plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
+		//							//发送数据
+		//							var formD = new FormData();
+		//							formD.append('list_pic',Apic[0]);
+		//							if(Apic.length>1){
+		//								console.log('图片张数'+Apic.length); 
+		//								for (var j=1; j<Apic.length; j++) {
+		//									console.log('添加banner');
+		//									formD.append('banner_pic',Apic[j]);
+		//								} 
+		//							}
+		//							formD.append('userid',myuserid);
+		//							formD.append('title',mui('#Bname')[0].value);
+		//							formD.append('phone',mui('#Bphone')[0].value);
+		//							formD.append('content',mui('#Binfo')[0].value);
+		//							formD.append('type',1);
+		//							formD.append('price',mui('#Bprice')[0].value);
+		//							formD.append('original_price',mui('#Bo_price')[0].value);
+		//							formD.append('address',mui('#Baddress')[0].value);
+		//							formD.append('brand',mui('#Bbrand')[0].value);
+		//							formD.append('colour',mui('#Bcolor')[0].value);
+		//							var xhr = new XMLHttpRequest(); 	
+		//		        			xhr.open('POST','http://192.168.199.191:7200/api/localservice/usedpublish');
+		//		        			xhr.onreadystatechange = function(){ 
+		//		        				if (xhr.readyState===4) {
+		//		        					if (xhr.status===200) {
+		//		        						plus.nativeUI.closeWaiting();//关闭等待框
+		//		        						var dataobj = JSON.parse(xhr.responseText);
+		//		        						console.log(dataobj);
+		//		        						if(dataobj.errno == 0){
+		//		        							mui.toast('发布成功');	
+		//		        							//触发跳转页面刷新
+		//		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
+		//											mui.fire(plus.webview.getWebviewById('2edMarket.html'),'refresh');
+		//											var time2 = setTimeout(function(){
+		//												plus.webview.currentWebview().close();
+		//												plus.nativeUI.closeWaiting();
+		//											},500)
+		//		        						}else{
+		//		        							mui.toast('发布失败');	
+		//		        						}
+		//		        					}
+		//		        				}
+		//					        }
+		//		        			xhr.setRequestHeader("token",oldtoken);
+		//		        			xhr.send(formD);
+		//						} 
+		//					}
+		//				}
+		//				
+		//			}
+		//			
+		//		}
+		//	})
+		</script>-->
+		<script type="text/javascript">
+			mui.init();
 			mui.plusReady(function(){
 				var orderId = plus.webview.currentWebview().orderId;
 				var oldToken = plus.storage.getItem('oldToken');
@@ -178,7 +269,7 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						
-//						alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0]));
+						alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0]));
 						var comPic = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsImg;
 						$('#comPic').attr('src',comPic);
 											
@@ -187,72 +278,44 @@
 							var goodsid = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsId;
 							var storeid = eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid;
 							var seller_comment = $('#comment').val();
-							var grade_star = $('.mui-icon-star-filled').length;
+	//						var grade_star = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsId;
 							alert(seller_comment);	
-							alert(grade_star);
-							
-							//提交评价
-							//发送数据
-							var formD = new FormData();
-							if(Apic.length>1){
-								console.log('图片张数'+Apic.length); 
-								for (var j=0; j<Apic.length; j++) {
-									console.log('添加banner');
-									formD.append('pic',Apic[j]);
-								} 
-							}
-							formD.append('orderid',orderId);
-							formD.append('goodsid',goodsid);
-							formD.append('stroeid',stroeid);
-							formD.append('seller_comment',seller_comment);
-							formD.append('seller_comment',seller_comment);
-							formD.append('grade_star',grade_star);
-							var xhr = new XMLHttpRequest(); 	
-		        			xhr.open('POST',serverUrl+'/api/mall/comment');
-		        			xhr.onreadystatechange = function(){ 
-		        				if (xhr.readyState===4) {
-		        					if (xhr.status===200) {
-		        						plus.nativeUI.closeWaiting();//关闭等待框
-		        						var dataobj = JSON.parse(xhr.responseText);
-		        						console.log(dataobj);
-		        						if(dataobj.errno == 0){
-		        							mui.toast('发布成功');	
-		        							//触发跳转页面刷新
-		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-											plus.webview.currentWebview().close();//关闭当前页面
-											mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
-		        						}else{
-		        							mui.toast('发布失败');	
-		        						}
-		        					}
-		        				}
-					        }
-		        			xhr.setRequestHeader("token",oldtoken);
-		        			xhr.send(formD);
-//							mui.ajax(serverUrl+'/api/mall/comment',{
-//								data:{orderid:orderId,goodsid:goodsid,stroeid:storeid,pic:pics,seller_comment:seller_comment,grade_star:grade_star},
-//								dataType:'json',
-//								type:'post',
-//								headers:{"token":oldToken},	 
-//								success:function(data,type,xhr){
-	
-//								},
-//								error:function(xhr,type,errorThrown){
-//									alert('响应失败  !');
-//								}
-//							});
 						}
+						//提交评价
+//						mui.ajax(serverUrl+'/api/mall/comment',{
+//							data:{orderid:orderId,goodsid:goodsid,stroeid:storeid,pic:pics,seller_comment:seller_comment,grade_star:grade_star},
+//							dataType:'json',
+//							type:'post',
+//		//					timeout:1000,
+//							headers:{"token":oldToken},	 
+//							success:function(data,type,xhr){
+//								
+//								alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0]));
+//								var comPic = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsImg;
+//								$('#comPic').attr('src',comPic);
+//								
+//								
+//								
+//		//						plus.webview.currentWebview().close();//关闭当前页面
+//		//						mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+//							},
+//							error:function(xhr,type,errorThrown){
+//								alert('响应失败  !');
+//							}
+//						});
+						
+//						plus.webview.currentWebview().close();//关闭当前页面
+//						mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
 					},
 					error:function(xhr,type,errorThrown){
 						alert('响应失败  !');
 					}
 				});
 				
+//				
+				
+				
 			})
-		</script>
-		<script type="text/javascript">
-			mui.init();
-			
 		</script>
 	</body>
 

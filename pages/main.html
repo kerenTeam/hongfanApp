@@ -244,7 +244,7 @@
 			<div class="mui-slider-group mui-slider-loop">
 			    <!--支持循环，需要重复图片节点-->
 			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= url %><%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
-				<% for(var i=0;i<bannerLi.length;i++){ %>
+				<% for(var i=0;i<bannerLi.length;i++){ %> 
 			    	<div class="mui-slider-item"><a><img src="<%= url %><%= bannerLi[i].bannerPic %>" /></a></div>
 			     <% } %>
 			    <!--支持循环，需要重复图片节点-->
@@ -375,16 +375,9 @@
 						view:'localLife/theSearch.html'
 				});
 			});
-			//打开待开发页面
-//			mui(".pub_img")[0].addEventListener('tap',function(){
-//				openview({
-//						view:'jindaikaifa.html'
-//				});
-//			});
-			
 			//数据渲染
 			var oldToken = plus.storage.getItem('oldToken');
-			
+//			console.log(serverimgUrl);
 			
 //			console.log(oldToken);
 			mui.ajax(serverUrl +'/api/index/indexheaderdata',{
@@ -398,9 +391,9 @@
 					var bannerObj = {};
 					var recommentObj = {};
 					bannerObj.bannerLi = JSON.parse(data.data.banner[0].banner);
-					//alert(data.data.recomment[0].content)
 					recommentObj.recommentLi = eval("(" +data.data.recomment[0].content +")");
-//					alert(JSON.parse(data.data.recomment[0].content));
+					
+//					alert(JSON.parse(data.data.recomment[0]));
 					bannerObj.url = serverimgUrl;
 					var html = template('banner-detail',bannerObj);
 					document.getElementById('banner').innerHTML = html;
