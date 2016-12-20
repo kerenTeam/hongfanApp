@@ -13,8 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<style type="text/css">
@@ -33,7 +32,7 @@
 			}
 			dl.listtwo dd>.react{
 				background-color:#fff;
-				border-bottom: 1px solid #efeff4;
+				/*border-bottom: 1px solid #efeff4;*/
 			}
 			dl.listtwo dd{
 				padding: 0;
@@ -104,10 +103,7 @@
 			}
 			.name{
 				line-height: 40px;
-			}
-			a.react{
-				display: table;
-			}
+			} 
 			.outP{
 				line-height: 40px;
 				text-indent: 15px;
@@ -118,76 +114,175 @@
 		<header class="hasManyCity hasManyCitytwo" id="header">
 			<a class="fl fanhui mui-action-back"><i class="iconfont icon-fanhui"></i></a>
 			<div class="header-tit">
-				我的收到的回复
+				收到的回复
 			</div>		
 		</header>
 		<div id="main">
-			<dl class="list listtwo list-in">						
-				<dd>
-					<a href="#" class="react">
-						<div class="dealcard dealcardtwo clearfloat">
-							<div class="mui-row">
-							    <div class="mui-col-sm-2 mui-col-xs-2">
-							    	<img src="../../img/54b9cae9d6bc4.jpg" class="imgbox">
-							    </div>
-							    <div class="mui-col-sm-8 mui-col-xs-8 name">
-							    	用户名字
-							    </div>
-							    <div class="mui-col-sm-2 mui-col-xs-2 state">
-							    	已回答
-							    </div>
+			
+			<div id="helpList"></div>
+			<script type="text/html" id="helpTpl">
+				<dl class="list listtwo list-in">	 
+						<dd>
+							<div class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<!--<div class="mui-row">
+									    <div class="mui-col-sm-2 mui-col-xs-2">
+									    	<%if(data.headPic==null){%>
+									    		<img src="../../img/10.png" class="imgbox">
+									    		<%}else{%>
+									    			<img src="<%=data.headPic%>" class="imgbox">
+									    			<%}%>
+									    	
+									    </div>
+									    <div class="mui-col-sm-8 mui-col-xs-8 name">
+									    	<%=data.name%>
+									    </div>
+									    <div class="mui-col-sm-2 mui-col-xs-2 state">
+									    	<%if(data.state==0){%>
+									    		暂无回复
+									    	<%}else{%> 
+									    		已回答
+									    	<%}%>
+									    </div>
+									</div>-->
+									<div class="dealcard-brand dealcard-brandtwo single-line">
+										<p class="poi-name">标题： <%=data.title%></p>
+										<p class="poi-name">内容：
+											<span><%=data.content%>
+											<%if(data.pics!=null){%>
+												<%for(var t = 0;t<data.pics.length;t++){%>
+													<img src="<%=myUrl%><%=data.pics[t].picImg%>" alt="" />
+													<%}%>
+												<%}%>
+										</span></p>
+										 <div class="mui-row state_bottom">
+									        <div class="mui-col-sm-6 mui-col-xs-6">
+								             	<!--<%if(data.state==0){%>
+										    		<span class="mui-badge" style="color: white">暂无回复</span>
+										    	<%}else{%> 
+										    		<span class="mui-badge mui-badge-danger" style="color: white">查看回复</span>
+										    	<%}%>                       -->
+									        </div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+									                                     发布于<%=data.create_time%>
+									        </div>
+									    </div>
+									</div>		
+								</div>
 							</div>
-							<div class="dealcard-brand dealcard-brandtwo single-line">
-								<p class="poi-name">标题：帮忙标题</p>
-								<p class="poi-name">内容：这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容</p>
-								<!--<p class="state">显示中</p>-->
-								<div class="mui-row state_bottom">
-							        <div class="mui-col-sm-6 mui-col-xs-6">
-							                                    
-							        </div>
-							        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-							                                     发布于12.12
-							        </div>
-							    </div>
-							</div>		
-						</div>
-					</a>
-				</dd>
-				<p class="outP">帮帮团的回复</p>
-				<dd>
-					<a href="#" class="react">
-						<div class="dealcard dealcardtwo clearfloat">
-							<div class="mui-row">
-							    <div class="mui-col-sm-2 mui-col-xs-2">
-							    	<img src="../../img/10.png" class="imgbox">
-							    </div>
-							    <div class="mui-col-sm-10 mui-col-xs-10 name">
-							    	专家名字
-							    </div>
+						</dd> 
+					
+				</dl>
+			</script>
+			
+			<div id="helpAnswer"></div>
+			<script type="text/html" id="answerTpl">
+				<dl class="list listtwo list-in"> 
+					<p class="outP">帮帮团的回复</p>
+					<dd>
+						<div class="react">
+							<div class="dealcard dealcardtwo clearfloat">
+								<div class="mui-row">
+								    <div class="mui-col-sm-2 mui-col-xs-2">
+								    	<%if(answerdata.headPic==null){%>
+									    		<img src="../../img/10.png" class="imgbox">
+									    		<%}else{%>
+									    			<img src="<%=answerdata.headPic%>" class="imgbox">
+									    			<%}%>
+								    </div>
+								    <div class="mui-col-sm-10 mui-col-xs-10 name">
+								    	<%=answerdata.name%>
+								    </div>
+								</div>
+								<div class="dealcard-brand dealcard-brandtwo single-line">
+									<p class="poi-name">回复：<%=answerdata.reply_content%></p>
+									<!--<p class="state">显示中</p>-->
+									<div class="mui-row state_bottom">
+								        <div class="mui-col-sm-6 mui-col-xs-6">
+								                                    
+								        </div>
+								        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+								                                     回答于<%=answerdata.reply_time%>
+								        </div>
+								    </div>
+								</div>		
 							</div>
-							<div class="dealcard-brand dealcard-brandtwo single-line">
-								<p class="poi-name">回答内容：这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容</p>
-								<!--<p class="state">显示中</p>-->
-								<div class="mui-row state_bottom">
-							        <div class="mui-col-sm-6 mui-col-xs-6">
-							                                    
-							        </div>
-							        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-							                                     回答于12.12
-							        </div>
-							    </div>
-							</div>		
 						</div>
-					</a>
-				</dd>
-			</dl>
+					</dd>
+				</dl>
+			</script>
+			 
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
 		function help(){
 			openview({
 				view:'../serveForPeople/around.html'
 			})
 		}
+		
+		mui.plusReady(function(){
+			var myuserid = plus.storage.getItem('userid');
+			var publishId = plus.webview.currentWebview().publishId; 
+			var oldtoken = plus.storage.getItem('oldToken'); 
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			mui.ajax(serverUrl+'/api/localservice/myhelprequest',{
+					data:{userid:myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data,type,xhr){ 
+						plus.nativeUI.closeWaiting();
+						console.log(JSON.stringify(data.data)) ;
+				       if(data.errno===0){
+				       	if(data.data.length!=0){
+				       		var helpListb = {},answerobj={};
+				       			helpListb.myUrl =serverimgUrl;
+				       		for(var t=0;t<data.data.length;t++){ 
+				       			if(data.data[t].create_time !=null){
+				       				data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
+				       			}else{
+				       				data.data[t].create_time='';
+				       			}
+				       			if(data.data[t].reply_time !=null){
+				       				data.data[t].reply_time = data.data[t].reply_time.substring(0,10)+" "+data.data[t].reply_time.substring(11,16); 
+				       			}else{
+				       				data.data[t].reply_time='';
+				       			}
+				       			if(data.data[t].id == publishId){
+				       				
+				       					 data.data[t].pics = eval("("+data.data[t].pics+")");
+				       					 console.log(data.data[t].pics) 
+				       					helpListb.data= data.data[t];
+				       					if(data.data[t].state==1){
+				       						answerobj.answerdata= data.data[t];
+				       						  document.getElementById("helpAnswer").innerHTML = template("answerTpl",answerobj);
+				       					}else{
+				       						var htmlwe='<img src="../../img/serveForPeople/answer.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">还没有收到回复哦</span>';
+				       					document.getElementById("helpAnswer").innerHTML =htmlwe;
+				       					}
+				       			} 
+				       		}  
+				       		
+					        document.getElementById("helpList").innerHTML = template("helpTpl",helpListb); 
+					        
+					       
+					        
+				       	}
+					     
+					    
+					     
+				       }
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting()
+						console.log('响应失败  !');
+					}
+				});
+		})
+		
 	</script>
 </html>

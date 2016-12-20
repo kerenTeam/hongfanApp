@@ -38,7 +38,7 @@
 			dl.listtwo dd{
 				padding: 0;
 				margin: 10px;
-				box-shadow: 0px 0px 6px #ccc;
+				/*box-shadow: 0px 0px 6px #ccc;*/
 			}
 			.poi-name{
 				width: 100%;
@@ -107,9 +107,7 @@
 			.name{
 				line-height: 40px;
 			}
-			a.react{
-				display: table;
-			}
+		 
 		</style>
 	</head>
 	<body>
@@ -121,69 +119,51 @@
 			<a href="javascript:;" class="fr baocun" onclick="help()">帮我</a>
 		</header>
 		<div id="main">
-			<div class="helpList"></div>
+			<div id="helpList"></div>
 			<script type="text/html" id="helpTpl">
 				<dl class="list listtwo list-in">						
-					<dd onclick="helpRecord()">
-						<a class="react">
-							<div class="dealcard dealcardtwo clearfloat">
-								<div class="mui-row">
-								    <div class="mui-col-sm-2 mui-col-xs-2">
-								    	<img src="../../img/54b9cae9d6bc4.jpg" class="imgbox">
-								    </div>
-								    <div class="mui-col-sm-8 mui-col-xs-8 name">
-								    	专家名字
-								    </div>
-								    <div class="mui-col-sm-2 mui-col-xs-2 state">
-								    	已回答
-								    </div>
+					<%for(var i=0;i<data.length;i++){%>
+						<dd onclick="helpRecord('<%=data[i].id%>')">
+							<a class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<!--<div class="mui-row">
+									    <div class="mui-col-sm-2 mui-col-xs-2">
+									    	<%if(data[i].headPic==null){%>
+									    		<img src="../../img/10.png" class="imgbox">
+									    		<%}else{%>
+									    			<img src="<%=data[i].headPic%>" class="imgbox">
+									    			<%}%>
+									    	
+									    </div>
+									    <div class="mui-col-sm-8 mui-col-xs-8 name">
+									    	<%=data[i].name%>
+									    </div>
+									    <div class="mui-col-sm-2 mui-col-xs-2 state">
+									    	
+									    </div>
+									</div>-->
+									<div class="dealcard-brand dealcard-brandtwo single-line">
+										<p class="poi-name">提问：<%=data[i].title%></p>
+										<p class="poi-name">内容：<span><%=data[i].content%></span></p>
+										<!--<p class="state">显示中</p>-->
+										<div class="mui-row state_bottom">
+									        <div class="mui-col-sm-6 mui-col-xs-6">
+								             	<%if(data[i].state==0){%>
+										    		<span class="mui-badge" style="color: white">暂无回复</span>
+										    	<%}else{%> 
+										    		<span class="mui-badge mui-badge-danger" style="color: white">查看回复</span>
+										    	<%}%>                       
+									        </div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+									                                     发布于<%=data[i].create_time%>
+									        </div>
+									    </div>
+									</div>		
 								</div>
-								<div class="dealcard-brand dealcard-brandtwo single-line">
-									<p class="poi-name">标题：帮忙标题</p>
-									<p class="poi-name">内容：这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容</p>
-									<!--<p class="state">显示中</p>-->
-									<div class="mui-row state_bottom">
-								        <div class="mui-col-sm-6 mui-col-xs-6">
-								                                    
-								        </div>
-								        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-								                                     发布于12.12
-								        </div>
-								    </div>
-								</div>		
-							</div>
-						</a>
-					</dd>
-					<dd onclick="helpRecord()">
-						<a class="react">
-							<div class="dealcard dealcardtwo clearfloat">
-								<div class="mui-row">
-								    <div class="mui-col-sm-2 mui-col-xs-2">
-								    	<img src="../../img/54b9cae9d6bc4.jpg" class="imgbox">
-								    </div>
-								    <div class="mui-col-sm-8 mui-col-xs-8 name">
-								    	专家名字
-								    </div>
-								    <div class="mui-col-sm-2 mui-col-xs-2 state">
-								    	已回答
-								    </div>
-								</div>
-								<div class="dealcard-brand dealcard-brandtwo single-line">
-									<p class="poi-name">标题：帮忙标题</p>
-									<p class="poi-name">内容：这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容这里是帮帮团问题内容</p>
-									<!--<p class="state">显示中</p>-->
-									<div class="mui-row state_bottom">
-								        <div class="mui-col-sm-6 mui-col-xs-6">
-								                                    
-								        </div>
-								        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-								                                     发布于12.12
-								        </div>
-								    </div>
-								</div>		
-							</div>
-						</a>
-					</dd>
+							</a>
+						</dd>
+					<%}%>
+					
 				</dl>
 			</script>
 			
@@ -197,9 +177,10 @@
 				view:'../serveForPeople/around.html'
 			})
 		}
-		function helpRecord(){
+		function helpRecord(id){
 			openview({
-				view:'my-answer.html'
+				view:'my-answer.html',
+				extrasobj:{publishId:id}
 			})
 		}
 		
@@ -208,7 +189,7 @@
 			var orderId = plus.webview.currentWebview().orderId;
 			var oldtoken = plus.storage.getItem('oldToken');
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			mui.ajax(serverUrl+'/api/localservice/myhelprequest  ',{
+			mui.ajax(serverUrl+'/api/localservice/myhelprequest',{
 					data:{userid:myuserid},
 					dataType:'json',
 					type:'post',
@@ -217,10 +198,23 @@
 					success:function(data,type,xhr){ 
 						plus.nativeUI.closeWaiting();
 						console.log(JSON.stringify(data.data)) ;
-				       if(data.errno===0){ 
-					        var helpList = {};
-					       		helpList.data= data.data; 
-					        document.getElementById("helpList").innerHTML = template("helpTpl",orderInfo); 
+				       if(data.errno===0){
+				       	if(data.data.length!=0){
+				       		for(var t=0;t<data.data.length;t++){ 
+				       			if(data.data[t].create_time !=null){
+				       				data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
+				       			}else{
+				       				data.data[t].create_time='';
+				       			}
+				       		
+				       		} 
+				       		var helpListb = {};
+					       		helpListb.data= data.data; 
+					        document.getElementById("helpList").innerHTML = template("helpTpl",helpListb); 
+				       	}else{
+				       		document.getElementById("helpList").innerHTML ='<img src="../../img/serveForPeople/publish.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">暂无帮帮团发布</span>'
+				       	}
+					        
 				       }
 					},
 					error:function(xhr,type,errorThrown){
