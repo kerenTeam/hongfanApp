@@ -10,7 +10,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/feedback.css" />
 	</head>
 	<style type="text/css">
-	 
 		.mui-icon-star{
 			font-size: 26px;
 			color: #f53c42!important;
@@ -65,6 +64,9 @@
 	    #uppics2 .onepic{width: 120px;background-color: #fff;}
 	    #uppics2 .picimg{width: 100%;}
 	    .picimg1{width: 25px;position: absolute;right: 0px;top: 2px;}
+	    .uppics{
+	    	border-bottom: none;
+	    }
 </style>
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -95,7 +97,6 @@
 			<div style="display: none;">图片(选填,提供问题截图,总大小10M以下)</div>
 				<div id='image-list' class="image-list" style="display: none;"></div>
 			</div>
-			
 			<!--上传图片-->
 			<div class="uppics clearfix">
 		        <div class="onepic" >
@@ -126,7 +127,6 @@
 		    		}else{
 		    			file_input.style.display = 'inline-block';
 		    		}
-					
 		        uppics.id = 'uppics2';
 		        var imgnode = document.createElement("div");
 		        clearInterval(time1);
@@ -162,9 +162,7 @@
 		       }
 		    }
 			//选择图片结束
-			
 			//上传部分
-			
 			mui.plusReady(function(){
 				var orderId = plus.webview.currentWebview().orderId;
 				var oldToken = plus.storage.getItem('oldToken');
@@ -174,36 +172,32 @@
 					data:{order_id:orderId},
 					dataType:'json',
 					type:'post',
-//					timeout:1000,
+					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						
-//						alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0]));
+//						alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid));
 						var comPic = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsImg;
 						$('#comPic').attr('src',comPic);
 											
 						//点击发送
 						window.sendCom = function(){
 							var goodsid = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsId;
-							var storeid = eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid;
+							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
 							var seller_comment = $('#comment').val();
 							var grade_star = $('.mui-icon-star-filled').length;
-							alert(seller_comment);	
-							alert(grade_star);
-							
+//							alert(seller_comment);	
+//							alert(storeid);
 							//提交评价
 							//发送数据
 							var formD = new FormData();
-							if(Apic.length>1){
-								console.log('图片张数'+Apic.length); 
-								for (var j=0; j<Apic.length; j++) {
-									console.log('添加banner');
-									formD.append('pic',Apic[j]);
-								} 
-							}
+//							alert('图片张数'+Apic.length); 
+							for (var j=0; j<Apic.length; j++) {
+//								console.log('添加评论图片');
+								formD.append('pic',Apic[j]);
+							} 
 							formD.append('orderid',orderId);
 							formD.append('goodsid',goodsid);
-							formD.append('stroeid',stroeid);
+							formD.append('stroeid',storeid);
 							formD.append('seller_comment',seller_comment);
 							formD.append('seller_comment',seller_comment);
 							formD.append('grade_star',grade_star);
@@ -212,7 +206,6 @@
 		        			xhr.onreadystatechange = function(){ 
 		        				if (xhr.readyState===4) {
 		        					if (xhr.status===200) {
-		        						plus.nativeUI.closeWaiting();//关闭等待框
 		        						var dataobj = JSON.parse(xhr.responseText);
 		        						console.log(dataobj);
 		        						if(dataobj.errno == 0){
@@ -220,27 +213,15 @@
 		        							//触发跳转页面刷新
 		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
 											plus.webview.currentWebview().close();//关闭当前页面
-											mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+											mui.fire(plus.webview.getWebviewById('personal/sc-order.html'),'refreshAd');//打开指定页面
 		        						}else{
 		        							mui.toast('发布失败');	
 		        						}
 		        					}
 		        				}
 					        }
-		        			xhr.setRequestHeader("token",oldtoken);
+		        			xhr.setRequestHeader("token",oldToken);
 		        			xhr.send(formD);
-//							mui.ajax(serverUrl+'/api/mall/comment',{
-//								data:{orderid:orderId,goodsid:goodsid,stroeid:storeid,pic:pics,seller_comment:seller_comment,grade_star:grade_star},
-//								dataType:'json',
-//								type:'post',
-//								headers:{"token":oldToken},	 
-//								success:function(data,type,xhr){
-	
-//								},
-//								error:function(xhr,type,errorThrown){
-//									alert('响应失败  !');
-//								}
-//							});
 						}
 					},
 					error:function(xhr,type,errorThrown){
@@ -252,8 +233,6 @@
 		</script>
 		<script type="text/javascript">
 			mui.init();
-			
 		</script>
 	</body>
-
 </html>

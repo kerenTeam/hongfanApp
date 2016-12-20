@@ -104,6 +104,7 @@
 	<script type="text/javascript" charset="utf-8">
       	mui.init();
 		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中...',{width:'100px',height:'80px'});
 			//判断是否登录并获取缓存token
 			if(plus.storage.getItem('myToken')){
 				var oldToken = plus.storage.getItem('oldToken');
@@ -134,9 +135,11 @@
 							memberObj.memberLi = data.data;
 							var html = template('memberList-detail', memberObj);
 							document.getElementById('memberList').innerHTML = html;
+							plus.nativeUI.closeWaiting();
 						},
 						error:function(xhr,type,errorThrown){
-							alert('响应失败  !');
+							plus.nativeUI.closeWaiting();
+							mui.toast('响应失败  !');
 						}
 					});
 					

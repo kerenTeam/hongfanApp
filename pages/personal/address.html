@@ -140,7 +140,7 @@
 	    <script type="text/javascript"> 
 		mui.init(); 
 		mui.plusReady(function(){
-			
+			plus.nativeUI.showWaiting('加载中...',{width:'100px',height:'80px'});
 			//添加刷新监听
 			document.addEventListener('refreshAd', function() {
 				RefreshAd();
@@ -169,6 +169,7 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
+						plus.nativeUI.closeWaiting();
 //						alert(JSON.stringify(data.data[0].userid));
 						plus.storage.setItem("userid",userId);//userId做缓存
 						var addressObj = {};
@@ -278,7 +279,8 @@
 						}
 					},
 					error:function(xhr,type,errorThrown){
-						alert('响应失败  !');
+						plus.nativeUI.closeWaiting();
+						mui.toast('响应失败  !');
 					}
 				});
 			}

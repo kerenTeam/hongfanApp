@@ -134,7 +134,7 @@
     		<button type="button" class="mui-btn mui-btn-danger mui-btn-outlined fr dao">签到</button>
     		<img src="../img/center/bigCloud.png"/ class="centerBack">
     		<div class="content clearfloat fl">
-    			<a class="white"><img src="../img/morentouxiang.jpg" class="myInfo"/>
+    			<a class="white"><img src="../img/morentouxiang.jpg" class="myInfo" id="mypic"/>
     			<span class="denlu denluzhuce" style="z-index: 99;">
     				登录\注册
     			</span></a> 
@@ -224,6 +224,10 @@
 							success:function(data,type,xhr){
 								console.log('获取用户数据返回'+JSON.stringify(data));
 								if(data.errno == 0){
+									//显示头像
+									if(data.data[0].avatar){
+										mui('#mypic')[0].src = pictarget+data.data[0].avatar;
+									}
 									//显示昵称
 									if(data.data[0].nickname != ' '){ 
 										if(data.data[0].nickname.indexOf('null') == -1){

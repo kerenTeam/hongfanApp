@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>团购订单</title>
+		<title>我的发布</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -13,8 +13,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<style type="text/css">
 			.notice .tab-hd,.orderbh,dl.list dt, dl.list dd,dl.list{border-bottom: 1px solid #eee;
 			}
@@ -84,13 +82,15 @@
 			.baocun{font-size: 12px !important;
 			}
 			.listtwo dd{margin-bottom: 3px !important;}
+			.notice .tab-hdtwo li{width: 33.3%;}
+			
 		</style>
 	</head>
 	<body>
 		<header class="hasManyCity hasManyCitytwo" id="header">
 			<a class="fl fanhui mui-action-back"><i class="iconfont icon-fanhui"></i></a>
 			<div class="header-tit">
-				团购订单
+				我的发布
 			</div>		
 		</header>
 		<div id="container" style="margin-top: 50px;">		
@@ -98,15 +98,21 @@
 				<div class="notice">
 					<div class="tab-hd tab-hdtwo">
 						<ul class="tab-nav">
-						  <li>跳蚤市场</li>
-						  <li>房产</li>
-						  <li>服务</li> 
-						</ul>
+						  <li id="second_hand">跳蚤市场</li>
+						  <li id="house">房产</li>
+						  <li id="service">服务</li> 
+						</ul> 
 					</div>
-					<div class="tab-bd">
-						<dl class="list listtwo list-in">						
-						<dd>
-							<a href="#" class="react">
+					
+					<div id="nulldiv" style="text-align:center;margin-top: 20%;font-size: 14px;color: #999;display: none;">
+						<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+						<br />
+						没有相关发布  
+					</div>
+					<div>
+						<dl class="list listtwo list-in" id="infolistdiv"> 
+						<!--<dd>
+							<a class="react">
 								<div class="dealcard dealcardtwo clearfloat">
 									<div class="dealcard-img imgbox">
 										<img src="../../img/54b9cae9d6bc4.jpg">
@@ -131,15 +137,344 @@
 								<a class="fr confirm">编辑</a>
 								<a class="fr confirm">删除</a>
 							</div>
-						</dd>
+						</dd> -->
+						
 					</dl>
+					<!--跳蚤市场-->
+						<script type="text/html" id="infolist1">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd>
+							<a class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<div class="dealcard-img imgbox">
+										<img src="<%= list[i].list_pic%>">
+									</div>
+									<div class="dealcard-block-right dealcard-block-righttwo">
+										<div class="dealcard-brand dealcard-brandtwo single-line">
+											<span class="poi-name icon-count-3"><%= list[i].title%></span>
+											<p class="state">区域: <%= list[i].address%></p>
+											<div class="mui-row state_bottom">
+										        <div class="mui-col-sm-6 mui-col-xs-6">
+									                                    发布于<%= list[i].create_time.split('T')[0]%>
+										        </div>
+										        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+										                                     电话: <span><%= list[i].phone%></span>
+										        </div>
+										    </div>
+										</div>									
+									</div>
+								</div>
+							</a>
+							<div class="order-bottom clearfloat box-s">
+								<a class="fr confirm" onclick="BsecondHand(<%= mytype%>,<%= list[i].id%>)">编辑</a>
+								<a class="fr confirm" onclick="DsecondHand(this,<%= list[i].id%>)">删除</a>
+							</div>
+						</dd>
+					<%}%>	
+					</script>
+					<!--我的房产-->
+					<script type="text/html" id="infolist2">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd>
+							<a class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<div class="dealcard-img imgbox">
+										<img src="<%= list[i].logo%>">
+									</div>
+									<div class="dealcard-block-right dealcard-block-righttwo">
+										<div class="dealcard-brand dealcard-brandtwo single-line">
+											<span class="poi-name icon-count-3"><%= list[i].name%></span>
+											<p class="state">区域: <%= list[i].address%></p>
+											<div class="mui-row state_bottom">
+										        <div class="mui-col-sm-6 mui-col-xs-6">
+									                                    发布于<%= list[i].create_time.split('T')[0]%>
+										        </div>
+										        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+										                                     电话: <span><%= list[i].phone%></span>
+										        </div> 
+										    </div>
+										</div>									
+									</div>
+								</div>
+							</a>
+							<div class="order-bottom clearfloat box-s">
+								<a class="fr confirm" onclick="Bhousefun(<%= mytype%>,<%= list[i].house_id%>)">编辑</a>
+								<a class="fr confirm" onclick="Dhousefun(this,<%= list[i].house_id%>)">删除</a>
+							</div> 
+						</dd>
+					<%}%>	
+					</script>
+					<!--我的服务-->
+					<script type="text/html" id="infolist3">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd>
+							<a class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<div class="dealcard-img imgbox">
+										<img src="<%= list[i].logo%>">
+									</div>
+									<div class="dealcard-block-right dealcard-block-righttwo">
+										<div class="dealcard-brand dealcard-brandtwo single-line">
+											<span class="poi-name icon-count-3"><%= list[i].name%></span>
+											<p class="state">区域: <%= list[i].address%></p>
+											<div class="mui-row state_bottom">
+										        <div class="mui-col-sm-6 mui-col-xs-6">
+									                                    发布于<%= list[i].create_time.split('T')[0]%>
+										        </div>
+										        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+										                                     电话: <span><%= list[i].phone%></span>
+										        </div> 
+										    </div>
+										</div>									
+									</div>
+								</div>
+							</a>
+							<div class="order-bottom clearfloat box-s">
+								<a class="fr confirm" onclick="Bservicefun(<%= mytype%>,<%= list[i].id%>)">编辑</a>
+								<a class="fr confirm" onclick="Dservicefun(this,<%= list[i].id%>)">删除</a>
+							</div> 
+						</dd>
+					<%}%>	
+					</script>
 					</div>
 				</div>								
 			</div>
 		</div>
 	</body>
-	<script src="../../js/jquery.SuperSlide.2.1.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript">
-		jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });
-	</script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>	
+<script src="../../js/mui.min.js" type="text/javascript"></script>	
+<script src="../../js/jquery.SuperSlide.2.1.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/app.js"></script>
+<script src="../../js/artTemplate-native.js"></script>
+<script type="text/javascript"> 
+//顶部tab	
+jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });
+
+
+mui.plusReady(function(){
+	//添加刷新监听
+	document.addEventListener('refresh', function(obj) {
+		switch(obj.detail.Btype){//刷新并重载某一类
+			case 1:
+			mui('#second_hand')[0].onclick();
+			break;
+			case 2:
+			mui('#house')[0].onclick();
+			break;
+			case 3:
+			mui('#service')[0].onclick();
+			break;
+		}
+	})
+	var myuserid = plus.storage.getItem('userid');
+	var oldtoken = plus.storage.getItem('oldToken');
+	secondHand();//默认加载跳蚤市场
+	//点击切换
+	mui('#second_hand')[0].onclick = function(){
+		secondHand();//加载跳蚤市场
+	}
+	mui('#house')[0].onclick = function(){
+		housefun();//加载房产
+	}
+	mui('#service')[0].onclick = function(){
+		servicefun();//加载服务
+	}
+	
+	//跳蚤市场
+	function secondHand(){ 
+		mui('#nulldiv')[0].style.display = 'none';
+		document.getElementById("infolistdiv").innerHTML = '';
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		mui.ajax(serverUrl+'/api/localservice/myusedpublish',{
+			data:{"userid":myuserid},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	              				
+			success:function(data){
+				plus.nativeUI.closeWaiting();
+				console.log('我的发布返回'+JSON.stringify(data));
+				if(data.errno == 0){
+					if(data.data.length){
+						mui('#nulldiv')[0].style.display = 'none';
+						var dataobj = {};
+						dataobj.list = data.data; 
+						dataobj.mytype = 1; 
+						var html=template("infolist1",dataobj);
+						document.getElementById("infolistdiv").innerHTML = html;
+					}else{
+						mui('#nulldiv')[0].style.display = 'block';
+						
+					}
+				}else{
+					mui('#nulldiv')[0].style.display = 'block';
+					mui.toast('获取用户信息失败');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui('#nulldiv')[0].style.display = 'block';
+				plus.nativeUI.closeWaiting();
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//删除跳蚤市场
+	window.DsecondHand = function(obj,id){
+		mui.ajax(serverUrl+'/api/localservice/myuseddelete',{ 
+			data:{"my_used_id":id},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	               				
+			success:function(data){
+				console.log('删除返回'+JSON.stringify(data)); 
+				if(data.errno == 0){
+					obj.parentNode.parentNode.style.display = 'none';
+					mui.toast('删除成功');
+				}else{
+					mui.toast('删除失败, 请重试');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//编辑跳蚤市场
+	window.BsecondHand = function(type,id){
+		openview({
+			view:'../localLife/new_ershou.html',
+			extrasobj:{Bname:id,Btype:type}
+		})
+	}
+	//房产
+	function housefun(){
+		mui('#nulldiv')[0].style.display = 'block';
+		document.getElementById("infolistdiv").innerHTML = '';
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		mui.ajax(serverUrl+'/api/localservice/myhouse',{
+			data:{"userId":myuserid},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	              				
+			success:function(data){
+				plus.nativeUI.closeWaiting();
+				console.log('我的发布返回'+JSON.stringify(data)); 
+				if(data.errno == 0){
+					if(data.data.length){
+						mui('#nulldiv')[0].style.display = 'none'; 
+						var dataobj = {};
+						dataobj.list = data.data;
+						dataobj.mytype = 2;
+						var html=template("infolist2",dataobj);
+						document.getElementById("infolistdiv").innerHTML = html;
+					}else{
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+					
+				}else{
+					mui.toast('获取用户信息失败');
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui('#nulldiv')[0].style.display = 'block';
+				plus.nativeUI.closeWaiting();
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//删除房产
+	window.Dhousefun = function(obj,id){
+		mui.ajax(serverUrl+'/api/localservice/housedelete',{ 
+			data:{"userId":myuserid,"houseId":id},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	               				
+			success:function(data){
+				console.log('删除返回'+JSON.stringify(data)); 
+				if(data.errno == 0){
+					obj.parentNode.parentNode.style.display = 'none';
+					mui.toast('删除成功');
+				}else{
+					mui.toast('删除失败, 请重试');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//编辑房产
+	window.Bhousefun = function(type,id){
+		openview({
+			view:'../localLife/new_house.html',
+			extrasobj:{Bname:id,Btype:type}
+		})
+	}
+	//服务
+	function servicefun(){
+		mui('#nulldiv')[0].style.display = 'none';
+		document.getElementById("infolistdiv").innerHTML = '';
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		mui.ajax(serverUrl+'/api/localservice/mylocalservicepublish',{
+			data:{"userid":myuserid},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	              				
+			success:function(data){
+				plus.nativeUI.closeWaiting();
+				console.log('我的发布返回'+JSON.stringify(data));
+				if(data.errno == 0){
+					if(data.data.length){
+						mui('#nulldiv')[0].style.display = 'none'; 
+						var dataobj = {};
+						dataobj.list = data.data;
+						dataobj.mytype = 3;
+						var html=template("infolist3",dataobj);
+						document.getElementById("infolistdiv").innerHTML = html;
+					}else{
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+					
+				}else{
+					mui.toast('获取用户信息失败');
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui('#nulldiv')[0].style.display = 'block';
+				plus.nativeUI.closeWaiting();
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//删除服务
+	window.Dservicefun = function(obj,id){
+		mui.ajax(serverUrl+'/api/localservice/deletemyservice',{ 
+			data:{"my_local_service_id":id},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	               				
+			success:function(data){
+				console.log('删除返回'+JSON.stringify(data)); 
+				if(data.errno == 0){
+					obj.parentNode.parentNode.style.display = 'none';
+					mui.toast('删除成功');
+				}else{
+					mui.toast('删除失败, 请重试');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//编辑服务
+	window.Bservicefun = function(type,id){
+		openview({
+			view:'../localLife/new_service.html',
+			extrasobj:{Bname:id,Btype:type}
+		})
+	}
+})	
+</script>
 </html>

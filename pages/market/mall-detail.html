@@ -18,10 +18,8 @@
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/other.js"></script>
-		
-		
 		<style type="text/css">
-		.mui-preview-image.mui-fullscreen {
+			.mui-preview-image.mui-fullscreen {
 				position: fixed;
 				z-index: 20;
 				background-color: #000;
@@ -325,6 +323,20 @@
 			.farmtc .bt{
 				border-top: 1px solid #EFEFF4;
 			}
+			/*banner图片固定高度比例*/
+			.mui-slider-item a{
+				position: relative;
+				display: inline-block;
+				padding-top: 41.67%;
+				width: 100%;
+				overflow: hidden;
+			}
+			.goodsImg{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+			}
 		</style>
 	</head>
 	<body>
@@ -336,32 +348,32 @@
 				<div class="warp warptwo clearfloat">
 					<div class="detail clearfloat">
 						<div id="moll_info"></div>
+							
 						<script type="text/html" id="infoTpl">
 							<!--轮播图-->
 							<div class="mui-slider">
 								  <div class="mui-slider-group mui-slider-loop">
 								    <!--支持循环，需要重复图片节点-->
 								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>"></a>
+								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
 								    </div>
 								    <% for(var i=0;i<infoData.length;i++){ %>
 								    <div class="mui-slider-item">
 								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>">
+								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
 								    	</a>
 								    </div>
 								    	<% } %>
 								    <!--支持循环，需要重复图片节点-->
 								    <div class="mui-slider-item mui-slider-item-duplicate">
 								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>"></a></div>
+								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
+								    	</a>
+								    </div>
 								  </div>
-								 
 							</div>
 							<!--轮播图结束-->
-						
 						</script>
-						
 						<div id="gdBrief"></div>
 						<script type="text/html" id="briefTpl">
 							<div class="top clearfloat box-s">
@@ -425,15 +437,14 @@
 							<ul class="farm clearfloat Cul">
 								<%if(cemmentData.length==0){%>
 									<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
-									<%}else{%>
+										<%}else{%>
 											<%for(var i=0;i<cemmentData.length;i++){%>
 											<li class="mui-row Cli">
 												<div class="mui-col-sm-2 mui-col-xs-2 user-head">
 													<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
 											    		<img src="../../img/10.png" class="radius comtPic" alt="" />
-											    	 <%}else{%> 
-													<img src="<%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
-
+											    	<%}else{%> 
+														<img src="<%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
 													<%}%>
 												</div>
 												<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
@@ -447,34 +458,28 @@
 								                   	<p class="comment"><%=cemmentData[i].seller_comment%></p>
 							                        <div class="clear"></div>
 								                    <div class="padding-h-xs mui-row">
-								                    	
 													<%if(cemmentData[i].comment_pic.length!=0){%>
 								                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
 								                    	<img src="<%=cemmentData[i].comment_pic[j].comment_pic%>" class="inlineBlock mui-col-sm-3 mui-col-xs-3" data-preview-src="" data-preview-group="<%=i+1%>" />
 								                    	<%}%>	 
-								                    	<%}%>
-								                    </div>
-												</div>
-											</li> 
-											<%}%>
-											<%}%> 
-								
-							
-						</ul>
+								                    <%}%>
+							                    </div>
+											</div>
+										</li> 
+									<%}%>
+								<%}%> 
+							</ul>
 						</script>
-						
 					</div>
 				</div>
 			</div>
 		</div>
-		
 		<!--footerone star-->
 		<div class="footerone clearfloat">
 			<div class="left clearfloat fl">
 				<ul>
 					<li>
-					  <a onclick="goShop()">
-
+					 	<a onclick="goShop()">
 							<i class="iconfont icon-shangcheng"></i>
 							<p>商城</p>
 						</a>
@@ -482,13 +487,11 @@
 				</ul>
 			</div>
 			<div class="right clearfloat fl">
-				                <span class="btn fl addBtn" onClick="toshare(1)">加入购物车</span>
+				<span class="btn fl addBtn" onClick="toshare(1)">加入购物车</span>
                 <a onClick="toshare(2)" class="btn btnone fl">立即购买</a>
-
 			</div>
 		</div>
 		<!--footerone end-->
-		
 		<!--这里是弹出购物车内容-->
 		<div class="am-share">
 			<div id="cartBox"></div>
@@ -514,23 +517,19 @@
 		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
 		     				<div class="middle clearfloat textType">
-					     			
 					     		<p><%=choose.parameter[i].parameter_name%></p>
 					     		<div class="xia clearfloat choose">
 					     			<ul>
 					     				<%if(choose.parameter[i].child_value.length!=0){%>
 					     					<%for(var j=0;j<choose.parameter[i].child_value.length;j++){%>
-					     						
-					     							<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
-					     						 
-					     						<%}%>
-					     					<%}%> 
+					     						<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+				     						<%}%>
+				     					<%}%> 
 						     		</ul>
 					     		</div>		     		
 					     	</div>
-		     				<%}%>
-		     				<%}%>
-		     
+	     				<%}%>
+	     			<%}%>
 		     	<div class="bottom clearfloat">
 		     		<p class="fl">购买数量</p>
 		     		<div class="you clearfloat fr">
@@ -542,10 +541,9 @@
 		     		</div>
 		     	</div>
 		     	</div>
-		     	
 		     </div>		     
-		  </div>
-		  <a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.fee_start_1%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+		</div>
+		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.fee_start_1%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
 		
 		</div>
@@ -555,7 +553,7 @@
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
-	<script type="text/javascript">  
+	<script type="text/javascript"> 
 		mui.plusReady(function(){ 
 			var shopId;
 			//获取token
