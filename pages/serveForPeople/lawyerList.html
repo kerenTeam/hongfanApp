@@ -76,7 +76,7 @@
 			<div class="guess-like">
 				<dl class="list">
 					<dd>
-						<a onclick="forHelp(even)"class="react">
+						<a onclick="forHelp(2)"class="react">
 							<div class="dealcard">
 								<div class="dealcard-img">
 									<img src="../../img/10.png"/>
@@ -94,7 +94,7 @@
 						</a>
 					</dd>
 					<dd>
-						<a onclick="forHelp(even)"class="react">
+						<a onclick="forHelp(2)"class="react">
 							<div class="dealcard">
 								<div class="dealcard-img">
 									<img src="../../img/10.png"/>
@@ -121,11 +121,28 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-		function forHelp(professor){
+		function forHelp(helpId){
 			openview({
 				view:"linshuiHelp.html",
-				extrasobj:{professorId:professor}
+				extrasobj:{helpId:helpId}
 			})
 		}
+		mui.ajax(serverUrl+'/api/localservice/searchhelper',{
+			data:{area:area,street:street},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	 
+			success:function(data,type,xhr){
+				alert(data);
+				plus.webview.currentWebview().close();//关闭当前页面
+				mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+					
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		});
+		
 	</script>
 </html>

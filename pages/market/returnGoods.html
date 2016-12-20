@@ -329,10 +329,10 @@
 		var oldToken = plus.storage.getItem('oldToken');
 		var userId = plus.storage.getItem('userid');
 		var price = plus.webview.currentWebview().price;
-		alert(price);
+		alert(orderId);
 		$('#price span').html(price);
 		
-		console.log(orderId);
+//		console.log(oldToken);
 //		点击提交申请
 		window.send = function(){
 			var buyer_reason = $('#payWay').html();
@@ -345,7 +345,7 @@
 //				console.log('添加评论图片');
 				formD.append('pic',Apic[j]);
 			} 
-			formD.append('orderid',orderId);
+			formD.append('orderId',orderId);
 			formD.append('userId',userId);
 			formD.append('refund_selection',1);//1 仅退款
 			formD.append('buyer_reason',buyer_reason);
@@ -361,8 +361,11 @@
 							mui.toast('发布成功');	
 							//触发跳转页面刷新
 							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-							plus.webview.currentWebview().close();//关闭当前页面
-							mui.fire(plus.webview.getWebviewById('personal/sc-order.html'),'refreshAd');//打开指定页面
+							mui.fire(plus.webview.getWebviewById('../personal/sc-order.html'),'refresh');//打开指定页面
+							var time1 = setTimeout(function(){
+								plus.webview.currentWebview().close();//关闭当前页面
+								plus.nativeUI.closeWaiting();
+							},1000)
 						}else{
 							mui.toast('发布失败');	
 						}
