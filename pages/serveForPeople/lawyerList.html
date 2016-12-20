@@ -155,7 +155,7 @@
 		var oldtoken = plus.storage.getItem('oldToken');
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
-			data:{area:'武侯区',address:street},  
+			data:{area:area,address:street},  
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	 
@@ -166,7 +166,7 @@
 					if(data.data.length){
 						var dataobj = {};
 						for(var i=0; i<data.data.length; i++){
-							data.data[i].competency = JSON.parse(data.data[i].competency);
+							data.data[i].competency = eval("("+data.data[i].competency+")");
 						}
 						dataobj.list = data.data; 
 						console.log(dataobj.list);

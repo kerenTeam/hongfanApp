@@ -32,7 +32,7 @@
 			}
 			dl.listtwo dd>.react{
 				background-color:#fff;
-				border-bottom: 1px solid #efeff4;
+				/*border-bottom: 1px solid #efeff4;*/
 			}
 			dl.listtwo dd{
 				padding: 0;
@@ -149,13 +149,24 @@
 										<p class="poi-name">标题： <%=data.title%></p>
 										<p class="poi-name">内容：
 											<span><%=data.content%>
-											<%if(data.pics.length!=0){%>
+											<%if(data.pics!=null){%>
 												<%for(var t = 0;t<data.pics.length;t++){%>
 													<img src="<%=myUrl%><%=data.pics[t].picImg%>" alt="" />
 													<%}%>
 												<%}%>
 										</span></p>
-										 
+										 <div class="mui-row state_bottom">
+									        <div class="mui-col-sm-6 mui-col-xs-6">
+								             	<!--<%if(data.state==0){%>
+										    		<span class="mui-badge" style="color: white">暂无回复</span>
+										    	<%}else{%> 
+										    		<span class="mui-badge mui-badge-danger" style="color: white">查看回复</span>
+										    	<%}%>                       -->
+									        </div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+									                                     发布于<%=data.create_time%>
+									        </div>
+									    </div>
 									</div>		
 								</div>
 							</div>
@@ -184,7 +195,7 @@
 								    </div>
 								</div>
 								<div class="dealcard-brand dealcard-brandtwo single-line">
-									<p class="poi-name">回答内容：<%=answerdata.reply_content%></p>
+									<p class="poi-name">回复：<%=answerdata.reply_content%></p>
 									<!--<p class="state">显示中</p>-->
 									<div class="mui-row state_bottom">
 								        <div class="mui-col-sm-6 mui-col-xs-6">
@@ -222,7 +233,7 @@
 					dataType:'json',
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldtoken},	 
+					headers:{"token":oldtoken},
 					success:function(data,type,xhr){ 
 						plus.nativeUI.closeWaiting();
 						console.log(JSON.stringify(data.data)) ;
@@ -242,20 +253,23 @@
 				       				data.data[t].reply_time='';
 				       			}
 				       			if(data.data[t].id == publishId){
-				       				console.log(data.data[t].pics) 
-				       					 data.data[t].pics = eval("("+data.data[t].pics+")")  
+				       				
+				       					 data.data[t].pics = eval("("+data.data[t].pics+")");
+				       					 console.log(data.data[t].pics) 
 				       					helpListb.data= data.data[t];
 				       					if(data.data[t].state==1){
 				       						answerobj.answerdata= data.data[t];
+				       						  document.getElementById("helpAnswer").innerHTML = template("answerTpl",answerobj);
 				       					}else{
-//				       						answerobj.answerdata='<img src="../../img/serveForPeople/publish.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">还没有收到回复哦</span>';
+				       						var htmlwe='<img src="../../img/serveForPeople/answer.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">还没有收到回复哦</span>';
+				       					document.getElementById("helpAnswer").innerHTML =htmlwe;
 				       					}
-				       					console.log(answerobj.answerdata)
 				       			} 
 				       		}  
 				       		
 					        document.getElementById("helpList").innerHTML = template("helpTpl",helpListb); 
-					         document.getElementById("helpAnswer").innerHTML = template("answerTpl",answerobj);
+					        
+					       
 					        
 				       	}
 					     
