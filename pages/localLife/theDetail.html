@@ -65,6 +65,20 @@
 				display: block;
 				width: 100%;
 			}
+			/*banner图片固定高度比例*/
+			.mui-slider-item a{
+				position: relative;
+				display: inline-block;
+				padding-top: 55.56%;
+				width: 100%;
+				overflow: hidden;
+			}
+			.goodsImg{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+			}
 		</style>
 	</head>
 
@@ -84,12 +98,12 @@
 					<div class="mui-slider">
 						  <div class="mui-slider-group mui-slider-loop">
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[pic.length-1].banner%>"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[pic.length-1].banner%>" class="goodsImg"></a></div>
 						    <% for(var i=0; i<pic.length; i++) {%>
-						    	<div class="mui-slider-item"><a><img src="<%= pic[i].banner%>"></a></div>
+						    	<div class="mui-slider-item"><a><img src="<%= pic[i].banner%>" class="goodsImg"></a></div>
 						    <% }%>	
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[0].banner%>"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[0].banner%>" class="goodsImg"></a></div>
 						  </div>
 			            <div class="mui-slider-indicator">
 							<div class="mui-indicator mui-active"></div>
@@ -150,6 +164,11 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+		var div = $(".goodsImg");
+		for (var i = 1;i<div.length;i++) {
+			var width = div[i].offsetWidth;
+	        div.style.height = width/2.4+"px";
+		}
 		mui.plusReady(function(){
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//获取数据

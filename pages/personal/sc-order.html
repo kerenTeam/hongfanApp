@@ -25,7 +25,6 @@
 			}
 			.notice .tab-bd .tab-pal{
 				border-top: 1px solid #eee;
-				
 			}
 			.notice .tab-bd .tab-pal dl{
 				background-color: #efeff4;
@@ -36,7 +35,7 @@
 				color: red;
 			}
 			dl.list dt, dl.list dd, dl.list{
-				margin-bottom: 4%;
+				margin-bottom: 2%;
 				background-color: #fff;
 			}
 			dl.listtwo dd>.react{
@@ -89,7 +88,6 @@
 				margin-bottom: 0;
 			}
 			.dealcard .dealcard-img{
-				/*height: 90px;*/
 				overflow: hidden;
 			}
 			.dealcard-img img{
@@ -124,10 +122,9 @@
 				color: #333;
 			}
 			.tab-nav{
-				  overflow-x: scroll !important;
-				    width: 120%;
-				    /*height: 0.5rem!important;*/
-				    white-space: nowrap;
+				overflow-x: scroll !important;
+				width: 120%;
+				white-space: nowrap;
 			}
 			.tab-hdtwo{
 				overflow-x: scroll;
@@ -221,7 +218,7 @@
 									<%}%>
 									<%if(orderData[i].order_status==2){%>
 										<div class="order-bottom clearfloat box-s">
-											<a onclick="tuiOrder('<%=orderData[i].order_id%>')" class="fr confirm">申请退款</a>
+											<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data[0].totalMoney%>')" class="fr confirm">申请退款</a>
 										</div>
 									<%}%>
 									<%if(orderData[i].order_status==3){%>
@@ -292,14 +289,12 @@
 				data:{userid:myuserid},
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
-						
 						if(data.data.length!=0){
-							 
 //							alert(JSON.stringify(data.data));  
 							for(var i=0;i<data.data.length;i++){ 
 								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
@@ -431,10 +426,10 @@
 			window.orderConfirm=function(id){
 				alert("确认收货"+id)
 			}
-			window.tuiOrder=function(id){ 
+			window.tuiOrder=function(id,price){ 
 				openview({
 					view:'../market/ruturnList.html', 
-					extrasobj:{orderId:id}
+					extrasobj:{orderId:id,price:price}
 				})
 			}
 		})
