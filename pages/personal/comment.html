@@ -190,6 +190,7 @@
 							//提交评价
 							//发送数据
 							var formD = new FormData();
+							console.log(Apic);
 //							alert('图片张数'+Apic.length); 
 							for (var j=0; j<Apic.length; j++) {
 //								console.log('添加评论图片');
@@ -199,7 +200,7 @@
 							formD.append('goodsid',goodsid);
 							formD.append('stroeid',storeid);
 							formD.append('seller_comment',seller_comment);
-							formD.append('seller_comment',seller_comment);
+//							formD.append('seller_comment',seller_comment);
 							formD.append('grade_star',grade_star);
 							var xhr = new XMLHttpRequest(); 	
 		        			xhr.open('POST',serverUrl+'/api/mall/comment');
@@ -212,8 +213,12 @@
 		        							mui.toast('发布成功');	
 		        							//触发跳转页面刷新
 		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-											plus.webview.currentWebview().close();//关闭当前页面
 											mui.fire(plus.webview.getWebviewById('personal/sc-order.html'),'refreshAd');//打开指定页面
+											var time1 = setTimeout(function(){
+												plus.webview.currentWebview().close();//关闭当前页面
+												plus.nativeUI.closeWaiting();
+											},1000)
+
 		        						}else{
 		        							mui.toast('发布失败');	
 		        						}
@@ -230,9 +235,6 @@
 				});
 				
 			})
-		</script>
-		<script type="text/javascript">
-			mui.init();
 		</script>
 	</body>
 </html>
