@@ -297,6 +297,7 @@
 		var myuserid = plus.storage.getItem('userid');
 		mui('#SubmitApply')[0].addEventListener('tap',function(){
 			var state = mui('#payWay')[0].innerHTML;
+			
 			var explain = mui('#sendMobile')[0].value;
 			//发送数据
 			var formD = new FormData();
@@ -305,14 +306,14 @@
 					formD.append('pic',Apic[j]);
 				} 
 			}
-			formD.append('userid',myuserid);
-			formD.append('userid',myuserid);
-			formD.append('userid',myuserid);
+			formD.append('userId',myuserid);
+			formD.append('orderId',orderId);
+			formD.append('refund_selection',type);
 			formD.append('userid',myuserid);
 			formD.append('userid',myuserid);
 			
 			var xhr = new XMLHttpRequest(); 	
-			xhr.open('POST','http://192.168.199.191:7200/api/localservice/usedpublish');
+			xhr.open('POST',serverUrl+'/api/mall/applyofrefundAction');
 			xhr.onreadystatechange = function(){ 
 				if (xhr.readyState===4) {
 					if (xhr.status===200) {

@@ -148,6 +148,11 @@
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	
 	<script type="text/javascript">
+	//添加刷新监听
+	document.addEventListener('refresh', function() {
+		Loading(1,7,'','','','','',1000,'price');//加载数据,包括上滑加载  
+		console.log('刷新数据');
+	})
 	Loading(1,7,'','','','','',1000,'price');//加载数据,包括上滑加载  
 	//加载方法
 	function Loading(gin1,gin2,gin3,gin4,gin5,gin55,gin6,gin66,gin7){
@@ -260,9 +265,16 @@
 	
 //发布按钮
 mui('#thePlus')[0].onclick = function(){
-	openview({
-	 	view:'housePublish.html',  
-	})
+	if(plus.storage.getItem('myToken')){ 
+		openview({
+		 	view:'new_house.html',  
+		})
+	}else{//没登陆直接打开登录页面
+		mui.toast('请登录');
+		openview({
+			view:'../login.html'
+		});
+	}
 }
 //跳转详情
 function opendetails(id){
