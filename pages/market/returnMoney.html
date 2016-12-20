@@ -198,7 +198,7 @@
 	        </div>
 	    </div>
 		<!--上传图片结束-->
-	    <div class="renting-footer renting-footertwo clearfloat" id="SubmitApply">
+	    <div class="renting-footer renting-footertwo clearfloat" id="SubmitApply" onclick="send()">
 			<ul>
 				<li>提交申请</li>
 			</ul>
@@ -235,107 +235,113 @@
 	</script>
 	<script type="text/javascript">
 		//选择图片
-	var onepic = document.getElementsByClassName('onepic')[0];
-    var uppics = document.getElementsByClassName('uppics')[0];
-    var p = document.getElementById('p');
-    var time1 = null;
-    var Apic = [];//存放图片数组
-    var Indexes = 0;//当前删除
-    onepic.onclick = function(){
-    	var file_input = document.getElementById('file_input');
-    	if(Apic.length<=4){
-    		if(Apic.length ==4){
-    			file_input.style.display = 'none';
-    		}else{
-    			file_input.style.display = 'inline-block';
-    		}
-			
-        uppics.id = 'uppics2';
-        var imgnode = document.createElement("div");
-        clearInterval(time1);
-        time1 = setInterval(function(){
-            console.log('加载中');
-            if (file_input.files[0]) {
-                clearInterval(time1);
-                var reader = new FileReader();
-                Apic.push(file_input.files[0]);
-                var picname = file_input.files[0].name;
-                reader.readAsDataURL(file_input.files[0]); 
-                reader.onload = function(e){
-                    imgnode.innerHTML = '<img class="picimg1 '+picname+'" src="../../img/shanchu.svg"/><img class="picimg" src="'+this.result+'"/>';
-                    document.getElementsByClassName('picimg1')[Indexes].onclick = function(){
-                        this.parentNode.parentNode.removeChild(this.parentNode);
-                        var dename = this.className.slice(8);
-                        for (var i = 0; i < Apic.length; i++) {
-                            if (Apic[i].name == dename) {
-                               Apic.splice(i,1);
-                            }
-                        }
-                        Indexes--;
-                    }
-                    Indexes++;
-                }
-                uppics.appendChild(imgnode);
-                file_input.value = '';
-            }
-        },500)
-       }else{
-       	file_input.style.display = 'none';
-       	mui.toast('最多选择五张');
-       }
-    }
-	//选择图片结束
-	
-	//上传部分
-	mui.plusReady(function(){
-		var orderId = plus.webview.currentWebview().orderId;
-		var oldToken = plus.storage.getItem('oldToken');
-		var userId = plus.storage.getItem('userid');
+		var onepic = document.getElementsByClassName('onepic')[0];
+	    var uppics = document.getElementsByClassName('uppics')[0];
+	    var p = document.getElementById('p');
+	    var time1 = null;
+	    var Apic = [];//存放图片数组
+	    var Indexes = 0;//当前删除
+	    onepic.onclick = function(){
+	    	var file_input = document.getElementById('file_input');
+	    	if(Apic.length<=4){
+	    		if(Apic.length ==4){
+	    			file_input.style.display = 'none';
+	    		}else{
+	    			file_input.style.display = 'inline-block';
+	    		}
+				
+	        uppics.id = 'uppics2';
+	        var imgnode = document.createElement("div");
+	        clearInterval(time1);
+	        time1 = setInterval(function(){
+	            console.log('加载中');
+	            if (file_input.files[0]) {
+	                clearInterval(time1);
+	                var reader = new FileReader();
+	                Apic.push(file_input.files[0]);
+	                var picname = file_input.files[0].name;
+	                reader.readAsDataURL(file_input.files[0]); 
+	                reader.onload = function(e){
+	                    imgnode.innerHTML = '<img class="picimg1 '+picname+'" src="../../img/shanchu.svg"/><img class="picimg" src="'+this.result+'"/>';
+	                    document.getElementsByClassName('picimg1')[Indexes].onclick = function(){
+	                        this.parentNode.parentNode.removeChild(this.parentNode);
+	                        var dename = this.className.slice(8);
+	                        for (var i = 0; i < Apic.length; i++) {
+	                            if (Apic[i].name == dename) {
+	                               Apic.splice(i,1);
+	                            }
+	                        }
+	                        Indexes--;
+	                    }
+	                    Indexes++;
+	                }
+	                uppics.appendChild(imgnode);
+	                file_input.value = '';
+	            }
+	        },500)
+	       }else{
+	       	file_input.style.display = 'none';
+	       	mui.toast('最多选择五张');
+	       }
+	    }
+		//选择图片结束
 		
-//		console.log(oldToken);
-//		点击提交申请
-		window.send = function(){
-			var buyer_reason = $('#payWay').html();
-			var refund_reason = $('#sendMobile').val();
-			alert(buyer_reason);
-						
-			var formD = new FormData();
-//				alert('图片张数'+Apic.length); 
-			for (var j=0; j<Apic.length; j++) {
-//				console.log('添加评论图片');
-				formD.append('pic',Apic[j]);
-			} 
-			formD.append('orderid',orderId);//订单id
-			formD.append('userId',userId);//用户id
-			formD.append('refund_selection',2);//2退款退货
-			formD.append('buyer_reason',buyer_reason);//退货理由
-			formD.append('refund_reason',refund_reason);//详细理由
-			var xhr = new XMLHttpRequest(); 	
-			xhr.open('POST',serverUrl+'/api/mall/applyofrefund');
-			xhr.onreadystatechange = function(){ 
-				if (xhr.readyState===4) {
-					if (xhr.status===200) {
-						var dataobj = JSON.parse(xhr.responseText);
-//      					console.log(dataobj);
-						if(dataobj.errno == 0){
-							mui.toast('发布成功');	
-							//触发跳转页面刷新
-							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-							mui.fire(plus.webview.getWebviewById('../personal/sc-order.html'),'refresh');//打开指定页面
-							var time1 = setTimeout(function(){
-								plus.webview.currentWebview().close();//关闭当前页面
-								plus.nativeUI.closeWaiting();
-							},1000)
-						}else{
-							mui.toast('发布失败');	
+		//上传部分
+		mui.plusReady(function(){
+			var orderId = plus.webview.currentWebview().orderId;
+			var oldToken = plus.storage.getItem('oldToken');
+			var userId = plus.storage.getItem('userid');
+			
+	//		点击提交申请
+			window.send = function(){
+				var buyer_reason = $('#payWay').html();
+				var refund_reason = $('#sendMobile').val();
+				
+				if(buyer_reason == '请选择货物状态'){
+					mui.toast('请选择货物状态!');
+				}else if(refund_reason == ''){
+					$('#sendMobile').focus(); 
+					mui.toast('请填写退款说明!');
+				}else{
+					var formD = new FormData();
+						alert('图片张数'+Apic.length); 
+					for (var j=0; j<Apic.length; j++) {
+		//				console.log('添加评论图片');
+						formD.append('pic',Apic[j]);
+					} 
+					formD.append('orderId',orderId);//订单id
+					formD.append('userId',userId);//用户id
+					formD.append('refund_selection',2);//2退款退货
+					formD.append('buyer_reason',buyer_reason);//退货理由
+					formD.append('refund_reason',refund_reason);//详细理由
+					var xhr = new XMLHttpRequest(); 	
+					xhr.open('POST',serverUrl+'/api/mall/applyofrefund');
+					xhr.onreadystatechange = function(){ 
+						if (xhr.readyState===4) {
+							if (xhr.status===200) {
+								var dataobj = JSON.parse(xhr.responseText);
+								if(dataobj.errno == 0){
+									mui.toast('发布成功');	
+									//触发跳转页面刷新
+									plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
+									mui.fire(plus.webview.getWebviewById('personal/sc-order.html'),'refresh');//打开指定页面
+									plus.webview.getWebviewById('../market/ruturnList.html').close();
+									var time1 = setTimeout(function(){
+										plus.webview.currentWebview().close();//关闭当前页面
+										alert(1);
+										plus.nativeUI.closeWaiting();
+									},1000)
+								}else{
+									mui.toast('发布失败');	
+								}
+							}
 						}
-					}
+			        }
+					xhr.setRequestHeader("token",oldToken);
+					xhr.send(formD);
 				}
-	        }
-			xhr.setRequestHeader("token",oldToken);
-			xhr.send(formD);
-		}
-
-	})
+			}
+	
+		})
 	</script>
 </html>
