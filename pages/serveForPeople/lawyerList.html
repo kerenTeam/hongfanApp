@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 	<head>
-		<meta http-equiv="competency-Type" competency="text/html; charset=UTF-8">
+		<meta http-equiv="competency-Type" competency="text/html"; charset="UTF-8">
 		<title>帮帮团列表</title>
 		<meta name="viewport" competency="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" competency="yes">
@@ -16,7 +16,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 		
 		<style type="text/css">
-			.mui-bar-nav{
+			.mui-bar-nav{ 
 				box-shadow: none;
 			}
 			.dealcard .title, .dealcard .price{
@@ -155,21 +155,21 @@
 		var oldtoken = plus.storage.getItem('oldToken');
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
-			data:{area:'武侯区',address:street},  
-			dataType:'json',//服务器返回json格式数据
+			data:{area:'成华区',address:'桂溪街道'},  
+			dataType:'json',//服务器返回json格式数据 
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	 
-			headers:{"token":oldtoken},  
+			headers:{"token":oldtoken},    
 			success:function(data){
 				console.log('列表返回'+JSON.stringify(data));
 				if(data.errno == 0){
-					if(data.data.length){
+					if(data.data.length){  
 						var dataobj = {};
 						for(var i=0; i<data.data.length; i++){
-							data.data[i].competency = JSON.parse(data.data[i].competency);
+							data.data[i].competency = eval("("+data.data[i].competency+")");
 						}
 						dataobj.list = data.data; 
-						console.log(dataobj.list);
+						console.log(dataobj.list); 
 						//获取并渲染用户信息
 						var html=template("listinfo",dataobj);
 						document.getElementById("listinfodiv").innerHTML = html;
