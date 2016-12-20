@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>为民服务部分的邻水帮帮团的列表页</title>
+		<title>帮帮团列表</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -15,9 +15,6 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 		
-		<script src="../../js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			.mui-bar-nav{
 				box-shadow: none;
@@ -71,32 +68,15 @@
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">专家列表</h1> 
-		</header>		
-		<div id="container">					<div class="guess-like">
-			<dl class="list">
-				<dd>
-					<a onclick="forHelp()"class="react">
-						<div class="dealcard">
-							<div class="dealcard-img">
-								<img src="../../img/10.png"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand">胡军衔<span class="ageBox xsmallSize">27岁</span>
-									<span class="mui-pull-right">
-						              	  附近100米
-						            </span>
-								</div>
-								<div class="title text-block">法律工作者</div>
-								<div class="price">
-									<span class="tag">婚姻家庭</span>
-									<span class="tag">劳动争议</span>
-									<span class="tag">交通事故</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</dd>
-				<dd>
+		</header>
+		<div id="nulldiv" style="text-align:center;margin-top: 20%;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+			<br />
+			没有相关信息  
+		</div>
+		<div id="container">
+			<dl class="list" id="listinfodiv">
+				<!--<dd>
 					<a onclick="forHelp()"class="react">
 						<div class="dealcard">
 							<div class="dealcard-img">
@@ -116,41 +96,76 @@
 							</div>
 						</div>
 					</a>
-				</dd>
-				<dd>
-					<a onclick="forHelp()"class="react">
-						<div class="dealcard">
-							<div class="dealcard-img">
-								<img src="../../img/10.png"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand">胡军衔<span class="ageBox xsmallSize">27岁</span>
-									<span class="mui-pull-right">
-						                附近100米
-						            </span></div>
-								<div class="title text-block">  法律工作者</div>
-								<div class="price">
-									<span class="tag">婚姻家庭</span>
-									<span class="tag">劳动争议</span>
-									<span class="tag">交通事故</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</dd>
-				<dd class="db">
-					<a>
-						<div class="moreone">加载更多...</div>
-					</a>
-				</dd>
+				</dd>-->
 			</dl>
+			<script type="text/html" id="listinfo">
+				<% for(var i=0; i<list.length; i++){%>
+				<dd>
+					<a onclick="forHelp(<%= list[i].helper_id%>)"class="react">
+						<div class="dealcard">
+							<div class="dealcard-img">
+								<img src="../../img/10.png"/>
+							</div>
+							<div class="dealcard-block-right">
+								<div class="dealcard-brand"><%= list[i].name%><span class="ageBox xsmallSize"><%= list[i].sex%></span>
+									<span class="mui-pull-right">
+						                附近100米
+						            </span></div>
+								<div class="title text-block"><%= list[i].occupation%></div>
+								<div class="price">
+									<%= list[i].content%>
+									<!--<span class="tag">婚姻家庭</span>-->
+								</div>
+							</div>
+						</div>
+					</a>
+				</dd>
+				<%}%>
+			</script>
 		</div>
 	</body>
-	<script type="text/javascript">
-		function forHelp(){
-			openview({
-				view:"linshuiHelp.html"
-			})
-		}
-	</script>
+<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/app.js"></script>
+<script src="../../js/artTemplate-native.js"></script>
+<script type="text/javascript">
+	function forHelp(){
+		openview({
+			view:"linshuiHelp.html"
+		})
+	}
+	//搜索显示列表
+	mui.plusReady(function(){
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		var area = plus.webview.currentWebview().area;
+		var street = plus.webview.currentWebview().street;
+		var oldtoken = plus.storage.getItem('oldToken');
+		//获取信息
+		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
+			data:{area:'武侯区',address:'桂溪街道'},  
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型 
+			timeout:10000,//超时时间设置为10秒；	 
+			headers:{"token":oldtoken},  
+			success:function(data){
+				console.log('列表返回'+JSON.stringify(data));
+				if(data.errno == 0){
+					var dataobj = {};
+					dataobj.list = data.data; 
+					//获取并渲染用户信息
+					var html=template("listinfo",dataobj);
+					document.getElementById("listinfodiv").innerHTML = html;
+				}else{
+					mui.toast("获取数据失败");
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+				plus.nativeUI.closeWaiting();//关闭等待框
+			},
+			error:function(){
+				mui('#nulldiv')[0].style.display = 'block';
+				plus.nativeUI.closeWaiting();//关闭等待框
+				mui.toast("当前网络不好请重试");
+			}
+		});
+	})
+</script>
 </html>

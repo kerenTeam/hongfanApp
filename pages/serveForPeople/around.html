@@ -172,7 +172,7 @@
 					<li class="clearfloat">
 						<a>
 							<p class="fl">所在街道</p>
-							<input type="text" class="fr shuru" name="" id="phone" value="" placeholder="请输入所在街道" />
+							<input type="text" class="fr shuru" name="" id="jiedao" value="" placeholder="请输入所在街道" />
 						</a>
 					</li>
 					<li class="clearfloat">
@@ -246,7 +246,7 @@
 						</div>
 					</a>
 				</dd>
-				<dd class="db">
+				<dd class="db"> 
 					<a>
 						<div class="moreone">加载更多...</div>
 					</a>
@@ -260,9 +260,17 @@
 		<script>
 			//点击搜索进入帮帮团专家列表
 			function helpBtn(){
-				openview({
-					view:'lawyerList.html'
-				})
+				var area = mui('#area')[0].innerHTML;
+				var jiedao = mui('#jiedao')[0].value;
+				if(area && jiedao){
+					openview({
+						view:'lawyerList.html',
+						extrasobj:{area:area,street:jiedao}
+					})
+				}else{
+					mui.toast('请输入地区和街道');
+				}
+				
 			}
 			
 			(function($, doc) {
