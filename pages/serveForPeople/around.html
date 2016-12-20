@@ -91,11 +91,8 @@
 			.mui-bar-nav{
 				box-shadow: none;
 			}
-			.dealcard .title, .dealcard .price{
-				/*height: 0.23rem;*/
-			}
 			.price .tag{
-				font-size: 8px!important;
+				font-size: 10px!important;
 			}
 			.dealcard-brand .mui-pull-right{
 				font-size: 10px;
@@ -118,17 +115,15 @@
 			.dealcard, .cinemacard{
 				margin: 0;
 			}
-			.dealcard .dealcard-img{
+			.dealcard .dealcard-img img{
 				width: 66px;
 				height: 66px;
 				border-radius: 50%;
+				margin-left: -10px;
 			}
 			.dealcard .dealcard-brand{
 				font-size: 16px;
-				line-height: 25px;
-				/*line-height: 16px;*/
-				padding-top: 8px;
-				margin-bottom: 8px;
+				line-height: 16px;
 			}
 			.dealcard .dealcard-block-right {
 				margin-left: 85px;
@@ -172,7 +167,7 @@
 					<li class="clearfloat">
 						<a>
 							<p class="fl">所在街道</p>
-							<input type="text" class="fr shuru" name="" id="phone" value="" placeholder="请输入所在街道" />
+							<input type="text" class="fr shuru" name="" id="jiedao" value="" placeholder="请输入所在街道" />
 						</a>
 					</li>
 					<li class="clearfloat">
@@ -181,77 +176,29 @@
 				</ul>
 			</div>
 			<p class="outP">推荐帮帮团</p>
-			<dl class="list">
-				<dd>
-					<a onclick="forHelp()"class="react">
-						<div class="dealcard">
-							<div class="dealcard-img">
-								<img src="../../img/10.png"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand">胡军衔<span class="ageBox xsmallSize">27岁</span>
-									<span class="mui-pull-right">
-						              	  附近100米
-						            </span>
+			<dl class="list" id="helper"></dl>
+			<script type="text/html" id="helper-detail">
+				<% for(var i = 0;i < helpLi.length;i++){ %>
+					<dd>
+						<a onclick="forHelp(<%= helpLi[i].helper_id %>)"class="react">
+							<div class="dealcard">
+								<div class="dealcard-img">
+									<img src="<%= helpLi[i].headPic %>"/>
 								</div>
-								<div class="title text-block">法律工作者</div>
-								<!--<div class="price">
-									<span class="tag">婚姻家庭</span>
-									<span class="tag">劳动争议</span>
-									<span class="tag">交通事故</span>
-								</div>-->
+								<div class="dealcard-block-right">
+									<div class="dealcard-brand"><%= helpLi[i].name %></div>
+									<div class="title text-block"><%= helpLi[i].occupation %></div>
+									<div class="price">
+										<% for(var j = 0;j < helpLi[i].competency.length;j++){ %>
+											<span class="tag"><%= helpLi[i].competency[j] %></span>
+										<% } %>
+									</div>
+								</div>
 							</div>
-						</div>
-					</a>
-				</dd>
-				<dd>
-					<a onclick="forHelp()" class="react">
-						<div class="dealcard">
-							<div class="dealcard-img">
-								<img src="../../img/10.png"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand">胡军衔<span class="ageBox xsmallSize">27岁</span>
-									<span class="mui-pull-right">
-						                附近100米
-						            </span></div>
-								<div class="title text-block">  法律工作者</div>
-								<!--<div class="price">
-									<span class="tag">婚姻家庭</span>
-									<span class="tag">劳动争议</span>
-									<span class="tag">交通事故</span>
-								</div>-->
-							</div>
-						</div>
-					</a>
-				</dd>
-				<dd>
-					<a onclick="forHelp()"class="react">
-						<div class="dealcard">
-							<div class="dealcard-img">
-								<img src="../../img/10.png"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand">胡军衔<span class="ageBox xsmallSize">27岁</span>
-									<span class="mui-pull-right">
-						                附近100米
-						            </span></div>
-								<div class="title text-block">  法律工作者</div>
-								<!--<div class="price">
-									<span class="tag">婚姻家庭</span>
-									<span class="tag">劳动争议</span>
-									<span class="tag">交通事故</span>
-								</div>-->
-							</div>
-						</div>
-					</a>
-				</dd>
-				<dd class="db">
-					<a>
-						<div class="moreone">加载更多...</div>
-					</a>
-				</dd>
-			</dl>
+						</a>
+					</dd>
+				<% } %>
+			</script>
 	    </div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.picker.min.js"></script>
@@ -260,9 +207,17 @@
 		<script>
 			//点击搜索进入帮帮团专家列表
 			function helpBtn(){
-				openview({
-					view:'lawyerList.html'
-				})
+				var area = mui('#area')[0].innerHTML;
+				var jiedao = mui('#jiedao')[0].value;
+				if(area && jiedao){
+					openview({
+						view:'lawyerList.html',
+						extrasobj:{area:area,street:jiedao}
+					})
+				}else{
+					mui.toast('请输入地区和街道');
+				}
+				
 			}
 			
 			(function($, doc) {
@@ -302,8 +257,39 @@
 		<script type="text/javascript" charset="utf-8">
       	mui.init();
 		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
 			
+			//推荐帮帮团
+			mui.ajax(serverUrl+'/api/localservice/recommendhelper',{
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(data.data[0].competency);
+					for(var i = 0;i < data.data.length;i++ ){
+						data.data[i].competency = eval("("+data.data[i].competency+")");
+					}
+					var helpObj = {};
+						helpObj.helpLi = data.data;
+					var html = template('helper-detail',helpObj);
+					document.getElementById('helper').innerHTML = html; 
+					
+//					plus.webview.currentWebview().close();//关闭当前页面
+//					mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			}); 
 		})();
+		//点击专家，进入问题发布
+		function forHelp(helpId){
+			openview({
+				view:"linshuiHelp.html",
+				extrasobj:{helpId:helpId}
+			})
+		}
     </script>
 	</body>
 

@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>为民服务部分的邻水帮帮团的列表页</title>
-		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-touch-fullscreen" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="address=no">
+		<meta http-equiv="competency-Type" competency="text/html; charset=UTF-8">
+		<title>帮帮团列表</title>
+		<meta name="viewport" competency="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" competency="yes">
+		<meta name="apple-touch-fullscreen" competency="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" competency="black">
+		<meta name="format-detection" competency="telephone=no">
+		<meta name="format-detection" competency="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 		
-		<script src="../../js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			.mui-bar-nav{
 				box-shadow: none;
@@ -26,7 +23,7 @@
 				/*height: 0.23rem;*/
 			}
 			.price .tag{
-				font-size: 8px!important;
+				font-size: 10px!important;
 			}
 			.dealcard-brand .mui-pull-right{
 				font-size: 10px;
@@ -65,84 +62,132 @@
 			dl.list{
 				border-bottom: 1px solid #EFEFF4;
 			}
+			.dealcard .dealcard-img{height: auto !important;}
+			.ageBox{border-radius: 3px;}
 		</style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">专家列表</h1> 
-		</header>		
-		<div id="container">					
-			<div class="guess-like">
-				<dl class="list">
-					<dd>
-						<a onclick="forHelp(2)"class="react">
-							<div class="dealcard">
-								<div class="dealcard-img">
-									<img src="../../img/10.png"/>
-								</div>
-								<div class="dealcard-block-right">
-									<div class="dealcard-brand">胡军衔</div>
-									<div class="title text-block">法律工作者</div>
-									<div class="price">
-										<span class="tag">婚姻家庭</span>
-										<span class="tag">劳动争议</span>
-										<span class="tag">交通事故</span>
-									</div>
+		</header>
+		<div id="nulldiv" style="text-align:center;margin-top: 50%;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+			<br />
+			没有相关信息  
+		</div>
+		<div id="container">
+			<dl class="list" id="listinfodiv">
+				<!--<dd>
+					<a onclick="forHelp()"class="react">
+						<div class="dealcard">
+							<div class="dealcard-img">
+								<img src="../../img/10.png"/>
+							</div>
+							<div class="dealcard-block-right">
+								<div class="dealcard-brand">胡军衔<span class="ageBox xsmallSize">27岁</span>
+									<span class="mui-pull-right">
+						                附近100米
+						            </span></div>
+								<div class="title text-block">  法律工作者</div>
+								<div class="price">
+									<span class="tag">婚姻家庭</span>
+									<span class="tag">劳动争议</span>
+									<span class="tag">交通事故</span>
 								</div>
 							</div>
-						</a>
-					</dd>
-					<dd>
-						<a onclick="forHelp(2)"class="react">
-							<div class="dealcard">
-								<div class="dealcard-img">
-									<img src="../../img/10.png"/>
+						</div>
+					</a>
+				</dd>-->
+			</dl>
+			<script type="text/html" id="listinfo">
+				<% for(var i=0; i<list.length; i++){%>
+				<dd>
+					<a onclick="forHelp(<%= list[i].helper_id%>)"class="react">
+						<div class="dealcard">
+							<div class="dealcard-img">
+								<img src="../../img/10.png"/>
+							</div>
+							<div class="dealcard-block-right">
+								<div class="dealcard-brand"><%= list[i].name%><span class="ageBox xsmallSize"><%= list[i].sex%></span>
+									<span class="mui-pull-right">
+					                	<%= list[i].area%> <%= list[i].address%>
+						            </span>
 								</div>
-								<div class="dealcard-block-right">
-									<div class="dealcard-brand">胡军衔</div>
-									<div class="title text-block">  法律工作者</div>
-									<div class="price">
-										<span class="tag">婚姻家庭</span>
-										<span class="tag">劳动争议</span>
-										<span class="tag">交通事故</span>
-									</div>
+								<div class="title text-block"><%= list[i].occupation%></div>
+								<div class="price">
+									<%= list[i].competency%>
+									<% for(var j=0; j<list[i].competency.length; j++){%>
+										<span class="tag"><%= list[i].competency[j]%></span>
+									<%}%>
 								</div>
 							</div>
-						</a>
-					</dd>
-					<dd class="db">
-						<a>
-							<div class="moreone">加载更多...</div>
-						</a>
-					</dd>
-				</dl>
-			</div>
+						</div>
+					</a>
+				</dd>
+				<%}%>
+			</script>
 		</div>
 	</body>
-	<script type="text/javascript">
-		function forHelp(helpId){
+<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/app.js"></script>
+<script src="../../js/artTemplate-native.js"></script>
+<script type="text/javascript">
+	function forHelp(helpId){
+		if(plus.storage.getItem('myToken')){
 			openview({
 				view:"linshuiHelp.html",
 				extrasobj:{helpId:helpId}
 			})
+		}else{
+			mui.toast('请登录');
+			openview({
+				view:'../login.html'
+			})
 		}
-		mui.ajax(serverUrl+'/api/localservice/searchhelper',{
-			data:{area:area,street:street},
-			dataType:'json',
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldToken},	 
-			success:function(data,type,xhr){
-				alert(data);
-				plus.webview.currentWebview().close();//关闭当前页面
-				mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
-					
+	
+	}
+	//搜索显示列表
+	mui.plusReady(function(){
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		var area = plus.webview.currentWebview().area;
+		var street = plus.webview.currentWebview().street;
+		var oldtoken = plus.storage.getItem('oldToken');
+		//获取信息
+		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
+			data:{area:'武侯区',address:street},  
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型 
+			timeout:10000,//超时时间设置为10秒；	 
+			headers:{"token":oldtoken},  
+			success:function(data){
+				console.log('列表返回'+JSON.stringify(data));
+				if(data.errno == 0){
+					if(data.data.length){
+						var dataobj = {};
+						for(var i=0; i<data.data.length; i++){
+							data.data[i].competency = JSON.parse(data.data[i].competency);
+						}
+						dataobj.list = data.data; 
+						console.log(dataobj.list);
+						//获取并渲染用户信息
+						var html=template("listinfo",dataobj);
+						document.getElementById("listinfodiv").innerHTML = html;
+					}else{
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+				}else{
+					mui.toast("获取数据失败");
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+				plus.nativeUI.closeWaiting();//关闭等待框
 			},
-			error:function(xhr,type,errorThrown){
-				alert('响应失败  !');
+			error:function(){
+				mui('#nulldiv')[0].style.display = 'block';
+				plus.nativeUI.closeWaiting();//关闭等待框
+				mui.toast("当前网络不好请重试");
 			}
 		});
-		
-	</script>
+	})
+</script>
 </html>
