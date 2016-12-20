@@ -172,6 +172,38 @@
 						</dd>
 					<%}%>	
 					</script>
+					<!--我的房产-->
+					<script type="text/html" id="infolist2">
+						<% for(var i=0; i<list.length; i++){%>
+							<dd>
+							<a class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<div class="dealcard-img imgbox">
+										<img src="<%= list[i].logo%>">
+									</div>
+									<div class="dealcard-block-right dealcard-block-righttwo">
+										<div class="dealcard-brand dealcard-brandtwo single-line">
+											<span class="poi-name icon-count-3"><%= list[i].name%></span>
+											<p class="state">区域: <%= list[i].address%></p>
+											<div class="mui-row state_bottom">
+										        <div class="mui-col-sm-6 mui-col-xs-6">
+									                                    发布于<%= list[i].create_time.split('T')[0]%>
+										        </div>
+										        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
+										                                     电话: <span><%= list[i].phone%></span>
+										        </div> 
+										    </div>
+										</div>									
+									</div>
+								</div>
+							</a>
+							<div class="order-bottom clearfloat box-s">
+								<a class="fr confirm" onclick="Bhousefun(<%= mytype%>,<%= list[i].house_id%>)">编辑</a>
+								<a class="fr confirm" onclick="Dhousefun(this,<%= list[i].house_id%>)">删除</a>
+							</div> 
+						</dd>
+					<%}%>	
+					</script>
 					<!--我的服务-->
 					<script type="text/html" id="infolist3">
 						<% for(var i=0; i<list.length; i++){%>
@@ -226,6 +258,9 @@ mui.plusReady(function(){
 			case 1:
 			mui('#second_hand')[0].onclick();
 			break;
+			case 2:
+			mui('#house')[0].onclick();
+			break;
 			case 3:
 			mui('#service')[0].onclick();
 			break;
@@ -248,6 +283,7 @@ mui.plusReady(function(){
 	//跳蚤市场
 	function secondHand(){ 
 		mui('#nulldiv')[0].style.display = 'none';
+		document.getElementById("infolistdiv").innerHTML = '';
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui.ajax(serverUrl+'/api/localservice/myusedpublish',{
 			data:{"userid":myuserid},
@@ -267,6 +303,7 @@ mui.plusReady(function(){
 						document.getElementById("infolistdiv").innerHTML = html;
 					}else{
 						mui('#nulldiv')[0].style.display = 'block';
+						
 					}
 				}else{
 					mui('#nulldiv')[0].style.display = 'block';
@@ -311,9 +348,10 @@ mui.plusReady(function(){
 	//房产
 	function housefun(){
 		mui('#nulldiv')[0].style.display = 'block';
+		document.getElementById("infolistdiv").innerHTML = '';
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-		mui.ajax(serverUrl+'/api/localservice/myusedpublish',{
-			data:{"userid":myuserid},
+		mui.ajax(serverUrl+'/api/localservice/myhouse',{
+			data:{"userId":myuserid},
 			type:'post',
 			timeout:10000,
 			headers:{"token":oldtoken},	              				
@@ -322,11 +360,12 @@ mui.plusReady(function(){
 				console.log('我的发布返回'+JSON.stringify(data)); 
 				if(data.errno == 0){
 					if(data.data.length){
-//						mui('#nulldiv')[0].style.display = 'none';
-//						var dataobj = {};
-//						dataobj.list = data.data; 
-//						var html=template("infolist",dataobj);
-						document.getElementById("infolistdiv").innerHTML = '';
+						mui('#nulldiv')[0].style.display = 'none'; 
+						var dataobj = {};
+						dataobj.list = data.data;
+						dataobj.mytype = 2;
+						var html=template("infolist2",dataobj);
+						document.getElementById("infolistdiv").innerHTML = html;
 					}else{
 						mui('#nulldiv')[0].style.display = 'block';
 					}
@@ -343,9 +382,38 @@ mui.plusReady(function(){
 			}
 		});
 	}
+	//删除房产
+	window.Dhousefun = function(obj,id){
+		mui.ajax(serverUrl+'/api/localservice/housedelete',{ 
+			data:{"userId":myuserid,"houseId":id},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	               				
+			success:function(data){
+				console.log('删除返回'+JSON.stringify(data)); 
+				if(data.errno == 0){
+					obj.parentNode.parentNode.style.display = 'none';
+					mui.toast('删除成功');
+				}else{
+					mui.toast('删除失败, 请重试');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui.toast('响应失败  !');
+			}
+		});
+	}
+	//编辑房产
+	window.Bhousefun = function(type,id){
+		openview({
+			view:'../localLife/new_house.html',
+			extrasobj:{Bname:id,Btype:type}
+		})
+	}
 	//服务
 	function servicefun(){
 		mui('#nulldiv')[0].style.display = 'none';
+		document.getElementById("infolistdiv").innerHTML = '';
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui.ajax(serverUrl+'/api/localservice/mylocalservicepublish',{
 			data:{"userid":myuserid},

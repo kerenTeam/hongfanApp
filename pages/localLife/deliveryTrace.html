@@ -39,7 +39,9 @@
 				订单跟踪
 			</div>		
 		</header>
-	    <div id="main" class="mui-clearfix"></div>
+	    <div id="main" class="mui-clearfix">
+	    	
+	    </div>
 	    <script type="text/html" id="main-detail">
 	    	<div class="track clearfloat">
 	    		<div class="state clearfloat box-s mui-row">
@@ -80,15 +82,28 @@
 		    		</div>
 				<% } %>
 	    		<div class="process clearfloat box-s">
-	    			<% for(var i=tracesLi.length-1;i>0;i--){ %>
-		    			<div class="list clearfloat">
-		    				<i class="iconfont dian2"></i>
-		    				<div class="you clearfloat">
-		    					<p class="tit"><%= tracesLi[i].AcceptTime %></p>
-		    					<p class="time"><%= tracesLi[i].AcceptStation %></p>
-		    				</div>
-		    			</div>
-		    		<% } %>
+	    			
+	    			<div class="list clearfloat">
+	    				<i class="iconfont dian2"></i>
+	    				<div class="you clearfloat">
+	    					<p class="tit"><%= tracesLi[tracesLi.length-1].AcceptTime %></p>
+	    					<p class="time"><%= tracesLi[tracesLi.length-1].AcceptStation %></p>
+	    				</div>
+	    			</div>	
+	    			 
+	    					
+	    					<% for(var i=tracesLi.length-2;i>0;i--){ %>
+				    			<div class="list clearfloat">
+				    				<i class="iconfont dian"></i>
+				    				<div class="you clearfloat">
+				    					<p class="tit"><%= tracesLi[i].AcceptTime %></p>
+				    					<p class="time"><%= tracesLi[i].AcceptStation %></p>
+				    				</div>
+				    			</div>
+				    		<% } %>
+	    					
+	    					 
+	    			
 	    		</div>
 	    	</div>
 	    </script>
@@ -97,27 +112,37 @@
 	<script type="text/javascript" charset="utf-8">
       	mui.init();
 		mui.plusReady(function(){
-			
+			plus.nativeUI.showWaiting('加载中 ...', {
+				width: '100px',
+				height: '80px'
+			});
 			//获取缓存
 			var deliveryNo = plus.webview.currentWebview().deliveryNo;
 			var shipper = plus.webview.currentWebview().shipper;
+			alert(deliveryNo+" dsfd "+shipper)
 			var oldToken = plus.storage.getItem('oldToken');
 			mui.ajax(serverUrl+'/api/kdniao/getordertraces',{
 				data:{orderCode:deliveryNo,shipperCode:shipper,logisticCode:deliveryNo},
 //				data:{orderCode:422080143401,shipperCode:'ZTO',logisticCode:422080143401},
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data));
-					var TracesObj = {};
-					    TracesObj.tracesLi = data.data.Traces;
-					    TracesObj.State = data.data.State;
-					    TracesObj.LogisticCode = data.data.LogisticCode;
-					    TracesObj.ShipperCode = data.data.ShipperCode;
-					var html = template('main-detail',TracesObj);
-					document.getElementById('main').innerHTML = html; 
+				success:function(data,type,xhr){ 
+					plus.nativeUI.closeWaiting();
+					 if(data.data.Traces.length != 0){
+					 	
+					 	var TracesObj = {};
+						    TracesObj.tracesLi = data.data.Traces;
+						    TracesObj.State = data.data.State;
+						    TracesObj.LogisticCode = data.data.LogisticCode;
+						    TracesObj.ShipperCode = data.data.ShipperCode;
+						var html = template('main-detail',TracesObj);
+						document.getElementById('main').innerHTML = html; 
+					 }else{
+					 	document.getElementById('main').innerHTML='<img src="../../img/market/logistics.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">暂无物流更新</span>'
+					 }
+						 
 				},
 				error:function(xhr,type,errorThrown){
 					alert('响应失败  !');
