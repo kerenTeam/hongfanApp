@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>商城订单详情 - 素材牛模板演示</title>
+		<title>商城订单详情</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -100,7 +100,7 @@
 														<img src="<%=data.goods_data[0].goodsData[i].goodsImg%>"/>
 													</div>
 													<div class="dealcard-block-right">
-														<div class="dealcard-brand single-line"><%=data.goods_data[0].goodsData[i].goodsName%> <span class="fr">￥<b><%=data.goods_data[0].goodsData[i].goodsPrice%></b></span></div>
+														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 90%"><%=data.goods_data[0].goodsData[i].goodsName%></span> <span class="fr">￥<b><%=data.goods_data[0].goodsData[i].goodsPrice%></b></span></div>
 														<div class="title text-block fl">
 															<%=data.goods_data[0].goodsData[i].goodText%>													
 														</div>
@@ -115,9 +115,9 @@
 														<%}%>
 														
 													</div>
-													<%if(data.order_status==2 || data.order_status==3){%>
+													<!--<%if(data.order_status==2 || data.order_status==3){%>
 														<button class="fr" style="margin-top: 0.2rem;">退款</button>
-													<%}%>
+													<%}%>-->
 													
 													
 												</div>
@@ -158,7 +158,7 @@
 							<dd class="dd-padding dd-paddingfour gray">
 								<ul>
 									<li>
-										<div class="tip-title">订单编号：<%=data.order_id%></div>
+										<div class="tip-title">订单编号：<%=data.order_UUID%></div>
 									</li>
 									<%if(data.order_status!=1){%>
 									<li>
@@ -186,43 +186,181 @@
 				</script> 
 			</div>
 		</div> 
-		<div class="renting-footer clearfloat" id="footer"> 
-				<button class="fr BC">付款</button>
-			 	<button class="fr">取消订单</button> 
-		</div>
-
+		<div id="button"></div>
+		<script id="buttonTpl" type="text/html">
+			<div class="renting-footer clearfloat" id="footer"> 
+				<%if(data.order_status==1){%>
+					<button class="fr BC" onclick="goOrder('<%=data.order_id%>','<%=data.goods_data[0].totalMoney%>')">付款</button>
+				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','取消')">取消订单</button> 
+				<%}%>
+				
+				<%if(data.order_status==2){%>
+					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data[0].totalMoney%>')">申请退款</button> 
+				<%}%>
+				
+				<%if(data.order_status==3){%>
+					<button class="fr BC" onclick="orderConfirm('<%=data.order_id%>')">确认收货</button>
+					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data[0].totalMoney%>')">申请退款</button>
+				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
+				<%}%>
+				
+				<%if(data.order_status==4){%>
+					<button class="fr BC" onclick="goComment('<%=data.order_id%>')">评价</button>
+					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data[0].totalMoney%>')">申请退款</button>
+				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
+				<%}%>
+				
+				<%if(data.order_status==5){%> 
+				 	<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data[0].totalMoney%>')">申请退款</button>
+				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
+				<%}%>
+				<%if(data.order_status==6 || data.order_status==7 || data.order_status==8){%>
+					<span class="fr" style="margin-right: 15px;">交易金额:<%=data.amount%>  退款金额：￥<%=data.amount%></span>
+				<%}%> 
+				<%if(data.order_status==9){%> 
+				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button> 
+				<%}%>
+			</div>
+		</script>
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
+			
+			window.addEventListener('refresh',function(event){
+				 
+				load();
+			})
+			
+			var myuserid = plus.storage.getItem('userid');
 			var orderId = plus.webview.currentWebview().orderId;
 			var oldtoken = plus.storage.getItem('oldToken');
 			alert(orderId);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			
-			mui.ajax(serverUrl+'/api/mall/orderinfo',{
-				data:{order_id:orderId},
-				dataType:'json',
-				type:'post',
-				timeout:1000,
-				headers:{"token":oldtoken},	 
-				success:function(data,type,xhr){ 
-					plus.nativeUI.closeWaiting();
-					console.log(JSON.stringify(data.data)) ;
-			       if(data.errno===0){
-				       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
-				        var orderInfo = {};
-				        orderInfo.data= data.data[0];
-				        console.log("orderInfo.data "+JSON.stringify(data.data[0]))
-				        document.getElementById("orderInfo").innerHTML = template("orderTpl",orderInfo)
-			       }
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting()
-					console.log('响应失败  !');
-				}
-			});
+			load();
+			function load(){
+				mui.ajax(serverUrl+'/api/mall/orderinfo',{
+					data:{order_id:orderId},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){ 
+						plus.nativeUI.closeWaiting();
+						console.log(JSON.stringify(data.data)) ;
+				       if(data.errno===0){
+					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
+					        var orderInfo = {};
+					        orderInfo.data= data.data[0];
+					        console.log("orderInfo.data "+JSON.stringify(data.data[0]))
+					        document.getElementById("orderInfo").innerHTML = template("orderTpl",orderInfo);
+					        document.getElementById("button").innerHTML = template("buttonTpl",orderInfo)
+				       }
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting()
+						console.log('响应失败  !');
+					}
+				});
+			}
+			window.delOrder=function(obj,id,txt){ 
+				alert(obj)
+				mui.confirm('确认'+txt+'订单？', '提示', ['取消', '确定'], function(e) {
+					 
+					plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
+						if(e.index == 1) {
+							alert("13")
+							mui.ajax(serverUrl+'/api/mall/deleteorder',{
+								data:{userId:myuserid,orderId:id},
+								dataType:'json',
+								type:'post',
+								timeout:1000,
+								headers:{"token":oldtoken},	 
+								success:function(data,type,xhr){ 
+									plus.nativeUI.closeWaiting();
+									alert(JSON.stringify(data))
+							       if(data.data==1){ 
+							       	
+							       	var listpage = plus.webview.getWebviewById("personal/sc-order.html"); 
+							       	mui.fire(listpage,'refresh');
+							       	mui.toast("订单已取消");
+							       	setTimeout(function(){mui.back();},1000)
+							       	
+							       }
+							 },  
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting()
+									console.log('响应失败  !');
+								} 
+							});
+						}else{
+							plus.nativeUI.closeWaiting();
+						}
+						
+				})   
+			}
+			window.goOrder=function(id,payment){
+				alert("付款"+id);
+				openview({
+					view:"../market/pay.html",
+					extrasobj:{payMent:payment,order_id:id}
+				})
+			} 
+			window.goComment=function(orderId){
+				alert("评论"+orderId);
+				openview({
+					view:'comment.html', 
+					extrasobj:{orderId:orderId}
+				})
+			}
+			window.viewLogistics=function(id,deliveryNo,shipper){
+				alert("查看物流"+id+" df "+deliveryNo+" sdd "+shipper)
+				openview({ 
+							view:'../localLife/deliveryTrace.html',
+							extrasobj:{deliveryNo:deliveryNo,shipper:shipper}
+						})
+			}
+			window.orderConfirm=function(id){
+				alert("确认收货"+id);
+				mui.confirm('确认收货？', '提示', ['取消', '确定'], function(e) {
+					 
+					plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
+						if(e.index == 1) { 
+							mui.ajax(serverUrl+'/api/mall/completeorder',{
+								data:{userId:myuserid,orderId:id},
+								dataType:'json',
+								type:'post',
+								timeout:1000,
+								headers:{"token":oldtoken},	 
+								success:function(data,type,xhr){ 
+									plus.nativeUI.closeWaiting();
+									alert(JSON.stringify(data))
+							       if(data.data==1){  
+							       	 	var listpage = plus.webview.getWebviewById("personal/sc-order.html"); 
+								       	mui.fire(listpage,'refresh');
+								       	mui.toast("已确认收货");
+								       	setTimeout(function(){mui.back();},1000)
+							       }
+							 },  
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting()
+									console.log('响应失败  !');
+								} 
+							});
+						}else{
+							plus.nativeUI.closeWaiting();
+						}
+						
+				})
+			}
+			window.tuiOrder=function(id,price){ 
+				openview({
+					view:'../market/ruturnList.html', 
+					extrasobj:{orderId:id,price:price} 
+				})
+			}
 		})
 	</script>
 </html>
