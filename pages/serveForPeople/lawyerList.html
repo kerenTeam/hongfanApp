@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="competency-Type" competency="text/html; charset=UTF-8">
 		<title>帮帮团列表</title>
-		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-touch-fullscreen" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="address=no">
+		<meta name="viewport" competency="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" competency="yes">
+		<meta name="apple-touch-fullscreen" competency="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" competency="black">
+		<meta name="format-detection" competency="telephone=no">
+		<meta name="format-detection" competency="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
@@ -23,7 +23,7 @@
 				/*height: 0.23rem;*/
 			}
 			.price .tag{
-				font-size: 8px!important;
+				font-size: 10px!important;
 			}
 			.dealcard-brand .mui-pull-right{
 				font-size: 10px;
@@ -62,6 +62,8 @@
 			dl.list{
 				border-bottom: 1px solid #EFEFF4;
 			}
+			.dealcard .dealcard-img{height: auto !important;}
+			.ageBox{border-radius: 3px;}
 		</style>
 	</head>
 	<body>
@@ -69,7 +71,7 @@
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">专家列表</h1> 
 		</header>
-		<div id="nulldiv" style="text-align:center;margin-top: 20%;font-size: 14px;color: #999;display: none;">
+		<div id="nulldiv" style="text-align:center;margin-top: 50%;font-size: 14px;color: #999;display: none;">
 			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 			<br />
 			没有相关信息  
@@ -109,12 +111,15 @@
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand"><%= list[i].name%><span class="ageBox xsmallSize"><%= list[i].sex%></span>
 									<span class="mui-pull-right">
-						                附近100米
-						            </span></div>
+					                	<%= list[i].area%> <%= list[i].address%>
+						            </span>
+								</div>
 								<div class="title text-block"><%= list[i].occupation%></div>
 								<div class="price">
-									<%= list[i].content%>
-									<!--<span class="tag">婚姻家庭</span>-->
+									<%= list[i].competency%>
+									<% for(var j=0; j<list[i].competency.length; j++){%>
+										<span class="tag"><%= list[i].competency[j]%></span>
+									<%}%>
 								</div>
 							</div>
 						</div>
@@ -129,10 +134,18 @@
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
 	function forHelp(helpId){
-		openview({
-			view:"linshuiHelp.html",
-			extrasobj:{helpId:helpId}
-		})
+		if(plus.storage.getItem('myToken')){
+			openview({
+				view:"linshuiHelp.html",
+				extrasobj:{helpId:helpId}
+			})
+		}else{
+			mui.toast('请登录');
+			openview({
+				view:'../login.html'
+			})
+		}
+	
 	}
 	//搜索显示列表
 	mui.plusReady(function(){
@@ -142,7 +155,7 @@
 		var oldtoken = plus.storage.getItem('oldToken');
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
-			data:{area:'武侯区',address:'桂溪街道'},  
+			data:{area:'武侯区',address:street},  
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	 
@@ -150,11 +163,19 @@
 			success:function(data){
 				console.log('列表返回'+JSON.stringify(data));
 				if(data.errno == 0){
-					var dataobj = {};
-					dataobj.list = data.data; 
-					//获取并渲染用户信息
-					var html=template("listinfo",dataobj);
-					document.getElementById("listinfodiv").innerHTML = html;
+					if(data.data.length){
+						var dataobj = {};
+						for(var i=0; i<data.data.length; i++){
+							data.data[i].competency = JSON.parse(data.data[i].competency);
+						}
+						dataobj.list = data.data; 
+						console.log(dataobj.list);
+						//获取并渲染用户信息
+						var html=template("listinfo",dataobj);
+						document.getElementById("listinfodiv").innerHTML = html;
+					}else{
+						mui('#nulldiv')[0].style.display = 'block';
+					}
 				}else{
 					mui.toast("获取数据失败");
 					mui('#nulldiv')[0].style.display = 'block';
