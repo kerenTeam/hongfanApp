@@ -184,6 +184,18 @@
 				width: 100%;
 				display: block;
 			}
+		 .mui-slider-item a{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
+			}
 		</style>
 	</head>
 	<body>
@@ -205,21 +217,21 @@
 								<!--支持循环，需要重复图片节点-->
 								<div class="mui-slider-item">
 									<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
-										<img src="<%=myUrl%><%=bannerData[bannerData.length-1].bannerPic%>" />
+										<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
 									</a>
 								</div>
 								<% for(var i=0;i<bannerData.length;i++){ %>
 					
 								<div class="mui-slider-item">
 									<a onclick="bannerGo('<%=bannerData[i].url%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
-										<img src="<%=myUrl%><%=bannerData[i].bannerPic%>" />
+										<img src="<%=bannerData[i].bannerPic%>" />
 									</a>
 								</div>
 								<% } %>
 								<!--支持循环，需要重复图片节点-->
 								<div class="mui-slider-item mui-slider-item-duplicate">
 									<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
-										<img src="<%=myUrl%><%=bannerData[0].bannerPic%>" />
+										<img src="<%=bannerData[0].bannerPic%>" />
 									</a>
 								</div>
 					
@@ -388,10 +400,11 @@
 					type:'post',//HTTP请求类型 
 					timeout:10000,//超时时间设置为10秒；	
 					headers:{"token":token}, 
-					success:function(data){
+					success:function(data){ 
 						//获取并渲染  eval("("+data1+")");
+						console.log(data.data.banner)
 						if(data.errno==0){
-							var dataobj= eval("("+data.data.banner+")"); 
+							var dataobj= eval("("+data.data.banner+")");
 						var bannerObj = {}
 							bannerObj.myUrl = serverimgUrl;
 							bannerObj.bannerData = dataobj
