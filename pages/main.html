@@ -109,11 +109,17 @@
 			}
 			
 			/*banner*/
-			.mui-slider-item img{
+			.mui-slider-item a{
+				position: relative;
 				width: 100%;
-				min-height: 144px;
-				max-height: 200px;
+				padding-top: 42%; 
 				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
 			}
 			
 			.act_l img,.act_r img,.act_b_l img,.act_b_r img{
@@ -247,7 +253,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="bor"></div>	
+					<!--<div class="bor"></div>-->	
 					<div class="activity clearfix" id="recomment"></div>
 					<!--推荐列表-->
 					<div class="sy_recmd">
@@ -272,12 +278,12 @@
 		<script type="text/html" id="banner-detail">
 			<div class="mui-slider-group mui-slider-loop">
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= url %><%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
 				<% for(var i=0;i<bannerLi.length;i++){ %> 
-			    	<div class="mui-slider-item"><a><img src="<%= url %><%= bannerLi[i].bannerPic %>" /></a></div>
+			    	<div class="mui-slider-item"><a><img src="<%=bannerLi[i].bannerPic %>" /></a></div>
 			     <% } %>
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= url %><%= bannerLi[0].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= bannerLi[0].bannerPic %>" /></a></div>
 			</div>
 			<div class="mui-slider-indicator">
 				<div class="mui-indicator mui-active"></div>
@@ -288,7 +294,7 @@
 		</script>
 		
 		<!--广告-->
-		<script type="text/html" id="recomment-detail">
+		<!--<script type="text/html" id="recomment-detail">
 			<div class="act_l adGo" id="haha">
 				<img src="<%= recommentLi[0].pic %>"/>
 			</div>
@@ -303,7 +309,7 @@
 					 
 				</div>
 			</div>
-		</script>
+		</script>-->
 		
 		<!--热门推荐-->
 		<script type="text/html" id="recommendTpl">
@@ -346,7 +352,7 @@
 			}
 			$(".adGo").each(function(){
 				$(this).click(function(){
-					alert(2)
+//					alert(2)
 				openview({
 				 	view:"market/mall-detail.html",
 				 	extrasobj:{goodsId:1}
@@ -417,15 +423,19 @@
 					console.log('banner返回'+JSON.stringify(data));
 					var bannerObj = {};
 					var recommentObj = {};
-					bannerObj.bannerLi = JSON.parse(data.data.banner[0].banner);
-					recommentObj.recommentLi = eval("(" +data.data.recomment[0].content +")");
+//					console.log(data.data.banner[0].banner)
+					bannerObj.bannerLi =eval("("+data.data.banner[0].banner+")") ;
+					 
+//					console.log(data.data.recomment[0].content)
+//					recommentObj.recommentLi = eval("(" +data.data.recomment[0].content +")");
 					
 //					alert(JSON.parse(data.data.recomment[0]));
 					bannerObj.url = serverimgUrl;
 					var html = template('banner-detail',bannerObj);
+//					alert(html)
 					document.getElementById('banner').innerHTML = html;
-					var html2 = template('recomment-detail',recommentObj);
-					document.getElementById('recomment').innerHTML = html2;
+//					var html2 = template('recomment-detail',recommentObj);
+//					document.getElementById('recomment').innerHTML = html2;
 					
 					//轮播图
 					//获得slider插件对象
@@ -435,7 +445,7 @@
 					});
 				},
 				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
+					console.log('响应失败  !');
 				}
 			});
 			
