@@ -147,6 +147,7 @@
 		
 		//加载方法
 		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
+			document.getElementById("infolistdiv").innerHTML = '';
 			mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
 				data:{type_name:Ctype_name,currentPage:CcurrentPage,numsPerPage:CnumsPerPage}, 
 				dataType:'json',//服务器返回json格式数据
@@ -155,7 +156,7 @@
 				headers:{"token":oldtoken}, 
 				success:function(data){
 					if(data.errno == 0){
-						console.log(data);
+						console.log('列表返回'+JSON.stringify(data));
 						var dataobj = {};
 						dataobj.list = data.data.data; 
 						//获取并渲染用户信息
