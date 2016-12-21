@@ -71,8 +71,7 @@
 			}
 			dl.listtwo dd>.react {padding: .2rem .12rem .2rem .15rem;
 			}
-			.imgbox{margin-top: 6px;
-			}
+			.imgbox{margin-top: -5px;}
 			.state_bottom{font-size: 11px;line-height: 20px;color: #999;
 			}
 			.state_bottom span{color: #ff5601;
@@ -166,7 +165,7 @@
 								</div>
 							</a>
 							<div class="order-bottom clearfloat box-s">
-								<a class="fr confirm" onclick="BsecondHand(<%= mytype%>,<%= list[i].id%>)">编辑</a>
+								<a class="fr confirm" onclick="BsecondHand(<%= mytype%>,<%= list[i].id%>,<%= list[i].type_name%>)">编辑</a>
 								<a class="fr confirm" onclick="DsecondHand(this,<%= list[i].id%>)">删除</a>
 							</div>
 						</dd>
@@ -179,7 +178,7 @@
 							<a class="react">
 								<div class="dealcard dealcardtwo clearfloat">
 									<div class="dealcard-img imgbox">
-										<img src="<%= list[i].logo%>">
+										<img src="<%= list[i].list_pic%>">
 									</div>
 									<div class="dealcard-block-right dealcard-block-righttwo">
 										<div class="dealcard-brand dealcard-brandtwo single-line">
@@ -198,7 +197,7 @@
 								</div>
 							</a>
 							<div class="order-bottom clearfloat box-s">
-								<a class="fr confirm" onclick="Bhousefun(<%= mytype%>,<%= list[i].house_id%>)">编辑</a>
+								<a class="fr confirm" onclick="Bhousefun(<%= mytype%>,<%= list[i].house_id%>,<%= list[i].type_name%>)">编辑</a>
 								<a class="fr confirm" onclick="Dhousefun(this,<%= list[i].house_id%>)">删除</a>
 							</div> 
 						</dd>
@@ -230,7 +229,7 @@
 								</div>
 							</a>
 							<div class="order-bottom clearfloat box-s">
-								<a class="fr confirm" onclick="Bservicefun(<%= mytype%>,<%= list[i].id%>)">编辑</a>
+								<a class="fr confirm" onclick="Bservicefun(<%= mytype%>,<%= list[i].id%>,<%= list[i].type_name%>)">编辑</a>
 								<a class="fr confirm" onclick="Dservicefun(this,<%= list[i].id%>)">删除</a>
 							</div> 
 						</dd>
@@ -319,30 +318,36 @@ mui.plusReady(function(){
 	}
 	//删除跳蚤市场
 	window.DsecondHand = function(obj,id){
-		mui.ajax(serverUrl+'/api/localservice/myuseddelete',{ 
-			data:{"my_used_id":id},
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldtoken},	               				
-			success:function(data){
-				console.log('删除返回'+JSON.stringify(data)); 
-				if(data.errno == 0){
-					obj.parentNode.parentNode.style.display = 'none';
-					mui.toast('删除成功');
-				}else{
-					mui.toast('删除失败, 请重试');
-				}
-			},
-			error:function(xhr,type,errorThrown){
-				mui.toast('响应失败  !');
-			}
-		});
+		var btnArray = ['取消', '确定'];
+        mui.confirm('确认删除吗 ？', '提示', btnArray, function(e) {
+            if (e.index == 1) {
+                mui.ajax(serverUrl+'/api/localservice/myuseddelete',{ 
+					data:{"my_used_id":id},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	               				
+					success:function(data){
+						console.log('删除返回'+JSON.stringify(data)); 
+						if(data.errno == 0){
+							obj.parentNode.parentNode.style.display = 'none';
+							mui.toast('删除成功');
+						}else{
+							mui.toast('删除失败, 请重试');
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast('响应失败  !');
+					}
+				});
+				
+            }
+        })
 	}
 	//编辑跳蚤市场
-	window.BsecondHand = function(type,id){
+	window.BsecondHand = function(type,id,type_name){
 		openview({
 			view:'../localLife/new_ershou.html',
-			extrasobj:{Bname:id,Btype:type}
+			extrasobj:{Bname:id,Btype:type,type_name:type_name}
 		})
 	}
 	//房产
@@ -384,30 +389,35 @@ mui.plusReady(function(){
 	}
 	//删除房产
 	window.Dhousefun = function(obj,id){
-		mui.ajax(serverUrl+'/api/localservice/housedelete',{ 
-			data:{"userId":myuserid,"houseId":id},
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldtoken},	               				
-			success:function(data){
-				console.log('删除返回'+JSON.stringify(data)); 
-				if(data.errno == 0){
-					obj.parentNode.parentNode.style.display = 'none';
-					mui.toast('删除成功');
-				}else{
-					mui.toast('删除失败, 请重试');
-				}
-			},
-			error:function(xhr,type,errorThrown){
-				mui.toast('响应失败  !');
-			}
-		});
+		var btnArray = ['取消', '确定'];
+        mui.confirm('确认删除吗 ？', '提示', btnArray, function(e) {
+            if (e.index == 1) {
+                mui.ajax(serverUrl+'/api/localservice/housedelete',{ 
+					data:{"userId":myuserid,"houseId":id},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	               				
+					success:function(data){
+						console.log('删除返回'+JSON.stringify(data)); 
+						if(data.errno == 0){
+							obj.parentNode.parentNode.style.display = 'none';
+							mui.toast('删除成功');
+						}else{
+							mui.toast('删除失败, 请重试');
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast('响应失败  !');
+					}
+				});
+            }
+        })
 	}
 	//编辑房产
-	window.Bhousefun = function(type,id){
+	window.Bhousefun = function(type,id,type_name){
 		openview({
 			view:'../localLife/new_house.html',
-			extrasobj:{Bname:id,Btype:type}
+			extrasobj:{Bname:id,Btype:type,type_name:type_name}
 		})
 	}
 	//服务
@@ -449,30 +459,35 @@ mui.plusReady(function(){
 	}
 	//删除服务
 	window.Dservicefun = function(obj,id){
-		mui.ajax(serverUrl+'/api/localservice/deletemyservice',{ 
-			data:{"my_local_service_id":id},
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldtoken},	               				
-			success:function(data){
-				console.log('删除返回'+JSON.stringify(data)); 
-				if(data.errno == 0){
-					obj.parentNode.parentNode.style.display = 'none';
-					mui.toast('删除成功');
-				}else{
-					mui.toast('删除失败, 请重试');
-				}
-			},
-			error:function(xhr,type,errorThrown){
-				mui.toast('响应失败  !');
-			}
-		});
+		var btnArray = ['取消', '确定'];
+        mui.confirm('确认删除吗 ？', '提示', btnArray, function(e) {
+            if (e.index == 1) {
+               mui.ajax(serverUrl+'/api/localservice/deletemyservice',{ 
+					data:{"my_local_service_id":id},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	               				
+					success:function(data){
+						console.log('删除返回'+JSON.stringify(data)); 
+						if(data.errno == 0){
+							obj.parentNode.parentNode.style.display = 'none';
+							mui.toast('删除成功');
+						}else{
+							mui.toast('删除失败, 请重试');
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast('响应失败  !');
+					}
+				});
+            }
+        })
 	}
 	//编辑服务
-	window.Bservicefun = function(type,id){
+	window.Bservicefun = function(type,id,type_name){
 		openview({
 			view:'../localLife/new_service.html',
-			extrasobj:{Bname:id,Btype:type}
+			extrasobj:{Bname:id,Btype:type,type_name:type_name} 
 		})
 	}
 })	
