@@ -92,15 +92,25 @@
 		<script type="text/html" id="storeItem-detail">
 			<% for(var i=0;i<recommentLi.length;i++){ %>
 				<div class="mui-card">
-					<img class="imgItem" src="<%= recommentImg[i] %>"/>
+					<%if(recommentLi[i].pic!=null){%>
+						<img class="imgItem" src="<%= recommentLi[i].pic[0].bannerpic%>"/>
+						<%}else{%>
+							<img class="imgItem" src="../../img/market/banner.png"/>
+							<%}%>
+					
 					<div class="mui-card-footer">
 						<p>
-							<img src="<%= recommentLi[i].logo %>"/>
+							<%if(recommentLi[i].logo!=null){%>
+								<img src="<%=recommentLi[i].logo%>"/>
+								<%}else{%>
+									<img src="../../img/market/shop.png"/>
+									<%}%>
+							
 							<span class="banch"><%= recommentLi[i].barnd_name %></span>
 						</p>
 						<button onclick="openStore(<%= recommentLi[i].store_id %>)">查看详情</button>
 					</div>
-				</div>
+				</div> 
 			<% } %>
 		</script>
 		
@@ -122,16 +132,29 @@
 				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					plus.nativeUI.closeWaiting()
-					var img = [];
+					plus.nativeUI.closeWaiting(); 
+//					var img = [];
+					alert(JSON.stringify(data.data))
 					for (var i=0;i<data.data.length;i++) {
-						var imgItem = JSON.parse(data.data[i].pic)[0].picImg;
-						img.push(imgItem);
+						if(data.data[i].pic!=''){
+							data.data[i].pic = eval("("+data.data[i].pic+")");
+						}else{
+							data.data[i].pic = null;
+						}
+						if(data.data[i].logo!=''){
+							data.data[i].logo = eval("("+data.data[i].logo+")");
+						}else{
+							data.data[i].logo = null;
+						}
+						
+						alert(data.data[i].pic+" dsadsd  "+data.data[i].logo)
+//						img.push(imgItem);
 					}
+					alert(JSON.stringify(data.data))
 //					alert(JSON.parse(data.data[0]));
-					var recommentObj = {};
+					var recommentObj = {};  
 					recommentObj.recommentLi = data.data;
-					recommentObj.recommentImg = img;
+//					recommentObj.recommentImg = img;
 					var html2 = template('storeItem-detail',recommentObj);
 					document.getElementById('storeItem').innerHTML = html2;
 					
