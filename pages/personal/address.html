@@ -68,6 +68,18 @@
 			.shopcar{
 				padding-bottom: 01px !important; 
 			}
+			.nothing{
+				background-color: #EFEFF4;
+				margin-top: 60px;
+			}
+			.nothing img{
+				display: block;
+				margin: 20px auto;
+				width: 80px;
+			}
+			.nothing p{
+				text-align: center;
+			}
 		</style>
 	</head>
 	<body>
@@ -83,50 +95,57 @@
 	    <!--模板铺数据-->
 		<script id="addressList-detail" type="text/html">
 			<div id="main" class="mui-clearfix contaniner">
-			 	<% for(var i=0;i<addressLi.length;i++){ %>
-			    	<div class="addlist clearfloat"data-addid="<%= addressLi[i].id %>" data-person="<%= addressLi[i].person %>" data-phone="<%= addressLi[i].phone %>" data-pv="<%= addressLi[i].province %>" data-ct="<%= addressLi[i].city %>" data-ar="<%= addressLi[i].area %>">
-			    		<div class="top clearfloat box-s">
-			    			<ul>
-			    				<li>
-			    					<span class="fl addId"><%= addressLi[i].person %></span>
-			    					<span class="fr"><%= addressLi[i].phone %></span>
-			    				</li>
-			    				<li>
-			    					<%= addressLi[i].province %><%= addressLi[i].city %><%= addressLi[i].area %><%= addressLi[i].address %>
-			    				</li>
-			    			</ul>
-			    		</div>
-			    		<div class="bottom clearfloat box-s">
-			    			<section class="shopcar clearfloat">
-			    				<div class="list listtwo clearfloat">
-									<div class="xuan xuantwo clearfloat fl">
-					    				<div class="radio" onclick="changeState(this)"> 
-										    <label>
-										    	<% if(addressLi[i].state == 1){ %>
-										        	<input type="checkbox" name="sex" value="" checked id="<%= addressLi[i].id %>" />
-										        <% }else{ %>
-													<input type="checkbox" name="sex" value="" id="<%= addressLi[i].id %>" />
-												<% } %>
-										        <div class="option"></div>
-										    </label>
-										</div>
-					    			</div>
-					    			<span class="mradd fl">默认地址</span>
-								<div class="right fr clearfloat">
-									<a href="javascript:;" class="fr exterminate" onclick="deleteAd(<%= addressLi[i].id %>)">
-										<i class="iconfont icon-lajixiang icon-shanchutwo"></i>
-										删除
-									</a>
-									<a href="javascript:;" class="fr editAd" onclick="editAd(<%= addressLi[i].id %>)">
-										<i class="iconfont icon-bianji bianjittt"></i>
-										编辑
-									</a>							
-								</div>
-								</div>
-							</section>
-			    		</div>
-			    	</div>
-		    	<% } %>
+				<% if(addressLi== ''){%>
+					<div class="nothing">
+						<img src="../../img/theList/ad.png"/>
+						<p>你还没有地址哟！</p>
+					</div>
+				<%}else{%>
+				 	<% for(var i=0;i<addressLi.length;i++){ %>
+				    	<div class="addlist clearfloat"data-addid="<%= addressLi[i].id %>" data-person="<%= addressLi[i].person %>" data-phone="<%= addressLi[i].phone %>" data-pv="<%= addressLi[i].province %>" data-ct="<%= addressLi[i].city %>" data-ar="<%= addressLi[i].area %>">
+				    		<div class="top clearfloat box-s">
+				    			<ul>
+				    				<li>
+				    					<span class="fl addId"><%= addressLi[i].person %></span>
+				    					<span class="fr"><%= addressLi[i].phone %></span>
+				    				</li>
+				    				<li>
+				    					<%= addressLi[i].province %><%= addressLi[i].city %><%= addressLi[i].area %><%= addressLi[i].address %>
+				    				</li>
+				    			</ul>
+				    		</div>
+				    		<div class="bottom clearfloat box-s">
+				    			<section class="shopcar clearfloat">
+				    				<div class="list listtwo clearfloat">
+										<div class="xuan xuantwo clearfloat fl">
+						    				<div class="radio" onclick="changeState(this)"> 
+											    <label>
+											    	<% if(addressLi[i].state == 1){ %>
+											        	<input type="checkbox" name="sex" value="" checked id="<%= addressLi[i].id %>" />
+											        <% }else{ %>
+														<input type="checkbox" name="sex" value="" id="<%= addressLi[i].id %>" />
+													<% } %>
+											        <div class="option"></div>
+											    </label>
+											</div>
+						    			</div>
+						    			<span class="mradd fl">默认地址</span>
+									<div class="right fr clearfloat">
+										<a href="javascript:;" class="fr exterminate" onclick="deleteAd(<%= addressLi[i].id %>)">
+											<i class="iconfont icon-lajixiang icon-shanchutwo"></i>
+											删除
+										</a>
+										<a href="javascript:;" class="fr editAd" onclick="editAd(<%= addressLi[i].id %>)">
+											<i class="iconfont icon-bianji bianjittt"></i>
+											编辑
+										</a>							
+									</div>
+									</div>
+								</section>
+				    		</div>
+				    	</div>
+			    	<% } %>
+			    <% } %>
 		    </div>
 		</script>
 		
