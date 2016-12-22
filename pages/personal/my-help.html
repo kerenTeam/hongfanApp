@@ -185,11 +185,20 @@
 		}
 		
 		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中...',{width:'100px',height:'80px'});
 			var myuserid = plus.storage.getItem('userid');
 			var orderId = plus.webview.currentWebview().orderId;
 			var oldtoken = plus.storage.getItem('oldToken');
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			mui.ajax(serverUrl+'/api/localservice/myhelprequest',{
+			//添加刷新监听
+			document.addEventListener('refreshHelp', function() {
+				Refresh();
+//				alert("刷新");
+				console.log('刷新数据');
+			})
+			Refresh();
+			function Refresh(){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				mui.ajax(serverUrl+'/api/localservice/myhelprequest',{
 					data:{userid:myuserid},
 					dataType:'json',
 					type:'post',
@@ -222,6 +231,9 @@
 						console.log('响应失败  !');
 					}
 				});
+			};
+			
+			
 		})
 		
 	</script>
