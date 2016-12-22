@@ -106,7 +106,7 @@
 			    			</ul>
 			    		</div>
 			    		<div class="list clearfloat box-s" id="operationList">
-							<div class="shang clearfloat">
+							<!--<div class="shang clearfloat">
 								<ul>
 				    				<li class="box-s">2016-12-14</li>
 				    				<li style="text-align: center;">注册送积分</li>
@@ -133,7 +133,7 @@
 									<p class="fr">剩余积分：<span id="userScore"></span></p>
 								</div>
 							</div>	 
-			    			
+			    			-->
 			    			
 			    		</div>
 			    	</div>
@@ -159,7 +159,7 @@
 		    						<%= scoreList[i].create_time.split('T')[0] %>
 		    					<%}%>
 		    				</li>
-		    				<li style="text-align: left;">
+		    				<li style="text-align: center;">
 		    					<% if(scoreList[i].notice ==null || scoreList[i].notice ==''){%>
 									注册送积分
 								<%}else{%>
@@ -202,7 +202,7 @@
 			var myuserid = plus.storage.getItem('userid');
 			console.log(oldToken);
 			//积分列表
-			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+			mui.ajax(serverUrl+'/api/useraccount/userintergral',{
 				data:{"userid":myuserid},
 				type:'post',
 				timeout:10000,
@@ -211,8 +211,8 @@
 //					alert(JSON.stringify(data.data));
 					var scoreObj = {};
 					scoreObj.scoreList = data.data;
-//					var html = template('operationList-detail', scoreObj);
-//					document.getElementById('operationList').innerHTML = html;
+					var html = template('operationList-detail', scoreObj);
+					document.getElementById('operationList').innerHTML = html;
 					
 					//获取当前时间
 					var date = new Date();
