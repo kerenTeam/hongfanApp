@@ -93,7 +93,7 @@
 			<% for(var i=0;i<recommentLi.length;i++){ %>
 				<div class="mui-card">
 					<%if(recommentLi[i].pic!=null){%>
-						<img class="imgItem" src="<%= recommentLi[i].pic[0].bannerpic%>"/>
+						<img class="imgItem" src="<%=myurl%><%=recommentLi[i].pic%>"/>
 						<%}else{%>
 							<img class="imgItem" src="../../img/market/banner.png"/>
 							<%}%>
@@ -101,7 +101,7 @@
 					<div class="mui-card-footer">
 						<p>
 							<%if(recommentLi[i].logo!=null){%>
-								<img src="<%=recommentLi[i].logo%>"/>
+								<img src="<%=myurl%><%=recommentLi[i].logo%>"/>
 								<%}else{%>
 									<img src="../../img/market/shop.png"/>
 									<%}%>
@@ -134,15 +134,16 @@
 				success:function(data,type,xhr){
 					plus.nativeUI.closeWaiting(); 
 //					var img = [];
-					alert(JSON.stringify(data.data))
+					alert( data.data[0].pic[0])
+//alert(JSON.parse(data.data[0].pic[0]))
 					for (var i=0;i<data.data.length;i++) {
 						if(data.data[i].pic!=''){
-							data.data[i].pic = eval("("+data.data[i].pic+")");
+							data.data[i].pic = data.data[i].pic;
 						}else{
 							data.data[i].pic = null;
 						}
 						if(data.data[i].logo!=''){
-							data.data[i].logo = eval("("+data.data[i].logo+")");
+							data.data[i].logo = data.data[i].logo;
 						}else{
 							data.data[i].logo = null;
 						}
@@ -153,6 +154,7 @@
 					alert(JSON.stringify(data.data))
 //					alert(JSON.parse(data.data[0]));
 					var recommentObj = {};  
+					recommentObj.myurl = serverimgUrl;
 					recommentObj.recommentLi = data.data;
 //					recommentObj.recommentImg = img;
 					var html2 = template('storeItem-detail',recommentObj);
