@@ -150,9 +150,15 @@
 										<p class="poi-name">内容：
 											<span><%=data.content%>
 											<%if(data.pics!=null){%>
+												<div class="mui-row">
 												<%for(var t = 0;t<data.pics.length;t++){%>
-													<img src="<%=myUrl%><%=data.pics[t].picImg%>" alt="" />
+													<!--<img src="<%=myUrl%><%=data.pics[t].picImg%>" alt="" />-->
+													
+														<img src="<%=myUrl%><%=data.pics[t].picImg%>" style="padding: 4% 2%;" class="mui-col-xs-3" alt="" />
+													
+													
 													<%}%>
+													</div>
 												<%}%>
 										</span></p>
 										 <div class="mui-row state_bottom">
@@ -240,7 +246,7 @@
 				       if(data.errno===0){
 				       	if(data.data.length!=0){
 				       		var helpListb = {},answerobj={};
-				       			helpListb.myUrl =serverimgUrl;
+				       			helpListb.myUrl ='http://211.149.195.183:8114';
 				       		for(var t=0;t<data.data.length;t++){ 
 				       			if(data.data[t].create_time !=null){
 				       				data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
@@ -253,10 +259,15 @@
 				       				data.data[t].reply_time='';
 				       			}
 				       			if(data.data[t].id == publishId){
-				       				
-				       					 data.data[t].pics = eval("("+data.data[t].pics+")");
-				       					 console.log(data.data[t].pics) 
-				       					helpListb.data= data.data[t];
+				       				alert(typeof(data.data[t].pics))
+				       					 alert(data.data[t].pics )
+ 				       					 data.data[t].pics= eval("("+data.data[t].pics+")");//"("+data.data[t].pics+")"
+				       					 alert(typeof(data.data[t].pics))
+//				       					 alert(gdgfj[0].picImg)
+//				       					 alert(data.data[t].pics)
+//				       					alert("2dgsfg "+gdgfj[0].picImg) 
+				       					helpListb.data= data.data[t]; 
+				       				document.getElementById("helpList").innerHTML = template("helpTpl",helpListb);
 				       					if(data.data[t].state==1){
 				       						answerobj.answerdata= data.data[t];
 				       						  document.getElementById("helpAnswer").innerHTML = template("answerTpl",answerobj);
@@ -267,7 +278,7 @@
 				       			} 
 				       		}  
 				       		
-					        document.getElementById("helpList").innerHTML = template("helpTpl",helpListb); 
+					     
 					        
 					       
 					        
