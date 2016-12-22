@@ -308,7 +308,6 @@
 			    
 			</div>
 		</div>
-		
 <script src="../../js/mui.min.js"></script>
 <script src="../../js/jquery.min.js"></script>
 
@@ -389,7 +388,7 @@
 			timeout:1000,
 			headers:{"token":oldToken},	 
 			success:function(data,type,xhr){
-//				alert(JSON.stringify(data.data));
+				alert(JSON.stringify(data.data));
 				$('#storeName').html(data.data.store_name);
 				$('#title2').html(data.data.secondary_name);
 				$('#floorName').html(data.data.store_name);
@@ -399,8 +398,16 @@
 				$('#openStaus').html(data.data.op_status);
 				$('#description').html(data.data.description);
 				$('#addressS').html(data.data.block_name);
-				$('#storeLogo').attr('src',data.data.logo);
-				$('#storeImg').attr('src',JSON.parse(data.data.pic)[0].picImg);
+				if(data.data.logo == '' || data.data.logo == null){
+					$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
+				}else{
+					$('#storeLogo').attr('src',data.data.logo);
+				}
+				if(data.data.pic == '' || data.data.pic == null){
+					$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
+				}else{
+					$('#storeImg').attr('src',eval("("+data.data.pic+")"));
+				}
 				
 				
 				//获取全部商品列表
@@ -448,7 +455,6 @@
 						success:function(data){
 //							alert(JSON.stringify(data))
 							//获取并渲染  eval("("+data1+")");
-							//var dataobj = eval("("+data.data.banner+")"); 
 							if(data.errno==0){
 							plus.nativeUI.closeWaiting();//关闭等待框
 							var dataobj = data.data.return.data
