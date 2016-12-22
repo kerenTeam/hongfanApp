@@ -161,11 +161,6 @@
 		mui.plusReady(function(){
 			plus.nativeUI.showWaiting('加载中...',{width:'100px',height:'80px'});
 			//添加刷新监听
-			document.addEventListener('refreshAd', function() {
-				RefreshAd();
-//				alert("刷新");
-				console.log('刷新数据');
-			})
 			
 			//判断是否登录并获取缓存token
 			if(plus.storage.getItem('myToken')){
@@ -178,8 +173,14 @@
 			}
 			var userId = plus.webview.currentWebview().userId;
 			var pageid = plus.webview.currentWebview().pageid;
+			alert(pageid)
 			RefreshAd();
-
+			document.addEventListener('refreshAd', function() {
+							alert(pageid)
+							RefreshAd();
+			//				alert("刷新");
+							console.log('刷新数据');
+						}) 
 			function RefreshAd(){
 				mui.ajax(serverUrl+'/api/useraccount/addresslist',{
 					data:{userid : userId},
