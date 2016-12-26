@@ -388,7 +388,7 @@
 			timeout:1000,
 			headers:{"token":oldToken},	 
 			success:function(data,type,xhr){
-				alert(JSON.stringify(data.data));
+//				alert(JSON.stringify(data.data.pic));
 				$('#storeName').html(data.data.store_name);
 				$('#title2').html(data.data.secondary_name);
 				$('#floorName').html(data.data.store_name);
@@ -401,12 +401,12 @@
 				if(data.data.logo == '' || data.data.logo == null){
 					$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
 				}else{
-					$('#storeLogo').attr('src',data.data.logo);
+					$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
 				}
 				if(data.data.pic == '' || data.data.pic == null){
 					$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
 				}else{
-					$('#storeImg').attr('src',eval("("+data.data.pic+")"));
+					$('#storeImg').attr('src',serverimgUrl+data.data.pic);
 				}
 				
 				
@@ -519,7 +519,13 @@
 					}
 			}); 
 				
-				
+			
+			window.goInfo =  function(goodsId){ 
+				 openview({
+				 	view:"mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
 				
 			},
 			error:function(xhr,type,errorThrown){

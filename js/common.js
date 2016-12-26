@@ -1,628 +1,1027 @@
-/* jQuery cookie 操作*/
-jQuery.cookie = function (key, value, options) {
-    if (arguments.length > 1 && (value === null || typeof value !== "object")){
-        options = jQuery.extend({}, options);
-        if (value === null) {
-            options.expires = -1;
-        }
-        if (typeof options.expires === 'number'){
-            var days = options.expires, t = options.expires = new Date();
-            t.setDate(t.getDate() + days);
-        }
-        return (document.cookie = [
-            encodeURIComponent(key), '=',
-            options.raw ? String(value) : encodeURIComponent(String(value)),
-            options.expires ? '; expires=' + options.expires.toUTCString() : '',
-            options.path ? '; path=' + options.path : '',
-            options.domain ? '; domain=' + options.domain : '',
-            options.secure ? '; secure' : ''
-        ].join(''));
-    }
-    options = value || {};
-    var result, decode = options.raw ? function (s) { return s; } : decodeURIComponent;
-    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
-};
-/** laytpl-v1.1 */
-
-;!function(){"use strict";var f,b={open:"{{",close:"}}"},c={exp:function(a){return new RegExp(a,"g")},query:function(a,c,e){var f=["#([\\s\\S])+?","([^{#}])*?"][a||0];return d((c||"")+b.open+f+b.close+(e||""))},escape:function(a){return String(a||"").replace(/&(?!#?[a-zA-Z0-9]+;)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/'/g,"&#39;").replace(/"/g,"&quot;")},error:function(a,b){var c="Laytpl Error：";return"object"==typeof console&&console.error(c+a+"\n"+(b||"")),c+a}},d=c.exp,e=function(a){this.tpl=a};e.pt=e.prototype,e.pt.parse=function(a,e){var f=this,g=a,h=d("^"+b.open+"#",""),i=d(b.close+"$","");a=a.replace(/[\r\t\n]/g," ").replace(d(b.open+"#"),b.open+"# ").replace(d(b.close+"}"),"} "+b.close).replace(/\\/g,"\\\\").replace(/(?="|')/g,"\\").replace(c.query(),function(a){return a=a.replace(h,"").replace(i,""),'";'+a.replace(/\\/g,"")+'; view+="'}).replace(c.query(1),function(a){var c='"+(';return a.replace(/\s/g,"")===b.open+b.close?"":(a=a.replace(d(b.open+"|"+b.close),""),/^=/.test(a)&&(a=a.replace(/^=/,""),c='"+_escape_('),c+a.replace(/\\/g,"")+')+"')}),a='"use strict";var view = "'+a+'";return view;';try{return f.cache=a=new Function("d, _escape_",a),a(e,c.escape)}catch(j){return delete f.cache,c.error(j,g)}},e.pt.render=function(a,b){var e,d=this;return a?(e=d.cache?d.cache(a,c.escape):d.parse(d.tpl,a),b?(b(e),void 0):e):c.error("no data")},f=function(a){return"string"!=typeof a?c.error("Template not found"):new e(a)},f.config=function(a){a=a||{};for(var c in a)b[c]=a[c]},f.v="1.1","function"==typeof define?define(function(){return f}):"undefined"!=typeof exports?module.exports=f:window.laytpl=f}();
-
-/* 简单的消息弹出层 */
-var motify = {
-	timer:null,
-	/*shade 为 object调用 show为true显示 opcity 透明度*/
-	log:function(msg,time,shade){
-		$('.motifyShade,.motify').hide();
-		if(motify.timer) clearTimeout(motify.timer);
-		if($('.motify').size() > 0){
-			$('.motify').show().find('.motify-inner').html(msg);
-		}else{
-			$('body').append('<div class="motify" style="display:block;"><div class="motify-inner">'+msg+'</div></div>');
-		}
-		if(shade && shade.show){
-			if($('.motifyShade').size() > 0){
-				$('.motifyShade').css({'background-color':'rgba(0,0,0,'+(shade.opcity ? shade.opcity : '0.3')+')'}).show();
-			}else{
-				$('body').append('<div class="motifyShade" style="display:block;background-color:rgba(0,0,0,'+(shade.opcity ? shade.opcity : '0.3')+');"></div>');
-			}
-		}
-		if(typeof(time) == 'undefined'){
-			time = 3000;
-		}
-		if(time != 0){
-			motify.timer = setTimeout(function(){
-				$('.motify').hide();
-			},time);
-		}
-	},
-	clearLog:function(){
-		$('.motifyShade,.motify').hide();
-	},
-	checkMobile:function(){
-		if(/(iphone|ipad|ipod|android|windows phone)/.test(navigator.userAgent.toLowerCase())){
-			return true;
-		}else{
-			return false;
-		}
-	},
-    checkIos:function(){
-        if(/(iphone|ipad|ipod)/.test(navigator.userAgent.toLowerCase())){
-            return true;
-        }else{
-            return false;
-        }
-    },
-    checkAndroid:function(){
-        if(/(android)/.test(navigator.userAgent.toLowerCase())){
-            return true;
-        }else{
-            return false;
-        }
-    },
-	checkWeixin:function(){
-		if(/(micromessenger)/.test(navigator.userAgent.toLowerCase())){
-			return true;
-		}else{
-			return false;
-		}
-	},
-    checkApp:function(){
-        if(/(pigcmso2olifeapp)/.test(navigator.userAgent.toLowerCase()) || /(pigcmso2oreallifeapp)/.test(navigator.userAgent.toLowerCase())){
-            return true;
-        }else{
-            return false;
-        }
-    },
-	checkLifeApp:function(){
-        if((/(pigcmso2olifeapp)/.test(navigator.userAgent.toLowerCase()) && /(life_app)/.test(navigator.userAgent.toLowerCase())) || /(pigcmso2oreallifeapp)/.test(navigator.userAgent.toLowerCase())){
-			return true;
-		}else{
-			return false;
-		}
-    },
-	getLifeAppVersion:function(){
-		var reg = /versioncode=(\d+),/;
-		var arr = reg.exec(navigator.userAgent.toLowerCase());
-		if(arr == null){
-			return 0;
-		}else{
-			return parseInt(arr[1]);
-		}
-	},
-	getAndroidVersion:function(){
-		var index = navigator.userAgent.indexOf("Android");
-		if(index >= 0){
-			var androidVersion = parseFloat(navigator.userAgent.slice(index+8));
-			if(androidVersion > 1){
-				return androidVersion;
-			}else{
-				return 100;
-			}
-		}else{
-			return 100;
-		}
-	}
-};
-/*修复Iscroll高版本安卓无法点击*/
-function iScrollClick(){
-	if (/iPhone|iPad|iPod|Macintosh/i.test(navigator.userAgent)) return false;
-	if (/Chrome/i.test(navigator.userAgent)) return (/Android/i.test(navigator.userAgent));
-	if (/Silk/i.test(navigator.userAgent)) return false;
-	if (/Android/i.test(navigator.userAgent)) {
-	   var s=navigator.userAgent.substr(navigator.userAgent.indexOf('Android')+8,3);
-	   return parseFloat(s[0]+s[3]) < 44 ? false : true
-    }
+﻿(function(w){
+// 空函数
+function shield(){
+	return false;
 }
-
-var voiceBtmTimer =null,voiceLocalId=0;
-$(function(){
-	FastClick.attach(document.body);
-	/*如果页面没有底部导航，修改样式*/
-	if($('.footerMenu').size() == 0){
-		$('body').css({'padding-bottom':'0px'});
-		$('#container').css({bottom:'0px'});
-	}
-	if(motify.getAndroidVersion() < 4 && $.cookie('lowPhoneVersion') == null){
-		if(confirm('您使用的手机安卓版是 '+motify.getAndroidVersion()+'，低于安卓4.0版本，我们为您提供了更流畅的版本！请问是否需要切换？下次访问会重新询问。')){
-			$.cookie('lowPhoneVersion','1');
-			window.location.reload();
+document.addEventListener('touchstart',shield,false);//取消浏览器的所有事件，使得active的样式在手机上正常生效
+document.oncontextmenu=shield;//屏蔽选择函数
+// H5 plus事件处理
+var ws=null,as='pop-in';
+function plusReady(){
+	ws=plus.webview.currentWebview();
+	// Android处理返回键
+	plus.key.addEventListener('backbutton',function(){
+		back();
+	},false);
+	compatibleAdjust();
+}
+if(w.plus){
+	plusReady();
+}else{
+	document.addEventListener('plusready',plusReady,false);
+}
+// DOMContentLoaded事件处理
+var domready=false;
+document.addEventListener('DOMContentLoaded',function(){
+	domready=true;
+	gInit();
+	document.body.onselectstart=shield;
+	compatibleAdjust();
+},false);
+// 处理返回事件
+w.back=function(hide){
+	if(w.plus){
+		ws||(ws=plus.webview.currentWebview());
+		if(hide||ws.preate){
+			ws.hide('auto');
 		}else{
-			$.cookie('lowPhoneVersion','2');
+			ws.close('auto');
+		}
+	}else if(history.length>1){
+		history.back();
+	}else{
+		w.close();
+	}
+};
+// 处理点击事件
+var openw=null,waiting=null;
+/**
+ * 打开新窗口
+ * @param {URIString} id : 要打开页面url
+ * @param {boolean} wa : 是否显示等待框
+ * @param {boolean} ns : 是否不自动显示
+ * @param {JSON} ws : Webview窗口属性
+ */
+w.clicked=function(id,wa,ns,ws){
+	if(openw){//避免多次打开同一个页面
+		return null;
+	}
+	if(w.plus){
+		wa&&(waiting=plus.nativeUI.showWaiting());
+		ws=ws||{};
+		ws.scrollIndicator||(ws.scrollIndicator='none');
+		ws.scalable||(ws.scalable=false);
+		var pre='';//'http://192.168.1.178:8080/h5/';
+		openw=plus.webview.create(pre+id,id,ws);
+		ns||openw.addEventListener('loaded',function(){//页面加载完成后才显示
+//		setTimeout(function(){//延后显示可避免低端机上动画时白屏
+			openw.show(as);
+			closeWaiting();
+//		},200);
+		},false);
+		openw.addEventListener('close',function(){//页面关闭后可再次打开
+			openw=null;
+		},false);
+		return openw;
+	}else{
+		w.open(id);
+	}
+	return null;
+};
+w.openDoc=function(t,c){
+	var d=plus.webview.getWebviewById('document');
+	if(d){
+		d.evalJS('updateDoc("'+t+'","'+c+'")');
+	}else{
+		d=plus.webview.create('/plus/doc.html','document',{zindex:9999,popGesture:'hide'},{preate:true});
+		d.addEventListener('loaded',function(){
+			d.evalJS('updateDoc("'+t+'","'+c+'")');
+		},false);
+	}
+}
+/**
+ * 关闭等待框
+ */
+w.closeWaiting=function(){
+	waiting&&waiting.close();
+	waiting=null;
+}
+// 兼容性样式调整
+var adjust=false;
+function compatibleAdjust(){
+	if(adjust||!w.plus||!domready){
+		return;
+	}	// iOS平台使用滚动的div
+	if('iOS'==plus.os.name){
+		var t=document.getElementById("dcontent");
+		t&&(t.className="sdcontent");
+		t=document.getElementById("content");
+		t&&(t.className="scontent");
+		//iOS8横竖屏切换div不更新滚动问题
+		var lasto=window.orientation;
+		window.addEventListener("orientationchange",function(){
+			var nowo=window.orientation;
+			if(lasto!=nowo&&(90==nowo||-90==nowo)){
+				dcontent&&(0==dcontent.scrollTop)&&(dcontent.scrollTop=1);
+				content&&(0==content.scrollTop)&&(content.scrollTop=1);
+			}
+			lasto=nowo;
+		},false);
+	}
+	adjust=true;
+};
+w.compatibleConfirm=function(){
+	plus.nativeUI.confirm('本OS原生层面不提供该控件，需使用mui框架实现类似效果。请点击“确定”下载Hello mui示例',function(e){
+		if(0==e.index){
+			plus.runtime.openURL("http://www.dcloud.io/hellomui/");
+		}
+	},"",["确定","取消"]);
+}
+// 通用元素对象
+var _dout_=null,_dcontent_=null;
+w.gInit=function(){
+	_dout_=document.getElementById("output");
+	_dcontent_=document.getElementById("dcontent");
+};
+// 清空输出内容
+w.outClean=function(){
+	_dout_.innerText="";
+	_dout_.scrollTop=0;//在iOS8存在不滚动的现象
+};
+// 输出内容
+w.outSet=function(s){
+	_dout_.innerText=s+"\n";
+	(0==_dout_.scrollTop)&&(_dout_.scrollTop=1);//在iOS8存在不滚动的现象
+};
+// 输出行内容
+w.outLine=function(s){
+	_dout_.innerText+=s+"\n";
+	(0==_dout_.scrollTop)&&(_dout_.scrollTop=1);//在iOS8存在不滚动的现象
+};
+// 格式化时长字符串，格式为"HH:MM:SS"
+w.timeToStr=function(ts){
+	if(isNaN(ts)){
+		return "--:--:--";
+	}
+	var h=parseInt(ts/3600);
+	var m=parseInt((ts%3600)/60);
+	var s=parseInt(ts%60);
+	return (ultZeroize(h)+":"+ultZeroize(m)+":"+ultZeroize(s));
+};
+// 格式化日期时间字符串，格式为"YYYY-MM-DD HH:MM:SS"
+w.dateToStr=function(d){
+	return (d.getFullYear()+"-"+ultZeroize(d.getMonth()+1)+"-"+ultZeroize(d.getDate())+" "+ultZeroize(d.getHours())+":"+ultZeroize(d.getMinutes())+":"+ultZeroize(d.getSeconds()));
+};
+/**
+ * zeroize value with length(default is 2).
+ * @param {Object} v
+ * @param {Number} l
+ * @return {String} 
+ */
+w.ultZeroize=function(v,l){
+	var z="";
+	l=l||2;
+	v=String(v);
+	for(var i=0;i<l-v.length;i++){
+		z+="0";
+	}
+	return z+v;
+};
+})(window);
+
+;(function () {
+	'use strict';
+
+	/**
+	 * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.
+	 *
+	 * @codingstandard ftlabs-jsv2
+	 * @copyright The Financial Times Limited [All Rights Reserved]
+	 * @license MIT License (see LICENSE.txt)
+	 */
+
+	/*jslint browser:true, node:true*/
+	/*global define, Event, Node*/
+
+
+	/**
+	 * Instantiate fast-clicking listeners on the specified layer.
+	 *
+	 * @constructor
+	 * @param {Element} layer The layer to listen on
+	 * @param {Object} [options={}] The options to override the defaults
+	 */
+	function FastClick(layer, options) {
+		var oldOnClick;
+
+		options = options || {};
+
+		/**
+		 * Whether a click is currently being tracked.
+		 *
+		 * @type boolean
+		 */
+		this.trackingClick = false;
+
+
+		/**
+		 * Timestamp for when click tracking started.
+		 *
+		 * @type number
+		 */
+		this.trackingClickStart = 0;
+
+
+		/**
+		 * The element being tracked for a click.
+		 *
+		 * @type EventTarget
+		 */
+		this.targetElement = null;
+
+
+		/**
+		 * X-coordinate of touch start event.
+		 *
+		 * @type number
+		 */
+		this.touchStartX = 0;
+
+
+		/**
+		 * Y-coordinate of touch start event.
+		 *
+		 * @type number
+		 */
+		this.touchStartY = 0;
+
+
+		/**
+		 * ID of the last touch, retrieved from Touch.identifier.
+		 *
+		 * @type number
+		 */
+		this.lastTouchIdentifier = 0;
+
+
+		/**
+		 * Touchmove boundary, beyond which a click will be cancelled.
+		 *
+		 * @type number
+		 */
+		this.touchBoundary = options.touchBoundary || 10;
+
+
+		/**
+		 * The FastClick layer.
+		 *
+		 * @type Element
+		 */
+		this.layer = layer;
+
+		/**
+		 * The minimum time between tap(touchstart and touchend) events
+		 *
+		 * @type number
+		 */
+		this.tapDelay = options.tapDelay || 200;
+
+		/**
+		 * The maximum time for a tap
+		 *
+		 * @type number
+		 */
+		this.tapTimeout = options.tapTimeout || 700;
+
+		if (FastClick.notNeeded(layer)) {
+			return;
+		}
+
+		// Some old versions of Android don't have Function.prototype.bind
+		function bind(method, context) {
+			return function() { return method.apply(context, arguments); };
+		}
+
+
+		var methods = ['onMouse', 'onClick', 'onTouchStart', 'onTouchMove', 'onTouchEnd', 'onTouchCancel'];
+		var context = this;
+		for (var i = 0, l = methods.length; i < l; i++) {
+			context[methods[i]] = bind(context[methods[i]], context);
+		}
+
+		// Set up event handlers as required
+		if (deviceIsAndroid) {
+			layer.addEventListener('mouseover', this.onMouse, true);
+			layer.addEventListener('mousedown', this.onMouse, true);
+			layer.addEventListener('mouseup', this.onMouse, true);
+		}
+
+		layer.addEventListener('click', this.onClick, true);
+		layer.addEventListener('touchstart', this.onTouchStart, false);
+		layer.addEventListener('touchmove', this.onTouchMove, false);
+		layer.addEventListener('touchend', this.onTouchEnd, false);
+		layer.addEventListener('touchcancel', this.onTouchCancel, false);
+
+		// Hack is required for browsers that don't support Event#stopImmediatePropagation (e.g. Android 2)
+		// which is how FastClick normally stops click events bubbling to callbacks registered on the FastClick
+		// layer when they are cancelled.
+		if (!Event.prototype.stopImmediatePropagation) {
+			layer.removeEventListener = function(type, callback, capture) {
+				var rmv = Node.prototype.removeEventListener;
+				if (type === 'click') {
+					rmv.call(layer, type, callback.hijacked || callback, capture);
+				} else {
+					rmv.call(layer, type, callback, capture);
+				}
+			};
+
+			layer.addEventListener = function(type, callback, capture) {
+				var adv = Node.prototype.addEventListener;
+				if (type === 'click') {
+					adv.call(layer, type, callback.hijacked || (callback.hijacked = function(event) {
+						if (!event.propagationStopped) {
+							callback(event);
+						}
+					}), capture);
+				} else {
+					adv.call(layer, type, callback, capture);
+				}
+			};
+		}
+
+		// If a handler is already declared in the element's onclick attribute, it will be fired before
+		// FastClick's onClick handler. Fix this by pulling out the user-defined handler function and
+		// adding it as listener.
+		if (typeof layer.onclick === 'function') {
+
+			// Android browser on at least 3.2 requires a new reference to the function in layer.onclick
+			// - the old one won't work if passed to addEventListener directly.
+			oldOnClick = layer.onclick;
+			layer.addEventListener('click', function(event) {
+				oldOnClick(event);
+			}, false);
+			layer.onclick = null;
 		}
 	}
-	// alert(navigator.platform);
-	// alert(navigator.userAgent);
-	/*语音事件 start*/
-	$('.voiceBtn').click(function(e){
-		$('body').append('<div class="voiceContainer"><div class="close"></div><div class="title">请大声说出您想要找什么</div><div class="content"><div class="tip">点击按钮开始录音</div><div class="btn"></div></div><div class="searchBtm1"></div><div class="searchBtm2"></div></div>');
-		$('.searchBtm1').css({'background-size':$('.searchBtm1').width()+'px '+$('.searchBtm1').height()+'px'});
-		$('.searchBtm2').css({'background-size':$('.searchBtm2').width()+'px '+$('.searchBtm2').height()+'px'});
 
-		$('.voiceContainer .close').click(function(){
-			if(voiceBtmTimer){
-				clearInterval(voiceBtmTimer);
+	/**
+	* Windows Phone 8.1 fakes user agent string to look like Android and iPhone.
+	*
+	* @type boolean
+	*/
+	var deviceIsWindowsPhone = navigator.userAgent.indexOf("Windows Phone") >= 0;
+
+	/**
+	 * Android requires exceptions.
+	 *
+	 * @type boolean
+	 */
+	var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0 && !deviceIsWindowsPhone;
+
+
+	/**
+	 * iOS requires exceptions.
+	 *
+	 * @type boolean
+	 */
+	var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent) && !deviceIsWindowsPhone;
+
+
+	/**
+	 * iOS 4 requires an exception for select elements.
+	 *
+	 * @type boolean
+	 */
+	var deviceIsIOS4 = deviceIsIOS && (/OS 4_\d(_\d)?/).test(navigator.userAgent);
+
+
+	/**
+	 * iOS 6.0-7.* requires the target element to be manually derived
+	 *
+	 * @type boolean
+	 */
+	var deviceIsIOSWithBadTarget = deviceIsIOS && (/OS [6-7]_\d/).test(navigator.userAgent);
+
+	/**
+	 * BlackBerry requires exceptions.
+	 *
+	 * @type boolean
+	 */
+	var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
+
+	/**
+	 * Determine whether a given element requires a native click.
+	 *
+	 * @param {EventTarget|Element} target Target DOM element
+	 * @returns {boolean} Returns true if the element needs a native click
+	 */
+	FastClick.prototype.needsClick = function(target) {
+		switch (target.nodeName.toLowerCase()) {
+
+		// Don't send a synthetic click to disabled inputs (issue #62)
+		case 'button':
+		case 'select':
+		case 'textarea':
+			if (target.disabled) {
+				return true;
 			}
-			$('.voiceContainer').remove();
-			if($('.voiceContainer .btn').hasClass('start')){
-				endVoice();
+
+			break;
+		case 'input':
+
+			// File inputs need real clicks on iOS 6 due to a browser bug (issue #68)
+			if ((deviceIsIOS && target.type === 'file') || target.disabled) {
+				return true;
 			}
-		});
-		$('.voiceContainer .btn').click(function(){
-			if($(this).hasClass('start')){
-				$('.voiceContainer .tip').html('点击按钮开始录音');
-				$(this).removeClass('start');
-				clearInterval(voiceBtmTimer);
-				endVoice();
-			}else{
-				beginVoice();
-			}
-		});
-		return false;
-	});
-	$('.footerMenu li a').click(function(e){
-		if($(this).hasClass('active')){
-			return false;
-			e.stopPropagation();
+
+			break;
+		case 'label':
+		case 'iframe': // iOS8 homescreen apps can prevent events bubbling into frames
+		case 'video':
+			return true;
 		}
-	});
-	/*语音事件 end*/
-	
-	/*页面点击事件*/
-	$(document).on('click','.link-url',function(){
-		if(typeof(noAnimate) == "undefined"){
-			redirect($(this).data('url'),$(this).data('url-type'));
-			return false;
-		}else{
-			window.location.href = $(this).data('url');
-		}
-	});
-	
-	/*A标签*/
-	$(document).on('click','a',function(){
-		if($(this).data('nobtn')){
-			return false;
-		}
-		if(typeof(noAnimate) == "undefined"){
-			var href = $(this).attr('href');
-			if(href && href.substr(0,3) != 'tel' && href.substr(0,10) != 'javascript'){
-				redirect(href,$(this).data('url-type'));
+
+		return (/\bneedsclick\b/).test(target.className);
+	};
+
+
+	/**
+	 * Determine whether a given element requires a call to focus to simulate click into element.
+	 *
+	 * @param {EventTarget|Element} target Target DOM element
+	 * @returns {boolean} Returns true if the element requires a call to focus to simulate native click.
+	 */
+	FastClick.prototype.needsFocus = function(target) {
+		switch (target.nodeName.toLowerCase()) {
+		case 'textarea':
+			return true;
+		case 'select':
+			return !deviceIsAndroid;
+		case 'input':
+			switch (target.type) {
+			case 'button':
+			case 'checkbox':
+			case 'file':
+			case 'image':
+			case 'radio':
+			case 'submit':
 				return false;
 			}
+
+			// No point in attempting to focus disabled inputs
+			return !target.disabled && !target.readOnly;
+		default:
+			return (/\bneedsfocus\b/).test(target.className);
 		}
-	});
-	
-	/*电话按钮事件*/
-	// if($('.phone').size() > 0){
-		$(document).on('click','.phone',function(event){
-			if($(this).attr('data-phone')){
-				var tmpPhone = $(this).attr('data-phone').split(' ');
-				var bg_height = $('body').height()>$(window).height() ? $('body').height() : $(window).height();
-				var msg_dom = '<div class="msg-bg" style="height:'+bg_height+'px;"></div>';
-				msg_dom+= '<div id="msg" class="msg-doc msg-option">';
-				msg_dom+= '<div class="msg-bd">'+($(this).data('phonetitle') ? $(this).data('phonetitle') : '拨打电话')+'</div>';
-				for(var i in tmpPhone){
-					msg_dom+= '		<div class="msg-option-btns"><a class="btn msg-btn" href="tel:'+tmpPhone[i]+'">'+(tmpPhone.length == 1 && $(this).data('phonetip') ? $(this).data('phonetip') : tmpPhone[i])+'</a></div>';
+	};
+
+
+	/**
+	 * Send a click event to the specified element.
+	 *
+	 * @param {EventTarget|Element} targetElement
+	 * @param {Event} event
+	 */
+	FastClick.prototype.sendClick = function(targetElement, event) {
+		var clickEvent, touch;
+
+		// On some Android devices activeElement needs to be blurred otherwise the synthetic click will have no effect (#24)
+		if (document.activeElement && document.activeElement !== targetElement) {
+			document.activeElement.blur();
+		}
+
+		touch = event.changedTouches[0];
+
+		// Synthesise a click event, with an extra attribute so it can be tracked
+		clickEvent = document.createEvent('MouseEvents');
+		clickEvent.initMouseEvent(this.determineEventType(targetElement), true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
+		clickEvent.forwardedTouchEvent = true;
+		targetElement.dispatchEvent(clickEvent);
+	};
+
+	FastClick.prototype.determineEventType = function(targetElement) {
+
+		//Issue #159: Android Chrome Select Box does not open with a synthetic click event
+		if (deviceIsAndroid && targetElement.tagName.toLowerCase() === 'select') {
+			return 'mousedown';
+		}
+
+		return 'click';
+	};
+
+
+	/**
+	 * @param {EventTarget|Element} targetElement
+	 */
+	FastClick.prototype.focus = function(targetElement) {
+		var length;
+
+		// Issue #160: on iOS 7, some input elements (e.g. date datetime month) throw a vague TypeError on setSelectionRange. These elements don't have an integer value for the selectionStart and selectionEnd properties, but unfortunately that can't be used for detection because accessing the properties also throws a TypeError. Just check the type instead. Filed as Apple bug #15122724.
+		if (deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time' && targetElement.type !== 'month') {
+			length = targetElement.value.length;
+			targetElement.setSelectionRange(length, length);
+		} else {
+			targetElement.focus();
+		}
+	};
+
+
+	/**
+	 * Check whether the given target element is a child of a scrollable layer and if so, set a flag on it.
+	 *
+	 * @param {EventTarget|Element} targetElement
+	 */
+	FastClick.prototype.updateScrollParent = function(targetElement) {
+		var scrollParent, parentElement;
+
+		scrollParent = targetElement.fastClickScrollParent;
+
+		// Attempt to discover whether the target element is contained within a scrollable layer. Re-check if the
+		// target element was moved to another parent.
+		if (!scrollParent || !scrollParent.contains(targetElement)) {
+			parentElement = targetElement;
+			do {
+				if (parentElement.scrollHeight > parentElement.offsetHeight) {
+					scrollParent = parentElement;
+					targetElement.fastClickScrollParent = parentElement;
+					break;
 				}
-				msg_dom+= '		<button class="btn msg-btn-cancel" type="button">取消</button>';
-				msg_dom+= '</div>';	
-				$('body').append(msg_dom);
+
+				parentElement = parentElement.parentElement;
+			} while (parentElement);
+		}
+
+		// Always update the scroll top tracker if possible.
+		if (scrollParent) {
+			scrollParent.fastClickLastScrollTop = scrollParent.scrollTop;
+		}
+	};
+
+
+	/**
+	 * @param {EventTarget} targetElement
+	 * @returns {Element|EventTarget}
+	 */
+	FastClick.prototype.getTargetElementFromEventTarget = function(eventTarget) {
+
+		// On some older browsers (notably Safari on iOS 4.1 - see issue #56) the event target may be a text node.
+		if (eventTarget.nodeType === Node.TEXT_NODE) {
+			return eventTarget.parentNode;
+		}
+
+		return eventTarget;
+	};
+
+
+	/**
+	 * On touch start, record the position and scroll offset.
+	 *
+	 * @param {Event} event
+	 * @returns {boolean}
+	 */
+	FastClick.prototype.onTouchStart = function(event) {
+		var targetElement, touch, selection;
+
+		// Ignore multiple touches, otherwise pinch-to-zoom is prevented if both fingers are on the FastClick element (issue #111).
+		if (event.targetTouches.length > 1) {
+			return true;
+		}
+
+		targetElement = this.getTargetElementFromEventTarget(event.target);
+		touch = event.targetTouches[0];
+
+		if (deviceIsIOS) {
+
+			// Only trusted events will deselect text on iOS (issue #49)
+			selection = window.getSelection();
+			if (selection.rangeCount && !selection.isCollapsed) {
+				return true;
 			}
-			event.stopPropagation();
-		});
-		$(document).on('click','.msg-btn-cancel',function(){
-			$('.msg-doc,.msg-bg').remove();
-		});
-	// }
-	
-	$('body').append('<div id="pageLoadTip" style="display:none;"><div></div></div>');
-});
 
-/*
- * 微信开始录音
- */
-function beginVoice(){
-	wx.startRecord({
-		success: function (res){
-			$('.voiceContainer .tip').html('点击按钮结束录音');
-			$('.voiceContainer .btn').addClass('start');
-			var voiceBtmNumber = 0;
-			voiceBtmTimer = setInterval(function(){
-				if(voiceBtmNumber%5 < 3){
-					$('.searchBtm1').css({left:(parseInt($('.searchBtm1').css('left'))-1)+'px'});
-				}else{
-					$('.searchBtm2').css({left:(parseInt($('.searchBtm2').css('left'))-1)+'px'});
+			if (!deviceIsIOS4) {
+
+				// Weird things happen on iOS when an alert or confirm dialog is opened from a click event callback (issue #23):
+				// when the user next taps anywhere else on the page, new touchstart and touchend events are dispatched
+				// with the same identifier as the touch event that previously triggered the click that triggered the alert.
+				// Sadly, there is an issue on iOS 4 that causes some normal touch events to have the same identifier as an
+				// immediately preceeding touch event (issue #52), so this fix is unavailable on that platform.
+				// Issue 120: touch.identifier is 0 when Chrome dev tools 'Emulate touch events' is set with an iOS device UA string,
+				// which causes all touch events to be ignored. As this block only applies to iOS, and iOS identifiers are always long,
+				// random integers, it's safe to to continue if the identifier is 0 here.
+				if (touch.identifier && touch.identifier === this.lastTouchIdentifier) {
+					event.preventDefault();
+					return false;
 				}
-				voiceBtmNumber += 1;
-			},15);
-			
-		},
-		fail: function (res){
-			if(res.errMsg == 'startRecord:system permission denied'){
-				motify.log('您拒绝了授权录音');
-			}else{
-				motify.log('未成功调用录音');
+
+				this.lastTouchIdentifier = touch.identifier;
+
+				// If the target element is a child of a scrollable layer (using -webkit-overflow-scrolling: touch) and:
+				// 1) the user does a fling scroll on the scrollable layer
+				// 2) the user stops the fling scroll with another tap
+				// then the event.target of the last 'touchend' event will be the element that was under the user's finger
+				// when the fling scroll was started, causing FastClick to send a click event to that layer - unless a check
+				// is made to ensure that a parent layer was not scrolled before sending a synthetic click (issue #42).
+				this.updateScrollParent(targetElement);
 			}
-		},
-		cancel: function(){
-			motify.log('您拒绝了授权录音');
 		}
-	});
-}
 
-/*
- * 微信结束录音
- */
-function endVoice(){
-	wx.stopRecord({
-		success: function (res) {
-			voiceLocalId = res.localId;
-			// alert(voiceLocalId);
-			/* wx.playVoice({
-				localId: voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
-			}); */
-			wx.translateVoice({
-				localId: voiceLocalId, // 需要识别的音频的本地Id，由录音相关接口获得
-				isShowProgressTips: 1, // 默认为1，显示进度提示
-				success: function (res) {
-					if(res.translateResult){
-						res.translateResult = res.translateResult.replace('。','');
-						motify.log('<div style="color:#06c1ae;">'+res.translateResult+'</div>正在为您查询...',0); // 语音识别的结果
-						window.location.href = window.location.pathname+'?c=Search&a=group&w='+encodeURIComponent(res.translateResult);
-					}else{
-						motify.log('没有听出您说了什么，请重试');
-					}
-				},fail: function (res) {
-					motify.log('无法识别该段语音，请重试');
-				}
-			});
-		},fail: function (res) {
-			
+		this.trackingClick = true;
+		this.trackingClickStart = event.timeStamp;
+		this.targetElement = targetElement;
+
+		this.touchStartX = touch.pageX;
+		this.touchStartY = touch.pageY;
+
+		// Prevent phantom clicks on fast double-tap (issue #36)
+		if ((event.timeStamp - this.lastClickTime) < this.tapDelay) {
+			event.preventDefault();
 		}
-	});
-}
- 
- 
-/*
- * 跳转页面
- * （默认页面往左滑动，即 openRightWindow）
- * （页面往右滑动，即 openLeftWindow）
- */
-function redirect(url,type){
-	var animateCss = {},animateAfterCss = {};
-	if(!type){
-		type = 'openRightWindow';
-	}
-	switch(type){
-		case 'openRightWindow':
-			animateCss = {'left':'-'+$(window).width()+'px'};
-			animateAfterCss = {'left':'0px'};
-			break;
-		case 'openLeftWindow':
-			animateCss = {'left':$(window).width()+'px'};
-			animateAfterCss = {'left':'0px'};
-			break;
-	}
-	$('#scroller,.footerMenu,.pageSliderHide').animate(animateCss,function(){
-		pageLoadTip();
-		window.addEventListener("pagehide", function(){
-			$('#scroller,.footerMenu,.pageSliderHide').css(animateAfterCss);
-			pageLoadTipHide();
-		},false);
-		window.location.href = url;
-	});
-}
-/*页面加载提示*/
-function pageLoadTip(msg){
-	var defaultMsg='',top=0;	//'加载中...'
-	//如果msg是数字，则是top的值！是字符串就是消息
-	if(typeof(msg) == 'number'){
-		top = msg;
-		msg = defaultMsg;
-	}else if(!msg){
-		top = 0;
-		msg = defaultMsg;
-	}
-	$('#pageLoadTip').css({top:top+'px','display':'block'}).find('div').css({'margin-top':(($(window).height()-100-top)/2)+'px'}).html(msg);
-	// $('body').append('<div id="pageLoadTip" style="top:'+top+'px;"><div style="margin-top:'+(($(window).height()-100-top)/2)+'px;">'+msg+'</div></div>');
-}
-function pageLoadTipHide(){
-	// $('#pageLoadTip').remove();
-	$('#pageLoadTip').hide();
-}
 
-/*
- *
- *获得用户经纬度方法
- *
- * 无返回值！如果需要返回值，只能使用 okFunction 调用其他方法
- *
-*/
-function getUserLocation(options){
-	this.options = {
-		'useHistory':true,				//boolean 是否使用历史数据
-		'historyTime':120,				//number  使用历史数据的时效，也是保存数据的有效期
-		'okFunction':false,				//string 得到位置之后调用的方法， refresh 代表刷新页面
-		'okFunctionParam':[],		//array 调用方法的自定义参数，以数组形式传参！系统参数：
-		'errorFunction':false,			//string 没得到位置调用的方法， refresh 代表刷新页面
-		'errorFunctionParam':[],		//array 调用方法的自定义参数，以数组形式传参！系统参数：
-		'errorAction':1,				//number 1代表给指定“errorTipTime”参数时间内的提示，2代表弹层给出确认按钮的提示后跳转“errorUrl”（需要自行加载layer.js支持），3代表直接跳转到URL，4代表不提示
-		'errorUrl':'',					//string errorAction 等于2或3时生效，值 history 代表上一页 值  href 代表刷新当前页面
-		'errorTipTime':3,				//number  给有效时间提示的时间 	0代表长时间存在
-		'errorTipTitle':'错误提示：',	//string errorAction 等于2生效
-		'errorContentSuffix':'',	//string errorAction 等于2生效
-		'errorShade':false,				//boolean errorAction 等于1时，是否开启遮罩层
-		'reportLocation':true,			//boolean 是否上报用户地理位置，默认开启
-		'okFunctionReport':true			//boolean 是否在上报用户地理位置成功后再执行方法，在 reportLocation为true时生效
-	}
-	for (var i in options){
-		this.options[i] = options[i];
-	}
-	options = this.options;
-	if(options.useHistory && $.cookie('userLocationLong') && $.cookie('userLocationLat')){
-		options['userLocation'] = $.cookie('userLocation');
-		options['userLocationLong'] = $.cookie('userLocationLong');
-		options['userLocationLat'] = $.cookie('userLocationLat');
-		locationOkFun(options);
+		return true;
+	};
+
+
+	/**
+	 * Based on a touchmove event object, check whether the touch has moved past a boundary since it started.
+	 *
+	 * @param {Event} event
+	 * @returns {boolean}
+	 */
+	FastClick.prototype.touchHasMoved = function(event) {
+		var touch = event.changedTouches[0], boundary = this.touchBoundary;
+
+		if (Math.abs(touch.pageX - this.touchStartX) > boundary || Math.abs(touch.pageY - this.touchStartY) > boundary) {
+			return true;
+		}
+
 		return false;
-	}
-	if(typeof(wxSdkLoad) != "undefined"){
-		wx.ready(function () {
-			wx.getLocation({
-				type: 'wgs84',
-				success: function (res) {
-					var userLat = res.latitude;
-					var userLong = res.longitude;
-					options['userLocation'] = userLong+','+userLat;
-					options['userLocationLong'] = userLong;
-					options['userLocationLat'] = userLat;
-					//通过 cookie 记录用户的经纬度，不通过H5的本地存储方便PHP调用
-					var expire =  new Date();
-					expire.setTime(expire.getTime() + options.historyTime*1000);
-					options.historyTime = expire;
-					$.cookie('userLocation',options['userLocation'],{expires:options.historyTime,path:'/'});
-					$.cookie('userLocationLong',options['userLocationLong'],{expires:options.historyTime,path:'/'});
-					$.cookie('userLocationLat',options['userLocationLat'],{expires:options.historyTime,path:'/'});
-					$.cookie('userLocationHasRecord',0,{expires:options.historyTime,path:'/'});
-					
-					if(options.reportLocation){
-						$.post(window.location.pathname+'?c=Userlonglat&a=report',{userLong:userLong,userLat:userLat},function(){
-							if(options.okFunctionReport){
-								locationOkFun(options);
-							}
-						});
-						if(!options.okFunctionReport){
-							locationOkFun(options);
-						}
-					}else{
-						locationOkFun(options);
-					}
-				},
-				fail: function(res){
-					locationErorrTip(res.errMsg);
-				},
-				cancel: function(res){
-					if(res.errMsg == 'getLocation:cancel'){
-						options['errorMsg'] = '获取位置信息失败,用户拒绝请求地理定位';
-					}
-					locationErorrTip(options);
+	};
+
+
+	/**
+	 * Update the last position.
+	 *
+	 * @param {Event} event
+	 * @returns {boolean}
+	 */
+	FastClick.prototype.onTouchMove = function(event) {
+		if (!this.trackingClick) {
+			return true;
+		}
+
+		// If the touch has moved, cancel the click tracking
+		if (this.targetElement !== this.getTargetElementFromEventTarget(event.target) || this.touchHasMoved(event)) {
+			this.trackingClick = false;
+			this.targetElement = null;
+		}
+
+		return true;
+	};
+
+
+	/**
+	 * Attempt to find the labelled control for the given label element.
+	 *
+	 * @param {EventTarget|HTMLLabelElement} labelElement
+	 * @returns {Element|null}
+	 */
+	FastClick.prototype.findControl = function(labelElement) {
+
+		// Fast path for newer browsers supporting the HTML5 control attribute
+		if (labelElement.control !== undefined) {
+			return labelElement.control;
+		}
+
+		// All browsers under test that support touch events also support the HTML5 htmlFor attribute
+		if (labelElement.htmlFor) {
+			return document.getElementById(labelElement.htmlFor);
+		}
+
+		// If no for attribute exists, attempt to retrieve the first labellable descendant element
+		// the list of which is defined here: http://www.w3.org/TR/html5/forms.html#category-label
+		return labelElement.querySelector('button, input:not([type=hidden]), keygen, meter, output, progress, select, textarea');
+	};
+
+
+	/**
+	 * On touch end, determine whether to send a click event at once.
+	 *
+	 * @param {Event} event
+	 * @returns {boolean}
+	 */
+	FastClick.prototype.onTouchEnd = function(event) {
+		var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
+
+		if (!this.trackingClick) {
+			return true;
+		}
+
+		// Prevent phantom clicks on fast double-tap (issue #36)
+		if ((event.timeStamp - this.lastClickTime) < this.tapDelay) {
+			this.cancelNextClick = true;
+			return true;
+		}
+
+		if ((event.timeStamp - this.trackingClickStart) > this.tapTimeout) {
+			return true;
+		}
+
+		// Reset to prevent wrong click cancel on input (issue #156).
+		this.cancelNextClick = false;
+
+		this.lastClickTime = event.timeStamp;
+
+		trackingClickStart = this.trackingClickStart;
+		this.trackingClick = false;
+		this.trackingClickStart = 0;
+
+		// On some iOS devices, the targetElement supplied with the event is invalid if the layer
+		// is performing a transition or scroll, and has to be re-detected manually. Note that
+		// for this to function correctly, it must be called *after* the event target is checked!
+		// See issue #57; also filed as rdar://13048589 .
+		if (deviceIsIOSWithBadTarget) {
+			touch = event.changedTouches[0];
+
+			// In certain cases arguments of elementFromPoint can be negative, so prevent setting targetElement to null
+			targetElement = document.elementFromPoint(touch.pageX - window.pageXOffset, touch.pageY - window.pageYOffset) || targetElement;
+			targetElement.fastClickScrollParent = this.targetElement.fastClickScrollParent;
+		}
+
+		targetTagName = targetElement.tagName.toLowerCase();
+		if (targetTagName === 'label') {
+			forElement = this.findControl(targetElement);
+			if (forElement) {
+				this.focus(targetElement);
+				if (deviceIsAndroid) {
+					return false;
 				}
-			});
+
+				targetElement = forElement;
+			}
+		} else if (this.needsFocus(targetElement)) {
+
+			// Case 1: If the touch started a while ago (best guess is 100ms based on tests for issue #36) then focus will be triggered anyway. Return early and unset the target element reference so that the subsequent click will be allowed through.
+			// Case 2: Without this exception for input elements tapped when the document is contained in an iframe, then any inputted text won't be visible even though the value attribute is updated as the user types (issue #37).
+			if ((event.timeStamp - trackingClickStart) > 100 || (deviceIsIOS && window.top !== window && targetTagName === 'input')) {
+				this.targetElement = null;
+				return false;
+			}
+
+			this.focus(targetElement);
+			this.sendClick(targetElement, event);
+
+			// Select elements need the event to go through on iOS 4, otherwise the selector menu won't open.
+			// Also this breaks opening selects when VoiceOver is active on iOS6, iOS7 (and possibly others)
+			if (!deviceIsIOS || targetTagName !== 'select') {
+				this.targetElement = null;
+				event.preventDefault();
+			}
+
+			return false;
+		}
+
+		if (deviceIsIOS && !deviceIsIOS4) {
+
+			// Don't send a synthetic click event if the target element is contained within a parent layer that was scrolled
+			// and this tap is being used to stop the scrolling (usually initiated by a fling - issue #42).
+			scrollParent = targetElement.fastClickScrollParent;
+			if (scrollParent && scrollParent.fastClickLastScrollTop !== scrollParent.scrollTop) {
+				return true;
+			}
+		}
+
+		// Prevent the actual click from going though - unless the target node is marked as requiring
+		// real clicks or if it is in the whitelist in which case only non-programmatic clicks are permitted.
+		if (!this.needsClick(targetElement)) {
+			event.preventDefault();
+			this.sendClick(targetElement, event);
+		}
+
+		return false;
+	};
+
+
+	/**
+	 * On touch cancel, stop tracking the click.
+	 *
+	 * @returns {void}
+	 */
+	FastClick.prototype.onTouchCancel = function() {
+		this.trackingClick = false;
+		this.targetElement = null;
+	};
+
+
+	/**
+	 * Determine mouse events which should be permitted.
+	 *
+	 * @param {Event} event
+	 * @returns {boolean}
+	 */
+	FastClick.prototype.onMouse = function(event) {
+
+		// If a target element was never set (because a touch event was never fired) allow the event
+		if (!this.targetElement) {
+			return true;
+		}
+
+		if (event.forwardedTouchEvent) {
+			return true;
+		}
+
+		// Programmatically generated events targeting a specific element should be permitted
+		if (!event.cancelable) {
+			return true;
+		}
+
+		// Derive and check the target element to see whether the mouse event needs to be permitted;
+		// unless explicitly enabled, prevent non-touch click events from triggering actions,
+		// to prevent ghost/doubleclicks.
+		if (!this.needsClick(this.targetElement) || this.cancelNextClick) {
+
+			// Prevent any user-added listeners declared on FastClick element from being fired.
+			if (event.stopImmediatePropagation) {
+				event.stopImmediatePropagation();
+			} else {
+
+				// Part of the hack for browsers that don't support Event#stopImmediatePropagation (e.g. Android 2)
+				event.propagationStopped = true;
+			}
+
+			// Cancel the event
+			event.stopPropagation();
+			event.preventDefault();
+
+			return false;
+		}
+
+		// If the mouse event is permitted, return true for the action to go through.
+		return true;
+	};
+
+
+	/**
+	 * On actual clicks, determine whether this is a touch-generated click, a click action occurring
+	 * naturally after a delay after a touch (which needs to be cancelled to avoid duplication), or
+	 * an actual click which should be permitted.
+	 *
+	 * @param {Event} event
+	 * @returns {boolean}
+	 */
+	FastClick.prototype.onClick = function(event) {
+		var permitted;
+
+		// It's possible for another FastClick-like library delivered with third-party code to fire a click event before FastClick does (issue #44). In that case, set the click-tracking flag back to false and return early. This will cause onTouchEnd to return early.
+		if (this.trackingClick) {
+			this.targetElement = null;
+			this.trackingClick = false;
+			return true;
+		}
+
+		// Very odd behaviour on iOS (issue #18): if a submit element is present inside a form and the user hits enter in the iOS simulator or clicks the Go button on the pop-up OS keyboard the a kind of 'fake' click event will be triggered with the submit-type input element as the target.
+		if (event.target.type === 'submit' && event.detail === 0) {
+			return true;
+		}
+
+		permitted = this.onMouse(event);
+
+		// Only unset targetElement if the click is not permitted. This will ensure that the check for !targetElement in onMouse fails and the browser's click doesn't go through.
+		if (!permitted) {
+			this.targetElement = null;
+		}
+
+		// If clicks are permitted, return true for the action to go through.
+		return permitted;
+	};
+
+
+	/**
+	 * Remove all FastClick's event listeners.
+	 *
+	 * @returns {void}
+	 */
+	FastClick.prototype.destroy = function() {
+		var layer = this.layer;
+
+		if (deviceIsAndroid) {
+			layer.removeEventListener('mouseover', this.onMouse, true);
+			layer.removeEventListener('mousedown', this.onMouse, true);
+			layer.removeEventListener('mouseup', this.onMouse, true);
+		}
+
+		layer.removeEventListener('click', this.onClick, true);
+		layer.removeEventListener('touchstart', this.onTouchStart, false);
+		layer.removeEventListener('touchmove', this.onTouchMove, false);
+		layer.removeEventListener('touchend', this.onTouchEnd, false);
+		layer.removeEventListener('touchcancel', this.onTouchCancel, false);
+	};
+
+
+	/**
+	 * Check whether FastClick is needed.
+	 *
+	 * @param {Element} layer The layer to listen on
+	 */
+	FastClick.notNeeded = function(layer) {
+		var metaViewport;
+		var chromeVersion;
+		var blackberryVersion;
+		var firefoxVersion;
+
+		// Devices that don't support touch don't need FastClick
+		if (typeof window.ontouchstart === 'undefined') {
+			return true;
+		}
+
+		// Chrome version - zero for other browsers
+		chromeVersion = +(/Chrome\/([0-9]+)/.exec(navigator.userAgent) || [,0])[1];
+
+		if (chromeVersion) {
+
+			if (deviceIsAndroid) {
+				metaViewport = document.querySelector('meta[name=viewport]');
+
+				if (metaViewport) {
+					// Chrome on Android with user-scalable="no" doesn't need FastClick (issue #89)
+					if (metaViewport.content.indexOf('user-scalable=no') !== -1) {
+						return true;
+					}
+					// Chrome 32 and above with width=device-width or less don't need FastClick
+					if (chromeVersion > 31 && document.documentElement.scrollWidth <= window.outerWidth) {
+						return true;
+					}
+				}
+
+			// Chrome desktop doesn't need FastClick (issue #15)
+			} else {
+				return true;
+			}
+		}
+
+		if (deviceIsBlackBerry10) {
+			blackberryVersion = navigator.userAgent.match(/Version\/([0-9]*)\.([0-9]*)/);
+
+			// BlackBerry 10.3+ does not require Fastclick library.
+			// https://github.com/ftlabs/fastclick/issues/251
+			if (blackberryVersion[1] >= 10 && blackberryVersion[2] >= 3) {
+				metaViewport = document.querySelector('meta[name=viewport]');
+
+				if (metaViewport) {
+					// user-scalable=no eliminates click delay.
+					if (metaViewport.content.indexOf('user-scalable=no') !== -1) {
+						return true;
+					}
+					// width=device-width (or less than device-width) eliminates click delay.
+					if (document.documentElement.scrollWidth <= window.outerWidth) {
+						return true;
+					}
+				}
+			}
+		}
+
+		// IE10 with -ms-touch-action: none or manipulation, which disables double-tap-to-zoom (issue #97)
+		if (layer.style.msTouchAction === 'none' || layer.style.touchAction === 'manipulation') {
+			return true;
+		}
+
+		// Firefox version - zero for other browsers
+		firefoxVersion = +(/Firefox\/([0-9]+)/.exec(navigator.userAgent) || [,0])[1];
+
+		if (firefoxVersion >= 27) {
+			// Firefox 27+ does not have tap delay if the content is not zoomable - https://bugzilla.mozilla.org/show_bug.cgi?id=922896
+
+			metaViewport = document.querySelector('meta[name=viewport]');
+			if (metaViewport && (metaViewport.content.indexOf('user-scalable=no') !== -1 || document.documentElement.scrollWidth <= window.outerWidth)) {
+				return true;
+			}
+		}
+
+		// IE11: prefixed -ms-touch-action is no longer supported and it's recomended to use non-prefixed version
+		// http://msdn.microsoft.com/en-us/library/windows/apps/Hh767313.aspx
+		if (layer.style.touchAction === 'none' || layer.style.touchAction === 'manipulation') {
+			return true;
+		}
+
+		return false;
+	};
+
+
+	/**
+	 * Factory method for creating a FastClick object
+	 *
+	 * @param {Element} layer The layer to listen on
+	 * @param {Object} [options={}] The options to override the defaults
+	 */
+	FastClick.attach = function(layer, options) {
+		return new FastClick(layer, options);
+	};
+
+
+	if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+
+		// AMD. Register as an anonymous module.
+		define(function() {
+			return FastClick;
 		});
-	}else if(navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(function(position){
-			var userLong = position.coords.longitude.toFixed(6);
-			var userLat  = position.coords.latitude.toFixed(6);
-			options['userLocation'] = userLong+','+userLat;
-			options['userLocationLong'] = userLong;
-			options['userLocationLat'] = userLat;
-			//通过 cookie 记录用户的经纬度，不通过H5的本地存储方便PHP调用
-			var expire =  new Date();
-			expire.setTime(expire.getTime() + options.historyTime*1000);
-			options.historyTime = expire;
-			$.cookie('userLocation',options['userLocation'],{expires:options.historyTime,path:'/'});
-			$.cookie('userLocationLong',options['userLocationLong'],{expires:options.historyTime,path:'/'});
-			$.cookie('userLocationLat',options['userLocationLat'],{expires:options.historyTime,path:'/'});
-			$.cookie('userLocationHasRecord',0,{expires:options.historyTime,path:'/'});
-			
-			if(options.reportLocation){
-				$.post(window.location.pathname+'?c=Userlonglat&a=report',{userLong:userLong,userLat:userLat},function(){
-					if(options.okFunctionReport){
-						locationOkFun(options);
-					}
-				});
-				if(!options.okFunctionReport){
-					locationOkFun(options);
-				}
-			}else{
-				locationOkFun(options);
-			}
-		},function(error){
-			switch (error.code){
-				case error.PERMISSION_DENIED:
-					options['errorMsg'] = '获取位置信息失败,用户拒绝请求地理定位';
-					break; 
-				case error.POSITION_UNAVAILABLE:
-					options['errorMsg'] = '获取位置信息失败,位置信息不可用';
-					break; 
-				case error.TIMEOUT:
-					options['errorMsg'] = '获取位置信息失败,请求获取用户位置超时';
-					break; 
-				case error.UNKNOWN_ERROR:
-					options['errorMsg'] = '获取位置信息失败,定位系统失效';
-					break;
-			}
-			locationErorrTip(options);
-		},{enableHighAccuracy:true});
-	}else{
-		options['errorMsg'] = '获取位置失败,用户浏览器不支持或已禁用位置获取权限';
-		locationErorrTip(options);
+	} else if (typeof module !== 'undefined' && module.exports) {
+		module.exports = FastClick.attach;
+		module.exports.FastClick = FastClick;
+	} else {
+		window.FastClick = FastClick;
 	}
-	function locationOkFun(options){
-		if(options.okFunction){
-			if(options.okFunction == 'refresh'){
-				window.location.reload();
-			}else{
-				options.okFunctionParam.push(options.userLocation);
-				options.okFunctionParam.push(options.userLocationLong);
-				options.okFunctionParam.push(options.userLocationLat);
-				call_user_func(options.okFunction,options.okFunctionParam);
-			}
-		}
-	}
-	function locationErorrTip(options){
-		if(options.errorMsg && options.errorContentSuffix){
-			options.errorMsg = options.errorMsg + '<br/>' + options.errorContentSuffix;
-		}
-		if(options.errorFunction){
-			if(options.errorFunction == 'refresh'){
-				window.location.reload();
-			}else{
-				options.errorFunctionParam.push(options.errorMsg);
-				call_user_func(options.errorFunction,options.errorFunctionParam);
-			}
-		}else{
-			if(options.errorMsg){
-				switch(options.errorAction){
-					case 1:
-						motify.log(options.errorMsg,options.errorTipTime*1000,(options.errorShade ? {show:true} : null));
-						break;
-					case 2:
-						layer.open({
-							title:[options.errorTipTitle,'background-color:#FF658E;color:#fff;'],
-							content:options.errorMsg,
-							btn: ['确定'],
-							end:function(){
-								if(options.errorUrl != ''){
-									if(options.errorUrl == 'history'){
-										window.history.go(-1);
-									}else if(options.errorUrl == 'href'){
-										window.location.reload();
-									}else{
-										window.location.href=options.errorUrl;
-									}
-								}
-							}
-						});
-						break;
-					case 3:
-						if(options.errorUrl != ''){
-							if(options.errorUrl == 'history'){
-								window.history.go(-1);
-							}else if(options.errorUrl == 'href'){
-								window.location.reload();
-							}else{
-								window.location.href=options.errorUrl;
-							}
-						}else{
-							motify.log('调用了“直接跳转URL”，却没有传URL地址',0);
-						}
-						break;
-				}
-			}
-		}	
-	}
-}
 
-function geoconv(funName,lng,lat){
-	$.getJSON('http://api.map.baidu.com/geoconv/v1/?coords='+lng+','+lat+'&ak=4c1bb2055e24296bbaef36574877b4e2&from=1&to=5&callback='+funName+'&jsoncallback=?');
-}
-function geocoder(funName,lng,lat){
-	$.getJSON('http://api.map.baidu.com/geocoder/v2/?location='+lat+','+lng+'&ak=4c1bb2055e24296bbaef36574877b4e2&output=json&pois=1&callback='+funName+'&jsoncallback=?');
-}
-/* 得到经纬度之间的距离 */
-function Rad(d){
-   return d * Math.PI / 180.0;//经纬度转换成三角函数中度分表形式。
-}
-//输出为米
-function GetDistance(lng1,lat1,lng2,lat2){
-	var radLat1 = Rad(lat1);
-	var radLat2 = Rad(lat2);
-	var a = radLat1 - radLat2;
-	var  b = Rad(lng1) - Rad(lng2);
-	var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
-	Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
-	s = s *6378.137 ;// EARTH_RADIUS;
-	s = Math.round(s * 10000) / 10; //输出为公里
-	return s;
-}
-	
-/*调用JS 自定义方法并带参数*/
-function call_user_func(cb, options){
-	func = window[cb];
-	func.apply(cb,options);
-}
-/* function alerts(params,params2){
-	console.log(arguments);
-}
-call_user_func('alerts',['1111','22222']); */
+document.addEventListener('DOMContentLoaded', function() {
+    FastClick.attach(document.body);
+}, false);
 
-function parseCoupon(obj,type){
-	var returnObj = {};
-	for(var i in obj){
-		if(typeof(obj[i]) == 'object'){
-			returnObj[i] = [];
-			for(var j in obj[i]){
-				returnObj[i].push('满'+obj[i][j].money+'元减'+obj[i][j].minus+'元');
-			}
-		}else if(i=='invoice'){
-			returnObj[i] = '满'+obj[i]+'元支持开发票，请在下单时填写发票抬头';
-		}else if(i=='discount'){
-			returnObj[i] = '店内全场'+obj[i]+'折';
-		}
-	}
-	var textObj = [];
-	for(var i in returnObj){
-		if(typeof(returnObj[i]) == 'object'){
-			switch(i){
-				case 'system_newuser':
-					textObj[i] = '平台首单'+returnObj[i].join(',');
-					break;
-				case 'system_minus':
-					textObj[i] = '平台优惠'+returnObj[i].join(',');
-					break;
-				case 'newuser':
-					textObj[i] = '店铺首单'+returnObj[i].join(',');
-					break;
-				case 'minus':
-					textObj[i] = '店铺优惠'+returnObj[i].join(',');
-					break;
-				case 'system_minus':
-					textObj[i] = '平台优惠'+returnObj[i].join(',');
-					break;
-				case 'delivery':
-					textObj[i] = '配送费'+returnObj[i].join(',');
-					break;
-			}
-		}else if(i=='invoice' || i=='discount'){
-			textObj[i] = returnObj[i];
-		}
-	}
-	if(type == 'text'){
-		var tmpObj = [];
-		for(var i in textObj){
-			tmpObj.push(textObj[i]);
-		}
-		return tmpObj.join(';');
-	}else{
-		return textObj;
-	}
-}
+}());
