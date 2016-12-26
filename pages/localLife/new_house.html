@@ -75,12 +75,13 @@
 				float: right;
 				width: 76%;
 				font-size: 16px;
+				color: #555; 
 			}
 			.data ul li .shuru{
 				line-height: 16px;
 				text-align: left;
 				width: 76%;
-				height: 49px;
+				height: 49px; 
 			}
 			.data ul li{
 				height: 50px;
@@ -94,7 +95,7 @@
 				margin-top: 4%;
 			}
 			.add-address .textare{
-				border-bottom: none;
+				border-bottom: none;color: #666;
 			}
 			.mobile{
 				margin: 50px 0 0 0;
@@ -321,7 +322,7 @@
 			/*图片上传*/
 	    	*{margin: 0;padding: 0;box-sizing: border-box;}
 	    	.clearfix:after {content: ""; display: block; clear:both;}
-	    	.uppics{text-align: center;border-bottom: 1px solid rgba(0,0,0,0.1);overflow-y: hidden;background-color: #fff;;}
+	    	.uppics{text-align: center;overflow-y: hidden;background-color: #fff;;}
 	    	.uppics div.onepic{height: 120px;padding: 0 !important;padding-top: 31px !important;font-size: 14px;}
 		    .uppics div.onepic img{width: 50px;}
 		    .uppics div.onepic input{width: 0;height: 0;position: absolute;outline: none;}
@@ -331,6 +332,11 @@
 		    #uppics2 .onepic{width: 120px;background-color: #eee;}
 		    #uppics2 .picimg{width: 100%;}
 		    .picimg1{width: 25px;position: absolute;right: 0px;top: 2px;}
+		    
+		    .hasManyCitytwo .baocun{font-size: 15px;}
+		    .hasManyCitytwo .header-tit{font-size: 15px;left: 46%;}
+		    .mui-bar-nav.mui-bar .mui-icon{margin-left: -2px;}
+		    #Disclaimer{display: block;text-align:center;font-size: 14px;color: red;margin: 10px auto;}
     </style>
 	</head>
 
@@ -341,7 +347,7 @@
 		    <div class="header-tit">
 				跳蚤市场发布
 			</div>
-			<a class="fr baocun" id="Releasebtn">发布</a> 
+			<a class="fr baocun" id="Releasebtn">提交</a> 
 		</header>
 		<!--上传图片-->
 		<div class="uppics clearfix" style="margin-top: 50px;">
@@ -352,7 +358,7 @@
 	        </div>
 	    </div>
 		<!--上传图片结束-->
-		<div id="container" style="margin-top:-50px">
+		<div id="container" style="margin-top:-40px">
 		    <div id="main" class="mui-clearfix add-address">
 		    	<div id="thisAddLi"></div>
 		    	<div class="plist clearfloat data">
@@ -433,9 +439,12 @@
 							</a>
 						</li>
 					</ul>
+					
 				</div>
+				
 
 		    </div>
+		    <span id="Disclaimer">发布既同意免责声明!</span>
 		</div>
 <!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
 <script src="../../js/mui.min.js"></script>
@@ -635,6 +644,7 @@
 //编辑显示既有部分
 	mui.plusReady(function(){
 		if(plus.webview.currentWebview().Bname){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			var Bnowid = plus.webview.currentWebview().Bname;
 			//显示信息
 			var oldtoken = plus.storage.getItem('oldToken');
@@ -662,8 +672,10 @@
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
 					}
+					plus.nativeUI.closeWaiting();
 				},
 				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
 					mui.toast('响应失败  !');
 				}
 			});
