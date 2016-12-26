@@ -191,39 +191,25 @@
 								<img style="width: 20px;margin-top: -3px;margin-right: 2px;" src="../../img/aixing.svg"/>
 								<span>义工活动</span>
 							</div>
-							<ul class="mui-table-view">
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/baomuy.jpg">
-										<div class="mui-media-body">
-											为曲陆海村捐建爱心桥
-											<p class='mui-wrap'>前几日，有所为同志为曲陆海村捐建爱心桥这一举动引起了深刻影响。
-											</p>
-										</div>
-									</a>
-								</li>
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/fangchanz.jpg">
-										<div class="mui-media-body">
-											为曲陆海村捐建爱心桥
-											<p class='mui-wrap'>前几日，有所为同志为曲陆海村捐建爱心桥这一举动引起了深刻影响。
-											</p>
-										</div>
-									</a>
-								</li>
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/kuaidis.jpg">
-										<div class="mui-media-body">
-											为曲陆海村捐建爱心桥
-											<p class='mui-wrap'>前几日，有所为同志为曲陆海村捐建爱心桥这一举动引起了深刻影响。
-											</p>
-										</div>
-									</a>
-								</li>
-				
-							</ul>
+							<div id="ygData"></div>
+							<script type="text/html" id="ygTpl">
+								<ul class="mui-table-view">
+									<%for(var i=0;i<lData.length;i++){%>
+										<li class="mui-table-view-cell mui-media" onclick="goInfo('<%=lData[i].id%>')">
+											<a href="javascript:;">
+												<img class="mui-media-object mui-pull-left" src="<%=lData[i].picImg%> ">
+												<div class="mui-media-body" style="line-height: 25px;">
+													<%=lData[i].title%> 
+												</div>
+												<small class="mui-media-body gray" style="line-height: 25px;">
+													发布时间 <%=lData[i].create_time%> 
+												</small>
+											</a>
+										</li> 
+										<%}%>  
+								</ul>
+							</script>
+							
 						</div>
 						<!--公益项目
 						结束 -->	
@@ -260,15 +246,13 @@
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		console.log(oldToken);
 		//banner数据请求
-		mui.ajax(serverUrl+'/api/localservice/communityServiceBanner',{
+		mui.ajax(serverUrl+'/api/localservice/communityservicebanner',{
 	//		data:{},
 			dataType:'json',
 			type:'post',
 			timeout:1000,
 			headers:{"token":oldToken},	 
-			success:function(data){ 
-				//获取并渲染  eval("("+data1+")");
-				console.log(data.data.banner)
+			success:function(data){  
 				if(data.errno==0){
 					var dataobj= eval("("+data.data.banner+")");
 					var bannerObj = {}
@@ -287,8 +271,45 @@
 			error:function(xhr,type,errorThrown){
 				alert('响应失败  !');
 			}
-		}); 
-		//banner数据请求结束
+		});  
+				//活动数据请求
+		mui.ajax(serverUrl+'/api/localservice/volunteeractivities',{
+			dataType:'json',
+			type:'post',
+			timeout:1000,
+			headers:{"token":oldToken},	 
+			success:function(data){  
+			            plus.nativeUI.closeWaiting(); 
+				alert(JSON.stringify(data.data))
+				if(data.errno==0){ 
+					if(data.data.length!=0){
+						for(var t=0;t<data.data.length;t++){  
+			       				data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
+			       			  
+			       		} 
+					 	var acObj = {};
+							acObj.myUrl2 = serverimgUrl;
+							
+							acObj.lData = data.data;
+							alert(JSON.stringify(acObj.lData)); 
+							document.getElementById("ygData").innerHTML = template("ygTpl",acObj)
+
+					 }
+				}  
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		});
+		window.goInfo = function(id){
+			alert(id)
+			openview({ 
+				view:'volunActivityDetail.html',
+				id:'volunActivityDetail',
+				extrasobj:{id:id}
+			})
+		}
+
 	})
 </script>
 </html>
