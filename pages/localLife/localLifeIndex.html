@@ -38,8 +38,7 @@
 			.mui-table-view li{padding-left: 0;padding-right: 10px;}
 			.mui-table-view-cell:after{left: 0;}
 			.icon-list .icon-circle{border-radius: 50%;}
-			#more{background-color:#fff;text-align: center;height: 50px;line-height: 30px;
-			font-size: 14px; }
+			#more{background-color:#fff;text-align: center;height: 40px;line-height: 30px;font-size: 14px; }
 			#more img{margin-left:5px;width: 16px;margin-top: -3px;}
 			.null{text-align: center;}
 			.null img{margin-top: 7%;width: 30%;margin-bottom: 3%;}
@@ -50,7 +49,7 @@
 			    padding: 15%;
 			}
 			.slider, .mb10{
-				margin-bottom: 10px;
+				/*margin-bottom: 10px;*/
 				border-bottom: none !important;
 			}
 			.slider:after, .caini:after, .mui-table-view-cell:after,.mui-table-view:after{
@@ -64,11 +63,26 @@
 		</style>    
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav">
+		<header class="mui-bar mui-bar-nav" id="header"> 
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">本地生活</h1>
 		    <!--<a class="fr shoucang mui-icon mui-icon-bars" id="theSearch" href="javascript:;"></a>-->
 		</header>
+		<!--状态栏-->
+		<div id="sBar" style="background-color: #f53c42;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+		<script type="text/javascript">
+			var immersed = 0;
+			var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+			    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+			}
+			var statusBar = document.getElementById('sBar');//这是模拟状态栏
+			var headdiv = document.getElementById('header');//这是现有的header
+			document.body.style.paddingTop =  immersed+'px';
+			statusBar&&(statusBar.style.height = immersed+'px');
+			headdiv&&(headdiv.style.top = immersed+'px');
+		</script>
+		<!--状态栏结束-->
 		<div id="container">		
 			<div id="main">
 				<div id="scroller">			
@@ -341,20 +355,5 @@
 			})
 		});
 		
-	</script>
-	<input id="scan" type='button'  value='扫描图片'></input>
-		<script type="text/javascript" >
-			
-			
-			mui.plusReady(function(){
-				mui('#scan')[0].onclick = function(){
-					console.log(plus.barcode)					
-					plus.barcode.scan( '_www/barcode.png', function (type,result) {
-							alert( "Scan success:("+type+")"+result );
-						}, function (error) {
-							alert( error.message );
-					} );
-				}
-			})
 	</script>
 </html>

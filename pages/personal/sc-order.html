@@ -322,7 +322,7 @@
 							
 							var obj={}; 
 							 obj.orderData=data.data;
-							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','交易关闭'];
+							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
 							$('.tab-nav li').click(function(){ 
 								var statusId=$(this).attr("data-statusId"); 
@@ -403,7 +403,7 @@
 									$('#noOrder').css('display','none');
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==6 || status==7 || status==8){
+									if(status==6 || status==7 || status==8 || status==9){
 										i++;
 										 $(this).css("display","block");
 									} 
@@ -461,7 +461,8 @@
 			}
 			window.orderInfo=function(orderId){
 				openview({
-					view:'orderDetail.html', 
+					view:'orderDetail.html',
+					id:'orderDetail',
 					extrasobj:{orderId:orderId}
 				})
 			}
@@ -506,8 +507,8 @@
 			window.goComment=function(orderId){
 				alert("评论"+orderId);
 				openview({
-					view:'comment.html', 
-					extrasobj:{orderId:orderId}
+					view:'comment.html',
+					extrasobj:{orderId:orderId,pageid:'sc-order'}
 				})
 			}
 			window.viewLogistics=function(id,deliveryNo,shipper){

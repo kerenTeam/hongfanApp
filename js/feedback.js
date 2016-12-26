@@ -141,103 +141,103 @@
 		feedback.imageList.appendChild(placeholder);
 	};
 	feedback.newPlaceholder();
-	feedback.submitBtn.addEventListener('tap', function(event) {
-		if (feedback.question.value == '') {
-			return mui.toast('信息填写不符合规范');
-		}
-		if (feedback.question.value.length > 200) {
-			return mui.toast('信息超长,请重新填写~')
-		}
-		//判断网络连接
-		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){
-			return mui.toast("连接网络失败，请稍后再试");
-		}
-		feedback.send(mui.extend({}, feedback.deviceInfo, {
-			content: feedback.question.value,
-			images: feedback.files,
-			score:''+starIndex
-		})) 
-	}, false)
+//	feedback.submitBtn.addEventListener('tap', function(event) {
+//		if (feedback.question.value == '') {
+//			return mui.toast('信息填写不符合规范');
+//		}
+//		if (feedback.question.value.length > 200) {
+//			return mui.toast('信息超长,请重新填写~')
+//		}
+//		//判断网络连接
+//		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){
+//			return mui.toast("连接网络失败，请稍后再试");
+//		}
+//		feedback.send(mui.extend({}, feedback.deviceInfo, {
+//			content: feedback.question.value,
+//			images: feedback.files,
+//			score:''+starIndex
+//		})) 
+//	}, false)
 	 
 	
 
 	
 	
-	feedback.send = function(content) {
-//		feedback.uploader = plus.uploader.createUpload(url, {
-//			method: 'POST'
-//		}, function(upload, status) {
-////			plus.nativeUI.closeWaiting()
-//			console.log("upload cb:"+upload.responseText);
-//			if(status==200){
-//				var data = JSON.parse(upload.responseText);
-//				//上传成功，重置表单
-//				if (data.ret === 0 && data.desc === 'Success') {
-////					mui.toast('反馈成功~')
-//					console.log("upload success");
-////					feedback.clearForm();
+//	feedback.send = function(content) {
+////		feedback.uploader = plus.uploader.createUpload(url, {
+////			method: 'POST'
+////		}, function(upload, status) {
+//////			plus.nativeUI.closeWaiting()
+////			console.log("upload cb:"+upload.responseText);
+////			if(status==200){
+////				var data = JSON.parse(upload.responseText);
+////				//上传成功，重置表单
+////				if (data.ret === 0 && data.desc === 'Success') {
+//////					mui.toast('反馈成功~')
+////					console.log("upload success");
+//////					feedback.clearForm();
+////				}
+////			}else{
+////				console.log("upload fail");
+////			}
+////			
+////		});
+////		//添加上传数据
+////		mui.each(content, function(index, element) {
+////			if (index !== 'images') {
+////				console.log("addData:"+index+","+element);
+//////				console.log(index);
+////				feedback.uploader.addData(index, element)
+////			} 
+////		});
+////		//添加上传文件
+////		mui.each(feedback.files, function(index, element) { 
+////			var f = feedback.files[index];
+////			console.log(JSON.stringify(f))
+////			console.log("addFile:"+JSON.stringify(f));
+////			feedback.uploader.addFile(f.path, {
+////				key: f.name
+////			});
+////		});
+////		//开始上传任务
+////		feedback.uploader.start();
+////		mui.alert("感谢反馈，点击确定关闭","问题反馈","确定",function () {
+////			feedback.clearForm();
+////			mui.back();
+////		});
+//////		plus.nativeUI.showWaiting();
+//console.log("myuserid "+myuserid)
+//console.log(JSON.stringify(feedback.files))
+//		//发送数据
+//		var formD = new FormData();
+//		console.log('图片',feedback.files);
+//		formD.append('list_pic',feedback.files[0]); 
+//		formD.append('userid','147'); 
+//		formD.append('title','1');
+//		formD.append('phone','17781694509');
+//		formD.append('content','dfaas');
+//		formD.append('type',1);
+//		formD.append('price','sdfsa');
+//		formD.append('original_price','123');
+//		formD.append('address','dfasdfa');
+//		formD.append('brand','dfad');
+//		formD.append('colour','dfad');
+//		
+//		var xhr = new XMLHttpRequest(); 	
+//		xhr.open('POST','http://192.168.199.191:7200/api/localservice/usedpublish');
+//		xhr.onreadystatechange = function(){ 
+//			if (xhr.readyState===4) {
+//				if (xhr.status===200) {
+//					plus.nativeUI.closeWaiting();//关闭等待框
+//					console.log(xhr.responseText); 
 //				}
-//			}else{
-//				console.log("upload fail");
 //			}
-//			
-//		});
-//		//添加上传数据
-//		mui.each(content, function(index, element) {
-//			if (index !== 'images') {
-//				console.log("addData:"+index+","+element);
-////				console.log(index);
-//				feedback.uploader.addData(index, element)
-//			} 
-//		});
-//		//添加上传文件
-//		mui.each(feedback.files, function(index, element) { 
-//			var f = feedback.files[index];
-//			console.log(JSON.stringify(f))
-//			console.log("addFile:"+JSON.stringify(f));
-//			feedback.uploader.addFile(f.path, {
-//				key: f.name
-//			});
-//		});
-//		//开始上传任务
-//		feedback.uploader.start();
-//		mui.alert("感谢反馈，点击确定关闭","问题反馈","确定",function () {
-//			feedback.clearForm();
-//			mui.back();
-//		});
-////		plus.nativeUI.showWaiting();
-console.log("myuserid "+myuserid)
-console.log(JSON.stringify(feedback.files))
-		//发送数据
-		var formD = new FormData();
-		console.log('图片',feedback.files);
-		formD.append('list_pic',feedback.files[0]); 
-		formD.append('userid','147'); 
-		formD.append('title','1');
-		formD.append('phone','17781694509');
-		formD.append('content','dfaas');
-		formD.append('type',1);
-		formD.append('price','sdfsa');
-		formD.append('original_price','123');
-		formD.append('address','dfasdfa');
-		formD.append('brand','dfad');
-		formD.append('colour','dfad');
-		
-		var xhr = new XMLHttpRequest(); 	
-		xhr.open('POST','http://192.168.199.191:7200/api/localservice/usedpublish');
-		xhr.onreadystatechange = function(){ 
-			if (xhr.readyState===4) {
-				if (xhr.status===200) {
-					plus.nativeUI.closeWaiting();//关闭等待框
-					console.log(xhr.responseText); 
-				}
-			}
-	    }
-		xhr.setRequestHeader("token",oldtoken);
-		xhr.send(formD);
-
-
-	};
+//	    }
+//		xhr.setRequestHeader("token",oldtoken);
+//		xhr.send(formD);
+//
+//
+//	};
 	
 	 //应用评分
 	 mui('.icons').on('tap','i',function(){
