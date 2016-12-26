@@ -69,8 +69,10 @@
 				padding-bottom: 01px !important; 
 			}
 			.nothing{
+				display: block;
 				background-color: #EFEFF4;
 				margin-top: 60px;
+				text-align: center;
 			}
 			.nothing img{
 				display: block;
@@ -96,9 +98,9 @@
 		<script id="addressList-detail" type="text/html">
 			<div id="main" class="mui-clearfix contaniner">
 				<% if(addressLi== ''){%>
-					<div class="nothing">
-						<img src="../../img/theList/ad.png"/>
-						<p>你还没有地址哟！</p>
+					<div class="nothing" style="background-color: #EFEFF4;margin-top: 60px;">
+						<img src="../../img/theList/ad.png" style="display: block;margin: 20px auto;width: 80px;"/>
+						<p style="text-align: center;">你还没有地址哟！</p>
 					</div>
 				<%}else{%>
 				 	<% for(var i=0;i<addressLi.length;i++){ %>
@@ -173,7 +175,7 @@
 			}
 			var userId = plus.webview.currentWebview().userId;
 			var pageid = plus.webview.currentWebview().pageid;
-			alert(pageid)
+			//alert(pageid)
 			RefreshAd();
 			document.addEventListener('refreshAd', function() {
 							alert(pageid)
@@ -215,8 +217,14 @@
 									plus.storage.setItem('$addressStorage', JSON.stringify(addressStorage));
 								
 								 alert(plus.storage.getItem('$addressStorage'));
-								
-								 var list = plus.webview.getWebviewById('market/market-order.html');  
+								if(plus.webview.getWebviewById('market/market-order.html')){
+									var list = plus.webview.getWebviewById('market/market-order.html');  
+								}
+								if(plus.webview.getWebviewById('market-order.html')){
+									var list = plus.webview.getWebviewById('market-order.html');  
+								}
+								 
+//								 alert(list)
  									plus.webview.currentWebview().close();//关闭当前页面
 								 	mui.fire(list,'readdstorage');
 								 	//alert(2)

@@ -24,6 +24,9 @@
 				z-index:99999;
 				background-color: #000;
 			}
+			.comtPic{
+				border-radius: 100%;
+			}
 			.mui-preview-header,
 			.mui-preview-footer {
 				position: absolute;
@@ -460,13 +463,20 @@
 							                            <%=cemmentData[i].seller_ctime%>
 							                        </time>
 							                        <div class="clear"></div>
-								                   	<p class="comment"><%=cemmentData[i].seller_comment%></p>
+							                        <div class="commentStar">
+								                   		<%for(var j = 0;j<cemmentData[i].grade_star;j++){%>
+								                   			<img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
+								                   			<%}%><small style="color: red;"><%=cemmentData[i].grade_star%>分</small>
+								                   	</div>
+								                   	<div class="comment"><%=cemmentData[i].seller_comment%></div>
+								                   	<div class="clear"></div>
+								                   	
 							                        <div class="clear"></div>
 								                    <div class="padding-h-xs mui-row">
 													<%if(cemmentData[i].comment_pic.length!=0){%>
 								                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
 								                    	<div class="inlineBlock mui-col-sm-3 mui-col-xs-3" style="display:inline-block;height: 0.5rem;overflow:hidden;">
-								                    	<img src="<%=cemmentData[i].comment_pic[j].comment_pic%>" style="width: 100%;overflow: hidden;height: 0.5rem" data-preview-src="" data-preview-group="<%=i+1%>" />
+								                    	<img src="<%=myUrl%><%=cemmentData[i].comment_pic[j].picImg%>" style="width: 100%;overflow: hidden;height: 0.5rem" data-preview-src="" data-preview-group="<%=i+1%>" />
 								                    	</div>
 								                    	<%}%>	 
 								                    <%}%>
@@ -577,7 +587,8 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
 						success:function(data){
-//							alert(JSON.stringify(data))
+							alert(JSON.stringify(data))
+							
 							if(data.errno==0){ 
 								plus.nativeUI.closeWaiting();
 							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
@@ -635,8 +646,9 @@
 		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
 		                    //评论
 		                    var cemmentObj = {}
+		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
 		                    for(var i = 0;i < commentobj.length;i++){
-										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10);
+										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
 										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
 									}
 								cemmentObj.myUrl = serverimgUrl;
@@ -649,7 +661,7 @@
 		                    //购物车 缓存
 		                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
 		                   
-		                    window.cartStorageF=function(obj){
+		                    window.cartStorageF=function(obj){ 
 		                     	if($('.cur').length == $(".choose").length){ 
 		                    		var shopName = obj.getAttribute("data-shop");
 		                    		var goodsId = obj.getAttribute("data-gdId");

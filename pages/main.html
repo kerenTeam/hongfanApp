@@ -272,7 +272,7 @@
 								</tr>
 								<tr>
 									<td class="server"><div class="imgWrap imgWrap5"><img src="../img/theList/ser.png"/></div><br/><p>为民服务</p></td>
-									<td><div class="imgWrap imgWrap6"><img src="../img/theList/date.png"/ style="margin-top: 20px !important;"></div><br/><p>一键钟情</p></td>
+									<td class="filove"><div class="imgWrap imgWrap6"><img src="../img/theList/date.png"/ style="margin-top: 20px !important;"></div><br/><p>一键钟情</p></td>
 									<td><div class="imgWrap imgWrap7"><img src="../img/theList/game.png"/></div><br/><p>游戏娱乐</p></td>
 									<td class="h_report"><div class="imgWrap imgWrap8"><img src="../img/theList/new.png"/></div><br/><p>家乡报道</p></td>
 								</tr>
@@ -368,6 +368,10 @@
 			<%}%>
 		</script>
 	<script type="text/javascript">
+	
+		
+	
+	
 	//跳转详情
 			function goInfo(goodsId){
 				 //alert(goodsId)
@@ -385,6 +389,17 @@
 				 })
 				})
 			}) 
+			
+	//检测该移动设备是否联网
+	var network = true; 
+	if(mui.os.plus) {
+			mui.plusReady(function() {
+				if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+					network = false;
+				}
+			});
+		}
+		if(network){
 		mui.plusReady(function(){
 //			document.getElementById("haha").addEventListener('tap', function() {
 //				mui.confirm('MUI是个好框架，确认？', 'Hello MUI', ['取消', '确定'], function(e) {
@@ -402,6 +417,7 @@
 			var server = document.getElementsByClassName('server')[0];
 			var ticket = document.getElementsByClassName('ticket')[0];
 			var market = document.getElementsByClassName('market')[0];
+			var filove =document.getElementsByClassName('filove')[0];
 			locallife.addEventListener('tap', function(){
 				openview({
 					view:'localLife/localLifeIndex.html'
@@ -420,6 +436,12 @@
 			ticket.addEventListener('tap', function(){
 				openview({
 					view:'piaowu.html',
+				});
+			});
+			filove.addEventListener('tap', function(){
+				openview({
+					view:'appriciate/appriciate.html',
+					id:'appriciate'
 				});
 			});
 			market.addEventListener('tap', function(){
@@ -554,6 +576,7 @@
 					}
 			});  
 		})();
+		} 
 	</script>	
 	</body>
 	
