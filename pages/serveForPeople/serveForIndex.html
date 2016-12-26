@@ -14,6 +14,10 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/mui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		
 		<style type="text/css">
 			.mui-bar-nav{
@@ -37,11 +41,49 @@
 				opacity: 1;
 				border: none;
 			}
-			.mui-text-right{
-				text-align: center !important;
+			.mui-slider{
+				margin-top: 50px;
 			}
-			.sy_limit_buy .locatLabel_switch .box{
-				width: 32% !important;
+			.onetable{
+				margin-top: 5px;
+			}
+			.onetable p{
+				margin-top: -10px;
+				font-size: 11px;
+				margin-bottom: 5px;
+			}
+			.fontcl2{ 
+				font-size: 16px;
+				line-height: 18px;
+			} 
+			.sy_recmd_list .pub_wz{
+				position: relative;
+			}
+			sub{
+				bottom: 0;
+				font-size: 50%;
+				margin-left: 5px;
+			}
+			.fr {
+				position: absolute;
+				float: right;
+				display: block;
+				top: 12px;
+				right: 5px;
+				font-size: 10px;
+			}
+			.sy_recmd_list .pub_wz .nr_box{
+				border-top: none;
+				margin-top: 0;
+			}
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
 			}
 			.mui-table-view-cell p{
 				font-size: 12px;
@@ -64,7 +106,7 @@
 			.mui-slider-item a{
 				position: relative;
 				display: inline-block;
-				padding-top: 55.56%;
+				/*padding-top: 55.56%;*/
 				width: 100%;
 				overflow: hidden;
 			}
@@ -92,59 +134,49 @@
 		</header>
 		<div id="container">		
 			<div id="main">
-				<div id="slider" class="mui-slider mui-sliderS">
-					<div class="mui-slider-group mui-slider-loop">
-						<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
-						<div class="mui-slider-item mui-slider-item-duplicate">
-							<a href="#">
-								<img src="../../img/serveForPeople/gongyi.jpg" class="goodsImg">
-							</a>
-						</div>
-						<div class="mui-slider-item">
-							<a href="#">
-								
-								<img src="../../img/serveForPeople/gongyi.jpg" class="goodsImg">
-							</a>
-						</div>
-						<div class="mui-slider-item">
-							<a href="#">
-								
-								<img src="../../img/serveForPeople/gongyi.jpg" class="goodsImg">
-							</a>
-						</div>
-						<div class="mui-slider-item">
-							<a href="#">
-								
-								<img src="../../img/serveForPeople/gongyi.jpg" class="goodsImg">
-							</a>
-						</div>
-						<div class="mui-slider-item">
-							<a href="#">
-								
-								<img src="../../img/serveForPeople/gongyi.jpg" class="goodsImg">
-							</a>
-						</div>
-						<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
-						<div class="mui-slider-item mui-slider-item-duplicate">
-							<a href="#">
-								<img src="../../img/serveForPeople/gongyi.jpg" class="goodsImg">
-							</a>
-						</div>
-					</div>
-					<div class="mui-slider-indicator mui-text-right">
-						<div class="mui-indicator mui-active"></div>
-						<div class="mui-indicator"></div>
-						<div class="mui-indicator"></div>
-						<div class="mui-indicator"></div>
-					</div>
-				</div>	
+				<div id="banner"></div>
+						<script type="text/html" id="bannerModal">
+						<!--轮播图-->
+						<div class="mui-slider">
+							<div class="mui-slider-group mui-slider-loop">
+								<!--支持循环，需要重复图片节点-->
+								<div class="mui-slider-item">
+									<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
+										<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
+									</a>
+								</div>
+								<% for(var i=0;i<bannerData.length;i++){ %>
+					
+								<div class="mui-slider-item">
+									<a onclick="bannerGo('<%=bannerData[i].url%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
+										<img src="<%=bannerData[i].bannerPic%>" />
+									</a>
+								</div>
+								<% } %>
+								<!--支持循环，需要重复图片节点-->
+								<div class="mui-slider-item mui-slider-item-duplicate">
+									<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
+										<img src="<%=bannerData[0].bannerPic%>" />
+									</a>
+								</div>
+					
+							</div>
+							<div class="mui-slider-indicator">
+								<div class="mui-indicator mui-active"></div>
+								<% for(var i=0;i<bannerData.length-1;i++){ %>
+							    	<div class="mui-indicator"></div>
+							    <% } %>
+				            </div>
+							<!--轮播图结束-->
+					</script>
+				
 				<div id="index" class="page-center-box">
 					<div>
 						<!--主要条目项板块开始 -->
 						<ul class="mui-table-view mui-grid-view yigong">
 					        <li class="mui-table-view-cell mui-media mui-col-xs-6">
 					            <a class="projectLink">
-					                <img class="mui-media-object" src="../../img/serveForPeople/yigongteam.jpg">
+					                <img class="mui-media-object" src="../../img/serveForPeople/yigongteam.png">
 					                <div class="mui-media-body">义工团队</div></a></li>
 					        <li class="mui-table-view-cell mui-media mui-col-xs-6">
 					            <a id="yigong">
@@ -157,41 +189,27 @@
 						<div class="jinengxueyuan">
 							<div class="sy_title" style="text-align: center;padding-bottom: 0;">
 								<img style="width: 20px;margin-top: -3px;margin-right: 2px;" src="../../img/aixing.svg"/>
-								<span>爱心邻水</span>
+								<span>义工活动</span>
 							</div>
-							<ul class="mui-table-view">
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/baomuy.jpg">
-										<div class="mui-media-body">
-											为曲陆海村捐建爱心桥
-											<p class='mui-wrap'>前几日，有所为同志为曲陆海村捐建爱心桥这一举动引起了深刻影响。
-											</p>
-										</div>
-									</a>
-								</li>
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/fangchanz.jpg">
-										<div class="mui-media-body">
-											为曲陆海村捐建爱心桥
-											<p class='mui-wrap'>前几日，有所为同志为曲陆海村捐建爱心桥这一举动引起了深刻影响。
-											</p>
-										</div>
-									</a>
-								</li>
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/kuaidis.jpg">
-										<div class="mui-media-body">
-											为曲陆海村捐建爱心桥
-											<p class='mui-wrap'>前几日，有所为同志为曲陆海村捐建爱心桥这一举动引起了深刻影响。
-											</p>
-										</div>
-									</a>
-								</li>
-				
-							</ul>
+							<div id="ygData"></div>
+							<script type="text/html" id="ygTpl">
+								<ul class="mui-table-view">
+									<%for(var i=0;i<lData.length;i++){%>
+										<li class="mui-table-view-cell mui-media" onclick="goInfo('<%=lData[i].id%>')">
+											<a href="javascript:;">
+												<img class="mui-media-object mui-pull-left" src="<%=lData[i].picImg%> ">
+												<div class="mui-media-body" style="line-height: 25px;">
+													<%=lData[i].title%> 
+												</div>
+												<small class="mui-media-body gray" style="line-height: 25px;">
+													发布时间 <%=lData[i].create_time%> 
+												</small>
+											</a>
+										</li> 
+										<%}%>  
+								</ul>
+							</script>
+							
 						</div>
 						<!--公益项目
 						结束 -->	
@@ -200,7 +218,6 @@
 			</div>
 		</div>
 	</body>
-<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 <script> 
 	//获得slider插件对象
 	var gallery = mui('.mui-slider');
@@ -211,7 +228,7 @@
 	//打开义工团队
 	mui('.projectLink')[0].addEventListener('tap', function(){
 		openview({
-			view:'volunteerTeam.html',
+			view:'volunTeamDetail.html',
 		});
 	});
 	//打开邻水帮帮团
@@ -221,6 +238,78 @@
 		});
 	});
 	
+</script>
+<script type="text/javascript">
+	mui.plusReady(function(){
+		//获取缓存
+		var oldToken = plus.storage.getItem('oldToken');
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		console.log(oldToken);
+		//banner数据请求
+		mui.ajax(serverUrl+'/api/localservice/communityservicebanner',{
+	//		data:{},
+			dataType:'json',
+			type:'post',
+			timeout:1000,
+			headers:{"token":oldToken},	 
+			success:function(data){  
+				if(data.errno==0){
+					var dataobj= eval("("+data.data.banner+")");
+					var bannerObj = {}
+						bannerObj.myUrl = serverimgUrl;
+						bannerObj.bannerData = dataobj
+		            document.getElementById("banner").innerHTML=template("bannerModal",bannerObj);
+		            plus.nativeUI.closeWaiting();
+		            var gallery = mui(".mui-slider");
+					gallery.slider({
+						interval: 3000 //设置自动轮播周期为3s
+					});
+				}else{
+					mui.toast("网络不好请重试！");
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		});  
+				//活动数据请求
+		mui.ajax(serverUrl+'/api/localservice/volunteeractivities',{
+			dataType:'json',
+			type:'post',
+			timeout:1000,
+			headers:{"token":oldToken},	 
+			success:function(data){  
+			            plus.nativeUI.closeWaiting(); 
+//				alert(JSON.stringify(data.data))
+				if(data.errno==0){ 
+					if(data.data.length!=0){
+						for(var t=0;t<data.data.length;t++){  
+			       				data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
+			       			  
+			       		} 
+					 	var acObj = {};
+							acObj.myUrl2 = serverimgUrl;
+							
+							acObj.lData = data.data;
+//							alert(JSON.stringify(acObj.lData)); 
+							document.getElementById("ygData").innerHTML = template("ygTpl",acObj)
 
+					 }
+				}  
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		});
+		window.goInfo = function(id){
+//			alert(id)
+			openview({ 
+				view:'volunActivityDetail.html',
+				id:'volunActivityDetail',
+				extrasobj:{id:id}
+			})
+		}
+
+	})
 </script>
 </html>
