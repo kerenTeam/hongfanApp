@@ -185,7 +185,7 @@
 		<script type="text/javascript" charset="utf-8">
       	mui.init();
       
-		mui.plusReady(function(){
+		mui.plusReady(function(){ 
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			var userId = plus.storage.getItem("userid");
@@ -239,9 +239,18 @@
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){
 //										alert(JSON.stringify(data))
-									alert("保存成功！");
+									mui.toast("保存成功！");
+									 alert(plus.webview.getWebviewById('address'));
+									 if(plus.webview.getWebviewById('personal/address.html')){
+									 	mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面 
+									 }
+									 if(plus.webview.getWebviewById('../personal/address.html')){
+									 	mui.fire(plus.webview.getWebviewById('../personal/address.html'),'refreshAd');//打开指定页面 
+									 }
+									
 									plus.webview.currentWebview().close();//关闭当前页面
-									mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+									
+//									mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAdo');//打开指定页面
 								},
 								error:function(xhr,type,errorThrown){
 									alert('响应失败  !');

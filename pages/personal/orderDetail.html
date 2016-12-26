@@ -55,6 +55,9 @@
 			color: white;
 			border: 1px solid #ec4d1c;
 		}
+		dl.listtwo dd>.react {
+		    padding: .15rem .12rem 0rem .15rem;
+		}
 	</style>
 	<body>
 		<header class="hasManyCity hasManyCitytwo" id="header">
@@ -86,13 +89,13 @@
 							</div>						
 						</div>	
 						
-						<div class="sjname box-s">
-									<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data[0].goodsData[0].shopName%></span>
+						<div class="sjname box-s" onclick="goStore('<%=data.goods_data[0]')">
+									<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data[0].goodsData[0].shopName%></span>
 									 <span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
 								</div>
 								<dl class="list listtwo">
 									 <%for(var i = 0;i<data.goods_data[0].goodsData.length;i++){%>
-									 	<dd>
+									 	<dd onclick="goGoods('<%=data.goods_data[0].goodsData[i].goodsId%>')">
 											<div class="react">												
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
@@ -100,7 +103,7 @@
 														<img src="<%=data.goods_data[0].goodsData[i].goodsImg%>"/>
 													</div>
 													<div class="dealcard-block-right">
-														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 90%"><%=data.goods_data[0].goodsData[i].goodsName%></span> <span class="fr">￥<b><%=data.goods_data[0].goodsData[i].goodsPrice%></b></span></div>
+														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.goods_data[0].goodsData[i].goodsName%></span> <span class="fr">￥<b><%=data.goods_data[0].goodsData[i].goodsPrice%></b></span></div>
 														<div class="title text-block fl">
 															<%=data.goods_data[0].goodsData[i].goodText%>													
 														</div>
@@ -154,7 +157,7 @@
 								</ul>
 							</dd>
 						</dl>
-						<dl id="deal-terms" class="list">
+						<dl id="deal-terms" class="list" style="margin-bottom:60px;">
 							<dd class="dd-padding dd-paddingfour gray">
 								<ul>
 									<li>
@@ -212,6 +215,7 @@
 				
 				<%if(data.order_status==5){%> 
 				 	<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data[0].totalMoney%>')">申请退款</button>
+				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
 				<%}%>
 				<%if(data.order_status==6 || data.order_status==7 || data.order_status==8){%>
@@ -301,6 +305,18 @@
 						
 				})   
 			}
+			window.goStore=function(storeId){
+				openview({
+							view:'../market/shophome.html',
+							extrasobj:{storeId:storeId}
+						})
+			}
+			window.goGoods=function(goodsId){
+				 openview({
+				 	view:"../market/mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
 			window.goOrder=function(id,payment){
 				alert("付款"+id);
 				openview({
@@ -311,8 +327,8 @@
 			window.goComment=function(orderId){
 				alert("评论"+orderId);
 				openview({
-					view:'comment.html', 
-					extrasobj:{orderId:orderId}
+					view:'comment.html',
+					extrasobj:{orderId:orderId,pageid:'orderDetail'}
 				})
 			}
 			window.viewLogistics=function(id,deliveryNo,shipper){

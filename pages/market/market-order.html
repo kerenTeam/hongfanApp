@@ -51,7 +51,9 @@
 			.boxs {
 				margin-bottom: 10px;
 			}
-			
+			.boxs li{
+				border-top: 0;
+			}
 			.boxstwo li a {
 				width: 100%;
 			}
@@ -131,9 +133,17 @@
 			
 			dl.list dt,
 			dl.list dd {
-				border-bottom: 1px solid #eee;
+				border-bottom: 0px solid #eee;
+				position: relative;
 			}
-			
+			dl.list dt:after,
+			dl.list dd:after{
+				content: '';display: block;height: 1px;-webkit-transform: scaleY(0.3);background-color: rgba(0,0,0,0.1);position: absolute;width: 100%;bottom: 0;left: 0;
+			}
+			dl.list dt:last-child:after,
+			dl.list dd:last-child:after{
+				height: 0;
+			}
 			.price {
 				color: #ff5f32;
 				line-height: 28px;
@@ -288,7 +298,23 @@
 			.dateLimit{
 				font-size: 12px;
 			}
-			 
+			#sfzin{
+				width: -moz-calc(100%-70px)!important;
+				width: -webkit-calc(100%-70px)!important; 
+				width: calc(100%-70px)!important;
+				font-size: 12px;
+			    padding: 0;
+			    text-align: right;
+			    background: none;
+			    outline: none;
+			    height: auto;
+			    margin: 0;
+			    line-height: 12px;
+			    border: none;
+			} 
+			.sf:after{
+				height: 0px!important;
+			}
 		</style>
 	</head>
 
@@ -305,7 +331,7 @@
 					<ul class="boxs boxstwo postWrap">
 						<div id="add_info"></div>
 						<script type="text/html" id="addrTpl">
-							<%if(obj.lenght==0){%>
+							<%if(obj.length==0){%>
 							<li onclick="goAddr()">
 								<div class="mui-row orderRow">
 									<div class="mui-col-sm-1 mui-col-xs-1">
@@ -313,6 +339,7 @@
 									</div>
 									<div class="mui-col-sm-11 mui-col-xs-11">
 										<p style="line-height: 50px;">请选择收货地址</p>
+										<p class="address"></p>
 										<div class="fr"><i class="ico_arrow middle-icon"></i></div>
 									</div>
 								</div>
@@ -390,6 +417,16 @@
 					</script>
 					
 						<dl class="list">
+							
+							<!--<div id="sfz"></div>
+								<script type="text/html" id="couponTpl">-->
+									 
+										<dd class="dd-padding kv-line-r sf" style="border-bottom: 10px solid #efeff4;">
+											<h6 style="font-size: 13px;line-height: 13px;margin-top: 2px;width: 70px!important;">身份证号码</h6><input type="text" id="sfzin" value="" placeholder="请填写身份证号码" />
+										</dd>  
+									
+								<!--</script>-->
+							
 							<div id="quanData"></div>
 							<script type="text/html" id="quanTpl">
 								<%if(allLi.length!=0){%>
@@ -456,6 +493,7 @@
 								
 							</script>
 							
+							
 					
 							<div id="coupon"></div>
 								<script type="text/html" id="couponTpl">
@@ -486,15 +524,7 @@
 	</body>
 	<script src="../../js/app.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
-	<script type="text/javascript">
-//		function goInfo(gid) {
-//			openview({
-//				view: "mall-detail.html",
-//				extrasobj: {
-//					goodsId: gid
-//				}
-//			})
-//		}
+	<script type="text/javascript"> 
 			mui.init({
 				beforeback: function() {
 		
@@ -506,8 +536,9 @@
 			});
 		var myuserid,allGroup=0,quan=0,jf=0,orderSubmitData=[],arr =[],arrNum=[],arrMoney =[],arrpostFee=[],shopID=[];;
 		mui.plusReady(function() {
+//			plus.storage.removeItem('$addressStorage')
 			window.addEventListener('readdstorage', function(event) {
-				//alert(1)
+//				alert(2)
 				orderAdd()
 			});
 			//订单缓存
@@ -516,8 +547,8 @@
 				//获取缓存
 			  myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken');
-
-			//加载默认地址
+			
+			
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
 				height: '80px'
@@ -525,6 +556,7 @@
 			
 			orderAdd();
 			function orderAdd(){
+			 
 				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
 				data: {
 					userid: myuserid,
@@ -539,18 +571,31 @@
 				success: function(data, type, xhr) {
 					if(data.errno == 0) { 
 						plus.nativeUI.closeWaiting()
-						//alert(JSON.stringify(data.data))
+//					  alert("ddd "+JSON.stringify(data.data))
 						var addrObj = {};
-						if(plus.storage.getItem("$addressStorage")){
-							//alert(plus.storage.getItem("$addressStorage"))
+//							 alert(plus.storage.getItem("$addressStorage"))
+						if(plus.storage.getItem("$addressStorage")!=null){
 							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
 						}else{
+//							alert("fd")
 							addrObj.obj = data.data; 
 						}
 							
 						document.getElementById("add_info").innerHTML = template("addrTpl", addrObj);
 						plus.storage.removeItem("$addressStorage")
-						//订单数据模板
+						
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					//alert('响应失败  !');
+					plus.nativeUI.closeWaiting();
+					mui.toast("网络不好请重试")
+				}
+			});
+			}
+			
+			
+			//订单数据模板
 						var data = {};
 						data.goodsList = orderStorage;
 						for(var i = 0; i < orderStorage.length; i++) {
@@ -630,15 +675,6 @@
 						 var totalPay=0;
 						  
 						 $("#submit_order").html(allGroup)
-					}
-				},
-				error: function(xhr, type, errorThrown) {
-					//alert('响应失败  !');
-					plus.nativeUI.closeWaiting();
-					mui.toast("网络不好请重试")
-				}
-			});
-			}
 			
 			
 			//获取积分
@@ -766,114 +802,127 @@
 				}); 
 				//goPay
 				window.goPay=function(){
-					plus.nativeUI.showWaiting('加载中 ...', {
-							width: '100px',
-							height: '80px'
-						});
-					if($("#addid")){
-						//地址
-						var MYaddress = {};
-						var addressid =$("#addid").attr("data-id");
-						MYaddress.people = $("#addid").attr("data-name");
-						MYaddress.addressNow = $("#addid").attr("data-address");
-						MYaddress.phoneNow =  $("#addid").attr("data-phone");
-						//alert("addressid "+addressid);
-						//买家留言
-						var noticeData=[];  
-						$(".tipsWrap").each(function(){
-							var notice = $(this).find("input").val();
-							for(var i=0;i<orderSubmitData.length;i++){
-								orderSubmitData[i].sendAddress = MYaddress;
-								if(orderSubmitData[i].storeid == $(this).attr("data-id")){
-									orderSubmitData[i].notice = notice;
-								}
-							}
-							if(notice!=''){
-								var noticeObj={};
-								noticeObj.shopId = $(this).attr("data-id");
-								noticeObj.notice = notice;
-								noticeData.push(noticeObj)
-							}
-							
-							
-						});
-						
-					//	alert(JSON.stringify("noticeData "+noticeData));
-						//alert("orderSubmitData ewrew"+JSON.stringify(orderSubmitData))
-						//优惠券id
-						var coupon_id='';
-						$(".quanc").each(function(){
-							if($(this).css("display")=="block"){
-								coupon_id =$(this).attr("data-id");
-							}
-						})
-						//积分使用
-						var isIntergal=0;
-						if($("#coupon").find("input[type='checkbox']:checked").length==1){
-							//alert("yes");
-							isIntergal=1
+					
+//						alert($("#addid"))
+					if($("#addid").length!=0){
+						var yourSFZ = $('#sfzin').val();
+						var sfzTest = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+						if(!sfzTest.test(yourSFZ)){
+							mui.toast("请输入正确的身份证号码！")
 						}else{
-							//alert("no")
-							isIntergal=0;
-						}
-						var goodsdata = JSON.stringify(orderSubmitData);
-						var notice = JSON.stringify(noticeData);
-						//alert(goodsdata)
-						//提交
-						console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
-		 					mui.ajax(serverUrl+'/api/mall/neworder',{
-								data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
-								dataType:'json',
-								type:'post',
-								timeout:1000,
-								headers:{"token":oldtoken},	 
-								success:function(data,type,xhr){
-									//购物车 缓存 
-        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-        							//alert(cartStorage)
-        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
-									//删除 购物车里 提交的这一条数据 
-									console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
-									for(var i=0;i<orderStorage.length;i++){
-										
-										for(var j=0;j<cartStorage.length;j++){
-											if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
-												 cartStorage.splice(j,1)
-											}
-											//break;
-										}
-										
-										
-									}
-//									alert("ooooo "+JSON.stringify(cartStorage))
-									plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
-									var list = plus.webview.getWebviewById('cart.html'); 
-											mui.fire(list,'refresh'); 
-									plus.nativeUI.closeWaiting(); 
-//									alert(JSON.stringify(data))
-									if(data.errno==0){
-									//	alert(JSON.stringify(data.data))
-										var payMent = data.data.payment;
-										var order_id=  data.data.order_id;
-										//alert("payMent "+payMent + " order_id"+order_id);
-										openview({
-											view:"../market/pay.html",
-											extrasobj:{payMent:payMent,order_id:order_id}
-										})
-//										var list = plus.webview.getWebviewById('cart.html'); 
-//											mui.fire(list,'refresh'); 
-//										plus.webview.currentWebview().close();
-									}else{
-										plus.nativeUI.closeWaiting()
-									   // alert(JSON.stringify(data.data))
-									}
-								},
-								error:function(xhr,type,errorThrown){
-									plus.nativeUI.closeWaiting()
-									console.log('响应失败  !');
-								}
+							plus.nativeUI.showWaiting('加载中 ...', {
+								width: '100px',
+								height: '80px'
 							});
+							alert($("#addid").length)
+							//地址
+							var MYaddress = {};
+							var addressid =$("#addid").attr("data-id");
+							MYaddress.people = $("#addid").attr("data-name");
+							MYaddress.addressNow = $("#addid").attr("data-address");
+							MYaddress.phoneNow =  $("#addid").attr("data-phone");
+							 alert("addressid "+addressid);
+							//买家留言
+							var noticeData=[];  
+							$(".tipsWrap").each(function(){
+								var notice = $(this).find("input").val();
+								for(var i=0;i<orderSubmitData.length;i++){
+									orderSubmitData[i].sendAddress = MYaddress;
+									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
+										orderSubmitData[i].notice = notice;
+									}
+								}
+								if(notice!=''){
+									var noticeObj={};
+									noticeObj.shopId = $(this).attr("data-id");
+									noticeObj.notice = notice;
+									noticeData.push(noticeObj)
+								}
+								
+								
+							});
+							
+	//					 	alert(JSON.stringify("noticeData "+noticeData));
+	//						 alert("orderSubmitData ewrew"+JSON.stringify(orderSubmitData))
+							//优惠券id
+							var coupon_id='';
+							$(".quanc").each(function(){
+								if($(this).css("display")=="block"){
+									coupon_id =$(this).attr("data-id");
+								}
+							})
+							alert(myuserid+" coupon_id "+coupon_id)
+							//积分使用
+							var isIntergal=0;
+							if($("#coupon").find("input[type='checkbox']:checked").length==1){
+	//							 alert("yes");
+								isIntergal=1
+							}else{
+	//							 alert("no")
+								isIntergal=0;
+							}
+							var goodsdata = JSON.stringify(orderSubmitData);
+							var notice = JSON.stringify(noticeData);
+	//						 alert(goodsdata)
+							//提交
+							console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
+			 					mui.ajax(serverUrl+'/api/mall/neworder',{
+									data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
+									dataType:'json',
+									type:'post',
+									timeout:1000,
+									headers:{"token":oldtoken},	 
+									success:function(data,type,xhr){
+	//									alert(JSON.stringify(data))
+										//购物车 缓存 
+	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+	        							//alert(cartStorage)
+	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
+										//删除 购物车里 提交的这一条数据 
+										console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
+										for(var i=0;i<orderStorage.length;i++){
+											
+											for(var j=0;j<cartStorage.length;j++){
+												if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
+													 cartStorage.splice(j,1)
+												}
+												//break;
+											}
+											
+											
+										}
+	//									alert("ooooo "+JSON.stringify(cartStorage))
+										plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
+										var list = plus.webview.getWebviewById('cart.html'); 
+												mui.fire(list,'refresh'); 
+										plus.nativeUI.closeWaiting(); 
+	//									alert(JSON.stringify(data))
+										if(data.errno==0){
+											alert(JSON.stringify(data.data))
+											var payMent = data.data.payment;
+											var order_id=  data.data.order_id;
+											//alert("payMent "+payMent + " order_id"+order_id);
+											openview({
+												view:"../market/pay.html",
+												extrasobj:{payMent:payMent,order_id:order_id}
+											})
+	//										var list = plus.webview.getWebviewById('cart.html'); 
+	//											mui.fire(list,'refresh'); 
+	//										plus.webview.currentWebview().close();
+										}else{
+											plus.nativeUI.closeWaiting()
+										   // alert(JSON.stringify(data.data))
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										plus.nativeUI.closeWaiting()
+										console.log('响应失败  !');
+									}
+								});
+						}
+//						
 					}else{ 
+						plus.nativeUI.closeWaiting()
 						mui.toast("您还未选择收货地址哟！")
 					}
 					 

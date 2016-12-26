@@ -163,8 +163,12 @@
 		    }
 			//选择图片结束
 			//上传部分
+			var storeid;
 			mui.plusReady(function(){
+				var myuserid = plus.storage.getItem('userid');
 				var orderId = plus.webview.currentWebview().orderId;
+				var pageid = plus.webview.currentWebview().pageid;
+				alert("pageid "+pageid)
 				var oldToken = plus.storage.getItem('oldToken');
 				console.log(oldToken);
 				//获取当前评价商品
@@ -175,20 +179,34 @@
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-//						alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid));
+						alert("zxcxc "+JSON.stringify(data));
+						storeid = eval("("+data.data[0].goods_data+")")[0].storeid;
 						var comPic = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsImg;
 						$('#comPic').attr('src',comPic);
 											
 						//点击发送
 						window.sendCom = function(){
 							var goodsid = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsId;
-							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
+//							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
 							var seller_comment = $('#comment').val();
 							var grade_star = $('.mui-icon-star-filled').length;
-//							alert(seller_comment);	
-//							alert(storeid);
+							alert("1 "+seller_comment);	
+							alert("2 "+storeid);
+							alert("3 "+myuserid);
+							alert("4 "+grade_star);
 							//提交评价
-							//发送数据
+							
+							if(grade_star==0){
+								mui.toast('还未评分哦~')
+							}
+							else if(seller_comment.length<=5){
+								mui.toast('请输入至少5个字的评价哦~')
+							}else{
+								
+								//触发跳转页面刷新
+		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
+								//发送数据
+								 
 							var formD = new FormData();
 							console.log(Apic);
 //							alert('图片张数'+Apic.length); 
@@ -199,6 +217,7 @@
 							formD.append('orderid',orderId);
 							formD.append('goodsid',goodsid);
 							formD.append('stroeid',storeid);
+							formD.append('userid',myuserid);
 							formD.append('seller_comment',seller_comment);
 //							formD.append('seller_comment',seller_comment);
 							formD.append('grade_star',grade_star);
@@ -211,10 +230,12 @@
 		        						console.log(dataobj);
 		        						if(dataobj.errno == 0){
 		        							mui.toast('发布成功');	
-		        							//触发跳转页面刷新
-		        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
+		        							
 											mui.fire(plus.webview.getWebviewById('personal/sc-order.html'),'refreshAd');//打开指定页面
 											var time1 = setTimeout(function(){
+												
+												
+												mui.fire(plus.webview.getWebviewById(pageid),'refresh')
 												plus.webview.currentWebview().close();//关闭当前页面
 												plus.nativeUI.closeWaiting();
 											},1000)
@@ -227,6 +248,8 @@
 					        }
 		        			xhr.setRequestHeader("token",oldToken);
 		        			xhr.send(formD);
+							}
+							
 						}
 					},
 					error:function(xhr,type,errorThrown){
