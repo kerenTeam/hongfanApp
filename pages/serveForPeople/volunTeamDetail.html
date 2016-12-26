@@ -11,9 +11,7 @@
 		<meta name="format-detection" content="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="../../js/jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
 		<style type="text/css">
 			p{
 				color: #333;
@@ -26,35 +24,67 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">义工团队活动</h1> 
+		    <h1 class="mui-title">义工团队</h1> 
 		</header>		
-		<div class="mui-content">		
-			<div class="mui-card">
-				<div class="mui-card-header">团队名称<p class="mui-pull-right">发布时间：14:00:56</p></div>
-				<div class="mui-card-content">
-					<div class="mui-card-content-inner">
-						<div>
-							<p>包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）</p>
-							<p>包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）</p>
-							
-							<p>包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）</p>
-							
-							<p>包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）</p>
-							
-							<p>包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）</p>
-							
-							
+		<div class="mui-content">	
+			<div id="teamInfo"></div>
+			<script type="text/html" id="teamTpl">
+				<%for(var i = 0;i<objData.length;i++){%>
+					<div class="mui-card">
+					<div class="mui-card-header"><%=objData[i].name%><small class="mui-pull-right gray">发布时间：<%=objData[i].ceate%></small></div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							<div>
+								<p style="text-indent: 2em;"><%=objData[i].content%></p> 
+								
+							</div>
+							<%if(objData[i].picImg){%>
+								<img class="mui-col-sm-10" src="<%=objData[i].picImg%>"/>
+								<%}%>
+													
 						</div>
-						<img class="mui-col-sm-10" src="../../img/yg.jpg"/>						
 					</div>
+					<div class="mui-card-footer"><p class="gray smallSize">浏览量：<%=objData[i].read%>次</p></div>
 				</div>
-				<div class="mui-card-footer"><p class="gray smallSize">浏览量：20次</p></div>
-			</div>
+					<%}%>
+				
+			</script>
+			
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
-			
+			var oldtoken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/localservice/volunteerteam ',{
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldtoken},	              				
+							success:function(data,type,xhr){
+								alert('获取用户数据返回'+JSON.stringify(data.data[0]));
+								if(data.errno == 0){
+									if(data.data.length!=0){
+										var teamObj={};
+										for(var t=0;t<data.data.length;t++){  
+							       				data.data[t].ceate = data.data[t].ceate.substring(0,10)+" "+data.data[t].ceate.substring(11,16); 
+							       			  
+							       		} 
+										teamObj.objData=data.data;
+										mui('#teamInfo')[0].innerHTML = template('teamTpl',teamObj);
+									}else{
+										mui('#teamInfo')[0].innerHTML = 'dddd';
+									}
+									 
+								}else{
+									mui.toast('网络不好请重试！');
+									console.log(data.errmsg);
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								alert('响应失败  !');
+							}
+						});
 		});
 	</script>
 </html>
