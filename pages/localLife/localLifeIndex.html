@@ -60,6 +60,10 @@
 				-webkit-transform: scaleY(.5);
 			}
 			p{color: #5d5d61;}
+			.r_p{display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			overflow: hidden;}
 		</style>    
 	</head>
 	<body>
@@ -164,8 +168,9 @@
 								<span class="left">热门推荐&nbsp;&nbsp;&nbsp;&nbsp;</span>
 								<!--<a  class="gray smallSize mui-pull-right">更多 &gt;</a>-->
 							</div>
-							<ul class="mui-table-view">
-								<li class="mui-table-view-cell mui-media">
+							<ul class="mui-table-view" id="recommendsdiv">
+								<div id="tuijiannull" style="padding: 20px;text-align: center;display: none;">暂时没有了</div>
+								<!--<li class="mui-table-view-cell mui-media">
 									<a href="javascript:;">
 										<img class="mui-media-object mui-pull-left" src="../../img/localLife/baomuy.jpg">
 										<div class="mui-media-body">
@@ -173,26 +178,21 @@
 											<p class='mui-wrap'>你还在为繁琐的家务担忧吗？保姆月嫂来帮你，一个电话全搞定！</p>
 										</div>
 									</a>
-								</li>
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/fangchanz.jpg">
-										<div class="mui-media-body">
-											房产咨询
-											<p class='mui-wrap'>天大地大，何处是家。房产咨询，还你一个温馨舒适的家。</p>
-										</div>
-									</a>
-								</li>
-								<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="../../img/localLife/kuaidis.jpg">
-										<div class="mui-media-body">
-											快递上门
-											<p class='mui-wrap'>总是担心路途遥远时间错过而不能及时拿到心爱的包裹吗？快递到家解您后顾之忧！</p>
-										</div>
-									</a>
-								</li>
+								</li>-->
 							</ul>
+							<script type="text/html" id="recommends">
+								<% for(var i=0; i<list.length; i++){%>
+									<li class="mui-table-view-cell mui-media">
+									<a href="javascript:;">
+										<img class="mui-media-object mui-pull-left" src="<%= list[i].logo%>">
+										<div class="mui-media-body">
+											<%= list[i].name%>
+											<p class='mui-wrap r_p'><%= list[i].content%></p>
+										</div>
+									</a>
+								</li>
+								<% }%>	
+							</script>
 						</div>
 						<div id="more">
 							更多推荐 <img src="../../img/more.svg"/> 
@@ -258,18 +258,16 @@
 					mui.toast('响应失败  !');
 				}
 			});
-			//广告数据
+			//猜你喜欢
 			mui.ajax(serverUrl+'/api/localservice/localservicead',{
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldtoken},	              				
 				success:function(data){
-					//alert(mytoken);
-					console.log('获取栏目返回'+JSON.stringify(data));
+					console.log('猜你喜欢返回'+JSON.stringify(data));
 					if(data.errno == 0){ 
 						var objdata = {};
 						objdata.list = data.data;
-//						console.log(objdata.list);
 						var html = template("Adv",objdata);
 						document.getElementById("Advdiv").innerHTML=html;
 						plus.nativeUI.closeWaiting();
@@ -280,6 +278,39 @@
 					}
 				},
 				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('响应失败  !');
+				}
+			});
+			//热门推荐
+			mui.ajax(serverUrl+'/api/localservice/localservicecommend',{
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data){
+					console.log('热门推荐返回'+JSON.stringify(data));
+					if(data.errno == 0){ 
+						if(data.data.length){
+							var objdata = {};
+							objdata.list = data.data;
+							var html = template("recommends",objdata);
+							document.getElementById("recommendsdiv").innerHTML=html;
+						}else{
+							mui('#tuijiannull')[0].style.display = 'block';
+							mui('#more')[0].style.display = 'none';
+						}
+						plus.nativeUI.closeWaiting();
+					}else{
+						mui('#tuijiannull')[0].style.display = 'block';
+						mui('#more')[0].style.display = 'none';
+						mui.toast('获取用户信息失败');
+						plus.nativeUI.closeWaiting();
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui('#tuijiannull')[0].style.display = 'block';
+					mui('#more')[0].style.display = 'none';
 					plus.nativeUI.closeWaiting();
 					mui.toast('响应失败  !');
 				}
