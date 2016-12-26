@@ -104,7 +104,7 @@
 					<div class="pWrap">
 						<p class="black title">运单号</p>
 					</div>
-					<input type="text" name="" id="deliveryNo" value="" class="phone" placeholder="请输入单号"/>
+					<input type="text" name="" id="deliveryNo" value="" class="phone" placeholder="请输入单号" onkeyup="this.value=(this.value.replace(/\D/g,''))"/>
 				</dd>
 			</dl>
 			<div class="add">
@@ -177,12 +177,10 @@
 					//判断是否合法
 					if(shipper == ''){
 						mui.toast('请选择快递公司!');
-					}else if(deliveryNo == ''){
+					}else if(!/^\d*$/g.test(deliveryNo)){
 						$('#deliveryNo').focus(); 
 						mui.toast('运单号不能为空!');
 					}else{
-//						alert(shipper);
-//						alert(deliveryNo);
 						openview({ 
 							view:'deliveryTrace.html',
 							extrasobj:{deliveryNo:deliveryNo,shipper:shipper}
