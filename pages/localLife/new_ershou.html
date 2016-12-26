@@ -75,6 +75,7 @@
 				float: right;
 				width: 76%;
 				font-size: 16px;
+				color: #666;
 			}
 			.data ul li .shuru{
 				line-height: 16px;
@@ -94,7 +95,7 @@
 				margin-top: 4%;
 			}
 			.add-address .textare{
-				border-bottom: none;
+				border-bottom: none;color: #666;
 			}
 			.mobile{
 				margin: 50px 0 0 0;
@@ -321,7 +322,7 @@
 			/*图片上传*/
 	    	*{margin: 0;padding: 0;box-sizing: border-box;}
 	    	.clearfix:after {content: ""; display: block; clear:both;}
-	    	.uppics{text-align: center;border-bottom: 1px solid rgba(0,0,0,0.1);overflow-y: hidden;background-color: #fff;;}
+	    	.uppics{text-align: center;overflow-y: hidden;background-color: #fff;;}
 	    	.uppics div.onepic{height: 120px;padding: 0 !important;padding-top: 31px !important;font-size: 14px;}
 		    .uppics div.onepic img{width: 50px;}
 		    .uppics div.onepic input{width: 0;height: 0;position: absolute;outline: none;}
@@ -360,7 +361,7 @@
 		    <div class="header-tit">
 				跳蚤市场发布
 			</div>
-			<a class="fr baocun" id="Releasebtn">发布</a> 
+			<a class="fr baocun" id="Releasebtn">提交</a> 
 		</header>
 		<!--上传图片-->
 		<div class="uppics clearfix" style="margin-top: 50px;">
@@ -371,7 +372,7 @@
 	        </div>
 	    </div>
 		<!--上传图片结束-->
-		<div id="container" style="margin-top:-50px">
+		<div id="container" style="margin-top:-40px">
 		    <div id="main" class="mui-clearfix add-address">
 		    	<div id="thisAddLi"></div>
 		    	<div class="plist clearfloat data">
@@ -399,7 +400,7 @@
 							<a href="javascript:;" id="mapAddress">
 								<p class="fl">分类</p>
 								<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
-								<div id='cityResult3' class="ui-alert"></div>
+								<div id='cityResult3' class="ui-alert">请选择分类</div>
 							</a>
 						</li>
 						<li class="clearfloat">
@@ -510,11 +511,31 @@
 		var myuserid = plus.storage.getItem('userid');
 		var Bnowid = plus.webview.currentWebview().Bname;
 		var Btype = plus.webview.currentWebview().Btype;
+		
+		
+		
 		mui('#Releasebtn')[0].onclick = function(){
+			var classification;//分类
+			switch(mui('#cityResult3')[0].innerHTML){
+				case '家用电器':
+				classification = 1;
+				break;
+				case '手机电脑':
+				classification = 2;
+				break;
+				case '衣服':
+				classification = 3;
+				break;
+				case '食品':
+				classification = 4;
+				break;
+			}
 			var Ynulls = mui('.Ynull');
 			if(!reg_phone.test(mui('#Bphone')[0].value)){
 				mui.toast('请输入正确的手机号');
 				mui('#Bphone')[0].focus();
+			}else if(mui('#cityResult3')[0].innerHTML == "请选择分类"){
+				mui.toast('请选择分类');
 			}else{
 				if(Bnowid){//修改上传
 					for (var i=0; i<Ynulls.length; i++) {
@@ -540,7 +561,7 @@
 							formD.append('title',mui('#Bname')[0].value);
 							formD.append('phone',mui('#Bphone')[0].value);
 							formD.append('content',mui('#Binfo')[0].value);
-							formD.append('type',1);
+							formD.append('type',classification);
 							formD.append('price',mui('#Bprice')[0].value);
 							formD.append('original_price',mui('#Bo_price')[0].value);
 							formD.append('address',mui('#Baddress')[0].value);
@@ -597,7 +618,7 @@
 								formD.append('title',mui('#Bname')[0].value);
 								formD.append('phone',mui('#Bphone')[0].value);
 								formD.append('content',mui('#Binfo')[0].value);
-								formD.append('type',1);
+								formD.append('type',classification);
 								formD.append('price',mui('#Bprice')[0].value);
 								formD.append('original_price',mui('#Bo_price')[0].value);
 								formD.append('address',mui('#Baddress')[0].value);
@@ -639,6 +660,7 @@
 	//编辑显示既有部分
 	mui.plusReady(function(){
 		if(plus.webview.currentWebview().Bname){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			var Bnowid = plus.webview.currentWebview().Bname;
 			//显示信息
 			var oldtoken = plus.storage.getItem('oldToken');
@@ -650,10 +672,25 @@
 				success:function(data){
 					console.log('获取修改数据返回'+JSON.stringify(data)); 
 					if(data.errno == 0){
+						var classification2;
+						switch(data.data.type){//显示分类
+							case 1:
+							classification2 = '家用电器';
+							break;
+							case 2:
+							classification2 = '手机电脑';
+							break;
+							case 3:
+							classification2 = '衣服';
+							break;
+							case 4:
+							classification2 = '食品';
+							break;
+						}
 						mui('#Bname')[0].value = data.data.title;
 						mui('#Bphone')[0].value = data.data.phone;
 						mui('#Binfo')[0].value = data.data.content;
-						mui('#cityResult3')[0].innerHTML = data.data.type;
+						mui('#cityResult3')[0].innerHTML = classification2;
 						mui('#Bprice')[0].value = data.data.price;
 						mui('#Bo_price')[0].value = data.data.original_price;
 						mui('#Baddress')[0].value = data.data.address;
@@ -663,8 +700,10 @@
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
 					}
+					plus.nativeUI.closeWaiting();
 				},
 				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
 					mui.toast('响应失败  !');
 				}
 			});

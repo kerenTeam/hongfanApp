@@ -44,8 +44,8 @@
 			.null{text-align: center;}
 			.null img{margin-top: 7%;width: 30%;margin-bottom: 3%;}
 			.icon-list .icon-circle {
-			    width:58px;
-			    height: 58px;
+			    width:54px;
+			    height: 54px; 
 			    margin-bottom: 5px;
 			    padding: 15%;
 			}
@@ -93,8 +93,8 @@
 								</div>
 								<div class="swiper-slide swiper_part2" >
 									<ul class="icon-list" id="columndiv2">
-										<!--没有数据显示-->
-										<img src="../../img/nullinfo.svg">
+										<!--没有数据显示--> 
+										<img src="../../img/nullinfo.svg" id="kuimg" style="display: none;">
 										<p>没有了</p>	
 									</ul>
 									<!--有数据显示-->
@@ -199,7 +199,8 @@
 		});
 		
 		mui.plusReady(function(){
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});	
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		mui('#kuimg')[0].style.display = 'inline-block';
 		var oldtoken = plus.storage.getItem('oldToken');
 			//栏目数据
 			mui.ajax(serverUrl+'/api/localservice/localservicecates',{
@@ -340,5 +341,20 @@
 			})
 		});
 		
+	</script>
+	<input id="scan" type='button'  value='扫描图片'></input>
+		<script type="text/javascript" >
+			
+			
+			mui.plusReady(function(){
+				mui('#scan')[0].onclick = function(){
+					console.log(plus.barcode)					
+					plus.barcode.scan( '_www/barcode.png', function (type,result) {
+							alert( "Scan success:("+type+")"+result );
+						}, function (error) {
+							alert( error.message );
+					} );
+				}
+			})
 	</script>
 </html>
