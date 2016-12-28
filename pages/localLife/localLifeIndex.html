@@ -125,20 +125,24 @@
 					</section>
 				</div>
 				
-				<div class="mui-row" style="background-color: white;margin: 5px 0;">
+				<!--广告-->
+				<div class="mui-row" style="background-color: white;margin: 5px 0;" id="ad"></div> 
+				<!--广告 数据渲染-->
+				<script type="text/html" id="ad-detail">
 					<div class="mui-col-xs-6 rowpad">
-						 <img src="../../img/market/mainda2.jpg" class="allimga" alt="" />
+						 <img src="<%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[1].id %>)"/>
 					</div>
 					<div class="mui-col-xs-6 rowpad">
 						<div class="rpad clearfloat"> 
-								 <img src="../../img/market/mainad.png" class="allimga" alt="" /> 
+								 <img src="<%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[1].id %>)"/> 
 						</div>
 						<div class="rpad clearfloat"> 
-								 <img src="../../img/market/mainad22.png" class="allimga" alt="" /> 
+								 <img src="<%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[1].id %>)"/> 
 						</div>
 					</div> 
-				</div> 
-							
+				</script>
+				
+				
 				<div id="index" class="page-center-box">
 					<div>				
 						<!--猜你喜欢-->
@@ -238,6 +242,14 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script> 
+		//广告跳转到服务详情
+		function goAdv(other_id){
+			openview({
+				view:'theDetail.html',
+				extrasobj:{name:other_id}
+			})
+		}
+		
 		//滑动栏目的轮播
 		var mySwiper = new Swiper('.swiper-container',{
 			pagination : '.swiper-pagination'
@@ -288,6 +300,25 @@
 					mui('#columndiv2')[0].className = 'null';
 					mui('.diandian')[0].style.display = 'none';
 					mui.toast('响应失败  !');
+				}
+			});
+			//广告
+			//广告 数据渲染
+			mui.ajax(serverUrl +'/api/index/ads',{
+				data:{ad_type:3},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){
+//						alert(JSON.stringify(data.data));
+					var adObj = {};
+					adObj.adLi = data.data;
+					var html = template('ad-detail',adObj);
+					document.getElementById('ad').innerHTML = html;
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
 				}
 			});
 			//猜你喜欢

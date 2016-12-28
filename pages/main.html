@@ -292,19 +292,8 @@
 						</table>
 					</div>
 					<!--<div class="bor"></div>-->	
-					<div class="mui-row" style="background-color: white;margin: 5px 0;">
-						<div class="mui-col-xs-6 rowpad">
-							 <img src="../img/market/mainda2.jpg" class="allimga" alt="" />
-						</div>
-						<div class="mui-col-xs-6 rowpad">
-							<div class="rpad clearfloat"> 
-									 <img src="../img/market/mainad.png" class="allimga" alt="" /> 
-							</div>
-							<div class="rpad clearfloat"> 
-									 <img src="../img/market/mainad22.png" class="allimga" alt="" /> 
-							</div>
-						</div> 
-					</div> 
+					<!--广告-->
+					<div class="mui-row" style="background-color: white;margin: 5px 0;" id="ad"></div> 
 					<!--推荐列表-->
 					<div class="sy_recmd">
 						<!--推荐列表-->
@@ -375,6 +364,21 @@
 				<%}%>
 			<%}%>
 		</script>
+		
+		<!--广告-->
+		<script type="text/html" id="ad-detail">
+			<div class="mui-col-xs-6 rowpad">
+				 <img src="<%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].storeid %>)"/>
+			</div>
+			<div class="mui-col-xs-6 rowpad">
+				<div class="rpad clearfloat"> 
+						 <img src="<%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].storeid %>)"/> 
+				</div>
+				<div class="rpad clearfloat"> 
+						 <img src="<%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].storeid %>)"/> 
+				</div>
+			</div> 
+		</script>
 	<script type="text/javascript">
 	//跳转详情
 		function goInfo(goodsId){
@@ -383,6 +387,15 @@
 			 	extrasobj:{goodsId:goodsId}
 			 })
 		}
+		
+		//根据广告跳转到对应商店详情
+		function goAdv(storeId){
+			openview({
+				view:'market/shophome.html',
+				extrasobj:{storeId:storeId}
+			})
+		}
+		
 		$(".adGo").each(function(){
 			$(this).click(function(){
 				openview({
@@ -450,7 +463,8 @@
 				});
 				fil.addEventListener('tap', function(){
 					openview({
-						view:'appriciate/appriciate.html',
+						view:'appriciate/apprenticeDetail.html',
+						extrasobj:{activityId:1}
 					});
 				});
 				loveBuy.addEventListener('tap', function(){
@@ -479,7 +493,7 @@
 					}
 				};
 				//数据渲染
-				
+				//渲染banner
 				mui.ajax(serverUrl +'/api/index/indexheaderdata',{
 	//				data:{userid : 148},
 					dataType:'json',
@@ -507,6 +521,25 @@
 					}
 				});
 				
+				
+				//广告 数据渲染
+				mui.ajax(serverUrl +'/api/index/ads',{
+					data:{ad_type:1},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+//						alert(JSON.stringify(data.data));
+						var adObj = {};
+						adObj.adLi = data.data;
+						var html = template('ad-detail',adObj);
+						document.getElementById('ad').innerHTML = html;
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('响应失败  !');
+					}
+				});
 				
 				//热门推荐 数据渲染 
 				var currentPage =1, numsPerPage=4;
