@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>为民服务-义工团队</title>
+		<title>为民服务-义工活动</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -33,7 +33,7 @@
 				<div class="mui-card">
 					<div class="mui-card-header">
 						<%= objData.title%>
-						<small class="mui-pull-right gray">发布时间：<%= objData.ceate%></small>
+						<small class="mui-pull-right gray">发布时间：<%= objData.create_time%></small>
 					</div>
 					<div class="mui-card-content">
 						<div class="mui-card-content-inner">
@@ -55,15 +55,17 @@
 	<script type="text/javascript">
 		mui.plusReady(function(){
 			var oldtoken = plus.storage.getItem('oldToken');
+			var activityId = plus.webview.currentWebview().activityId;
+//			alert(activityId);
 			mui.ajax(serverUrl+'/api/localservice/activitieinfo',{
 				type:'post',
-				data:{id:1},
+				data:{id:activityId},
 				timeout:10000,
 				headers:{"token":oldtoken},	              				
 				success:function(data,type,xhr){
-					alert(data.data.title);
+//					alert(JSON.stringify(data.data));
 					var teamObj={};
-//		       		data.data.ceate = data.data.ceate; 
+		       		data.data.create_time = data.data.create_time.split('T')[0]; 
 					teamObj.objData=data.data;
 					mui('#teamInfo')[0].innerHTML = template('teamTpl',teamObj);
 				},
