@@ -8,7 +8,10 @@
 		<title>扫描二维码</title>
 		<link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8"/>
 		<link rel="stylesheet" href="../../css/mui.min.css" type="text/css" charset="utf-8"/>
-		
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>  
+		<script type="text/javascript" src="../../js/app.js"></script>  
+
 		<script type="text/javascript">
 			var ws=null,wo=null;
 			var scan=null,domready=false;
@@ -57,7 +60,36 @@
 			    result = result.replace(/\n/g, ''); 
 			    alert(result);
 //			    wo.evalJS("scaned('"+ type +"','"+ result +"','"+ file +"');");
-			    back();
+			    //back();
+			    //上传数据
+			    mui.plusReady(function(){
+			    	var myuserid = plus.storage.getItem('userid');
+					var oldtoken = plus.storage.getItem('oldToken');
+					plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
+				    mui.ajax(serverUrl+'/api/useraccount/couponverify',{
+						data:{"userid":myuserid,"couponid":result},
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldtoken},	              				
+						success:function(data,type,xhr){
+							plus.nativeUI.closeWaiting();
+							console.log('上传核销返回'+JSON.stringify(data));
+							if(data.errno == 0){
+								
+								
+							}else{
+								plus.nativeUI.closeWaiting();
+								mui.toast('核销失败'); 
+							}
+							back();							
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast('核销失败'); 
+							back();	
+						}
+					});
+				})  
 			}
 		</script>
 		

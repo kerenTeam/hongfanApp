@@ -46,11 +46,11 @@
 			/*修改*/
 			body{
 				/*background-color: #e6e6e6;*/ 
-				
+				 
 			}
 			.h-top{
 				/*background: red url(../img/center/bigCloud.png) no-repeat bottom;*/
-				background-size: cover;
+				background-size: cover; 
 				margin: 0;
 			}
 			.centerBack{
@@ -223,7 +223,7 @@
 				<li class="box-s2"> 
 					<a class="aboutUs">
     					<p class="fl"><img style="margin-right: 13px;margin-left: 2px;" src="../img/center/aboutUs.png"/>关于我们</p> 
-					<a class="writeOff">
+					<a class="writeOff" style="display: none;">
     					<p class="fl"><img style="width: 11%;margin-right: 10px;margin-left: 2px;" src="../img/hexiao.svg"/>商户核销</p> 
     				</a>
 				</li>
@@ -268,8 +268,18 @@
 									}else{
 										mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
 									}
+									//显示核销
+									if(data.data[0].gid == 5){
+										 mui('.writeOff')[0].style.display = 'block';
+										 mui('.writeOff')[0].addEventListener('tap',function(){
+											openview({
+												view:'personal/barcode_scan.html' 
+											});
+										});
+									}
+									
 								}else{
-									mui.toast('获取用户信息失败');
+									mui.toast('获取用户信息失败'); 
 									console.log(data.errmsg);
 								}
 							},
@@ -301,9 +311,26 @@
 						if(plus.storage.getItem('myToken')){ 
 							if(this.innerHTML = "已签到"){
 //								mui.toast("不能重复签到哦")
-							}else{ 
+							}else{
 								//执行签到 
-								this.innerHTM = "已签到";
+								mui.ajax(serverUrl+'api/index/cheking',{
+									data:{"userid":myuserid},
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldtoken},	              				
+									success:function(data){
+										console.log('签到返回'+JSON.stringify(data));
+										if(data.errno == 0){
+											
+											this.innerHTM = "已签到";
+										}else{
+											mui.toast('签到失败');
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast('签到失败'); 
+									}
+								});
 							}
 						}else{//没登陆直接打开登录页面 
 							mui.toast('请登录');
@@ -452,20 +479,6 @@
 							});
 						}
 					});	
-					//核销 
-					mui('.writeOff')[0].addEventListener('tap',function(){
-						if(plus.storage.getItem('myToken')){ 
-							openview({
-//								id:'barcode_scan',
-								view:'personal/barcode_scan.html' 
-							});
-						}else{//没登陆直接打开登录页面
-							mui.toast('请登录');
-							openview({
-								view:'login.html'
-							});
-						}
-					});
 					
 				}//刷新	
 			});
