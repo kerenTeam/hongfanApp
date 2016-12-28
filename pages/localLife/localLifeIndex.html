@@ -64,6 +64,8 @@
 			-webkit-box-orient: vertical;
 			-webkit-line-clamp: 2;
 			overflow: hidden;}
+			.sy_limit_buy .locatLabel_switch .box{line-height: 1.2;}
+			.sy_limit_buy .locatLabel_switch .box p{padding: 3px 0;text-align: left;font-size: 13px;}
 		</style>    
 	</head>
 	<body>
@@ -73,6 +75,7 @@
 		    <!--<a class="fr shoucang mui-icon mui-icon-bars" id="theSearch" href="javascript:;"></a>-->
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="Mask" style="position: absolute;width: 100%;height: 100%;background-color: #fff;z-index: 100;"></div>
 		<div id="container">		
 			<div id="main">
 				<div id="scroller">			
@@ -135,9 +138,9 @@
 								<script type="text/html" id="Adv">
 									<% for(var i=0; i<list.length; i++){%>
 										<div class="box swiper-slide">
-											<a href="#">
-												<img src="<%= list[i].pic%>" width="" height="" onclick="fun1()">
-												<p class="txt_center overflow_clear"><%= list[i].titlt%></p>
+											<a href="javascript:;" onclick="opendetails(<%= list[i].id%>)">
+												<img src="<%= list[i].logo%>" width="" height="">
+												<p class="txt_center overflow_clear"><%= list[i].name%></p>
 											</a>
 										</div>
 									<% }%>	
@@ -166,18 +169,46 @@
 									</a>
 								</li>-->
 							</ul>
+							<!--猜你喜欢-->
 							<script type="text/html" id="recommends">
-								<% for(var i=0; i<list.length; i++){%>
-									<li class="mui-table-view-cell mui-media">
-									<a href="javascript:;">
-										<img class="mui-media-object mui-pull-left" src="<%= list[i].logo%>">
-										<div class="mui-media-body">
-											<%= list[i].name%>
-											<p class='mui-wrap r_p'><%= list[i].content%></p>
-										</div>
-									</a>
-								</li>
+								<% if(list.length >= 3){%>
+									<% for(var i=0; i<3; i++){%>
+										<li class="mui-table-view-cell mui-media" onclick="opendetails(<%= list[i].id%>)">
+											<a href="javascript:;">
+												<img class="mui-media-object mui-pull-left" src="<%= list[i].logo%>">
+												<div class="mui-media-body">
+													<%= list[i].name%>
+													<p class='mui-wrap r_p'><%= list[i].content%></p>
+												</div>
+											</a>
+										</li>
+									<% }%>
+								<% }else{%>
+									<% for(var i=0; i<list.length; i++){%>
+										<li class="mui-table-view-cell mui-media" onclick="opendetails(<%= list[i].id%>)">
+											<a href="javascript:;">
+												<img class="mui-media-object mui-pull-left" src="<%= list[i].logo%>">
+												<div class="mui-media-body">
+													<%= list[i].name%>
+													<p class='mui-wrap r_p'><%= list[i].content%></p>
+												</div>
+											</a>
+										</li>
+									<% }%>
 								<% }%>	
+							</script>
+							<script type="text/html" id="recommends2">
+								<% for(var i=0; i<list.length; i++){%>
+									<li class="mui-table-view-cell mui-media" onclick="opendetails(<%= list[i].id%>)">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="<%= list[i].logo%>">
+											<div class="mui-media-body">
+												<%= list[i].name%>
+												<p class='mui-wrap r_p'><%= list[i].content%></p>
+											</div>
+										</a>
+									</li>
+								<% }%>
 							</script>
 						</div>
 						<div id="more">
@@ -227,6 +258,7 @@
 						}
 						
 						plus.nativeUI.closeWaiting();
+						mui('#Mask')[0].style.display = 'none';
 						//添加监听
 						Monitor();
 					}else{
@@ -245,7 +277,7 @@
 				}
 			});
 			//猜你喜欢
-			mui.ajax(serverUrl+'/api/localservice/localservicead',{
+			mui.ajax(serverUrl+'/api/localservice/localserviceads',{
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldtoken},	              				
@@ -257,6 +289,7 @@
 						var html = template("Adv",objdata);
 						document.getElementById("Advdiv").innerHTML=html;
 						plus.nativeUI.closeWaiting();
+						mui('#Mask')[0].style.display = 'none';
 					}else{
 						mui.toast('获取用户信息失败');
 						plus.nativeUI.closeWaiting();
@@ -277,10 +310,29 @@
 					console.log('热门推荐返回'+JSON.stringify(data));
 					if(data.errno == 0){ 
 						if(data.data.length){
+							mui('#Mask')[0].style.display = 'none';
 							var objdata = {};
 							objdata.list = data.data;
 							var html = template("recommends",objdata);
-							document.getElementById("recommendsdiv").innerHTML=html;
+							document.getElementById("recommendsdiv").innerHTML = html;
+							if(data.data.length>=3){//大于三条点击更多继续加载;
+								mui('#more')[0].onclick = function(){
+									mui('#more')[0].innerHTML = '<img style="width: 13%;margin-top: -10px;" src="../../img/balls.svg"/>';
+									var Tjiazai = setTimeout(function(){
+										document.getElementById("recommendsdiv").innerHTML = html;
+										mui('#more')[0].style.display = 'none';
+										document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="padding: 20px;text-align: center;position: relative;top: 10px;z-index: 1;background-color: #fff;padding-top: 10px;">暂时没有了</div>'
+										
+									},500)
+									var html = template("recommends2",objdata);
+
+								}
+							}else{
+								mui('#more')[0].style.display = 'none';
+								document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="padding: 20px;text-align: center;">暂时没有了</div>'
+							}
+							
+							
 						}else{
 							mui('#tuijiannull')[0].style.display = 'block';
 							mui('#more')[0].style.display = 'none';
@@ -371,6 +423,16 @@
 				view:'../jindaikaifa.html',
 			})
 		});
+		
+		
+		//猜你喜欢,热门推荐 的 跳转详情
+		function opendetails(id){
+			openview({
+				view:'theDetail.html',
+				extrasobj:{name:id}
+			})
+		}
+		
 		
 	</script>
 </html>
