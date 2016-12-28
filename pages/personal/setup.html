@@ -98,7 +98,7 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
-			<div id="main">
+			<div id="main"> 
 		    	<div class="plist clearfloat data" id="userMessContainer">
 					<ul>
 						<li class="clearfloat touxiang">
@@ -121,17 +121,17 @@
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">性别</p>
-				    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn">
+				    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn" dir="rtl">
 									<option value="item-1">点击选择</option>
-									<option value="item-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;男</option> 
-									<option value="item-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;女</option>
+									<option value="item-2">男</option> 
+									<option value="item-2">女</option>
 								</select>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">身份证号码</p>
-								<input type="text" class="fr shuru" name="" id="mynickname" placeholder="点击编辑" />
+								<input type="text" class="fr shuru" name="" id="IDcard" placeholder="点击编辑" />
 							</a>
 						</li>
 						<!--<li class="clearfloat">
@@ -158,6 +158,9 @@
 				<li id="Signout"><a href="#">退出登录</a></li>
 			</ul>
 		</div>
+		<script type="text/javascript">
+			
+		</script>
 	</body>
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -208,7 +211,7 @@
 							case '女':
 							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
 							break;
-							case null:
+							case '择'|| null:
 							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
 							break;
 						}
@@ -236,44 +239,58 @@
 			mui.plusReady(function(){ 
 				var myuserid = plus.storage.getItem('userid');
 				var oldtoken = plus.storage.getItem('oldToken');
-				
-				var fd = new FormData(); 
-				if(touxiang.name){
-					fd.append('avatar',touxiang);
+				var IDnum = mui('#IDcard')[0].value;
+				var reg_ID = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+				if(IDnum == ''){
+					upfun1();
+				}else{
+					if(reg_ID.test(IDnum)){
+						upfun1();
+					}else{
+						plus.nativeUI.closeWaiting();//关闭等待框
+						mui.toast('请输入合法证件号');
+					}
 				}
-		        fd.append('userid',myuserid);  		
-		        fd.append('nickname',mynickname);  		
-		        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
-		        var xhr = new XMLHttpRequest(); 	
-		        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
-		    	xhr.onreadystatechange = function(){
-		    		if (xhr.readyState===4) {
-    					if (xhr.status===200) {
-    						plus.nativeUI.closeWaiting();//关闭等待框
-    						var dataobj = JSON.parse(xhr.responseText);
-    						console.log('修改'+xhr.responseText);
-    						if(dataobj.errno == 0){
-    							mui.toast('修改成功');	
-    							//触发跳转页面刷新
-								mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-								var time2 = setTimeout(function(){
-									plus.webview.currentWebview().close();
-								},500)
-    						}else{
-    							mui.toast('保存失败');	
-    						}
-    					}else{
-    						mui.toast('响应失败');	
-    					}
-    				}
-		        } 
-		        xhr.setRequestHeader("token",oldtoken);
-		        xhr.send(fd);
+				function upfun1(){
+					var fd = new FormData(); 
+					if(touxiang.name){
+						fd.append('avatar',touxiang);
+					}
+			        fd.append('userid',myuserid);  		
+			        fd.append('nickname',mynickname);  		
+			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
+			        var xhr = new XMLHttpRequest(); 	
+			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
+			    	xhr.onreadystatechange = function(){
+			    		if (xhr.readyState===4) {
+	    					if (xhr.status===200) {
+	    						plus.nativeUI.closeWaiting();//关闭等待框
+	    						var dataobj = JSON.parse(xhr.responseText);
+	    						console.log('修改'+xhr.responseText);
+	    						if(dataobj.errno == 0){
+	    							mui.toast('修改成功');	
+	    							//触发跳转页面刷新
+									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+									var time2 = setTimeout(function(){
+										plus.webview.currentWebview().close();
+									},500)
+	    						}else{
+	    							mui.toast('保存失败');	
+	    						}
+	    					}else{
+	    						mui.toast('响应失败');	
+	    					}
+	    				}
+			        } 
+			        xhr.setRequestHeader("token",oldtoken);
+			        xhr.send(fd);
+				}
+				
 			})
 		
 		})
 		
-		//上传文件方法	
+		//图片上传文件方法	
 		function previewImage(file) {
 			var MAXWIDTH = 350;
 			var MAXHEIGHT = 249;
