@@ -16,6 +16,8 @@
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/apprentice.css"/> 
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<style>
 		.goinfl{
@@ -54,45 +56,80 @@
 		    <h1 class="mui-title">一见钟情</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="mui-content">		
+		<div class="mui-content" id="activity"></div>
+		
+		<script type="text/html" id="activity-detail">
 			<div class="imgBox">
-				<img src="../../img/localLife/xiangqinhui.png"/>
+				<img src="<%= objData.picImg %>"/>
 			</div>
 			<div class="ceremonyContent" style="background-color: white;">
 				<article class="xiangqinPara">
-					<div class="black" style="margin-top: 5%;"><b>感受甜蜜--邂逅爱情</b></div>
-					<div class="gray"><small>71人已参加</small></div>
-					<button type="button" onclick="gosub(id)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl">要参加</button>
+					<div class="black" style="margin-top: 5%;"><b><%= objData.title %></b></div>
+					<div class="gray"><small><%= objData.joined %>人已参加</small></div>
+					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.fee %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl">要参加</button>
 					
-					<div class="black acl"><img src="../../img/serveForPeople/actime.png" alt="" /> 活动时间<small class="fr gray">9月7日 13：00-22:00</small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray">8月1日-8月31日</small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/baom.png" alt="" /> 报名费用<small class="fr gray">￥33</small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/acmap.png" alt="" /> 活动地点<small class="fr gray">xxxxxx广场</small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/ban.png" alt="" /> 活动承办方<small class="fr gray">xxxxxx</small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/actime.png" alt="" /> 活动时间<small class="fr gray"><%= objData.time %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray"><%= objData.begin_time %>到<%= objData.end_time %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/baom.png" alt="" /> 报名费用<small class="fr gray">
+						<% if(objData.fee >0){ %>
+							￥<%= objData.fee %>
+						<% }else{ %>
+							免费
+						<% } %>
+						
+					</small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/acmap.png" alt="" /> 活动地点<small class="fr gray"><%= objData.site %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/ban.png" alt="" /> 活动承办方<small class="fr gray"><%= objData.sponsor %></small></div>
 					 
 					<div class="grayd">活动详情：
 						<ul class="listContent">
-							<li>13:00开始分发号码牌、进场、浏览参会人员基本资料；</li>
-							<li>14:00相亲活动正式开始，进入游戏互动交友的乐园;</li>
+							<li><%= objData.content %></li>
+							<!--<li>14:00相亲活动正式开始，进入游戏互动交友的乐园;</li>
 							<li>18:30相亲活动结束，参会人员可享免费晚餐;</li>
-							<li>19:30-22:00嘉年华演出;</li>
+							<li>19:30-22:00嘉年华演出;</li>-->
 						</ul>
 					</div> 
-					
 				</article>
 			</div> 
-		</div>
+		</script>
 	</body>
 	<script type="text/javascript">
-	        function gosub(id){
-				openview({
-						view:'apprenticeSub.html',
-						id:'apprenticeSub',
-						extras:{id:id}
-					});
-			}
+        function gosub(id,fee){
+			openview({
+					view:'apprenticeSub.html',
+//					id:'apprenticeSub',
+					extrasobj:{apprenticeId:id,apprenticeFee:fee}
+				});
+		}
 		mui.plusReady(function(){
-		
+			
+			//铺数据
+			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
+			var oldToken = plus.storage.getItem('oldToken');
+			var activityId = plus.webview.currentWebview().activityId;
+//			alert(activityId);
+			console.log(oldToken);
+			mui.ajax(serverUrl+'/api/localservice/activityinfo',{
+				data:{id:activityId},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data[0]));
+					var dateObj={};
+		       		data.data[0].time = data.data[0].time.split('T')[0]; 
+		       		data.data[0].begin_time = data.data[0].begin_time.split('T')[0]; 
+		       		data.data[0].end_time = data.data[0].end_time.split('T')[0]; 
+					dateObj.objData=data.data[0];
+					mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
+					plus.nativeUI.closeWaiting();
+					
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
 		});
 	</script>
 </html>

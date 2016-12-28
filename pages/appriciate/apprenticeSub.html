@@ -283,7 +283,7 @@
 	    			<span>年龄</span> <input type="number" id="Bage" class="Ynull fr" min="20" max="50" value=""/>
 	    		</div>
 	    		<div class="czhi clearfloat box-s">
-	    			<span>报名费</span> <input type="number" id="Bprice" class="Ynull fr" value="0" readonly />
+	    			<span>报名费</span> <input type="text" id="Bprice" class="Ynull fr" readonly disabled/>
 	    		</div> 
 	    	</div>	    	
 	    </div>
@@ -339,39 +339,86 @@
 	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
+		var apprenticeId = plus.webview.currentWebview().apprenticeId;
+		var apprenticeFee = plus.webview.currentWebview().apprenticeFee;
+		console.log(oldtoken);
+		if(apprenticeFee > 0){
+			document.getElementById('Bprice').value = apprenticeFee;
+		}else{
+			document.getElementById('Bprice').value = "免费";
+		}
+		
+//		alert(apprenticeFee);
+		
 		mui('#Releasebtn')[0].onclick = function(){ 
-			var Ynulls = mui('.Ynull');
-			if(mui('#Bname')[0].value==''){
-				mui.toast('请输入您的姓名');
-				mui('#Bname')[0].focus();
-			}
-			else if(!reg_phone.test(mui('#Bphone')[0].value)){
-				mui.toast('请输入正确的手机号');
-				mui('#Bphone')[0].focus();
-			}
-			else if(mui('#Bclass')[0].value!='男' && mui('#Bclass')[0].value!='女'){
-				mui.toast('请输入您的性别');
-				mui('#Bclass')[0].focus();
-			}
-			else if(mui('#Bage')[0].value==''){
-				mui.toast('请输入您的年龄');
-				mui('#Bage')[0].focus();
-			}
-			else{
-				for (var i=0; i<Ynulls.length; i++) {
-					if(!Ynulls[i].value){
-						Ynulls[i].focus();
-						mui.toast('请输入'+Ynulls[i].placeholder);
-						break; 
-					}
-					if(i==Ynulls.length-1){
-						plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
-						
-						//发送数据 
-					}
-				}
 			
-			}
+			//获取所需data
+			var name = mui('#Bname')[0].value;
+			var mobileno = mui('#Bphone')[0].value;
+			var gender = mui('#Bclass')[0].value;
+			var age = mui('#Bage')[0].value;
+			var price = document.getElementById('Bprice').value;
+			
+			var Ynulls = mui('.Ynull');
+//			if(mui('#Bname')[0].value==''){
+//				mui.toast('请输入您的姓名');
+//				mui('#Bname')[0].focus();
+//			}
+//			else if(!reg_phone.test(mui('#Bphone')[0].value)){
+//				mui.toast('请输入正确的手机号');
+//				mui('#Bphone')[0].focus();
+//			}
+//			else if(mui('#Bclass')[0].value!='男' && mui('#Bclass')[0].value!='女'){
+//				mui.toast('请输入您的性别');
+//				mui('#Bclass')[0].focus();
+//			}
+//			else if(mui('#Bage')[0].value==''){
+//				mui.toast('请输入您的年龄');
+//				mui('#Bage')[0].focus();
+//			}
+//			else{
+//				for (var i=0; i<Ynulls.length; i++) {
+//					if(!Ynulls[i].value){
+//						Ynulls[i].focus();
+//						mui.toast('请输入'+Ynulls[i].placeholder);
+//						break; 
+//					}
+//					if(i==Ynulls.length-1){
+						if(!price == "免费"){
+							
+							//铺数据
+							var oldToken = plus.storage.getItem('oldToken');
+							console.log(oldToken);
+							mui.ajax(serverUrl+'/api/localservice/activityjoin',{
+								data:{id:apprenticeId,userid:myuserid,name:name,gender:gender,mobileno:mobileno,age:age},
+								dataType:'json',
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldToken},	 
+								success:function(data,type,xhr){
+									alert(JSON.stringify(data.data));
+									plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
+									var dateObj={};
+									for(var i = 0;i < data.data.length;i++){
+										data.data[i].time = data.data[i].time.split('T')[i]; 
+							       		data.data[i].begin_time = data.data[i].begin_time.split('T')[i]; 
+							       		data.data[i].end_time = data.data[i].end_time.split('T')[i]; 
+									}
+									dateObj.objData=data.data;
+									mui('#Alist')[0].innerHTML = template('Alist-detail',dateObj);
+								},
+								error:function(xhr,type,errorThrown){
+									alert('响应失败  !');
+								}
+							});						
+						}else{
+							
+						}
+						
+//					}
+//				}
+//			
+//			}
 		}
 	})
 </script>
