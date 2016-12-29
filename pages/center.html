@@ -283,7 +283,6 @@
 						mui('.dao')[0].innerHTML = '签到';
 						mui('#mypic')[0].src = '../img/morentouxiang.jpg';
 					}
-					
 					//头像
 					mui('.myInfo')[0].addEventListener('tap',function(){
 						if(plus.storage.getItem('myToken')){ 
@@ -297,32 +296,29 @@
 							});
 						}
 					});
-					//签到 
-					document.getElementsByClassName('dao')[0].onclick=function(){
+					//签到  
+					mui('.dao')[0].onclick=function(){  
 						if(plus.storage.getItem('myToken')){ 
-							if(this.innerHTML = "已签到"){
-//								mui.toast("不能重复签到哦")
-							}else{
+							if(mui('.dao')[0].innerHTML == "签到"){
 								//执行签到 
-								mui.ajax(serverUrl+'api/index/cheking',{
-									data:{"userid":myuserid},
+								mui.ajax(serverUrl+'/api/index/cheking',{
+									data:{"userid":myuserid,"intergral_float":2050},
 									type:'post',
 									timeout:10000,
 									headers:{"token":oldtoken},	              				
 									success:function(data){
 										console.log('签到返回'+JSON.stringify(data));
 										if(data.errno == 0){
-											
-											this.innerHTM = "已签到";
+											mui.toast('签到成功'); 
 										}else{
-											mui.toast('签到失败');
+											mui.toast('每天只能签到一次');
 										}
 									},
 									error:function(xhr,type,errorThrown){
 										mui.toast('签到失败'); 
 									}
 								});
-							}
+							}	
 						}else{//没登陆直接打开登录页面 
 							mui.toast('请登录');
 							openview({
