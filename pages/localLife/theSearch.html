@@ -13,18 +13,18 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
-		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<!--<link href="../../css/mui.picker.min.css" rel="stylesheet" />-->
+		<!--<link href="../../css/mui.poppicker.css" rel="stylesheet" />-->
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
 		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
+		<!--<script type="text/javascript" src="../../js/swiper.min.js"></script>-->
 		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<script src="../../js/mui.picker.min.js"></script>
-		<script src="../../js/mui.poppicker.js"></script>
+		<!--<script src="../../js/mui.picker.min.js"></script>-->
+		<!--<script src="../../js/mui.poppicker.js"></script>-->
 		
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
 		
 		<style type="text/css">
 		 .mui-search:before{
@@ -71,25 +71,44 @@
 			 .searchOut{
 			 	display: none;
 			 	position: fixed;
-			 	top: 89px;
-			 	width: 100%;
+			 	top: 0px;
+			 	width: 100%; 
 			 }
-		</style>
+			 .mui-icon-back:before, .mui-icon-left-nav:before {
+				margin-left: 10%;
+			}
+			 #searchdiv{width: 86%;float: left;border-bottom: 1px solid #fff;height: 45px;}
+			 .mui-bar{padding: 0 1%;}
+			 #words{height: 100%;background: none;border: none;padding: 0;margin: 0;padding-top: 8px;
+    padding-left: 7px;padding-right: 8px;color: #fff;width: 100%;text-align: left;}
+		    #words::-webkit-input-placeholder {color:rgba(255, 255, 255, 0.54);}
+		#searchdiv img{width: 7%;margin-left: 9px;margin-bottom:7px;} 
+		.historyBox{padding-top: 63px;}
+		#searchf{display: inline-block;width: 87%;margin-top: 5px;}
+		</style> 
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">搜索</h1>
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="width: 12%;float: left;margin: 0;padding: 0;"></a>
+		    <!--<h1 class="mui-title">搜索</h1>-->
+		    <div id="searchdiv" >
+		    	<form onsubmit="submitTest();return false;" id="searchf">
+		    		<input type="search" id="words" class="" placeholder="请输入搜索内容">
+				</form>
+		    	
+		    	<img src="../../img/sousuo.svg"/ onclick="submitTest();" >
+		    </div>
+		     
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="theSearch">
+		<!--<div class="theSearch">
 			<div class="mui-input-row mui-search">
-			    <input type="search" id="words" class="mui-input-clear" placeholder="">
+			   
 			</div>
-		</div>
+		</div>-->
 		<div id="container">
-			<section class="hotBox">
+			<section class="hotBox" style="display: none;">
 				<div class="title">热门搜索</div>
 				<ul class="hotKeyUl">
 					<li>
@@ -121,7 +140,17 @@
 			
 			<!--搜索历史-->
 			
-			<div id="record"></div>
+			<div id="record">
+				 
+			</div>
+				<script id="recordTpt2" type="text/html">
+					<section class="historyBox" style="">
+					<div class="title">搜索历史</div>
+					<ul>
+					 	<li class="clear clearStr">暂无搜索历史</li>
+					</ul>
+				</section>
+				</script>	
 				<script id="recordTpt" type="text/html">
 					<%if(data.length==0){%>
 						<!--<div class="searchRecord">
@@ -152,21 +181,17 @@
 	</body>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		(function(){
-			
 			mui.plusReady(function(){
-				//缓存记录
+			//缓存记录
 			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
-			
-			$("input").on('change',function(){
-				alert(2)
+			//搜索方法
+			window.submitTest = function(){
 				if($("input").val()!=''){ 
 					var words=$("input").val();
 					if(searchStorage.length != 0) {
 						var flag = false;
 						for(var i = 0; i < searchStorage.length; i++) {
 							if(searchStorage[i] == words) {
-								
 								searchStorage[i] = words;
 								flag = false;
 								break;
@@ -182,7 +207,6 @@
 						
 					} 
 					plus.storage.setItem('$searchStorage', JSON.stringify(searchStorage)); 
-					alert("执行搜索")
 					alert(JSON.stringify(searchStorage))
 					$("#container").css("display","none");
 					$(".searchOut").css("display","block");
@@ -190,30 +214,60 @@
 					$("#container").css("display","block");
 					$(".searchOut").css("display","none");
 				} 
-			})
-			$(".mui-icon-clear:before,.mui-icon-close-filled:before").on('click',function(){ 
-				alert(1)
-					$("#container").css("display","block");
-				$(".searchOut").css("display","none"); 
-			})
- 
- 			
-			 //alert(searchStorage.length)
+			}
+			
 			var recordObj = {};
-				recordObj.data= searchStorage;
-			var htmlrecord = template('recordTpt', recordObj);
-			    document.getElementById('record').innerHTML = htmlrecord;
-			     mui('.clearStr')[0].addEventListener('tap',function(){
-				 	//alert(22)
-				 	plus.storage.removeItem("$searchStorage");
-				 	mui("#record")[0].style.display="none"
-				 })
-				//搜索某一条 缓存 
-				  $('.searchli').click(function(e){
-				   	e.preventDefault();
-				   	alert("执行搜索")
-				  })
-				})
+			recordObj.data= searchStorage;
+			if(searchStorage.length){
+				var htmlrecord = template('recordTpt', recordObj);
+			}else{
+				var htmlrecord = template('recordTpt2', recordObj);
+			}
+		    document.getElementById('record').innerHTML = htmlrecord;
+		    //清除记录
+		    mui('.clearStr')[0].addEventListener('tap',function(){
+			 	//alert(22)
+			 	plus.storage.removeItem("$searchStorage");
+			 	$('.link-url').css("display","none");
+			 	mui(".clearStr")[0].innerHTML="暂无搜索历史"; 
+			})
+			//搜索某一条 缓存 
+			$('.searchli').click(function(e){
+			    e.preventDefault();
+			    alert("执行搜索")
+			})
+				  
+				  
+			  	//自动弹出输入法
+			  	var nativeWebview, imm, InputMethodManager;
+				var initNativeObjects = function() {
+				    if (mui.os.android) {
+				        var main = plus.android.runtimeMainActivity();
+				        var Context = plus.android.importClass("android.content.Context");
+				        InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+				        imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				    } else {
+				        nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+				    }
+				};
+				var showSoftInput = function() {
+				    if (mui.os.android) {
+				        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+				    } else {
+				        nativeWebview.plusCallMethod({
+				            "setKeyboardDisplayRequiresUserAction": false
+				        });
+				    }
+			        //此处可写具体逻辑设置获取焦点的input
+			        setTimeout(function() {
+				       var inputElem = document.getElementById('words');
+		               inputElem.focus(); 
+	                }, 200); 
+				};
+			    initNativeObjects();
+			    showSoftInput();
+				  
+			})
 			
 			  
 			//输入搜索
@@ -226,6 +280,5 @@
 //					
 //				}
 //			});
-		})();
 	</script>
 </html>

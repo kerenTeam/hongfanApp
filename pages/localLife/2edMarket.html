@@ -190,6 +190,11 @@
 					</script>
 				</section>
 				<div class="upload text-center text-xs gray" id="upload"></div>
+				<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+					<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+					<br />
+					没有相关信息
+				</div>
 			</div>
 		</div>
 		
@@ -212,6 +217,7 @@
 	//加载方法
 	function Loading(gin1,gin2,gin3,gin4,gin44,gin5,gin6){
 		document.getElementById("infolistdiv").innerHTML = '';
+		mui('#nulldiv')[0].style.display = 'none';
 		$('.Category-eject').removeClass('grade-w-roll');
 		$('.Sort-eject').removeClass('grade-w-roll');
 		$('.grade-eject').removeClass('grade-w-roll');
@@ -243,7 +249,8 @@
 					if(data.data.totalPages){
 						mui("#upload")[0].innerHTML = " ";
 					}else{
-						mui("#upload")[0].innerHTML = "没有数据了 ";
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
 					
 					//滚动到底部加载
@@ -296,6 +303,7 @@
 					});
 				}else{
 					mui.toast("没有数据");
+					mui('#nulldiv')[0].style.display = 'block';
 				}
 				plus.nativeUI.closeWaiting();//关闭等待框
 			},
