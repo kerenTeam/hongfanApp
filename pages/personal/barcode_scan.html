@@ -66,7 +66,7 @@
 			    	var myuserid = plus.storage.getItem('userid');
 					var oldtoken = plus.storage.getItem('oldToken');
 					plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
-				    mui.ajax(serverUrl+'/api/useraccount/couponverify',{
+				    mui.ajax(serverUrl+'/api/mall/couponverify',{
 						data:{"userid":myuserid,"couponid":result},
 						type:'post',
 						timeout:10000,
@@ -75,10 +75,8 @@
 							plus.nativeUI.closeWaiting();
 							console.log('上传核销返回'+JSON.stringify(data));
 							if(data.errno == 0){
-								
-								
+								mui.toast('核销成功');
 							}else{
-								plus.nativeUI.closeWaiting();
 								mui.toast('核销失败'); 
 							}
 							back();							
