@@ -13,19 +13,8 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<!--<link href="../../css/mui.picker.min.css" rel="stylesheet" />-->
-		<!--<link href="../../css/mui.poppicker.css" rel="stylesheet" />-->
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
-		<!--<script type="text/javascript" src="../../js/iscroll.js"></script>-->
-		<!--<script type="text/javascript" src="../../js/swiper.min.js"></script>-->
-		<!--<script type="text/javascript" src="../../js/index.js"></script>-->
-		<!--<script src="../../js/mui.picker.min.js"></script>-->
-		<!--<script src="../../js/mui.poppicker.js"></script>-->
-		
-		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
-		
 		<style type="text/css">
 		 .mui-search:before{
 		 	top:58%;
@@ -45,9 +34,6 @@
 			.mui-bar-nav{
 				box-shadow: none;
 			}
-			/*.mui-icon{
-				line-height: 50px;
-			}	*/
 			.mui-icon .iconfont{
 				font-size: 18px;
 			}
@@ -181,7 +167,36 @@
 	</body>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-			mui.plusReady(function(){
+		mui.plusReady(function(){
+			//自动弹出输入法
+		  	var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+			    if (mui.os.android) {
+			        var main = plus.android.runtimeMainActivity();
+			        var Context = plus.android.importClass("android.content.Context");
+			        InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+			        imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+			    } else {
+			        nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+			    }
+			};
+			var showSoftInput = function() {
+			    if (mui.os.android) {
+			        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+			    } else {
+			        nativeWebview.plusCallMethod({
+			            "setKeyboardDisplayRequiresUserAction": false
+			        });
+			    }
+		        //此处可写具体逻辑设置获取焦点的input
+		        setTimeout(function() {
+			       var inputElem = document.getElementById('words');
+	               inputElem.focus(); 
+                }, 200); 
+			};
+	    	initNativeObjects();
+	    	showSoftInput();
+			
 			//缓存记录
 			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
 			//搜索方法
@@ -236,38 +251,7 @@
 			    e.preventDefault();
 			    alert("执行搜索")
 			})
-				  
-				  
-			  	//自动弹出输入法
-			  	var nativeWebview, imm, InputMethodManager;
-				var initNativeObjects = function() {
-				    if (mui.os.android) {
-				        var main = plus.android.runtimeMainActivity();
-				        var Context = plus.android.importClass("android.content.Context");
-				        InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
-				        imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
-				    } else {
-				        nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
-				    }
-				};
-				var showSoftInput = function() {
-				    if (mui.os.android) {
-				        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-				    } else {
-				        nativeWebview.plusCallMethod({
-				            "setKeyboardDisplayRequiresUserAction": false
-				        });
-				    }
-			        //此处可写具体逻辑设置获取焦点的input
-			        setTimeout(function() {
-				       var inputElem = document.getElementById('words');
-		               inputElem.focus(); 
-	                }, 200); 
-				};
-			    initNativeObjects();
-			    showSoftInput();
-				  
-			})
+		})
 			
 			  
 			//输入搜索
