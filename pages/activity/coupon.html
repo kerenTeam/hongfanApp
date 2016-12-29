@@ -168,19 +168,19 @@
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
-			mui.ajax(serverUrl+'/api/localservice/activitylist',{
+			mui.ajax(serverUrl+'/api/index/coupon',{
 //				data:{id:1},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data));
+					alert(JSON.stringify(data.data));
 					var dateObj={};
 					for(var i = 0;i < data.data.length;i++){
-						data.data[i].time = data.data[i].time.split('T')[i]; 
-			       		data.data[i].begin_time = data.data[i].begin_time.split('T')[i]; 
-			       		data.data[i].end_time = data.data[i].end_time.split('T')[i]; 
+						data.data[i].create_time = data.data[i].create_time.split('T')[i]; 
+			       		data.data[i].begin_date = data.data[i].begin_date.split('T')[i]; 
+			       		data.data[i].end_date = data.data[i].end_date.split('T')[i]; 
 					}
 					dateObj.objData=data.data;
 					mui('#Alist')[0].innerHTML = template('Alist-detail',dateObj);
