@@ -9,14 +9,16 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/common.css">
-		<link rel="stylesheet" type="text/css" href="../../css/index.css">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/one.css"/>
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/localHost.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/one.css"/>
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/artTemplate-native.js"></script>
 		<style type="text/css">
 			.infocon h4{
 				padding: 20px 0;
@@ -68,6 +70,10 @@
 				line-height: 30px;
 				text-align: right;
 			}
+			.AdContent{
+				width: 100%;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 
@@ -77,20 +83,19 @@
 		    <h1 class="mui-title">广告详情</h1>
 			<a href="setup.html" class="fr shoucang sousuo mui-icon"><i class="iconfont icon-fenxiang"></i></a>
 		</header>
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="infocon ymt ymb">
-			<h4>公告标题</h4>
+		<script src="../js/statusBar.js"></script><!--状态栏-->
+		<div class="infocon ymt ymb" id="ad"></div>
+			
+		<script type="text/html" id="ad-detail">
+			<h4><%= adLi.title %></h4>
 			<div class="infomidd">
-				<img src="../../img/21.jpg"/>
-				<p>
-					公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情公告详情
-				</p>
+				<img src="<%= adLi.pic %>"/>
+				<div id="AdContent"></div>
 			</div>
 			<div class="noticeFooter">
-				<p>发布id</p>
-				<p>2016-11-29</p>
+				<p><%= adLi.create_time.split('T')[0] %></p>
 			</div>
-		</div>
+		</script>
 		<script type="text/javascript">
 			var infolist = mui('.infolist div');
 			for(var i=0; i<infolist.length; i++ ){
@@ -106,6 +111,29 @@
 					})
 				})
 			}
+			mui.plusReady(function(){ 
+				var oldToken = plus.storage.getItem('oldToken');
+				var AdvId = plus.webview.currentWebview().AdvId;
+//				alert(AdvId)
+				mui.ajax(serverUrl +'/api/index/adsinfo',{
+					data:{id:AdvId},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+//						alert(JSON.stringify(data.data));
+						var adObj = {};
+						adObj.adLi = data.data;
+						var html = template('ad-detail',adObj);
+						document.getElementById('ad').innerHTML = html;
+						document.getElementById('AdContent').innerHTML = data.data.content;
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('响应失败  !');
+					}
+				});
+			})
 		</script>
 	</body>
 	

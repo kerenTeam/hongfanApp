@@ -61,7 +61,27 @@
 		.aclist{
 			padding: 0 auto 0.05rem auto;
 		}
-	 
+		.Ctitle{
+			font-size: 18px;
+			line-height: 35px;
+		}
+	 	.acright img{
+	 		width: 14px;
+	 		margin-right: 5px;
+	 	}
+	 	small{
+	 		color: #999 !important;
+	 	}
+	 	.red1{
+	 		color: #F53C42;
+	 		white-space: nowrap;
+	 		width: 90%;
+	 		overflow: hidden;
+	 		text-overflow: ellipsis;
+	 		font-size: 16px;
+	 		line-height: 35px;
+	 		font-weight: bold;
+	 	}
 	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -71,41 +91,7 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main">
-				<!--<div class="mui-row" style="padding: 0.1rem 0;border-left: 3px solid #f1a6ac;">
-						<p class="black"><img src="../../img/localLife/facti.png" class="activityIcon" alt="" /> 同城交友</p>
-					</div>-->
 				<div style="background-color: white;" id="Alist"></div>
-					
-					<!-- <div class="mui-table-view-cell ddafter">
-						<div class="mui-row aclist">
-							 <div class="fl acleft">
-							 	<img src="../../img/localLife/acf.png" alt="" />
-							 </div>
-							 <div class="fl acright">
-							 	<p class="gray">户外</p>
-							 	<div class=""><b>野餐活动</b></div>
-							 	<div><small>时间：2016.12.12 - 2017.01.12</small></div>
-							 	<div><small>地点： 邻水 xxx街道</small></div>
-							 	<div><small>费用： 免费</small></div>
-							 </div>
-						</div>
-					</div> 
-					
-					<div class="mui-table-view-cell ddafter">
-						<div class="mui-row aclist">
-							 <div class="fl acleft">
-							 	<img src="../../img/localLife/Img267346995.jpg" alt="" />
-							 </div>
-							 <div class="fl acright">
-							 	<p class="gray">室内</p>
-							 	<div class=""><b>歌唱联欢</b></div>
-							 	<div><small>时间：2016.12.12 - 2017.01.12</small></div>
-							 	<div><small>地点： 邻水 xxx街道</small></div>
-							 	<div><small>费用： ￥100</small></div>
-							 </div>
-						</div>
-					</div> -->
-					
 				</div>
 				
 				<!--渲染数据-->
@@ -114,13 +100,12 @@
 						<div class="mui-table-view-cell ddafter" onclick="activity(<%= objData[i].id %>)">
 							<div class="mui-row aclist">
 								 <div class="fl acleft">
-								 	<img src="<%= objData[i].wrapImg %>" alt="" />
+								 	<img src="<%= objData[i].pic %>" alt="" />
 								 </div>
 								 <div class="fl acright">
-								 	<p class="gray"><%= objData[i].title %></p>
-								 	<div class=""><%= objData[i].title %></div>
-								 	<div><small>时间：<%= objData[i].begin_time %>到<%= objData[i].end_time %></small></div>
-								 	<div><small>地点： <%= objData[i].site %></small></div>
+								 	<p class="gray Ctitle"><%= objData[i].store_name %></p>
+								 	<div class="red1"><%= objData[i].title %></div>
+								 	<div><img src="../../img/time.png"/><small>时间：<%= objData[i].begin_time %>&nbsp;~&nbsp;<%= objData[i].end_time %></small></div>
 								 </div>
 							</div>
 						</div>
@@ -130,57 +115,34 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+		//点击优惠进入详情
 		function activity(id){
 			openview({
 				view:'couponDetail.html',
-//				extrasobj:{activityId:id}
+				extrasobj:{storeCouponId:id}
 			})
 		}
 		mui.plusReady(function(){
-			//打开义工页面
-//			mui("#main").on('tap','.ddafter',function(){
-//				mui.openWindow({
-//				    url:'apprenticeDetail.html',
-//				    id:'apprenticeDetail',
-//				    styles:{
-//				      top:0,//新页面顶部位置
-//				      bottom:0,//新页面底部位置
-//				    },
-//				    extras:{
-//				      
-//				    },
-//				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-//				    show:{
-//				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-//				    },
-//				    waiting:{
-//				      autoShow:true,//自动显示等待框，默认为true
-//				      title:'正在加载...',//等待对话框上显示的提示内容
-//				      options:{
-//				      }
-//				    }
-//				});
-//				
-//			});
-//			
-		
 			//铺数据
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
-			mui.ajax(serverUrl+'/api/index/coupon',{
-//				data:{id:1},
+			
+			mui.ajax(serverUrl+'/api/index/couponoractivity',{
+				data:{type:2},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					alert(JSON.stringify(data.data));
+//					alert(data.data[0].pic);
 					var dateObj={};
 					for(var i = 0;i < data.data.length;i++){
-						data.data[i].create_time = data.data[i].create_time.split('T')[i]; 
-			       		data.data[i].begin_date = data.data[i].begin_date.split('T')[i]; 
-			       		data.data[i].end_date = data.data[i].end_date.split('T')[i]; 
+			       		data.data[i].begin_time = data.data[i].begin_time.split('T')[0]; 
+			       		data.data[i].end_time = data.data[i].end_time.split('T')[0]; 
+//			       		data.data[i].picImg = serverimgUrl + data.data[i].picImg;
+			       		data.data[i].pic = serverimgUrl + data.data[i].pic;
+			       		data.data[i].content = data.data[i].content;
 					}
 					dateObj.objData=data.data;
 					mui('#Alist')[0].innerHTML = template('Alist-detail',dateObj);
