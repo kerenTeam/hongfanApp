@@ -166,18 +166,19 @@
 	    	<div class="plist clearfloat data">
 				<ul>
 					<li class="clearfloat">
-						<a href="javascript:;" id="mapAddress">
+						<a>
 							<p class="fl">所在地区</p>
-							<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
-							<div id='cityResult3' class="ui-alert"><span id="province"></span><span id="city"></span><span id="area"></span></div>
+							<input type="text" class="fr shuru" name="" id="jiedao" value="邻水县" readonly/>
 						</a>
 					</li>
 					<li class="clearfloat">
-						<a>
+						<a href="javascript:;" id="mapAddress">
 							<p class="fl">所在街道</p>
-							<input type="text" class="fr shuru" name="" id="jiedao" value="" placeholder="请输入所在街道" />
+							<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+							<div id='cityResult3' class="ui-alert"><span id="area"></span></div>
 						</a>
 					</li>
+					
 					<li class="clearfloat">
 						<button type="button" class="mui-btn mui-btn-danger mui-btn-block helpBtn" onclick="helpBtn()">搜索附近帮帮团</button>
 					</li>
@@ -222,6 +223,7 @@
 			function helpBtn(){
 				var area = mui('#area')[0].innerHTML;
 				var jiedao = mui('#jiedao')[0].value;
+				//alert(area+"  "+jiedao)
 				if(area && jiedao){
 					openview({
 						view:'lawyerList.html',
@@ -239,16 +241,14 @@
 				$.ready(function() {
 					//地址选择三级联动
 					var cityPicker3 = new $.PopPicker({
-						layer: 3
+						layer: 1
 					});
 					cityPicker3.setData(cityData3);
 					var showCityPickerButton = doc.getElementById('showCityPicker3');
 					var cityResult3 = doc.getElementById('cityResult3');
 					showCityPickerButton.addEventListener('tap', function(event) {
-						cityPicker3.show(function(items) {
-							doc.getElementById('province').innerText = (items[0] || {}).text + " ";
-							doc.getElementById('city').innerText =  (items[1] || {}).text + " ";
-							doc.getElementById('area').innerText = (items[2] || {}).text + " ";
+						cityPicker3.show(function(items) {  
+							doc.getElementById('area').innerText = (items[0] || {}).text + " ";
 							//返回 false 可以阻止选择框的关闭
 							//return false;
 						});

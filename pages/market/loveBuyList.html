@@ -213,7 +213,7 @@
 			<%}else{%>
 				<% for(var i=0;i<list.length;i++){ %>
 				<dd class="goodsItem">
-					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
+					<a class="react" onclick="goInfo(<%= list[i].open_iid%>,<%= list[i].differentiate%>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
 								<img src="<%= list[i].thumb %>"/>
@@ -221,9 +221,11 @@
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
 								<div class="title text-block bage">
-									<!--<span class="mui-badge mui-badge-primary">64G</span>
-									<span class="mui-badge mui-badge-primary">128G</span>
-									<span class="mui-badge mui-badge-primary">64G</span>-->
+									<% if(list[i].tag!=null && list[i].tag!=''){ %>
+										<% for(var j=0;j<list[i].tag.length;j++){ %>
+											<span class="mui-badge mui-badge-primary"><%= list[i].tag[j].tag_name %></span>
+										<%}%>
+									<%} %>
 								</div>
 								<div class="price mui-row">
 									<div class="mui-col-sm-4 mui-col-xs-4">
@@ -248,17 +250,8 @@
 		mui.plusReady(function(){
 			
 			//获取缓存
-			var oldToken = plus.storage.getItem('oldToken');
-			//获取页面传值 商品分类id
-			var goodcatId = plus.webview.currentWebview().goodscatId; 
-			//alert(goodcatId)
-//			var myToken = plus.storage.getItem('oldToken');
-//			if(plus.storage.getItem('myToken')){
-//				Sstate = true;//如果存在myToken则是登录状态
-//				var oldToken = plus.storage.getItem('oldToken');
-//				console.log(oldToken);
-//			}
-			//youpinexchange  currentPage numsPerPage
+			var oldToken = plus.storage.getItem('oldToken'); 
+		 
 			//数据渲染
 			var currentPage =1, numsPerPage=5;
 			mui.ajax(serverUrl+'/api/mall/youpinexchange',{
@@ -268,10 +261,21 @@
 				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){  
+					//alert(JSON.stringify(data.data))
 					if(data.errno==0){
 						if(data.data.data.length!=0){ 
 							var objdata = {};
+							
+							for(var m=0; m < data.data.data.length; m++){ 
+									if(data.data.data[m].tag==''){
+									 	data.data.data[m].tag=null;
+									}else{
+										data.data.data[m].tag= eval("("+data.data.data[m].tag+")");
+									}
+								 } 
+							
 							objdata.list = data.data.data;
+							
 							var html=template("goodsList-detail",objdata);
 							document.getElementById("goodsList").innerHTML=html;
 							
@@ -295,6 +299,13 @@
 											success:function(data){
 												if(data.errno == 0){
 													var objdata = {};
+													for(var m=0; m < data.data.data.length; m++){ 
+														if(data.data.data[m].tag==''){
+														 	data.data.data[m].tag=null;
+														}else{
+															data.data.data[m].tag= eval("("+data.data.data[m].tag+")");
+														}
+													 } 
 													objdata.list = data.data.data;
 													var html=template("goodsList-detail",objdata);
 													document.getElementById("goodsList").innerHTML+=html;
@@ -332,10 +343,11 @@
 	 
 			
 			//跳转详情
-			window.goInfo =  function(goodsId){ 
+			window.goInfo =  function(goodsId,differentiate){ 
 				 openview({
-				 	view:"mall-detail.html",
-				 	extrasobj:{goodsId:goodsId}
+				 	view:"yphDetail.html",
+				 	id:"yphDetail",
+				 	extrasobj:{goodsId:goodsId,differentiate:differentiate}
 				 })
 			}
 			
