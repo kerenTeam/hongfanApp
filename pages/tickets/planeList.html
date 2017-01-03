@@ -349,6 +349,7 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+		//点击机票进入详情
 		window.goPlane = function(){
 			openview({ 
 				view:'planeDetail.html'
@@ -375,5 +376,46 @@
 			});
 		})(mui);
 	</script>
-
+	<!--数据渲染-->
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var planeType = plus.webview.currentWebview().planeType;
+			//往返
+			var from = plus.webview.currentWebview().from;
+			var arrive = plus.webview.currentWebview().arrive;
+			var fromTime = plus.webview.currentWebview().fromTime;
+			var arriveTime = plus.webview.currentWebview().arriveTime;
+			//单程
+			var from1 = plus.webview.currentWebview().from1;
+			var arrive1 = plus.webview.currentWebview().arrive1;
+			var time1 = plus.webview.currentWebview().time1;
+			alert(planeType);
+			//获取缓存
+			var oldToken = plus.storage.getItem('oldToken');
+			if(planeType == "往返"){
+					mui.ajax(serverUrl +'/api/index/indexheaderdata',{
+	//				data:{userid : 148},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						console.log('banner返回'+JSON.stringify(data));
+						var bannerObj = {};
+						var recommentObj = {};
+						bannerObj.bannerLi =eval("("+data.data.banner[0].banner+")") ;
+						 
+						console.log(data.data.recomment)
+						bannerObj.url = serverimgUrl;
+						var html = template('banner-detail',bannerObj);
+						document.getElementById('banner').innerHTML = html;
+						
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('响应失败  !');
+					}
+				});
+			}
+		})
+	</script>
 </html>

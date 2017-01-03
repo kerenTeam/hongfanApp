@@ -228,12 +228,8 @@
 			<div class="mui-content">
 				<div style="padding: 10px 10px;">
 					<div id="segmentedControl" class="mui-segmented-control">
-						<a class="mui-control-item mui-active" href="#item1">
-							往返
-						</a>
-						<a class="mui-control-item" href="#item3">
-							单程
-						</a>
+						<a class="mui-control-item mui-active" href="#item1">往返</a>
+						<a class="mui-control-item" href="#item3">单程</a>
 					</div>
 				</div>
 				<div style="padding: 10px 10px;">
@@ -241,14 +237,14 @@
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>出发</label>
-						        <input type="text" class="InputCss fromAd" value="成都">
+						        <input type="text" class="InputCss fromAd" value="成都" id="from">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>到达</label>
-						        <input type="text" class="InputCss toAd" value="邻水">
+						        <input type="text" class="InputCss toAd" value="邻水" id="arrive">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
@@ -256,7 +252,7 @@
 						    <div class="mui-input-row wrap">
 						    	<div class="item">
 						        	<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
-						        	<input type="text" class="calendars" hours hours-past value="全年"><br>
+						        	<input type="text" class="calendars" hours hours-past value="全年" id="fromTime"><br>
 						    	</div>
 						    </div>
 						</div>
@@ -264,7 +260,7 @@
 						    <div class="mui-input-row wrap">
 						    	<div class="item">
 						        	<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
-						        	<input type="text" class="calendars" hours hours-past value="全年"><br>
+						        	<input type="text" class="calendars" hours hours-past value="全年" id="arriveTime"><br>
 						    	</div>
 						    </div>
 						</div>
@@ -276,14 +272,14 @@
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>出发</label>
-						        <input type="text" class="InputCss fromAd" value="成都">
+						        <input type="text" class="InputCss fromAd" value="成都" id="from1">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>到达</label>
-						        <input type="text" class="InputCss toAd" value="邻水">
+						        <input type="text" class="InputCss toAd" value="邻水" id="arrive1">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
@@ -291,7 +287,7 @@
 						    <div class="mui-input-row wrap">
 						    	<div class="item">
 						        	<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
-						        	<input type="text" class="calendars" hours hours-past value="全年"><br>
+						        	<input type="text" class="calendars" hours hours-past value="全年" id="time1"><br>
 						    	</div>
 						    </div>
 						</div>
@@ -351,8 +347,20 @@
 			
 			//点击搜索
 			window.searchPlane = function(){
+				var planeType = mui('.mui-active')[0].innerHTML;
+				//往返
+				var from = mui('#from')[0].value;
+				var arrive = mui('#arrive')[0].value;
+				var fromTime = mui('#fromTime')[0].value;
+				var arriveTime = mui('#arriveTime')[0].value;
+				//单程
+				var from1 = mui('#from1')[0].value;
+				var arrive1 = mui('#arrive1')[0].value;
+				var time1 = mui('#time1')[0].value;
+				alert(planeType)
 				openview({ 
 					view:'planeList.html'
+					extrasobj:{planeType:planeType,from:from,arrive:arrive,fromTime:fromTime,arriveTime:arriveTime,from1:from1,arrive1:arrive1,time1:time1}
 				})
 			}
 		})(mui);
