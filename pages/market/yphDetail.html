@@ -27,6 +27,9 @@
 			.comtPic{
 				border-radius: 100%;
 			}
+			.gray{
+				color: gray;
+			}
 			.mui-preview-header,
 			.mui-preview-footer {
 				position: absolute;
@@ -305,7 +308,7 @@
 				padding: 5px 0;
 			}
 			.sdetail{
-				height: 490px;
+				/*min-height: 200px;*/
 			}
 			.footerone .left{
 				width: 15%;
@@ -398,10 +401,16 @@
 								<div class="zuo clearfloat fl">
 									<%=brief.title%>
 								</div>
-								<!--<div class="you clearfloat fr">
-									<i class="iconfont icon-fenxiang"></i>
-									<p>分享</p>
-								</div>-->
+								<div class="you clearfloat fr">
+									<ul>
+										<li>
+										 	<a onclick="goLoveBuy()">
+												<i class="iconfont icon-shangcheng"></i>
+												<p>爱购</p>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</div>
 							<div class="xia clearfloat">
 								<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;"><del>￥<%=brief.original_price%></del></small></p>
@@ -416,7 +425,7 @@
 							            <%}%>
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-							            <p class="box-s">库存：<%=brief.num%></p>
+							            <!--<p class="box-s">库存：<%=brief.num%></p>-->
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
 							          	<%if(brief.shipping_free_type==0){%>
@@ -433,17 +442,18 @@
 							</div>
 							
 						</div>
-						</script>
-						
 						<div class="farmtc clearfloat mt10">
 							<p class="bt box-s">商品详情</p>
 						</div>
-						<div class="farm clearfloat">
+						<div class="farm clearfloat" style="overflow: scroll;max-width: 100%;">
 							<div class="top rentingtop clearfloat box-s">
 								<div id="textInfo"></div>
 								 
 							</div>					
 						</div>
+						</script>
+						
+						
 						
 					</div>
 				</div>
@@ -455,8 +465,7 @@
 				<ul>
 					<li>
 					 	<a onclick="goShop()">
-							<i class="iconfont icon-shangcheng"></i>
-							<p>商城</p>
+							<img src="../../img/market/cartIcon.svg" alt="" /> 
 						</a>
 					</li>
 				</ul>
@@ -481,7 +490,7 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
-		     			<img src="<%=choose.thumb%>" data-preview-src="" />
+		     			<img src="<%=choose.imglist.img1%>" style="width: 100%;" data-preview-src="" />
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
@@ -506,19 +515,22 @@
 	     				<%}%>
 	     			<%}%>
 		     	<div class="bottom clearfloat">
-		     		<p class="fl">购买数量</p>
+		     		<p class="fl">购买数量 
+		     			<%if(choose.max_limit){%>
+			     		<small class="gray fr">(限购:<%=choose.max_limit%>)</small></p>
+			     		<%}%>
 		     		<div class="you clearfloat fr">
 	     				<div class="mui-numbox margin-top" data-numbox-min="1" data-numbox-max='<%=choose.max_limit%>'>
 	     					<button class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
 	     					<input id="test" class="mui-input-numbox" data-max="" type="number" value="0">
-	     					<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
-	     				</div>
+	     					<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button> 
+	     				</div> 
 		     		</div>
 		     	</div>
 		     	</div>
 		     </div>		     
 		</div>
-		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.fee_start_1%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+		<a data-gdId="<%=choose.open_iid%>" data-shopId="0" data-shop="爱购保税" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.imglist.img1%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.ratemoney%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
 		
 		</div>
@@ -547,7 +559,7 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
 						success:function(data){ 
-						//	alert(JSON.stringify(data))
+					 	alert(JSON.stringify(data))
 							if(data.errno==0){ 
 								plus.nativeUI.closeWaiting(); 
 								var d = data.data.youpin.data.imglist;//{img1:dd,img2:aa,img3,cc} 
@@ -575,7 +587,10 @@
 		                    var rate =parseFloat(data.data.youpin.data.tax_rate.replace(/%/, ""))/100;
 		                    data.data.youpin.data.ratemoney =parseFloat(parseFloat(data.data.youpin.data.price)*rate).toFixed(2); 
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.youpin.data});
-//		                 	  data.data.goodsInfo.parameter=[]; 
+		                       
+		                    //详情
+		                    document.getElementById("textInfo").innerHTML=data.data.youpin.data.remark;
+		                 	  data.data.youpin.data.parameter=[]; 
 //		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
 		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.youpin.data});
@@ -608,15 +623,14 @@
 										})
 		                     	
 		                     })
-		                    
-		                    //详情
-		                    document.getElementById("textInfo").innerHTML=data.data.youpin.data.remark;
+		                  
 		                   
 		                   // plus.storage.removeItem('$cartStorage');
 		                    //购物车 缓存
 		                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
 		                   
 		                    window.cartStorageF=function(obj){ 
+		                    	 
 		                     	if($('.cur').length == $(".choose").length){ 
 		                    		var shopName = obj.getAttribute("data-shop");
 		                    		var goodsId = obj.getAttribute("data-gdId");
@@ -634,8 +648,7 @@
 		                    			prop.parameter_name=$(this).find("p").html();
 		                    			prop.child_parameter_name=$(this).find(".cur").html();
 		                    			goodProp.push(prop)
-		                    		})  
-		                    		//alert(JSON.stringify(goodProp))
+		                    		})   
 		                    		//当前商品对象
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
@@ -669,7 +682,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-//		                    		alert(JSON.stringify(cartStorage))
+		                    		alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
@@ -726,10 +739,15 @@
 				//跳转商家详情
 				window.goShop = function(){ 
 						openview({
-							view:"shophome.html",
-							extrasobj:{storeId:shopId}
+							view:"../cart.html",
+							extrasobj:{pageId:"detail"}
 						})
 					}
+				window.goLoveBuy = function(){
+					openview({
+							view:"loveBuyList.html"
+						})
+				}
 					mui.previewImage();			
 		}) 
 		
