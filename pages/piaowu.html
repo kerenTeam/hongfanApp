@@ -39,7 +39,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav ">
-		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize">返回</a>
+		  <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">充值缴费</h1>
 		</header>
 		<script src="../js/statusBar.js"></script><!--状态栏-->
@@ -93,48 +93,102 @@
 	<script type="text/javascript">
 		mui.init();
 		(function(){
-			//点击水费跳转
-			window.water = function(){
-				 openview({
-				 	view:"tickets/waterRecharge.html"
-				 })
-			}
-			
-			//点击气费跳转
-			window.gas = function(){
-				 openview({
-				 	view:"tickets/gasRecharge.html"
-				 })
-			}
-			
-			//点击固话充值跳转
-			window.phoneRecharge = function(){
-				 openview({
-				 	view:"tickets/phoneRecharge.html"
-				 })
-			}
-			
-			//点击飞机票跳转
-			window.plane = function(){
-				 openview({
-				 	view:"tickets/plane.html"
-				 })
-			}
-			
-			//点击火车票跳转
-			window.train = function(){
-				 openview({
-				 	view:"tickets/train.html"
-				 })
-			}
-			
-			//点击购票记录跳转
-			window.ticketRe = function(){
-				 openview({
-				 	view:"tickets/ticketRecord.html"
-				 })
-			}
-			
+			//获取缓存
+			mui.plusReady(function(){
+				 var myuserid = plus.storage.getItem('userid');
+				//点击水费跳转
+					window.water = function(){
+						
+						 if(plus.storage.getItem('myToken')){ 
+									 openview({
+									 	view:"tickets/waterRecharge.html"
+									 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+					}
+					
+					//点击气费跳转
+					window.gas = function(){
+						 if(plus.storage.getItem('myToken')){ 
+									 openview({
+									 	view:"tickets/gasRecharge.html"
+									 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+						
+					}
+					
+					//点击固话充值跳转
+					window.phoneRecharge = function(){
+						 
+						 if(plus.storage.getItem('myToken')){ 
+									 openview({
+									 	view:"tickets/phoneRecharge.html"
+									 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+					}
+					
+					//点击飞机票跳转
+					window.plane = function(){
+						  
+						  if(plus.storage.getItem('myToken')){ 
+									 openview({
+									 	view:"tickets/plane.html"
+									 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+					}
+					
+					//点击火车票跳转
+					window.train = function(){
+						
+						 if(plus.storage.getItem('myToken')){ 
+								 openview({
+								 	view:"tickets/train.html"
+								 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+					}
+					
+					//点击购票记录跳转
+					window.ticketRe = function(){
+						
+						 
+						  if(plus.storage.getItem('myToken')){ 
+								 openview({
+									 	view:"tickets/ticketRecord.html"
+									 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+					}
+					
+					})
+		
 		})();
 	</script>
 	

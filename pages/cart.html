@@ -17,6 +17,7 @@
 	<body>
 		<!--header star-->
 		<header class="hasManyCity hasManyCitytwo" id="header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui" style="display: none;"></a>
 			<div class="header-tit">
 				购物车<span class="cartNum">(<span>0</span>)</span>
 			</div>
@@ -43,7 +44,7 @@
 				<% if(goodsList[j].shopName ==  cates[i]){%>
 				<dd>
 					<div class="mui-checkbox" style="top: 30%;"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].storeid%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-num="<%=goodsList[j].goodsnum%>" type="checkbox"></div>
-					<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>')"><img src="<%=goodsList[j].goodsImg%>" /></a>
+					<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].storeid%>')"><img src="<%=goodsList[j].goodsImg%>" /></a>
 					<div class="goodsInfor"> <!--onclick="goGoods('<%=goodsList[j].goodsId%>')"-->
 						<h2> 
 
@@ -99,6 +100,7 @@
 	
 	
 	mui.plusReady(function(){ 
+		
 		window.addEventListener('refresh',function(event){ 
 //	   		alert(1);
 			cartload(); 
@@ -106,6 +108,13 @@
 				 
 	cartload();
     function cartload(){
+    	var page = plus.webview.currentWebview().pageId;
+//		alert(page)
+		if(page = "detail"){
+			$(".fanhui").css("display","block")
+		}else{
+			$(".fanhui").css("display","none")
+		}
     	//购物车 缓存 
         var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
         
@@ -423,18 +432,25 @@
 						
 					}
 				})
+				//进店铺详情
+					$('.shopName').click(function(){ 
+						var shopId = $(this).parent().next().find(".mui-checkbox input").attr("data-shopId");
+					//	alert(shopId)
+						if(shopId!=0){
+							 openview({
+								view:'market/shophome.html', 
+								extrasobj:{storeId:shopId}
+							})
+						}else{
+							 openview({
+								view:'market/loveBuyList.html'
+							})
+						}
+						
+					})
 			}
     
-    
-    		//进店铺详情
-			$('.shopName').click(function(){ 
-				var shopId = $(this).parent().next().find(".mui-checkbox input").attr("data-shopId");
-				 openview({
-						view:'market/shophome.html', 
-						extrasobj:{storeId:shopId}
-					})
-			})
-			
+     
 
 		})
 			//逛逛
@@ -444,11 +460,18 @@
 				 })
 			}
 			//进商品详情
-			function goGoods(gid){
-				openview({
-				 	view:"market/mall-detail.html",
-				 	extrasobj:{goodsId:gid}
-				 })
+			function goGoods(gid,did){
+				if(did==0){
+					openview({
+					 	view:"market/yphDetail.html",
+					 	extrasobj:{goodsId:gid}
+					 })
+				}else{
+					openview({
+					 	view:"market/mall-detail.html",
+					 	extrasobj:{goodsId:gid}
+					 })
+				} 
 			}
 			$('.numberWidget,.mui-numbox button,.mui-numbox input').click(function(){
 				event.stopPropagation()
