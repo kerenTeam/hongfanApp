@@ -120,20 +120,20 @@
 		<!--详情内容-->
 		<div id="main"></div>
 		<script type="text/html" id="details">
-			<img src="../../img/18.png" class="goodsImg">
+			<img src="<%= list.picImg%>" class="goodsImg">
 			<div class="farm clearfloat">
 				<div class="top rentingtop clearfloat box-s">
-					<p class="red1">二楼ZARA特卖汇！</p>
+					<p class="red1"><%= list.title%></p>
 					<div class="merchant">
 						<div class="biz-detail">
 							<p class="time">
-								<img src="../../img/time.png"/>活动时间：2017.01.01~2017.03.02
+								<img src="../../img/time.png"/>活动时间：<%= list.begin_time.split('T')[0]%>~<%= list.end_time.split('T')[0]%>
 							</p>
 							<p class="time greencss">
-								<img src="../../img/add.png"/>活动地点：二楼201号
+								<img src="../../img/add.png"/>活动地点：<%= list.site%>
 							</p>
 						</div>
-						<div class="biz-call">
+						<div class="biz-call" onclick="openMerchant(<%= list.storeid%>)">
 							<img src="../../img/store.png"/>
 							<p>查看商户</p>
 						</div>
@@ -144,11 +144,9 @@
 				<p class="bt box-s">活动详情</p>
 			</div>
 			<div class="farm clearfloat">
-				<div class="top rentingtop rentingtopbot clearfloat box-s">
-					<p> 1.点击进入活动界面，每位玩家在神秘商店都有 1次 抽折扣购买道具的机会。如果你拥有神秘钥匙，将会获得额外折扣的机会!抽到五折是日常哟，不过也有很多运气不好的玩家抽到七折、甚至八折，那优惠力度就比较低了。</p>
-					<p>2.未抽取折扣前，你的专属英雄都是未知，每个人都有20个专属英雄以及他们的相关皮肤。</p>
-					<p>3.如何获得阿卡丽神秘钥匙说明：神秘钥匙由英雄联盟官方活动发放，暂无其他渠道获得，敬请留意。拥有神秘钥匙的玩家，在阿卡丽的神秘商店中拥有额外一次刷新折扣的机会，因此十分珍贵。</p>
-				</div>					
+				<div id="hahaha" class="top rentingtop rentingtopbot clearfloat box-s">
+					<%= list.content%>
+				</div>	
 			</div>
 		</script>
 		
@@ -163,17 +161,17 @@
 		//获取数据
 		var oldtoken = plus.storage.getItem('oldToken');
 		var activityId = plus.webview.currentWebview().activityId;
-		mui.ajax(serverUrl+'/api/index/activityinfo',{
-			data:{"system_activity_id":activityId},
+		mui.ajax(serverUrl+'/api/index/couponoractivityinfo',{
+			data:{"id":activityId},
 			type:'post',
 			timeout:10000,
 			headers:{"token":oldtoken},	               				
 			success:function(data){
 				//alert(mytoken);
-				console.log('活动详情返回'+JSON.stringify(data));
+				console.log('活动详情返回'+JSON.stringify(data)); 
 				if(data.errno == 0){
 					var objdata = {};
-					objdata.list = data.data; 
+					objdata.list = data.data.system_activity; 
 					var html=template("details",objdata);
 					document.getElementById("main").innerHTML=html;
 				}else{
@@ -186,6 +184,13 @@
 				alert('响应失败  !');
 			}
 		});
-	})
+	});
+	//打开商户详情
+	function openMerchant(id){
+		openview({
+			view:'../market/shophome.html',
+			extrasobj:{storeId:id}
+		})
+	}
 	</script>
 </html>
