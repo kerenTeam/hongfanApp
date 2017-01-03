@@ -13,7 +13,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		
 		<style type="text/css">
 			
 			.mui-bar{height: 50px;
@@ -69,11 +68,12 @@
 				color: #f53c42 !important;
 				margin-bottom: 10px;
 				font-size: 18px !important;
+				display: inline-block;
 			}
 			.time img{
 				width: 15px;
 				margin-right: 5px;
-				margin-top: -2px;
+				/*margin-top: -2px;*/
 			}
 			.mui-btn-block {
 				font-size: 16px;
@@ -107,6 +107,51 @@
 			.greencss{
 				color: #32B16C !important;
 			}
+			.picWrap{
+				padding: 10px 10px 0 10px;
+				position: relative;
+			}
+			.cc{
+				width: 100%;
+			}
+			.ccW{
+				position: absolute;
+				top: -10px;
+				left: -15px;
+				width: 0%;
+			}
+			.cLeft{
+				position: absolute;
+				top: 25px;
+				left: 25px;
+				/*z-index: 99;*/
+			}
+			.cLeft p{
+				line-height: 22px;
+			}
+			.cRight{
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				width: 21%;
+				padding: 28px 22px;
+			}
+			.cRight p{
+				line-height: 20px;
+				font-size: 16px;
+				color: #fff;
+			}
+			.got{
+				position: absolute;
+				right: 0px;
+				top: 3px;
+				width: 95px;
+			}
+			.yellowT{
+				/*margin-bottom: 10px;*/
+				font-size: 18px !important;
+				color: #f2af2d!important;
+			}
 		</style>
 	</head>
 
@@ -119,123 +164,67 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
 		<!--详情内容-->
-			<div id="main">
-				<img src="../../img/18.png" class="goodsImg">
-				<div class="farm clearfloat">
-					<div class="top rentingtop clearfloat box-s">
-						<p class="red1">二楼ZARA特卖汇！</p>
-						<div class="merchant">
-							<div class="biz-detail">
-								<p class="time">
-									<img src="../../img/time.png"/>活动时间：2017.01.01~2017.03.02
-								</p>
-								<p class="time greencss">
-									<img src="../../img/add.png"/>活动地点：二楼201号
-								</p>
-							</div>
-							<div class="biz-call">
-								<img src="../../img/store.png"/>
-								<p>查看商户</p>
-							</div>
-						</div>
-					</div>
+		<div id="main"></div>
+		<!--模板渲染数据-->
+		<script type="text/html" id="main-detail">
+			<img src="<%= objData.system_activity.pic %>" class="goodsImg">
+			<div class="farm clearfloat">
+				<div class="top rentingtop clearfloat box-s">
+					<p class="yellowT"><%= objData.system_activity.title %></p>
 					<div class="merchant">
 						<div class="biz-detail">
-							<button type="button" class="mui-btn mui-btn-blue mui-btn-block">领取</button>
-						</div>
-					</div>	
-				</div>
-				
-				<div class="farmtc clearfloat mt10">
-					<p class="bt box-s">活动详情</p>
-				</div>
-				<div class="farm clearfloat">
-					<div class="top rentingtop rentingtopbot clearfloat box-s">
-						<p> 1.点击进入活动界面，每位玩家在神秘商店都有 1次 抽折扣购买道具的机会。如果你拥有神秘钥匙，将会获得额外折扣的机会!抽到五折是日常哟，不过也有很多运气不好的玩家抽到七折、甚至八折，那优惠力度就比较低了。</p>
-						<p>2.未抽取折扣前，你的专属英雄都是未知，每个人都有20个专属英雄以及他们的相关皮肤。</p>
-						<p>3.如何获得阿卡丽神秘钥匙说明：神秘钥匙由英雄联盟官方活动发放，暂无其他渠道获得，敬请留意。拥有神秘钥匙的玩家，在阿卡丽的神秘商店中拥有额外一次刷新折扣的机会，因此十分珍贵。</p>
-					</div>					
-				</div>
-				
-			<!--<script type="text/html" id="details">-->
-				<!--<div class="deal">
-					<img src="<%= pic[pic.length-1].picImg%>" class="goodsImg">
-					<div class="farm clearfloat">
-						<div class="top rentingtop clearfloat box-s">
-							<p><%= list.name%></p>
 							<p class="time">
-								发布时间：<%= list.create_time%>
+								<img src="../../img/time.png"/>活动时间：<%= objData.system_activity.begin_time.split('T')[0] %>&nbsp;~&nbsp;<%= objData.system_activity.end_time.split('T')[0] %>
+							</p>
+							<p class="time greencss">
+								<img src="../../img/add.png"/>活动地点：<%= objData.system_activity.floor_name %>楼<%= objData.system_activity.door_no %>号
 							</p>
 						</div>
-						<div class="bottom clearfloat box-s">
-							<ul>
-								<li>
-									<p class="fl">小区名称：</p>
-									<%= list.quarters%>
-								</li>
-								<li>
-									<p class="fl">小区地址：</p>
-									<%= list.area_address%>
-								</li>
-								<li>
-									<p class="fl">平均售价：</p>
-									<%= list.avg_price%>
-								</li>
-								<li>
-									<p class="fl">中介名称：</p>
-									<%= list.intermediary_name%>
-								</li>
-								<li> 
-									<p class="fl">房间户型：</p>
-									<%= list.house_layout%>
-								</li>
-								<li>
-									<p class="fl">房间面积：</p>
-									<%= list.house_area%>
-								</li>
-								<li>
-									<p class="fl">房间价格：</p>
-									<%= list.price%>
-								</li>
-								<%if(list.house_type){%>
-									<li>
-										<p class="fl">房间类型：</p>
-										<%= list.house_type%>
-									</li>
-								<%}%>
-							</ul>
+						<div class="biz-call" onclick="goStore(<%= objData.system_activity.storeid %>)">
+							<img src="../../img/store.png"/>
+							<p>查看商户</p>
 						</div>
 					</div>
-					<dl class="list">
-						<dd class="dd-padding">
-							<div class="merchant">
-								<div class="biz-detail">
-									<a class="react" href="#" title="">
-										<h5 class="title single-line">电话: <%= list.phone%></h5>
-
-										<div class="address single-line">地址: <%= list.address%></div>
-									</a>
-								</div>
-								<div class="biz-call">
-									<a class="react phone" href="tel:<%= list.phone%>"> 
-										<i class="text-icon">✆</i>
-									</a>
-								</div>
+				</div>
+			</div>
+			<% if(!objData.shop_coupon || objData.shop_coupon == ""){ %>
+								
+			<% }else{ %>
+				<% for(var i = 0;i< objData.shop_coupon.length;i++ ){ %>
+					<div class="picWrap">
+						<img src="../../img/cc.png" class="cc"/>
+						<div class="cLeft">
+							<b class="red1"><%= objData.shop_coupon[i].name %></b>
+							<p>使用时间：
+								<%= objData.shop_coupon[i].begin_date %> ~ <%= objData.shop_coupon[i].begin_date %>
+							</p>
+							<p>使用条件：
+								<% if(!objData.shop_coupon[i].salerule || objData.shop_coupon[i].salerule == ""){ %>
+									无限制
+								<% }else{ %>
+									满<%= objData.shop_coupon[i].salerule1 %>减<%= objData.shop_coupon[i].salerule2 %>
+								<% } %>
+							</p>
+							<img src="../../img/ccW.png"/ class="ccW">
+						</div>
+						<div class="cRight" onclick="getCoupon(this,<%= objData.shop_coupon[i].id %>)">
+							<div class="waitGet">
+								<p>立即</p>
+								<p>领取</p>
 							</div>
-						</dd>
-					</dl>							
-				</div>
-				<div class="farmtc clearfloat mt10">
-					<p class="bt box-s">房屋简介</p>
-				</div>
-				<div class="farm clearfloat">
-					<div class="top rentingtop rentingtopbot clearfloat box-s">
-						<p><%= list.content%></p>
-					</div>					
-				</div>-->
-			<!--</script>-->
-		</div>
-		
+							<img src="../../img/got.png" class="got" style="display: none;"/>
+						</div>
+					</div>
+				<% } %>
+			<% } %>
+			<div class="farmtc clearfloat mt10">
+				<p class="bt box-s">活动详情</p>
+			</div>
+			<div class="farm clearfloat">
+				<div class="top rentingtop rentingtopbot clearfloat box-s" id="activityContent"></div>					
+			</div>
+			
+		</script>
 		
 		
 	</body>
@@ -243,48 +232,102 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-//		mui.plusReady(function(){
-//			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-//			//获取数据
-//			var oldtoken = plus.storage.getItem('oldToken');
-//			var nowid = plus.webview.currentWebview().name;
-//			mui.ajax(serverUrl+'/api/localservice/houseinfo',{
-//				data:{house_id:nowid},
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldtoken},	               				
-//				success:function(data){
-//					//alert(mytoken);
-//					console.log('获取数据返回'+JSON.stringify(data));
-//					if(data.errno == 0){
-//						var objdata = {};
-//						console.log(data.data); 
-//						data.data.create_time = data.data.create_time.split('T')[0]
-//						objdata.list = data.data; 
-//						
-//						objdata.pic = JSON.parse(objdata.list.pic);//轮播图
-//						console.log(objdata.pic);
-//						var html=template("details",objdata);
-//						document.getElementById("main").innerHTML=html;
-//						plus.nativeUI.closeWaiting();
-//						//轮播图
-//						var gallery = mui('.mui-slider');
-//						gallery.slider({
-//						  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
-//						});
-//					}else{
-//						mui.toast('获取用户信息失败');
-//						plus.nativeUI.closeWaiting();
-//						console.log(data.errmsg);
-//					}
-//				},
-//				error:function(xhr,type,errorThrown){
-//					plus.nativeUI.closeWaiting();
-//					alert('响应失败  !');
-//				}
-//			});
-//		})
+		//点击查看商户
+		function goStore(storeId){
+			openview({
+				view:'../market/shophome.html',
+				extrasobj:{storeId:storeId}
+			})
+		}
 		
 		
+		mui.plusReady(function(){
+//			plus.storage.removeItem('$gotCoupon');//清除缓存
+			var storeCouponId = plus.webview.currentWebview().storeCouponId;
+			
+			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
+			var oldToken = plus.storage.getItem('oldToken');
+			console.log(oldToken);
+			
+			//数据渲染
+			mui.ajax(serverUrl+'/api/index/couponoractivityinfo',{
+				data:{id:storeCouponId},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(data.data.system_activity);
+					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
+					var dateObj={};
+			       		data.data.system_activity.pic = serverimgUrl + data.data.system_activity.pic;
+			       	//处理获取的数据
+					for(var j = 0;j < data.data.shop_coupon.length;j++){
+						if(!data.data.shop_coupon[j].salerule || data.data.shop_coupon[j].salerule == ''){
+							data.data.shop_coupon[j].salerule = null;
+						}else{
+							data.data.shop_coupon[j].salerule1 = eval("("+ data.data.shop_coupon[j].salerule +")").overflowValue;
+			       			data.data.shop_coupon[j].salerule2 = eval("("+data.data.shop_coupon[j].salerule+")").cutValue;
+						}
+			       		
+					}
+					dateObj.objData=data.data;
+					mui('#main')[0].innerHTML = template('main-detail',dateObj);
+					mui('#activityContent')[0].innerHTML = data.data.system_activity.content;
+					plus.nativeUI.closeWaiting();
+					//已领取的缓存，修改样式，点击禁用
+					for(var k = 0;k<gotCouponId.length;k++){
+						for(var n = 0;n < data.data.shop_coupon.length;n++){
+							if(gotCouponId[k]==data.data.shop_coupon[n].id){
+								mui('.waitGet')[n].style.display = 'none';
+								mui('.got')[n].style.display = 'block';
+								mui('.cRight')[n].onclick = function(){}
+							}else{
+							}
+						}
+					}
+					//点击领取优惠券
+					window.getCoupon = function(e,getCouponId){
+						//判断是否登录并获取缓存token
+						if(plus.storage.getItem('myToken')){
+							var userId = plus.storage.getItem("userid");
+							mui.ajax(serverUrl+'/api/index/getcoupon',{
+								data:{id:getCouponId,userid:4},
+								dataType:'json',
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldToken},	 
+								success:function(data,type,xhr){
+	//								alert(JSON.stringify(data));
+									if(data.errno == 0){
+										alert("领取成功！");
+										e.getElementsByClassName('waitGet')[0].style.display = 'none';
+										e.getElementsByClassName('got')[0].style.display = 'block';
+										e.onclick = function(){}
+										//已领取的存缓存
+										gotCouponId.push(getCouponId);
+										plus.storage.setItem('$gotCoupon', JSON.stringify(gotCouponId)); 
+									}else{
+										alert("领取失败，请重试！")
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									alert('响应失败  !');
+								}
+							});
+						}else{
+							mui.toast('请登录！');
+							openview({
+								view:'../login.html'
+							})
+						}
+						
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			});
+		});
 	</script>
 </html>
