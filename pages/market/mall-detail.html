@@ -305,7 +305,7 @@
 				padding: 5px 0;
 			}
 			.sdetail{
-				height: 490px;
+				/*height: 490px;*/
 			}
 			.footerone .left{
 				width: 15%;
@@ -398,10 +398,16 @@
 								<div class="zuo clearfloat fl">
 									<%=brief.title%>
 								</div>
-								<!--<div class="you clearfloat fr">
-									<i class="iconfont icon-fenxiang"></i>
-									<p>分享</p>
-								</div>-->
+								<div class="you clearfloat fr">
+									<ul>
+										<li>
+										 	<a onclick="goShop()">
+												<i class="iconfont icon-shangcheng"></i>
+												<p>商城</p>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</div>
 							<div class="xia clearfloat">
 								<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
@@ -425,8 +431,6 @@
 							</div>
 							
 						</div>
-						</script>
-						
 						<div class="farmtc clearfloat mt10">
 							<p class="bt box-s">商品详情</p>
 						</div>
@@ -436,6 +440,9 @@
 								 
 							</div>					
 						</div>
+						
+						</script>
+						
 						
 						<div class="farmtc clearfloat mt10">
 							<p class="bt box-s">商品评价</p>
@@ -493,12 +500,12 @@
 		</div>
 		<!--footerone star-->
 		<div class="footerone clearfloat">
+			 
 			<div class="left clearfloat fl">
 				<ul>
 					<li>
-					 	<a onclick="goShop()">
-							<i class="iconfont icon-shangcheng"></i>
-							<p>商城</p>
+					 	<a onclick="gocart()">
+							<img src="../../img/market/cartIcon.svg" alt="" /> 
 						</a>
 					</li>
 				</ul>
@@ -610,6 +617,8 @@
 										
 		                    //简介
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
+		                     //详情
+		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
 		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
@@ -644,8 +653,7 @@
 		                     	
 		                     })
 		                    
-		                    //详情
-		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+		                    
 		                    //评论
 		                    var cemmentObj = {}
 //		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
@@ -777,6 +785,12 @@
 							extrasobj:{storeId:shopId}
 						})
 					}
+				window.gocart = function(){
+					openview({
+							view:"../cart.html",
+							extrasobj:{pageId:"detail"}
+						})
+				}
 					mui.previewImage();			
 		}) 
 		

@@ -23,6 +23,9 @@
 		<!--引入模板引擎-->
 		<script src="../js/artTemplate-native.js"></script>
 		<style type="text/css">
+		.mui-slider{
+			margin-top:50px;
+		}
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
 				width: 10px;
@@ -54,9 +57,7 @@
 				left: 0;
 				width: 100%;
 			}
-			.mui-slider{
-				margin-top: 50px;
-			}
+		 
 			.onetable{
 				margin-top: 0;
 				background-color: #fff;
@@ -193,6 +194,9 @@
 			.PriceB{
 				text-align: left !important;
 			}
+			table{
+				overflow: scroll;
+			}
 			/*加载*/
 			#upload{ 
 				text-align: center;margin-bottom: 18px;margin-top:15px;font-size: 12px;
@@ -251,6 +255,10 @@
 				background-position: 7px 15px;
 			}
 			.hasManyCity .qrcodeBtn{width: 32px;}
+			/*#header{
+				opacity: 0;
+				-webkit-transition: opacity 0.2s linear;
+			}*/
 		</style>
 	</head>
 
@@ -317,12 +325,12 @@
 		<script type="text/html" id="banner-detail">
 			<div class="mui-slider-group mui-slider-loop">
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[bannerLi.length-1].url%>')"><img src="<%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
 				<% for(var i=0;i<bannerLi.length;i++){ %> 
-			    	<div class="mui-slider-item"><a><img src="<%=bannerLi[i].bannerPic %>" /></a></div>
+			    	<div class="mui-slider-item"><a onclick="bannerGo('<%=bannerLi[i].url%>')"><img src="<%=bannerLi[i].bannerPic %>" /></a></div>
 			     <% } %>
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= bannerLi[0].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[0].url%>')"><img src="<%= bannerLi[0].bannerPic %>" /></a></div>
 			</div>
 			<div class="mui-slider-indicator">
 				<div class="mui-indicator mui-active"></div>
@@ -380,6 +388,8 @@
 			</div> 
 		</script>
 	<script type="text/javascript">
+	 
+	
 	//跳转详情
 		function goInfo(goodsId){
 			 openview({
@@ -546,7 +556,13 @@
 						console.log('响应失败  !');
 					}
 				});
-				
+				//banner跳转
+						window.bannerGo=function(url){
+//						  	alert(url)
+						  	openview({
+										 	view:url,
+										 })
+						  }
 				//热门推荐 数据渲染 
 				var currentPage =1, numsPerPage=4;
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist', {

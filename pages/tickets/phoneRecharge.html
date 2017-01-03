@@ -54,7 +54,7 @@
 			.mui-input-row{
 				border-bottom: 1px solid #eee;
 			}
-			input[type=text]{
+			#mobileNo{
 				line-height: 28px;
 				width: 100%;
 				height: 100px;
@@ -87,20 +87,26 @@
 			}
 			.rechargeItem{
 				margin: 5px;
-				border: 1px solid #f56267;
+				border: 1px solid #ddd;
 				border-radius: 6px;
 				padding: 12px 0;
 			}
+			 
 			.rechargeItem p{
 				text-align: center;
-				color: #f56267;
+				color: #C1C2C4;
 			}
 			.rechargeItemActive{
 				border: 1px solid #f56267;
-				background-color: #f56267;
 			}
 			.rechargeItemActive p{
-				color: #fff;
+				color: #f56267;
+			}
+			.rechargeItemActive:active{
+				background-color: #f56267;
+			}
+			.rechargeItemActive:active p{
+				color: white;
 			}
 			.rechargeBig{
 				font-size: 20px;
@@ -123,6 +129,10 @@
 			.rechargeFoot p a{
 				color: #999;
 			}
+			.mui-icon-clear{
+				top:30px!important;
+				right: 15%!important;
+			}
 		</style>
 	</head>
 	<body>
@@ -134,54 +144,54 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div class="farm clearfloat" id="main">
 		    <div class="mui-input-row">
-		        <input type="text" class="mui-input" placeholder="请输入手机号码" id="mobileNo">
+		        <input type="number" class="mui-input-clear" placeholder="请输入手机号码" id="mobileNo">
 		    	<span class="mui-icon mui-icon-contact contact-icon"></span>
 		    	<!--<span class="tips">默认号码（四川移动)</span>-->
 		    </div>
 		</div>
 		<div class="farm clearfloat rechargeOut">
 			<div class="rechargeWrap">
-				<p class="rechargeTitle">充话费</p>
+				<p class="rechargeTitle">充话费  <small>(目前仅限￥30)</small></p>
 				<div class="mui-content">
 				    <div class="mui-row">
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,10)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">10元</p>
 				            	<!--<p class="rechargeTiny">售价29.97元</p>-->
 				        	</div>
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,20)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">20元</p>
 				            	<!--<p class="rechargeTiny">售价29.97元</p>-->
 				        	</div>
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,30)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">30元</p>
 				        	</div>
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,50)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">50元</p>
 				        	</div>
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,100)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">100元</p>
 				        	</div>
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,200)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">200元</p>
 				        	</div>
 				        </div>
-				         <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,300)">
+				         <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">300元</p>
 				        	</div>
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss" onclick="clickCss(this,500)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
 				        		<p class="rechargeBig">500元</p>
 				        	</div>
@@ -226,73 +236,61 @@
 			})
 		}
 		
-		var rechargeAmount
+		mui.plusReady(function(){
+			var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+			var phoneInput = document.getElementById('mobileNo');
+			var oldToken = plus.storage.getItem('oldToken');
+			var myuserid = plus.storage.getItem('userid');
+			phoneInput.oninput = function(){
+					var mobileNo = this.value;
+//				alert(mobileNo)
+				$(".mui-icon-clear").css("display","block")
+					if(reg_phone.test(mobileNo)){ 
+						$(".mui-icon-clear").css("display","none")
+						$(".rechargeItem").addClass("rechargeItemActive");
+						$(".rechargeItemActive").click(function(){
+							var mobileNo = $("#mobileNo").val();
+							if(reg_phone.test(mobileNo)){
+								plus.nativeUI.showWaiting()
+								var rechargeAmount = parseFloat($(this).find("p").html());
+								 alert(rechargeAmount + " "+mobileNo+" "+myuserid);
+								//	充话费接口
+									mui.ajax(serverUrl+'/api/qianmi/createmobilebill',{
+										data:{mobileNo:mobileNo,rechargeAmount:rechargeAmount,userid:myuserid},
+										dataType:'json',
+										type:'post',
+										timeout:10000,
+										headers:{"token":oldToken},	 
+										success:function(data,type,xhr){
+											plus.nativeUI.closeWaiting()
+											alert(JSON.stringify(data));
+											if(data.errno==0){
+												var orderCost = data.data.body.data.orderCost; 
+												var saleAmount = data.data.body.data.saleAmount;
+												var billId = data.data.body.data.billId;
+												var newOrderID = data.data.new_qianmi_order_id;
+												alert(orderCost+" "+saleAmount+" "+billId+" "+newOrderID);
+												openview({
+													view:"../market/paysecond.html",
+													id:"phoneRrchargeg",
+													extrasobj:{new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount}
+												})
+											}
+										},
+										error:function(xhr,type,errorThrown){
+											//alert('响应失败  !');
+										}
+									}); 
+							}
+							
+						})
+					}else{
+						$(".rechargeItem").removeClass("rechargeItemActive");
+					}
+				}
+		})
 		
-		function clickCss(e,Amount){
-//			alert(Amount);
-			
-//			alert(e.getElementsByClassName('rechargeBig')[0].innerHTML);
+	 
 
-			//请求接口数据
-//			mui.plusReady(function(){
-				//获取所需数据
-				var oldToken = plus.storage.getItem('oldToken');
-				var mobileNo = document.getElementById('mobileNo').value;
-//				alert(mobileNo);
-				console.log(oldToken);
-				
-				//判断
-				var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
-//				if(rechargeAmount == ''){
-//					mui.toast('收货人不能为空!');
-//				}else if(!reg_phone.test(mobileNo)){
-//					$('#mobileNo').focus(); 
-//					mui.toast('请输入正确的手机号码 !');
-//				}else{
-					//点击样式切换
-					rechargeAmount = Amount;
-					var allAmount = document.getElementsByClassName('rechargeItem');
-					for(var i = 0; i<allAmount.length;i++){
-						allAmount[i].className = 'rechargeItem';
-					};
-					e.getElementsByClassName('rechargeItem')[0].className = 'rechargeItem rechargeItemActive';
-//					充话费接口
-					mui.ajax(serverUrl+'/api/qianmi/createbill',{
-//						data:{mobileNo:mobileNo,rechargeAmount:rechargeAmount},
-						data:{mobileNo:18180924082,rechargeAmount:30},
-						dataType:'json',
-						type:'post',
-						timeout:1000,
-						headers:{"token":oldToken},	 
-						success:function(data,type,xhr){
-							alert(JSON.stringify(data))
-//							alert("保存成功！");
-//							plus.webview.currentWebview().close();//关闭当前页面
-//							mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
-						},
-						error:function(xhr,type,errorThrown){
-							alert('响应失败  !');
-						}
-					}); 
-	//			})
-			}
-			
-//		};
-//		(function() {
-			
-//			mui('.clickCss')[0].addEventListener('tap',function(){
-//				if(Sstate){
-//					openview({
-//						view:'personal/coupon.html'
-//					});
-//				}else{//没登陆直接打开登录页面
-//					mui.toast('请登录  !');
-//					openview({
-//						view:'login.html'
-//					});
-//				}
-//			});
-			
-//		})
 </script>
 </html>
