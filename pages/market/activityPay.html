@@ -81,8 +81,8 @@ mui.plusReady(function() {
 	var oldtoken = plus.storage.getItem('oldToken');
 	var activityId = plus.webview.currentWebview().activityId; 
 	var price = plus.webview.currentWebview().price;
-	document.getElementById('payMoney').innerHTML = orderCost;
-	document.getElementById('orderId').innerHTML = orderId;
+	document.getElementById('payMoney').innerHTML = price;
+	document.getElementById('orderId').innerHTML = activityId;
 	//系统检测获取支付通道
 	plus.payment.getChannels(function(channels){
 		console.log(JSON.stringify(channels));
@@ -107,24 +107,19 @@ mui.plusReady(function() {
 //	alert(oldtoken+" "+ orderId)
 	 mui(document.body).on('tap', '.mui-btn', function(e) {
 	 	plus.nativeUI.showWaiting(); 
-	 	mui.ajax(serverUrl+'/api/qianmi/paybill',{
-				data:{new_qianmi_order_id:orderId,billId:billId},
+	 	mui.ajax(serverUrl+'/api/localservice/activityjoinpay',{
+				data:{activityid:activityId,userid:myuserid},
 				dataType:'json',
 				type:'post',
 				timeout:1000,
-				headers:{"token":oldtoken},	 
+				headers:{"token":oldtoken},	   
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting();
-//					alert(JSON.stringify(data)) ;
+					alert(JSON.stringify(data)) ;
 					 mui.toast("支付成功"); 
-					  
-					openview({
-						view:"../tickets/phone-record-de.html",
-						extrasobj:{saleAmount:saleAmount,orderCost:orderCost}
-					})
-//					 plus.webview.getWebviewById("market/market-order.html").close();
-//					 
-//					 plus.webview.currentWebview().close();
+					   
+					 plus.webview.getWebviewById("apprenticeSub.html").close(); 
+					 mui.back(); 
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting()

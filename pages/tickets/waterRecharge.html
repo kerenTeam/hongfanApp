@@ -14,9 +14,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
 		
 		<style type="text/css">
 			/*banner底部导航*/
@@ -145,7 +142,7 @@
 			}
 		</style>
 	</head>
-	<body>
+	<body class="farm">
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">新增缴费账户</h1>
@@ -155,7 +152,7 @@
 		<!--详情内容-->
 		<div id="main">
 			<div class="deal">
-				<div class="farm">
+				<div>
 					<div class="top rentingtop box-s">
 						<div class="icon">
 							<img src="../../img/theList/316. Water.png"/>
@@ -165,16 +162,22 @@
 					<div class="recharge clearfloat">
 			    		<div class="czhi box-s">
 							<p>家庭</p>
-							<input type="text" id="" value="" placeholder="" />
+							<!--<input type="text" id="" value="" placeholder="" />-->
+							<select class="mui-btn mui-btn-block" style="width: 78%;padding: 0;height: 0.5rem;font-size: 0.14rem;">
+								<option value="我家">我家</option>
+								<option value="父母">父母</option>
+								<option value="房东">房东</option>
+								<option value="朋友">朋友</option>
+								<option value="其他">其他</option>
+							</select>
 			    		</div>
 	    			</div>
 					<div class="warpthree clearfloat line">
 				    	<div class="recharge">
 				    		<div class="czhi box-s">
 				    			<p>缴费单位</p>
-				    			<div id="Cchoose" onclick="unit()">
+				    			<div id="Cchoose">
 				    				<input type="text" id="" value="" placeholder="邻水县自来水公司" disabled="disabled"/>
-				    				<span class="mui-icon mui-icon-arrowright"></span>
 				    			</div>
 				    		</div>
 				    	</div>	 
@@ -183,7 +186,7 @@
 				    	<div class="recharge">
 				    		<div class="czhi box-s">
 				    			<p>户号</p>
-				    			<input type="text" id="" value="" placeholder="查看纸质账单" />
+				    			<input type="text" id="huhao" value="" placeholder="查看纸质账单" />
 				    		</div>
 				    	</div>	
 				    </div>
@@ -191,7 +194,7 @@
 						<p>户号为8-10位数字。支持邻水县主城区。</p>
 					</div>
 					<div class="btw agree">
-						<p>同意<span class="textRed"> 《支付宝自助缴费服务协议》</span></p>
+						<p>同意<span class="textRed"> 《千米网自助缴费服务协议》</span></p>
 					</div>
 					<button type="button" class="mui-btn mui-btn-block" onclick="next()">下一步</button>
 				</div>
@@ -208,17 +211,19 @@
 			
 			//点击下一步跳转
 			window.next = function(){
-				openview({
-					view:'waterPay.html',
-				})
+				if(mui("#huhao")[0].value==''){
+					mui.toast("户号必填哦");
+					mui("#huhao")[0].focus();
+				}else{
+					openview({
+						view:'waterPay.html',
+						id:'waterPay',
+						extrasobj:{huhao:mui("#huhao")[0].value}
+					})
+				}
+				
 			}
-			
-			//点击缴费单位跳转
-			window.unit = function(){
-				openview({
-					view:'rechargeList.html',
-				})
-			}
+		 
 		})();
 	</script>
 </html>
