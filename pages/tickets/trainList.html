@@ -214,7 +214,10 @@
 			}
 			.head{
 				background-color: #FFC900;
-				margin-top: 50px;
+			    position: fixed;
+			    top: 50px;
+			    left: 0;
+			    z-index: 100;
 			}
 			.hLeft{
 				text-align: right;
@@ -286,21 +289,21 @@
 			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
 					<div class="timeBox">
 						<span class="mui-icon mui-icon-arrowleft"></span>
-						<p class="ad black">前一天</p>
-						<p class="ad black">￥360</p>
+						<p class="ad black" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">前一天</p>
+						<!--<p class="ad black">￥360</p>-->
 					</div>
 		       	</div>
 		        <div class="mui-col-sm-6 mui-col-xs-6 hMiddle">
 		        	<div class="timeBox iconWrap">
-			        	<input type="text" class="calendars" hours hours-past value="全年"><br>
+			        	<input type="text" class="calendars"  hours hours-past value=""><br>
 			        	<img src="../../img/tickets/calender.png"/ class="cIcon">
 					</div>
 		        </div>
 		         <div class="mui-col-sm-3 mui-col-xs-3 hRight">
 					<div class="timeBox">
 						<span class="mui-icon mui-icon-arrowright"></span>
-						<p class="ad black">后一天</p>
-						<p class="ad black">￥390</p>
+						<p class="ad black" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">后一天</p>
+						<!--<p class="ad black">￥390</p>-->
 					</div>
 		       	</div>
 			</div>
@@ -337,12 +340,12 @@
 		        <li>其他</li>
 		    </ul>
 		</div>	
-		<div id="main" style="padding-top: 2px;">
+		<div id="main" style="padding-top: 2px;margin-top: 100px;">
 			<div class="guess-like">
 				<dl class="list" id="goodsList"></dl>
 				<script type="text/html" id="infolist">
 					<% for(var i=0; i<list.length; i++){%>
-						<dd class="goodsItem" onclick="goTrain()">
+						<dd class="goodsItem" onclick="goTrain(<%= list[i].details%>)">
 							<a class="react mui-row">
 								<div class="mui-col-sm-4 mui-col-xs-4">
 									<div class="timeBox">
@@ -361,7 +364,12 @@
 									</div>
 						        </div>
 						        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
-						        	<p><span class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+						        	<% if(list[i].Yprice>0){%>
+						        		<p><span class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+						        	<% }else{%>
+						        		<p><span style="color: #999;" class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+						        	<% }%>	
+						        	
 						        	<p class="Achange"><%= list[i].Yname%></p>
 						        	<p><%= list[i].Ynum%>张</p>
 						        </div>
@@ -378,10 +386,15 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-		window.goTrain = function(){
-			openview({ 
-				view:'trainDetail.html'
+		window.goTrain = function(details){
+			mui.plusReady(function(){
+				var time = plus.webview.currentWebview().time;
+				openview({  
+					view:'trainDetail.html',
+					extrasobj:{details:details,timeattr:time}
+				})
 			})
+			
 		}
 	</script>
 	<!--数据渲染-->
@@ -413,7 +426,8 @@
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			var from = plus.webview.currentWebview().from;
 			var arrive = plus.webview.currentWebview().arrive;
-			var time = plus.webview.currentWebview().time; 
+			var time = plus.webview.currentWebview().time;
+			mui('.calendars')[0].value = time;
 			var oldToken = plus.storage.getItem('oldToken');
 			mui('#headstate')[0].innerHTML = from + ' - ' + arrive;
 			mui.ajax(serverUrl+'/api/qianmi/trainlineslist',{
@@ -431,26 +445,12 @@
 							if(Tlist.length || Tlist != null){ 
 								var dataobj = {};
 								for(var i=0;i<Tlist.length;i++){ 
+									//保存详情数据
+									Tlist[i].details = JSON.stringify(Tlist[i]);
 									//时间格式调整
 									Tlist[i].runTime = formatSeconds(Tlist[i].runTime);
 									//优先 硬座(5),其次 硬卧(7), 软卧(8) , 高级软卧,  二等座(0) , 一等座(1), 无座(4) , 商务座(3),
 									var ridetype = Tlist[i].trainSeats.trainSeat;
-//									for(var j=0;j<ridetype.length;j++){
-//										if(ridetype[j].seatId==0 && ridetype[j].remainderTrainTickets>0){
-//											alert(0);
-//											break;
-//										}
-//										if(j == ridetype.length-1){
-//											for(var j=0;j<ridetype.length;j++){
-//												if(ridetype[j].seatId==1 && ridetype[j].remainderTrainTickets>0){
-//													alert(0);
-//													break;
-//												}
-//											}
-//											
-//										}
-//										
-//									}
 									for(var j=0;j<ridetype.length;j++){
 										var funchange = function(){//更改数据代码块
 											Tlist[i].Yprice = ridetype[j].seatPrice;
