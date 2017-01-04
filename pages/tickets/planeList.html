@@ -15,8 +15,8 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script src=" ../../js/hmt.js" type="text/javascript"></script>
+		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
+		<!--<script src=" ../../js/hmt.js" type="text/javascript"></script>-->
 		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" ></script>
 		
@@ -196,17 +196,21 @@
 				border-bottom: none;
 			}
 			/*header样式*/
-			.mui-bar-nav {
+			/*.mui-bar-nav {
+			 	* 
 				background-color: #FFF !important;
-			}
-			.hasManyCitytwo .header-tit{
+			}*/
+			/*.hasManyCitytwo .header-tit{
 				color: #333;
-			}
-			.hasManyCitytwo .fanhui{
+			}*/
+			/*.hasManyCitytwo .fanhui{
 				color: #333;
-			}
+			}*/
 			div.screening{
 				border-top: 1px solid #EFEFF4;
+			}
+			#main{
+				margin-top: 60px;
 			}
 		</style>
 	</head>
@@ -217,7 +221,7 @@
 				机票
 			</div>
 		</header>
-		<div class="head">
+		<!--<div class="head">
 			<div class="mui-row">
 			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
 					<div class="timeBox">
@@ -240,8 +244,8 @@
 					</div>
 		       	</div>
 			</div>
-		</div>
-		<div class="screening">
+		</div>-->
+		<!--<div class="screening">
 		    <ul>
 		        <li class="Brand">起飞时段</li>
 		        <li class="Regional">航空公司</li>
@@ -266,12 +270,12 @@
 		        <li onclick="order('price','desc')">从低到高</li>
 		        <li onclick="order('price','asc')">从高到低</li>
 		    </ul>
-		</div>
+		</div>-->
 		<div id="main">
 			<div class="guess-like">
 				
 				<dl class="list" id="goodsList">
-					<dd class="goodsItem" onclick="goPlane()">
+					<!--<dd class="goodsItem" onclick="goPlane()">
 						<a class="react mui-row">
 							<div class="mui-col-sm-3 mui-col-xs-3">
 								<div class="timeBox">
@@ -313,48 +317,47 @@
 						<div class="order-bottom clearfloat box-s tip">
 							<p>人均含税总价<span class="price"><sub>￥</sub>342</span></p>
 						</div>
-					</dd>
-					<dd class="goodsItem" onclick="goPlane()">
-						<a class="react mui-row">
-							<div class="mui-col-sm-3 mui-col-xs-3">
-								<div class="timeBox">
-									<p>22:40 </p>
-									<p class="ad">双流T1</p>
-								</div>
-					        </div>
-					        <div class="mui-col-sm-1 mui-col-xs-1">-</div>
-					        <div class="mui-col-sm-3 mui-col-xs-3">
-					        	<div class="timeBox">
-									<p>00:40</p>
-									<p class="ad">首都T1</p>
-									<div class="bage">+1</div>
-								</div>
-					        </div>
-					        <div class="mui-col-sm-5 mui-col-xs-5 airTip">
-					        	<p class="Achange"><span>中转1次 </span>14h50m</p>
-					        	<p>国航CA1746</p>
-					        </div>
-						</a>
-						<div class="order-bottom clearfloat box-s tip">
-							<p>人均含税总价<span class="price"><sub>￥</sub>342</span></p>
-						</div>
-					</dd>
+					</dd>-->
+					
+					
+				</dl>
+				<script type="text/html" id="goodsList-detail">
+					<% for(var i = 0;i<adLi.length;i++){ %>
+						<dd class="goodsItem" onclick="goPlane('<%= adLi[i].flightNo %>','<%= adLi[i].flightCompanyCode %>')">
+							<a class="react mui-row">
+								<div class="mui-col-sm-3 mui-col-xs-3">
+									<div class="timeBox">
+										<p><%= adLi[i].depTime %></p>
+										<p class="ad"><%= adLi[i].orgCityName.replace("航站楼:","")  %></p>
+									</div>
+						        </div>
+						        <div class="mui-col-sm-1 mui-col-xs-1">-</div>
+						        <div class="mui-col-sm-3 mui-col-xs-3">
+						        	<div class="timeBox">
+										<p><%= adLi[i].arriTime %></p>
+										<p class="ad"><%= adLi[i].dstCityName.replace("航站楼:","") %></p>
+									</div>
+						        </div>
+						        <div class="mui-col-sm-5 mui-col-xs-5 airTip">
+						        	<p><%= adLi[i].flightCompanyName %><%= adLi[i].flightNo %></p>
+						        </div>
+							</a>
+							<div class="order-bottom clearfloat box-s tip">
+								<p>原价<span class="price"><sub>￥</sub><%= adLi[i].basePrice %></span></p>
+							</div>
+						</dd>
+					<% } %>
 					<dd class="db">
 						<a class="react " href="javascript:;">
 							<div class="moreone">加载更多</div>
 						</a>
 					</dd>
-				</dl>
+				</script>
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-		//点击机票进入详情
-		window.goPlane = function(){
-			openview({ 
-				view:'planeDetail.html'
-			})
-		}
+		
 		mui.init({
 			swipeBack:true //启用右滑关闭功能
 		});
@@ -379,43 +382,95 @@
 	<!--数据渲染-->
 	<script type="text/javascript">
 		mui.plusReady(function(){
-			var planeType = plus.webview.currentWebview().planeType;
-			//往返
 			var from = plus.webview.currentWebview().from;
 			var arrive = plus.webview.currentWebview().arrive;
 			var fromTime = plus.webview.currentWebview().fromTime;
-			var arriveTime = plus.webview.currentWebview().arriveTime;
-			//单程
-			var from1 = plus.webview.currentWebview().from1;
-			var arrive1 = plus.webview.currentWebview().arrive1;
-			var time1 = plus.webview.currentWebview().time1;
-			alert(planeType);
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
-			if(planeType == "往返"){
-					mui.ajax(serverUrl +'/api/index/indexheaderdata',{
-	//				data:{userid : 148},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
-						console.log('banner返回'+JSON.stringify(data));
-						var bannerObj = {};
-						var recommentObj = {};
-						bannerObj.bannerLi =eval("("+data.data.banner[0].banner+")") ;
-						 
-						console.log(data.data.recomment)
-						bannerObj.url = serverimgUrl;
-						var html = template('banner-detail',bannerObj);
-						document.getElementById('banner').innerHTML = html;
-						
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('响应失败  !');
+			console.log(oldToken);
+			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
+			//获取所有站点的三字码
+			var fromPlace,arrivePlace,itemId;
+			mui.ajax(serverUrl +'/api/qianmi/airstationslist',{
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//						alert(JSON.stringify(data.data.air_stations_list_response.stations.station));
+					dataReturn = data.data.air_stations_list_response.stations.station;
+					for(var i = 0;i<dataReturn.length;i++){
+						//起飞地点三字码
+						if(from == dataReturn[i].name){
+							fromPlace = dataReturn[i].code;
+						}
+						//目的地三字码
+						if(arrive == dataReturn[i].name){
+							arrivePlace = dataReturn[i].code;
+						}
 					}
-				});
-			}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
+				}
+			});
+			
+			//获取标准商品列表信息
+			mui.ajax(serverUrl +'/api/qianmi/airitemslist',{
+				data:{pageNo : 0,itemName:'',itemId:'',pageSize:10},
+				dataType:'json',
+				type:'post',
+				timeout:15000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data.air_items_list_response.items.item[0].itemId));
+					numReturn = data.data.air_items_list_response.items.item;
+					for(var j = 0;j<numReturn.length;j++){
+						itemId = numReturn[j].itemId;
+//						alert(arrive)
+						//获取航线列表
+						mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
+							data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
+							dataType:'json',
+							type:'post',
+							timeout:15000,
+							headers:{"token":oldToken},	 
+							success:function(data,type,xhr){
+								alert(data.data.airlines_list_response.airlines);
+								var dataObj = data.data.airlines_list_response.airlines;
+								if(!dataObj || dataObj == ''){
+									plus.nativeUI.closeWaiting();
+									alert('没有航线信息,请重新输入航线！');
+									plus.webview.currentWebview().close();
+								}else{
+									dataObj = data.data.airlines_list_response.airlines.airline;
+									var adObj = {};
+									adObj.adLi = data.data.airlines_list_response.airlines.airline;
+									var html = template('goodsList-detail',adObj);
+									document.getElementById('goodsList').innerHTML = html;
+									plus.nativeUI.closeWaiting();
+									//点击机票进入详情
+									window.goPlane = function(flightNo,flightCompanyCode){
+										alert(flightNo);
+										openview({ 
+											view:'planeDetail.html',
+											extrasobj:{flightNo:flightNo,flightCompanyCode:flightCompanyCode,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
+										})
+									}
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								console.log('响应失败  !');
+							}
+						});
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
+				}
+			});
+			
+			
 		})
 	</script>
 </html>

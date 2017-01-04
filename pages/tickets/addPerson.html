@@ -15,11 +15,11 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script src=" ../../js/hmt.js" type="text/javascript"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
+		<!--<script src=" ../../js/hmt.js" type="text/javascript"></script>-->
+		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
 		<script src="../../js/app.js" type="text/javascript" ></script>
 		<script src="../../js/mui.picker.min.js"></script>
 		<script src="../../js/mui.poppicker.js"></script>
@@ -215,7 +215,7 @@
 				display: inline-block;
 			}
 			/*header样式*/
-			.mui-bar-nav {
+			/*.mui-bar-nav {
 				background-color: #FFF !important;
 				border-bottom: 1px solid #EFEFF4;
 			}
@@ -224,9 +224,14 @@
 			}
 			.hasManyCitytwo .fanhui{
 				color: #333;
-			}
-			.hasManyCitytwo .baocun{
+			}*/
+			/*.hasManyCitytwo .baocun{
 				color: #f53c42 ;
+			}*/
+			input[type=text]{
+				border: none;
+				margin-bottom: 0;
+				padding: 0;
 			}
 		</style>
 	</head>
@@ -247,7 +252,7 @@
 							<p class="black">姓名 </p>
 				       </div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
-				        	<input type="" name="" id="" value="" class="phone" placeholder="与乘客证件一致"/>
+				        	<input type="text" name="" id="newName" value="" class="phone" placeholder="与乘客证件一致"/>
 				        </div>
 					</a>
 				</dd>
@@ -258,7 +263,7 @@
 				      	</div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
 				        	<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
-							<div id='cityResult3' class="ui-alert"></div>
+							<div id='cityResult3' class="ui-alert">身份证</div>
 				        </div>
 					</a>
 				</dd>
@@ -268,7 +273,7 @@
 							<p class="black">证件号码 </p>
 				       </div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
-				        	<input type="" name="" id="" value="" class="phone" placeholder="与乘客证件一致"/>
+				        	<input type="text" name="" id="idNo" value="" class="phone" placeholder="与乘客证件一致"/>
 				        </div>
 					</a>
 				</dd>
@@ -276,33 +281,59 @@
 		</div>
 	</body>
 	<script>
-		(function($, doc) {
-			$.init();
-			$.ready(function() {
-				//分类选择
-				var userPicker = new $.PopPicker();
-				userPicker.setData([{
-					text: '身份证'
-				}, {
-					text: '护照'
-				},{
-					text: '港澳通行证'
-				},{
-					text: '台湾通行证'
-				},{
-					text: '户口簿'
-				}]);
-				var showUserPickerButton = doc.getElementById('showCityPicker3');
-				var userResult = doc.getElementById('cityResult3');
-				showUserPickerButton.addEventListener('tap', function(event) {
-					userPicker.show(function(items) {
-						userResult.innerText = items[0].text;
-						//返回 false 可以阻止选择框的关闭
-						//return false;
-					});
-				}, false);
-			});
-		})(mui, document);
+//		(function($, doc) {
+//			$.init();
+//			$.ready(function() {
+//				//分类选择
+//				var userPicker = new $.PopPicker();
+//				userPicker.setData([{
+//					text: '身份证'
+////				}, {
+////					text: '护照'
+////				},{
+////					text: '港澳通行证'
+////				},{
+////					text: '台湾通行证'
+////				},{
+////					text: '户口簿'
+//				}]);
+//				var showUserPickerButton = doc.getElementById('showCityPicker3');
+//				var userResult = doc.getElementById('cityResult3');
+//				showUserPickerButton.addEventListener('tap', function(event) {
+//					userPicker.show(function(items) {
+//						userResult.innerText = items[0].text;
+//						//返回 false 可以阻止选择框的关闭
+//						//return false;
+//					});
+//				}, false);
+//			});
+//		})(mui, document);
 	</script>
-
+	<script type="text/javascript">
+		function save(){
+			var newName = mui('#newName')[0].value;
+			var idType = mui('#cityResult3')[0].innerHTML;//证件分类选择
+			var idNo = mui('#idNo')[0].value;
+			var regIdCard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; //身份证验证
+//			var regPassport = /^[a-zA-Z0-9]{3,21}$/   /^(P\d{7})|(G\d{8})$/; //护照验证
+			
+//			if(idType = "身份证"){
+				if(regIdCard.test(idNo) === false){  
+				       mui.toast("请输入正确的身份证好");  
+				       mui('#idNo')[0].focus();
+				       
+				}
+//			}
+//			else if(idType = "护照"){
+//				if(regPassport.test(idNo) === false){  
+//				    mui.toast("请输入正确的护照号码"); 
+//				    mui('#idNo')[0].focus();
+//				       
+//				}else{
+//					
+//				}
+//			}
+		}
+		
+	</script>
 </html>
