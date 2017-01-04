@@ -13,7 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
 		<!--<script src=" ../../js/hmt.js" type="text/javascript"></script>-->
@@ -251,10 +251,8 @@
 						<div class="mui-col-sm-9 mui-col-xs-9">
 							<p class="black title">12-13&nbsp;周二&nbsp;20:10&nbsp;经济舱 </p>
 							<p class="black tiny">双流机场T2&nbsp;-&nbsp;萧山机场</p>
-							
 				        </div>
 				        <div class="mui-col-sm-3 mui-col-xs-3">
-				        	
 				        </div>
 					</a>-->
 				</dd>
@@ -273,7 +271,6 @@
 					<a class="react mui-row">
 						<div class="mui-col-sm-6 mui-col-xs-6">
 							<p class="black">成人票￥<span id="settlePrice"></span></p>
-							
 				       	</div>
 				        <div class="mui-col-sm-6 mui-col-xs-6">
 				        	<p class="black">基建燃油￥<span id="adultAirportTax"></span>+￥<span id="adultFuelTax"></span></p>
@@ -293,10 +290,10 @@
 				        </div>
 					</a>
 				</dd>
-				<dd class="goodsItem">
-					<a class="react mui-row">
+				<dd class="goodsItem" id="persons">
+					<a class="react mui-row aPerson">
 						<div class="mui-col-sm-1 mui-col-xs-1">
-							<img src="../../img/tickets/delete.png" class="delete"/>
+							<img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/>
 				       	</div>
 				        <div class="mui-col-sm-11 mui-col-xs-11">
 				        	<p class="black">柯南</p>
@@ -320,7 +317,7 @@
 					<a class="react mui-row">
 						<div class="mui-col-sm-3 mui-col-xs-3">
 							<p class="black">手机号码 </p>
-				       </div>
+				       	</div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
 				        	<input type="" name="" id="" value="" class="phone" placeholder="用于接收短信(必填)"/>
 				        </div>
@@ -334,7 +331,7 @@
 							<p class="black">改签规则</p>
 				       </div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
-				        	<small id="changeStipulate"></small>
+				        	<p id="changeStipulate" style="line-height: 20px;font-size: 12px;margin: 10px 0;"></p>
 				        </div>
 					</a>
 				</dd>
@@ -342,9 +339,9 @@
 					<a class="react mui-row">
 						<div class="mui-col-sm-3 mui-col-xs-3">
 							<p class="black">退票规则</p>
-				       </div>
+				       	</div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
-				        	<small id="refundStipulate"></small>
+				        	<p id="refundStipulate"></p>
 				        </div>
 					</a>
 				</dd>
@@ -353,7 +350,7 @@
 		<!--footerone star-->
 		<div class="footerone clearfloat">
 			<div class="left">
-				<p class="red1"><sub>￥</sub>425<sub class="gray">（共1人）</sub></p>
+				<p class="red1"><sub>￥</sub><span id="subPrice"></span><sub class="gray">（共<span id="subPerson"></span>人）</sub></p>
 			</div>
 			<div class="right ">
                 <a onClick="toshare(2)" class="btn btnone fl">立即购买</a>
@@ -364,14 +361,22 @@
 	<script type="text/javascript">
 		window.addPerson = function(){
 			openview({ 
-				view:'addPerson.html'
+				view:'planeAddPerson.html'
 			})
 		}
 	</script>
 	<!--数据渲染-->
 	<script type="text/javascript">
+		//点击删除，删除乘机人
+		function deletePerson(thisP){
+			mui.confirm('确认删除该乘机人？','',['取消','确认'],function (e) {
+				if(e.index == 1) { 
+					$(thisP).parents('.aPerson').remove();
+				}
+			})
+		}
 		mui.plusReady(function(){
-			
+			//从机票详情获取的数据
 			var flightNo = plus.webview.currentWebview().flightNo;
 			var fromPlace = plus.webview.currentWebview().fromPlace;
 			var arrivePlace = plus.webview.currentWebview().arrivePlace;
@@ -382,22 +387,32 @@
 			var flightCompanyCode = plus.webview.currentWebview().flightCompanyCode;
 			
 			var oldToken = plus.storage.getItem('oldToken');
+			
+			//从添加乘机人获取的详情
+			document.addEventListener('refreshPerson', function(obj) {
+				var newName=obj.detail.newName;
+				var idNo=obj.detail.idNo;
+//				alert(idNo+newName);
+				var persons = document.getElementById('persons');
+				persons.insertAdjacentHTML('beforebegin', '<dd class="goodsItem" id="persons"><a class="react mui-row aPerson"><div class="mui-col-sm-1 mui-col-xs-1"><img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/></div><div class="mui-col-sm-11 mui-col-xs-11"><p class="black">'+newName+'</p><p class="tiny black">身份证&nbsp;'+idNo+'</p></div></a></dd>'); 
+			})
+			
 			//获取航线列表
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
-				data:{from:fromPlace,itemId:itemId,date:'2017-01-12',to:arrivePlace},
+				data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					alert(data)
+//					alert(data)
 					//航线基本信息
 					var objData = data.data.airlines_list_response.airlines.airline;
 					for(var i = 0;i<objData.length;i++){
 						//循环获取当前航班号
 						if(objData[i].flightNo == flightNo){
-							alert(JSON.stringify(objData[i].flightNo));
+//							alert(JSON.stringify(objData[i].flightNo));
 							var adObj = {};
 							adObj.adLi = objData[i];
 							adObj.seatMsg = seatMsg;
@@ -412,13 +427,10 @@
 							//航线具体舱位信息
 							for(var k = 0; k<objData[i].airSeats.airSeat.length;k++){
 								if( objData[i].airSeats.airSeat[k].seatCode == seatCode){
-									alert(objData[i].airSeats.airSeat[k].seatCode);
-//									var airSeatsObj = {};
 									airSeats = objData[i].airSeats.airSeat[k];
-//									var html2 = template('goodsList-detail',airSeatsObj);
-//									document.getElementById('goodsList').innerHTML = html2;
 									//其他数据渲染
-									mui('#settlePrice')[0].innerHTML = airSeats.settlePrice;			
+									mui('#settlePrice')[0].innerHTML = airSeats.settlePrice;//票价
+									mui('#subPrice')[0].innerHTML = airSeats.settlePrice;//总票价
 									mui('#changeStipulate')[0].innerHTML = airSeats.changeStipulate;			
 									mui('#refundStipulate')[0].innerHTML = airSeats.refundStipulate;			
 									plus.nativeUI.closeWaiting();
