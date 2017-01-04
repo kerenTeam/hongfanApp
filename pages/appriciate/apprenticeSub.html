@@ -360,27 +360,24 @@
 			
 			var Ynulls = mui('.Ynull');
 			
-//			if(mui('#Bname')[0].value==''){
-//				mui.toast('请输入您的姓名');
-//				mui('#Bname')[0].focus();
-//			}
-//			else if(!reg_phone.test(mui('#Bphone')[0].value)){
-//				mui.toast('请输入正确的手机号');
-//				mui('#Bphone')[0].focus();
-//			}
-//			else if(mui('#Bclass')[0].value!='男' && mui('#Bclass')[0].value!='女'){
-//				mui.toast('请输入正确的性别');
-//				mui('#Bclass')[0].focus();
-//			}
-//			else if(mui('#Bage')[0].value==''){
-//				mui.toast('请输入您的年龄');
-//				mui('#Bage')[0].focus();
-//			}
-//			else{
-//				
-//					
-			if(price !== "免费"){
-				alert("要给钱哟")
+			if(mui('#Bname')[0].value==''){
+				mui.toast('请输入您的姓名');
+				mui('#Bname')[0].focus();
+			}
+			else if(!reg_phone.test(mui('#Bphone')[0].value)){
+				mui.toast('请输入正确的手机号');
+				mui('#Bphone')[0].focus();
+			}
+			else if(mui('#Bclass')[0].value!='男' && mui('#Bclass')[0].value!='女'){
+				mui.toast('请输入正确的性别');
+				mui('#Bclass')[0].focus();
+			}
+			else if(mui('#Bage')[0].value==''){
+				mui.toast('请输入您的年龄');
+				mui('#Bage')[0].focus();
+			}
+			else{
+				if(price !== "免费"){
 				//铺数据
 				var oldToken = plus.storage.getItem('oldToken');
 				console.log(oldToken);
@@ -396,13 +393,14 @@
 						var activityId = data.data;
 						plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
 						if(data.errno==0){
-//							mui.toast('报名成功');
-							plus.webview.currentWebview().close();
+							alert(data) 
+							plus.nativeUI.closeWaiting();
 							openview({
-								view:'../market/pay.html',
+								view:'../market/activityPay.html',
 								extrasobj:{activityId:activityId,price:price}
 							})
-							plus.nativeUI.closeWaiting();
+						//	plus.webview.currentWebview().close();
+							
 						}
 					},
 					error:function(xhr,type,errorThrown){
@@ -411,29 +409,31 @@
 				});		
 			}else{
 				//铺数据
-				var oldToken = plus.storage.getItem('oldToken');
-				console.log(oldToken);
-				mui.ajax(serverUrl+'/api/localservice/activityjoin',{
-					data:{id:apprenticeId,userid:myuserid,name:name,gender:gender,mobileno:mobileno,age:age},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
-						
-						alert(JSON.stringify(data));
-						plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
-						if(data.errno==0){
-							mui.toast('报名成功');
-							plus.webview.currentWebview().close();
-							plus.nativeUI.closeWaiting();
-						}
-					},
-					error:function(xhr,type,errorThrown){
-						alert('响应失败  !');
+					var oldToken = plus.storage.getItem('oldToken');
+						console.log(oldToken);
+						mui.ajax(serverUrl+'/api/localservice/activityjoin',{
+							data:{id:apprenticeId,userid:myuserid,name:name,gender:gender,mobileno:mobileno,age:age},
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldToken},	 
+							success:function(data,type,xhr){
+								
+								alert(JSON.stringify(data));
+								plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
+								if(data.errno==0){
+									mui.toast('报名成功');
+									plus.webview.currentWebview().close();
+									plus.nativeUI.closeWaiting();
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								alert('响应失败  !');
+							}
+						});		
 					}
-				});		
-			}
+					}
+			
 		}
 	})
 </script>

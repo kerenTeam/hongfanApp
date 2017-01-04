@@ -39,7 +39,7 @@
 			
 			/*这一页*/
 			.grade-eject, .Category-eject, .Sort-eject{
-				height: 80px;
+				height: 120px;
 			}
 			div.screening>ul>li{
 				border-left: 1px solid #eee !important;
@@ -194,7 +194,7 @@
 		        <li class="Sort">价格</li>
 		    </ul>
 		</div>
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
 		        <li onclick="order('create_time','asc')">新品</li>
@@ -212,6 +212,7 @@
 		        <li onclick="order('price','asc')">从高到低</li>
 		    </ul>
 		</div>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main">
 				<div class="guess-like">
@@ -280,13 +281,13 @@
 			
 			//数据渲染
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-				data:{currentPage:1,numsPerPage:3,categoryid:goodcatId,recommend:1,storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc'},
+				data:{currentPage:1,numsPerPage:3,categoryid:goodcatId,recommend:'',storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc'},
 				dataType:'json',
 				type:'post',
 				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-//					 alert(JSON.stringify(data));
+					 alert(JSON.stringify(data));
 					if(data.errno!=1000){
 						
 					var objdata = {};
@@ -308,7 +309,7 @@
 			//按照选择排序
 			window.order = function(orderType,sequence){
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data:{currentPage:1,numsPerPage:3,categoryid:goodcatId,recommend:1,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
+					data:{currentPage:1,numsPerPage:3,categoryid:goodcatId,recommend:'',storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
 					dataType:'json',
 					type:'post',
 					timeout:1000,

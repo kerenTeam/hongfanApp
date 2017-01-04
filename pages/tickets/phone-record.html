@@ -14,9 +14,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		
 		<style type="text/css">
 			/*banner底部导航*/
@@ -109,7 +107,7 @@
 			}
 			.clearfloat{
 				border-bottom: 1px solid #eee;
-				margin-bottom: 20px;
+				/*margin-bottom: 10px;*/
 			}
 			.farm, .farmtc{
 				background-color: #fafafa;
@@ -155,7 +153,7 @@
 			}
 			.recharge .czhi, .btw {
 				height: 60px;
-				border-bottom: 1px solid #eee;
+				/*border-bottom: 1px solid #eee;*/
 			}
 			.recordDetail{
 				width: 60%;
@@ -188,43 +186,38 @@
 			<div class="deal">
 				<div class="farm">
 					<div class="warpthree clearfloat line">
-				    	<div class="recharge" onclick="recordDe()">
-				    		<div class="czhi box-s">
-				    			<p>10-02</p>
-				    			<div id="Cchoose">
-									<div class="icon-gas icon">
-										<img src="../../img/tickets/phone.png"/>
-									</div>
-									<div class="recordDetail">
-										<p class="recordBig">-10.00</p>
-										<p class="recordTiny">充值10元-12667496663</p>
-									</div>
-				    			</div>
-				    		</div>
-				    	</div>
-				    	<div class="recharge" onclick="recordDe()">
-				    		<div class="czhi box-s">
-				    			<p>10-02</p>
-				    			<div id="Cchoose">
-									<div class="icon-water icon">
-										<img src="../../img/tickets/phone.png"/>
-									</div>
-									<div class="recordDetail">
-										<p class="recordBig">-10.00</p>
-										<p class="recordTiny">充值10元-12667496663</p>
-									</div>
-				    			</div>
-				    		</div>
-				    	</div>	
+						
+						<div id="rechargeList"></div>
+						<script type="text/html" id="rechargeTpl">
+							<%for(var t=0;t<list.length;t++){%>
+								<div class="recharge clearfloat" onclick="recordDe('<%=list[t].id%>')">
+						    		<div class="czhi box-s">
+						    			<p style="font-size: 0.12rem;"><%=list[t].data.data.orderTime%></p> 
+											<div class="icon-water icon">
+												<img src="../../img/tickets/phone.png"/>
+											</div>
+											<div class="recordDetail">
+												<p class="recordBig">-<%=list[t].data.data.itemCost%></p>
+												<p class="recordTiny">充值<%=list[t].data.data.saleAmount%>元-<%=list[t].data.data.rechargeAccount%></p>
+											</div> 
+						    		</div>
+						    	</div>	
+								<%}%>
+						</script> 
+				    	
 				   </div>
 				</div>
 			</div>
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		function recordDe(){
+		function recordDe(id){
+			alert(id)
 			openview({
-				view:'phone-record-de.html'
+				view:'phone-record-de.html',
+				extrasobj:{qianmiOrderID:id}
 			})
 		}
 		(function(){
@@ -241,6 +234,44 @@
 				    }
 				})
 			}
+			
+			mui.plusReady(function(){
+				var oldToken = plus.storage.getItem('oldToken');
+				var myuserid = plus.storage.getItem('userid');
+			 
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				mui.ajax(serverUrl+'/api/qianmi/billorder',{
+					data:{userid:myuserid,type:1},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						plus.nativeUI.closeWaiting()
+						alert(JSON.stringify(data));
+						if(data.errno==0){
+							 if(data.data.length!=0){ 
+							 	var rcObj = {};
+							 	for(var t=0;t<data.data.length;t++){ 
+							 		//alert(eval("("+data.data[t].data+")"));
+							 	 	  data.data[t].data = eval("("+data.data[t].data+")");
+							 	 	  data.data[t].data.data.itemCost = parseFloat(data.data[t].data.data.itemCost).toFixed(2);
+							 	 	  data.data[t].data.data.saleAmount = parseFloat(data.data[t].data.data.saleAmount).toFixed(2);
+							 	 	  data.data[t].data.data.orderTime = data.data[t].data.data.orderTime.substring(0,10);
+							 	}  
+							 	rcObj.list = data.data; 
+							 	mui("#rechargeList")[0].innerHTML = template("rechargeTpl",rcObj);
+							 }else{
+							 	mui("#rechargeList")[0].innerHTML = "暂无记录";
+							 }
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//alert('响应失败  !');
+					}
+				}); 
+			})
+			
 			
 		})();
 	</script>

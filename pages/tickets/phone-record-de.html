@@ -13,9 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
 		
 		<style type="text/css">
 			/*banner底部导航*/
@@ -162,7 +160,7 @@
 				text-align: center;
 			}
 			.recharge .czhi span{
-				width: 80%;
+				width: 78%;
 				color: #666;
 			}
 			.recharge .bottom{
@@ -191,7 +189,7 @@
 					</div>
 					<div class="recharge clearfloat">
 			    		<div class="czhi box-s">
-							<span id="amount">-10.00</span>
+							<span id="amount"></span>
 							<span id="amountTip">交易成功</span>
 			    		</div>
 		    			<div class="bottom clearfloat box-s">
@@ -202,15 +200,15 @@
 								</li>
 								<li class="mui-row">
 									<p class="fl mui-col-sm-3">充值说明：</p>
-									<span class="mui-col-sm-9">四川移动 10元手机话费充值</span>
+									<span class="mui-col-sm-9" id="itemName"></span>
 								</li>
 								<li class="mui-row">
 									<p class="fl mui-col-sm-3">充值号码：</p>
-									<span class="mui-col-sm-9">12345678998</span>
+									<span class="mui-col-sm-9" id="phoneCharge"></span>
 								</li>
 								<li class="mui-row">
 									<p class="fl mui-col-sm-3">面值：</p>
-									<span class="mui-col-sm-9">10</span>
+									<span class="mui-col-sm-9" id="saleAmount"></span>
 								</li>
 								<li class="mui-row">
 									<p class="fl mui-col-sm-3">交易对象：</p>
@@ -220,7 +218,7 @@
 						</div>
 			    		<div class="czhi box-s">
 			    			<p>创建时间</p>
-			    			<span>2016-12-16&nbsp;14:11</span>
+			    			<span id="cretime"></span>
 			    		</div>
 				    </div>
 				 </div>
@@ -228,6 +226,7 @@
 			</div>
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		(function(){
 			function openview(obj){
@@ -243,6 +242,44 @@
 				    }
 				})
 			}
+			
+			
+			mui.plusReady(function(){
+				 
+				if(plus.webview.getWebviewById('paysecond')){
+					 plus.webview.getWebviewById('paysecond').close();
+				}
+				
+				var oldToken = plus.storage.getItem('oldToken');
+				var myuserid = plus.storage.getItem('userid');
+				var orderId = plus.webview.currentWebview().qianmiOrderID;
+				alert(orderId)
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				mui.ajax(serverUrl+'/api/qianmi/billorderinfo',{
+					data:{qianmiOrderID:orderId},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						plus.nativeUI.closeWaiting()
+						alert(JSON.stringify(data));
+						if(data.errno==0){
+							var infoData = eval("("+data.data.data+")").data;
+							mui("#amount")[0].innerHTML = "￥"+parseFloat(infoData.orderCost).toFixed(2);
+							mui("#itemName")[0].innerHTML = infoData.itemName;
+							mui("#phoneCharge")[0].innerHTML = infoData.rechargeAccount;
+							mui("#saleAmount")[0].innerHTML = "￥"+parseFloat(infoData.saleAmount).toFixed(2);
+							mui("#cretime")[0].innerHTML = infoData.orderTime;
+							alert(eval("("+data.data.data+")").data.orderTime) 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//alert('响应失败  !');
+					}
+				}); 
+			})
+			
 		})();
 	</script>
 </html>
