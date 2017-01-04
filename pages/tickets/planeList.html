@@ -148,9 +148,9 @@
 			}
 			.head{
 				background-color: #ffc900;
-				margin-top: 86px;
+				margin-top: 50px;
 			}
-			.hLeft{
+			.hLeft,.hMiddle{
 				text-align: right;
 				padding: 5px 20px 5px 10px;
 			}
@@ -163,16 +163,16 @@
 			.hMiddle{
 				text-align: center;
 			}
-			.hRight{
+			/*.hRight{
 				text-align: left;
 				padding: 5px 10px 5px 20px;
-			}
-			.hRight span{
+			}*/
+			/*.hRight span{
 				display: inline-block;
 				float: right;
 				font-size: 16px;
 				line-height: 40px;
-			}
+			}*/
 			.iconWrap{
 				position: relative;
 			}
@@ -181,13 +181,13 @@
 				width: 100%;
 				margin: 5px 0;
 				font-size: 16px;
-				text-indent: 20px;
+				text-align: center;
 			}
 			.cIcon{
 				position: absolute;
 				top: 12px;
-				right: 4%;
-				width: 12%;
+				right: 10%;
+				width: 8%;
 			}
 			.guess-like{
 				padding-top: 0;
@@ -210,7 +210,14 @@
 				border-top: 1px solid #EFEFF4;
 			}
 			#main{
-				margin-top: 60px;
+				margin-top: 10px;
+			}
+			.goTime{
+				line-height: 40px;
+				font-size: 14px;
+			}
+			.calendars{
+				background-color: #fff;
 			}
 		</style>
 	</head>
@@ -221,30 +228,30 @@
 				机票
 			</div>
 		</header>
-		<!--<div class="head">
+		<div class="head">
 			<div class="mui-row">
 			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
-					<div class="timeBox">
-						<span class="mui-icon mui-icon-arrowleft"></span>
-						<p class="ad black">前一天</p>
-						<p class="ad black">￥360</p>
-					</div>
+					<!--<div class="">-->
+						<!--<span class="mui-icon mui-icon-arrowleft"></span>-->
+						<p class="black goTime">出发时间</p>
+						<!--<p class="ad black">￥360</p>-->
+					<!--</div>-->
 		       	</div>
-		        <div class="mui-col-sm-6 mui-col-xs-6 hMiddle">
-		        	<div class="timeBox iconWrap">
-			        	<input type="text" class="calendars" hours hours-past value="全年"><br>
+		        <div class="mui-col-sm-9 mui-col-xs-9 hMiddle">
+		        	<!--<div class="timeBox iconWrap">-->
+			        	<p type="text" class="black goTime calendars"><span id="calendars"></span>&nbsp;&nbsp;<span id="weekday"></span></p>
 			        	<img src="../../img/tickets/calender.png"/ class="cIcon">
-					</div>
+					<!--</div>-->
 		        </div>
-		         <div class="mui-col-sm-3 mui-col-xs-3 hRight">
-					<div class="timeBox">
-						<span class="mui-icon mui-icon-arrowright"></span>
-						<p class="ad black">后一天</p>
-						<p class="ad black">￥390</p>
-					</div>
-		       	</div>
+		         <!--<div class="mui-col-sm-3 mui-col-xs-3 hRight">-->
+					<!--<div class="timeBox">-->
+						<!--<span class="mui-icon mui-icon-arrowright"></span>-->
+						<!--<p class="ad black">后一天</p>-->
+						<!--<p class="ad black">￥390</p>-->
+					<!--</div>-->
+		       	<!--</div>-->
 			</div>
-		</div>-->
+		</div>
 		<!--<div class="screening">
 		    <ul>
 		        <li class="Brand">起飞时段</li>
@@ -343,21 +350,20 @@
 						        </div>
 							</a>
 							<div class="order-bottom clearfloat box-s tip">
-								<p>原价<span class="price"><sub>￥</sub><%= adLi[i].basePrice %></span></p>
+								<p>原价（点击查看优惠价格）<span class="price"><sub>￥</sub><%= adLi[i].basePrice %></span></p>
 							</div>
 						</dd>
 					<% } %>
-					<dd class="db">
+					<!--<dd class="db">
 						<a class="react " href="javascript:;">
 							<div class="moreone">加载更多</div>
 						</a>
-					</dd>
+					</dd>-->
 				</script>
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-		
 		mui.init({
 			swipeBack:true //启用右滑关闭功能
 		});
@@ -385,6 +391,22 @@
 			var from = plus.webview.currentWebview().from;
 			var arrive = plus.webview.currentWebview().arrive;
 			var fromTime = plus.webview.currentWebview().fromTime;
+			mui('#calendars')[0].innerHTML = fromTime;
+			
+			//修改星期日期时间
+			var dateTime = fromTime.replace(/\-/g,'/');//将获取的日期如2017-01-01改为2017/01/01
+			var date = new Date(dateTime).getDay();//获取具体周几
+			var weekday=new Array(7);
+				weekday[1]="周一";
+				weekday[2]="周二";
+				weekday[3]="周三";
+				weekday[4]="周四";
+				weekday[5]="周五";
+				weekday[6]="周六";
+				weekday[7]="周日";
+			document.getElementById('weekday').innerHTML = weekday[date];
+			//修改星期日期时间结束
+			
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
@@ -436,7 +458,7 @@
 							timeout:15000,
 							headers:{"token":oldToken},	 
 							success:function(data,type,xhr){
-								alert(data.data.airlines_list_response.airlines);
+//								alert(data.data.airlines_list_response.airlines);
 								var dataObj = data.data.airlines_list_response.airlines;
 								if(!dataObj || dataObj == ''){
 									plus.nativeUI.closeWaiting();
@@ -451,7 +473,7 @@
 									plus.nativeUI.closeWaiting();
 									//点击机票进入详情
 									window.goPlane = function(flightNo,flightCompanyCode){
-										alert(flightNo);
+//										alert(flightNo);
 										openview({ 
 											view:'planeDetail.html',
 											extrasobj:{flightNo:flightNo,flightCompanyCode:flightCompanyCode,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}

@@ -87,7 +87,7 @@
 				font-size: 12px;
 				color: #999;
 				font-weight: normal;
-				line-height: 30px;
+				line-height: 24px;
 			}
 			.timeBox .bage{
 				position: absolute;
@@ -155,7 +155,7 @@
 				border: none;
 				margin-top: 10px;
 			}
-			.hLeft{
+			/*.hLeft{
 				text-align: right;
 				padding-top: 10px;
 			}
@@ -166,6 +166,18 @@
 			.hRight{
 				text-align: left;
 				padding: 10px;
+			}*/
+			.hLeft{
+				text-align: right;
+			}
+			.hMiddle{
+				text-align: center;
+			}
+			.hRight{
+				text-align: left;
+			}
+			.head{
+				background-color: #ffc900;
 			}
 			.arrows{
 				height: 20px;
@@ -174,9 +186,6 @@
 				width: 60%;
 				height: 10px;
 			}
-			.head{
-				background-color: #ffc900;
-			}
 			dl.list {
 				border-top: none;
 				margin-top: 0; 
@@ -184,8 +193,8 @@
 			.toLine{
 				width: 60%;
 				height: 1px;
-				margin: 40px 20%;
-				background-color: #666;
+				margin: 10px 20%;
+				background-color: #000;
 			}
 			.Atips{
 				text-align: center;
@@ -267,7 +276,6 @@
 					</div>
 					<!--机票基本信息渲染-->
 					<script type="text/html" id="airBase-detail">
-						<p class="hMiddle black">12月12日&nbsp;周二</p>
 						<div class="mui-row">
 						    <div class="mui-col-sm-4 mui-col-xs-4 hLeft">
 								<div class="timeBox">
@@ -278,7 +286,9 @@
 					       	</div>
 					        <div class="mui-col-sm-4 mui-col-xs-4 hMiddle">
 					        	<div class="timeBox">
+									<p class="ad black"><%=adLi.flightCompanyName %></p>
 									<div class="toLine"></div>
+									<p class="ad black"><%=adLi.flightNo %></p>
 								</div>
 					        </div>
 					         <div class="mui-col-sm-4 mui-col-xs-4 hRight">
@@ -289,11 +299,6 @@
 								</div>
 					       	</div>
 						</div>
-						<div class="black Atips">
-							<ul>
-								<li><%=adLi.flightCompanyName %><%=adLi.flightNo %></li>
-							</ul>
-						</div>
 						<dl class="list" id="goodsList"></dl>
 					</script>
 					<!--具体舱位详情数据渲染-->
@@ -303,7 +308,8 @@
 								<a class="react mui-row">
 									<div class="mui-col-sm-3 mui-col-xs-3">
 										<p><span class="price"><sub>￥</sub><%=airSeatsLi[i].settlePrice %></span></p>
-										<p class="discount"><%=airSeatsLi[i].seatMsg %></p>
+										<!--<p class="discount"><%=airSeatsLi[i].seatMsg %></p>-->
+										<p class="discount"><%=airSeatsLi[i].discount %>折</p>
 							      </div>
 							        <div class="mui-col-sm-9 mui-col-xs-9 airTip">
 							        	<button onclick="planeOrder('<%=airSeatsLi[i].seatCode %>','<%=airSeatsLi[i].seatMsg %>','<%=airSeatsLi[i].settlePrice %>','<%=airSeatsLi[i].changeStipulate %>','<%=airSeatsLi[i].refundStipulate %>')" class="price order">订</button>
@@ -344,6 +350,7 @@
 //							alert(JSON.stringify(objData[i]));
 							var adObj = {};
 							adObj.adLi = objData[i];
+							
 							var html = template('airBase-detail',adObj);
 							document.getElementById('airBase').innerHTML = html;
 							var adultAirportTax = adObj.adLi.adultAirportTax;//基建费
@@ -352,10 +359,19 @@
 							var arriTime = adObj.adLi.arriTime//降落时间
 							var orgCityName = adObj.adLi.orgCityName//起飞地点
 							var dstCityName = adObj.adLi.dstCityName//降落地点
-							
+							var flightCompanyName = adObj.adLi.flightCompanyName//航空公司名字
 							//航线具体舱位信息
 							var airSeatsObj = {};
 							airSeatsObj.airSeatsLi = objData[i].airSeats.airSeat;
+							for(var j = 0;j<airSeatsObj.airSeatsLi.length;j++){
+								airSeatsObj.airSeatsLi[j].discount = airSeatsObj.airSeatsLi[j].discount.toFixed(2)*10;
+								airSeatsObj.airSeatsLi[j].discount = airSeatsObj.airSeatsLi[j].discount.toFixed(1);
+								
+//								airSeatsObj.airSeatsLi[j].discount = airSeatsObj.airSeatsLi[j].discount;
+//								alert(airSeatsObj.airSeatsLi[1].discount);
+//								break
+							}
+							
 							var html2 = template('goodsList-detail',airSeatsObj);
 							document.getElementById('goodsList').innerHTML = html2;
 							
@@ -366,7 +382,7 @@
 								openview({ 
 									view:'planeOrder.html',
 									//票价，改签规则，退票规则，航班号，公司编码，舱位号，舱位信息，起飞地点，目的地，时间，标准商品编号，
-									extrasobj:{dstCityName:dstCityName,orgCityName:orgCityName,arriTime:arriTime,depTime:depTime,adultFuelTax:adultFuelTax,adultAirportTax:adultAirportTax,settlePrice:settlePrice,changeStipulate:changeStipulate,refundStipulate:refundStipulate,flightNo:flightNo,flightCompanyCode:flightCompanyCode,seatCode:seatCode,seatMsg:seatMsg,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
+									extrasobj:{flightCompanyName:flightCompanyName,dstCityName:dstCityName,orgCityName:orgCityName,arriTime:arriTime,depTime:depTime,adultFuelTax:adultFuelTax,adultAirportTax:adultAirportTax,settlePrice:settlePrice,changeStipulate:changeStipulate,refundStipulate:refundStipulate,flightNo:flightNo,flightCompanyCode:flightCompanyCode,seatCode:seatCode,seatMsg:seatMsg,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
 								})
 							}
 						}
