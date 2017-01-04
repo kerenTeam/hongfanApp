@@ -315,36 +315,6 @@
 							</ul>
 							<div class="clear"></div>
 						</div>
-						<!--热门推荐-->
-							<script type="text/html" id="recommendTpl">
-								<%if(recommendData.length==0){%>
-									暂无推荐商品
-								<%}else{%>
-									<%for(var i=0;i<recommendData.length;i++){%>
-										<li class="sy_recmd_list">
-											<div class="box">
-												<div class="pub_img">
-													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
-												</div>
-												<div class="pub_wz">
-													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
-													<div class="nr_box mui-row">
-														<div class="mui-col-sm-5 mui-col-xs-5 ">
-												        	<p class="fl fontcl2"><sub>¥</sub>&nbsp;<%=recommendData[i].price%></p>
-												        </div>
-												       	<!--<div class="mui-col-sm-4 mui-col-xs-4 PriceB">
-												        	<p class="fl fontcl2"><sub class="black9">[优惠]</sub>
-												        </div>-->
-												        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
-															<p class="fl fontcl2"><sub class="saled black9">已售<%=recommendData[i].sales%></sub></p>
-												      	</div>
-												     </div>
-												</div>
-											</div>
-										</li> 
-									<%}%>
-								<%}%>
-							</script>
 					<div class="upload text-center text-xs gray" id="upload"></div>
 				</div>
 			</div>
@@ -372,7 +342,33 @@
 		
 		 
 		
-		
+		<!--热门推荐-->
+		<script type="text/html" id="recommendTpl">
+			<%if(recommendData.length==0){%>
+				暂无推荐商品
+			<%}else{%>
+				<%for(var i=0;i<recommendData.length;i++){%>
+					<li class="sy_recmd_list">
+						<div class="box">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
+							</div>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
+								<div class="nr_box mui-row">
+									<div class="mui-col-sm-5 mui-col-xs-5 ">
+							        	<p class="fl fontcl2"><sub>¥</sub>&nbsp;<%=recommendData[i].price%></p>
+							       </div>
+							        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
+										<p class="fl fontcl2"><sub class="saled black9">已售<%=recommendData[i].sales%></sub></p>
+							      	</div>
+							     </div>
+							</div>
+						</div>
+					</li> 
+				<%}%>
+			<%}%>
+		</script>
 		
 		<!--广告-->
 		<script type="text/html" id="ad-detail">
@@ -391,7 +387,7 @@
 	<script type="text/javascript">
 	 
 	
-	//跳转详情
+		//跳转详情
 		function goInfo(goodsId){
 			 openview({
 			 	view:"market/mall-detail.html",
@@ -406,7 +402,7 @@
 				extrasobj:{AdvId:AdvId}
 			})
 		}
-		
+		//点击进入商品详情
 		$(".adGo").each(function(){
 			$(this).click(function(){
 				openview({
@@ -417,15 +413,6 @@
 		}) 
 		mui.plusReady(function(){ 
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-//			document.getElementById("haha").addEventListener('tap', function() {
-//				mui.confirm('MUI是个好框架，确认？', 'Hello MUI', ['取消', '确定'], function(e) {
-//					if (e.index == 1) {
-//						alert('你确定了');
-//					} else {
-//						alert('取消le');
-//					}
-//				}) 
-//			},'div');
 			//跳转页面
 			var Timetoken = null;
 			var oldToken = null; 
@@ -537,109 +524,109 @@
 						console.log('响应失败  !');
 					}
 				});
-				
-				
-				//广告 数据渲染
-				mui.ajax(serverUrl +'/api/index/ads',{
-					data:{ad_type:1},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
+			}//重载方法结束
+			
+			//广告 数据渲染
+			mui.ajax(serverUrl +'/api/index/ads',{
+				data:{ad_type:1},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
 //						alert(JSON.stringify(data.data));
-						var adObj = {};
-						adObj.adLi = data.data;
-						var html = template('ad-detail',adObj);
-						document.getElementById('ad').innerHTML = html;
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('响应失败  !');
-					}
-				});
-				//banner跳转
-						window.bannerGo=function(url){
-//						  	alert(url)
-						  	openview({
-										 	view:url,
-										 })
-						  }
-					var currentPage =1, numsPerPage=4;
- 			//热门推荐 数据渲染 
-				mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-					data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
-					dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型 
-						timeout:10000,//超时时间设置为10秒；	
-						headers:{"token":oldToken}, 
-						success:function(data){
-							 //alert(JSON.stringify(data))
-							//获取并渲染  eval("("+data1+")");
-							//var dataobj= eval("("+data.data.banner+")"); 
-							if(data.errno==0){
-							plus.nativeUI.closeWaiting();//关闭等待框
-							var dataobj = data.data.return.data
-							var recommendObj = {}
-								recommendObj.myUrl = serverimgUrl;
-								recommendObj.recommendData = dataobj
-		                    document.getElementById("moll_recommend").innerHTML=template("recommendTpl",recommendObj);
-		                    mui("#upload")[0].innerHTML = "加载更多";
-		                    	//上滑加载
-		                   $(window).scroll(function(){
+					var adObj = {};
+					adObj.adLi = data.data;
+					var html = template('ad-detail',adObj);
+					document.getElementById('ad').innerHTML = html;
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
+				}
+			});
+			//banner跳转
+			window.bannerGo=function(url){
+//					alert(url)
+			  	openview({
+							 	view:url,
+				})
+			}
+			
+			//热门推荐 数据渲染 
+			var currentPage =1, numsPerPage=4;
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":oldToken}, 
+					success:function(data){
+						 alert(data.data.return.data.length);
+						//获取并渲染  eval("("+data1+")");
+						//var dataobj= eval("("+data.data.banner+")"); 
+						if(data.errno==0){
+						plus.nativeUI.closeWaiting();//关闭等待框
+						var dataobj = data.data.return.data;
+						var recommendObj = {}
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = dataobj
+	                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+	                    mui("#upload")[0].innerHTML = "加载更多";
+	                    //上滑加载
+	                   	$(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
-							var nowpage = ++currentPage;
-							if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
-								mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
-								console.log('可以请求数据');
-								mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-									data:{currentPage:nowpage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
-									dataType:'json',//服务器返回json格式数据
-									type:'post',//HTTP请求类型 
-									timeout:10000,//超时时间设置为10秒；	
-									headers:{"token":oldToken}, 
-									success:function(data){
-										if(data.errno == 0){
-											var dataobj = data.data.return.data
-											var recommendObj = {}
-												recommendObj.myUrl = serverimgUrl;
-												recommendObj.recommendData = dataobj
-						                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
-						                    mui("#upload")[0].innerHTML = "";
-										}else{
+								var nowpage = ++currentPage;
+								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../img/balls.svg'/>";
+									console.log('可以请求数据');
+									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
+										data:{currentPage:nowpage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+										dataType:'json',//服务器返回json格式数据
+										type:'post',//HTTP请求类型 
+										timeout:10000,//超时时间设置为10秒；	
+										headers:{"token":oldToken}, 
+										success:function(data){
+											if(data.errno == 0){
+												var dataobj = data.data.return.data
+												var recommendObj = {}
+													recommendObj.myUrl = serverimgUrl;
+													recommendObj.recommendData = dataobj
+							                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+							                    mui("#upload")[0].innerHTML = "";
+											}else{
+												--currentPage;//请求失败,继续请求当前页
+												plus.nativeUI.closeWaiting();
+												mui.toast("获取数据失败");
+											}
+											plus.nativeUI.closeWaiting();//关闭等待框
+										},
+										error:function(xhr,type,errorThrown){
 											--currentPage;//请求失败,继续请求当前页
-											plus.nativeUI.closeWaiting();
-											mui.toast("获取数据失败");
+											mui.toast("当前网络不好请重试");
 										}
-										plus.nativeUI.closeWaiting();//关闭等待框
-									},
-									error:function(xhr,type,errorThrown){
-										--currentPage;//请求失败,继续请求当前页
-										mui.toast("当前网络不好请重试");
-									}
-								});
-							}else{
-								mui("#upload")[0].innerHTML = "没有数据了";
-							}
-							//加载下一部分结束
-							　　}
-						});
-							}else{
-								plus.nativeUI.closeWaiting();
-								mui.toast("获取数据失败");
-							}
-							
-						}, 
-						error:function(xhr,type,errorThrown){
-							//异常处理；
-							console.log("获取失败！");
+									});
+								}else{
+									mui("#upload")[0].innerHTML = "没有数据了";
+								}
+								//加载下一部分结束
+								}
+							});
+						}else{
 							plus.nativeUI.closeWaiting();
-							mui.toast("当前网络不好请重试");
+							mui.toast("获取数据失败");
 						}
-				}); 
-			}//重载方法
+						
+					}, 
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						console.log("获取失败！");
+						plus.nativeUI.closeWaiting();
+						mui.toast("当前网络不好请重试");
+					}
+			}); 
 		})();
 	</script>	
 	</body>
