@@ -13,7 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
 		<script src=" ../../js/hmt.js" type="text/javascript"></script>
@@ -294,26 +294,8 @@
 								<li><%=adLi.flightCompanyName %><%=adLi.flightNo %></li>
 							</ul>
 						</div>
+						<dl class="list" id="goodsList"></dl>
 					</script>
-					<dl class="list" id="goodsList">
-						<!--<dd class="goodsItem">
-							<a class="react mui-row">
-								<div class="mui-col-sm-3 mui-col-xs-3">
-									<p><span class="price"><sub>￥</sub>342</span></p>
-									<p class="discount">2.4折经济舱</p>
-						      </div>
-						        <div class="mui-col-sm-9 mui-col-xs-9 airTip">
-						        	<p><span class="price"><button onclick="planeOrder()">订</button></p>
-						        </div>
-							</a>
-						</dd>-->
-						<!--<dd class="db">
-							<a class="react " href="javascript:;">
-								<div class="moreone">加载更多</div>
-							</a>
-						</dd>-->
-					</dl>
-					
 					<!--具体舱位详情数据渲染-->
 					<script type="text/html" id="goodsList-detail">
 						<% for(var i = 0;i<airSeatsLi.length;i++){ %>
@@ -324,7 +306,7 @@
 										<p class="discount"><%=airSeatsLi[i].seatMsg %></p>
 							      </div>
 							        <div class="mui-col-sm-9 mui-col-xs-9 airTip">
-							        	<button onclick="planeOrder('<%=airSeatsLi[i].seatCode %>','<%=airSeatsLi[i].seatMsg %>')" class="price order">订</button>
+							        	<button onclick="planeOrder('<%=airSeatsLi[i].seatCode %>','<%=airSeatsLi[i].seatMsg %>','<%=airSeatsLi[i].settlePrice %>','<%=airSeatsLi[i].changeStipulate %>','<%=airSeatsLi[i].refundStipulate %>')" class="price order">订</button>
 							        </div>
 								</a>
 							</dd>
@@ -345,7 +327,6 @@
 			var flightNo = plus.webview.currentWebview().flightNo;
 			var oldToken = plus.storage.getItem('oldToken');
 			
-			
 			//获取航线列表
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
@@ -360,14 +341,19 @@
 					for(var i = 0;i<objData.length;i++){
 						//循环获取当前航班号
 						if(objData[i].flightNo == flightNo){
-							alert(JSON.stringify(objData[i]));
+//							alert(JSON.stringify(objData[i]));
 							var adObj = {};
 							adObj.adLi = objData[i];
 							var html = template('airBase-detail',adObj);
 							document.getElementById('airBase').innerHTML = html;
+							var adultAirportTax = adObj.adLi.adultAirportTax;//基建费
+							var adultFuelTax = adObj.adLi.adultFuelTax//基建费
+							var depTime = adObj.adLi.depTime//起飞时间
+							var arriTime = adObj.adLi.arriTime//降落时间
+							var orgCityName = adObj.adLi.orgCityName//起飞地点
+							var dstCityName = adObj.adLi.dstCityName//降落地点
 							
 							//航线具体舱位信息
-							var airSeats = objData[i].airSeats;
 							var airSeatsObj = {};
 							airSeatsObj.airSeatsLi = objData[i].airSeats.airSeat;
 							var html2 = template('goodsList-detail',airSeatsObj);
@@ -376,10 +362,11 @@
 							plus.nativeUI.closeWaiting();
 							
 							//点击订票
-							window.planeOrder = function(seatCode,seatMsg){
+							window.planeOrder = function(seatCode,seatMsg,settlePrice,changeStipulate,refundStipulate){
 								openview({ 
 									view:'planeOrder.html',
-									extrasobj:{flightNo:flightNo,flightCompanyCode:flightCompanyCode,seatCode:seatCode,seatMsg:seatMsg,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
+									//票价，改签规则，退票规则，航班号，公司编码，舱位号，舱位信息，起飞地点，目的地，时间，标准商品编号，
+									extrasobj:{dstCityName:dstCityName,orgCityName:orgCityName,arriTime:arriTime,depTime:depTime,adultFuelTax:adultFuelTax,adultAirportTax:adultAirportTax,settlePrice:settlePrice,changeStipulate:changeStipulate,refundStipulate:refundStipulate,flightNo:flightNo,flightCompanyCode:flightCompanyCode,seatCode:seatCode,seatMsg:seatMsg,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
 								})
 							}
 						}
