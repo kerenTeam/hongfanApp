@@ -231,18 +231,18 @@
 					</div>
 					<dl class="list" id="goodsList">
 						<% for(var i=0; i<list.trainSeats.trainSeat.length; i++){%>
-							<dd class="goodsItem">
+							<dd class="goodsItem" onclick="trainOrder(this)">
 								<a class="react mui-row">
 									<div class="mui-col-sm-3 mui-col-xs-3">
-										<p class="black"><%= list.trainSeats.trainSeat[i].seatName%> </p>
+										<p class="black typename"  id="typename"><%= list.trainSeats.trainSeat[i].seatName%> </p>
 							       </div>
 							        
 							        <% if(list.trainSeats.trainSeat[i].remainderTrainTickets>0){%>
 							        	<div class="mui-col-sm-3 mui-col-xs-3">
 							        		<p class="black"><%= list.trainSeats.trainSeat[i].remainderTrainTickets%>张 </p>
 							        	</div>
-							        	<div class="mui-col-sm-6 mui-col-xs-6 airTip">
-								        	<p><span class="price"><sub>￥</sub><%= list.trainSeats.trainSeat[i].seatPrice%></span><button onclick="trainOrder()">预定</button></p>
+							        	<div class="mui-col-sm-6 mui-col-xs-6 airTip" >
+								        	<p><span class="price Tprice"><sub>￥</sub><%= list.trainSeats.trainSeat[i].seatPrice%></span><button >预定</button></p>
 								        </div>
 							        <% }else{%>
 							        	<div class="mui-col-sm-3 mui-col-xs-3">
@@ -331,10 +331,37 @@
 		    }
 		    }
 		}
-    	window.trainOrder = function(){
-			openview({ 
-				view:'trainOrder.html'
-			})
+    	function trainOrder(obj){
+    		var that = obj;
+    		mui.plusReady(function(){
+    			var Aweek = ['周日','周一','周二','周三','周四','周五','周六'];
+    			var details = plus.webview.currentWebview().details;
+    			var time = plus.webview.currentWebview().timeattr;
+    			var Sdate = time.split('-')[1] + '-' + time.split('-')[2];
+    			var Aweeknum = new Date(time).getDay();
+    			var Sweek = Aweek[Aweeknum];//开始星期
+    			var type = that.getElementsByClassName('typename')[0].innerText;
+    			var price = that.getElementsByClassName('Tprice')[0].innerText;
+    			var detailsobj = {
+    				from:details.currentStartStationName,
+    				Stime:details.startTime,
+    				Sdate:Sdate,
+    				Sweek:Sweek,
+    				name:details.trainNumber,
+    				runtime:formatSeconds(details.runTime),
+    				End:details.currentEndStationName,
+    				Etime:details.endTime,
+    				Edate:1,
+    				Eweek:1,
+    				type:type,
+    				Price:price
+    			};
+    			openview({ 
+					view:'trainOrder.html',
+					extrasobj:{details:detailsobj}
+				})
+    		})
+			
 		}
     	mui.plusReady(function(){
     		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});

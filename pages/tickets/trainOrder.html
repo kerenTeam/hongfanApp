@@ -254,39 +254,39 @@
 			</div>
 		</header>	
 		<div class="guess-like">
-			<div class="head">
+			<div class="head" style="min-height: 50px;">
 				<div class="mui-row">
 				    <div class="mui-col-sm-4 mui-col-xs-4 hLeft">
 						<div class="timeBox">
-							<p class="ad black">成都</p>
-							<p>22:40 </p>
-							<p class="ad black">12-12周一</p>
+							<p class="ad black" id="Tfrom"></p>
+							<p id="Stime"> </p>
+							<p class="ad black" id="Sdate"></p>
 						</div>
 			       	</div>
 			        <div class="mui-col-sm-4 mui-col-xs-4 hMiddle">
 			        	<div class="timeBox">
-							<p class="ad black">T110</p>
+							<p class="ad black" id="Tname"></p>
 							<div class="toLine"></div>
-							<p class="ad black">11时47分水</p>
+							<p class="ad black" id="tuntime"></p>
 						</div>
 			        </div>
 			         <div class="mui-col-sm-4 mui-col-xs-4 hRight">
 						<div class="timeBox">
-							<p class="ad black">邻水</p>
-							<p>22:40 </p>
-							<p class="ad black">12-13周二</p>
+							<p class="ad black" id="End"></p>
+							<p id="Etime"> </p>
+							<p class="ad black" id="Edate"></p>
 						</div>
 			       	</div>
 				</div>
 			</div>
 			<dl class="list" id="goodsList">
-				<dd class="goodsItem">
-					<a class="react mui-row" onclick="goInfo()">
+				<dd class="goodsItem"    style="min-height: 40px;">
+					<a class="react mui-row">
 						<div class="mui-col-sm-2 mui-col-xs-2">
-							<p>硬座 </p>
+							<p id="Ttype"> </p>
 				       </div>
 				        <div class="mui-col-sm-10 mui-col-xs-10">
-				        	<p class="black"><sub>￥</sub>342</p>
+				        	<p class="black" id="Tprice"></p>
 				        </div>
 					</a>
 				</dd>
@@ -295,16 +295,16 @@
 				<dd class="goodsItem">
 					<a class="react mui-row">
 						<div class="mui-col-sm-8 mui-col-xs-8">
-							<p class="black">添加/修改乘机人 </p>
+							<p class="black">添加乘车人 </p>
 							<p class="tiny">请确保姓名证件填写正确</p>
 				       </div>
 				        <div class="mui-col-sm-4 mui-col-xs-4">
-				        	<button class="addMan" onclick="addPerson()">添加乘机人</button>
+				        	<button class="addMan" onclick="addPerson()">添加乘车人</button>
 				        </div>
 					</a>
 				</dd>
-				<dd class="goodsItem">
-					<a class="react mui-row">
+				<dd class="goodsItem"  id="persons">
+					<!--<a class="react mui-row">
 						<div class="mui-col-sm-1 mui-col-xs-1">
 							<img src="../../img/tickets/delete.png" class="delete"/>
 				       	</div>
@@ -312,17 +312,27 @@
 				        	<p class="black">柯南</p>
 				        	<p class="tiny black">身份证&nbsp;51245781466666666</p>
 				        </div>
-					</a>
+					</a>-->
 				</dd>
 			</dl>
 			<dl class="list" id="goodsList">
 				<dd class="goodsItem">
 					<a class="react mui-row">
 						<div class="mui-col-sm-3 mui-col-xs-3">
-							<p class="black">联系手机 </p>
+							<p class="black">订票人 </p>
 				       </div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
-				        	<input type="" name="" id="" value="" class="phone"/>
+				        	<input type="" name="" id="" placeholder="请输入订票人" value="" class="phone"/>
+				        </div>
+					</a>
+				</dd>
+				<dd class="goodsItem">
+					<a class="react mui-row">
+						<div class="mui-col-sm-3 mui-col-xs-3">
+							<p class="black">联系手机 </p>
+				        </div>
+				        <div class="mui-col-sm-9 mui-col-xs-9">
+				        	<input type="" name="" id="" placeholder="请输入手机号" value="" class="phone"/>
 				        </div>
 					</a>
 				</dd>
@@ -359,10 +369,40 @@
 		<!--footerone end-->
 	</body>
 	<script type="text/javascript">
-		window.addPerson = function(){
+		function addPerson(){//添加联系人
 			openview({ 
-				view:'addPerson.html'
+				view:'trainaddPerson.html'
 			})
 		}
+		function deletePerson(thisP){//点击删除，删除乘机人
+			mui.confirm('确认删除该乘车人？','',['取消','确认'],function (e) {
+				if(e.index == 1) { 
+					$(thisP).parents('.aPerson').remove();
+				}
+			})
+		}
+		mui.plusReady(function(){
+			//从添加乘机人获取的详情
+			document.addEventListener('refreshPerson', function(obj) {
+				var newName=obj.detail.newName;
+				var idNo=obj.detail.idNo;
+				var phonenum=obj.detail.phonenum;
+				var persons = document.getElementById('persons');
+				persons.insertAdjacentHTML('beforebegin', '<dd class="goodsItem" id="persons"><a class="react mui-row aPerson"><div class="mui-col-sm-1 mui-col-xs-1"><img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/></div><div class="mui-col-sm-11 mui-col-xs-11"><p class="black">'+newName+'</p><p class="tiny black">身份证&nbsp;'+idNo+'</p></div></a></dd>'); 
+			})
+			//获取上页面数据
+			var details1 = plus.webview.currentWebview().details; 
+			mui('#Tfrom')[0].innerHTML = details1.from;
+			mui('#Stime')[0].innerHTML = details1.Stime;
+			mui('#Tname')[0].innerHTML = details1.name;
+			mui('#tuntime')[0].innerHTML = details1.runtime;
+			mui('#End')[0].innerHTML = details1.End;
+			mui('#Etime')[0].innerHTML = details1.Etime;
+			mui('#Ttype')[0].innerHTML = details1.type;
+			mui('#Tprice')[0].innerHTML = details1.Price;
+			mui('#Sdate')[0].innerHTML = details1.Sdate + details1.Sweek;
+			mui('#Edate')[0].innerHTML = details1.Sdate + details1.Sweek;
+			
+		});
 	</script>
 </html>
