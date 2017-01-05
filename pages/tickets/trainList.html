@@ -250,7 +250,8 @@
 				width: 100%;
 				margin: 5px 0;
 				font-size: 16px;
-				text-indent: 20px;
+				/*text-indent: 20px;*/
+				text-align: center;
 			}
 			.cIcon{
 				position: absolute;
@@ -289,20 +290,20 @@
 			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
 					<div class="timeBox">
 						<span class="mui-icon mui-icon-arrowleft"></span>
-						<p class="ad black" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">前一天</p>
+						<p class="ad black" id="frontday" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">前一天</p>
 						<!--<p class="ad black">￥360</p>-->
 					</div>
 		       	</div>
 		        <div class="mui-col-sm-6 mui-col-xs-6 hMiddle">
 		        	<div class="timeBox iconWrap">
-			        	<input type="text" class="calendars"  hours hours-past value=""><br>
-			        	<img src="../../img/tickets/calender.png"/ class="cIcon">
+			        	<input type="text" class="calendars2" readonly="readonly"  value=""><br>
+			        	<!--<img src="../../img/tickets/calender.png"/ class="cIcon">-->
 					</div>
 		        </div>
 		         <div class="mui-col-sm-3 mui-col-xs-3 hRight">
 					<div class="timeBox">
 						<span class="mui-icon mui-icon-arrowright"></span>
-						<p class="ad black" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">后一天</p>
+						<p class="ad black" id="backday" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">后一天</p>
 						<!--<p class="ad black">￥390</p>-->
 					</div>
 		       	</div>
@@ -423,109 +424,149 @@
             return result;
         }
 		mui.plusReady(function(){
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			
 			var from = plus.webview.currentWebview().from;
 			var arrive = plus.webview.currentWebview().arrive;
 			var time = plus.webview.currentWebview().time;
-			mui('.calendars')[0].value = time;
+			mui('.calendars2')[0].value = time;
 			var oldToken = plus.storage.getItem('oldToken');
 			mui('#headstate')[0].innerHTML = from + ' - ' + arrive;
-			mui.ajax(serverUrl+'/api/qianmi/trainlineslist',{
-				data:{"from":from,"date":time,'to':arrive},
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldToken},	              				
-				success:function(data,type,xhr){
-					console.log(data);
-					console.log('火车列表返回'+JSON.stringify(data));
-					if(data.errno == 0){
-						var Tlist;
-						if(data.data.trainlines_list_response.trainlines && data.data.trainlines_list_response.trainlines != undefined){
-							Tlist = data.data.trainlines_list_response.trainlines.trainline;//信息条数
-							if(Tlist.length || Tlist != null){ 
-								var dataobj = {};
-								for(var i=0;i<Tlist.length;i++){ 
-									//保存详情数据
-									Tlist[i].details = JSON.stringify(Tlist[i]);
-									//时间格式调整
-									Tlist[i].runTime = formatSeconds(Tlist[i].runTime);
-									//优先 硬座(5),其次 硬卧(7), 软卧(8) , 高级软卧,  二等座(0) , 一等座(1), 无座(4) , 商务座(3),
-									var ridetype = Tlist[i].trainSeats.trainSeat;
-									for(var j=0;j<ridetype.length;j++){
-										var funchange = function(){//更改数据代码块
-											Tlist[i].Yprice = ridetype[j].seatPrice;
-											Tlist[i].Yname = ridetype[j].seatName;
-											if(ridetype[j].remainderTrainTickets>100){
-												Tlist[i].Ynum = 100;
-											}else{
-												Tlist[i].Ynum = ridetype[j].remainderTrainTickets;
+			loadfun(time);//初始化加载方法
+			//前一天
+			mui('#frontday')[0].onclick = function(){
+				aroundfun('front');
+			}
+			//后一天
+			mui('#backday')[0].onclick = function(){
+				aroundfun('back');
+			}
+			
+			
+			
+			
+			function aroundfun(type){
+				var nowdate = mui('.calendars2')[0].value; 
+				var date = new Date(nowdate);
+				if(type == 'front'){
+					date.setDate(date.getDate() - 1);
+				}else if(type == 'back'){
+					date.setDate(date.getDate() + 1);
+				}
+				var endmonth,endday,timestr = date.toLocaleDateString();
+				if(timestr.split('/')[1].length == 1){
+					endmonth = '0' + timestr.split('/')[1];
+				}else{
+					endmonth = timestr.split('/')[1];
+				}
+				if(timestr.split('/')[2].length == 1){
+					endday = '0' + timestr.split('/')[2];
+				}else{
+					endday = timestr.split('/')[2];
+				}
+				var time2 = timestr.split('/')[0] +'-'+ endmonth +'-'+ endday;
+				mui('.calendars2')[0].value = time2;
+				loadfun(time2);
+			}
+			function loadfun(time1){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+				document.getElementById("goodsList").innerHTML = '';
+				mui.ajax(serverUrl+'/api/qianmi/trainlineslist',{
+					data:{"from":from,"date":time1,'to':arrive},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	              				
+					success:function(data,type,xhr){
+						console.log(data);
+						console.log('火车列表返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							var Tlist;
+							if(data.data.trainlines_list_response.trainlines && data.data.trainlines_list_response.trainlines != undefined){
+								Tlist = data.data.trainlines_list_response.trainlines.trainline;//信息条数
+								if(Tlist.length || Tlist != null){ 
+									var dataobj = {};
+									for(var i=0;i<Tlist.length;i++){ 
+										//保存详情数据
+										Tlist[i].details = JSON.stringify(Tlist[i]);
+										//时间格式调整
+										Tlist[i].runTime = formatSeconds(Tlist[i].runTime);
+										//优先 硬座(5),其次 硬卧(7), 软卧(8) , 高级软卧,  二等座(0) , 一等座(1), 无座(4) , 商务座(3),
+										var ridetype = Tlist[i].trainSeats.trainSeat;
+										for(var j=0;j<ridetype.length;j++){
+											var funchange = function(){//更改数据代码块
+												Tlist[i].Yprice = ridetype[j].seatPrice;
+												Tlist[i].Yname = ridetype[j].seatName;
+												if(ridetype[j].remainderTrainTickets>100){
+													Tlist[i].Ynum = 100;
+												}else{
+													Tlist[i].Ynum = ridetype[j].remainderTrainTickets;
+												}
 											}
-										}
-										if(ridetype[j].seatId==5 && ridetype[j].remainderTrainTickets>0){
-											funchange();
-											break;
-										}
-										if(ridetype[j].seatId==7 && ridetype[j].remainderTrainTickets>0){
-											funchange();
-											break;
-										}
-										if(ridetype[j].seatId==8 && ridetype[j].remainderTrainTickets>0){
-											funchange();
-											break;
-										}
-										if(ridetype[j].seatId==0 && ridetype[j].remainderTrainTickets>0){
-											funchange(); 
-											break;
-										}
-										if(ridetype[j].seatId==1 && ridetype[j].remainderTrainTickets>0){
-											funchange();
-											break;
-										}
-										if(ridetype[j].seatId==4 && ridetype[j].remainderTrainTickets>0){
-											funchange();
-											break;
-										}
-										if(ridetype[j].seatId==3 && ridetype[j].remainderTrainTickets>0){
-											funchange(); 
-											break;
-										}
-										if(ridetype[j].seatId==2 && ridetype[j].remainderTrainTickets>0){
-											funchange(); 
-											break;
-										}
-										if(ridetype[j].seatId==6 && ridetype[j].remainderTrainTickets>0){
-											funchange(); 
-											break;
-										}else{
-											Tlist[i].Yprice = 0;
-											Tlist[i].Yname = '没有票';
-											Tlist[i].Ynum = 0; 
-										}
-									} 
+											if(ridetype[j].seatId==5 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==7 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==8 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==0 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}
+											if(ridetype[j].seatId==1 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==4 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==3 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}
+											if(ridetype[j].seatId==2 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}
+											if(ridetype[j].seatId==6 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}else{
+												Tlist[i].Yprice = 0;
+												Tlist[i].Yname = '没有票';
+												Tlist[i].Ynum = 0; 
+											}
+										} 
+									}
+									
+									dataobj.list = Tlist; 
+									//获取并渲染用户信息
+									var html=template("infolist",dataobj);
+									document.getElementById("goodsList").innerHTML = html;
+								}else{
+									
 								}
-								
-								dataobj.list = Tlist; 
-								//获取并渲染用户信息
-								var html=template("infolist",dataobj);
-								document.getElementById("goodsList").innerHTML = html;
 							}else{
-								
+								mui('#nulldiv')[0].style.display = 'block';
 							}
 						}else{
+							mui.toast('获取信息失败'); 
 							mui('#nulldiv')[0].style.display = 'block';
 						}
-					}else{
+						plus.nativeUI.closeWaiting();
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
 						mui.toast('获取信息失败'); 
 						mui('#nulldiv')[0].style.display = 'block';
 					}
-					plus.nativeUI.closeWaiting();
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();
-					mui.toast('获取信息失败'); 
-					mui('#nulldiv')[0].style.display = 'block';
-				}
-			});
+				});
+			}	
 		})
 	</script>
 </html>
