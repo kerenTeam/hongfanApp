@@ -260,7 +260,7 @@
 				<dd class="goodsItem">
 					<a class="react mui-row id">
 						<div class="mui-col-sm-3 mui-col-xs-3">
-							<p class="black">分类</p>
+							<p class="black">证件类型</p>
 				      	</div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
 				        	<!--<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>-->
@@ -275,6 +275,16 @@
 				       </div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
 				        	<input type="text" name="" id="idNo" value="" class="phone" placeholder="与乘客证件一致"/>
+				        </div>
+					</a>
+				</dd>
+				<dd class="goodsItem">
+					<a class="react mui-row">
+						<div class="mui-col-sm-3 mui-col-xs-3">
+							<p class="black">联系电话 </p>
+				       </div>
+				        <div class="mui-col-sm-9 mui-col-xs-9">
+				        	<input type="text" name="" id="idPhone" value="" class="phone" placeholder="用于接收短信"/>
 				        </div>
 					</a>
 				</dd>
@@ -313,9 +323,10 @@
 	<script type="text/javascript">
 		function save(){
 			var newName = mui('#newName')[0].value;
-//			var idType = mui('#cityResult3')[0].innerHTML;//证件分类选择
 			var idNo = mui('#idNo')[0].value;
+			var idPhone = mui('#idPhone')[0].value;
 			var regIdCard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; //身份证验证
+			var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 			//验证
 			if(!newName){
 				mui.toast("请输入姓名！");  
@@ -323,10 +334,13 @@
 			}else if(regIdCard.test(idNo) === false){  
 			    mui.toast("请输入正确的身份证号！");  
 			    mui('#idNo')[0].focus();
+			}else if(reg_phone.test(idPhone) === false){  
+			    mui.toast("请输入正确的手机号！");  
+			    mui('#idPhone')[0].focus();
 			}else{
 				mui.plusReady(function(){
 					plus.webview.currentWebview().close();//关闭当前界面
-					mui.fire(plus.webview.getWebviewById('planeOrder.html'),'refreshPerson',{newName:newName,idNo:idNo});
+					mui.fire(plus.webview.getWebviewById('planeOrder.html'),'refreshPerson',{newName:newName,idNo:idNo,idPhone:idPhone});
 				})
 			}
 		}
