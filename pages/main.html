@@ -355,12 +355,12 @@
 		<script type="text/html" id="banner-detail">
 			<div class="mui-slider-group mui-slider-loop">
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[bannerLi.length-1].url%>')"><img src="<%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[bannerLi.length-1].url%>','<%=bannerLi[bannerLi.length-1].name%>')"><img src="<%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
 				<% for(var i=0;i<bannerLi.length;i++){ %> 
-			    	<div class="mui-slider-item"><a onclick="bannerGo('<%=bannerLi[i].url%>')"><img src="<%=bannerLi[i].bannerPic %>" /></a></div>
+			    	<div class="mui-slider-item"><a onclick="bannerGo('<%=bannerLi[i].url%>','<%=bannerLi[i].name%>')"><img src="<%=bannerLi[i].bannerPic %>" /></a></div>
 			     <% } %>
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[0].url%>')"><img src="<%= bannerLi[0].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[0].url%>','<%=bannerLi[0].name%>')"><img src="<%= bannerLi[0].bannerPic %>" /></a></div>
 			</div>
 			<div class="mui-slider-indicator">
 				<div class="mui-indicator mui-active"></div>
@@ -369,36 +369,7 @@
 			    <% } %>
             </div> 
 		</script>
-		
 		 
-		
-		<!--热门推荐-->
-		<script type="text/html" id="recommendTpl">
-			<%if(recommendData.length==0){%>
-				暂无推荐商品
-			<%}else{%>
-				<%for(var i=0;i<recommendData.length;i++){%>
-					<li class="sy_recmd_list">
-						<div class="box">
-							<div class="pub_img">
-								<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
-							</div>
-							<div class="pub_wz">
-								<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
-								<div class="nr_box mui-row">
-									<div class="mui-col-sm-5 mui-col-xs-5 ">
-							        	<p class="fl fontcl2"><sub>¥</sub>&nbsp;<%=recommendData[i].price%></p>
-							       </div>
-							        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
-										<p class="fl fontcl2"><sub class="saled black9">已售<%=recommendData[i].sales%></sub></p>
-							      	</div>
-							     </div>
-							</div>
-						</div>
-					</li> 
-				<%}%>
-			<%}%>
-		</script>
 		
 		<!--广告-->
 		<script type="text/html" id="ad-detail">
@@ -506,7 +477,7 @@
 				});
 				loveBuy.addEventListener('tap', function(){
 					openview({
-						view:'market/loveBuyList.html',
+						view:'market/youpinhui-Center.html',
 					});
 				});
 				gameList.addEventListener('tap', function(){
@@ -583,12 +554,13 @@
 					}
 				});
 				//banner跳转
-						window.bannerGo=function(url){
-//						  	alert(url)
-						  	openview({
-										 	view:url,
-										 })
-						  }
+				window.bannerGo=function(url,name){ 
+				  	openview({
+					 	view:"bannerTpl.html",
+					 	id:"bannerTpl",
+					 	extrasobj:{bannerUrl:url,bannerName:name}
+					 })
+				  }
 					var currentPage =1, numsPerPage=4;
  			//热门推荐 数据渲染 
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist', {

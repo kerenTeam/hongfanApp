@@ -251,20 +251,20 @@
 								<div class="mui-slider-group mui-slider-loop">
 									<!--支持循环，需要重复图片节点-->
 									<div class="mui-slider-item">
-										<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
+										<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>','<%=bannerData[bannerData.length-1].name%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
 											<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
 										</a>
 									</div>
 									<% for(var i=0;i<bannerData.length;i++){ %>
 										<div class="mui-slider-item">
-											<a onclick="bannerGo('<%=bannerData[i].url%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
+											<a onclick="bannerGo('<%=bannerData[i].url%>','<%=bannerData[i].name%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
 												<img src="<%=bannerData[i].bannerPic%>" />
 											</a>
 										</div>
 									<% } %>
 									<!--支持循环，需要重复图片节点-->
 									<div class="mui-slider-item mui-slider-item-duplicate">
-										<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
+										<a onclick="bannerGo('<%=bannerData[0].url%>','<%=bannerData[0].name%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
 											<img src="<%=bannerData[0].bannerPic%>" />
 										</a>
 									</div>
@@ -496,11 +496,12 @@
 						});
 										
 						//banner跳转
-						window.bannerGo=function(url){
-//						  	alert(url)
+						window.bannerGo=function(url,name){ 
 						  	openview({
-										 	view:url,
-										 })
+							 	view:"../bannerTpl.html",
+							 	id:"bannerTpl",
+							 	extrasobj:{bannerUrl:url,bannerName:name}
+							 })
 						  }
 						}else{
 							mui.toast("网络不好请重试！");

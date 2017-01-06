@@ -304,6 +304,7 @@
 				购物中心
 			</div>
 		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main">
 				<div id="scroller">
@@ -360,7 +361,7 @@
 										<br/>
 										<p>购物</p>
 									</td>
-									<td>
+									<td class="wifi">
 										<div class="market-icon icon2">
 											<img src="../../img/market/wifi.svg"/>
 										</div>
@@ -611,8 +612,10 @@
 							</div>
 						</div>
 					</div>
+					 
 				</div>
 			</div>
+			
 			<div class="pagebottom">到底了</div>
 		</div>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -623,6 +626,8 @@
 			var jfenmall = document.getElementsByClassName('jfenmall')[0];
 			var mtactivity = document.getElementsByClassName('mtactivity')[0];
 			var sales = document.getElementsByClassName('sales')[0];
+			var wifi = document.getElementsByClassName('wifi')[0];
+			var mtshop = document.getElementsByClassName('mtshop')[0];
 			bcenter.addEventListener('tap', function(){
 				openview({
 					view:'market-center.html',
@@ -643,13 +648,31 @@
 					view:"../activity/coupon.html"
 				})
 			});
-			
+			wifi.addEventListener('tap', function(){
+				openview({
+					view:"wifi.html"
+				})
+			});
+			mtshop.addEventListener('tap', function(){
+				openview({
+					view:"storeListFloor.html"
+				})
+			});
 			mui("#storeRcmd")[0].addEventListener('tap',function(){
 				openview({
 					 	view:"storeList.html"
 					 })
 			})
 			
+			
+			//banner跳转
+			window.bannerGo=function(url,name){ 
+			  	openview({
+				 	view:"../bannerTpl.html",
+				 	id:"bannerTpl",
+				 	extrasobj:{bannerUrl:url,bannerName:name}
+				 })
+			  }
 			
 		//轮播图
 		//获得slider插件对象
