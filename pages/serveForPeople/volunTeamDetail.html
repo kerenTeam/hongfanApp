@@ -2,90 +2,168 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>为民服务-义工团队</title>
+		<title>义工详情</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
+			.mui-bar-nav{
+				box-shadow: none;
+			}
 			p{
 				color: #333;
+				line-height: 20px;
+				padding-top: 10px;
 			}
 			img{
 				width: 100%;
 			}
+			#main{
+				margin-top: 50px;
+				padding-bottom: 10px;
+			}
+			.mui-card{
+				margin: 10px 0;
+				box-shadow: none;
+			}
 		</style>
 	</head>
+
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">义工团队</h1> 
+		    <h1 class="mui-title">义工团队详情</h1> 
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="mui-content">	
+		<div id="main">
 			<div id="teamInfo"></div>
 			<script type="text/html" id="teamTpl">
 				<%for(var i = 0;i<objData.length;i++){%>
 					<div class="mui-card">
-					<div class="mui-card-header"><%=objData[i].name%><small class="mui-pull-right gray">发布时间：<%=objData[i].ceate%></small></div>
-					<div class="mui-card-content">
-						<div class="mui-card-content-inner">
-							<div>
-								<p style="text-indent: 2em;"><%=objData[i].content%></p> 
-								
-							</div>
-							<%if(objData[i].picImg){%>
-								<img class="mui-col-sm-10" src="<%=objData[i].picImg%>"/>
+						<div class="mui-card-header"><%=objData[i].name%></div>
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner">
+								<%if(objData[i].picImg){%>
+									<img class="mui-col-sm-10" src="<%=objData[i].picImg%>"/>
 								<%}%>
-													
+								<div>
+									<p style="text-indent: 2em;"><%=objData[i].content%></p> 
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="mui-card-footer"><p class="gray smallSize">浏览量：<%=objData[i].read%>次</p></div>
-				</div>
-					<%}%>
-				
+				<%}%>
 			</script>
-			
+			<div id="index" class="page-center-box">
+				<div>
+					<!--公益项目开始 -->	
+					<div class="jinengxueyuan" style="background-color: #fff;">
+						<div class="mui-card-header">活动</div>
+					</div>
+						<div id="ygData"></div>
+						<script type="text/html" id="ygTpl">
+							<ul class="mui-table-view">
+								<%for(var i=0;i<lData.length;i++){%>
+									<li class="mui-table-view-cell mui-media" onclick="goInfo('<%=lData[i].id%>')">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="<%=lData[i].picImg%> ">
+											<div class="mui-media-body" style="line-height: 25px;">
+												<%=lData[i].title%> 
+											</div>
+											<small class="mui-media-body gray" style="line-height: 25px;">
+												发布时间 <%=lData[i].create_time%> 
+											</small>
+										</a>
+									</li> 
+								<%}%>  
+							</ul>
+						</script>
+					</div>
+					<!--公益项目结束 -->	
+				</div>
+			</div>
 		</div>
 	</body>
-	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript">
-		mui.plusReady(function(){
-			var oldtoken = plus.storage.getItem('oldToken');
-			mui.ajax(serverUrl+'/api/localservice/volunteerteam ',{
-							type:'post',
-							timeout:10000,
-							headers:{"token":oldtoken},	              				
-							success:function(data,type,xhr){
-//								alert('获取用户数据返回'+JSON.stringify(data.data[0]));
-								if(data.errno == 0){
-									if(data.data.length!=0){
-										var teamObj={};
-										for(var t=0;t<data.data.length;t++){  
-							       				data.data[t].ceate = data.data[t].ceate.substring(0,10)+" "+data.data[t].ceate.substring(11,16); 
-							       			  
-							       		} 
-										teamObj.objData=data.data;
-										mui('#teamInfo')[0].innerHTML = template('teamTpl',teamObj);
-									}else{
-										mui('#teamInfo')[0].innerHTML = 'dddd';
-									}
-									 
-								}else{
-									mui.toast('网络不好请重试！');
-									console.log(data.errmsg);
-								}
-							},
-							error:function(xhr,type,errorThrown){
-								alert('响应失败  !');
-							}
-						});
+<script type="text/javascript">
+	mui.plusReady(function(){
+		//获取缓存
+		var oldToken = plus.storage.getItem('oldToken');
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		console.log(oldToken);
+		
+		//团队详情
+		mui.ajax(serverUrl+'/api/localservice/volunteerteam',{
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	              				
+			success:function(data,type,xhr){
+//				alert(JSON.stringify(data));
+				if(data.errno == 0){
+					if(data.data.length!=0){
+						var teamObj={};
+						for(var t=0;t<data.data.length;t++){  
+			       			data.data[t].ceate = data.data[t].ceate.substring(0,10)+" "+data.data[t].ceate.substring(11,16); 
+			       		} 
+						teamObj.objData=data.data;
+						mui('#teamInfo')[0].innerHTML = template('teamTpl',teamObj);
+					}else{
+						mui('#teamInfo')[0].innerHTML = 'dddd';
+					}
+					 
+				}else{
+					mui.toast('网络不好请重试！');
+					console.log(data.errmsg);
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
 		});
-	</script>
+		//活动数据请求
+		mui.ajax(serverUrl+'/api/localservice/volunteeractivities',{
+			dataType:'json',
+			type:'post',
+			timeout:1000,
+			headers:{"token":oldToken},	 
+			success:function(data){  
+//				alert(JSON.stringify(data.data))
+				if(data.errno==0){ 
+					if(data.data.length!=0){
+						for(var t=0;t<data.data.length;t++){  
+			       			data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
+			       		} 
+					 	var acObj = {};
+							acObj.myUrl2 = serverimgUrl;
+							acObj.lData = data.data;
+//							alert(JSON.stringify(acObj.lData)); 
+						document.getElementById("ygData").innerHTML = template("ygTpl",acObj)
+					 }
+				}  
+				plus.nativeUI.closeWaiting(); 
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		});
+		window.goInfo = function(id){
+			openview({ 
+				view:'volunActivityDetail.html',
+				id:'volunActivityDetail',
+				extrasobj:{activityId:id}
+			})
+		}
+
+	})
+</script>
 </html>
