@@ -195,6 +195,8 @@
 	var password = document.getElementById('password'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
+	var VerCode = 'you'; 
+	var codeflag = false;//验证码是错误标杆 
 	//点击发送验证码
 	//var code = '';//验证码
 	mui('#VeCodenum')[0].addEventListener('tap',codefun);
@@ -213,6 +215,7 @@
 					timeout:10000,
 					success:function(data){
 						console.log('发送验证码返回'+JSON.stringify(data));
+						VerCode = data.data;
 					}, 
 					error:function(xhr,type,errorThrown){
 						mui.toast('发送验证码响应失败');
@@ -250,24 +253,13 @@
 	//验证验证码
 	mui('#VeCode')[0].onchange = function(){
 		if(reg_phone.test(account.value)){
-			mui.ajax(serverUrl+'/api/useraccount/verifysms',{ 
-				data:{smsCode:mui('#VeCode')[0].value}, 
-				dataType:'json',  
-				type:'post',
-				timeout:10000,
-				success:function(data){ 
-					console.log('验证验证码返回'+JSON.stringify(data));
-					if(data.errno==0){ 
-						mui('.Veb')[0].style.display = 'none'; 
-					}else{
-						mui('.Veb')[0].style.display = 'inline-block';
-					}
-				},
-				error:function(xhr,type,errorThrown){
-					mui.toast('验证验证码响应失败');
-					
-				}
-			});
+			if(mui('#VeCode')[0].value == VerCode){ 
+				mui('.Veb')[0].style.display = 'none';
+				codeflag = true;
+			}else{
+				mui('.Veb')[0].style.display = 'inline-block';
+				codeflag = false;
+			}
 		}
 		 
 	}
@@ -284,6 +276,9 @@
 			password.focus();
 		}else if(!mui('#hook')[0].checked){
 			mui.toast('你还没有勾选协议 ');
+		}else if(!codeflag){
+			mui.toast('请输入正确的验证码 ');
+			mui('#VeCode')[0].focus();
 		}else{
 			plus.nativeUI.showWaiting('登录中 ...',{width:'100px',height:'80px'});
 			mui.ajax(serverUrl+'/api/useraccount/register',{//注册

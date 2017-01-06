@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>火车票退票</title>
+		<title>飞机票退票</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -284,7 +284,7 @@
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
-				火车票退票
+				飞机票退票
 			</div>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
@@ -362,10 +362,7 @@
 				</dd>
 			</dl>
 			<dl class="list">
-				<button type="button" class="mui-btn mui-btn-blue mui-btn-block">确认退票</button>
-			</dl>
-			<dl class="list">
-				<button type="button" class="mui-btn mui-btn-block cancel">取消退票</button>
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-block" onclick="returnPlane()">确认退票</button>
 			</dl>
 			<dl class="list last">
 				<p><span class="red1">*</span>温馨提示</p>
@@ -380,11 +377,56 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-		function returnPlane(){
-			openview({ 
-				view:'addPerson.html'
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'); 
+			var myuserid = plus.storage.getItem('userid'); 
+			//获取订单主编号
+			var tradeNo = plus.webview.currentWebview().tradeNo;
+			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+			//查看整笔订单详情
+			mui.ajax(serverUrl+'/api/qianmi/airorderrefund',{
+				data:{tradeNo:tradeNo},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){ 
+					plus.nativeUI.closeWaiting(); 
+					alert(data);
+					//点击退票
+					window.returnPlane = function(){
+						//退订飞机票订单
+						mui.confirm('确认退票？','',['取消','确认'],function (e) {
+							if(e.index == 1) { 
+								plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+								//查询订单列表
+								mui.ajax(serverUrl+'/api/qianmi/airorderrefund',{
+									data:{tradeNo:tradeNo,returnType:'退票类型:1-退废票,3-退票',orderNos:'订单子单编号集合'},
+									dataType:'json',
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){ 
+										plus.nativeUI.closeWaiting(); 
+										alert(data);
+//										mui.toast("退票申请已提交成功！");
+//										plus.webview.currentWebview().close();//关闭当前页面
+									},
+									error:function(xhr,type,errorThrown){
+										plus.nativeUI.closeWaiting()
+										console.log('响应失败  !');
+									}
+								})
+							}
+						});
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting()
+					console.log('响应失败  !');
+				}
 			})
-		}
+		});
+		
 	</script>
-
 </html>

@@ -160,7 +160,8 @@
 			}
 			/*日历*/
 			.item input{
-				width: 80% !important;
+				/*width: 80% !important;*/
+			    padding-right: 35px;
 				background-color: rgba(0,0,0,0);
 			}
 			.calendars{
@@ -222,22 +223,24 @@
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>出发</label>
-						        <input type="text" class="InputCss fromAd" value="成都" id="from">
+						        <input type="text" class="InputCss fromAd" placeholder="请输入起点" value="" id="from">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>到达</label>
-						        <input type="text" class="InputCss toAd" value="邻水" id="arrive">
+						        <input type="text" class="InputCss toAd" placeholder="请输入终点" value="" id="arrive">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
 						<div class="inputWrap">
 						    <div class="mui-input-row wrap">
 						    	<div class="item">
-						        	<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
-						        	<input type="text" class="calendars" id="calender" hours hours-past><br>
+					    			<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
+					    			<input type="text" class="calendars" id="calender" past placeholder="请选择时间"><br>
+					        		<!--<input placeholder="请选择时间" type="text" class="calendars" id="calender" hours hours-past>-->
+					        		<!--<br>-->
 						    	</div>
 						    </div>
 						</div>
@@ -289,17 +292,32 @@
 				var from = mui('#from')[0].value;
 				var arrive = mui('#arrive')[0].value;
 				var time = mui('#calender')[0].value;
-				alert(time)
-				openview({ 
-					view:'trainList.html',
-					extrasobj:{from:from,arrive:arrive,time:time}
-				})
+				if(from && arrive && time){
+					//处理事件格式
+					var time1 = time.split('/')[0];
+					var time2 = time.split('/')[1];
+					var time3 = time.split('/')[2];
+					if(time2.length == 1){
+						time2 = 0 + time2;
+					}
+					if(time3.length == 1){
+						time3 = 0 + time3;
+					}
+					var timeend = time1 + '-' + time2 + '-' + time3;
+					openview({ 
+						view:'trainList.html',
+						extrasobj:{from:from,arrive:arrive,time:timeend}
+					})
+				}else{
+					mui.toast('信息填写不完整');
+				}
+				
 			}
 			
-			//获取当前时间
+			//获取当前 时间
 			var date = new Date();
 			var time = date.getMonth()+1 + '月' + date.getDate() + '日';
-			document.getElementById('calender').value=time;
+//			document.getElementById('calender').value=time;
 			
 			//点击中间的地点切换
 			var changeAd = document.getElementsByClassName('changeAd');
@@ -309,15 +327,6 @@
 				document.getElementsByClassName('toAd')[0].value= fromAd;
 				document.getElementsByClassName('fromAd')[0].value = toAd;
 			});
-			changeAd[1].addEventListener('tap', function(){
-				var fromAd = document.getElementsByClassName('fromAd')[1].value;
-				var toAd = document.getElementsByClassName('toAd')[1].value;
-				document.getElementsByClassName('toAd')[1].value= fromAd;
-				document.getElementsByClassName('fromAd')[1].value = toAd;
-			});
-			
-			
-		
 			
 		})(mui);
 	</script>

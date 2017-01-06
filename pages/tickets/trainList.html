@@ -13,16 +13,9 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script src=" ../../js/hmt.js" type="text/javascript"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" ></script>
-		
-		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
-		<!--日历选择插件-->
 		<link href="../../css/calendar.css" rel="stylesheet" />
 		<script src="../../js/calendar.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
@@ -221,7 +214,10 @@
 			}
 			.head{
 				background-color: #FFC900;
-				margin-top: 86px;
+			    position: fixed;
+			    top: 50px;
+			    left: 0;
+			    z-index: 100;
 			}
 			.hLeft{
 				text-align: right;
@@ -254,7 +250,8 @@
 				width: 100%;
 				margin: 5px 0;
 				font-size: 16px;
-				text-indent: 20px;
+				/*text-indent: 20px;*/
+				text-align: center;
 			}
 			.cIcon{
 				position: absolute;
@@ -286,35 +283,33 @@
 	<body>
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
-		    <div class="header-tit">
-				成都 - 邻水
-			</div>
+		    <div class="header-tit" id="headstate"></div> 
 		</header>
 		<div class="head">
 			<div class="mui-row">
 			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
 					<div class="timeBox">
 						<span class="mui-icon mui-icon-arrowleft"></span>
-						<p class="ad black">前一天</p>
-						<p class="ad black">￥360</p>
+						<p class="ad black" id="frontday" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">前一天</p>
+						<!--<p class="ad black">￥360</p>-->
 					</div>
 		       	</div>
 		        <div class="mui-col-sm-6 mui-col-xs-6 hMiddle">
 		        	<div class="timeBox iconWrap">
-			        	<input type="text" class="calendars" hours hours-past value="全年"><br>
-			        	<img src="../../img/tickets/calender.png"/ class="cIcon">
+			        	<input type="text" class="calendars2" readonly="readonly"  value=""><br>
+			        	<!--<img src="../../img/tickets/calender.png"/ class="cIcon">-->
 					</div>
 		        </div>
 		         <div class="mui-col-sm-3 mui-col-xs-3 hRight">
 					<div class="timeBox">
 						<span class="mui-icon mui-icon-arrowright"></span>
-						<p class="ad black">后一天</p>
-						<p class="ad black">￥390</p>
+						<p class="ad black" id="backday" style="font-size:14px;line-height: 40px;position: relative;top: 1px;">后一天</p>
+						<!--<p class="ad black">￥390</p>-->
 					</div>
 		       	</div>
 			</div>
 		</div>
-		<div class="screening">
+		<div class="screening" style="display: none;">
 		    <ul>
 		        <li class="Brand">时间排序</li>
 		        <li class="Regional">车型</li>
@@ -346,84 +341,232 @@
 		        <li>其他</li>
 		    </ul>
 		</div>	
-		<div id="main">
+		<div id="main" style="padding-top: 2px;margin-top: 100px;">
 			<div class="guess-like">
-				<dl class="list" id="goodsList">
-					<dd class="goodsItem" onclick="goTrain()">
-						<a class="react mui-row">
-							<div class="mui-col-sm-4 mui-col-xs-4">
-								<div class="timeBox">
-									<p class="ad black">D314</p>
-									<p>22:40 </p>
-									<p class="ad">08：55次日</p>
-								</div>
-					       </div>
-					        <div class="mui-col-sm-4 mui-col-xs-4">
-					        	<div class="timeBox">
-									<p class="ad black"><img src="../../img/tickets/time.png"/> 11时47分</p>
-									<p class="ad black"><span class="dot"></span>成都东</p>
-									<div class="line"></div>
-									<p class="ad black"><span class="dot"></span>邻水</p>
-									
-								</div>
-					        </div>
-					        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
-					        	<p><span class="price"><sub>￥</sub>342</span></p>
-					        	<p class="Achange">二等座</p>
-					        	<p>53张</p>
-					        </div>
-						</a>
-					</dd>
-					<dd class="goodsItem" onclick="goTrain()">
-						<a class="react mui-row">
-							<div class="mui-col-sm-4 mui-col-xs-4">
-								<div class="timeBox">
-									<p class="ad black">D314</p>
-									<p>22:40 </p>
-									<p class="ad">08：55次日</p>
-								</div>
-					       </div>
-					        <div class="mui-col-sm-4 mui-col-xs-4">
-					        	<div class="timeBox">
-									<p class="ad black"><img src="../../img/tickets/time.png"/> 11时47分</p>
-									<p class="ad black"><span class="dot"></span>成都东</p>
-									<div class="line"></div>
-									<p class="ad black"><span class="dot"></span>邻水</p>
-									
-								</div>
-					        </div>
-					        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
-					        	<p><span class="price"><sub>￥</sub>342</span></p>
-					        	<p class="Achange">二等座</p>
-					        	<p>53张</p>
-					        </div>
-						</a>
-					</dd>
-					<dd class="db">
-						<a class="react " href="javascript:;">
-							<div class="moreone">加载更多</div>
-						</a>
-					</dd>
-				</dl>
+				<dl class="list" id="goodsList"></dl>
+				<script type="text/html" id="infolist">
+					<% for(var i=0; i<list.length; i++){%>
+						<dd class="goodsItem" onclick="goTrain(<%= list[i].details%>)">
+							<a class="react mui-row">
+								<div class="mui-col-sm-4 mui-col-xs-4">
+									<div class="timeBox">
+										<p class="ad black"><%= list[i].trainNumber%></p>
+										<p><%= list[i].startTime%> </p>
+										<p class="ad"><%= list[i].endTime%>次日</p>
+									</div>
+						       </div>
+						        <div class="mui-col-sm-4 mui-col-xs-4">
+						        	<div class="timeBox">
+										<p class="ad black"><img src="../../img/tickets/time.png"/><%= list[i].runTime%></p>
+										<p class="ad black"><span class="dot"></span><%= list[i].currentStartStationName%></p>
+										<div class="line"></div>
+										<p class="ad black"><span class="dot"></span><%= list[i].currentEndStationName%></p>
+										
+									</div>
+						        </div>
+						        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
+						        	<% if(list[i].Yprice>0){%>
+						        		<p><span class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+						        	<% }else{%>
+						        		<p><span style="color: #999;" class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+						        	<% }%>	
+						        	
+						        	<p class="Achange"><%= list[i].Yname%></p>
+						        	<p><%= list[i].Ynum%>张</p>
+						        </div>
+							</a>
+						</dd>
+					<%}%>	
+				</script>	
+			</div>
+			<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+				<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+				<br />
+				没有相关信息
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-		window.goTrain = function(){
-			openview({ 
-				view:'trainDetail.html'
+		window.goTrain = function(details){
+			mui.plusReady(function(){
+				var time = plus.webview.currentWebview().time;
+				openview({  
+					view:'trainDetail.html',
+					extrasobj:{details:details,timeattr:time}
+				})
 			})
+			
 		}
 	</script>
 	<!--数据渲染-->
 	<script type="text/javascript">
+		//事件转化	
+		 function formatSeconds(value) {
+            var theTime = parseInt(value);// 秒
+            var theTime1 = 0;// 分
+            var theTime2 = 0;// 小时
+            if(theTime > 60) {
+                theTime1 = parseInt(theTime/60);
+                theTime = parseInt(theTime%60);
+                if(theTime1 > 60) {
+                    theTime2 = parseInt(theTime1/60);
+                    theTime1 = parseInt(theTime1%60);
+                }
+            }
+//          var result = ""+parseInt(theTime)+"秒";
+            var result = "";
+            if(theTime1 > 0) {
+                result = ""+parseInt(theTime1)+"分"+result;
+            }
+            if(theTime2 > 0) {
+                result = ""+parseInt(theTime2)+"小时"+result;
+            }
+            return result;
+        }
 		mui.plusReady(function(){
+			
 			var from = plus.webview.currentWebview().from;
 			var arrive = plus.webview.currentWebview().arrive;
 			var time = plus.webview.currentWebview().time;
-			//获取缓存
+			mui('.calendars2')[0].value = time;
 			var oldToken = plus.storage.getItem('oldToken');
+			mui('#headstate')[0].innerHTML = from + ' - ' + arrive;
+			loadfun(time);//初始化加载方法
+			//前一天
+			mui('#frontday')[0].onclick = function(){
+				aroundfun('front');
+			}
+			//后一天
+			mui('#backday')[0].onclick = function(){
+				aroundfun('back');
+			}
 			
+			
+			
+			
+			function aroundfun(type){
+				var nowdate = mui('.calendars2')[0].value; 
+				var date = new Date(nowdate);
+				if(type == 'front'){
+					date.setDate(date.getDate() - 1);
+				}else if(type == 'back'){
+					date.setDate(date.getDate() + 1);
+				}
+				var endmonth,endday,timestr = date.toLocaleDateString();
+				if(timestr.split('/')[1].length == 1){
+					endmonth = '0' + timestr.split('/')[1];
+				}else{
+					endmonth = timestr.split('/')[1];
+				}
+				if(timestr.split('/')[2].length == 1){
+					endday = '0' + timestr.split('/')[2];
+				}else{
+					endday = timestr.split('/')[2];
+				}
+				var time2 = timestr.split('/')[0] +'-'+ endmonth +'-'+ endday;
+				mui('.calendars2')[0].value = time2;
+				loadfun(time2);
+			}
+			function loadfun(time1){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+				document.getElementById("goodsList").innerHTML = '';
+				mui.ajax(serverUrl+'/api/qianmi/trainlineslist',{
+					data:{"from":from,"date":time1,'to':arrive},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	              				
+					success:function(data,type,xhr){
+						console.log(data);
+						console.log('火车列表返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							var Tlist;
+							if(data.data.trainlines_list_response.trainlines && data.data.trainlines_list_response.trainlines != undefined){
+								Tlist = data.data.trainlines_list_response.trainlines.trainline;//信息条数
+								if(Tlist.length || Tlist != null){ 
+									var dataobj = {};
+									for(var i=0;i<Tlist.length;i++){ 
+										//保存详情数据
+										Tlist[i].details = JSON.stringify(Tlist[i]);
+										//时间格式调整
+										Tlist[i].runTime = formatSeconds(Tlist[i].runTime);
+										//优先 硬座(5),其次 硬卧(7), 软卧(8) , 高级软卧,  二等座(0) , 一等座(1), 无座(4) , 商务座(3),
+										var ridetype = Tlist[i].trainSeats.trainSeat;
+										for(var j=0;j<ridetype.length;j++){
+											var funchange = function(){//更改数据代码块
+												Tlist[i].Yprice = ridetype[j].seatPrice;
+												Tlist[i].Yname = ridetype[j].seatName;
+												if(ridetype[j].remainderTrainTickets>100){
+													Tlist[i].Ynum = 100;
+												}else{
+													Tlist[i].Ynum = ridetype[j].remainderTrainTickets;
+												}
+											}
+											if(ridetype[j].seatId==5 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==7 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==8 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==0 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}
+											if(ridetype[j].seatId==1 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==4 && ridetype[j].remainderTrainTickets>0){
+												funchange();
+												break;
+											}
+											if(ridetype[j].seatId==3 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}
+											if(ridetype[j].seatId==2 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}
+											if(ridetype[j].seatId==6 && ridetype[j].remainderTrainTickets>0){
+												funchange(); 
+												break;
+											}else{
+												Tlist[i].Yprice = 0;
+												Tlist[i].Yname = '没有票';
+												Tlist[i].Ynum = 0; 
+											}
+										} 
+									}
+									
+									dataobj.list = Tlist; 
+									//获取并渲染用户信息
+									var html=template("infolist",dataobj);
+									document.getElementById("goodsList").innerHTML = html;
+								}else{
+									
+								}
+							}else{
+								mui('#nulldiv')[0].style.display = 'block';
+							}
+						}else{
+							mui.toast('获取信息失败'); 
+							mui('#nulldiv')[0].style.display = 'block';
+						}
+						plus.nativeUI.closeWaiting();
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast('获取信息失败'); 
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+				});
+			}	
 		})
 	</script>
 </html>

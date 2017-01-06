@@ -63,7 +63,7 @@
 				font-size: 26px;
 			}
 			.bodyWrap{
-				background: url(../../img/tickets/bodyWrap.png) no-repeat fixed top;
+				background: url(../../img/tickets/bodyWrap.jpeg) no-repeat fixed top;
 				background-size: cover;
 				width: 100%;
 				height: 100%;
@@ -75,7 +75,6 @@
 				height: 100%;
 				position: fixed;
 			}
-			
 			.mui-segmented-control {
 				font-size: 13px;
 				width: 100%;
@@ -229,7 +228,7 @@
 				<div style="padding: 10px 10px;">
 					<div id="segmentedControl" class="mui-segmented-control">
 						<a class="mui-control-item mui-active" href="#item1">往返</a>
-						<a class="mui-control-item" href="#item3">单程</a>
+						<!--<a class="mui-control-item" href="#item3">单程</a>-->
 					</div>
 				</div>
 				<div style="padding: 10px 10px;">
@@ -248,7 +247,7 @@
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
 						</div>
-						<div class="inputWrap half">
+						<div class="inputWrap">
 						    <div class="mui-input-row wrap">
 						    	<div class="item">
 						        	<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
@@ -256,19 +255,19 @@
 						    	</div>
 						    </div>
 						</div>
-						<div class="inputWrap half halfRight">
+						<!--<div class="inputWrap half halfRight">
 						    <div class="mui-input-row wrap">
 						    	<div class="item">
 						        	<span><img src="../../img/tickets/ca.png" class="caIcon"/></span>
 						        	<input type="text" class="calendars" hours hours-past value="全年" id="arriveTime"><br>
 						    	</div>
 						    </div>
-						</div>
+						</div>-->
 						<div class="changeAd">
 							<img src="../../img/tickets/change.png"/>
 						</div>
 					</div>
-					<div id="item3" class="mui-control-content">
+					<!--<div id="item3" class="mui-control-content">
 						<div class="inputWrap">
 						    <div class="mui-input-row">
 						        <label>出发</label>
@@ -294,7 +293,7 @@
 						<div class="changeAd">
 							<img src="../../img/tickets/change.png"/>
 						</div>
-					</div>
+					</div>-->
 					<button class="searchBtn" onclick="searchPlane()"><span class="mui-icon mui-icon-search"></span>搜索</button>
 					<!--<button class="record" onclick="planeRe()">
 						<p>购买记录</p>
@@ -345,24 +344,36 @@
 				document.getElementsByClassName('fromAd')[1].value = toAd;
 			});
 			
-			//点击搜索
-			window.searchPlane = function(){
-				var planeType = mui('.mui-active')[0].innerHTML;
-				//往返
+			
+			
+		})(mui);
+		
+		//点击搜索
+		function searchPlane(){
 				var from = mui('#from')[0].value;
 				var arrive = mui('#arrive')[0].value;
 				var fromTime = mui('#fromTime')[0].value;
-				var arriveTime = mui('#arriveTime')[0].value;
-				//单程
-				var from1 = mui('#from1')[0].value;
-				var arrive1 = mui('#arrive1')[0].value;
-				var time1 = mui('#time1')[0].value;
-				alert(planeType)
-				openview({ 
-					view:'planeList.html'
-					extrasobj:{planeType:planeType,from:from,arrive:arrive,fromTime:fromTime,arriveTime:arriveTime,from1:from1,arrive1:arrive1,time1:time1}
-				})
+				if(from && arrive && fromTime){
+					//处理事件格式
+					var time1 = fromTime.split('/')[0];
+					var time2 = fromTime.split('/')[1];
+					var time3 = fromTime.split('/')[2];
+					if(time2.length == 1){
+						time2 = 0 + time2;
+					}
+					if(time3.length == 1){
+						time3 = 0 + time3;
+					}
+					var timeend = time1 + '-' + time2 + '-' + time3;
+//					alert(timeend)
+					openview({ 
+						view:'planeList.html',
+						extrasobj:{from:from,arrive:arrive,fromTime:timeend}
+					})
+				}else{
+					mui.toast('信息填写不完整');
+				}
+				
 			}
-		})(mui);
 	</script>
 </html>

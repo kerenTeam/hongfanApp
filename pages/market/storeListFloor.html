@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>商品列表</title>
+		<title>商店楼层列表</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -39,7 +39,7 @@
 			
 			/*这一页*/
 			.grade-eject, .Category-eject, .Sort-eject{
-				height: 120px;
+				height: 327px;
 			}
 			div.screening>ul>li{
 				border-left: 1px solid #eee !important;
@@ -47,17 +47,6 @@
 			div.screening>ul{
 				border-bottom:1px solid #eee; 
 			}
-			/*div.screening>ul:after{
-				content: '';
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				display: block;
-				height: 1px;
-				background-color: rgba(0,0,0,0.1);
-				-webkit-transform: scaleY(0.5);
-			}*/
 			dl.list dt, dl.list dd,dl.list{
 				border-bottom: 0;
 				margin: 0 5px;
@@ -136,15 +125,16 @@
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				display: block;
+				line-height: 22px;
 			}
 			.dealcard .title span, .dealcard .price span {
 				font-size: .12rem;
 			}
 			.dealcard .dealcard-img{
-				width: 30%;
+				width: 28%;
 				height: auto !important;
 				max-height: 106px !important;
-				margin-top: -10px;
+				margin-top: -4px;
 				border-radius: 0 !important;
 			}
 			.dealcard .dealcard-block-right {
@@ -182,39 +172,56 @@
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
+			div.screening>ul>li{
+				width: 50%;
+			}
+			.mui-icon-arrowright{
+				line-height: 100px;
+				color: #999;
+				float: right;
+			}
+			.info{
+				line-height: 30px;
+			}
 		</style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
-				商品列表
+				商店列表
 			</div>
 		</header>
 		
 		 <div class="screening" id="screeningdiv" style="top: 50px;">
 		    <ul>
-		        <li class="Brand">综合</li>
-		        <li class="Regional" onclick="order('sales','asc')">销量</li>
-		        <li class="Sort">价格</li>
+		        <li class="Brand">楼层</li>
+		        <li class="Sort">全部商店</li>
 		    </ul>
 		</div>
 		
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="order('create_time','asc')">新品</li>
-		        <li onclick="order('comments','asc')">评价</li>
+		        <li onclick="order('create_time','asc')">全部</li>
+		        <li onclick="order('comments','asc')">B1</li>
+		        <li onclick="order('comments','asc')">F1</li>
+		        <li onclick="order('comments','asc')">F2</li>
+		        <li onclick="order('comments','asc')">F3</li>
+		        <li onclick="order('comments','asc')">F4</li>
+		        <li onclick="order('comments','asc')">F5</li>
+		        <li onclick="order('comments','asc')">F6</li>
 		    </ul>
 		</div>
-		<!--<div class="grade-eject">
-		    <ul class="grade-w" id="gradew">
-		        <li onclick="order('sales','asc')">从高到低</li>
-		    </ul>
-		</div>-->
 		<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="order('price','desc')">从高到低</li>
-		        <li onclick="order('price','asc')">从低到高</li>
+		        <li onclick="order('price','desc')">全部商户</li>
+		        <li onclick="order('price','asc')">百货</li>
+		        <li onclick="order('price','asc')">配套服务</li>
+		        <li onclick="order('price','asc')">数码音像</li>
+		        <li onclick="order('price','asc')">家居生活</li>
+		        <li onclick="order('price','asc')">儿童</li>
+		        <li onclick="order('price','asc')">休闲娱乐</li>
+		        <li onclick="order('price','asc')">餐饮</li>
 		    </ul>
 		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
@@ -222,11 +229,25 @@
 			<div id="main">
 				<div class="guess-like">
 					<dl class="list" id="goodsList">
-						<!--<dd class="db">
-							<a class="react " href="javascript:;">
-								<div class="moreone">加载更多</div>
+						<dd class="goodsItem">
+							<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
+								<div class="dealcard">
+									<div class="dealcard-img imgbox">
+										<img src="<%= list[i].thumb %>"/>
+									</div>
+									<div class="dealcard-block-right mui-row">
+										<div class="mui-col-sm-10 mui-col-xs-10">
+											<div class="dealcard-brand single-line">店铺名字</div>
+											<p class="info">生活用品(业态)</p>
+											<p class="info">4楼 433号店铺</p>
+										</div>
+										<div class="mui-col-sm-2 mui-col-xs-2">
+											<span class="mui-icon mui-icon-arrowright"></span>
+										</div>
+									</div>
+								</div>
 							</a>
-						</dd>-->
+						</dd>
 					</dl>
 				</div>
 				<div class="upload text-center text-xs gray" id="upload"></div>
@@ -244,33 +265,27 @@
 				<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
 			<%}else{%>
 				<% for(var i=0;i<list.length;i++){ %>
-				<dd class="goodsItem">
-					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
-						<div class="dealcard">
-							<div class="dealcard-img imgbox">
-								<img src="<%= list[i].thumb %>"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand single-line"><%= list[i].title %></div>
-								<div class="title text-block bage">
-									<!--<span class="mui-badge mui-badge-primary">64G</span>
-									<span class="mui-badge mui-badge-primary">128G</span>
-									<span class="mui-badge mui-badge-primary">64G</span>-->
+					<dd class="goodsItem">
+						<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
+							<div class="dealcard">
+								<div class="dealcard-img imgbox">
+									<img src="<%= list[i].thumb %>"/>
 								</div>
-								<div class="price mui-row">
-									<div class="mui-col-sm-4 mui-col-xs-4">
-										<span class="strong-color">￥</span><span class="strong"><%= list[i].price %></span>
+								<div class="dealcard-block-right mui-row">
+									<div class="mui-col-sm-10 mui-col-xs-10">
+										<div class="dealcard-brand single-line"><%= list[i].title %></div>
+										<p class="info">生活用品</p>
+										<p class="info">4楼 433号店铺</p>
 									</div>
-									<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价<%= list[i].comments %>条</span>
-									<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售<%= list[i].sales %></span>
+									<div class="mui-col-sm-2 mui-col-xs-2">
+										<span class="mui-icon mui-icon-arrowright"></span>
+									</div>
 								</div>
 							</div>
-						</div>
-					</a>
-				</dd>
-			<% } %>
+						</a>
+					</dd>
+				<% } %>
 			<%}%>
-			
 		</script>
 	</body>
 
@@ -287,80 +302,58 @@
 			window.order = function(orderType,sequence){
 				var pagenum = 7,CcurrentPage = 1;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:goodcatId,recommend:'',storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
+				mui.ajax(serverUrl +'/api/mall/storelist',{
+					data:{currentPage:1,numsPerPage:2,commercial_type_name:0,subcommercial_type_name:0},
+					dataType:'json',
 					type:'post',
-					timeout:10000,
+					timeout:1000,
 					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){ 
-					console.log(JSON.stringify(data));
-					if(data.errno == 0){
-						if(data.data.return.data.length){
-							var objdata = {};
-							objdata.list = data.data.return.data;
-							var html=template("goodsList-detail",objdata);
-							document.getElementById("goodsList").innerHTML=html;
-							mui("#upload")[0].innerHTML = "";
-						}else{	
-							mui("#upload")[0].innerHTML = ""; 
-							mui('#nulldiv')[0].style.display = 'block';
-						}
-						//滚动到底部加载
-						$(window).scroll(function(){
-						　　var scrollTop = $(this).scrollTop();
-						　　var scrollHeight = $(document).height();
-						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight == scrollHeight){
-								//加载下一部分
-							  var nowpage = ++CcurrentPage;
-								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
-									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-									console.log('可以请求数据');
-									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:goodcatId,recommend:'',storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence}, 
-										type:'post',
-										timeout:10000,
-										headers:{"token":oldToken},	 
-										success:function(data,type,xhr){ 
-											console.log(JSON.stringify(data));
-											if(data.errno == 0){
-												var objdata = {};
-												objdata.list = data.data.return.data;
-												var html=template("goodsList-detail",objdata);
-												document.getElementById("goodsList").innerHTML+=html;
-												mui("#upload")[0].innerHTML = "上滑加载 ";
-											}else{
-												--CcurrentPage;//请求失败,继续请求当前页
-												mui.toast("获取数据失败");
-											}
-											plus.nativeUI.closeWaiting();//关闭等待框
-										},
-										error:function(xhr,type,errorThrown){
-											--CcurrentPage;//请求失败,继续请求当前页
-											mui.toast("当前网络不好请重试");
-										}
-									});
-								}else{
-									mui("#upload")[0].innerHTML = "没有数据了";
-								}
-								//加载下一部分结束
-							　　}
-						});
+					success:function(data,type,xhr){
+						plus.nativeUI.closeWaiting(); 
+	//					var img = [];
+						alert( data.data[0].pic[0])
+						alert(JSON.parse(data.data[0].pic[0]))
+//						for (var i=0;i<data.data.length;i++) {
+//							if(data.data[i].pic!=''){
+//								data.data[i].pic = data.data[i].pic;
+//							}else{
+//								data.data[i].pic = null;
+//							}
+//							if(data.data[i].logo!=''){
+//								data.data[i].logo = data.data[i].logo;
+//							}else{
+//								data.data[i].logo = null;
+//							}
+//							
+//							alert(data.data[i].pic+" dsadsd  "+data.data[i].logo)
+//	//						img.push(imgItem);
+//						}
+//						alert(JSON.stringify(data.data))
+//	//					alert(JSON.parse(data.data[0]));
+//						var recommentObj = {};  
+//						recommentObj.myurl = serverimgUrl;
+//						recommentObj.recommentLi = data.data;
+//	//					recommentObj.recommentImg = img;
+//						var html2 = template('storeItem-detail',recommentObj);
+//						document.getElementById('storeItem').innerHTML = html2;
 						
-					}else{
-						mui.toast('没有数据');
+						//点击进入详情
+						window.openStore = function(store_id){
+	//						alert(store_id);
+							openview({
+								view:'shophome.html',
+	//							alert(store_id),
+								extrasobj:{storeId:store_id}
+							})
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//alert('响应失败  !');
+						plus.nativeUI.closeWaiting();
+						mui.toast("网络不好请重试")
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
-					mui.toast('没有数据');
-				}
 				});
 				
-				$('.Category-eject').removeClass('grade-w-roll');
-				$('.Sort-eject').removeClass('grade-w-roll');
-				$('.grade-eject').removeClass('grade-w-roll');
 			}
 			order('sales','desc');//初始化
 			//跳转详情
