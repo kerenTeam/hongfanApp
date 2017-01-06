@@ -415,10 +415,10 @@
 							<div class="xia">
 								 <div class="mui-row">
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
-							        	<%if(brief.fee_start_1==0 || brief.fee_start_1=='' ||brief.fee_start_1==null){%>
+							        	<%if(!brief.postage){%>
 							           		<p class="box-s">快递：免邮</p>
 							            <%}else{%>
-							             <p class="box-s">快递：<%=brief.fee_start_1%>元</p>
+							             <p class="box-s">快递：<%=brief.postage%>元</p>
 							            <%}%>
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
@@ -444,11 +444,12 @@
 						</script>
 						
 						
-						<div class="farmtc clearfloat mt10">
-							<p class="bt box-s">商品评价</p>
-						</div>
+						
 						<div id="moll_comment"></div>
 						<script type="text/html" id="commentTpl">
+							<div class="farmtc clearfloat mt10">
+								<p class="bt box-s">商品评价</p>
+							</div>
 							<ul class="farm clearfloat Cul">
 								<%if(cemmentData.length==0){%>
 									<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
@@ -567,7 +568,7 @@
 		     	</div>
 		     </div>		     
 		</div>
-		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.fee_start_1%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.postage%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
 		
 		</div>
@@ -586,7 +587,7 @@
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId; 
 //			var goodId = 1; 
-//			alert(goodId);
+			alert(goodId);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
@@ -596,7 +597,7 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
 						success:function(data){
-							//alert(JSON.stringify(data))
+							console.log(JSON.stringify(data))
 							
 							if(data.errno==0){ 
 								plus.nativeUI.closeWaiting();

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>购物中心</title>
+		<title>商城</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -236,7 +236,7 @@
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
-				购物中心
+				商城
 			</div>
 		</header> 
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
@@ -300,7 +300,7 @@
 					
 					<!--模块选择-->
 					<div class="mui-row" style="background-color: white;margin: 10px 0;">
-						<div class="mui-col-xs-6 rowpad">
+						<div class="mui-col-xs-6 rowpad" onclick="movie()">
 							<div class="moviepad">
 								<h4 style="color: #F94A1F;"><span style="font-size:0.4rem;vertical-align: middle;">·</span> <span style="vertical-align: middle;">热映电影</span>  <span style="font-size:0.4rem;vertical-align: middle;">·</span></h4>
 								<div class="gomovie">立即购票</div>
@@ -349,41 +349,7 @@
 						</div>
 					</div>
 					
-					<div class="sy_recmd">
-						<!--精选频道-->
-						<div class="sy_title mb10">
-							<span class="left">精选频道</span>
-							<a href="#" class="fr morethree">更多&gt;&gt;</a>
-						</div>
-						<div class="sy_recmd_list_box choicenessWrap">
-							<ul>
-								<li class="sy_recmd_list" id="storeRcmd">
-									<div class="box">
-										<div class="pub_img">
-											<a href="javascript:;"><img src="../../img/market/market-cloth.jpg" width="145" height="145"></a>
-										</div>
-										<div class="choiceness">
-											<p class="overflow_clear"><img src="../../img/market/store.png"/>达人探店</p>
-											<p class="gray">达人为你推荐好店</p>
-										</div>
-									</div>
-								</li>
-								<li class="sy_recmd_list">
-									<div class="box">
-										<div class="pub_img">
-											<a><img src="../../img/market/market-food.jpg" width="145" height="145"></a>
-										</div>
-										<div class="choiceness">
-											<p class="overflow_clear"><img src="../../img/market/breakfast.png"/>元气早餐</p>
-											<p class="gray">附近人气餐厅选择</p>
-										</div>
-									</div>
-								</li>
-							</ul>
-							<div class="clear"></div>
-						</div>
-						
-					</div>
+					
 					<div class="sy_recmd" style="background-color: #fff;">
 						
 						<!--推荐列表-->
@@ -406,10 +372,10 @@
 										<li class="sy_recmd_list">
 											<div class="box">
 												<div class="pub_img">
-													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
 												</div>
 												<div class="pub_wz">
-													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
+													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
 													<div class="nr_box mui-row">
 														<div class="mui-col-sm-6 mui-col-xs-6">
 												        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
@@ -445,12 +411,19 @@
 		}
 		
 		//跳转详情
-		function goInfo(goodsId){
-			 //alert(goodsId)
-			 openview({
-			 	view:"mall-detail.html",
-			 	extrasobj:{goodsId:goodsId}
-			 })
+		function goInfo(goodsId,storeId){
+			if(storeId==0){
+				 openview({
+				 	view:"yphDetail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}else{
+				 openview({
+				 	view:"mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
+			
 		}
 		
 		//跳转优惠
@@ -459,7 +432,12 @@
 				view:"../activity/coupon.html"
 			})
 		}
-		
+		//跳转电影
+		function movie(){
+			openview({
+				view:"jifen-mall.html"
+			})
+		}
 		//跳转活动
 		function activity(){
 			openview({
@@ -467,12 +445,7 @@
 			})
 		}
 			 
-		mui("#storeRcmd")[0].addEventListener('tap',function(){
-			openview({
-				 	view:"storeList.html"
-				 })
-		})
-		
+	 
 		//点击广告跳转到商品详情
 		function goAdv(AdvId){
 //			alert(goodsId)

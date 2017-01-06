@@ -46,24 +46,31 @@
 		<div id="container">		
 			<div id="main">
 				<ul class="boxs self-paytop">
-					<li id="show_arrive_date">
+					<li class="show_arrive_date">
 						<a href="javascript:;" onclick="water()" class="date">
 							<img src="../img/tickets/waterR.png"/>
 							<strong>水费</strong>								
 							<div class="fr"><i class="ico_arrow"></i></div>
 						</a>
 					</li>
-					<li id="show_arrive_date">
+					<li class="show_arrive_date">
+						<a href="javascript:;" onclick="electric()" class="date">
+							<img src="../img/tickets/light.png"/>
+							<strong>电费</strong>								
+							<div class="fr"><i class="ico_arrow"></i></div>
+						</a>
+					</li>
+					<li class="show_arrive_date">
 						<a href="javascript:;" onclick="gas()" class="date">
 							<img src="../img/tickets/gasR.png"/>
-							<strong>气费</strong>								
+							<strong>燃气费</strong>								
 							<div class="fr"><i class="ico_arrow"></i></div>
 						</a>
 					</li>
 					<li>
 						<a href="javascript:;" onclick="phoneRecharge()">
 							<img src="../img/tickets/phoneR.png"/>
-							<strong>固话充值</strong>
+							<strong>手机充值</strong>
 							<div class="fr"><i class="ico_arrow"></i></div>
 						</a>
 					</li>
@@ -83,7 +90,7 @@
 					</li>
 				</ul>
 				<div class="self-paybt clearfloat">
-					<a>缴费记录</a>
+					<a onclick="phoneRe()">缴费记录</a>
 					<a onclick="ticketRe()">购票记录</a>
 				</div>
 			</div>
@@ -101,7 +108,8 @@
 						
 						 if(plus.storage.getItem('myToken')){ 
 									 openview({
-									 	view:"tickets/waterRecharge.html"
+									 	view:"tickets/waterRecharge.html",
+									 	id:"waterRecharge"
 									 })
 								}else{//没登陆直接打开登录页面
 									mui.toast('请登录');
@@ -110,12 +118,27 @@
 									});
 								}
 					}
-					
+					//点击电费跳转
+					window.electric = function(){
+						 if(plus.storage.getItem('myToken')){ 
+									 openview({
+									 	view:"tickets/eleRecharge.html",
+									 	id:"eleRecharge"
+									 })
+								}else{//没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view:'login.html'
+									});
+								}
+						
+					}
 					//点击气费跳转
 					window.gas = function(){
 						 if(plus.storage.getItem('myToken')){ 
 									 openview({
-									 	view:"tickets/gasRecharge.html"
+									 	view:"tickets/gasRecharge.html",
+									 	id:"gasRecharge"
 									 })
 								}else{//没登陆直接打开登录页面
 									mui.toast('请登录');
@@ -186,7 +209,12 @@
 									});
 								}
 					}
-					
+					window.phoneRe = function(){
+						openview({
+							view:'tickets/record.html',
+							extrasobj:{typeC:2}
+						})
+					}
 					})
 		
 		})();

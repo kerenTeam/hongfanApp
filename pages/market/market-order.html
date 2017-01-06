@@ -385,17 +385,29 @@
 									</p>
 									<p class="price"><sub>￥</sub>
 										<%=goodsList[j].goodsPrice%> <span class="num">×<%=goodsList[j].goodsnum%></span></p>
+									<%if(shopID[i]==0){%>	
+									<samll style="font-size:0.1rem;color: gray;">含税<%=goodsList[j].goodsPostfee%> </samll>
+									<%}%>
 								</div>
 							</dd>
 							<%}%>
 							<%}%>
 							<dd class="dd-padding kv-line-r">
 								<h6>配送方式</h6>
-								<%if(arrpostFee[i]==0){%>
-									<p class="jifen">快递 免邮</p>
+								<%if(shopID[i]==0){%>
+										<%if(arrpostFee[i]==0){%>
+											<p class="jifen">税费 免税</p>
+											<%}else{%>
+												<p class="jifen">税费 <%=arrpostFee[i]%>元</p>
+											<%}%> 
 									<%}else{%>
-										<p class="jifen">快递<%=arrpostFee[i]%>元</p>
+										<%if(arrpostFee[i]==0){%>
+											<p class="jifen">快递 免邮</p>
+											<%}else{%>
+												<p class="jifen">快递 <%=arrpostFee[i]%>元</p>
+											<%}%>
 										<%}%>
+								
 								
 							</dd>
 
@@ -602,17 +614,23 @@
 						shopID = shopID.unique1();  
 						data.shopID = shopID;
 						 // alert(JSON.stringify(shopID))
-						for(var i= 0;i<data.cates.length;i++){
+						for(var i= 0;i<data.shopID.length;i++){
 							//分组邮费小计
-							var groupPostfee=0;
+							var groupPostfee=0; 
 							 for(var j = 0;j<orderStorage.length;j++){
-							 	 
-							 	if(orderStorage[j].goodsPostfee!=0){
-							 		groupPostfee=orderStorage[j].goodsPostfee;
-							 		break;
-							 	}else{
-							 		groupPostfee = 0;
+							 	if(data.shopID[i] == orderStorage[j].shopId){
+							 		if(data.shopID[i] == 0){
+							 			groupPostfee+=parseFloat(orderStorage[j].goodsPostfee);
+							 		}else{
+							 			if(orderStorage[j].goodsPostfee!=0){
+									 		groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
+									 		break;
+									 	}else{
+									 		groupPostfee = 0;
+									 	}
+							 		}
 							 	}
+							 	
 							 }
 							 arrpostFee.push(groupPostfee);
 						}
@@ -666,7 +684,7 @@
 						 //订单总价
 						 var totalPay=0;
 						  
-						 $("#submit_order").html(allGroup)
+						 $("#submit_order").html(parseFloat(allGroup).toFixed(2))
 			
 			
 			//获取积分
@@ -696,7 +714,7 @@
 							}else{ 
 								jf=0; 
 							}
-							var nowPAY = allGroup-jf-quan;
+							var nowPAY =parseFloat(allGroup-jf-quan).toFixed(2);
 								if(nowPAY<=0){
 									nowPAY=0;
 								}
@@ -781,7 +799,7 @@
 								$(".minuMoney").css("display","inline-block"); 
 								
 							}
-							var nowPAY = allGroup-jf-quan;
+							var nowPAY = parseFloat(allGroup-jf-quan).toFixed(2);
 								if(nowPAY<=0){
 									nowPAY=0;
 								}

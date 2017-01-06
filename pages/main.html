@@ -324,10 +324,10 @@
 										<li class="sy_recmd_list">
 											<div class="box">
 												<div class="pub_img">
-													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
+													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
 												</div>
 												<div class="pub_wz">
-													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
+													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
 													<div class="nr_box mui-row">
 														<div class="mui-col-sm-5 mui-col-xs-5 ">
 												        	<p class="fl fontcl2"><sub>¥</sub>&nbsp;<%=recommendData[i].price%></p>
@@ -392,11 +392,19 @@
 	 
 	
 	//跳转详情
-		function goInfo(goodsId){
-			 openview({
-			 	view:"market/mall-detail.html",
-			 	extrasobj:{goodsId:goodsId}
-			 })
+		function goInfo(goodsId,storeId){
+			if(storeId==0){
+				 openview({
+				 	view:"market/yphDetail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}else{
+				 openview({
+				 	view:"market/mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
+			
 		}
 		
 		//根据广告跳转到对应商店详情
@@ -470,7 +478,7 @@
 				});
 				market.addEventListener('tap', function(){
 					openview({
-						view:'market/market-Center.html',
+						view:'market/market.html',
 					});
 				});
 				fil.addEventListener('tap', function(){
@@ -573,7 +581,7 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":oldToken}, 
 						success:function(data){
-							 //alert(JSON.stringify(data))
+							  alert(JSON.stringify(data))
 							//获取并渲染  eval("("+data1+")");
 							//var dataobj= eval("("+data.data.banner+")"); 
 							if(data.errno==0){
