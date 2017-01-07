@@ -316,6 +316,7 @@
 				success:function(data,type,xhr){
 //						alert(JSON.stringify(data.data));
 					var adObj = {};
+					
 					adObj.adLi = data.data;
 					var html = template('ad-detail',adObj);
 					document.getElementById('ad').innerHTML = html;
@@ -333,6 +334,9 @@
 					console.log('猜你喜欢返回'+JSON.stringify(data));
 					if(data.errno == 0){ 
 						var objdata = {};
+						mui.each(data.data,function (index,ele) {
+							data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+						})
 						objdata.list = data.data;
 						var html = template("Adv",objdata);
 						document.getElementById("Advdiv").innerHTML=html;
@@ -360,6 +364,9 @@
 						if(data.data.length){
 							mui('#Mask')[0].style.display = 'none';
 							var objdata = {};
+							mui.each(data.data,function (index,ele) {
+								data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+							})
 							objdata.list = data.data;
 							var html = template("recommends",objdata);
 							document.getElementById("recommendsdiv").innerHTML = html;

@@ -41,7 +41,7 @@
 			}
 			.dealcard .dealcard-img img{
 				height: 60px;
-				overflow: hidden;
+				overflow: hidden; 
 			}
 		 	.shoucang .iconfont{
 				font-size: 18px;
@@ -106,6 +106,7 @@
 			.dealcard .coupon{border: none;}
 			.coupon p, .dealcard .coupon{margin: 0;}
 			#thePlus2{font-size: 16px;margin-top: 1px;}
+			.typespan{border: 1px solid #f53c42;border-radius: 5px;font-size: 9px;padding: 1px 2px;color: #f53c42;font-weight: 100;display: inline-block;position: relative;left: 4px;top: -2px;}
 		</style>
 	</head>
 	<body>
@@ -125,27 +126,27 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="Loading(1,7,'','','','','price')">全部</li>
-		        <li onclick="Loading(1,7,5,'','','','price');">电脑</li>
-		        <li onclick="Loading(1,7,6,'','','','price');">手机</li>
-		        <li onclick="Loading(1,7,10,'','','','price');">童装</li>
+		        <li onclick="Loading(1,10,'','','','','price')">全部</li>
+		        <li onclick="Loading(1,10,5,'','','','price');">电脑</li>
+		        <li onclick="Loading(1,10,6,'','','','price');">手机</li>
+		        <li onclick="Loading(1,10,10,'','','','price');">童装</li>
 		    </ul>
 		</div>
 		<div class="grade-eject">
 		    <ul class="grade-w" id="gradew">
-		        <li onclick="Loading(1,7,'','','','','price')">全部</li>
-		        <li onclick="Loading(1,7,'','',100,'','price');">100元以下</li>
-		        <li onclick="Loading(1,7,'',100,1000,'','price');">100-1000元</li>
-		        <li onclick="Loading(1,7,'',1000,5000,'','price');">1000-5000元</li>
+		        <li onclick="Loading(1,10,'','','','','price')">全部</li>
+		        <li onclick="Loading(1,10,'','',100,'','price');">100元以下</li>
+		        <li onclick="Loading(1,10,'',100,1000,'','price');">100-1000元</li>
+		        <li onclick="Loading(1,10,'',1000,5000,'','price');">1000-5000元</li>
 		    </ul>
 		</div>
 		<!-- End grade -->
 		<!-- Category -->
 		<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="Loading(1,7,'','','','','price')">全部</li>
-		        <li onclick="Loading(1,7,'','','',1,'price')">个人</li>
-		        <li onclick="Loading(1,7,'','','',0,'price')">商家</li>
+		        <li onclick="Loading(1,10,'','','','','price')">全部</li>
+		        <li onclick="Loading(1,10,'','','',1,'price')">个人</li>
+		        <li onclick="Loading(1,10,'','','',0,'price')">商家</li>
 		    </ul>
 		</div>
 		<!-- End Category -->
@@ -177,10 +178,17 @@
 									<div class="dealcard-block-right">
 										<div class="brand branddiv"><%= list[i].title%></div>
 										<div class="title ">
-											<%= list[i].address%>
+											地址:<%= list[i].address%>
 										</div>
 										<div class="coupon ">
-											<p>电话: <%= list[i].phone%></p>
+											<p>
+												电话: <%= list[i].phone%>
+												<% if(list[i].type == 1){%>
+													<b class="typespan" id="">商家</b>
+												<% }else{%>
+													<b class="typespan" id="">个人</b>
+												<% }%>	
+											</p>
 											<span><sub>￥</sub><%= list[i].price%><sub>起</sub></span>
 										</div>
 									</div>
@@ -208,10 +216,10 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-	Loading(1,7,'','','','','price');//加载数据,包括上滑加载
+	Loading(1,10,'','','','','price');//加载数据,包括上滑加载
 	//添加刷新监听
 	document.addEventListener('refresh', function() {
-		Loading(1,7,'','','','','price');//加载数据,包括上滑加载
+		Loading(1,10,'','','','','price');//加载数据,包括上滑加载
 		console.log('刷新数据');
 	})
 	//加载方法
@@ -237,13 +245,15 @@
 			timeout:10000,//超时时间设置为10秒；	
 			headers:{"token":oldtoken}, 
 			success:function(data){
-				console.log(JSON.stringify(data));
+				console.log('列表返回'+JSON.stringify(data));
+				console.log('列表返回',data);
 				if(data.errno == 0){
-					console.log(data);
 					var dataobj = {};
+					mui.each(data.data.data,function (index,ele) {
+						data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
+					})
 					dataobj.list = data.data.data; 
 					//获取并渲染用户信息
-					console.log(data.data.data);
 					var html=template("infolist",dataobj);
 					document.getElementById("infolistdiv").innerHTML += html;
 					if(data.data.totalPages){
@@ -279,6 +289,9 @@
 								success:function(data){
 									if(data.errno == 0){
 										var dataobj = {};
+										mui.each(data.data.data,function (index,ele) {
+											data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
+										})
 										dataobj.list = data.data.data; 
 										//获取并渲染用户信息
 										var html=template("infolist",dataobj);

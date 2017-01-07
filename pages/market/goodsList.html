@@ -283,9 +283,8 @@
 			//获取页面传值 商品分类id
 			var goodcatId = plus.webview.currentWebview().goodscatId;
 			
-			//按照选择排序
-			window.order = function(orderType,sequence){
-				var pagenum = 7,CcurrentPage = 1;
+			window.order = function(orderType,sequence){//加载方法
+				var pagenum = 10,CcurrentPage = 1;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
 					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:goodcatId,recommend:'',storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
@@ -349,11 +348,15 @@
 						
 					}else{
 						mui.toast('没有数据');
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
 					plus.nativeUI.closeWaiting();//关闭等待框
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
 					mui.toast('没有数据');
 				}
 				});
@@ -362,9 +365,9 @@
 				$('.Sort-eject').removeClass('grade-w-roll');
 				$('.grade-eject').removeClass('grade-w-roll');
 			}
-			order('sales','desc');//初始化
-			//跳转详情
-			window.goInfo =  function(goodsId){ 
+			order('sales','desc');//初始化加载
+			
+			window.goInfo =  function(goodsId){//跳转详情
 				 openview({
 				 	view:"mall-detail.html",
 				 	extrasobj:{goodsId:goodsId}
@@ -372,7 +375,6 @@
 			}
 			
 		})();
-		
 		
 	</script>
 

@@ -18,7 +18,7 @@
 		
 		<style type="text/css">
 			.mui-bar{height: 50px;
-			}
+			} 
 			.mui-title,.mui-icon{line-height: 50px;
 			}
 			.mui-bar .mui-icon{padding: 0;
@@ -148,19 +148,19 @@
 			switch(nowwebname){
 				case 'Repair'://维修数据 
 				headtitle.innerHTML = '维修列表'; 
-				Loading(1,1,7);//加载数据,包括上滑加载
+				Loading(1,1,10);//加载数据,包括上滑加载
 				break;
 				case 'Clean'://保洁数据
 				headtitle.innerHTML = '保洁列表';
-				Loading(2,1,7);//加载数据,包括上滑加载
+				Loading(2,1,10);//加载数据,包括上滑加载
 				break;
 				case 'Babysister'://保姆数据
 				headtitle.innerHTML = '保姆列表';
-				Loading(3,1,7);//加载数据,包括上滑加载
+				Loading(3,1,10);//加载数据,包括上滑加载
 				break;
 				case 'Openclock'://开锁数据
 				headtitle.innerHTML = '开锁列表';
-				Loading(4,1,7);//加载数据,包括上滑加载
+				Loading(4,1,10);//加载数据,包括上滑加载
 				break;
 			}
 		}
@@ -178,12 +178,17 @@
 				success:function(data){
 					if(data.errno == 0){
 						console.log('列表返回'+JSON.stringify(data));
-						var dataobj = {};
-						dataobj.list = data.data.data; 
-						//获取并渲染用户信息
-						var html=template("infolist",dataobj);
-						document.getElementById("infolistdiv").innerHTML += html;
+						console.log('列表返回',data);
 						if(data.data.totalPages){
+							var dataobj = {};
+							mui.each(data.data.data,function (index,ele) {
+								data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+							})
+							dataobj.list = data.data.data; 
+							
+							//获取并渲染用户信息
+							var html=template("infolist",dataobj);
+							document.getElementById("infolistdiv").innerHTML += html;
 							mui("#upload")[0].innerHTML = "";
 						}else{
 							mui("#upload")[0].innerHTML = ""; 
@@ -208,8 +213,14 @@
 										timeout:10000,//超时时间设置为10秒；	
 										headers:{"token":oldtoken}, 
 										success:function(data){
+											console.log('列表返回'+JSON.stringify(data));
+											console.log('列表返回',data);
 											if(data.errno == 0){
 												var dataobj = {};
+												mui.each(data.data.data,function (index,ele) {
+													console.log('地址'+ eval("("+ele.logo+")")[0].picImg);
+													data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+												})
 												dataobj.list = data.data.data; 
 												//获取并渲染用户信息
 												var html=template("infolist",dataobj);
