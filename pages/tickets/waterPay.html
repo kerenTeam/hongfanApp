@@ -13,10 +13,8 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
-		
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
@@ -192,28 +190,32 @@
 						<p class="chargeTitle">水费</p>
 					</div>
 					<div class="recharge clearfloat">
-			    		<div class="czhi box-s">
-							<p>应缴金额</p>
-							<span id="amount">20.00</span>
-							<span id="amountTip">（含违约金1.09元）</span>
-			    		</div>
+			    		 
 		    			<div class="bottom clearfloat box-s">
 							<ul>
 								<li>
 									<p class="fl">缴费单位：</p>
-									<span>邻水县燃气有限公司</span>
+									<span id="unit"></span>
 								</li>
 								<li>
 									<p class="fl">缴费户号：</p>
-									<span>02015646</span>
+									<span id="account"></span>
 								</li>
 								<li>
 									<p class="fl">户名：</p>
-									<span>*嘟嘟</span>
+									<span id="accountName"></span>
 								</li>
 								<li>
 									<p class="fl">住址信息：</p>
-									<span>重庆市邻水县4</span>
+									<span id="address"></span>
+								</li>
+								<li>
+									<p class="fl">当前可用余额：</p>
+									<span id="balance" style="width: 50%!important;"></span>
+								</li>
+								<li>
+									<p class="fl">当前欠费金额：</p>
+									<span id="arrearage" style="width:50%;"></span>
 								</li>
 							</ul>
 						</div>
@@ -221,9 +223,9 @@
 					<div class="warpthree clearfloat line">
 				    	<div class="recharge">
 				    		<div class="czhi box-s">
-				    			<p>缴费单位</p>
+				    			<p>充值金额</p>
 				    			<div id="Cchoose">
-				    				<input type="text" id="" value="" placeholder="请输入充值现金" disabled="disabled"/>
+				    				<input type="number" id="chargeMoney" value="" placeholder="请输入充值现金"/>
 				    			</div>
 				    		</div>
 				    	</div>
@@ -236,19 +238,7 @@
 	</body>
 	<script type="text/javascript">
 		(function(){
-			function openview(obj){
-				var t = obj.top || 0,b = obj.bottom || 0;
-				mui.openWindow({
-					url:obj.view,
-				    styles:{
-				      top:t,//新页面顶部位置
-				      bottom:b
-				    },
-				    waiting:{
-				      autoShow:false,//自动显示等待框，默认为true
-				    }
-				})
-			}
+		 
 			var payRecord = document.getElementById('payRecord');
 			payRecord.addEventListener('tap', function(){
 				openview({
@@ -258,7 +248,58 @@
 			
 			mui.plusReady(function(){
 				var huhao = plus.webview.currentWebview().huhao;
-				 alert(huhao)
+				var itemId = plus.webview.currentWebview().itemId;
+				var unitName = plus.webview.currentWebview().unitName;
+				var accountName = plus.webview.currentWebview().accountName;
+				var address = plus.webview.currentWebview().address
+				var balance = plus.webview.currentWebview().balance;
+				var arrearage = plus.webview.currentWebview().arrearage
+				 alert(huhao+" "+itemId+" "+unitName+" "+balance+" "+arrearage+" "+address+" "+accountName);
+				 mui("#unit")[0].innerHTML = unitName;
+				 mui("#account")[0].innerHTML = huhao;
+				 mui("#accountName")[0].innerHTML =accountName;
+				 mui("#address")[0].innerHTML = address;
+				 mui("#arrearage")[0].innerHTML = parseFloat(arrearage).toFixed(2);
+				  mui("#balance")[0].innerHTML = parseFloat(balance).toFixed(2);
+				 mui("button")[0].onclick=function(){
+				 	var moneyAdd = mui("#chargeMoney")[0].value;
+				 	if(moneyAdd==''){
+				 		mui.toast("充值金额不能为空");
+				 		mui("#chargeMoney")[0].focus()
+				 	}else{
+				 		    var oldToken = plus.storage.getItem('oldToken');
+							var myuserid = plus.storage.getItem('userid');
+						 moneyAdd = parseFloat(moneyAdd).toFixed()
+							plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+							mui.ajax(serverUrl+'/api/qianmi/liferechargecreatebill',{
+								data:{itemId:itemId,itemNum:moneyAdd,rechargeAccount:huhao,customerName:'',customerAddress:'',billCycle:2,contractNo:7140150305384789,userid:myuserid},
+								dataType:'json',
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldToken},	 
+								success:function(data,type,xhr){
+									plus.nativeUI.closeWaiting()
+									alert(JSON.stringify(data));
+									if(data.errno==0){
+										  var orderCost = data.data.body.data.orderCost; 
+											var saleAmount = data.data.body.data.saleAmount;
+											var billId = data.data.body.data.billId;
+											var newOrderID = data.data.new_qianmi_order_id;
+											alert(orderCost+" "+saleAmount+" "+billId+" "+newOrderID);
+											  openview({
+														view:"../market/paysecond.html",
+														id:"paysecond",
+														extrasobj:{new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount}
+													})
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									//alert('响应失败  !');
+									plus.nativeUI.closeWaiting()
+								}
+							}); 
+				 	}
+				 }
 			})
 			
 		})();

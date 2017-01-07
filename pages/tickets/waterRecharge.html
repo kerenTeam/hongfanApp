@@ -13,8 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
 		<style type="text/css">
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
@@ -140,13 +139,16 @@
 			.mui-icon-arrowright{
 				color: #999 !important;
 			}
+			#Cchoose input{
+				font-size: 0.13rem;
+			}
 		</style>
 	</head>
 	<body class="farm">
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">新增缴费账户</h1>
-			<a href="javascript:;" class="fr">邻水县</a>
+			<a onclick="phoneRe()" class="fr">缴费记录</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<!--详情内容-->
@@ -163,7 +165,7 @@
 			    		<div class="czhi box-s">
 							<p>家庭</p>
 							<!--<input type="text" id="" value="" placeholder="" />-->
-							<select class="mui-btn mui-btn-block" style="width: 78%;padding: 0;height: 0.5rem;font-size: 0.14rem;">
+							<select id="select" class="mui-btn mui-btn-block" style="width: 78%;padding: 0;height: 0.5rem;font-size: 0.13rem;">
 								<option value="我家">我家</option>
 								<option value="父母">父母</option>
 								<option value="房东">房东</option>
@@ -176,8 +178,9 @@
 				    	<div class="recharge">
 				    		<div class="czhi box-s">
 				    			<p>缴费单位</p>
-				    			<div id="Cchoose">
-				    				<input type="text" id="" value="" placeholder="邻水县自来水公司" disabled="disabled"/>
+				    			<div id="Cchoose" onclick="unit()">
+				    				<input type="text" id="cgunit" value="重庆合川区自来水有限责任公司" disabled="disabled"/>
+				    				<span class="mui-icon mui-icon-arrowright"></span>
 				    			</div>
 				    		</div>
 				    	</div>	 
@@ -191,7 +194,7 @@
 				    	</div>	
 				    </div>
 					<div class="btw">
-						<p>户号为8-10位数字。支持邻水县主城区。</p>
+						<p>户号为8-10位数字。</p>
 					</div>
 					<div class="btw agree">
 						<p>同意<span class="textRed"> 《千米网自助缴费服务协议》</span></p>
@@ -206,24 +209,118 @@
 		
 		
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		(function(){
 			
-			//点击下一步跳转
+			
+		 //点击缴费单位跳转
+			window.unit = function(){
+				openview({
+					view:'rechargeList.html',
+					extrasobj:{typeCharge:'1'}
+				})
+			}
+			window.phoneRe = function(){
+				openview({
+					view:'record.html',
+					extrasobj:{typeC:2}
+				})
+			}
+				var itemid="6455900";
+			mui.plusReady(function(){ 
+				window.addEventListener('refresh', function(event){ 
+						var itemId = event.detail.itemId;
+						itemid = itemId;
+						var itemName = event.detail.itemName;
+						alert(itemName)
+						 document.getElementById("cgunit").value = itemName;
+					});	 
+					//点击下一步跳转
 			window.next = function(){
-				if(mui("#huhao")[0].value==''){
-					mui.toast("户号必填哦");
+				var selectobj = document.getElementById("select"); //定位id 
+				var index = selectobj.selectedIndex; // 选中索引 
+				var selecttext = selectobj.options[index].text; // 选中文本 
+				//alert(selecttext) 
+				var zz = /^\d{8,10}$/;
+				var hh = parseFloat(mui("#huhao")[0].value);
+				if(!zz.test(hh)){
+					mui.toast("户号为8-10位数字哦");
 					mui("#huhao")[0].focus();
 				}else{
-					openview({
-						view:'waterPay.html',
-						id:'waterPay',
-						extrasobj:{huhao:mui("#huhao")[0].value}
-					})
+					plus.nativeUI.showWaiting('正在查询机构',{width:'100px',height:'80px'});
+					var oldToken = plus.storage.getItem('oldToken');
+					var myuserid = plus.storage.getItem('userid');
+					mui.ajax(serverUrl+'/api/qianmi/watercoalitempropslist',{
+								data:{itemId:itemid},
+								dataType:'json',
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldToken},	 
+								success:function(data,type,xhr){
+									plus.nativeUI.closeWaiting()
+								//	alert(JSON.stringify(data));
+									if(data.errno==0){
+										
+										var projectId = data.data.item_props_list_response.cid;
+										//alert(projectId)
+										var unitId = data.data.item_props_list_response.itemProps.itemProp[4].vid
+										//alert(unitId)
+										var province = data.data.item_props_list_response.itemProps.itemProp[2].vname
+										//alert(province)
+										var city = data.data.item_props_list_response.itemProps.itemProp[3].vname
+										//alert(city)
+										var unitName = data.data.item_props_list_response.itemProps.itemProp[4].vname
+										//alert(unitName)
+										var cityId = data.data.item_props_list_response.itemProps.itemProp[3].vid
+										//alert(cityId)
+										var modeType = 2;
+										var modeId = data.data.item_props_list_response.itemProps.itemProp[1].vid
+										//alert(modeId);
+										mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
+											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId,supUserId:4},
+											dataType:'json',
+											type:'post',
+											timeout:10000,
+											headers:{"token":oldToken},	 
+											success:function(data,type,xhr){
+												plus.nativeUI.closeWaiting()
+												alert(JSON.stringify(data));
+												if(data.errno==0){
+													  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill || !data.data.water_coal_ubqs_response){
+													  	mui.toast("该户号尚未出账，请等出账后在查询")
+													  openview({
+																view:'waterPay.html',
+																id:'waterPay',
+																extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:20,arrearage:0.00,accountName:"xxx",address:"xxx街xxxx号xxxx"}
+															})
+													  }else{
+													  	openview({
+																view:'waterPay.html',
+																id:'waterPay',
+																extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:20,arrearage:0.00,accountName:"xxx",address:"xxx街xxxx号xxxx"}
+															})
+													  }
+												}
+											},
+											error:function(xhr,type,errorThrown){
+												//alert('响应失败  !');
+												plus.nativeUI.closeWaiting()
+											}
+										});   
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									//alert('响应失败  !');
+									plus.nativeUI.closeWaiting()
+								}
+							}); 
+					
+					 
 				}
 				
 			}
-		 
+			})
 		})();
 	</script>
 </html>

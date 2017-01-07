@@ -16,8 +16,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/one.css"/>
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		<style type="text/css">
 			.mui-bar-nav{
 				box-shadow: none;
@@ -36,37 +35,130 @@
 			.mui-search .mui-placeholder{
 				top: 10px;
 			}
+			.show_arrive_date{
+				display: none;
+			}
+			 
 		</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav ">
 		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
-		    <h1 class="mui-title">机构选择</h1>
+		    <h1 class="mui-title">缴费机构</h1>
 		    <a href="javascript:;" class="fr">邻水县</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main">
-				<div class="theSearch">
-					<div class="mui-input-row mui-search">
-					    <input type="search" class="mui-input-clear" placeholder="">
-					</div>
-				</div>
-				<ul class="boxs self-paytop">
-					<li id="show_arrive_date">
-						<a href="#" class="date">
-							<strong>邻水县燃气有限公司</strong>	
+				 
+				<ul class="boxs self-paytop"> 
+					<li class="show_arrive_date gg">
+						<a id="64396301" class="date">
+							<strong>重庆渝川燃气有限责任公司</strong>	
+						</a>
+					</li> 
+					<li class="show_arrive_date ww">
+						<a id="6434200" class="date">
+							<strong>重庆长寿区渝长自来水公司</strong>	
+						</a>
+					</li> 
+					<li class="show_arrive_date ww">
+						<a id="6455900" class="date">
+							<strong>重庆合川区自来水有限责任公司</strong>	
 						</a>
 					</li>
-					<li>
-						<a href="#">
-							<strong>邻水县天然气公司</strong>
+					<li class="show_arrive_date gg">
+						<a id="6490400" class="date">
+							<strong>重庆佳渝天燃气有限公司</strong>	
+						</a>
+					</li>
+					<li class="show_arrive_date ll">
+						<a id="6417300" class="date">
+							<strong>重庆市电力公司</strong>	
+						</a>
+					</li>
+					<li class="show_arrive_date ww">
+						<a id="6494500" class="date">
+							<strong>重庆市永川区侨立水务有限公司</strong>	
+						</a>
+					</li>
+					<li class="show_arrive_date ww">
+						<a id="6434100" class="date">
+							<strong>重庆市自来水厂</strong>	
+						</a>
+					</li>
+					<li class="show_arrive_date ww">
+						<a id="6415200" class="date">
+							<strong>重庆中法水务公司</strong>	
+						</a>
+					</li>
+					<li class="show_arrive_date ll">
+						<a id="64404001" class="date">
+							<strong>三峡电力</strong>	
 						</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 	</body>
-	
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var myuserid = plus.storage.getItem('userid'); 
+			var oldtoken = plus.storage.getItem('oldToken');
+			var typeCharge = plus.webview.currentWebview().typeCharge;
+			alert(typeCharge);
+			if(typeCharge==1){ 
+				 $(".ww").css("display","block");
+				 mui("#main").on('tap','.show_arrive_date',function(){ 
+				  	var itemId = $(this).find("a").attr("id");
+				  	var itemName = $(this).find("strong").html();
+				  	alert(itemId+" "+itemName)
+	            	 
+	            	var list = plus.webview.getWebviewById('waterRecharge');
+	            	alert(list)
+	            	mui.fire(list, 'refresh', {
+							itemId: itemId,
+							itemName:itemName
+						});
+					mui.back();
+	            })
+			}
+			if(typeCharge==2){
+				$(".ll").css("display","block");
+				 mui("#main").on('tap','.show_arrive_date',function(){ 
+				  	var itemId = $(this).find("a").attr("id");
+				  	var itemName = $(this).find("strong").html();
+				  	alert(itemId+" "+itemName)
+	            	 
+	            	var list = plus.webview.getWebviewById('eleRecharge');
+	            	alert(list)
+	            	mui.fire(list, 'refresh', {
+							itemId: itemId,
+							itemName:itemName
+						});
+					mui.back();
+	            })
+			}
+			if(typeCharge==3){
+				$(".gg").css("display","block");
+				 mui("#main").on('tap','.show_arrive_date',function(){ 
+				  	var itemId = $(this).find("a").attr("id");
+				  	var itemName = $(this).find("strong").html();
+				  	alert(itemId+" "+itemName)
+	            	 
+	            	var list = plus.webview.getWebviewById('gasRecharge');
+	            	alert(list)
+	            	mui.fire(list, 'refresh', {
+							itemId: itemId,
+							itemName:itemName
+						});
+					mui.back();
+	            })
+			}
+			
+		})
+	</script>
 </html>

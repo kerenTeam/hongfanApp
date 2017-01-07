@@ -14,9 +14,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script type="text/javascript" src="../../js/swiper.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		
 		<style type="text/css">
 			/*banner底部导航*/
@@ -92,6 +90,9 @@
 			.icon-water{
 				background-color: #00A0E9;
 			}
+			.icon-ele{
+				background-color: #f77565;
+			}
 			.icon img{
 				margin: 8px;
 				width: 25px;
@@ -109,7 +110,7 @@
 			}
 			.clearfloat{
 				border-bottom: 1px solid #eee;
-				margin-bottom: 20px;
+				margin-bottom: 5px;
 			}
 			.farm, .farmtc{
 				background-color: #fafafa;
@@ -177,18 +178,37 @@
 			
 		</style>
 	</head>
-	<body>
+	<body class="farm">
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">缴费账单</h1>
+		    <h1 class="mui-title">缴费记录</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<!--详情内容-->
 		<div id="main">
 			<div class="deal">
-				<div class="farm">
+				<div>
 					<div class="warpthree clearfloat line">
-				    	<div class="recharge">
+						<div id="rechargeList"></div>
+						<script type="text/html" id="rechargeTpl">
+								<%for(var t=0;t<list.length;t++){%> 
+									<%if(list[t].state == 1){%>
+										<div class="recharge clearfloat" onclick="recordDe('<%=list[t].id%>')">
+								    		<div class="czhi box-s">
+								    			<p style="font-size: 0.12rem;"><%=list[t].data.data.orderTime%></p> 
+													<div class="icon-water icon">
+														<img src="../../img/theList/pay.png"/>
+													</div>
+													<div class="recordDetail">
+														<p class="recordBig">-<%=list[t].data.data.orderCost%></p>
+														<p class="recordTiny">缴费-户号 <%=list[t].data.data.rechargeAccount%></p>
+													</div> 
+								    		</div>
+								    	</div>
+								    	<%}%> 
+								 <%}%>
+						</script>
+				    	<!--<div class="recharge">
 				    		<div class="czhi box-s">
 				    			<p>10-02</p>
 				    			<div id="Cchoose">
@@ -206,6 +226,20 @@
 				    		<div class="czhi box-s">
 				    			<p>10-02</p>
 				    			<div id="Cchoose">
+									<div class="icon-ele icon">
+										<img src="../../img/tickets/eleR.png"/>
+									</div>
+									<div class="recordDetail">
+										<p class="recordBig">-20.00</p>
+										<p class="recordTiny">电费-缴费号020125423</p>
+									</div>
+				    			</div>
+				    		</div>
+				    	</div>
+				    	<div class="recharge">
+				    		<div class="czhi box-s">
+				    			<p>10-02</p>
+				    			<div id="Cchoose">
 									<div class="icon-water icon">
 										<img src="../../img/theList/316. Water.png"/>
 									</div>
@@ -215,33 +249,63 @@
 									</div>
 				    			</div>
 				    		</div>
-				    	</div>	
+				    	</div>	-->
 				   </div>
 				</div>
 			</div>
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+	function recordDe(id){
+			alert(id)
+			openview({
+				view:'phone-record-de.html',
+				extrasobj:{qianmiOrderID:id}
+			})
+		}
 		(function(){
-			function openview(obj){
-				var t = obj.top || 0,b = obj.bottom || 0;
-				mui.openWindow({
-					url:obj.view,
-				    styles:{
-				      top:t,//新页面顶部位置
-				      bottom:b
-				    },
-				    waiting:{
-				      autoShow:false,//自动显示等待框，默认为true
-				    }
-				})
-			}
-			var Cchoose = document.getElementById('Cchoose');
-			Cchoose.addEventListener('tap', function(){
-				openview({
-					view:'rechargeList.html',
-				})
-			});
+			 
+			 mui.plusReady(function(){
+				var oldToken = plus.storage.getItem('oldToken');
+				var myuserid = plus.storage.getItem('userid');
+			 
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				mui.ajax(serverUrl+'/api/qianmi/billorder',{
+					data:{userid:myuserid,type:2},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						plus.nativeUI.closeWaiting()
+						alert(JSON.stringify(data));
+						if(data.errno==0){
+							 if(data.data.length!=0){ 
+							 	var rcObj = {};
+							 	for(var t=0;t<data.data.length;t++){ 
+							 		if(data.data[t].state == 1){
+							 			// alert(eval("("+data.data[0].data+")"));
+								 	 	  data.data[t].data = eval("("+data.data[t].data+")");
+								 	 	  data.data[t].data.data.orderCost = parseFloat(data.data[t].data.data.orderCost).toFixed(2);
+								 	 	  data.data[t].data.data.saleAmount = parseFloat(data.data[t].data.data.saleAmount).toFixed(2);
+								 	 	  data.data[t].data.data.orderTime = data.data[t].data.data.orderTime.substring(0,10);
+							 		}
+							 	
+							 	}  
+							 	rcObj.list = data.data; 
+							 	mui("#rechargeList")[0].innerHTML = template("rechargeTpl",rcObj);
+							 }else{
+							 	mui("#rechargeList")[0].innerHTML = '<img src="../../img/tickets/noorder.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">没有记录</span>';
+							 }
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//alert('响应失败  !');
+					}
+				}); 
+			})
 		})();
 	</script>
 </html>

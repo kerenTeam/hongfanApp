@@ -128,7 +128,7 @@
 				left: 0;
 				width: 100%;
 			}
-			.jinengxueyuan{margin-bottom: 30px;}
+			.jinengxueyuan{margin-bottom: 30px;margin-top: 10px;}
 			.mui-table-view.mui-grid-view{padding: 0 7px 10px 0;}
 			.yigong .mui-table-view-cell{padding: 5px 0 0 6px!important;}  
 			.sy_title{border: none;}
@@ -154,21 +154,21 @@
 							<div class="mui-slider-group mui-slider-loop">
 								<!--支持循环，需要重复图片节点-->
 								<div class="mui-slider-item">
-									<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
+									<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>','<%=bannerData[bannerData.length-1].name%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
 										<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
 									</a>
 								</div>
 								<% for(var i=0;i<bannerData.length;i++){ %>
 					
 								<div class="mui-slider-item">
-									<a onclick="bannerGo('<%=bannerData[i].url%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
+									<a onclick="bannerGo('<%=bannerData[i].url%>','<%=bannerData[i].name%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
 										<img src="<%=bannerData[i].bannerPic%>" />
 									</a>
 								</div>
 								<% } %>
 								<!--支持循环，需要重复图片节点-->
 								<div class="mui-slider-item mui-slider-item-duplicate">
-									<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
+									<a onclick="bannerGo('<%=bannerData[0].url%>','<%=bannerData[0].name%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
 										<img src="<%=bannerData[0].bannerPic%>" />
 									</a>
 								</div>
@@ -199,10 +199,10 @@
 					    </ul>   
 						<!--主要条目项板块结束 -->	
 						<!--公益项目开始 -->	
-						<div class="jinengxueyuan">
-							<div class="sy_title" style="text-align: center;padding-bottom: 0;">
+						<div class="jinengxueyuan" style="background-color: #fff;">
+							<div class="sy_title" style="text-align: center;padding-bottom: 0;border-bottom: 1px solid #EFEFEF;margin: 0 10px;">
 								<img style="width: 20px;margin-top: -3px;margin-right: 2px;" src="../../img/aixing.svg"/>
-								<span>义工活动</span>
+								<span style="color: #666;">义工活动</span>
 							</div>
 							<div id="ygData"></div>
 							<script type="text/html" id="ygTpl">
@@ -219,7 +219,7 @@
 												</small>
 											</a>
 										</li> 
-										<%}%>  
+									<%}%>  
 								</ul>
 							</script>
 							
@@ -315,11 +315,12 @@
 			}
 		});
 		//banner跳转
-		window.bannerGo=function(url){
-//						  	alert(url)
+		window.bannerGo=function(url,name){ 
 		  	openview({
-						 	view:url,
-						 })
+			 	view:"../bannerTpl.html",
+			 	id:"bannerTpl",
+			 	extrasobj:{bannerUrl:url,bannerName:name}
+			 })
 		  }
 		
 		window.goInfo = function(id){
