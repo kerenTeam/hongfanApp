@@ -198,12 +198,13 @@
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						if(data.data[0].avatar){ //显示头像
-							mui('#preview')[0].innerHTML = '<img id="imghead" src="'+pictarget+data.data[0].avatar+'" width="50" height="50">';
+							var imgurl = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+							mui('#preview')[0].innerHTML = '<img id="imghead" src="'+imgurl+'" width="50" height="50">';
 						}
 						//显示昵称
 						if(data.data[0].nickname != ' '){ 
 							if(data.data[0].nickname.indexOf('null') == -1){
-								mui('#mynickname')[0].value =data.data[0].nickname;
+								mui('#mynickname')[0].value =data.data[0].nickname; 
 							}
 						}
 						//显示性别
@@ -233,7 +234,6 @@
 		var filepic = {};
 		//保存数据
 		mui('#Preservation')[0].addEventListener('tap',function(){ 
-			alert(1); 
 			plus.nativeUI.showWaiting('保存中 ...',{width:'100px',height:'80px'});
 			var mynickname = mui('#mynickname')[0].value || null;
 			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;

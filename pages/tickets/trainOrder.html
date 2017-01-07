@@ -380,13 +380,10 @@
 		<!--footerone end-->
 	</body>
 	<script type="text/javascript">
-		function addPerson(){//添加联系人
-			openview({ 
-				view:'trainaddPerson.html'
-			})
-		}
+		
 		mui.plusReady(function(){
 			var settlePrice;//票价
+			var bookingstr = '';
 			var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 			//获取上页面数据,并显示
 			var details1 = plus.webview.currentWebview().details; 
@@ -402,10 +399,16 @@
 			mui('#Edate')[0].innerHTML = details1.Edate + details1.Eweek;
 			
 			document.addEventListener('refreshPerson', function(obj) {//从添加乘机人获取的详情
-				var newName=obj.detail.newName;
+				var newName = obj.detail.newName;
 				var idNo=obj.detail.idNo;
 				var phonenum=obj.detail.phonenum;
 				var persons = document.getElementById('persons');
+				//组乘客信息
+				if(!bookingstr){//如果为空
+					bookingstr += newName +'!'+ phonenum +'!'+ idNo +'!'+ details1.type;
+				}else{
+					bookingstr += '@@' + newName +'!'+ phonenum +'!'+ idNo +'!'+ details1.type;
+				}
 				persons.insertAdjacentHTML('beforebegin', '<dd class="goodsItem" id="persons"><a class="react mui-row aPerson"><div class="mui-col-sm-1 mui-col-xs-1"><img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/></div><div class="mui-col-sm-11 mui-col-xs-11"><p class="black">'+newName+'</p><p class="tiny black">身份证&nbsp;'+idNo+'</p></div></a></dd>'); 
 				//重新计算人数和价格
 				var acountP = $('.aPerson').length;
@@ -435,12 +438,12 @@
 				var Orderpeople = mui('#Orderpeople')[0].value;
 				var Orderphone = mui('#Orderphone')[0].value;
 				
-				if(acountP || acountP == undefined){
+				if(!acountP || acountP == undefined){
 					mui.toast('至少添加一位乘客');
-				}else if(Orderpeople){
+				}else if(!Orderpeople){
 					mui.toast('请输入订票人姓名');
 					mui('#Orderpeople')[0].focus();
-				}else if(reg_phone.test(Orderphone)){
+				}else if(!reg_phone.test(Orderphone)){
 					mui.toast('请输入正确的手机号');
 					mui('#Orderphone')[0].focus();
 				}else{//开始支付
@@ -451,20 +454,22 @@
 						headers:{"token":oldToken},	              				
 						success:function(data,type,xhr){
 							console.log(data);
-							console.log('预定返回'+JSON.stringify(data));
+							console.log('获取标号'+JSON.stringify(data));
 							if(data.data.train_items_list_response.items.item[0].itemId){
-								var gradenum = data.data.train_items_list_response.items.item[0].itemId;
-								mui.ajax(serverUrl+'/api/qianmi/trainordercreate',{
+								var gradenum = data.data.train_items_list_response.items.item[0].itemId;//标号
+								alert(bookingstr);
+								mui.ajax(serverUrl+'/api/qianmi/trainordercreate',{//开始预定
 									data:{
-										from:'广州',
-										to:'成都',
-										date:'2017-01-04',
-										trainNumber:'K827',
-										contactName:'张三丰',
-										contactTel:'17781694508',
-										passagers:"王大锤,17781694509,513701199405236539,无座", 
+										from:details1.from,
+										to:details1.End,
+										date:details1.timeall,
+										trainNumber:details1.name,
+										itemIdInsur:'9200203',//保险编号
+										contactName:Orderpeople,
+										contactTel:Orderphone,
+										passagers:bookingstr,
 										itemIdTrain:gradenum,
-										startTime:'16:42'
+										startTime:details1.Stime
 									},
 									type:'post',
 									timeout:10000,
@@ -491,14 +496,14 @@
 							mui.toast('预定失败,请重试'); 
 						}
 					});
-					
-					
-					
-					
 				}
-				
 			}
 			
-		});
+		});//ready
+		function addPerson(){//添加联系人
+			openview({ 
+				view:'trainaddPerson.html'
+			})
+		}
 	</script>
 </html>

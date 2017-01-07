@@ -125,8 +125,8 @@
 			<div class="notice">
 				<div class="tab-hd tab-hdtwo">
 					<ul class="tab-nav">
-					  <li class="active" data-statusId="-1">飞机</li>
-					  <li data-statusId="0">火车</li>
+					  <li class="active" id="planebtn" data-statusId="-1">飞机</li>
+					  <li data-statusId="0" id="trainbtn">火车</li>
 					  <!--<li data-statusId="1">代支付</li>-->
 					  <!--<li data-statusId="2">退款单</li>-->
 					</ul>
@@ -209,10 +209,8 @@
 	</script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
-//			window.addEventListener('refresh',function(event){
-//				load();
-//			})
 			var oldToken = plus.storage.getItem('oldToken'); 
+<<<<<<< HEAD
 			var userid = plus.storage.getItem('userid'); 
 			//加载订单 
 //			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
@@ -265,6 +263,47 @@
 //				}
 //			});
 //			}
+=======
+			var myuserid = plus.storage.getItem('userid'); 
+			loadplane();//默认加载飞机
+			mui('#planebtn')[0].onclick = function(){//点击加载飞机
+				if(this.className != 'active'){
+					mui('#planebtn')[0].className = 'active';
+					mui('#trainbtn')[0].className = '';
+				}
+				loadplane();
+			}
+			mui('#trainbtn')[0].onclick = function(){//点击加载火车
+				if(this.className != 'active'){
+					mui('#trainbtn')[0].className = 'active';
+					mui('#planebtn')[0].className = '';
+				}
+				loadtrain();
+			}
+			function loadtrain(){//加载火车列表方法
+				alert('加载火车列表');
+			}
+			function loadplane(){//加载飞机列表方法
+				alert('加载飞机列表');
+				plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+				mui('#noOrder')[0].style.display = 'none';
+				mui.ajax(serverUrl+'/api/qianmi/airorderslist',{
+					data:{tradeNo:'订单主编号',startTime:'',endTime:'',sort:'',supUserId:'',pageNo:'',pageSize:'',orderStatus:''},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){ 
+						plus.nativeUI.closeWaiting(); 
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting()
+						mui.toast('加载失败,请重试 ');
+					}
+				});
+			}
+
+>>>>>>> 2cbfec026416b376a1506d2a88649d4b0b655a94
 		})
 	</script>
 </html>
