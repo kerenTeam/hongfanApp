@@ -324,7 +324,14 @@
 										<li class="sy_recmd_list">
 											<div class="box">
 												<div class="pub_img">
-													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
+													<%if(recommendData[i].storeid == 0){%>
+													 
+															<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
+														 
+														<%}else{%>
+										            	<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=myUrl%><%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
+	
+														<%}%>
 												</div>
 												<div class="pub_wz">
 													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
@@ -355,12 +362,12 @@
 		<script type="text/html" id="banner-detail">
 			<div class="mui-slider-group mui-slider-loop">
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[bannerLi.length-1].url%>','<%=bannerLi[bannerLi.length-1].name%>')"><img src="<%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[bannerLi.length-1].url%>','<%=bannerLi[bannerLi.length-1].name%>')"><img src="<%=url%><%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
 				<% for(var i=0;i<bannerLi.length;i++){ %> 
-			    	<div class="mui-slider-item"><a onclick="bannerGo('<%=bannerLi[i].url%>','<%=bannerLi[i].name%>')"><img src="<%=bannerLi[i].bannerPic %>" /></a></div>
+			    	<div class="mui-slider-item"><a onclick="bannerGo('<%=bannerLi[i].url%>','<%=bannerLi[i].name%>')"><img src="<%=url%><%=bannerLi[i].bannerPic %>" /></a></div>
 			     <% } %>
 			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[0].url%>','<%=bannerLi[0].name%>')"><img src="<%= bannerLi[0].bannerPic %>" /></a></div>
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[0].url%>','<%=bannerLi[0].name%>')"><img src="<%=url%><%= bannerLi[0].bannerPic %>" /></a></div>
 			</div>
 			<div class="mui-slider-indicator">
 				<div class="mui-indicator mui-active"></div>
@@ -374,14 +381,14 @@
 		<!--广告-->
 		<script type="text/html" id="ad-detail">
 			<div class="mui-col-xs-6 rowpad">
-				 <img src="<%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/>
+				 <img src="<%=myUrl%><%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/>
 			</div>
 			<div class="mui-col-xs-6 rowpad">
 				<div class="rpad clearfloat"> 
-						 <img src="<%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/> 
+						 <img src="<%=myUrl%><%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/> 
 				</div>
 				<div class="rpad clearfloat"> 
-						 <img src="<%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/> 
+						 <img src="<%=myUrl%><%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/> 
 				</div>
 			</div> 
 		</script>
@@ -546,6 +553,7 @@
 //						alert(JSON.stringify(data.data)); 
 						var adObj = {};
 						adObj.adLi = data.data;
+						adObj.myUrl = serverimgUrl;
 						var html = template('ad-detail',adObj);
 						document.getElementById('ad').innerHTML = html;
 					},
@@ -619,7 +627,7 @@
 										}
 									});
 								}else{
-									mui("#upload")[0].innerHTML = "没有数据了";
+									mui("#upload")[0].innerHTML = "到底了";
 								}
 								//加载下一部分结束
 								}

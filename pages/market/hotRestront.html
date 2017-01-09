@@ -167,24 +167,28 @@
 		
 		
 		<div id="storeItem">
-			
-		</div>
-		
-		<script type="text/html" id="storeItem-detail">
 			<div class="msTOP">
 				<img src="../../img/market/dr.jpeg" class="responsive" alt="" />
 				
 			</div>
 			<div class="brtit">
-				<div><%=recommentLi.active_store_goods[1].titile%></div>
-				<small>hi集达人 | <%=recommentLi.active_store_goods[1].create_time%></small>
+				<div>开吃吧！美好的一天从吃开始</div>
+				<small>hi集达人 | 2017年01月07日</small>
 			</div>
 			<article>
 				<div class="trangle"></div>
-				<p><%=recommentLi.active_store_goods[1].content%></p>
+				<p>相信很多吃货们，每天早上都会花大量时间纠结xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,下面这些都会hiji
+				的达人们热情推荐的美食好店！</p>
 			</article>
+		</div>
+		
+		<script type="text/html" id="storeItem-detail">
 				<div>
-			<% for(var i=0;i<recommentLi.shopactivestoreorgoods[0][1].length;i++){ %>
+			<% for(var i=0;i<recommentLi.length;i++){ %>
 				<div class="mui-card drs">
 					<div class="imgItem">
 					<%if(!recommentLi[i].pic){%>
@@ -220,62 +224,63 @@
 			var oldToken = plus.storage.getItem('oldToken');
 
 			console.log(oldToken);
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
-			mui.ajax(serverUrl +'/api/mall/shopactivestoreorgoods',{
-				data:{type:2,isVenue:''},//以及业态
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			var currentPage =1, numsPerPage=4;
+			
+			
+			mui.ajax(serverUrl +'/api/mall/storelist',{
+				data:{currentPage:currentPage,numsPerPage:numsPerPage,commercial_type_name:'',subcommercial_type_name:'',store_distinction:4},//以及业态
 				dataType:'json',
 				type:'post',
 				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					plus.nativeUI.closeWaiting();    
-					console.log(data.data.shopactivestoreorgoods)  
-//					data.data.active_store_goods[1].create_time=data.data.active_store_goods[1].create_time.substring(0,10);
-// console.log(JSON.stringify( data.data.shopactivestoreorgoods[0]) )
-//					var recommentObj = {};  
-//					recommentObj.myurl = serverimgUrl;
-//					recommentObj.recommentLi = data.data;
-////					recommentObj.recommentImg = img;
-//					var html2 = template('storeItem-detail',recommentObj);
-//					document.getElementById('storeItem').innerHTML+= html2;
-//					mui("#upload")[0].innerHTML = "加载更多";
-//		                    	//上滑加载
-//		                   $(window).scroll(function(){
-//						　　var scrollTop = $(this).scrollTop();
-//						　　var scrollHeight = $(document).height();
-//						　　var windowHeight = $(this).height();
-//						　　if(scrollTop + windowHeight == scrollHeight){ 
-//							var nowpage = ++currentPage;
-//							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
-//								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-//								console.log('可以请求数据');
-//									mui.ajax(serverUrl +'/api/mall/storelist',{
-//										data:{currentPage:currentPage,numsPerPage:numsPerPage,commercial_type_name:'',subcommercial_type_name:'',store_distinction:3},
-//										dataType:'json',
-//										type:'post',
-//										timeout:1000,
-//										headers:{"token":oldToken},	 
-//										success:function(data,type,xhr){
-//											plus.nativeUI.closeWaiting();
-//											var recommentObj = {};  
-//											recommentObj.myurl = serverimgUrl;
-//											recommentObj.recommentLi = data.data.data;
-//						//					recommentObj.recommentImg = img;
-//											var html2 = template('storeItem-detail',recommentObj);
-//											document.getElementById('storeItem').innerHTML+= html2;
-//											 
-//										},
-//										error:function(xhr,type,errorThrown){
-//												--currentPage;//请求失败,继续请求当前页
-//												mui.toast("当前网络不好请重试");
-//											}
-//									});
-//							}else{
-//								mui("#upload")[0].innerHTML = "到底了";
-//							}
-//							//加载下一部分结束
-//							　　}
-//						});
+					alert(JSON.stringify(data)) 
+					var recommentObj = {};  
+					recommentObj.myurl = serverimgUrl;
+					recommentObj.recommentLi = data.data.data;
+//					recommentObj.recommentImg = img;
+					var html2 = template('storeItem-detail',recommentObj);
+					document.getElementById('storeItem').innerHTML+= html2;
+					mui("#upload")[0].innerHTML = "加载更多";
+		                    	//上滑加载
+		                   $(window).scroll(function(){
+						　　var scrollTop = $(this).scrollTop();
+						　　var scrollHeight = $(document).height();
+						　　var windowHeight = $(this).height();
+						　　if(scrollTop + windowHeight == scrollHeight){
+							var nowpage = ++currentPage;
+							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+								console.log('可以请求数据');
+									mui.ajax(serverUrl +'/api/mall/storelist',{
+										data:{currentPage:currentPage,numsPerPage:numsPerPage,commercial_type_name:'',subcommercial_type_name:'',store_distinction:4},
+										dataType:'json',
+										type:'post',
+										timeout:1000,
+										headers:{"token":oldToken},	 
+										success:function(data,type,xhr){
+											plus.nativeUI.closeWaiting();
+											var recommentObj = {};  
+											recommentObj.myurl = serverimgUrl;
+											recommentObj.recommentLi = data.data.data;
+						//					recommentObj.recommentImg = img;
+											var html2 = template('storeItem-detail',recommentObj);
+											document.getElementById('storeItem').innerHTML+= html2;
+											 
+										},
+										error:function(xhr,type,errorThrown){
+												--currentPage;//请求失败,继续请求当前页
+												mui.toast("当前网络不好请重试");
+											}
+									});
+							}else{
+								mui("#upload")[0].innerHTML = "到底了";
+							}
+							//加载下一部分结束
+							　　}
+						});
 					//点击进入详情
 					window.openStore = function(store_id){
 //						alert(store_id);
@@ -292,8 +297,6 @@
 					mui.toast("网络不好请重试")
 				}
 			});
-			
-			
 			
 		})();
 	</script>
