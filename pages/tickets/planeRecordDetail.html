@@ -191,6 +191,7 @@
 				font-size: 12px;
 				float: right;
 				width: 25%;
+				margin-left: 10px;
 			}
 			.goPay{
 				/*color: #999;*/
@@ -205,21 +206,6 @@
 			dl.list dt, dl.list dd{
 				border-bottom: 1px solid #EFEFF4;
 			}
-			/*.delete{
-				width: 90%;
-				margin-top: 15px;
-			}*/
-			/*header样式*/
-			/*.mui-bar-nav {
-				background-color: #FFF !important;
-				border-bottom: 1px solid #EFEFF4;
-			}
-			.hasManyCitytwo .header-tit{
-				color: #333;
-			}
-			.hasManyCitytwo .fanhui{
-				color: #333;
-			}*/
 			.colRight{
 				text-align: right;
 			}
@@ -264,6 +250,13 @@
 			#stateName{
 				color: #d72d22 !important;
 			}
+			.last{
+				margin: 10px 15px;
+				padding-bottom: 20px;
+			}
+			.last p{
+				line-height: 20px;
+			}
 		</style>
 	</head>
 	<body>
@@ -291,29 +284,23 @@
 						<div class="mui-col-sm-9 mui-col-xs-9">
 							<p class="black"><span id="startTime1"></span>&nbsp;<span id="weekday"></span>&nbsp;<span id="title"></span></p>
 				        </div>
-				        <div class="mui-col-sm-3 mui-col-xs-3">
-				        	
-				        </div>
+				        <div class="mui-col-sm-3 mui-col-xs-3"></div>
 					</div>
 					<div class="react mui-row" style="margin-top: 10px;">
 						<div class="mui-col-sm-3 mui-col-xs-3">
 							<p class="black title"><span id="startTime"></span></p>
 							<p class="tiny red1"><span class="mui-icon mui-icon-location tiny"></span><span id="startStation"></span></p>
-				       		<p class="tiny">
+				        	<p class="tiny">
 								<span id="startTime2"></span>
 							</p>
 						</div>
 				         <div class="mui-col-sm-6 mui-col-xs-6">
 				        	<img src="../../img/tickets/line.png"/ class="theline">
-				        	
 				        </div>
 				        <div class="mui-col-sm-3 mui-col-xs-3 colRight">
 				        	<p class="black title"><span id="recevieTime"></span></p>
-							<p class="tiny red1">
-								<span class="mui-icon mui-icon-location tiny"></span>
-								<span id="recevieStation"></span>
-							</p>
-							<p class="tiny">
+							<p class="tiny red1"><span class="mui-icon mui-icon-location tiny"></span><span id="recevieStation"></span></p>
+				        	<p class="tiny">
 								<span id="recevieTime2"></span>
 							</p>
 				        </div>
@@ -326,6 +313,7 @@
 					<a class="react mui-row">
 			        	<button type="button" class="mui-btn mui-btn-blue goPay" onclick="goPay()">去支付</button>
 			        	<button class="addMan" onclick="cancelPlane()">取消订单</button>
+			        	<button class="addMan goReturn" onclick="returnPlane()">退票</button>
 					</a>
 				</dd>
 			</dl>
@@ -359,6 +347,16 @@
 					</a>
 				</dd>
 			</dl>
+			<dl class="list last">
+				<p><span class="red1">*</span>温馨提示</p>
+				<p>1.机票相关业务处理时间为8:00-22:00。</p>
+				<p>2.机票业务不做改签处理</p>
+				<p>3.机票支持在线申请退废票和自愿退票，非自愿退票请根据平台规则联系客服处理。</p>
+				<p>4.出票当日提交"退废票"，具体以航司规定为准。</p>
+				<p>5.请仔细核对用户身份证号以及姓名，以免造成不必要的损失。</p>
+				<p>6.行程单(报销凭证)机场提供打印服务。</p>
+				<p>7.目前不支持飞机票保险货源。</p>
+			</dl>
 			<script type="text/html" id="orderList-detail">
 				<% for(var i=0;i<orderList.length;i++){ %>
 					<a class="react mui-row react2 order">
@@ -379,7 +377,7 @@
 							</div>	
 						</div>
 						<div class="mui-col-sm-9 mui-col-xs-9">
-							<p class="black ">票号：<%= orderList[i].ticketNo %></p>
+							<p class="black ">订单自编号：<%= orderList[i].orderNo %></p>
 						</div>
 						<div class="mui-col-sm-3 mui-col-xs-3">
 							
@@ -390,102 +388,147 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-		function returnPlane(){
-			openview({ 
-				view:'planeReturn.html'
-			})
-		}
-		
-	</script>
-	<script type="text/javascript">
 		var tradeNo;
+		var orderNos=[];
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken');
+			tradeNo = plus.webview.currentWebview().tradeNo; 
+//			alert(tradeNo);
 			console.log(oldToken);
-//			var tradeNo = plus.webview.currentWebview().tradeNo;
-			var planeOrder = plus.webview.currentWebview().planeOrder;
-//			alert(JSON.stringify(planeOrder.ticketOrders.ticketOrder));
-			
-			//将数据铺入
-			mui('#tradeNo')[0].innerHTML=planeOrder.tradeNo;
-			tradeNo = planeOrder.tradeNo;
-			console.log(tradeNo);
-			mui('#title')[0].innerHTML=planeOrder.title;
-			mui('#orderNo')[0].innerHTML=planeOrder.ticketOrders.ticketOrder.length;
-			
-			//订单状态
-			if(planeOrder.billState == 0){
-				mui('#stateName')[0].innerHTML="待支付";
-			}else if(planeOrder.state == 2 || !planeOrder.billState == 0){
-				mui('#stateName')[0].innerHTML="预定中";
-				mui('.goPay')[0].remove();
-			}else{
-				mui('#stateName')[0].innerHTML=planeOrder.stateName;
-				mui('.addMan')[0].remove();
-				mui('.goPay')[0].remove();
-			}
-			mui('#trainNo')[0].innerHTML=planeOrder.trainNo;
-			mui('#contactTel')[0].innerHTML=planeOrder.contactTel;
-			
-			mui('#startStation')[0].innerHTML=planeOrder.startStation;
-			mui('#recevieStation')[0].innerHTML=planeOrder.recevieStation;
-			mui('#startTime')[0].innerHTML=planeOrder.startTime.substring(11);
-			mui('#startTime2')[0].innerHTML=planeOrder.startTime.substring(11,planeOrder.startTime.toString().Length-11);
-			mui('#recevieTime2')[0].innerHTML=planeOrder.recevieTime.substring(11,planeOrder.startTime.toString().Length-11);
-			//修改星期日期时间
-			var dateTime = planeOrder.startTime.replace(/\-/g,'/');//将获取的日期如2017-01-01改为2017/01/01
-			var date = new Date(dateTime).getDay();//获取具体周几
-			var weekday=new Array(7);
-				weekday[1]="周一";
-				weekday[2]="周二";
-				weekday[3]="周三";
-				weekday[4]="周四";
-				weekday[5]="周五";
-				weekday[6]="周六";
-				weekday[7]="周日";
-			document.getElementById('weekday').innerHTML = weekday[date];
-			//修改星期日期时间结束
-			mui('#startTime1')[0].innerHTML=planeOrder.startTime.substring(11,planeOrder.startTime.toString().Length-11);
-			mui('#recevieTime')[0].innerHTML=planeOrder.recevieTime.substring(11);
-			mui('#totalPayCash')[0].innerHTML=planeOrder.totalPayCash;
-//			mui('#totalOtherFee')[0].innerHTML=planeOrder.totalOtherFee;
-			
-			//乘机人信息
-			var orderObj = {};
-			orderObj.orderList = planeOrder.ticketOrders.ticketOrder;
-			var html = template('orderList-detail',orderObj);
-			document.getElementById('orderList').innerHTML = html;
-			
-			//点击取消订单
-			window.cancelPlane = function(){
-				mui.confirm('确认取消该订单？','',['取消','确认'],function (e) {
-					if(e.index == 1) { 
-						mui.ajax(serverUrl +'/api/qianmi/airordercancel',{
-							data:{tradeNo:tradeNo},//订单主编号
-							dataType:'json',
-							type:'post',
-							timeout:15000,
-							headers:{token:oldToken},	 
-							success:function(data,type,xhr){
-								alert(JSON.stringify(data));
-								if(data.data.air_order_cancel_response.result==1){
-									mui.toast("取消订单成功！");
-									
-								}else{
-									mui.toast("取消订单失败！")
-								}
-								plus.nativeUI.closeWaiting();
-							},
-							error:function(xhr,type,errorThrown){
-								console.log('响应失败  !');
-							}
-						});
+			mui.ajax(serverUrl +'/api/qianmi/airorderdetail',{
+				data:{tradeNo:tradeNo},//订单主编号
+				dataType:'json',
+				type:'post',
+				timeout:15000,
+				headers:{token:oldToken},	 
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data));
+					var planeOrder = data.data.air_order_detail_response.ticketTrade;
+					//将数据铺入
+					mui('#tradeNo')[0].innerHTML=planeOrder.tradeNo;
+					tradeNo = planeOrder.tradeNo;
+					console.log(tradeNo);
+					mui('#title')[0].innerHTML=planeOrder.title;
+					mui('#orderNo')[0].innerHTML=planeOrder.ticketOrders.ticketOrder.length;
+					planeOrder.state =1;
+					planeOrder.billState =1
+					//订单状态
+					if(planeOrder.billState == 0){//待支付
+						mui('#stateName')[0].innerHTML="待支付";
+						mui('.goReturn')[0].remove();
+					}else if(planeOrder.state == 2 && !planeOrder.billState == 0){
+						mui('#stateName')[0].innerHTML="预定中";//预定中
+						mui('.goPay')[0].remove();
+						mui('.goReturn')[0].remove();
+					}else if(planeOrder.state == 1 && planeOrder.billState == 1){
+						alert("可退票");
+						mui('#stateName')[0].innerHTML=planeOrder.stateName;//可退票
+						mui('.goPay')[0].remove();
+						mui('.addMan')[0].remove();
+					}else{
+						mui('#stateName')[0].innerHTML=planeOrder.stateName;
+						mui('.addMan')[0].remove();
+						mui('.goPay')[0].remove();
+						mui('.goReturn')[0].remove();
 					}
-				})
-			}
+					mui('#trainNo')[0].innerHTML=planeOrder.trainNo;
+					mui('#contactTel')[0].innerHTML=planeOrder.contactTel;
+					
+					mui('#startStation')[0].innerHTML=planeOrder.startStation;
+					mui('#recevieStation')[0].innerHTML=planeOrder.recevieStation;
+					mui('#startTime')[0].innerHTML=planeOrder.startTime.substring(11);
+					//修改星期日期时间
+					var dateTime = planeOrder.startTime.replace(/\-/g,'/');//将获取的日期如2017-01-01改为2017/01/01
+					var date = new Date(dateTime).getDay();//获取具体周几
+					var weekday=new Array(7);
+						weekday[1]="周一";
+						weekday[2]="周二";
+						weekday[3]="周三";
+						weekday[4]="周四";
+						weekday[5]="周五";
+						weekday[6]="周六";
+						weekday[7]="周日";
+					document.getElementById('weekday').innerHTML = weekday[date];
+					//修改星期日期时间结束
+					mui('#startTime1')[0].innerHTML=planeOrder.startTime.substring(11,planeOrder.startTime.toString().Length-11);
+					mui('#recevieTime')[0].innerHTML=planeOrder.recevieTime.substring(11);
+					mui('#totalPayCash')[0].innerHTML=planeOrder.totalPayCash;
+					mui('#startTime2')[0].innerHTML=planeOrder.startTime.substring(11,planeOrder.startTime.toString().Length-11);
+					mui('#recevieTime2')[0].innerHTML=planeOrder.recevieTime.substring(11,planeOrder.startTime.toString().Length-11);
+		//			mui('#totalOtherFee')[0].innerHTML=planeOrder.totalOtherFee;
+					//乘机人信息
+					var orderObj = {};
+					orderObj.orderList = planeOrder.ticketOrders.ticketOrder;
+					var html = template('orderList-detail',orderObj);
+					document.getElementById('orderList').innerHTML = html;
+					for(var j=0;j<orderObj.orderList.length;j++){
+//						alert(orderObj.orderList[j].orderNo);
+						var orderNo=orderObj.orderList[j].orderNo;
+						orderNos.push(orderNo);
+					}
+					
+					
+					//点击取消订单
+					window.cancelPlane = function(){
+						mui.confirm('确认取消该订单？','',['取消','确认'],function (e) {
+							if(e.index == 1) { 
+								mui.ajax(serverUrl +'/api/qianmi/airordercancel',{
+									data:{tradeNo:tradeNo},//订单主编号
+									dataType:'json',
+									type:'post',
+									timeout:15000,
+									headers:{token:oldToken},	 
+									success:function(data,type,xhr){
+										alert(JSON.stringify(data));
+										if(data.data.air_order_cancel_response.result==1){
+											mui.toast("取消订单成功！");
+										}else{
+											mui.toast("取消订单失败！")
+										}
+										plus.nativeUI.closeWaiting();
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('响应失败  !');
+									}
+								});
+							}
+						})
+					}
+					
+					//点击退票
+					window.returnPlane = function(){
+						alert(tradeNo+" "+orderNos);
+						orderNos=orderNos.toString();
+						mui.confirm('确认退票？','',['取消','确认'],function (e) {
+							if(e.index == 1) { 
+								mui.ajax(serverUrl +'/api/qianmi/airorderrefund',{
+									data:{tradeNo:tradeNo,orderNos:orderNos,returnType:3},//订单主编号
+									dataType:'json',
+									type:'post',
+									timeout:15000,
+									headers:{token:oldToken},	 
+									success:function(data,type,xhr){
+										alert(JSON.stringify(data));
+										if(data.data.air_order_refund_response.result==1){
+											mui.toast("退票成功！");
+										}else{
+											mui.toast("退票失败！")
+										}
+										plus.nativeUI.closeWaiting();
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('响应失败  !');
+									}
+								});
+							}
+						})
+						
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
+				}
+			});
 		})
-		
-		
-		
 	</script>
 </html>

@@ -245,6 +245,13 @@
 				color: #999;
 			}
 			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before{font-size: 18px;color: red !important;}
+			.baoxian:after{
+				content: '';
+				display: block;
+				height: 1px;
+				background-color: #eee;
+				-webkit-transform: scaleY(.5);
+			}
 		</style>
 	</head>
 	<body>
@@ -338,6 +345,24 @@
 					</a>
 				</dd>
 			</dl>
+			<dl class="list" id="goodsList">
+				<dd class="goodsItem">
+					<a class="react mui-row" id="infolistdiv"></a>
+					<script type="text/html" id="infolist">
+						<% for(var i=0; i<list.length; i++){%>
+							<div class="mui-input-row mui-radio mui-left baoxian" onclick="baoxianfun(<%= list[i].itemId%>)">
+								<label style="padding-left: 23px;"><%= list[i].itemName%></label>
+								<% if(list[i].Rcheak){%>
+									<input name="radio1" type="radio" checked style="top: 10px;left: -1px;">
+								<% }else{%>
+									<input name="radio1" type="radio" style="top: 10px;left: -1px;">
+								<% }%>	
+							</div>
+						<% }%>	
+					</script>	
+					
+				</dd>
+			</dl>
 			<dl class="list LastList" id="goodsList">
 				<dd class="goodsItem">
 					<a class="react mui-row">
@@ -355,18 +380,7 @@
 					</a>
 				</dd>
 			</dl>
-			<dl class="list" id="goodsList">
-				<dd class="goodsItem">
-					<a class="react mui-row">
-				        <div class="mui-input-row mui-checkbox agreement1 mui-left">
-				        	<label style="padding-left: 20px;">
-				        		<span>交通意外保险<span style="color: red;">5元</span></span>
-						  		<input style="left: 0;top: 8px;" name="checkbox1" value="Item 1" type="checkbox" checked id="Insurance"> 
-				        	</label>
-						</div>
-					</a>
-				</dd>
-			</dl>
+			
 		</div>
 		<!--footerone star-->
 		<div class="footerone clearfloat">
@@ -380,14 +394,13 @@
 		<!--footerone end-->
 	</body>
 	<script type="text/javascript">
-		function addPerson(){//添加联系人
-			openview({ 
-				view:'trainaddPerson.html'
-			})
-		}
+		
 		mui.plusReady(function(){
 			var settlePrice;//票价
+			var bookingstr = '';
+			var baoxianid;//保险编号
 			var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+			var oldToken = plus.storage.getItem('oldToken');
 			//获取上页面数据,并显示
 			var details1 = plus.webview.currentWebview().details; 
 			mui('#Tfrom')[0].innerHTML = details1.from;
@@ -401,11 +414,50 @@
 			mui('#Sdate')[0].innerHTML = details1.Sdate + details1.Sweek;
 			mui('#Edate')[0].innerHTML = details1.Edate + details1.Eweek;
 			
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			mui.ajax(serverUrl+'/api/qianmi/traininsurslist',{//获取保险信息
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	              				
+				success:function(data){
+					console.log(data);
+					console.log('保险返回'+JSON.stringify(data));
+					if(data.errno == 0){
+						var dataobj = {};
+						dataobj.list = data.data.train_insurs_list_response.items.item; 
+						if(dataobj.list.length > 3){
+							dataobj.list.length = 3;
+						}
+						console.log(dataobj.list);
+						dataobj.list[0].Rcheak = 'cheak';//第一个默认选中
+						baoxianid = dataobj.list[0].itemId;//默认保险编号 
+						var html=template("infolist",dataobj);
+						document.getElementById("infolistdiv").innerHTML = html; 
+					}else{
+						mui.toast('保险信息获取失败,请重试');
+					}
+					plus.nativeUI.closeWaiting();
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('保险信息获取失败,请重试');
+				}
+			});
+			window.baoxianfun = function(itemid){//获取保险标号
+				baoxianid = itemid;//点击更换保险标号		
+			}
+			
 			document.addEventListener('refreshPerson', function(obj) {//从添加乘机人获取的详情
-				var newName=obj.detail.newName;
+				var newName = obj.detail.newName;
 				var idNo=obj.detail.idNo;
 				var phonenum=obj.detail.phonenum;
 				var persons = document.getElementById('persons');
+				//组乘客信息
+				if(!bookingstr){//如果为空
+					bookingstr += newName +'!'+ phonenum +'!'+ idNo +'!'+ details1.type;
+				}else{
+					bookingstr += '@@' + newName +'!'+ phonenum +'!'+ idNo +'!'+ details1.type;
+				}
 				persons.insertAdjacentHTML('beforebegin', '<dd class="goodsItem" id="persons"><a class="react mui-row aPerson"><div class="mui-col-sm-1 mui-col-xs-1"><img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/></div><div class="mui-col-sm-11 mui-col-xs-11"><p class="black">'+newName+'</p><p class="tiny black">身份证&nbsp;'+idNo+'</p></div></a></dd>'); 
 				//重新计算人数和价格
 				var acountP = $('.aPerson').length;
@@ -429,18 +481,20 @@
 				})
 			}
 			
+			
+			
 			mui('#purchase')[0].onclick = function(){//立即购买
-				var oldToken = plus.storage.getItem('oldToken');
+				
 				var acountP = $('.aPerson').length;
 				var Orderpeople = mui('#Orderpeople')[0].value;
 				var Orderphone = mui('#Orderphone')[0].value;
 				
-				if(acountP || acountP == undefined){
+				if(!acountP || acountP == undefined){
 					mui.toast('至少添加一位乘客');
-				}else if(Orderpeople){
+				}else if(!Orderpeople){
 					mui.toast('请输入订票人姓名');
 					mui('#Orderpeople')[0].focus();
-				}else if(reg_phone.test(Orderphone)){
+				}else if(!reg_phone.test(Orderphone)){
 					mui.toast('请输入正确的手机号');
 					mui('#Orderphone')[0].focus();
 				}else{//开始支付
@@ -451,33 +505,127 @@
 						headers:{"token":oldToken},	              				
 						success:function(data,type,xhr){
 							console.log(data);
-							console.log('预定返回'+JSON.stringify(data));
+							console.log('获取标号'+JSON.stringify(data));
 							if(data.data.train_items_list_response.items.item[0].itemId){
-								var gradenum = data.data.train_items_list_response.items.item[0].itemId;
-								mui.ajax(serverUrl+'/api/qianmi/trainordercreate',{
+								var gradenum = data.data.train_items_list_response.items.item[0].itemId;//标号
+								mui.ajax(serverUrl+'/api/qianmi/trainordercreate',{//开始预定
 									data:{
-										from:'广州',
-										to:'成都',
-										date:'2017-01-04',
-										trainNumber:'K827',
-										contactName:'张三丰',
-										contactTel:'17781694508',
-										passagers:"王大锤,17781694509,513701199405236539,无座", 
+										from:details1.from,
+										to:details1.End,
+										date:details1.timeall,
+										trainNumber:details1.name,
+										itemIdInsur:9200601,//保险编号
+										contactName:Orderpeople,
+										contactTel:Orderphone,
+										passagers:bookingstr,
 										itemIdTrain:gradenum,
-										startTime:'16:42'
+										startTime:details1.Stime
 									},
 									type:'post',
 									timeout:10000,
 									headers:{"token":oldToken},	              				
 									success:function(data,type,xhr){
-										console.log(data);
+										
+										var data1 = {
+										  "errno": 0,
+										  "errmsg": "",
+										  "data": {
+										    "body": {
+										      "train_order_create_response": {
+										        "ticketTrade": {
+										          "ticketOrders": {
+										            "ticketOrder": [
+										              {
+										                "orderNo": "P170107171991191",
+										                "title": "游向前 2017-01-10 07:55 成都东-广州南 G1318",
+										                "state": 0,
+										                "stateName": "交易中",
+										                "itemId": "5500201",
+										                "passengerName": "游向前",
+										                "passengerTel": "17781694509",
+										                "idcardType": 0,
+										                "idcardNo": "513701199405236539",
+										                "ticketNo": "513701199405236539",
+										                "salePrice": 0,
+										                "payCash": 818.5,
+										                "facePrice": 816.5,
+										                "purPrice": 817.5,
+										                "otherFee": 1,
+										                "refundFee": 0,
+										                "feeDetail": "816.5+1",
+										                "insurance": {
+										                  "insuranceNo": "I170107171991192",
+										                  "state": 0,
+										                  "insuranceInfo": null,
+										                  "userName": "游向前",
+										                  "salePrice": 0,
+										                  "payCash": 4.5,
+										                  "purPrice": 4.5,
+										                  "facePrice": 5,
+										                  "userTel": "17781694509",
+										                  "itemId": "9200601",
+										                  "saleOrderNo": null,
+										                  "insurancePolicyNo": null,
+										                  "itemCash": 4.5
+										                },
+										                "seatType": 0,
+										                "seatName": "二等座",
+										                "seatInfo": null,
+										                "saleOrderNo": null,
+										                "ticketType": 0
+										              }
+										            ]
+										          },
+										          "tradeNo": "T170107171991190",
+										          "ctime": "2017-01-07 17:55:17",
+										          "title": "G1318 07:55 成都东-广州南",
+										          "state": 0,
+										          "stateName": "预定中",
+										          "billState": 0,
+										          "billTime": "",
+										          "etime": "",
+										          "trainNo": "G1318",
+										          "startStation": "成都东",
+										          "recevieStation": "广州南",
+										          "startTime": "2017-01-10 07:55",
+										          "recevieTime": "",
+										          "contactName": "游向前",
+										          "contactTel": "17781694508",
+										          "orderType": 1,
+										          "tplId": "48068",
+										          "totalSalePrice": 0,
+										          "totalPayCash": 823,
+										          "totalFacePrice": 821.5,
+										          "totalPurPrice": 822,
+										          "totalOtherFee": 1,
+										          "totalRefundFee": 0,
+										          "legs": null,
+										          "remark": null
+										        }
+										      }
+										    },
+										    "new_qianmi_order_id": 143
+										  }
+										}
 										console.log('预定返回'+JSON.stringify(data));
+										console.log(data);
 										if(data.errno == 0){
-											mui.toast('预定成功');
+											if(data.data.body.subErrors){
+												plus.nativeUI.closeWaiting();
+												mui.toast(data.data.body.subErrors[0].message);
+											}else{
+//												var TorderD = data.data.body.train_order_create_response.ticketTrade; 
+												var Tordernum11 = data.data.body.train_order_create_response.ticketTrade.tradeNo;
+												openview({
+													view:'trainRecord.html',
+													extrasobj:{Tordernum:Tordernum11}
+												})
+											}
 										}else{
+											plus.nativeUI.closeWaiting();
 											mui.toast('预定失败,请重试');
 										}
-										plus.nativeUI.closeWaiting();
+										
 									},
 									error:function(xhr,type,errorThrown){
 										plus.nativeUI.closeWaiting();
@@ -491,14 +639,14 @@
 							mui.toast('预定失败,请重试'); 
 						}
 					});
-					
-					
-					
-					
 				}
-				
 			}
 			
-		});
+		});//ready
+		function addPerson(){//添加联系人
+			openview({ 
+				view:'trainaddPerson.html'
+			})
+		}
 	</script>
 </html>

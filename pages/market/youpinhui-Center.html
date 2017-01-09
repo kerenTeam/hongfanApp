@@ -34,6 +34,18 @@
 				opacity: 1;
 				border: none;
 			}
+			.mui-slider-item{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
+			}
 			.mui-slider{
 				margin-top: 50px;
 			}
@@ -204,18 +216,6 @@
 				width: 100%;
 				display: block;
 			}
-		 	.mui-slider-item a{
-				position: relative;
-				width: 100%;
-				padding-top: 42%; 
-				overflow: hidden;
-			}
-			.mui-slider-item img{
-				position: absolute;
-				width: 100%; 
-				height:100%;
-				top: 0;
-			}
 			.mb10{
 				border-top: none !important;
 				border-bottom: 1px solid #EFEFF4;
@@ -261,257 +261,213 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 			<div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div> 
 			<div id="main">
-				<div id="banner">
-					<div class="mui-slider">
-							<div class="mui-slider-group mui-slider-loop">
-								<!--支持循环，需要重复图片节点-->
-								<div class="mui-slider-item">
-									<a data-id = "<%=bannerData.length-1%>">
-										<img src="../../img/18.png" />
-									</a>
+				<div id="scroller">
+				<!--轮播图-->
+				<div class="mui-slider" id="banner"></div>
+				<!--轮播图结束-->
+				<!--banner数据渲染-->
+				<script type="text/html" id="banner-detail">
+					<div class="mui-slider-group mui-slider-loop">
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" />
+					    </div>
+						<% for(var i=0;i<bannerList.length;i++){ %> 
+					    	<div class="mui-slider-item">
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" />
+					    	</div>
+					     <% } %>
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" />
+					    </div>
+					</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator mui-active"></div>
+						<% for(var i=0;i<bannerList.length-1;i++){ %>
+					    	<div class="mui-indicator"></div>
+					    <% } %>
+		            </div> 
+				</script>
+			</div>
+					
+			<div class="sy_recmd">
+				<!--广告-->
+				<div class="sy_title mb10">
+					<span class="hot">
+						热拍<img src="../../img/market/hot.png"/>
+					</span>
+					<span class="hotContent">买年货，来热拍</span>
+				</div>
+				<div class="sy_recmd_list_box choicenessWrap">
+					<ul>
+						<li class="sy_recmd_list" id="storeRcmd">
+							<div class="box">
+								<div class="pub_img">
+									<a href="javascript:;"><img src="../../img/market/ttc.png" width="145" height="145"></a>
 								</div>
-								<div class="mui-slider-item">
-									<a data-id = "<%=i%>">
-										<img src="../../img/18.png" />
-									</a>
-								</div>
-								<div class="mui-slider-item">
-									<a  data-id = "<%=i%>">
-										<img src="../../img/18.png" />
-									</a>
-								</div>
-								<div class="mui-slider-item">
-									<a data-id = "<%=i%>">
-										<img src="../../img/18.png" />
-									</a>
-								</div>
-								<!--支持循环，需要重复图片节点-->
-								<div class="mui-slider-item mui-slider-item-duplicate">
-									<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
-										<img src="../../img/18.png" />
-									</a>
+								<div class="choiceness">
+									<p class="overflow_clear">土特产</p>
+									<!--<p class="gray">达人为你推荐好店</p>-->
 								</div>
 							</div>
-							<div class="mui-slider-indicator">
-								<div class="mui-indicator mui-active"></div>
-							    	<div class="mui-indicator"></div>
-							    	<div class="mui-indicator"></div>
-							    	<div class="mui-indicator"></div>
-				            </div>
-				        </div>
-					</div>
-						<!--<script type="text/html" id="bannerModal">-->
-							<!--轮播图-->
-							<!--<div class="mui-slider">
-								<div class="mui-slider-group mui-slider-loop">-->
-									<!--支持循环，需要重复图片节点-->
-									<!--<div class="mui-slider-item">
-										<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
-											<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
-										</a>
-									</div>
-									<% for(var i=0;i<bannerData.length;i++){ %>
-										<div class="mui-slider-item">
-											<a onclick="bannerGo('<%=bannerData[i].url%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
-												<img src="<%=bannerData[i].bannerPic%>" />
-											</a>
-										</div>
-									<% } %>-->
-									<!--支持循环，需要重复图片节点-->
-									<!--<div class="mui-slider-item mui-slider-item-duplicate">
-										<a onclick="bannerGo('<%=bannerData[0].url%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
-											<img src="<%=bannerData[0].bannerPic%>" />
-										</a>
-									</div>
+						</li>
+						<li class="sy_recmd_list">
+							<div class="box loveBuy">
+								<div class="pub_img">
+									<a><img src="../../img/market/ag.jpg" width="145" height="145"></a>
 								</div>
-								<div class="mui-slider-indicator">
-									<div class="mui-indicator mui-active"></div>
-									<% for(var i=0;i<bannerData.length-1;i++){ %>
-								    	<div class="mui-indicator"></div>
-								    <% } %>
-					            </div>
-					        </div>
-					    </div>-->
-						<!--轮播图结束-->
-					<!--</script>-->
-					
-					<div class="sy_recmd">
-						<!--广告-->
-						<div class="sy_title mb10">
-							<span class="hot">
-								热拍<img src="../../img/market/hot.png"/>
-							</span>
-							<span class="hotContent">买年货，来热拍</span>
-						</div>
-						<div class="sy_recmd_list_box choicenessWrap">
-							<ul>
-								<li class="sy_recmd_list" id="storeRcmd">
-									<div class="box">
-										<div class="pub_img">
-											<a href="javascript:;"><img src="../../img/market/ttc.png" width="145" height="145"></a>
-										</div>
-										<div class="choiceness">
-											<p class="overflow_clear">土特产</p>
-											<!--<p class="gray">达人为你推荐好店</p>-->
-										</div>
-									</div>
-								</li>
-								<li class="sy_recmd_list">
-									<div class="box loveBuy">
-										<div class="pub_img">
-											<a><img src="../../img/market/ag.jpg" width="145" height="145"></a>
-										</div>
-										<div class="choiceness">
-											<p class="overflow_clear">爱购保税</p>
-											<!--<p class="gray">附近人气餐厅选择</p>-->
-										</div>
-									</div>
-								</li>
-							</ul>
-							<div class="clear"></div>
-						</div>
-						
-					</div>
-					<div class="sy_recmd" style="background-color: #fff;">
-						<!--推荐列表-->
-						<div class="sy_title mb10">
-							<span class="left">热门推荐</span>
-							<a href="#" class="fr morethree">更多&gt;&gt;</a>
-						</div> 
-						<div class="sy_recmd_list_box">
-							<ul>
-								<div id="moll_recommend">
-									
-									
-									<li class="sy_recmd_list hot_info">
-										<div class="box">
-											<div class="pub_img">
-												<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="../../img/market/atcenter.jpg" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">外套</a></h3>
-												<!--<div class="nr_box mui-row">
-													<div class="mui-col-sm-6 mui-col-xs-6">
-											        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
-											      	</div>
-											        <div class="mui-col-sm-6 mui-col-xs-6 saled">
-														<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
-											      	</div>
-											     </div>-->
-											</div>
-										</div>
-									</li> 
-									<li class="sy_recmd_list hot_info">
-										<div class="box">
-											<div class="pub_img">
-												<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">秋冬上新</a></h3>
-												<!--<div class="nr_box mui-row">
-													<div class="mui-col-sm-6 mui-col-xs-6">
-											        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
-											      	</div>
-											        <div class="mui-col-sm-6 mui-col-xs-6 saled">
-														<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
-											      	</div>
-											     </div>-->
-											</div>
-										</div>
-									</li> 
-									<li class="sy_recmd_list hot_info">
-										<div class="box">
-											<div class="pub_img">
-												<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">卫衣</a></h3>
-												<!--<div class="nr_box mui-row">
-													<div class="mui-col-sm-6 mui-col-xs-6">
-											        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
-											      	</div>
-											        <div class="mui-col-sm-6 mui-col-xs-6 saled">
-														<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
-											      	</div>
-											     </div>-->
-											</div>
-										</div>
-									</li> 
-									<li class="sy_recmd_list hot_info">
-										<div class="box">
-											<div class="pub_img">
-												<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">卫衣</a></h3>
-												<!--<div class="nr_box mui-row">
-													<div class="mui-col-sm-6 mui-col-xs-6">
-											        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
-											      	</div>
-											        <div class="mui-col-sm-6 mui-col-xs-6 saled">
-														<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
-											      	</div>
-											     </div>-->
-											</div>
-										</div>
-									</li> 
-									<li class="sy_recmd_list hot_info">
-										<div class="box">
-											<div class="pub_img">
-												<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">卫衣</a></h3>
-												<!--<div class="nr_box mui-row">
-													<div class="mui-col-sm-6 mui-col-xs-6">
-											        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
-											      	</div>
-											        <div class="mui-col-sm-6 mui-col-xs-6 saled">
-														<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
-											      	</div>
-											     </div>-->
-											</div>
-										</div>
-									</li> 
-									
-									
-									
+								<div class="choiceness">
+									<p class="overflow_clear">爱购保税</p>
+									<!--<p class="gray">附近人气餐厅选择</p>-->
 								</div>
-							</ul>
-							<div class="clear"></div>
-						</div>
-						<script type="text/html" id="recommendTpl">
-							<%if(recommendData.length==0){%>
-								暂无推荐商品
-							<%}else{%>
-								<%for(var i=0;i<recommendData.length;i++){%>
-									<li class="sy_recmd_list">
-										<div class="box">
-											<div class="pub_img">
-												<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
-											</div>
-											<div class="pub_wz">
-												<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
-												<div class="nr_box mui-row">
-													<div class="mui-col-sm-6 mui-col-xs-6">
-											        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
-											      	</div>
-											        <div class="mui-col-sm-6 mui-col-xs-6 saled">
-														<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
-											      	</div>
-											     </div>
-											</div>
-										</div>
-									</li> 
-								<%}%>
-							<%}%>
-						</script>
-						<div class="upload text-center text-xs gray" id="upload"></div>
-					</div>
-					
+							</div>
+						</li>
+					</ul>
+					<div class="clear"></div>
 				</div>
+				
+			</div>
+			<div class="sy_recmd" style="background-color: #fff;">
+				<!--推荐列表-->
+				<div class="sy_title mb10">
+					<span class="left">热门推荐</span>
+					<a href="#" class="fr morethree">更多&gt;&gt;</a>
+				</div> 
+				<div class="sy_recmd_list_box">
+					<ul>
+						<div id="moll_recommend">
+							
+							
+							<li class="sy_recmd_list hot_info">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="../../img/market/atcenter.jpg" width="145" height="145"></a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">外套</a></h3>
+										<!--<div class="nr_box mui-row">
+											<div class="mui-col-sm-6 mui-col-xs-6">
+									        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+									      	</div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 saled">
+												<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>-->
+									</div>
+								</div>
+							</li> 
+							<li class="sy_recmd_list hot_info">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">秋冬上新</a></h3>
+										<!--<div class="nr_box mui-row">
+											<div class="mui-col-sm-6 mui-col-xs-6">
+									        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+									      	</div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 saled">
+												<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>-->
+									</div>
+								</div>
+							</li> 
+							<li class="sy_recmd_list hot_info">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">卫衣</a></h3>
+										<!--<div class="nr_box mui-row">
+											<div class="mui-col-sm-6 mui-col-xs-6">
+									        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+									      	</div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 saled">
+												<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>-->
+									</div>
+								</div>
+							</li> 
+							<li class="sy_recmd_list hot_info">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">卫衣</a></h3>
+										<!--<div class="nr_box mui-row">
+											<div class="mui-col-sm-6 mui-col-xs-6">
+									        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+									      	</div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 saled">
+												<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>-->
+									</div>
+								</div>
+							</li> 
+							<li class="sy_recmd_list hot_info">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')">卫衣</a></h3>
+										<!--<div class="nr_box mui-row">
+											<div class="mui-col-sm-6 mui-col-xs-6">
+									        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+									      	</div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 saled">
+												<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>-->
+									</div>
+								</div>
+							</li> 
+							
+							
+							
+						</div>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				<script type="text/html" id="recommendTpl">
+					<%if(recommendData.length==0){%>
+						暂无推荐商品
+					<%}else{%>
+						<%for(var i=0;i<recommendData.length;i++){%>
+							<li class="sy_recmd_list">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>')"><%=recommendData[i].title%></a></h3>
+										<div class="nr_box mui-row">
+											<div class="mui-col-sm-6 mui-col-xs-6">
+									        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+									      	</div>
+									        <div class="mui-col-sm-6 mui-col-xs-6 saled">
+												<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>
+									</div>
+								</div>
+							</li> 
+						<%}%>
+					<%}%>
+				</script>
+				<div class="upload text-center text-xs gray" id="upload"></div>
+			</div>
+			
+		</div>
 		 
-		<script src="../../js/mui.min.js"></script> 
+	<script src="../../js/mui.min.js"></script> 
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/app.js"></script>	
 	<script type="text/javascript">
@@ -533,8 +489,9 @@
 		});		
 		mui.plusReady(function(){
 			//获取token
-			var token=plus.storage.getItem("oldToken"); 
-//			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框  
+			var token=plus.storage.getItem("oldToken");
+			
+//			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				//banner数据渲染
 //				mui.ajax(serverUrl+'/api/mall/mallbanner',{
 //					dataType:'json',//服务器返回json格式数据
@@ -639,9 +596,39 @@
 //				}
 				
 //			}, 
-
 		});
 	</script>	
 	</body>
-	
+	<script type="text/javascript">
+	mui.plusReady(function(){ 
+		//获取缓存
+		var oldToken = plus.storage.getItem('oldToken');
+//		var userId = plus.storage.getItem("userid");
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		
+		mui.ajax(serverUrl+'/api/index/banner',{
+			data:{banner_type:6},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	 
+			success:function(data,type,xhr){
+				bannerObj={};
+				bannerObj.bannerList = eval("("+data.data.banner+")");
+				bannerObj.url = serverimgUrl;
+				var html = template('banner-detail',bannerObj);
+				document.getElementById('banner').innerHTML = html;
+				plus.nativeUI.closeWaiting();//关闭等待框
+				//轮播图,获得slider插件对象
+				var gallery = mui('.mui-slider');
+				gallery.slider({
+				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				});
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		}); 
+	})
+	</script>
 </html>

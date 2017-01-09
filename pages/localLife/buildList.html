@@ -90,26 +90,26 @@
 		
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="Loading(1,7,'','','','','',1000,'price');">全部</li>
-		        <li onclick="Loading(1,7,'','2室2厅','','','',1000,'price');">2室2厅</li>
-		        <li onclick="Loading(1,7,'','2室1厅','','','',1000,'price');">2室1厅</li>
-		        <li onclick="Loading(1,7,'','1室2厅','','','',1000,'price');">1室2厅</li>  
+		        <li onclick="Loading(1,10,'','','','','',1000,'price');">全部</li>
+		        <li onclick="Loading(1,10,'','2室2厅','','','',1000,'price');">2室2厅</li>
+		        <li onclick="Loading(1,10,'','2室1厅','','','',1000,'price');">2室1厅</li>
+		        <li onclick="Loading(1,10,'','1室2厅','','','',1000,'price');">1室2厅</li>  
 		    </ul>
 		</div>
 		<div class="grade-eject">
 		    <ul class="grade-w" id="gradew">
-		        <li onclick="Loading(1,7,'','','','','',1000,'price');">全部</li>
-		        <li onclick="Loading(1,7,'','',100000,400000,'','','price');">100000-400000</li>
-		        <li onclick="Loading(1,7,'','',400000,1000000,'','','price');">400000-1000000</li>
-		        <li onclick="Loading(1,7,'','',1000000,10000000,'','','price');">1000000-10000000</li>
+		        <li onclick="Loading(1,10,'','','','','',1000,'price');">全部</li>
+		        <li onclick="Loading(1,10,'','',100000,400000,'','','price');">100000-400000</li>
+		        <li onclick="Loading(1,10,'','',400000,1000000,'','','price');">400000-1000000</li>
+		        <li onclick="Loading(1,10,'','',1000000,10000000,'','','price');">1000000-10000000</li>
 		    </ul>
 		</div>
 		<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="Loading(1,7,'','','','','',1000,'price');">全部</li>
-		        <li onclick="Loading(1,7,'','','','',20,45,'price');">20-45</li>
-		        <li onclick="Loading(1,7,'','','','',45,70,'price');">45-70</li>
-		        <li onclick="Loading(1,7,'','','','',70,110,'price');">70-110</li>
+		        <li onclick="Loading(1,10,'','','','','',1000,'price');">全部</li>
+		        <li onclick="Loading(1,10,'','','','',20,45,'price');">20-45</li>
+		        <li onclick="Loading(1,10,'','','','',45,70,'price');">45-70</li>
+		        <li onclick="Loading(1,10,'','','','',70,110,'price');">70-110</li>
 		    </ul>
 		</div>
 		<script src="../../js/statusBar.js"></script>
@@ -179,10 +179,10 @@
 	<script type="text/javascript">
 	//添加刷新监听
 	document.addEventListener('refresh', function() {
-		Loading(1,7,'','','','','',1000,'price');//加载数据,包括上滑加载  
+		Loading(1,10,'','','','','',1000,'price');//加载数据,包括上滑加载  
 		console.log('刷新数据');
 	})
-	Loading(1,7,'','','','','',1000,'price');//加载数据,包括上滑加载  
+	Loading(1,10,'','','','','',1000,'price');//加载数据,包括上滑加载  
 	//加载方法
 	function Loading(gin1,gin2,gin3,gin4,gin5,gin55,gin6,gin66,gin7){
 		$('.Category-eject').removeClass('grade-w-roll');
@@ -212,6 +212,9 @@
 				if(data.errno == 0){
 					console.log(data);
 					var dataobj = {};
+					mui.each(data.data.data,function (index,ele) {
+						data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
+					})
 					dataobj.list = data.data.data; 
 					//获取并渲染用户信息
 					var html=template("buildlist",dataobj);
@@ -252,6 +255,9 @@
 								success:function(data){
 									if(data.errno == 0){
 										var dataobj = {};
+										mui.each(data.data.data,function (index,ele) {
+											data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
+										})
 										dataobj.list = data.data.data; 
 										//获取并渲染用户信息
 										var html=template("buildlist",dataobj);

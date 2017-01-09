@@ -261,28 +261,6 @@
 		</div>
 	</body>
     <script type="text/javascript">
-    	function formatSeconds(value) {//秒转小时分钟
-            var theTime = parseInt(value);// 秒
-            var theTime1 = 0;// 分
-            var theTime2 = 0;// 小时
-            if(theTime > 60) {
-                theTime1 = parseInt(theTime/60);
-                theTime = parseInt(theTime%60);
-                if(theTime1 > 60) {
-                    theTime2 = parseInt(theTime1/60);
-                    theTime1 = parseInt(theTime1%60);
-                }
-            }
-            var result = "";
-            if(theTime1 > 0) {
-                result = ""+parseInt(theTime1)+"分"+result;
-            }
-            if(theTime2 > 0) {
-                result = ""+parseInt(theTime2)+"小时"+result;
-            }
-            return result;
-        }
-	    
     	
     	mui.plusReady(function(){
     		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
@@ -295,7 +273,6 @@
 			details.Sweek = Aweek[Aweeknum];//开始星期
 			details.runtime = formatSeconds(details.runTime);//运行总时间
 			console.log(time);
-			
 			var newtime = time.split('-')[1] + '-' + time.split('-')[2] + '-' + time.split('-')[0] + ' ' + details.startTime;
 			var date = new Date(newtime);
 			var jiange = formatSeconds(details.runTime);
@@ -303,13 +280,6 @@
 			var runmin = parseInt(jiange.split('小时')[1]);//间隔分钟
 			date.setHours(date.getHours() + runhour);
 			date.setMinutes(date.getMinutes() + runmin);
-//			console.log(date.toLocaleDateString());
-//			console.log(date.getMonth()+1 + '结束月');
-//			console.log(date.getDate() + '结束天');
-//			console.log(date.getHours() + '结束小时');
-//			console.log(date.getMinutes() + '结束分钟');
-//			console.log(date.getDay() + '结束周');
-			
 			var Emonth;//结束月
 			if(JSON.stringify(date.getMonth()+1).length == 1){
 				Emonth = '0'+ JSON.stringify(date.getMonth()+1);
@@ -324,13 +294,10 @@
 			}
 			details.Edate = Emonth + '-' + Eday;//结束日期
 			details.Eweek = Aweek[date.getDay()];//结束星期
-			
 			dataobj.list = details;  
 			var html=template("infolist",dataobj);
 			document.getElementById("container").innerHTML = html;
 			plus.nativeUI.closeWaiting();
-			
-			
 			
 			window.trainOrder = function(obj){//预定
 	    		var that = obj;
@@ -353,13 +320,35 @@
     				Edate:Edate,
     				Eweek:Eweek,
     				type:type,
-    				Price:price
+    				Price:price,
+    				timeall:time
     			};
     			openview({ 
 					view:'trainOrder.html',
 					extrasobj:{details:detailsobj}
 				})
 			}
-    	});
+    	});//ready
+    	function formatSeconds(value) {//秒转小时分钟
+            var theTime = parseInt(value);// 秒
+            var theTime1 = 0;// 分
+            var theTime2 = 0;// 小时
+            if(theTime > 60) {
+                theTime1 = parseInt(theTime/60);
+                theTime = parseInt(theTime%60);
+                if(theTime1 > 60) {
+                    theTime2 = parseInt(theTime1/60);
+                    theTime1 = parseInt(theTime1%60);
+                }
+            }
+            var result = "";
+            if(theTime1 > 0) {
+                result = ""+parseInt(theTime1)+"分"+result;
+            }
+            if(theTime2 > 0) {
+                result = ""+parseInt(theTime2)+"小时"+result;
+            }
+            return result;
+        }
     </script>
 </html>

@@ -173,6 +173,10 @@
 					<label>密码</label>
 					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
+				<div class="mui-input-row mui-block">
+					<label style="width: 32%;">确认密码</label>
+					<input style="width: 68%;" id='passwordagain' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+				</div>
 			</form>
 			<div class="mui-input-row mui-checkbox agreement1 mui-left">
 			  <span>我同意勾选宏帆app用户许可协议</span>
@@ -193,6 +197,7 @@
 	
 	var account = document.getElementById('account');
 	var password = document.getElementById('password'),
+	passwordagain = document.getElementById('passwordagain'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
 	var VerCode = 'you'; 
@@ -215,10 +220,11 @@
 					timeout:10000,
 					success:function(data){
 						console.log('发送验证码返回'+JSON.stringify(data));
+						mui.toast('验证码已发送');
 						VerCode = data.data;
 					}, 
 					error:function(xhr,type,errorThrown){
-						mui.toast('发送验证码响应失败');
+						mui.toast('发送验证码失败');
 					}
 				});
 				this.className += 'unable';
@@ -242,10 +248,10 @@
 		}
 	}
 	//输入验证按钮状态(包括点击勾勾)
-	mui('#VeCode')[0].oninput = mui('#hook')[0].onclick = password.oninput = account.oninput = verification;
+	mui('#VeCode')[0].oninput = mui('#hook')[0].onclick = password.oninput = passwordagain.oninput = account.oninput = verification;
 	function verification(){
-		if(reg_pass.test(password.value) && reg_phone.test(account.value) && mui('#hook')[0].checked && mui('#VeCode')[0].value){
-			mui('.denlu')[0].className = mui('.denlu')[0].className.replace(' cannotbtn','');
+		if(reg_pass.test(password.value) && password.value == passwordagain.value && reg_phone.test(account.value) && mui('#hook')[0].checked && mui('#VeCode')[0].value){
+			mui('.denlu')[0].className = mui('.denlu')[0].className.replace(' cannotbtn','');//验证通过
 		}else if(mui('.denlu')[0].className.indexOf('cannotbtn') == -1){
 			mui('.denlu')[0].className += ' cannotbtn';
 		}
@@ -274,7 +280,10 @@
 		}else if(!reg_pass.test(password.value)){
 			mui.toast('请输入6-12位数字和字母组合密码 ');
 			password.focus();
-		}else if(!mui('#hook')[0].checked){
+		}else if(password.value != passwordagain.value){
+			mui.toast('两次密码不相同');
+			passwordagain.focus();
+		}else if(!mui('#hook')[0].checked){  
 			mui.toast('你还没有勾选协议 ');
 		}else if(!codeflag){
 			mui.toast('请输入正确的验证码 ');

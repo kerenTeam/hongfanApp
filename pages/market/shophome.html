@@ -480,14 +480,18 @@
 							var recommendObj = {};
 								recommendObj.myUrl = serverimgUrl;
 								recommendObj.recommendData = dataobj
-							for (var i = 0;i<data.data.return.data.length;i++) {
-								data.data.return.data[i].tag = eval("("+ data.data.return.data[i].tag +")");
-							}
+							for(var m=0; m < data.data.return.data.length; m++){ 
+								if(data.data.return.data[m].tag==''){
+								 	data.data.return.data[m].tag=null;
+								}else{
+									data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
+								}
+							}   
 		                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 		                    document.getElementById("moll_recommend2").innerHTML+=template("recommendTpl2",recommendObj);
 		                    mui(".upload")[0].innerHTML = "加载更多";
 //		                   	上滑加载
-							  $(window).scroll(function(){
+							 $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
@@ -542,10 +546,10 @@
 			}); 
 			
 			window.goInfo =  function(goodsId){ 
-				 openview({
+				openview({
 				 	view:"mall-detail.html",
 				 	extrasobj:{goodsId:goodsId}
-				 })
+				})
 			}
 				
 			},

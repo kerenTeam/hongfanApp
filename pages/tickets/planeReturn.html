@@ -15,9 +15,6 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
-		<!--<script src=" ../../js/hmt.js" type="text/javascript"></script>-->
-		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
 		<script src="../../js/app.js" type="text/javascript" ></script>
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
@@ -290,7 +287,7 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 			<dl class="list">
-				<p class="time">单程： 2016年12月26日</p>
+				<p class="time">单程： <span id=""></span></p>
 			</dl>
 			<dl class="list">
 				<dd class="goodsItem">
@@ -366,12 +363,13 @@
 			</dl>
 			<dl class="list last">
 				<p><span class="red1">*</span>温馨提示</p>
-				<p>1.开车前15天（不含）以上退票的，不收取退票费；</p>
-				<p>2.票面乘车站开车时间前48小时以上的按票价5%计，24小时以上、不足48小时的按票价10%计，不足24小时的按票价20%计。
-				<p>3.开车前48小时～15天期间内，改签或变更到站至距开车15天以上的其他列车，又在距开车15天前退票的，仍核收5%的退票费。</p>
-　				<p>4.办理车票改签或“变更到站”时，新车票票价低于原车票的，退还差额，对差额部分核收退票费并执行现行退票费标准。</p>
-　　				<p>5.上述计算的尾数以5角为单位，尾数小于2.5角的舍去、2.5角以上且小于7.5角的计为5角、7.5角以上的进为1元。退票费最低按2元计收。</p>
-　　				<p>6.改签后的车票乘车日期在春运期间的，退票时一律按开车时间前不足24小时标准核收退票费。</p>
+				<p>1.机票相关业务处理时间为8:00-22:00。</p>
+				<p>2.机票业务不做改签处理</p>
+				<p>3.机票支持在线申请退废票和自愿退票，非自愿退票请根据平台规则联系客服处理。</p>
+				<p>4.出票当日提交"退废票"，具体以航司规定为准。</p>
+				<p>5.请仔细核对用户身份证号以及姓名，以免造成不必要的损失。</p>
+				<p>6.行程单(报销凭证)机场提供打印服务。</p>
+				<p>7.目前不支持飞机票保险货源。</p>
 			</dl>
 			
 		</div>
@@ -379,10 +377,12 @@
 	<script type="text/javascript">
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken'); 
-			var myuserid = plus.storage.getItem('userid'); 
+			var userid = plus.storage.getItem('userid'); 
 			//获取订单主编号
 			var tradeNo = plus.webview.currentWebview().tradeNo;
-			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+			var orderNos = plus.webview.currentWebview().orderNos;
+			alert(tradeNo+" "+orderNos);
+//			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
 			//查看整笔订单详情
 			mui.ajax(serverUrl+'/api/qianmi/airorderrefund',{
 				data:{tradeNo:tradeNo},
@@ -401,7 +401,7 @@
 								plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
 								//查询订单列表
 								mui.ajax(serverUrl+'/api/qianmi/airorderrefund',{
-									data:{tradeNo:tradeNo,returnType:'退票类型:1-退废票,3-退票',orderNos:'订单子单编号集合'},
+									data:{tradeNo:tradeNo,returnType:3,orderNos:orderNos},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
@@ -420,12 +420,12 @@
 							}
 						});
 					}
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting()
-					console.log('响应失败  !');
-				}
-			})
+//				},
+//				error:function(xhr,type,errorThrown){
+//					plus.nativeUI.closeWaiting()
+//					console.log('响应失败  !');
+//				}
+//			})
 		});
 		
 	</script>

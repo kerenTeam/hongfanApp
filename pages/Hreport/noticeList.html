@@ -16,6 +16,8 @@
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/swiper.min.js"></script>
+		<script type="text/javascript" src="../../js/app.js"></script>
+		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		
 		<style type="text/css">
 			/*banner底部导航*/
@@ -35,6 +37,18 @@
 				box-shadow: none;
 				opacity: 1;
 				border: none;
+			}
+			.mui-slider-item{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
 			}
 			.mui-bar{
 				height: 50px;
@@ -192,57 +206,47 @@
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">公告列表</h1>
 		</header>
-		
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<!--详情内容-->
 		<div id="main">
-			<div id="slider" class="mui-slider" >
-			<div class="mui-slider-group mui-slider-loop">
-				<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
-				<div class="mui-slider-item mui-slider-item-duplicate">
-					<img src="../../img/localLife/billborde.jpg">
-					<div class="titleWrap">
-						<p>这里是标题4</p>
+			<div id="scroller">
+				<!--轮播图-->
+				<div class="mui-slider" id="banner"></div>
+				<!--轮播图结束-->
+				<!--banner数据渲染-->
+				<script type="text/html" id="banner-detail">
+					<div class="mui-slider-group mui-slider-loop">
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" />
+					    	<div class="titleWrap">
+								<p><%=bannerList[bannerList.length-1].name %></p>
+							</div>
+					    </div>
+						<% for(var i=0;i<bannerList.length;i++){ %> 
+					    	<div class="mui-slider-item">
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" />
+					    		<div class="titleWrap">
+									<p><%=bannerList[i].name %></p>
+								</div>
+					    	</div>
+					     <% } %>
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" />
+					    	<div class="titleWrap">
+								<p><%= bannerList[0].name %></p>
+							</div>
+					    </div>
 					</div>
-				</div>
-				<div class="mui-slider-item">
-					<img src="../../img/localLife/billborde.jpg">
-					<div class="titleWrap">
-						<p>这里是标题1</p>
-					</div>
-				</div>
-				<div class="mui-slider-item">
-					<img src="../../img/localLife/billborde.jpg">
-					<div class="titleWrap">
-						<p>这里是标题2</p>
-					</div>
-				</div>
-				<div class="mui-slider-item">
-					<img src="../../img/localLife/billborde.jpg">
-					<div class="titleWrap">
-						<p>这里是标题3</p>
-					</div>
-				</div>
-				<div class="mui-slider-item">
-					<img src="../../img/localLife/billborde.jpg">
-					<div class="titleWrap">
-						<p>这里是标题4</p>
-					</div>
-				</div>
-				<div class="mui-slider-item mui-slider-item-duplicate">
-					<img src="../../img/18.png">
-					<div class="titleWrap">
-						<p>这里是标题1</p>
-					</div>
-				</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator mui-active"></div>
+						<% for(var i=0;i<bannerList.length-1;i++){ %>
+					    	<div class="mui-indicator"></div>
+					    <% } %>
+		            </div> 
+				</script>
 			</div>
-			<!--<div class="mui-slider-indicator">
-				<div class="mui-indicator mui-active"></div>
-				<div class="mui-indicator"></div>
-				<div class="mui-indicator"></div>
-				<div class="mui-indicator"></div>
-			</div>-->
-		</div>
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
 			<div class="deal">
 				<div class="farm">
 					<div class="warpthree clearfloat line">
@@ -314,14 +318,44 @@
 				})
 			})
 			
-			//轮播
-			var slider = mui("#slider");
-//			document.getElementById("switch").addEventListener('toggle', function(e) {
-				slider.slider({
-					interval: 5000
-				});
-//			});
+			
 			
 		})();
+	</script>
+	<!--banner-->
+	<script type="text/javascript">
+	mui.plusReady(function(){ 
+		//获取缓存
+		var oldToken = plus.storage.getItem('oldToken');
+//		var userId = plus.storage.getItem("userid");
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		
+		mui.ajax(serverUrl+'/api/index/banner',{
+			data:{banner_type:2},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	 
+			success:function(data,type,xhr){
+//				alert(JSON.stringify(data.data.banner));
+//				alert(eval("("+data.data.banner+")")[0].bannerPic);
+				bannerObj={};
+				bannerObj.bannerList = eval("("+data.data.banner+")");
+				bannerObj.url = serverimgUrl;
+				var html = template('banner-detail',bannerObj);
+				document.getElementById('banner').innerHTML = html;
+				plus.nativeUI.closeWaiting();//关闭等待框
+				//轮播图,获得slider插件对象
+				var gallery = mui('.mui-slider');
+				gallery.slider({
+				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				});
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		}); 
+	})
+		
 	</script>
 </html>
