@@ -167,7 +167,11 @@
 		<div id="main"></div>
 		<!--模板渲染数据-->
 		<script type="text/html" id="main-detail">
-			<img src="<%= objData.system_activity.pic %>" class="goodsImg">
+			<% if(!objData.system_activity.picImg || objData.system_activity.picImg == ''){ %>
+				<img src="../../img/market/nodata.svg" class="goodsImg">
+			<% }else{ %>
+				<img src="<%=myUrl %><%= objData.system_activity.picImg %>" class="goodsImg">
+			<% } %>
 			<div class="farm clearfloat">
 				<div class="top rentingtop clearfloat box-s">
 					<p class="yellowT"><%= objData.system_activity.title %></p>
@@ -258,9 +262,10 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 //					alert(data.data.system_activity);
+					
+					
 					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
 					var dateObj={};
-			       		data.data.system_activity.pic = serverimgUrl + data.data.system_activity.pic;
 			       	//处理获取的数据
 					for(var j = 0;j < data.data.shop_coupon.length;j++){
 						if(!data.data.shop_coupon[j].salerule || data.data.shop_coupon[j].salerule == ''){
@@ -272,6 +277,7 @@
 			       		
 					}
 					dateObj.objData=data.data;
+					dateObj.myUrl=serverimgUrl;
 					mui('#main')[0].innerHTML = template('main-detail',dateObj);
 					mui('#activityContent')[0].innerHTML = data.data.system_activity.content;
 					plus.nativeUI.closeWaiting();

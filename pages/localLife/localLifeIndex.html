@@ -54,13 +54,37 @@
 				/*margin-bottom: 10px;*/
 				border-bottom: none !important;
 			}
-			/*.slider:after, .caini:after, .mui-table-view-cell:after,.mui-table-view:after{
-				content: '';
-				display: block;
-				height: 1px;
-				background-color: rgba(0,0,0,0.1);
-				-webkit-transform: scaleY(.5);
-			}*/
+			/*banner底部导航*/
+			/*banner底部导航*/
+			.mui-slider-indicator .mui-indicator{
+				width: 10px;
+				height: 10px;
+				border-radius: 8px;
+				background: black;
+				margin-right: 5px;
+				opacity: 0.3;
+				cursor: pointer;
+				border: none;
+				box-shadow: none;
+			}
+			.mui-slider-indicator .mui-active.mui-indicator{
+				background-color: rgba(245,60,66,0.8);
+				box-shadow: none;
+				opacity: 1;
+				border: none;
+			}
+			.mui-slider-item{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
+			}
 			p{color: #5d5d61;}
 			.r_p{display: -webkit-box;
 			-webkit-box-orient: vertical;
@@ -123,11 +147,31 @@
 								</script>
 							</div>
 						</div>
-						<div class="swiper-pagination swiper-pagination2 diandian">
+						<div class="swiper-slide swiper_part2" >
+							<ul class="icon-list" id="columndiv2">
+								<!--没有数据显示--> 
+								<img src="../../img/nullinfo.svg" id="kuimg" style="display: none;" onerror="javascript:this.src='../../img/market/banner.png';">
+								<p>没有了</p>	
+							</ul>
+							<!--有数据显示-->
+							<script type="text/html" id="column2">
+								<% for(var i=8; i<list.length; i++){%>
+									<li class="icon">
+										<a class="supermarket">
+											<span class="icon-circle bluegray">
+												<img src="../../img/localLife/chaoshi.svg" onerror="javascript:this.src='../../img/market/banner.png';">
+											</span>
+											<span class="icon-desc">超市比价</span>
+										</a>
+									</li>
+								<% }%>	
+							</script>
 						</div>
 					</div>
-				</section>
-			</div>
+					<div class="swiper-pagination swiper-pagination2 diandian">
+					</div>
+				</div>
+			</section>
 			
 			<!--广告-->
 			<div class="mui-row" style="background-color: white;margin: 10px 0;" id="ad"></div> 
@@ -481,6 +525,41 @@
 			})
 		}
 		
+		
+	</script>
+	<!--banner-->
+	<script type="text/javascript">
+	mui.plusReady(function(){ 
+		//获取缓存
+		var oldToken = plus.storage.getItem('oldToken');
+//		var userId = plus.storage.getItem("userid");
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		mui.ajax(serverUrl+'/api/index/banner',{
+			data:{banner_type:7},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	 
+			success:function(data,type,xhr){
+//				alert(JSON.stringify(data.data.banner));
+//				alert(eval("("+data.data.banner+")")[0].bannerPic);
+				bannerObj={};
+				bannerObj.bannerList = eval("("+data.data.banner+")");
+				bannerObj.url = serverimgUrl;
+				var html = template('banner-detail',bannerObj);
+				document.getElementById('banner').innerHTML = html;
+				plus.nativeUI.closeWaiting();//关闭等待框
+				//轮播图,获得slider插件对象
+				var gallery = mui('.mui-slider');
+				gallery.slider({
+				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				});
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		}); 
+	})
 		
 	</script>
 </html>

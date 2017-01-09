@@ -531,7 +531,7 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
-		     			<img src="<%=choose.thumb%>" data-preview-src="" />
+		     			<img src="<%=myUrl%><%=choose.thumb%>" data-preview-src="" />
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
@@ -541,6 +541,7 @@
 		     	<div class="Mscroll">
 		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
+		     				<%if(choose.parameter[i].parameter_name){%>
 		     				<div class="middle clearfloat textType">
 					     		<p><%=choose.parameter[i].parameter_name%></p>
 					     		<div class="xia clearfloat choose">
@@ -553,6 +554,7 @@
 						     		</ul>
 					     		</div>		     		
 					     	</div>
+					     	<%}%>
 	     				<%}%>
 	     			<%}%>
 		     	<div class="bottom clearfloat">
@@ -620,10 +622,15 @@
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 		                     //详情
 		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+		                     alert(data.data.goodsInfo.parameter);
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
+		                     
 		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
-		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
+		                     var chooseO = {};
+		                     chooseO.choose = data.data.goodsInfo;
+		                     chooseO.myUrl = serverimgUrl;
+		                     document.getElementById("cartBox").innerHTML=template("boxTpl",chooseO);
 		                     mui(".mui-numbox").numbox();
 		                     var priceChange =parseInt($("#priceChange").html());
 		                     $('.choose').each(function(){
@@ -677,6 +684,7 @@
 		                    		var shopName = obj.getAttribute("data-shop");
 		                    		var goodsId = obj.getAttribute("data-gdId");
 		                    		var storeid = obj.getAttribute("data-shopId");
+		                    		alert(storeid)
 		                    		var goodsName = obj.getAttribute("data-gdName");
 		                    		var goodsImg = obj.getAttribute("data-gdImg");
 		                    		var goodsPrice = priceChange;
@@ -696,7 +704,7 @@
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
 		                    		cartObj.shopName=shopName;
-		                    		cartObj.storeid=storeid;
+		                    		cartObj.shopId=storeid;
 		                    		cartObj.goodsName=goodsName;
 		                    		cartObj.goodsImg=goodsImg;
 		                    		cartObj.goodsPrice=goodsPrice;
@@ -741,7 +749,7 @@
 											orderStorage =[];
 			                    			orderStorage.push(cartObj);
 			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-			                    		 //alert(plus.storage.getItem("$orderStorage"));
+			                    		 alert(plus.storage.getItem("$orderStorage"));
 			                    			
 			                    			openview({
 											 	view:"market-order.html", 

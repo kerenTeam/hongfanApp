@@ -263,7 +263,7 @@
 			.priceWrap p sub {
 				bottom: 0;
 			}
-			.mui-checkbox{
+			#coupon .mui-checkbox{
 				position: absolute;
 				top: 50%;
 				margin-top: -18px;
@@ -393,7 +393,7 @@
 							<%}%>
 							<%}%>
 							<dd class="dd-padding kv-line-r">
-								<h6>配送方式</h6>
+								<h6>邮费/税费</h6>
 								<%if(shopID[i]==0){%>
 										<%if(arrpostFee[i]==0){%>
 											<p class="jifen">税费 免税</p>
@@ -410,7 +410,41 @@
 								
 								
 							</dd>
-
+							<%if(shopID[i]!=0){%>
+								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
+									<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">配送方式：</h6>
+									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
+	 
+										<div class="mui-input-row mui-radio mui-left">
+											<label>到店自提</label>
+											<input name="radio1" type="radio">
+										</div>
+									</div>
+									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
+										 <div class="mui-input-row mui-radio mui-left">
+											<label>卖家配送</label>
+											<input name="radio1" type="radio" checked="checked">
+										</div>
+									</div>
+								</dd>
+							<%}else{%>
+								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
+									<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">配送方式：</h6>
+									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
+	 
+										<div class="mui-input-row mui-radio mui-left">
+											<label>到店自提</label>
+											<input name="radio1" type="radio" disabled="">
+										</div>
+									</div>
+									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
+										 <div class="mui-input-row mui-radio mui-left">
+											<label>卖家配送</label>
+											<input name="radio1" type="radio" checked="checked">
+										</div>
+									</div>
+								</dd>
+								<%}%>
 							<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
 								<h6 class="addTitle mui-col-sm-1 mui-col-xs-2">备注：</h6>
 								<div class="clearfloat fr mui-col-sm-11 mui-col-xs-10 goods">
@@ -672,7 +706,7 @@
 							 orderSubmitData.push(orderList);
 						}
 						
-							// alert("orderSubmitData "+JSON.stringify(orderSubmitData))
+							 alert("orderSubmitData "+JSON.stringify(orderSubmitData))
 						
 						//alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
@@ -722,7 +756,7 @@
 						})
 				},
 				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
+				//	alert('响应失败  !');
 				}
 			});
 			var d = new Date();
@@ -811,8 +845,7 @@
 					}
 				}); 
 				//goPay
-				window.goPay=function(){
-					
+				window.goPay=function(){ 
 //						alert($("#addid"))
 					if($("#addid").length!=0){
 						var yourSFZ = $('#sfzin').val();
@@ -836,6 +869,14 @@
 								for(var i=0;i<orderSubmitData.length;i++){
 									orderSubmitData[i].sendAddress = MYaddress;
 									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
+										alert("orderSubmitData0000 "+orderSubmitData[i].storeid)
+										if(orderSubmitData[i].storeid == 0 ){
+											orderSubmitData[i].order_type = 2;
+										}else if(orderSubmitData[i].storeid == -1 ){
+											orderSubmitData[i].order_type = 3;
+										}else{
+											orderSubmitData[i].order_type = 1;
+										}
 										orderSubmitData[i].notice = notice;
 									}
 								}
@@ -857,8 +898,7 @@
 								if($(this).css("display")=="block"){
 									coupon_id =$(this).attr("data-id");
 								}
-							})
-							alert(myuserid+" coupon_id "+coupon_id)
+							}) 
 							//积分使用
 							var isIntergal=0;
 							if($("#coupon").find("input[type='checkbox']:checked").length==1){
@@ -909,13 +949,13 @@
 											var payMent = data.data.payment;
 											var order_id=  data.data.order_id;
 											//alert("payMent "+payMent + " order_id"+order_id);
+											plus.webview.currentWebview().close();
 											openview({
 												view:"../market/pay.html",
 												extrasobj:{payMent:payMent,order_id:order_id}
 											})
 	//										var list = plus.webview.getWebviewById('cart.html'); 
 	//											mui.fire(list,'refresh'); 
-	//										plus.webview.currentWebview().close();
 										}else{
 											plus.nativeUI.closeWaiting()
 										   // alert(JSON.stringify(data.data))

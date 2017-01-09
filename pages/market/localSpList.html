@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>土特产列表</title>
+		<title>商品列表</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -19,7 +19,7 @@
 		<script src=" ../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" ></script>
-		
+
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
 		<style type="text/css">
@@ -36,7 +36,7 @@
 			#main{
 				margin-top: 50px;
 			}
-			
+
 			/*这一页*/
 			.grade-eject, .Category-eject, .Sort-eject{
 				height: 120px;
@@ -45,7 +45,7 @@
 				border-left: 1px solid #eee !important;
 			}
 			div.screening>ul{
-				border-bottom:1px solid #eee; 
+				border-bottom:1px solid #eee;
 			}
 			/*div.screening>ul:after{
 				content: '';
@@ -175,9 +175,9 @@
 				line-height: 40px;
 			}
 			.Regional{
-				background-image: none !important; 
+				background-image: none !important;
 			}
-			#upload{ 
+			#upload{
 				text-align: center;margin-bottom: 30px;font-size: 15px;
 			}
 			#upload img{width: 60px;margin-top: -15px;
@@ -188,10 +188,10 @@
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
-				土特产列表
+				商品列表
 			</div>
 		</header>
-		
+
 		 <div class="screening" id="screeningdiv" style="top: 50px;">
 		    <ul>
 		        <li class="Brand">综合</li>
@@ -199,7 +199,7 @@
 		        <li class="Sort">价格</li>
 		    </ul>
 		</div>
-		
+
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
 		        <li onclick="order('create_time','asc')">新品</li>
@@ -218,7 +218,7 @@
 		    </ul>
 		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="container">		
+		<div id="container">
 			<div id="main">
 				<div class="guess-like">
 					<dl class="list" id="goodsList">
@@ -237,7 +237,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!--模板渲染数据-->
 		<script id="goodsList-detail" type="text/html">
 			<%if(list.length==0){%>
@@ -248,14 +248,11 @@
 					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
-								<img src="<%=myUrl%><%= list[i].thumb %>" onerror="javascript:this.src='../img/zhaoxiangji.svg';"/>
+								<img src="<%=myUrl%><%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
 								<div class="title text-block bage">
-									<!--<span class="mui-badge mui-badge-primary">64G</span>
-									<span class="mui-badge mui-badge-primary">128G</span>
-									<span class="mui-badge mui-badge-primary">64G</span>-->
 								</div>
 								<div class="price mui-row">
 									<div class="mui-col-sm-4 mui-col-xs-4">
@@ -270,42 +267,41 @@
 				</dd>
 			<% } %>
 			<%}%>
-			
+
 		</script>
 	</body>
 
 	<script type="text/javascript">
 		mui.init();
 		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			//获取页面传值 商品分类id
 			var goodcatId = plus.webview.currentWebview().goodscatId;
+
 			//按照选择排序
 			window.order = function(orderType,sequence){
-				var currentPage =1, numsPerPage=8;
+				var pagenum = 8,CcurrentPage = 1;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data: {currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:0,differentiate:3,storeId:'',brand:'',keyword:'',order_type:orderType,desc:sequence},
+					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:4,storeid:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){ 
+					headers:{"token":oldToken},
+					success:function(data,type,xhr){
 					console.log(JSON.stringify(data));
-					alert(JSON.stringify(data));
 					if(data.errno == 0){
 						if(data.data.return.data.length){
 							var objdata = {};
-							objdata.myUrl = serverimgUrl;
+							objdata.myurl = serverimgUrl;
 							objdata.list = data.data.return.data;
 							var html=template("goodsList-detail",objdata);
 							document.getElementById("goodsList").innerHTML=html;
 							mui("#upload")[0].innerHTML = "";
-							plus.nativeUI.closeWaiting();//关闭等待框
-						}else{	
-							mui("#upload")[0].innerHTML = ""; 
+						}else{
+							mui("#upload")[0].innerHTML = "";
 							mui('#nulldiv')[0].style.display = 'block';
-							plus.nativeUI.closeWaiting();//关闭等待框
 						}
 						//滚动到底部加载
 						$(window).scroll(function(){
@@ -318,12 +314,12 @@
 								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 									console.log('可以请求数据');
-									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:goodcatId,recommend:'',differentiate:4,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence}, 
+									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
+										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:4,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
 										type:'post',
 										timeout:10000,
-										headers:{"token":oldToken},	 
-										success:function(data,type,xhr){ 
+										headers:{"token":oldToken},
+										success:function(data,type,xhr){
 											console.log(JSON.stringify(data));
 											if(data.errno == 0){
 												var objdata = {};
@@ -349,7 +345,7 @@
 								//加载下一部分结束
 							　　}
 						});
-						
+
 					}else{
 						mui.toast('没有数据');
 					}
@@ -360,22 +356,23 @@
 					mui.toast('没有数据');
 				}
 				});
-				
+
 				$('.Category-eject').removeClass('grade-w-roll');
 				$('.Sort-eject').removeClass('grade-w-roll');
 				$('.grade-eject').removeClass('grade-w-roll');
 			}
 			order('sales','desc');//初始化
 			//跳转详情
-			window.goInfo =  function(goodsId){ 
+			window.goInfo =  function(goodsId){
 				 openview({
-				 	view:"mall-detail.html",
+				 	view:"hometown-detail.html",
 				 	extrasobj:{goodsId:goodsId}
 				 })
 			}
-			
+
 		})();
-		
+
+
 	</script>
 
 </html>

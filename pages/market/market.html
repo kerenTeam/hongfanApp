@@ -162,11 +162,7 @@
 			.choiceness img{
 				width: 16px;
 			}
-			.choicenessWrap .pub_img img {
-				height: 100px;
-				min-height: 1rem;
-				overflow: hidden;
-			}
+			 
 			.box{
 				border: 1px solid #efefef;
 			}
@@ -218,11 +214,9 @@
 		 		/*height: 1.3rem;*/ 
 		 		text-align: center;
 		 		display: inline-block;
-		 		margin-top: 10px;
+		 		margin: 10px 0;
+		 		border: 1px solid #EFEFF4;
 		 		margin-left: 10px;
-		 	}
-		 	.nplist:last-child{
-		 		 
 		 	}
 		 	.nplast{  
 		 		height: 1.3rem;
@@ -233,11 +227,11 @@
 		 		position: absolute;
 		 		top: 0; 
 		 	}
-		 	
 		 	.nplist h4{
 		 		color: black;
 		 		font-size: 0.14rem;
 		 		width: 1rem;
+		 		line-height: 0.2rem;
 			    text-overflow: ellipsis;
 			    white-space: nowrap;
 			    overflow: hidden;
@@ -439,23 +433,34 @@
 			<!--会场数据渲染-->
 			<script type="text/html" id="outStore-detail">
 				<% for(var i=0;i<outList.length;i++){ %>
-					<div class="sy_recmd typeDis" style="background-color: #fff;" onclick="goGood(<%= outList[i].id %>)">
-						<div class="imgpt">
-						 	<img src="<%=myUrl %><%= outList[i].main.picImg %>" alt="" />
+					<div class="sy_recmd typeDis" style="background-color: #fff;">
+						<div class="imgpt" onclick="goConncilList(<%= outList[i].main.id %>)">
+						 	<img src="<%=myUrl %><%= outList[i].main.picImg %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
 						 	<div class="trangle"></div>
 						</div>
-						
 						<div class="npbk" id="<%= outList[i].goods_list %>">
-							<% for(var j=0;j<outList[i].minor.length;j++){ %>
-								<div class="nplist" onclick="goGood(<%= outList[i].minor[j].good_id %>)">
-									<div class="npimg">
-										<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" />
+							<% if(outList[i].minor.length<5){ %>
+								<% for(var j=0;j<outList[i].minor.length;j++){ %>
+									<div class="nplist" onclick="goConncilGood(<%= outList[i].minor[j].goods_id %>)">
+										<div class="npimg">
+											<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+										</div>
+										<h4><%= outList[i].minor[j].title %></h4>
+										<div class="nprice">￥<%= outList[i].minor[j].price %></div>
 									</div>
-									<h4><%= outList[i].minor[j].title %></h4>
-									<div class="nprice">￥<%= outList[i].minor[j].price %></div>
-								</div>
+								<% } %>
+							<% }else{ %>
+								<% for(var j=0;j<5;j++){ %>
+									<div class="nplist" onclick="goConncilGood(<%= outList[i].minor[j].goods_id %>)">
+										<div class="npimg">
+											<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+										</div>
+										<h4><%= outList[i].minor[j].title %></h4>
+										<div class="nprice">￥<%= outList[i].minor[j].price %></div>
+									</div>
+								<% } %>
 							<% } %>
-							<div class="nplist nplast">
+							<div class="nplist nplast" onclick="goConncilList(<%= outList[i].main.id %>)">
 								 查看全部
 							</div>
 						</div>
@@ -481,17 +486,15 @@
 			});
 			jfenmall.addEventListener('tap', function(){
 				if(plus.storage.getItem('myToken')){ 
-							openview({
-								view:'jifen-mall.html',
-							});
-						}else{//没登陆直接打开登录页面
-							mui.toast('请登录');
-							openview({
-								view:'../login.html'
-							});
-						}
-				
-				
+					openview({
+						view:'jifen-mall.html',
+					});
+				}else{//没登陆直接打开登录页面
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
 			});
 			mtshop.addEventListener('tap', function(){
 				openview({
@@ -538,83 +541,79 @@
 				 	extrasobj:{bannerUrl:url,bannerName:name}
 				 })
 			  }
-			
-		
-		
 		})();
-		
-		mui.plusReady(function(){
-			 
-		});
-	</script>	
-	<script type="text/javascript">
-	mui.plusReady(function(){ 
-		//获取缓存
-		var oldToken = plus.storage.getItem('oldToken');
-//		var userId = plus.storage.getItem("userid");
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		
-		mui.ajax(serverUrl+'/api/index/banner',{
-			data:{banner_type:6},
-			dataType:'json',
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldToken},	 
-			success:function(data,type,xhr){
-				bannerObj={};
-				bannerObj.bannerList = eval("("+data.data.banner+")");
-				bannerObj.url = serverimgUrl;
-				var html = template('banner-detail',bannerObj);
-				document.getElementById('banner').innerHTML = html;
-				plus.nativeUI.closeWaiting();//关闭等待框
-				//轮播图,获得slider插件对象
-				var gallery = mui('.mui-slider');
-				gallery.slider({
-				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
-				});
-			},
-			error:function(xhr,type,errorThrown){
-				alert('响应失败  !');
-			}
-		}); 
-	})
-	</script>
-	<!--会场铺数据-->
-	<script type="text/javascript">
-	mui.plusReady(function(){ 
-		//获取缓存
-		var oldToken = plus.storage.getItem('oldToken');
-//		var userId = plus.storage.getItem("userid");
-		mui.ajax(serverUrl+'/api/mall/shopactivestoreorgoods',{
-			data:{type:1,isVenue:''},
-			dataType:'json',
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldToken},	 
-			success:function(data,type,xhr){
-//				alert(JSON.stringify(data.data.length));
-//				alert(JSON.stringify(data.data[0].main));
-//				alert(JSON.stringify(data.data[1].main));
-//				alert(JSON.stringify(data.data[0].minor));
-//				
-//				alert(JSON.stringify(data.data[0].minor.length));
-//				alert(JSON.stringify(data.data[0].minor[0]));
-				outObj={};
-				outObj.outList=data.data;
-				outObj.myUrl= serverimgUrl;
-				for(var i=0;i<outObj.outList.length;i++){
-					outObj.outList[i].main.picImg =eval("("+outObj.outList[i].main.picImg+")")[0].picImg;
-//					alert(outObj.outList[i].main.picImg);
+		mui.plusReady(function(){ 
+			//获取缓存
+			var oldToken = plus.storage.getItem('oldToken');
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			//banner数据渲染
+			mui.ajax(serverUrl+'/api/index/banner',{
+				data:{banner_type:6},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					bannerObj={};
+					bannerObj.bannerList = eval("("+data.data.banner+")");
+					bannerObj.url = serverimgUrl;
+					var html = template('banner-detail',bannerObj);
+					document.getElementById('banner').innerHTML = html;
+					//轮播图,获得slider插件对象
+					var gallery = mui('.mui-slider');
+					gallery.slider({
+					  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+					});
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
 				}
-				var html = template('outStore-detail',outObj);
-				document.getElementById('outStore').innerHTML = html;
-			},
-			error:function(xhr,type,errorThrown){
-				alert('响应失败  !');
-			}
-		}); 
-	})
-		
+			}); 
+			//会场数据渲染
+			mui.ajax(serverUrl+'/api/mall/shopactivestoreorgoods',{
+				data:{type:1,isVenue:''},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+	//				alert(JSON.stringify(data.data.length));
+//					alert(JSON.stringify(data.data[0].main));
+//					alert(JSON.stringify(data.data[0].minor));
+//					alert(JSON.stringify(data.data[1].minor[0].thumb));
+					outObj={};
+					outObj.outList=data.data;
+					outObj.myUrl= serverimgUrl;
+					for(var i=0;i<outObj.outList.length;i++){
+						outObj.outList[i].main.picImg =eval("("+outObj.outList[i].main.picImg+")")[0].picImg;
+					}
+					var html = template('outStore-detail',outObj);
+					document.getElementById('outStore').innerHTML = html;
+					plus.nativeUI.closeWaiting();//关闭等待框
+					
+					//点击进入会场列表
+					window.goConncilList = function(concilId){
+//						alert(concilId);
+						openview({
+							view:'conncilList.html',
+							extrasobj:{concilId:concilId}
+						})
+					}
+					
+					//点击进入商品
+					window.goConncilGood = function(goodsId){
+//						alert(goodsId);
+						openview({
+							view:'mall-detail.html',
+							extrasobj:{goodsId:goodsId}
+						})
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			}); 
+		})
 	</script>
 	</body>
 	
