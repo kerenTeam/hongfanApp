@@ -151,50 +151,6 @@
 					<div class="tab-pal">
 						<dl class="list listtwo list-in" id="planeList">
 							<dd id="test" style="background-color: #EFEFF4;"></dd>
-							<!--<dd onclick="planRe()">
-								<div class="orderbh box-s">
-									<img src="../../img/tickets/p.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">机票</span>
-									<span class="fr state"><span id="stateName"></span></span>
-								</div>
-								<a class="react mui-row">
-									<div class="mui-col-sm-6 mui-col-xs-6">
-										<p class="black big"><span id="startStation"></span>&nbsp;<span class="gray">→</span>&nbsp;<span id="recevieStation"></span></p>
-									</div>
-									<div class="mui-col-sm-6 mui-col-xs-6">
-										<div class="pricetwo">
-											<p class="black big">¥<span id="totalSalePrice"></span></p>
-										</div>	
-									</div>
-									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="dark tiny"><span id="startTime"></span> <span id="startTime1"></span> - <span id="recevieTime"></span></p>
-									</div>
-									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="tiny">海南航空<span id="trainNo"></span></p>
-									</div>
-								</a>
-							</dd>-->
-							<!--<dd onclick="trainRe()">
-								<div class="orderbh box-s">
-									<img src="../../img/tickets/t.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">火车票</span>
-									<span class="fr state">交易完成</span>
-								</div>
-								<a class="react mui-row">
-									<div class="mui-col-sm-6 mui-col-xs-6">
-										<p class="black big">成都&nbsp;<span class="gray">→</span>&nbsp;邻水</p>
-									</div>
-									<div class="mui-col-sm-6 mui-col-xs-6">
-										<div class="pricetwo">
-											<p class="black big">¥50</p>
-										</div>	
-									</div>
-									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="dark tiny">2016-12-22 11:30 - 12:30</p>
-									</div>
-									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="tiny">车次 C56</p>
-									</div>
-								</a>
-							</dd>-->
 						</dl>
 					</div>
 					
@@ -229,7 +185,7 @@
 			console.log(oldToken);
 			var userid = plus.storage.getItem('userid'); 
 			//加载订单 
-			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+//			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
 			//获取用户千米网信息
 			mui.ajax(serverUrl+'/api/qianmi/billorder',{
 				data:{userid:userid,type:4},
@@ -237,7 +193,7 @@
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){ 
+				success:function(data,type,xhr){  
 //					plus.nativeUI.closeWaiting(); 
 //					//alert(JSON.stringify(data.data));
 					var dataobj=data.data;
@@ -249,62 +205,17 @@
 								orderNos.push(orderItem);
 							}
 						}
-						//初始进入获取"预定中"数据
 						if(orderNos.length>0){
-							for(var j=0;j<orderNos.length;j++){
-								mui.ajax(serverUrl+'/api/qianmi/airorderslist',{
-			//						data:{tradeNo:orderNos[j],startTime:'',endTime:'',sort:'desc',supUserId:'',pageNo:'',pageSize:'',orderStatus:orderStatus},
-									data:{tradeNo:orderNos[j],startTime:'',endTime:'',sort:'desc',supUserId:'',pageNo:'',pageSize:'',orderStatus:0},
-									dataType:'json',
-									type:'post',
-									timeout:10000,
-									headers:{"token":oldToken},	 
-									success:function(data,type,xhr){ 
-										plus.nativeUI.closeWaiting(); 
-//										//alert(JSON.stringify(data.data.air_orders_list_response.ticketTrades.ticketTrade));
-										var ticketTrade = data.data.air_orders_list_response.ticketTrades.ticketTrade;
-										if(ticketTrade.length>0){
-											for(var m=0;m<ticketTrade.length;m++){
-		         								var stateName = ticketTrade[m].stateName;
-												var startStation = ticketTrade[m].startStation;
-												var recevieStation = ticketTrade[m].recevieStation;
-												var startTime = ticketTrade[m].startTime.substring(11,ticketTrade[m].startTime.toString().Length-11);
-												var startTime1  = ticketTrade[m].startTime.substring(11);
-												var recevieTime = ticketTrade[m].recevieTime.substring(11);
-												var totalSalePrice = ticketTrade[m].totalSalePrice;
-												var trainNo = ticketTrade[m].trainNo;
-												var tradeNo = ticketTrade[m].tradeNo;
-												var planList = mui('#test')[0];
-												planList.insertAdjacentHTML('beforebegin','<dd onclick="planRe('+'this'+')" class="listItem" id="'+tradeNo+'"><div class="orderbh box-s"><img src="../../img/tickets/p.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">机票</span><span class="fr state">'+stateName+'</span></div><a class="react mui-row"><div class="mui-col-sm-6 mui-col-xs-6"><p class="black big">'+startStation+'&nbsp;<span class="gray">→</span>&nbsp;'+recevieStation+'</p></div><div class="mui-col-sm-6 mui-col-xs-6"><div class="pricetwo"><p class="black big">¥'+totalSalePrice+'</p></div></div><div class="mui-col-sm-12 mui-col-xs-12"><p class="dark tiny">'+startTime+startTime1+'-'+recevieTime+'</p></div><div class="mui-col-sm-12 mui-col-xs-12"><p class="tiny">'+trainNo+'</p></div></a></dd>')
-											}
-										}else{
-											var planList = mui('#test')[0];
-											$('#test').html('<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>');
-										}
-									},
-									error:function(xhr,type,errorThrown){
-			//							plus.nativeUI.closeWaiting()
-										console.log('响应失败  !');
-									}
-								});
-							}
-						}else{
-							var planList = mui('#test')[0];
-							planList.insertAdjacentHTML('beforebegin','<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>')
-							
-						}
-						
-						//点击切换查询飞机票订单列表
-						window.ListRefresh = function(thisStatus,orderStatus){
-							plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
-							$(thisStatus).addClass('active');
-							$(thisStatus).siblings().removeClass('active');
-							$(thisStatus).parents('.notice').find('.listItem').remove();
-//							//alert(orderStatus);
-							if(orderNos.length>0){
-								for(var j=0;j<orderNos.length;j++){
+							console.log(orderNos);
+							for(var j=0;j<orderNos.length;j++){ 
+								//点击切换查询飞机票订单列表
+								window.ListRefresh = function(thisStatus,orderStatus){
+									console.log(thisStatus);
+									plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+									$(thisStatus).addClass('active');
+									$(thisStatus).siblings().removeClass('active');
+									$(thisStatus).parents('.notice').find('.listItem').remove(); 
 									mui.ajax(serverUrl+'/api/qianmi/airorderslist',{
-				//						data:{tradeNo:orderNos[j],startTime:'',endTime:'',sort:'desc',supUserId:'',pageNo:'',pageSize:'',orderStatus:orderStatus},
 										data:{tradeNo:orderNos[j],startTime:'',endTime:'',sort:'desc',supUserId:'',pageNo:'',pageSize:'',orderStatus:orderStatus},
 										dataType:'json',
 										type:'post',
@@ -312,7 +223,7 @@
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){ 
 											plus.nativeUI.closeWaiting(); 
-	//										//alert(JSON.stringify(data.data.air_orders_list_response.ticketTrades.ticketTrade));
+ 
 											var ticketTrade = data.data.air_orders_list_response.ticketTrades.ticketTrade;
 											if(ticketTrade.length>0){
 												for(var m=0;m<ticketTrade.length;m++){
@@ -330,7 +241,7 @@
 												}
 											}else{
 												var planList = mui('#test')[0];
-											$('#test').html('<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>');
+												$('#test').html('<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>');
 											}
 										},
 										error:function(xhr,type,errorThrown){
@@ -339,12 +250,61 @@
 										}
 									});
 								}
-							}else{
-								var planList = mui('#test')[0];
-								planList.insertAdjacentHTML('beforebegin','<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>')
-								
+
+							//初始进入获取"预定中"数据
+//							ListRefresh(,0);
+						
 							}
+						}else{
+							var planList = mui('#test')[0];
+							planList.insertAdjacentHTML('beforebegin','<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>')
+							
 						}
+//						if(orderNos.length>0){
+//							for(var j=0;j<orderNos.length;j++){
+//								mui.ajax(serverUrl+'/api/qianmi/airorderslist',{
+//			//						data:{tradeNo:orderNos[j],startTime:'',endTime:'',sort:'desc',supUserId:'',pageNo:'',pageSize:'',orderStatus:orderStatus},
+//									data:{tradeNo:orderNos[j],startTime:'',endTime:'',sort:'desc',supUserId:'',pageNo:'',pageSize:'',orderStatus:0},
+//									dataType:'json',
+//									type:'post',
+//									timeout:10000,
+//									headers:{"token":oldToken},	 
+//									success:function(data,type,xhr){ 
+//										plus.nativeUI.closeWaiting(); 
+////										alert(JSON.stringify(data.data.air_orders_list_response.ticketTrades.ticketTrade));
+//										var ticketTrade = data.data.air_orders_list_response.ticketTrades.ticketTrade;
+//										if(ticketTrade.length>0){
+//											for(var m=0;m<ticketTrade.length;m++){
+//		         								var stateName = ticketTrade[m].stateName;
+//												var startStation = ticketTrade[m].startStation;
+//												var recevieStation = ticketTrade[m].recevieStation;
+//												var startTime = ticketTrade[m].startTime.substring(11,ticketTrade[m].startTime.toString().Length-11);
+//												var startTime1  = ticketTrade[m].startTime.substring(11);
+//												var recevieTime = ticketTrade[m].recevieTime.substring(11);
+//												var totalSalePrice = ticketTrade[m].totalSalePrice;
+//												var trainNo = ticketTrade[m].trainNo;
+//												var tradeNo = ticketTrade[m].tradeNo;
+//												var planList = mui('#test')[0];
+//												planList.insertAdjacentHTML('beforebegin','<dd onclick="planRe('+'this'+')" class="listItem" id="'+tradeNo+'"><div class="orderbh box-s"><img src="../../img/tickets/p.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">机票</span><span class="fr state">'+stateName+'</span></div><a class="react mui-row"><div class="mui-col-sm-6 mui-col-xs-6"><p class="black big">'+startStation+'&nbsp;<span class="gray">→</span>&nbsp;'+recevieStation+'</p></div><div class="mui-col-sm-6 mui-col-xs-6"><div class="pricetwo"><p class="black big">¥'+totalSalePrice+'</p></div></div><div class="mui-col-sm-12 mui-col-xs-12"><p class="dark tiny">'+startTime+startTime1+'-'+recevieTime+'</p></div><div class="mui-col-sm-12 mui-col-xs-12"><p class="tiny">'+trainNo+'</p></div></a></dd>')
+//											}
+//										}else{
+//											var planList = mui('#test')[0];
+//											$('#test').html('<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>');
+//										}
+//									},
+//									error:function(xhr,type,errorThrown){
+//			//							plus.nativeUI.closeWaiting()
+//										console.log('响应失败  !');
+//									}
+//								});
+//							}
+//						}else{
+////							var planList = mui('#test')[0];
+////							planList.insertAdjacentHTML('beforebegin','<div class="nothing listItem" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/market/order.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">该状态不存在订单！</p></div>')
+//							
+//						}
+						
+						
 					}
 				},
 				error:function(xhr,type,errorThrown){

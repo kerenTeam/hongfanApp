@@ -362,7 +362,7 @@
 								<div class="box">
 									<div class="pub_img">
 										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')">
-											<img src="<%=myUrl %><%=recommendData[i].thumb%>" onerror="javascript:this.src='../../img/market/banner.png';" width="145" height="145" class="hotImg">
+											<img src="<%=myUrl %><%=recommendData[i].thumb%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
 										</a>
 									</div>
 									<div class="pub_wz">
@@ -373,7 +373,7 @@
 									       </div>
 									        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
 												<p class="fl fontcl2"><sub class="saled black9">已售<%=recommendData[i].sales%></sub></p>
-									      	</div>
+									      	</div> 
 									     </div>
 									</div>
 								</div>
@@ -421,13 +421,14 @@
 			//推荐数据渲染
 			var currentPage =1, numsPerPage=4;
  			//热门推荐 数据渲染 
-			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-				data: {currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:1,differentiate:4,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist', { 
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:0,differentiate:3,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
 				dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型 
 					timeout:10000,//超时时间设置为10秒；	
 					headers:{"token":oldToken}, 
 					success:function(data){
+						console.log('优品汇推荐',data)
 //						alert(JSON.stringify(data))
 						//获取并渲染  eval("("+data1+")");
 						//var dataobj= eval("("+data.data.banner+")"); 
@@ -435,7 +436,7 @@
 						plus.nativeUI.closeWaiting();//关闭等待框
 						var dataobj = data.data.return.data
 						var recommendObj = {}
-							recommendObj.myUrl = serverimgUrl;
+							recommendObj.myUrl = '';
 							recommendObj.recommendData = dataobj
 	                    document.getElementById("moll_recommend").innerHTML=template("recommendTpl",recommendObj);
 	                    mui("#upload")[0].innerHTML = "加载更多";
@@ -450,16 +451,17 @@
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
 									console.log('可以请求数据');
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:1,differentiate:4,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+										data:{currentPage:currentPage,numsPerPage:numsPerPage,recommend:0,differentiate:3,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
 										dataType:'json',//服务器返回json格式数据
 										type:'post',//HTTP请求类型 
 										timeout:10000,//超时时间设置为10秒；	
 										headers:{"token":oldToken}, 
 										success:function(data){
+											console.log('优品汇推荐',data)
 											if(data.errno == 0){
 												var dataobj = data.data.return.data
 												var recommendObj = {}
-													recommendObj.myUrl = serverimgUrl;
+													recommendObj.myUrl = '';
 													recommendObj.recommendData = dataobj
 							                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 							                    mui("#upload")[0].innerHTML = "";
