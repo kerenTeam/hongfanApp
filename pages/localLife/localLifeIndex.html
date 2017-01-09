@@ -94,7 +94,7 @@
 										<li class="icon">
 											<a class="<%= classnames[i]%>">
 												<span class="icon-circle bluegray" style="background-color:<%= list[i].icon_color%>;">
-													<img src="<%= myUrl%><%= list[i].icon%>" onerror="javascript:this.src='../../img/market/banner.png';">
+													<img src="<%= list[i].iconpic%>">
 												</span>
 												<span class="icon-desc"><%= list[i].name%></span>
 											</a>
@@ -105,7 +105,7 @@
 							<div class="swiper-slide swiper_part2" >
 								<ul class="icon-list" id="columndiv2">
 									<!--没有数据显示--> 
-									<img src="../../img/nullinfo.svg" id="kuimg" style="display: none;" onerror="javascript:this.src='../../img/market/banner.png';">
+									<img src="../../img/nullinfo.svg" id="kuimg" style="display: none;" >
 									<p>没有了</p>	
 								</ul>
 								<!--有数据显示-->
@@ -114,7 +114,7 @@
 										<li class="icon">
 											<a class="supermarket">
 												<span class="icon-circle bluegray">
-													<img src="../../img/localLife/chaoshi.svg" onerror="javascript:this.src='../../img/market/banner.png';">
+													<img src="<%= list[i].iconpic%>" >
 												</span>
 												<span class="icon-desc">超市比价</span>
 											</a>
@@ -172,7 +172,7 @@
 					<!--首页限时抢购结束-->
 					<!--热门推荐 -->	
 					<div class="jinengxueyuan">
-						<div class="sy_limit_buy mb10">
+						<div class="sy_limit_buy mb10" style="margin-bottom: 0;">
 							<div class="sy_title">
 							<span class="left">热门推荐&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</div>
@@ -259,12 +259,14 @@
 				success:function(data){
 //					alert(JSON.stringify(data.data));
 					console.log('获取栏目返回'+JSON.stringify(data));
+					console.log('获取栏目返回',data);
 					if(data.errno == 0){ 
 						var objdata = {};
+						mui.each(data.data,function (index,ele) {
+							data.data[index].iconpic = serverimgUrl + JSON.parse(ele.icon)[0].picImg;
+						})
 						objdata.list = data.data;
 						objdata.classnames = ['repair','cleaning','babysister','house','tiaozao','openclock','express','supermarket']
-						objdata.myUrl = serverimgUrl;
-//						console.log(objdata.list);
 						var html = template("column",objdata);
 						document.getElementById("columndiv").innerHTML=html;
 						if(data.data.length > 8){//显示下一轮数据

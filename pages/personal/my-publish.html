@@ -211,7 +211,7 @@
 							<a class="react">
 								<div class="dealcard dealcardtwo clearfloat">
 									<div class="dealcard-img imgbox">
-										<img src="<%= list[i].logo%>">
+										<img src="<%= list[i].list_pic%>">
 									</div>
 									<div class="dealcard-block-right dealcard-block-righttwo">
 										<div class="dealcard-brand dealcard-brandtwo single-line">
@@ -292,11 +292,15 @@ mui.plusReady(function(){
 			headers:{"token":oldtoken},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
-				console.log('我的发布返回'+JSON.stringify(data));
+				console.log('跳蚤市场'+JSON.stringify(data));
+				console.log('跳蚤市场',data);
 				if(data.errno == 0){
 					if(data.data.length){
 						mui('#nulldiv')[0].style.display = 'none';
 						var dataobj = {};
+						mui.each(data.data,function (index,ele) {
+							data.data[index].list_pic = serverimgUrl + JSON.parse(ele.list_pic)[0].picImg;
+						})
 						dataobj.list = data.data; 
 						dataobj.mytype = 1; 
 						var html=template("infolist1",dataobj);
@@ -368,6 +372,9 @@ mui.plusReady(function(){
 					if(data.data.length){
 						mui('#nulldiv')[0].style.display = 'none'; 
 						var dataobj = {};
+						mui.each(data.data,function (index,ele) {
+							data.data[index].list_pic = serverimgUrl + JSON.parse(ele.list_pic)[0].picImg;
+						})
 						dataobj.list = data.data;
 						dataobj.mytype = 2;
 						var html=template("infolist2",dataobj);
@@ -438,6 +445,9 @@ mui.plusReady(function(){
 					if(data.data.length){
 						mui('#nulldiv')[0].style.display = 'none'; 
 						var dataobj = {};
+						mui.each(data.data,function (index,ele) {
+							data.data[index].list_pic = serverimgUrl + JSON.parse(ele.logo)[0].picImg;
+						})
 						dataobj.list = data.data;
 						dataobj.mytype = 3;
 						var html=template("infolist3",dataobj);
