@@ -413,7 +413,7 @@
 								</div>
 							</div>
 							<div class="xia clearfloat">
-								<p class="jifen fl box-s"><img src="../../img/market/jifen.svg" alt="" /><samp><%=brief.price%></samp></p>
+								<p class="jifen fl box-s"><img src="../../img/market/jifen.svg" alt="" /><samp id="priceChange"><%=brief.price%></samp></p>
 							</div>
 							 
 						</div>
@@ -488,8 +488,8 @@
 		<!--footerone star-->
 		<div class="footerone clearfloat">
 		 
-			<div class="right clearfloat fl" style="width：100%!important;"> 
-                <a onClick="toshare(2)" class="btn btnone fl" style="width：100%!important;">立即兑换</a>
+			<div class="right clearfloat fl" style="width:100%!important;"> 
+                <a onClick="toshare(2)" class="btn btnone fl" style="width:100%!important;">立即兑换</a>
 			</div>
 		</div>
 		<!--footerone end-->
@@ -507,16 +507,17 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
-		     			<img src="<%=choose.thumb%>" data-preview-src="" />
+		     			<img src="<%=myUrl%><%=choose.thumb%>" data-preview-src="" />
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
-		     			<span>￥<b id="priceChange"><%=choose.price%></b></span>
+		     			<span><img src="../../img/market/jifen.svg" style="width: 0.1rem;vertical-align: middle;" alt="" /><b><%=choose.price%></b></span>
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
 		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
+		     				<%if(choose.parameter[i].parameter_name){%> 
 		     				<div class="middle clearfloat textType">
 					     		<p><%=choose.parameter[i].parameter_name%></p>
 					     		<div class="xia clearfloat choose">
@@ -529,22 +530,14 @@
 						     		</ul>
 					     		</div>		     		
 					     	</div>
+					     <%}%>	
 	     				<%}%>
 	     			<%}%>
-		     	<div class="bottom clearfloat">
-		     		<p class="fl">购买数量</p>
-		     		<div class="you clearfloat fr">
-	     				<div class="mui-numbox margin-top" data-numbox-min="1">
-	     					<button class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
-	     					<input id="test" class="mui-input-numbox" type="number" value="0">
-	     					<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
-	     				</div>
-		     		</div>
-		     	</div>
+		      
 		     	</div>
 		     </div>		     
 		</div>
-		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.postage%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.postage%>" data-diffrentiate="<%=choose.diffrentiate%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
 		
 		</div>
@@ -596,11 +589,14 @@
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 		                     //详情
 		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+		                       alert(data.data.goodsInfo.parameter);
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
 		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
-		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.goodsInfo});
-		                     mui(".mui-numbox").numbox();
+		                     var chooseO = {};
+		                     chooseO.choose = data.data.goodsInfo;
+		                     chooseO.myUrl = serverimgUrl;
+		                     document.getElementById("cartBox").innerHTML=template("boxTpl",chooseO); 
 		                     var priceChange =parseInt($("#priceChange").html());
 		                     $('.choose').each(function(){
 		                     	var chooseli = $(this).find("li");
@@ -622,10 +618,7 @@
 		                     		oldstep=newstep;
 											$(this).addClass('cur');
 											$(this).siblings().removeClass('cur');
-				                     	  newstep = $(this).attr("data-priceStep");
-//				                     	alert(newstep)
-				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
-				                     	 $('#priceChange').html(priceChange)
+				                     	 
 										})
 		                     	
 		                     })
@@ -655,6 +648,7 @@
 		                    		var storeid = obj.getAttribute("data-shopId");
 		                    		var goodsName = obj.getAttribute("data-gdName");
 		                    		var goodsImg = obj.getAttribute("data-gdImg");
+		                    		//var gddiffrentiate = obj.getAttribute("data-diffrentiate");
 		                    		var goodsPrice = priceChange;
 		                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
 		                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
@@ -677,50 +671,21 @@
 		                    		cartObj.goodsImg=goodsImg;
 		                    		cartObj.goodsPrice=goodsPrice;
 		                    		cartObj.goodsPostfee=goodsPostfee;
-		                    		cartObj.goodsnum=goodsnum;
+		                    		cartObj.goodsnum=1;
 		                    		cartObj.goodText=goodText;
 		                    		cartObj.goodProp=goodProp;
 		                    		
-		                    		if(goNum ==1){
-		                    			if(cartStorage.length != 0) {
-									var flag = false;
-									for(var i = 0; i < cartStorage.length; i++) {
-										if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) { 
-											 
-												cartStorage[i].goodsnum=parseInt(cartStorage[i].goodsnum)+parseInt(goodsnum); 
-											flag = false;
-											break;
-										} else {
-											flag = true;
-										}
-									}
-									if(flag) {
-		                    		cartStorage.push(cartObj); 
-									}
-								} else { 
-		                    		cartStorage.push(cartObj); 
-								}  
-		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-//		                    		alert(JSON.stringify(cartStorage))
-		                    		$(".am-share").removeClass("am-modal-active");
-		                    		$(".sharebg ").removeClass("sharebg-active");
-		                    		mui.toast("已成功加入购物车");
-		                    		//webview 购物车页面 刷新
-		                    		  //获得列表界面的webview
-									var list= plus.webview.getWebviewById('cart.html');
-									//触发列表界面的自定义事件（refresh）,从而进行数据刷新
-									mui.fire(list,'refresh'); 
-
-		                    		}else{
+		                    		 
 		                    			
 		                    			if(plus.storage.getItem('myToken')){ 
-											orderStorage =[];
+										var orderStorage =[];
 			                    			orderStorage.push(cartObj);
 			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
 			                    		 //alert(plus.storage.getItem("$orderStorage"));
 			                    			
 			                    			openview({
-											 	view:"market-order.html", 
+											 	view:"jifen-torder.html", 
+											 	id:"jifen-torder"
 											 })
 										}else{//没登陆直接打开登录页面
 											mui.toast('请登录');
@@ -730,9 +695,7 @@
 										}
 		                    			
 		                    			
-		                    			
-		                    		}
-		                    		
+		                    		 
 		                    		
 		                    		
 		                    		

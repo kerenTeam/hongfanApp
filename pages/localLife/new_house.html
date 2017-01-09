@@ -353,6 +353,16 @@
 		   	.gray{
 		   		color: #999 !important;
 		   	}
+		   	#showCityPicker4{
+				position: absolute;
+				right: 10px;
+				line-height: 49px;
+				border: none;
+				padding: 0;
+				text-align: right;
+				width: 75%;
+				background-color: rgba(0,0,0,0);
+			}
 		
     </style>
 	</head>
@@ -390,7 +400,7 @@
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">电话</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bphone" value="" placeholder="请输入电话" />
+								<input type="number" class="fr shuru Ynull" name="" id="Bphone" value="" placeholder="请输入电话" />
 							</a>
 						</li>
 						<textarea name="" rows="4" id="Binfo" placeholder="请填写描述" class="textare box-s Ynull"></textarea>
@@ -402,6 +412,13 @@
 								<div id='cityResult3' class="ui-alert"></div>
 							</a>
 						</li>-->
+						<li class="clearfloat" id="Bclass2">
+							<a href="javascript:;" id="mapAddress">
+								<p class="fl">身份</p>
+								<button id='showCityPicker4' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+								<div id='cityResult4' class="ui-alert">请选择身份</div>
+							</a>
+						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">小区名称</p>
@@ -536,10 +553,21 @@
 		var Bnowid = plus.webview.currentWebview().Bname;
 		var Btype = plus.webview.currentWebview().Btype;
 		mui('#Releasebtn')[0].onclick = function(){
+			var classification_1;//身份
+			switch(mui('#cityResult4')[0].innerHTML){
+				case '商家':
+				classification_1 = 1;
+				break;
+				case '个人':
+				classification_1 = 0;
+				break;
+			}
 			var Ynulls = mui('.Ynull');
 			if(!reg_phone.test(mui('#Bphone')[0].value)){
 				mui.toast('请输入正确的手机号');
 				mui('#Bphone')[0].focus();
+			}else if(mui('#cityResult4')[0].innerHTML == "请选择身份"){
+				mui.toast('请选择身份');
 			}else{
 				if(Bnowid){//修改上传
 					for (var i=0; i<Ynulls.length; i++) {
@@ -610,6 +638,7 @@
 								break; 
 							}
 							if(i==Ynulls.length-1){
+								alert(classification_1);
 								plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
 								//发送数据
 								var formD = new FormData();
@@ -625,6 +654,7 @@
 								formD.append('name',mui('#Bname')[0].value);
 								formD.append('phone',mui('#Bphone')[0].value);
 								formD.append('content',mui('#Binfo')[0].value);
+								formD.append('isbusiness',classification_1);//商家个人
 								formD.append('quarters',mui('#Bxiaoqu')[0].value);//小区
 								formD.append('area_address',mui('#Bxiaoqudizhi')[0].value);//小区地址
 								formD.append('address',mui('#Bdizhi')[0].value);//小区地址
@@ -692,6 +722,7 @@
 						mui('#Bhuxing')[0].value = data.data.house_layout;
 						mui('#Bmianji')[0].value = data.data.house_area;
 						mui('#Bfangleixing')[0].value =data.data.house_type; 
+						mui('#Bclass2')[0].style.display = 'none';
 					}else{
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
@@ -725,6 +756,29 @@
 			}]);
 			var showUserPickerButton = doc.getElementById('showCityPicker3');
 			var userResult = doc.getElementById('cityResult3');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				userPicker.show(function(items) {
+					userResult.innerText = items[0].text;
+					//返回 false 可以阻止选择框的关闭
+					//return false;
+				});
+			}, false);
+		});
+	})(mui, document);
+</script>
+<script>
+	(function($, doc) {
+		$.init();
+		$.ready(function() {
+			//分类选择
+			var userPicker = new $.PopPicker();
+			userPicker.setData([{
+				text: '商家'
+			}, {
+				text: '个人'
+			}]);
+			var showUserPickerButton = doc.getElementById('showCityPicker4');
+			var userResult = doc.getElementById('cityResult4');
 			showUserPickerButton.addEventListener('tap', function(event) {
 				userPicker.show(function(items) {
 					userResult.innerText = items[0].text;
