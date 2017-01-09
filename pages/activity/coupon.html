@@ -100,12 +100,19 @@
 						<div class="mui-table-view-cell ddafter" onclick="activity(<%= objData[i].id %>)">
 							<div class="mui-row aclist">
 								 <div class="fl acleft">
-								 	<img src="<%= objData[i].pic %>" alt="" />
+								 	<% if(!objData[i].picImg || objData[i].picImg == ''){ %>
+										<img src="../../img/market/nodata.svg" class="goodsImg">
+									<% }else{ %>
+										<img src="<%= myUrl %><%= objData[i].picImg %>" alt="" />
+									<% } %>
 								 </div>
 								 <div class="fl acright">
 								 	<p class="gray Ctitle"><%= objData[i].store_name %></p>
 								 	<div class="red1"><%= objData[i].title %></div>
-								 	<div><img src="../../img/time.png"/><small>时间：<%= objData[i].begin_time %>&nbsp;~&nbsp;<%= objData[i].end_time %></small></div>
+								 	<div>
+								 		<img src="../../img/time.png"/>
+								 		<small>时间：<%= objData[i].begin_time %>&nbsp;~&nbsp;<%= objData[i].end_time %></small>
+								 	</div>
 								 </div>
 							</div>
 						</div>
@@ -135,16 +142,14 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(data.data[0].pic);
+//					alert(JSON.stringify(data.data[0]));
 					var dateObj={};
 					for(var i = 0;i < data.data.length;i++){
 			       		data.data[i].begin_time = data.data[i].begin_time.split('T')[0]; 
 			       		data.data[i].end_time = data.data[i].end_time.split('T')[0]; 
-//			       		data.data[i].picImg = serverimgUrl + data.data[i].picImg;
-			       		data.data[i].pic = serverimgUrl + data.data[i].pic;
-			       		data.data[i].content = data.data[i].content;
 					}
 					dateObj.objData=data.data;
+					dateObj.myUrl=serverimgUrl;
 					mui('#Alist')[0].innerHTML = template('Alist-detail',dateObj);
 					plus.nativeUI.closeWaiting();
 				},
