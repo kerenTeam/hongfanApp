@@ -300,8 +300,8 @@
 				购物中心
 			</div>
 		</header>
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
-
+		<script src="../../js/statusBar.js"></script><!--状态栏--> 
+		<div id="container">		 
 		<div id="main">
 			<div id="scroller">
 			<!--轮播图-->
@@ -337,7 +337,7 @@
 						<tr>
 							<td class="bcenter">
 								<div class="market-icon icon1">
-									<img src="../../img/market/buy.svg"/>
+									<img src="../../img/market/buy.svg"/> 
 								</div>
 								<br/>
 								<p>购物</p>
@@ -417,14 +417,14 @@
 								</div>
 							</div>
 						</li>
-						<li class="sy_recmd_list">
+						<li class="sy_recmd_list" id="hotRestront">
 							<div class="box">
 								<div class="pub_img">
 									<a><img src="../../img/market/market-food.jpg" width="145" height="145"></a>
 								</div>
 								<div class="choiceness">
-									<p class="overflow_clear"><img src="../../img/market/breakfast.png"/>元气早餐</p>
-									<p class="gray">附近人气餐厅选择</p>
+									<p class="overflow_clear"><img src="../../img/market/breakfast.png"/>元气吃货</p>
+									<p class="gray">人气餐厅选择</p>
 								</div>
 							</div>
 						</li>
@@ -480,9 +480,20 @@
 				});
 			});
 			jfenmall.addEventListener('tap', function(){
-				openview({
-					view:'jifen-mall.html',
-				});
+				
+				
+				if(plus.storage.getItem('myToken')){ 
+							openview({
+								view:'jifen-mall.html',
+							});
+						}else{//没登陆直接打开登录页面
+							mui.toast('请登录');
+							openview({
+								view:'../login.html'
+							});
+						}
+				
+				
 			});
 			mtshop.addEventListener('tap', function(){
 				openview({
@@ -505,21 +516,22 @@
 				})
 			});
 
-			
-
 			mtshop.addEventListener('tap', function(){
 				openview({
 					view:"storeListFloor.html"
 				})
 			});
-
-//			mui("#storeRcmd")[0].addEventListener('tap',function(){
-//				openview({
-//					 	view:"storeList.html"
-//					 })
-//			})
-			
-			
+			mui("#storeRcmd")[0].addEventListener('tap',function(){
+				openview({
+					 	view:"storeList.html"
+					 })
+			}) 
+			mui("#hotRestront")[0].addEventListener('tap',function(){
+				openview({
+					 	view:"hotRestront.html"
+					 })
+			})
+			 
 			//banner跳转
 			window.bannerGo=function(url,name){ 
 			  	openview({
