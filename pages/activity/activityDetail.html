@@ -107,6 +107,7 @@
 			.greencss{
 				color: #32B16C !important;
 			}
+			
 		</style>
 	</head>
 
@@ -120,7 +121,7 @@
 		<!--详情内容-->
 		<div id="main"></div>
 		<script type="text/html" id="details">
-			<img src="<%= list.picImg%>" class="goodsImg">
+			<img src="<%=myUrl %><%= list.picImg%>" class="goodsImg">
 			<div class="farm clearfloat">
 				<div class="top rentingtop clearfloat box-s">
 					<p class="red1"><%= list.title%></p>
@@ -144,8 +145,7 @@
 				<p class="bt box-s">活动详情</p>
 			</div>
 			<div class="farm clearfloat">
-				<div id="hahaha" class="top rentingtop rentingtopbot clearfloat box-s">
-					<%= list.content%>
+				<div id="content" class="top rentingtop rentingtopbot clearfloat box-s">
 				</div>	
 			</div>
 		</script>
@@ -172,8 +172,10 @@
 				if(data.errno == 0){
 					var objdata = {};
 					objdata.list = data.data.system_activity; 
+					objdata.myUrl = serverimgUrl; 
 					var html=template("details",objdata);
 					document.getElementById("main").innerHTML=html;
+					mui('#content')[0].innerHTML = objdata.list.content;
 				}else{
 					mui.toast('获取用户信息失败');
 				}

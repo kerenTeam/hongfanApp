@@ -239,7 +239,7 @@
 						<%for(var i=0;i<recommendData.length;i++){%>
 							<dd class="goodsItem react" onclick="goInfo('<%=recommendData[i].goods_id%>')" > 
 								<div class="dealcard-img imgbox">
-									<img src="<%=recommendData[i].thumb%>" alt="" >
+									<img src="<%=myUrl %><%=recommendData[i].thumb%>" alt="" >
 								</div>
 								<div class="dealcard-block-right">
 									<div class="dealcard-brand single-line"><%=recommendData[i].title%></div>
@@ -268,7 +268,7 @@
 					<% for(var i=0;i<list.length;i++){ %>
 						<dd class="goodsItem react" onclick="goInfo(<%= list[i].goods_id%>)">
 							<div class="dealcard-img imgbox">
-								<img src="<%= list[i].thumb %>"/>
+								<img src="<%=myUrl %><%= list[i].thumb %>"/>
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
@@ -299,7 +299,7 @@
 						<%for(var i=0;i<recommendData.length;i++){%>
 							<dd class="goodsItem react" onclick="goInfo('<%=recommendData[i].goods_id%>')" > 
 								<div class="dealcard-img imgbox">
-									<img src="<%=recommendData[i].thumb%>" alt="" >
+									<img src="<%=myUrl %><%=recommendData[i].thumb%>" alt="" >
 								</div>
 								<div class="dealcard-block-right">
 									<div class="dealcard-brand single-line"><%=recommendData[i].title%></div>
@@ -423,6 +423,7 @@
 				if(data.data.logo == '' || data.data.logo == null){
 					$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
 				}else{
+					alert(data.data.pic)
 					$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
 				}
 				if(data.data.pic == '' || data.data.pic == null){
@@ -449,6 +450,7 @@
 						 }    
 						var alldata = {}; 
 						alldata.list = data1.data.return.data; 
+						alldata.myurl = serverimgUrl; 
 						var html=template("allGoods-detail",alldata);
 						document.getElementById("allGoods").innerHTML=html;
 						

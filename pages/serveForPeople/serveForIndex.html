@@ -41,10 +41,7 @@
 				opacity: 1;
 				border: none;
 			}
-			.mui-slider{
-				margin-top: 50px;
-			}
-			.mui-slider-item a{
+			.mui-slider-item{
 				position: relative;
 				width: 100%;
 				padding-top: 42%; 
@@ -135,7 +132,10 @@
 			.mui-table-view:before{height: 0;}
 			.mui-table-view:after{background-color: rgba(0,0,0,0.1);}
 			.mui-table-view-cell:after{right: 15px;background-color: rgba(0,0,0,0.1);}
-			body::-webkit-scrollbar {display:none!important;};
+			body::-webkit-scrollbar {display:none!important;}
+			#main{
+				margin-top: 50px;
+			}
 		</style>
 	</head>
 
@@ -145,88 +145,90 @@
 		    <h1 class="mui-title">为民服务</h1> 
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="container">		
-			<div id="main">
-				<div id="banner"></div>
-						<script type="text/html" id="bannerModal">
-						<!--轮播图-->
-						<div class="mui-slider">
-							<div class="mui-slider-group mui-slider-loop">
-								<!--支持循环，需要重复图片节点-->
-								<div class="mui-slider-item">
-									<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>','<%=bannerData[bannerData.length-1].name%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
-										<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
-									</a>
-								</div>
-								<% for(var i=0;i<bannerData.length;i++){ %>
-					
-								<div class="mui-slider-item">
-									<a onclick="bannerGo('<%=bannerData[i].url%>','<%=bannerData[i].name%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
-										<img src="<%=bannerData[i].bannerPic%>" />
-									</a>
-								</div>
-								<% } %>
-								<!--支持循环，需要重复图片节点-->
-								<div class="mui-slider-item mui-slider-item-duplicate">
-									<a onclick="bannerGo('<%=bannerData[0].url%>','<%=bannerData[0].name%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
-										<img src="<%=bannerData[0].bannerPic%>" />
-									</a>
-								</div>
-					
+
+		<div id="main">
+			<div id="scroller">
+				<!--轮播图-->
+				<div class="mui-slider" id="banner"></div>
+				<!--轮播图结束-->
+				<!--banner数据渲染-->
+				<script type="text/html" id="banner-detail">
+					<div class="mui-slider-group mui-slider-loop">
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+					    	<div class="titleWrap">
+								<p><%=bannerList[bannerList.length-1].name %></p>
 							</div>
-							<div class="mui-slider-indicator">
-								<div class="mui-indicator mui-active"></div>
-								<% for(var i=0;i<bannerData.length-1;i++){ %>
-							    	<div class="mui-indicator"></div>
-							    <% } %>
-				            </div>
-							<!--轮播图结束-->
-					</script>
-				
-				<div id="index" class="page-center-box">
-					<div>
-						<!--主要条目项板块开始 -->
-						<ul class="mui-table-view mui-grid-view yigong">
-					        <li class="mui-table-view-cell mui-media mui-col-xs-6">
-					            <a class="projectLink">
-					                <img class="mui-media-object" src="../../img/serveForPeople/yigongteam.png">
-					                <div class="mui-media-body">义工团队</div></a></li>
-					        <li class="mui-table-view-cell mui-media mui-col-xs-6">
-					            <a id="yigong">
-					                <img class="mui-media-object" src="../../img/serveForPeople/linshuibang.jpg">
-					                <div class="mui-media-body">邻水帮帮团</div></a></li>
-					        
-					    </ul>   
-						<!--主要条目项板块结束 -->	
-						<!--公益项目开始 -->	
-						<div class="jinengxueyuan" style="background-color: #fff;">
-							<div class="sy_title" style="text-align: center;padding-bottom: 0;border-bottom: 1px solid #EFEFEF;margin: 0 10px;">
-								<img style="width: 20px;margin-top: -3px;margin-right: 2px;" src="../../img/aixing.svg"/>
-								<span style="color: #666;">义工活动</span>
+					    </div>
+						<% for(var i=0;i<bannerList.length;i++){ %> 
+					    	<div class="mui-slider-item">
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+					    		<div class="titleWrap">
+									<p><%=bannerList[i].name %></p>
+								</div>
+					    	</div>
+					     <% } %>
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+					    	<div class="titleWrap">
+								<p><%= bannerList[0].name %></p>
 							</div>
-							<div id="ygData"></div>
-							<script type="text/html" id="ygTpl">
-								<ul class="mui-table-view">
-									<%for(var i=0;i<lData.length;i++){%>
-										<li class="mui-table-view-cell mui-media" onclick="goInfo('<%=lData[i].id%>')">
-											<a href="javascript:;">
-												<img class="mui-media-object mui-pull-left" src="<%=lData[i].picImg%> ">
-												<div class="mui-media-body" style="line-height: 25px;">
-													<%=lData[i].title%> 
-												</div>
-												<small class="mui-media-body gray" style="line-height: 25px;">
-													发布时间 <%=lData[i].create_time%> 
-												</small>
-											</a>
-										</li> 
-									<%}%>  
-								</ul>
-							</script>
-							
-						</div>
-						<!--公益项目
-						结束 -->	
+					    </div>
 					</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator mui-active"></div>
+						<% for(var i=0;i<bannerList.length-1;i++){ %>
+					    	<div class="mui-indicator"></div>
+					    <% } %>
+		            </div> 
+				</script>
+			</div>
+			
+			<div id="index" class="page-center-box">
+				<div>
+					<!--主要条目项板块开始 -->
+					<ul class="mui-table-view mui-grid-view yigong">
+				        <li class="mui-table-view-cell mui-media mui-col-xs-6">
+				            <a class="projectLink">
+				                <img class="mui-media-object" src="../../img/serveForPeople/yigongteam.png">
+				                <div class="mui-media-body">义工团队</div></a></li>
+				        <li class="mui-table-view-cell mui-media mui-col-xs-6">
+				            <a id="yigong">
+				                <img class="mui-media-object" src="../../img/serveForPeople/linshuibang.jpg">
+				                <div class="mui-media-body">邻水帮帮团</div></a></li>
+				        
+				    </ul>   
+					<!--主要条目项板块结束 -->	
+					<!--公益项目开始 -->	
+					<div class="jinengxueyuan" style="background-color: #fff;">
+						<div class="sy_title" style="text-align: center;padding-bottom: 0;border-bottom: 1px solid #EFEFEF;margin: 0 10px;">
+							<img style="width: 20px;margin-top: -3px;margin-right: 2px;" src="../../img/aixing.svg"/>
+							<span style="color: #666;">义工活动</span>
+						</div>
+						<div id="ygData"></div>
+						<script type="text/html" id="ygTpl">
+							<ul class="mui-table-view">
+								<%for(var i=0;i<lData.length;i++){%>
+									<li class="mui-table-view-cell mui-media" onclick="goInfo('<%=lData[i].id%>')">
+										<a href="javascript:;">
+											<img class="mui-media-object mui-pull-left" src="<%=lData[i].picImg%> ">
+											<div class="mui-media-body" style="line-height: 25px;">
+												<%=lData[i].title%> 
+											</div>
+											<small class="mui-media-body gray" style="line-height: 25px;">
+												发布时间 <%=lData[i].create_time%> 
+											</small>
+										</a>
+									</li> 
+								<%}%>  
+							</ul>
+						</script>
+						
+					</div>
+					<!--公益项目
+					结束 -->	
 				</div>
 			</div>
 		</div>
@@ -257,58 +259,27 @@
 		//获取缓存
 		var oldToken = plus.storage.getItem('oldToken');
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		console.log(oldToken);
-		//banner数据请求
-		mui.ajax(serverUrl+'/api/localservice/communityservicebanner',{
-	//		data:{},
-			dataType:'json',
-			type:'post',
-			timeout:1000,
-			headers:{"token":oldToken},	 
-			success:function(data){  
-				if(data.errno==0){
-					var dataobj= eval("("+data.data.banner+")");
-					var bannerObj = {}
-						bannerObj.myUrl = serverimgUrl;
-						bannerObj.bannerData = dataobj
-		            document.getElementById("banner").innerHTML=template("bannerModal",bannerObj);
-		            plus.nativeUI.closeWaiting();
-		            var gallery = mui(".mui-slider");
-					gallery.slider({
-						interval: 3000 //设置自动轮播周期为3s
-					});
-				}else{
-					mui.toast("网络不好请重试！");
-				}
-			},
-			error:function(xhr,type,errorThrown){
-				alert('响应失败  !');
-			}
-		});  
-				//活动数据请求
+		
+		//活动数据请求
 		mui.ajax(serverUrl+'/api/localservice/volunteeractivities',{
 			dataType:'json',
 			type:'post',
 			timeout:1000,
 			headers:{"token":oldToken},	 
 			success:function(data){  
-			            plus.nativeUI.closeWaiting(); 
 //				alert(JSON.stringify(data.data))
 				if(data.errno==0){ 
 					if(data.data.length!=0){
 						for(var t=0;t<data.data.length;t++){  
-			       				data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
-			       			  
+			       			data.data[t].create_time = data.data[t].create_time.substring(0,10)+" "+data.data[t].create_time.substring(11,16); 
 			       		} 
 					 	var acObj = {};
 							acObj.myUrl2 = serverimgUrl;
-							
 							acObj.lData = data.data;
-//							alert(JSON.stringify(acObj.lData)); 
-							document.getElementById("ygData").innerHTML = template("ygTpl",acObj)
-
-					 }
-				}  
+						document.getElementById("ygData").innerHTML = template("ygTpl",acObj)
+					}
+				} 
+				plus.nativeUI.closeWaiting();
 			},
 			error:function(xhr,type,errorThrown){
 				alert('响应失败  !');
@@ -320,8 +291,8 @@
 			 	view:"../bannerTpl.html",
 			 	id:"bannerTpl",
 			 	extrasobj:{bannerUrl:url,bannerName:name}
-			 })
-		  }
+			})
+		}
 		
 		window.goInfo = function(id){
 			openview({ 
@@ -330,7 +301,32 @@
 				extrasobj:{activityId:id}
 			})
 		}
-
+		
+		//banner
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		mui.ajax(serverUrl+'/api/index/banner',{
+			data:{banner_type:8},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	 
+			success:function(data,type,xhr){
+				bannerObj={};
+				bannerObj.bannerList = eval("("+data.data.banner+")");
+				bannerObj.url = serverimgUrl;
+				var html = template('banner-detail',bannerObj);
+				document.getElementById('banner').innerHTML = html;
+				plus.nativeUI.closeWaiting();//关闭等待框
+				//轮播图,获得slider插件对象
+				var gallery = mui('.mui-slider');
+				gallery.slider({
+				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				});
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		}); 
 	})
-</script>
+	</script>
 </html>
