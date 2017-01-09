@@ -580,7 +580,7 @@
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId; 
 //			var goodId = 1; 
-			alert(goodId);
+			//alert(goodId);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
@@ -607,13 +607,13 @@
 											interval: 3000 //设置自动轮播周期为3s
 										});
 										
-//										alert(eval("("+data.data.goodsInfo.content+")"))
+//										//alert(eval("("+data.data.goodsInfo.content+")"))
 										
 		                    //简介
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 		                     //详情
 		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
-		                     alert(data.data.goodsInfo.parameter);
+		                     //alert(data.data.goodsInfo.parameter);
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
 		                     
 		                      shopId=data.data.goodsInfo.storeid;     
@@ -640,12 +640,12 @@
 				                     	
 		                     	})
 		                     	chooseli.click(function(){
-//		                     		alert(oldstep)
+//		                     		//alert(oldstep)
 		                     		oldstep=newstep;
 											$(this).addClass('cur');
 											$(this).siblings().removeClass('cur');
 				                     	  newstep = $(this).attr("data-priceStep");
-//				                     	alert(newstep)
+//				                     	//alert(newstep)
 				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
 				                     	 $('#priceChange').html(priceChange)
 										})
@@ -655,10 +655,11 @@
 		                    
 		                    //评论
 		                    var cemmentObj = {}
-//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
+//		                    //alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
 		                    for(var i = 0;i < commentobj.length;i++){
 										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
 										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
+										commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
 									}
 								cemmentObj.myUrl = serverimgUrl;
 								cemmentObj.cemmentData = commentobj; 
@@ -689,7 +690,7 @@
 		                    			prop.child_parameter_name=$(this).find(".cur").html();
 		                    			goodProp.push(prop)
 		                    		})  
-		                    		//alert(JSON.stringify(goodProp))
+		                    		////alert(JSON.stringify(goodProp))
 		                    		//当前商品对象
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
@@ -723,7 +724,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-//		                    		alert(JSON.stringify(cartStorage))
+//		                    		//alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
@@ -739,10 +740,11 @@
 											orderStorage =[];
 			                    			orderStorage.push(cartObj);
 			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-			                    		 //alert(plus.storage.getItem("$orderStorage"));
+			                    		 ////alert(plus.storage.getItem("$orderStorage"));
 			                    			
 			                    			openview({
 											 	view:"market-order.html", 
+											 	id:"market-order"
 											 })
 										}else{//没登陆直接打开登录页面
 											mui.toast('请登录');

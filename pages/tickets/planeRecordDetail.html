@@ -393,7 +393,7 @@
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken');
 			tradeNo = plus.webview.currentWebview().tradeNo; 
-//			alert(tradeNo);
+//			//alert(tradeNo);
 			console.log(oldToken);
 			mui.ajax(serverUrl +'/api/qianmi/airorderdetail',{
 				data:{tradeNo:tradeNo},//订单主编号
@@ -402,7 +402,7 @@
 				timeout:15000,
 				headers:{token:oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data));
+//					//alert(JSON.stringify(data));
 					var planeOrder = data.data.air_order_detail_response.ticketTrade;
 					//将数据铺入
 					mui('#tradeNo')[0].innerHTML=planeOrder.tradeNo;
@@ -421,7 +421,7 @@
 						mui('.goPay')[0].remove();
 						mui('.goReturn')[0].remove();
 					}else if(planeOrder.state == 1 && planeOrder.billState == 1){
-//						alert("可退票");
+//						//alert("可退票");
 						mui('#stateName')[0].innerHTML=planeOrder.stateName;//可退票
 						mui('.goPay')[0].remove();
 						mui('.addMan')[0].remove();
@@ -462,7 +462,7 @@
 					var html = template('orderList-detail',orderObj);
 					document.getElementById('orderList').innerHTML = html;
 					for(var j=0;j<orderObj.orderList.length;j++){
-//						alert(orderObj.orderList[j].orderNo);
+//						//alert(orderObj.orderList[j].orderNo);
 						var orderNo=orderObj.orderList[j].orderNo;
 						orderNos.push(orderNo);
 					}
@@ -479,7 +479,7 @@
 									timeout:15000,
 									headers:{token:oldToken},	 
 									success:function(data,type,xhr){
-//										alert(JSON.stringify(data));
+//										//alert(JSON.stringify(data));
 										if(data.data.air_order_cancel_response.result==1){
 											mui.toast("取消订单成功！");
 										}else{
@@ -497,7 +497,7 @@
 					
 					//点击退票
 					window.returnPlane = function(){
-						alert(tradeNo+" "+orderNos);
+						//alert(tradeNo+" "+orderNos);
 						orderNos=orderNos.toString();
 						mui.confirm('确认退票？','',['取消','确认'],function (e) {
 							if(e.index == 1) { 
@@ -508,7 +508,7 @@
 									timeout:15000,
 									headers:{token:oldToken},	 
 									success:function(data,type,xhr){
-										alert(JSON.stringify(data));
+										//alert(JSON.stringify(data));
 										if(data.data.air_order_refund_response.result==1){
 											mui.toast("退票成功！");
 										}else{
