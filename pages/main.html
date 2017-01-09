@@ -44,6 +44,21 @@
 				opacity: 1;
 				border: none;
 			}
+			.mui-slider-item{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
+			}
+			.mui-slider{
+				margin-top: 50px;
+			}
 			.rcdPadding{
 				position: relative;
 				display: inline-block;
@@ -172,7 +187,6 @@
 				margin-right: 5px;
 			}
 			.left{
-				/*border-left: 0.03rem solid #f53c42;*/
 				padding-left: 10px;
 				padding: 5px 0;
 				text-align: center;
@@ -271,129 +285,122 @@
 			<a style=""><div id="xiaoxi" class="qrcodeBtn"></div></a>
 		</header>
 		<script src="../js/statusBar.js"></script><!--状态栏-->
-		<div id="container">		
-			<div id="main">
-				<div id="scroller">
-					<!--轮播图-->
-					<div class="mui-slider" id="banner"></div>
-					<!--轮播图结束-->
-					<div class="onetable">
-						<table> 
-							<tbody>
-								<tr>
-									<td class="market"><div class="imgWrap imgWrap1"><img src="../img/theList/shop.png"/></div><br/><p>购物中心</p></td>
-									<td class="locallife"><div class="imgWrap imgWrap2"><img src="../img/theList/life.png"/></div><br/><p>本地生活</p></td>
-									<td class="ticket"><div class="imgWrap imgWrap3"><img src="../img/theList/pay.png"/></div><br /><p>充值缴费</p></td>
-									<td class="loveBuy"><div class="imgWrap imgWrap4"><img src="../img/theList/tax.png"/></div><br /><p>优品汇</p></td>
-								</tr>
-								<tr>
-									<td class="server"><div class="imgWrap imgWrap5"><img src="../img/theList/ser.png"/></div><br/><p>为民服务</p></td>
-									<td class="fil"><div class="imgWrap imgWrap6"><img src="../img/theList/date.png"/ style="margin-top: 20px !important;"></div><br/><p>一键钟情</p></td>
-									<td class="gameList"><div class="imgWrap imgWrap7"><img src="../img/theList/game.png"/></div><br/><p>游戏娱乐</p></td>
-									<td class="h_report"><div class="imgWrap imgWrap8"><img src="../img/theList/new.png"/></div><br/><p>家乡报道</p></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!--<div class="bor"></div>-->	
-					<!--广告-->
-					<div class="mui-row" style="background-color: white;margin: 10px 0 0 0;" id="ad"></div> 
-					<!--推荐列表-->
-					<div class="sy_recmd">
-						<!--推荐列表-->
-						<div class="sy_title mb10">
-							<span class="left"><img src="../img/center/hot.png"/>热门推荐</span>
-							<!--<a href="#" class="fr morethree">更多&gt;&gt;</a>-->
-						</div> 
-						<div class="sy_recmd_list_box">
-							<ul>
-								<div id="moll_recommend"></div>
-							</ul>
-							<div class="clear"></div>
-						</div> 
-						<!--热门推荐--> 
-							<script type="text/html" id="recommendTpl">
-								<%if(recommendData.length==0){%>
-									暂无推荐商品
-								<%}else{%>
-									<%for(var i=0;i<recommendData.length;i++){%>
-										<li class="sy_recmd_list">
-											<div class="box">
-												<div class="pub_img">
-													<%if(recommendData[i].storeid == 0){%>
-													 
-															<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
-														 
-														<%}else{%>
-										            	<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=myUrl%><%=recommendData[i].thumb%>" width="145" height="145" class="hotImg"></a>
-	
-														<%}%>
-												</div>
-												<div class="pub_wz">
-													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
-													<div class="nr_box mui-row">
-														<div class="mui-col-sm-5 mui-col-xs-5 ">
-												        	<p class="fl fontcl2"><sub>¥</sub>&nbsp;<%=recommendData[i].price%></p>
-												        </div>
-												       	<!--<div class="mui-col-sm-4 mui-col-xs-4 PriceB">
-												        	<p class="fl fontcl2"><sub class="black9">[优惠]</sub>
-												        </div>-->
-												        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
-															<p class="fl fontcl2"><sub class="saled black9">已售<%=recommendData[i].sales%></sub></p>
-												      	</div>
-												     </div>
-												</div> 
-											</div>
-											 
-										</div>
-									</li> 
-								<%}%>
-							<%}%>
-						</script> 
-					<div class="upload text-center text-xs gray" id="upload"></div>
+		<!--<div id="container">-->		
+		<div id="main">
+			<div id="scroller">
+			<!--轮播图-->
+			<div class="mui-slider" id="banner"></div>
+			<!--轮播图结束-->
+			<!--banner数据渲染-->
+			<script type="text/html" id="banner-detail">
+				<div class="mui-slider-group mui-slider-loop">
+				    <!--支持循环，需要重复图片节点-->
+				    <div class="mui-slider-item mui-slider-item-duplicate">
+				    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+				    </div>
+					<% for(var i=0;i<bannerList.length;i++){ %> 
+				    	<div class="mui-slider-item">
+				    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+				    	</div>
+				     <% } %>
+				    <!--支持循环，需要重复图片节点-->
+				    <div class="mui-slider-item mui-slider-item-duplicate">
+				    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+				    </div>
 				</div>
+				<div class="mui-slider-indicator">
+					<div class="mui-indicator mui-active"></div>
+					<% for(var i=0;i<bannerList.length-1;i++){ %>
+				    	<div class="mui-indicator"></div>
+				    <% } %>
+	            </div> 
+			</script>
+			<div class="onetable">
+				<table> 
+					<tbody>
+						<tr>
+							<td class="market"><div class="imgWrap imgWrap1"><img src="../img/theList/shop.png"/></div><br/><p>购物中心</p></td>
+							<td class="locallife"><div class="imgWrap imgWrap2"><img src="../img/theList/life.png"/></div><br/><p>本地生活</p></td>
+							<td class="ticket"><div class="imgWrap imgWrap3"><img src="../img/theList/pay.png"/></div><br /><p>充值缴费</p></td>
+							<td class="loveBuy"><div class="imgWrap imgWrap4"><img src="../img/theList/tax.png"/></div><br /><p>优品汇</p></td>
+						</tr>
+						<tr>
+							<td class="server"><div class="imgWrap imgWrap5"><img src="../img/theList/ser.png"/></div><br/><p>为民服务</p></td>
+							<td class="fil"><div class="imgWrap imgWrap6"><img src="../img/theList/date.png"/ style="margin-top: 20px !important;"></div><br/><p>一键钟情</p></td>
+							<td class="gameList"><div class="imgWrap imgWrap7"><img src="../img/theList/game.png"/></div><br/><p>游戏娱乐</p></td>
+							<td class="h_report"><div class="imgWrap imgWrap8"><img src="../img/theList/new.png"/></div><br/><p>家乡报道</p></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!--<div class="bor"></div>-->	
+			<!--广告-->
+			<div class="mui-row" style="background-color: white;margin: 10px 0 0 0;" id="ad"></div> 
+			<!--推荐列表-->
+			<div class="sy_recmd">
+				<!--推荐列表-->
+				<div class="sy_title mb10">
+					<span class="left"><img src="../img/center/hot.png"/>热门推荐</span>
+					<!--<a href="#" class="fr morethree">更多&gt;&gt;</a>-->
+				</div> 
+				<div class="sy_recmd_list_box">
+					<ul>
+						<div id="moll_recommend"></div>
+					</ul>
+					<div class="clear"></div>
+				</div> 
+				<!--热门推荐-->
+				<script type="text/html" id="recommendTpl">
+					<%if(recommendData.length==0){%>
+						暂无推荐商品
+					<%}else{%>
+						<%for(var i=0;i<recommendData.length;i++){%>
+							<li class="sy_recmd_list">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')">
+											<img src="<%=myUrl %><%=recommendData[i].thumb%>" onerror="javascript:this.src='../img/market/banner.png';" width="145" height="145" class="hotImg">
+										</a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
+										<div class="nr_box mui-row">
+											<div class="mui-col-sm-5 mui-col-xs-5 ">
+									        	<p class="fl fontcl2"><sub>¥</sub>&nbsp;<%=recommendData[i].price%></p>
+									       </div>
+									        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
+												<p class="fl fontcl2"><sub class="saled black9">已售<%=recommendData[i].sales%></sub></p>
+									      	</div>
+									     </div>
+									</div>
+								</div>
+							</li> 
+						<%}%>
+					<%}%>
+				</script> 
+				<div class="upload text-center text-xs gray" id="upload"></div>
 			</div>
 		</div>
-		
-		<!--模板引擎渲染数据-->
-		<!--banner-->
-		<script type="text/html" id="banner-detail">
-			<div class="mui-slider-group mui-slider-loop">
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[bannerLi.length-1].url%>','<%=bannerLi[bannerLi.length-1].name%>')"><img src="<%=url%><%= bannerLi[bannerLi.length-1].bannerPic %>" /></a></div>
-				<% for(var i=0;i<bannerLi.length;i++){ %> 
-			    	<div class="mui-slider-item"><a onclick="bannerGo('<%=bannerLi[i].url%>','<%=bannerLi[i].name%>')"><img src="<%=url%><%=bannerLi[i].bannerPic %>" /></a></div>
-			     <% } %>
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a onclick="bannerGo('<%=bannerLi[0].url%>','<%=bannerLi[0].name%>')"><img src="<%=url%><%= bannerLi[0].bannerPic %>" /></a></div>
-			</div>
-			<div class="mui-slider-indicator">
-				<div class="mui-indicator mui-active"></div>
-				<% for(var i=0;i<bannerLi.length-1;i++){ %>
-			    	<div class="mui-indicator"></div>
-			    <% } %>
-            </div> 
-		</script>
+		<!--</div>-->
 		 
 		
 		<!--广告-->
 		<script type="text/html" id="ad-detail">
-			<div class="mui-col-xs-6 rowpad"> 
-				 <img src="<%=myUrl%><%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/>
+			<div class="mui-col-xs-6 rowpad">
+				 <img src="<%=myUrl %><%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)" onerror="javascript:this.src='../img/market/banner.png';"/>
 			</div>
 			<div class="mui-col-xs-6 rowpad">
 				<div class="rpad clearfloat"> 
-						 <img src="<%=myUrl%><%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/> 
+					<img src="<%=myUrl %><%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)" onerror="javascript:this.src='../img/market/banner.png';"/> 
 				</div>
 				<div class="rpad clearfloat"> 
-						 <img src="<%=myUrl%><%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)"/> 
- 
+					<img src="<%=myUrl %><%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)" onerror="javascript:this.src='../img/market/banner.png';"/> 
 				</div>
 			</div> 
 		</script>
+		
+	
 	<script type="text/javascript">
-	 
-	 
 	//跳转详情
 		function goInfo(goodsId,storeId){
 			if(storeId==0){
@@ -432,6 +439,7 @@
 			var Timetoken = null;
 			var oldToken = null; 
 			oldToken = plus.storage.getItem('oldToken');
+			console.log(oldToken);
 			clearInterval(Timetoken);
 			againfun();
 			Timetoken = setInterval(function(){//等待oldToken加载方法
@@ -511,34 +519,6 @@
 						});
 					}
 				};
-				//数据渲染
-				//渲染banner
-				mui.ajax(serverUrl +'/api/index/indexheaderdata',{
-	//				data:{userid : 148},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
-						console.log('banner返回'+JSON.stringify(data));
-						var bannerObj = {};
-						var recommentObj = {};
-						bannerObj.bannerLi =eval("("+data.data.banner[0].banner+")") ;
-						 
-						console.log(data.data.recomment)
-						bannerObj.url = serverimgUrl;
-						var html = template('banner-detail',bannerObj);
-						document.getElementById('banner').innerHTML = html;
-						//轮播图,获得slider插件对象
-						var gallery = mui('.mui-slider');
-						gallery.slider({
-						  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
-						});
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('响应失败  !');
-					}
-				});
 			}//重载方法结束
 			
 			//广告 数据渲染
@@ -549,48 +529,47 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//						alert(JSON.stringify(data.data)); 
-						var adObj = {};
-						adObj.adLi = data.data;
-						adObj.myUrl = serverimgUrl;
-						var html = template('ad-detail',adObj);
-						document.getElementById('ad').innerHTML = html;
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('响应失败  !');
-					}
-				});
-				//banner跳转
-				window.bannerGo=function(url,name){ 
-				  	openview({
-					 	view:"bannerTpl.html",
-					 	id:"bannerTpl",
-					 	extrasobj:{bannerUrl:url,bannerName:name}
-					 })
-				  }
-					var currentPage =1, numsPerPage=4;
+//					alert(JSON.stringify(data.data)); 
+					var adObj = {};
+					adObj.adLi = data.data;
+					adObj.myUrl = serverimgUrl;
+					var html = template('ad-detail',adObj);
+					document.getElementById('ad').innerHTML = html;
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
+				}
+			});
+			//banner跳转
+			window.bannerGo=function(url,name){ 
+			  	openview({
+				 	view:"bannerTpl.html",
+				 	id:"bannerTpl",
+				 	extrasobj:{bannerUrl:url,bannerName:name}
+				})
+			}
+			var currentPage =1, numsPerPage=4;
  			//热门推荐 数据渲染 
-				mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-					data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
-					dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型 
-						timeout:10000,//超时时间设置为10秒；	
-						headers:{"token":oldToken}, 
-						success:function(data){
-							  alert(JSON.stringify(data))
-							//获取并渲染  eval("("+data1+")");
-							//var dataobj= eval("("+data.data.banner+")"); 
-							if(data.errno==0){
-							plus.nativeUI.closeWaiting();//关闭等待框
-							var dataobj = data.data.return.data
-							var recommendObj = {}
-								recommendObj.myUrl = serverimgUrl;
-								recommendObj.recommendData = dataobj
-		                    document.getElementById("moll_recommend").innerHTML=template("recommendTpl",recommendObj);
-		                    mui("#upload")[0].innerHTML = "加载更多";
-		                    	//上滑加载
-		                   $(window).scroll(function(){
-
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":oldToken}, 
+					success:function(data){
+//							  alert(JSON.stringify(data))
+						//获取并渲染  eval("("+data1+")");
+						//var dataobj= eval("("+data.data.banner+")"); 
+						if(data.errno==0){
+						plus.nativeUI.closeWaiting();//关闭等待框
+						var dataobj = data.data.return.data
+						var recommendObj = {}
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = dataobj
+	                    document.getElementById("moll_recommend").innerHTML=template("recommendTpl",recommendObj);
+	                    mui("#upload")[0].innerHTML = "加载更多";
+	                    	//上滑加载
+	                   $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
@@ -600,7 +579,7 @@
 									mui("#upload")[0].innerHTML = "<img src='../img/balls.svg'/>";
 									console.log('可以请求数据');
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:nowpage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+										data:{currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
 										dataType:'json',//服务器返回json格式数据
 										type:'post',//HTTP请求类型 
 										timeout:10000,//超时时间设置为10秒；	
@@ -626,26 +605,59 @@
 										}
 									});
 								}else{
-									mui("#upload")[0].innerHTML = "到底了";
+									mui("#upload")[0].innerHTML = "没有数据了";
 								}
-								//加载下一部分结束
-								}
-							});
-						}else{
-							plus.nativeUI.closeWaiting();
-							mui.toast("获取数据失败");
-						}
-						
-					}, 
-					error:function(xhr,type,errorThrown){
-						//异常处理；
-						console.log("获取失败！");
+							}
+						});
+					}else{
 						plus.nativeUI.closeWaiting();
-						mui.toast("当前网络不好请重试");
+						mui.toast("获取数据失败");
 					}
+					
+				}, 
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+					console.log("获取失败！");
+					plus.nativeUI.closeWaiting();
+					mui.toast("当前网络不好请重试");
+				}
 			}); 
 		})();
 	</script>	
 	</body>
+	<!--banner-->
+	<script type="text/javascript">
+	mui.plusReady(function(){ 
+		//获取缓存
+		var oldToken = plus.storage.getItem('oldToken');
+//		var userId = plus.storage.getItem("userid");
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		
+		mui.ajax(serverUrl+'/api/index/banner',{
+			data:{banner_type:1},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldToken},	 
+			success:function(data,type,xhr){
+				alert(JSON.stringify(data))
+				bannerObj={};
+				bannerObj.bannerList = eval("("+data.data.banner+")");
+				bannerObj.url = serverimgUrl;
+				var html = template('banner-detail',bannerObj);
+				document.getElementById('banner').innerHTML = html;
+				plus.nativeUI.closeWaiting();//关闭等待框
+				//轮播图,获得slider插件对象
+				var gallery = mui('.mui-slider');
+				gallery.slider({
+				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				});
+			},
+			error:function(xhr,type,errorThrown){
+				alert('响应失败  !');
+			}
+		}); 
+	})
+	</script>
 	
 </html>

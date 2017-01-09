@@ -216,7 +216,9 @@
 					<a class="react" onclick="goInfo(<%= list[i].open_iid%>,<%= list[i].differentiate%>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
-								<img src="<%= list[i].thumb %>" onerror="javascript:this.src='../../img/market/none.png';" alt="加载中"/>
+ 
+								<img src="<%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
+
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
@@ -266,23 +268,19 @@
 					if(data.errno==0){
 						if(data.data.data.length!=0){ 
 							var objdata = {};
-							
 							for(var m=0; m < data.data.data.length; m++){ 
-									if(data.data.data[m].tag==''){
-									 	data.data.data[m].tag=null;
-									}else{
-										data.data.data[m].tag= eval("("+data.data.data[m].tag+")");
-									}
-								 } 
-							
+								if(data.data.data[m].tag==''){
+								 	data.data.data[m].tag=null;
+								}else{
+									data.data.data[m].tag= eval("("+data.data.data[m].tag+")");
+								}
+							} 
 							objdata.list = data.data.data;
-							
 							var html=template("goodsList-detail",objdata);
 							document.getElementById("goodsList").innerHTML=html;
-							
 							mui("#upload")[0].innerHTML = "";
-		                    	//上滑加载
-		                   $(window).scroll(function(){
+		                    //上滑加载
+		                   	$(window).scroll(function(){
 								　　var scrollTop = $(this).scrollTop();
 								　　var scrollHeight = $(document).height();
 								　　var windowHeight = $(this).height();
@@ -329,10 +327,7 @@
 									//加载下一部分结束
 									　　}
 								});
-							  
-							
 						}else{
-							 
 							document.getElementById("goodsList").innerHTML='暂无商品';
 						}
 					}
