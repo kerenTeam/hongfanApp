@@ -372,7 +372,17 @@
 			    font-size: 25px;
 			    right: 36%;
 			    color: #777;}  
-		   
+		   #showCityPicker4{
+				position: absolute;
+				right: 10px;
+				line-height: 49px;
+				border: none;
+				padding: 0;
+				text-align: right;
+				width: 75%;
+				background-color: rgba(0,0,0,0);
+				color: #000;
+			}
     </style>
 	</head>
 
@@ -438,6 +448,13 @@
 								<p class="fl">服务范围</p>
 								<button id="showCityPicker3" type="button"><span class="mui-icon mui-icon-arrowdown"></span></button>
 								<div id="cityResult3" class="ui-alert"><span id="province" class="Brange1">请选择区域</span><span id="city" class="Brange2"></span><span id="area" class="Brange3"></span></div>
+							</a>
+						</li>
+						<li class="clearfloat" id="Bclass2">
+							<a href="javascript:;" id="mapAddress">
+								<p class="fl">身份</p>
+								<button id='showCityPicker4' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+								<div id='cityResult4' class="ui-alert">请选择身份</div>
 							</a>
 						</li>
 						<li class="clearfloat">
@@ -601,6 +618,15 @@
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
 		mui('#Releasebtn')[0].onclick = function(){
+			var classification_1;//身份
+			switch(mui('#cityResult4')[0].innerHTML){
+				case '商家':
+				classification_1 = 1;
+				break;
+				case '个人':
+				classification_1 = 0;
+				break;
+			}
 			var Ynulls = mui('.Ynull');
 			var timeduan = mui('#showCityPicker2')[0].innerHTML + " ~ " + mui('#showCityPicker22')[0].innerHTML;
 			var Rangeinfo = mui('#province')[0].innerHTML + mui('#city')[0].innerHTML + mui('#area')[0].innerHTML;
@@ -611,6 +637,8 @@
 				mui.toast('请选择服务范围');
 			}else if(timeduan.indexOf('时间')>-1){ 
 				mui.toast('请选择服务时段'); 
+			}else if(mui('#cityResult4')[0].innerHTML == "请选择身份"){
+				mui.toast('请选择身份');
 			}else{
 				 if(Bnowid){//修改上传
 			 		for (var i=0; i<Ynulls.length; i++) {
@@ -679,6 +707,7 @@
 								break; 
 							}
 							if(i==Ynulls.length-1){
+								alert(classification_1);
 								plus.nativeUI.showWaiting('发布中 ...',{width:'100px',height:'80px'});//显示等待框
 								//发送数据
 								var formD = new FormData();
@@ -701,6 +730,7 @@
 								formD.append('link_man',mui('#Bcall')[0].value);
 								formD.append('phone',mui('#Bphone')[0].value);
 								formD.append('price',mui('#Bprice')[0].value);
+								formD.append('isbusiness',classification_1);//商家个人
 								
 								console.log(myuserid);
 								console.log(mui('#Bname')[0].value);
@@ -772,6 +802,7 @@
 						mui('#Bcall')[0].value = data.data[0].link_man;
 						mui('#Bphone')[0].value = data.data[0].phone;
 						mui('#Bprice')[0].value = data.data[0].price;
+						mui('#Bclass2')[0].style.display = 'none';
 					}else{  
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
@@ -787,6 +818,29 @@
 		
 		
 	})
+</script>
+<script>
+	(function($, doc) {
+		$.init();
+		$.ready(function() {
+			//分类选择
+			var userPicker = new $.PopPicker();
+			userPicker.setData([{
+				text: '商家'
+			}, {
+				text: '个人'
+			}]);
+			var showUserPickerButton = doc.getElementById('showCityPicker4');
+			var userResult = doc.getElementById('cityResult4');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				userPicker.show(function(items) {
+					userResult.innerText = items[0].text;
+					//返回 false 可以阻止选择框的关闭
+					//return false;
+				});
+			}, false);
+		});
+	})(mui, document);
 </script>
 
 	</body>
