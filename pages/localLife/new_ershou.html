@@ -58,7 +58,7 @@
 				padding: 8px;
 				margin: 3px;
 			}
-			#showCityPicker3{
+			#showCityPicker3 ,#showCityPicker4{
 				position: absolute;
 				right: 10px;
 				line-height: 49px;
@@ -407,6 +407,13 @@
 								<div id='cityResult3' class="ui-alert">请选择分类</div>
 							</a>
 						</li>
+						<li class="clearfloat" id="Bclass2">
+							<a href="javascript:;" id="mapAddress">
+								<p class="fl">身份</p>
+								<button id='showCityPicker4' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+								<div id='cityResult4' class="ui-alert">请选择身份</div>
+							</a>
+						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">价格</p>
@@ -534,12 +541,23 @@
 				classification = 4;
 				break;
 			}
+			var classification_1;//身份
+			switch(mui('#cityResult4')[0].innerHTML){
+				case '商家':
+				classification_1 = 1;
+				break;
+				case '个人':
+				classification_1 = 0;
+				break;
+			}
 			var Ynulls = mui('.Ynull');
 			if(!reg_phone.test(mui('#Bphone')[0].value)){
 				mui.toast('请输入正确的手机号');
 				mui('#Bphone')[0].focus();
 			}else if(mui('#cityResult3')[0].innerHTML == "请选择分类"){
 				mui.toast('请选择分类');
+			}else if(mui('#cityResult4')[0].innerHTML == "请选择身份"){
+				mui.toast('请选择身份');
 			}else{
 				if(Bnowid){//修改上传
 					for (var i=0; i<Ynulls.length; i++) {
@@ -566,6 +584,7 @@
 							formD.append('phone',mui('#Bphone')[0].value);
 							formD.append('content',mui('#Binfo')[0].value);
 							formD.append('type',classification);
+//							formD.append('type',classification_1);
 							formD.append('price',mui('#Bprice')[0].value);
 							formD.append('original_price',mui('#Bo_price')[0].value);
 							formD.append('address',mui('#Baddress')[0].value);
@@ -623,6 +642,7 @@
 								formD.append('phone',mui('#Bphone')[0].value);
 								formD.append('content',mui('#Binfo')[0].value);
 								formD.append('type',classification);
+								formD.append('isbusiness',classification_1);
 								formD.append('price',mui('#Bprice')[0].value);
 								formD.append('original_price',mui('#Bo_price')[0].value);
 								formD.append('address',mui('#Baddress')[0].value);
@@ -691,6 +711,7 @@
 							classification2 = '食品';
 							break;
 						}
+						
 						mui('#Bname')[0].value = data.data.title;
 						mui('#Bphone')[0].value = data.data.phone;
 						mui('#Binfo')[0].value = data.data.content;
@@ -700,6 +721,8 @@
 						mui('#Baddress')[0].value = data.data.address;
 						mui('#Bbrand')[0].value = data.data.brand;
 						mui('#Bcolor')[0].value = data.data.colour;
+						mui('#Bclass2')[0].style.display = 'none';
+						
 					}else{
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
@@ -733,6 +756,29 @@
 			}]);
 			var showUserPickerButton = doc.getElementById('showCityPicker3');
 			var userResult = doc.getElementById('cityResult3');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				userPicker.show(function(items) {
+					userResult.innerText = items[0].text;
+					//返回 false 可以阻止选择框的关闭
+					//return false;
+				});
+			}, false);
+		});
+	})(mui, document);
+</script>
+<script>
+	(function($, doc) {
+		$.init();
+		$.ready(function() {
+			//分类选择
+			var userPicker = new $.PopPicker();
+			userPicker.setData([{
+				text: '商家'
+			}, {
+				text: '个人'
+			}]);
+			var showUserPickerButton = doc.getElementById('showCityPicker4');
+			var userResult = doc.getElementById('cityResult4');
 			showUserPickerButton.addEventListener('tap', function(event) {
 				userPicker.show(function(items) {
 					userResult.innerText = items[0].text;
