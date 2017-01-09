@@ -506,6 +506,7 @@
 			
 			//订单数据模板
 						var data = {};
+						alert(JSON.stringify(orderStorage))
 						data.goodsList = orderStorage;
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
@@ -570,6 +571,7 @@
 							    orderList.goodsData =[]; 
 						 	for(var j = 0;j<orderStorage.length;j++){
 						 	 if(orderStorage[j].shopId == shopID[i]){
+						 	 	
 						 	 	orderList.goodsData.push(orderStorage[j])
 						 	 }
 						 	 
@@ -577,7 +579,7 @@
 							 orderSubmitData.push(orderList);
 						}
 						
-							// alert("orderSubmitData "+JSON.stringify(orderSubmitData))
+							 alert("orderSubmitData "+JSON.stringify(orderSubmitData))
 						
 						//alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
@@ -613,9 +615,11 @@
 								var notice = $(this).find("input").val();
 								for(var i=0;i<orderSubmitData.length;i++){
 									orderSubmitData[i].sendAddress = MYaddress;
+									if(orderSubmitData[i].goodsData[0].diffrentiate == 2){ 
+											orderSubmitData[i].order_type = 4; 
+									}
 									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
 									 
-											orderSubmitData[i].order_type = 4; 
 										orderSubmitData[i].notice = notice;
 									}
 								}
@@ -679,15 +683,14 @@
 										if(data.errno==0){
 											alert(JSON.stringify(data.data))
 											var payMent = data.data.payment;
-											var order_id=  data.data.order_id;
-											//alert("payMent "+payMent + " order_id"+order_id);
+											var order_id=  data.data.order_id; 
+											plus.webview.currentWebview().close();
 											openview({
 												view:"jifen-order.html",
 											 
 											})
 	//										var list = plus.webview.getWebviewById('cart.html'); 
 	//											mui.fire(list,'refresh'); 
-	//										plus.webview.currentWebview().close();
 										}else{
 											plus.nativeUI.closeWaiting()
 										   // alert(JSON.stringify(data.data))

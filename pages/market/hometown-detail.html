@@ -27,9 +27,6 @@
 			.comtPic{
 				border-radius: 100%;
 			}
-			.gray{
-				color: gray;
-			}
 			.mui-preview-header,
 			.mui-preview-footer {
 				position: absolute;
@@ -308,7 +305,7 @@
 				padding: 5px 0;
 			}
 			.sdetail{
-				/*min-height: 200px;*/
+				/*height: 490px;*/
 			}
 			.footerone .left{
 				width: 15%;
@@ -375,19 +372,19 @@
 								  <div class="mui-slider-group mui-slider-loop">
 								    <!--支持循环，需要重复图片节点-->
 								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a><img src="<%=infoData[infoData.length-1]%>" class="goodsImg"></a>
+								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
 								    </div>
 								    <% for(var i=0;i<infoData.length;i++){ %>
 								    <div class="mui-slider-item">
 								    	<a>
-								    		<img src="<%=infoData[i]%>" class="goodsImg">
+								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
 								    	</a>
 								    </div>
 								    	<% } %>
 								    <!--支持循环，需要重复图片节点-->
 								    <div class="mui-slider-item mui-slider-item-duplicate">
 								    	<a>
-								    		<img src="<%=infoData[0]%>" class="goodsImg">
+								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
 								    	</a>
 								    </div>
 								  </div>
@@ -401,42 +398,25 @@
 								<div class="zuo clearfloat fl">
 									<%=brief.title%>
 								</div>
-								<div class="you clearfloat fr">
-									<ul>
-										<li>
-										 	<a onclick="goLoveBuy()">
-												<i class="iconfont icon-shangcheng"></i>
-												<p>爱购</p>
-											</a>
-										</li>
-									</ul>
-								</div>
+								 
 							</div>
 							<div class="xia clearfloat">
-								<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;"><del>￥<%=brief.original_price%></del></small></p>
+								<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
 							</div>
 							<div class="xia">
 								 <div class="mui-row">
-							        <div class="mui-col-sm-4 mui-col-xs-4 Mleft"> 
-							        	<%if(brief.tax_rate==0 || brief.tax_rate=='' ||brief.tax_rate==null){%>
-							           		<p class="box-s">税费：免税</p>
+							        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
+							        	<%if(!brief.postage){%>
+							           		<p class="box-s">快递：免邮</p>
 							            <%}else{%>
-							             <p class="box-s">税费：<%=brief.ratemoney%>元</p>
+							             <p class="box-s">快递：<%=brief.postage%>元</p>
 							            <%}%>
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-							            <!--<p class="box-s">库存：<%=brief.num%></p>-->
+							            <p class="box-s">销量：<%=brief.sales%>笔</p>
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
-							          	<%if(brief.shipping_free_type==0){%>
-							           		<p class="box-s">包邮类型：不免邮</p>
-							            <%}else if(brief.shipping_free_type==1){%>
-							           		<p class="box-s">包邮类型：全免邮</p>
-							            <%}else if(brief.shipping_free_type==2){%>
-							           		<p class="box-s">包邮类型：免国际</p>
-							            <%}else{%>
-							             <p class="box-s">包邮类型：免国内</p>
-							            <%}%>
+							            <p class="box-s">重庆</p> 
 							        </div>
 							  	</div>
 							</div>
@@ -445,26 +425,78 @@
 						<div class="farmtc clearfloat mt10">
 							<p class="bt box-s">商品详情</p>
 						</div>
-						<div class="farm clearfloat" style="overflow: scroll;max-width: 100%;">
+						<div class="farm clearfloat">
 							<div class="top rentingtop clearfloat box-s">
 								<div id="textInfo"></div>
 								 
 							</div>					
 						</div>
+						
 						</script>
 						
 						
 						
+						<div id="moll_comment"></div>
+						<script type="text/html" id="commentTpl">
+							<div class="farmtc clearfloat mt10">
+								<p class="bt box-s">商品评价</p>
+							</div>
+							<ul class="farm clearfloat Cul">
+								<%if(cemmentData.length==0){%>
+									<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
+										<%}else{%>
+											<%for(var i=0;i<cemmentData.length;i++){%>
+											<li class="mui-row Cli">
+												<div class="mui-col-sm-2 mui-col-xs-2 user-head">
+													<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
+											    		<img src="../../img/10.png" class="radius comtPic" alt="" />
+											    	<%}else{%> 
+														<img src="<%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
+													<%}%>
+												</div>
+												<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
+							                        <div class="am-comment-author left">
+							                        	<p><b class="black"><%=cemmentData[i].nickname%></b></p>
+							                        </div>
+							                        <time class="text-sm right gray">
+							                            <%=cemmentData[i].seller_ctime%>
+							                        </time>
+							                        <div class="clear"></div>
+							                        <div class="commentStar">
+								                   		<%for(var j = 0;j<cemmentData[i].grade_star;j++){%>
+								                   			<img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
+								                   			<%}%><small style="color: red;"><%=cemmentData[i].grade_star%>分</small>
+								                   	</div>
+								                   	<div class="comment"><%=cemmentData[i].seller_comment%></div>
+								                   	<div class="clear"></div>
+								                   	
+							                        <div class="clear"></div>
+								                    <div class="padding-h-xs mui-row">
+													<%if(cemmentData[i].comment_pic.length!=0){%>
+								                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
+								                    	<div class="inlineBlock mui-col-sm-3 mui-col-xs-3" style="display:inline-block;height: 0.5rem;overflow:hidden;">
+								                    	<img src="<%=myUrl%><%=cemmentData[i].comment_pic[j].picImg%>" style="width: 100%;overflow: hidden;height: 0.5rem" data-preview-src="" data-preview-group="<%=i+1%>" />
+								                    	</div>
+								                    	<%}%>	 
+								                    <%}%>
+							                    </div>
+											</div>
+										</li> 
+									<%}%>
+								<%}%> 
+							</ul>
+						</script>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!--footerone star-->
 		<div class="footerone clearfloat">
+			 
 			<div class="left clearfloat fl">
 				<ul>
 					<li>
-					 	<a onclick="goShop()">
+					 	<a onclick="gocart()">
 							<img src="../../img/market/cartIcon.svg" alt="" /> 
 						</a>
 					</li>
@@ -490,7 +522,7 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
-		     			<img src="<%=choose.imglist.img1%>" style="width: 100%;" data-preview-src="" />
+		     			<img src="<%=myUrl%><%=choose.thumb%>" data-preview-src="" />
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
@@ -500,6 +532,7 @@
 		     	<div class="Mscroll">
 		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
+		     				<%if(choose.parameter[i].parameter_name){%>
 		     				<div class="middle clearfloat textType">
 					     		<p><%=choose.parameter[i].parameter_name%></p>
 					     		<div class="xia clearfloat choose">
@@ -512,25 +545,23 @@
 						     		</ul>
 					     		</div>		     		
 					     	</div>
+					     	<%}%>
 	     				<%}%>
 	     			<%}%>
 		     	<div class="bottom clearfloat">
-		     		<p class="fl">购买数量 
-		     			<%if(choose.max_limit){%>
-			     		<small class="gray fr">(限购:<%=choose.max_limit%>)</small></p>
-			     		<%}%>
+		     		<p class="fl">购买数量</p>
 		     		<div class="you clearfloat fr">
-	     				<div class="mui-numbox margin-top" data-numbox-min="1" data-numbox-max='<%=choose.max_limit%>'>
+	     				<div class="mui-numbox margin-top" data-numbox-min="1">
 	     					<button class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
-	     					<input id="test" class="mui-input-numbox" data-max="" type="number" value="0">
-	     					<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button> 
-	     				</div> 
+	     					<input id="test" class="mui-input-numbox" type="number" value="0">
+	     					<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
+	     				</div>
 		     		</div>
 		     	</div>
 		     	</div>
 		     </div>		     
 		</div>
-		<a data-gdId="<%=choose.open_iid%>" data-shopId="0" data-shop="爱购保税" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.imglist.img1%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.ratemoney%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+		<a data-gdId="<%=choose.goods_id%>" data-shopId="-1" data-shop="土特产" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.postage%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
 		
 		</div>
@@ -548,36 +579,28 @@
 			console.log(token)
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId; 
-			var differentiate =plus.webview.currentWebview().differentiate;
-		//	alert(goodId+"  "+differentiate)
+//			var goodId = 1; 
+			alert(goodId);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//请求商品详情
-			mui.ajax(serverUrl+'/api/mall/youpinfo', {
-					data: {id:goodId},
+			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
+					data: {goodsId:goodId},
 					dataType:'json',//服务器返回json格式数据
 						type:'post',//HTTP请求类型 
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":token}, 
-						success:function(data){ 
-					 	alert(JSON.stringify(data))
+						success:function(data){
+							console.log(JSON.stringify(data))
+							
 							if(data.errno==0){ 
-								plus.nativeUI.closeWaiting(); 
-								var d = data.data.youpin.data.imglist;//{img1:dd,img2:aa,img3,cc} 
-								var bannerArray = [];
-								if(d){
-									for(var t=0;t<Object.keys(d).length;t++){ 
-										var vae = Object.keys(d)[t] ;
-										bannerArray.push(d[vae]);
-									} 
-									 
-								}
-								
-							var dataobj =data.data.youpin.data.imglist; 
-							 
-							var infoObj = {};
-								 
+								plus.nativeUI.closeWaiting();
+							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
+							var commentobj = data.data.comments;
+							//var content = data.data.comments
+							//banner
+							var infoObj = {}
 								infoObj.myUrl = serverimgUrl;
-								infoObj.infoData = bannerArray;  
+								infoObj.infoData = dataobj;
 		                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
 		                      var gallery = mui(".mui-slider");
 										gallery.slider({
@@ -587,16 +610,18 @@
 //										alert(eval("("+data.data.goodsInfo.content+")"))
 										
 		                    //简介
-		                    var rate =parseFloat(data.data.youpin.data.tax_rate.replace(/%/, ""))/100;
-		                    data.data.youpin.data.ratemoney =parseFloat(parseFloat(data.data.youpin.data.price)*rate).toFixed(2); 
-		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.youpin.data});
-		                       
-		                    //详情
-		                    document.getElementById("textInfo").innerHTML=data.data.youpin.data.remark;
-		                 	  data.data.youpin.data.parameter=[]; 
-//		                      shopId=data.data.goodsInfo.storeid;     
+		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
+		                     //详情
+		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+		                     alert(data.data.goodsInfo.parameter);
+		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
+		                     
+		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
-		                     document.getElementById("cartBox").innerHTML=template("boxTpl",{choose:data.data.youpin.data});
+		                     var chooseO = {};
+		                     chooseO.choose = data.data.goodsInfo;
+		                     chooseO.myUrl = serverimgUrl;
+		                     document.getElementById("cartBox").innerHTML=template("boxTpl",chooseO);
 		                     mui(".mui-numbox").numbox();
 		                     var priceChange =parseInt($("#priceChange").html());
 		                     $('.choose').each(function(){
@@ -626,14 +651,26 @@
 										})
 		                     	
 		                     })
-		                  
-		                   
+		                    
+		                    
+		                    //评论
+		                    var cemmentObj = {}
+//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
+		                    for(var i = 0;i < commentobj.length;i++){
+										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
+										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
+									}
+								cemmentObj.myUrl = serverimgUrl;
+								cemmentObj.cemmentData = commentobj; 
+								
+		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
+		                    	
+
 		                   // plus.storage.removeItem('$cartStorage');
 		                    //购物车 缓存
 		                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
 		                   
 		                    window.cartStorageF=function(obj){ 
-		                    	 
 		                     	if($('.cur').length == $(".choose").length){ 
 		                    		var shopName = obj.getAttribute("data-shop");
 		                    		var goodsId = obj.getAttribute("data-gdId");
@@ -651,7 +688,8 @@
 		                    			prop.parameter_name=$(this).find("p").html();
 		                    			prop.child_parameter_name=$(this).find(".cur").html();
 		                    			goodProp.push(prop)
-		                    		})   
+		                    		})  
+		                    		//alert(JSON.stringify(goodProp))
 		                    		//当前商品对象
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
@@ -685,7 +723,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-		                    		alert(JSON.stringify(cartStorage))
+//		                    		alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
@@ -741,14 +779,16 @@
 				}); 
 				//跳转商家详情
 				window.goShop = function(){ 
-						openview({
+					console.log(shopId);
+					openview({
+						view:"shophome.html",
+						extrasobj:{storeId:shopId}
+					})
+				}
+				window.gocart = function(){
+					openview({
 							view:"../cart.html",
 							extrasobj:{pageId:"detail"}
-						})
-					}
-				window.goLoveBuy = function(){
-					openview({
-							view:"loveBuyList.html"
 						})
 				}
 					mui.previewImage();			

@@ -90,14 +90,15 @@
 				left: 0;*/
 			}
 			.msTOP{
-				position: relative;
+				/*position: relative;*/
 				width: 100%;
-				padding-top: 62.5%;
+				/*padding-top: 62.5%;*/
 				overflow: hidden;
 				color: white;
 			}
 			.msTOP img{
-				position: absolute;
+				width: 100%;
+				/*position: absolute;*/
 				top: 0;
 				left: 0;
 			}
@@ -171,38 +172,41 @@
 		</div>
 		
 		<script type="text/html" id="storeItem-detail">
-			<div class="msTOP">
-				<img src="../../img/market/dr.jpeg" class="responsive" alt="" />
-				
+			<div class="msTOP"> 
+				<%if(recommentLi[0].main.picImg){%>
+					<% for(var i=0;i<recommentLi[0].main.picImg.length;i++){ %>
+						<img src="<%=myurl%><%=recommentLi[0].main.picImg[i].picImg%>" class="responsive" alt="" />
+					<%}%>
+					<%}%>
 			</div>
 			<div class="brtit">
-				<div><%=recommentLi.active_store_goods[1].titile%></div>
-				<small>hi集达人 | <%=recommentLi.active_store_goods[1].create_time%></small>
+				<div><%=recommentLi[0].main.titile%></div>
+				<small>hi集达人 | <%=recommentLi[0].main.create_time%></small>
 			</div>
 			<article>
 				<div class="trangle"></div>
-				<p><%=recommentLi.active_store_goods[1].content%></p>
+				<p><%=recommentLi[0].main.content%></p>
 			</article>
 				<div>
-			<% for(var i=0;i<recommentLi.shopactivestoreorgoods[0][1].length;i++){ %>
+			<% for(var i=0;i<recommentLi[0].minor.length;i++){ %>
 				<div class="mui-card drs">
 					<div class="imgItem">
-					<%if(!recommentLi[i].pic){%>
+					<%if(!recommentLi[0].minor[i].pic){%>
 						<img src="../../img/market/nodata.svg"/>
 					<%}else{%>
-						<img src="<%=myurl%><%=recommentLi[i].pic%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+						<img src="<%=myurl%><%=recommentLi[0].minor[i].pic%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
 					<%}%>
 					</div>
 					<div class="mui-card-footer">
 						<p>
-							<%if(!recommentLi[i].logo){%>
+							<%if(!recommentLi[0].minor[i].logo){%>
 								<img src="../../img/market/shop.png"/>
 							<%}else{%>
-								<img src="<%=myurl%><%=recommentLi[i].logo%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+								<img src="<%=myurl%><%=recommentLi[0].minor[i].logo%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
 							<%}%>
-							<span class="banch"><%= recommentLi[i].barnd_name %></span>
+							<span class="banch"><%= recommentLi[0].minor[i].barnd_name %></span>
 						</p>
-						<button onclick="openStore(<%= recommentLi[i].store_id %>)">进入好店</button>
+						<button onclick="openStore(<%= recommentLi[0].minor[i].store_id %>)">进入好店</button>
 					</div>
 				</div> 
 			<% } %>
@@ -224,19 +228,22 @@
 				data:{type:2,isVenue:''},//以及业态
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					plus.nativeUI.closeWaiting();    
-					console.log(data.data.shopactivestoreorgoods)  
-//					data.data.active_store_goods[1].create_time=data.data.active_store_goods[1].create_time.substring(0,10);
-// console.log(JSON.stringify( data.data.shopactivestoreorgoods[0]) )
-//					var recommentObj = {};  
-//					recommentObj.myurl = serverimgUrl;
-//					recommentObj.recommentLi = data.data;
-////					recommentObj.recommentImg = img;
-//					var html2 = template('storeItem-detail',recommentObj);
-//					document.getElementById('storeItem').innerHTML+= html2;
+					alert(JSON.stringify(data.data[0].main.id))
+					alert(data.data[0].main.picImg)
+					data.data[0].main.picImg = eval("("+data.data[0].main.picImg+")")
+					plus.nativeUI.closeWaiting();  
+					data.data[0].main.create_time=data.data[0].main.create_time.substring(0,10);
+//					 console.log(JSON.stringify( data.data[0].main.create_time )
+					var recommentObj = {};  
+					recommentObj.myurl = serverimgUrl;
+					recommentObj.recommentLi = data.data;
+//					recommentObj.recommentImg = img;
+					var html2 = template('storeItem-detail',recommentObj);
+					alert(html2)
+					document.getElementById('storeItem').innerHTML= html2;
 //					mui("#upload")[0].innerHTML = "加载更多";
 //		                    	//上滑加载
 //		                   $(window).scroll(function(){

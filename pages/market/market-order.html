@@ -706,7 +706,7 @@
 							 orderSubmitData.push(orderList);
 						}
 						
-							// alert("orderSubmitData "+JSON.stringify(orderSubmitData))
+							 alert("orderSubmitData "+JSON.stringify(orderSubmitData))
 						
 						//alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
@@ -756,7 +756,7 @@
 						})
 				},
 				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
+				//	alert('响应失败  !');
 				}
 			});
 			var d = new Date();
@@ -845,8 +845,7 @@
 					}
 				}); 
 				//goPay
-				window.goPay=function(){
-					
+				window.goPay=function(){ 
 //						alert($("#addid"))
 					if($("#addid").length!=0){
 						var yourSFZ = $('#sfzin').val();
@@ -870,7 +869,7 @@
 								for(var i=0;i<orderSubmitData.length;i++){
 									orderSubmitData[i].sendAddress = MYaddress;
 									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
-										
+										alert("orderSubmitData0000 "+orderSubmitData[i].storeid)
 										if(orderSubmitData[i].storeid == 0 ){
 											orderSubmitData[i].order_type = 2;
 										}else if(orderSubmitData[i].storeid == -1 ){
@@ -899,8 +898,7 @@
 								if($(this).css("display")=="block"){
 									coupon_id =$(this).attr("data-id");
 								}
-							})
-							alert(myuserid+" coupon_id "+coupon_id)
+							}) 
 							//积分使用
 							var isIntergal=0;
 							if($("#coupon").find("input[type='checkbox']:checked").length==1){
@@ -951,13 +949,13 @@
 											var payMent = data.data.payment;
 											var order_id=  data.data.order_id;
 											//alert("payMent "+payMent + " order_id"+order_id);
+											plus.webview.currentWebview().close();
 											openview({
 												view:"../market/pay.html",
 												extrasobj:{payMent:payMent,order_id:order_id}
 											})
 	//										var list = plus.webview.getWebviewById('cart.html'); 
 	//											mui.fire(list,'refresh'); 
-	//										plus.webview.currentWebview().close();
 										}else{
 											plus.nativeUI.closeWaiting()
 										   // alert(JSON.stringify(data.data))
