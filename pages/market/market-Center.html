@@ -252,20 +252,20 @@
 									<!--支持循环，需要重复图片节点-->
 									<div class="mui-slider-item">
 										<a onclick="bannerGo('<%=bannerData[bannerData.length-1].url%>','<%=bannerData[bannerData.length-1].name%>')" data-url="<%=bannerData[bannerData.length-1].url%>" data-id = "<%=bannerData.length-1%>">
-											<img src="<%=bannerData[bannerData.length-1].bannerPic%>" />
+											<img src="<%=myUrl%><%=bannerData[bannerData.length-1].bannerPic%>" />
 										</a>
 									</div>
 									<% for(var i=0;i<bannerData.length;i++){ %>
 										<div class="mui-slider-item">
 											<a onclick="bannerGo('<%=bannerData[i].url%>','<%=bannerData[i].name%>')" data-url="<%=bannerData[i].url%>" data-id = "<%=i%>">
-												<img src="<%=bannerData[i].bannerPic%>" />
+												<img src="<%=myUrl%><%=bannerData[i].bannerPic%>" />
 											</a>
 										</div>
 									<% } %>
 									<!--支持循环，需要重复图片节点-->
 									<div class="mui-slider-item mui-slider-item-duplicate">
 										<a onclick="bannerGo('<%=bannerData[0].url%>','<%=bannerData[0].name%>')" data-url="<%=bannerData[0].url%>" data-id = "0">
-											<img src="<%=bannerData[0].bannerPic%>" />
+											<img src="<%=myUrl%><%=bannerData[0].bannerPic%>" />
 										</a>
 									</div>
 								</div>
@@ -372,7 +372,12 @@
 										<li class="sy_recmd_list">
 											<div class="box">
 												<div class="pub_img">
-													<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+													<%if(recommendData[i].storeid == 0){%>
+														<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=recommendData[i].thumb%>" width="145" height="145"></a>
+														<%}else{%>
+															<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><img src="<%=myUrl%><%=recommendData[i].thumb%>" width="145" height="145"></a>
+															<%}%>
+													
 												</div>
 												<div class="pub_wz">
 													<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
@@ -613,7 +618,7 @@
 									}
 								});
 							}else{
-								mui("#upload")[0].innerHTML = "没有数据了";
+								mui("#upload")[0].innerHTML = "到底了";
 							}
 							//加载下一部分结束
 							　　}
