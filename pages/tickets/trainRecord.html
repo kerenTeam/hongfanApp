@@ -185,11 +185,13 @@
 				margin-top: -5px;
 			}
 			.addMan{
-				color: #999;
+				color: #077eb9;
+				border-color: #077eb9;
 				margin: 10px 0;
 				line-height: 16px;
 				font-size: 12px;
 				float: right;
+				margin-left: 12px;
 			}
 			dl.list dt, dl.list dd{
 				border-bottom: 1px solid #EFEFF4;
@@ -259,6 +261,8 @@
 				font-size: 16px;
 				line-height: 16px !important;
 			}
+			#zhuangtai{font-size: 16px;font-weight: normal;}
+			#daoda{font-size: 14px;font-weight: normal;color: #555555;}
 		</style>
 	</head>
 	<body>
@@ -274,7 +278,10 @@
 				<dd class="goodsItem">
 					<div class="react mui-row">
 						<div class="mui-col-sm-9 mui-col-xs-9">
-							<p class="state">交易完成 </p>
+							<p class="state" id="Tstate" style="min-height: 50px;">
+								<span id="zhuangtai"></span>
+								<span id="daoda"></span>
+							</p>
 				        </div>
 				        <div class="mui-col-sm-3 mui-col-xs-3">
 				        	
@@ -283,33 +290,35 @@
 				</dd>
 			</dl>
 			<dl class="list" id="goodsList">
-				<dd class="goodsItem">
+				<dd class="goodsItem" style="min-height: 110px;display: none;">
 					<div class="react mui-row" style="margin: 20px 0;">
 						<div class="mui-col-sm-3 mui-col-xs-3">
-							<p class="black address">成都东站</p>
-							<p class="black title">11:30</p>
-							<p class="tiny">12-11&nbsp;周日</p>
+							<p class="black address" id="Tkaishi"></p>
+							<p class="black title" id="Tkaishishi"></p>
+							<!--<p class="tiny">12-11&nbsp;周日</p>-->
 				        </div>
 				         <div class="mui-col-sm-6 mui-col-xs-6">
-				         	<p class="tiny lineTop">C5454&nbsp;城际高速</p>
+				         	<p class="tiny lineTop" id="Tname"></p>
 				        	<img src="../../img/tickets/line.png"/ class="theline">
-				         	<p class="tiny lineBottom">耗时35分</p>
+				         	<p class="tiny lineBottom"></p>
 				        </div>
 				        <div class="mui-col-sm-3 mui-col-xs-3 colRight">
-				        	<p class="black address">邻水站</p>
-							<p class="black title">12:30</p>
-							<p class="tiny">12-11&nbsp;周日</p>
+				        	<p class="black address" id="Tjieshu"></p>
+							<p class="black title" id="Tjieshushi"></p>
+							<!--<p class="tiny">12-11&nbsp;周日</p>-->
 				        </div>
 					</div>
 				</dd>
 				<dd class="goodsItem">
 					<a class="react mui-row">
-						<div class="mui-col-sm-8 mui-col-xs-8">
+						<!--<div class="mui-col-sm-8 mui-col-xs-8">
 							<p class="theRule red1" onclick="planeRule()">退票规则</p>
-							<!--<p class="tiny">请确保姓名证件填写正确</p>-->
-				       </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4">
-				        	<button class="addMan" onclick="returnTrain()">申请退票</button>
+							<p class="tiny">请确保姓名证件填写正确</p>
+				       </div>-->
+				        <div class="">
+				        	<button class="addMan" id="tuipiao" style="display: none;" onclick="returnTrain()">申请退票</button>
+				        	<button class="addMan" id="quxiao" style="display: none;" onclick="returnTrain()">取消订票</button>
+				        	<button class="addMan" id="zhifu" style="display: none;" onclick="returnTrain()">立即支付</button>
 				        </div>
 					</a>
 				</dd>
@@ -324,57 +333,106 @@
 							</div>	
 						</span>
 					</div>
-					<a class="react mui-row react2">
-						<div class="mui-col-sm-9 mui-col-xs-9">
-							<p class="black big">Nina&nbsp;<sub class="gray">成人票</sub></p>
-						</div>
-						<div class="mui-col-sm-3 mui-col-xs-3">
-							<div class="fr">
-								<p class="black">软座</p>
+					<a class="react mui-row react2" id="infolistdiv"></a>
+					<script type="text/html" id="infolist">
+						<% for(var i=0; i<list.length; i++){%>
+							<div class="mui-col-sm-9 mui-col-xs-9">
+								<p class="black big"><%= list[i].passengerName%><sub class="gray"></sub></p>
+							</div>
+							<div class="mui-col-sm-3 mui-col-xs-3">
+								<div class="fr">
+									<p class="black"><%= list[i].seatName%></p>
+								</div>	
+							</div>
+							<div class="mui-col-sm-9 mui-col-xs-9">
+								<p class="black big"><%= list[i].idcardNo%></p>
+							</div>
+							<div class="mui-col-sm-3 mui-col-xs-3">
+								<div class="fr">
+									<p class="black">￥<%= list[i].facePrice%></p>
+								</div>	
+							</div>
+							<div class="mui-col-sm-9 mui-col-xs-9">
+								<p class="black big"><%= list[i].seatInfo%></p>
+							</div>
+							<div class="mui-col-sm-3 mui-col-xs-3">
+								
 							</div>	
-						</div>
-						<div class="mui-col-sm-9 mui-col-xs-9">
-							<p class="black big">46***********323</p>
-						</div>
-						<div class="mui-col-sm-3 mui-col-xs-3">
-							<div class="fr">
-								<p class="black">￥10</p>
-							</div>	
-						</div>
-						<div class="mui-col-sm-9 mui-col-xs-9">
-							<p class="black big">02车厢18F号</p>
-						</div>
-						<div class="mui-col-sm-3 mui-col-xs-3">
-							
-						</div>
-					</a>
+						<% }%>	
+					</script>
 				</dd>
 			</dl>
 			<dl class="list">
 				<dd>
 					<a class="react mui-row react2">
 						<span>联系手机</span>
-						<span class="black fr">5846514365154</span>		
+						<span class="black fr" id="Tshouji"></span>		
 					</a>
 				</dd>
 			</dl>
 			<dl class="list">
-				<dd>
+				<!--<dd>
 					<a class="react mui-row react2">
 						<span>取票、退票须知</span>
 						<span class="fr mui-icon mui-icon-arrowright gray tinyIcon"></span>		
 					</a>
-				</dd>
+				</dd>-->
 				<dd>
 					<a class="react mui-row react2">
 						<span>订单号</span>
-						<span class="gray fr">5846514365154</span>		
+						<span class="gray fr" id="Tdindan"></span>		
 					</a>
 				</dd>
 			</dl>
 		</div>
 	</body>
 	<script type="text/javascript">
+		mui.plusReady(function(){
+//			var TorderD = plus.webview.currentWebview().Torder;
+			var TorderD = plus.webview.currentWebview().Tordernum;
+			var oldToken = plus.storage.getItem('oldToken');
+			alert(TorderD);
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取保险信息
+				data:{tradeNo:TorderD},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	              				
+				success:function(data){
+					console.log(data);
+					console.log('详情返回'+JSON.stringify(data));
+					if(data.errno == 0){
+						var Tdatail = data.data.train_order_detail_response.ticketTrade;
+						console.log(Tdatail);
+						switch (Tdatail.stateName){
+							case '已取消':
+							mui('#zhifu')[0].style.display = 'inline-block';
+							break;
+						}
+						mui('#zhuangtai')[0].innerText =  Tdatail.stateName;
+						mui('#daoda')[0].innerHTML = "( " + Tdatail.startStation +" - " +Tdatail.recevieStation + " )";
+						mui('#Tshouji')[0].innerHTML = Tdatail.contactTel;
+						mui('#Tdindan')[0].innerHTML = Tdatail.tradeNo;
+						var dataobj = {};
+//						mui.each(Tdatail.ticketOrders.ticketOrder,function (index,ele) {
+//							var Tarray = ele.seatInfo.split(',');
+//							Tdatail.ticketOrders.ticketOrder[index].seatInfo = Tarray[2]+Tarray[3]+Tarray[4]+Tarray[5];
+//						})
+						dataobj.list = Tdatail.ticketOrders.ticketOrder; 
+						var html=template("infolist",dataobj);
+						document.getElementById("infolistdiv").innerHTML = html;
+					}else{
+						mui.toast('订单信息获取失败,请重试');
+					}
+					plus.nativeUI.closeWaiting();
+				},
+				error:function(xhr,type,errorThrown){ 
+					plus.nativeUI.closeWaiting();
+					mui.toast('保险信息获取失败,请重试');
+				}
+			});
+			
+		})//read
 		//点击申请退票
 		function returnTrain(){
 			openview({ 
