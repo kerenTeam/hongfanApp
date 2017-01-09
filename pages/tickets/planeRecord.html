@@ -299,14 +299,23 @@
 						<div class="mui-col-sm-3 mui-col-xs-3">
 							<p class="black title"><span id="startTime"></span></p>
 							<p class="tiny red1"><span class="mui-icon mui-icon-location tiny"></span><span id="startStation"></span></p>
-				        </div>
+				       		<p class="tiny">
+								<span id="startTime2"></span>
+							</p>
+						</div>
 				         <div class="mui-col-sm-6 mui-col-xs-6">
 				        	<img src="../../img/tickets/line.png"/ class="theline">
 				        	
 				        </div>
 				        <div class="mui-col-sm-3 mui-col-xs-3 colRight">
 				        	<p class="black title"><span id="recevieTime"></span></p>
-							<p class="tiny red1"><span class="mui-icon mui-icon-location tiny"></span><span id="recevieStation"></span></p>
+							<p class="tiny red1">
+								<span class="mui-icon mui-icon-location tiny"></span>
+								<span id="recevieStation"></span>
+							</p>
+							<p class="tiny">
+								<span id="recevieTime2"></span>
+							</p>
 				        </div>
 					</div>
 					<div class="tip">
@@ -421,6 +430,8 @@
 			mui('#startStation')[0].innerHTML=planeOrder.startStation;
 			mui('#recevieStation')[0].innerHTML=planeOrder.recevieStation;
 			mui('#startTime')[0].innerHTML=planeOrder.startTime.substring(11);
+			mui('#startTime2')[0].innerHTML=planeOrder.startTime.substring(11,planeOrder.startTime.toString().Length-11);
+			mui('#recevieTime2')[0].innerHTML=planeOrder.recevieTime.substring(11,planeOrder.startTime.toString().Length-11);
 			//修改星期日期时间
 			var dateTime = planeOrder.startTime.replace(/\-/g,'/');//将获取的日期如2017-01-01改为2017/01/01
 			var date = new Date(dateTime).getDay();//获取具体周几
@@ -459,6 +470,7 @@
 								alert(JSON.stringify(data));
 								if(data.data.air_order_cancel_response.result==1){
 									mui.toast("取消订单成功！");
+									
 								}else{
 									mui.toast("取消订单失败！")
 								}

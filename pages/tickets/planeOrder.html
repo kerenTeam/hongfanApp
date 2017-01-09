@@ -230,7 +230,7 @@
 			}
 			.last{
 				margin: 10px 15px;
-				padding-bottom: 20px;
+				padding-bottom: 60px;
 			}
 			.last p{
 				line-height: 20px;
@@ -301,20 +301,19 @@
 				        </div>
 					</a>
 				</dd>
-				<dd class="goodsItem" id="persons">
-					<!--添加联系人位置-->
-					
-					<!--<dd class="goodsItem" id="persons">
+					<!--<dd class="goodsItem persons">
 						<a class="react mui-row aPerson">
 							<div class="mui-col-sm-2 mui-col-xs-2">
 								<img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/>
 							</div><div class="mui-col-sm-10 mui-col-xs-10">
-								<p class="black">'+newName+'</p>
-								<p class="tiny black">身份证&nbsp;'+idNo+'</p>
-								<p class="tiny black">身份证&nbsp;'+idNo+'</p>
+								<p class="black nameM">名字1</p>
+								<p class="tiny black">身份证&nbsp;<span class="idM">身份证1</span></p>
+								<p class="tiny black">手机号&nbsp;<span class="phoneM">手机号1</span></p>
 							</div>
 						</a>
 					</dd>-->
+				<dd class="goodsItem persons">
+					<!--添加联系人位置-->
 				</dd>
 			</dl>
 			<dl class="list" id="goodsList">
@@ -392,8 +391,11 @@
 	</script>
 	<!--数据渲染-->
 	<script type="text/javascript">
-		var settlePrice;
+		var settlePrice,passagers;
 		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
+			var userid = plus.storage.getItem('userid');
+			var passagers = [];
 			//从机票详情获取的数据
 			var flightNo = plus.webview.currentWebview().flightNo;
 			var fromPlace = plus.webview.currentWebview().fromPlace;
@@ -442,14 +444,18 @@
 			mui('#adultAirportTax')[0].innerHTML = adultAirportTax;
 			//总价计算
 			var acountP = mui('.aPerson').length;
+//			alert(adultFuelTax+adultAirportTax+parseFloat(settlePrice));
 			if(acountP==0){
 				$('#subPerson').html(0);
 				mui('#subPrice')[0].innerHTML = 0.00;//总票价
 				mui('#subPerson')[0].innerHTML = 0;//总人数
 			}else{
-				mui('#subPrice')[0].innerHTML = settlePrice;//总票价
+				mui('#subPrice')[0].innerHTML = parseFloat(settlePrice) +adultAirportTax+adultFuelTax;//总票价
+				
 			}
 			mui('#settlePrice')[0].innerHTML = settlePrice;//票价
+			settlePrice = adultFuelTax+adultAirportTax+parseFloat(settlePrice);
+			settlePrice = settlePrice.toFixed(2);
 			mui('#changeStipulate')[0].innerHTML = changeStipulate;			
 			mui('#refundStipulate')[0].innerHTML = refundStipulate;	
 			
@@ -458,126 +464,76 @@
 				var newName = obj.detail.newName;
 				var idNo = obj.detail.idNo;
 				var idPhone = obj.detail.idPhone;
-				var persons = document.getElementById('persons');
-				persons.insertAdjacentHTML('beforebegin', '<dd class="goodsItem" id="persons"><a class="react mui-row aPerson"><div class="mui-col-sm-2 mui-col-xs-2"><img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/></div><div class="mui-col-sm-10 mui-col-xs-10"><p class="black">'+newName+'</p><p class="tiny black">身份证&nbsp;'+idNo+'</p><p class="tiny black">联系电话&nbsp;'+idPhone+'</p></div></a></dd>'); 
+				var persons = mui('.persons')[0];
+				persons.insertAdjacentHTML('beforebegin', '<dd class="goodsItem persons"><a class="react mui-row aPerson"><div class="mui-col-sm-2 mui-col-xs-2"><img src="../../img/tickets/delete.png" class="delete" onclick="deletePerson(this)"/></div><div class="mui-col-sm-10 mui-col-xs-10"><p class="black nameM">'+newName+'</p><p class="tiny black idM">身份证&nbsp;'+idNo+'</p><p class="tiny black phoneM">联系电话&nbsp;'+idPhone+'</p></div></a></dd>'); 
+				//组乘客信息
+
+				if(!passagers || passagers==''){//如果为空
+					passagers += newName +'!'+ idPhone +'!'+ idNo +'!';
+				}else{
+					passagers += '@@' + newName +'!'+ idPhone +'!'+ idNo +'!';
+				}
+//				alert(passagers);
 				//重新计算人数和价格
 				var acountP = $('.aPerson').length;
 				$('#subPerson').html(acountP);
 				var newPrice = settlePrice*acountP;//总价计算
 				$('#subPrice').html(newPrice.toFixed(2));
+				
+				
 			})
 			
 			//点击立即购买
 			window.goBuy = function(){
-//			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-				console.log(oldToken);
+//				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				
 				var contactPerson = mui('#contactPerson')[0].value;
 				var contactPhone = mui('#contactPhone')[0].value;
 				var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
-//				if(contactPerson == ''){
-//					mui('#contactPerson')[0].focus(); 
-//					mui.toast('联系人人不能为空!');
-//				}else if(!reg_phone.test(contactPhone)){
-//					mui('#contactPhone')[0].focus(); 
-//					mui.toast('请输入正确的手机号码 !');
-//				}else{
-					
-					//获取缓存信息
-					var oldToken = plus.storage.getItem('oldToken');
-					var userid = plus.storage.getItem('userid');
-//					console.log(seatCode+itemId+contactPerson+flightNo+fromPlace+flightCompanyCode+arrivePlace+contactPhone);
-//					//提交生成订单
+				
+//				alert(oldToken);
+				if(!passagers || passagers==''){
+					mui.toast('请添加乘机人 !');
+				}else if(contactPerson == ''){
+					mui('#contactPerson')[0].focus(); 
+					mui.toast('联系人人不能为空!');
+				}else if(!reg_phone.test(contactPhone)){
+					mui('#contactPhone')[0].focus(); 
+					mui.toast('请输入正确的手机号码 !');
+				}else{
+//					alert("userid:"+userid+"//date:"+fromTime+"//passagers:"+passagers);
+//					alert("seatCode:"+seatCode+"//itemId:"+itemId+"//contactPhone:"+contactPhone+"//contactPerson:"+contactPerson+"//flightNo:"+flightNo+"//fromPlace:"+fromPlace+"//flightCompanyCode:"+flightCompanyCode+"//arrivePlace:"+arrivePlace);
+					//提交生成订单
+					plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 					mui.ajax(serverUrl +'/api/qianmi/airordercreate',{
-//					data:{userid:userid,seatCode:seatCode,passagers:'王菲!15708434450!51303019930216752X',itemId:itemId,contactName:contactPerson,flightNo:flightNo,date:fromTime,from:fromPlace,to:arrivePlace,companyCode:flightCompanyCode,contactTel:contactPhone},
-						data:{userid:userid,seatCode:'U',passagers:'王菲!15708434450!51303019930216752X',itemId:'5500301',contactName:'王菲',flightNo:'CZ6101',date:'2017-01-12',from:'SHE',to:'PEK',companyCode:'CZ',contactTel:15708434450},
+					data:{userid:userid,seatCode:seatCode,passagers:passagers,itemId:itemId,contactName:contactPerson,flightNo:flightNo,date:fromTime,from:fromPlace,to:arrivePlace,companyCode:flightCompanyCode,contactTel:contactPhone},
+//						data:{userid:userid,seatCode:'U',passagers:'王菲!15708434450!51303019930216752X',itemId:'5500301',contactName:'王菲',flightNo:'CZ6101',date:'2017-01-12',from:'SHE',to:'PEK',companyCode:'CZ',contactTel:15708434450},
 						dataType:'json',
 						type:'post',
 						timeout:15000,
 						headers:{"token":oldToken},
 						success:function(data,type,xhr){
-							alert(JSON.stringify(data))
-							if(data.errno==0){
-//								alert(JSON.stringify(data.data.air_order_create_response.ticketTrade));
-								var planeOrder = {
-        "ticketOrders": {
-          "ticketOrder": [
-            {
-              "orderNo": "P170106161988363",
-              "title": "沈阳-北京",
-              "state": 0,
-              "stateName": "交易中",
-              "itemId": "5500301",
-              "passengerName": "王菲",
-              "passengerTel": "15708434450",
-              "idcardType": 0,
-              "idcardNo": "51303019930216752X",
-              "ticketNo": "51303019930216752X",
-              "salePrice": 0,
-              "payCash": 881.6,
-              "facePrice": 840,
-              "purPrice": 831.6,
-              "otherFee": 50,
-              "refundFee": 0,
-              "feeDetail": "0.0+50.0",
-              "insurance": null,
-              "seatType": 11,
-              "seatName": "",
-              "seatInfo": null,
-              "saleOrderNo": null,
-              "ticketType": 0
-            }
-          ]
-        },
-        "tradeNo": "T170106161988362",
-        "ctime": "2017-01-06 16:33:25",
-        "title": "沈阳-北京",
-        "state": 0,
-        "stateName": "预定中",
-        "billState": 0,
-        "billTime": "",
-        "etime": "",
-        "trainNo": "CZ6101",
-        "startStation": "沈阳",
-        "recevieStation": "北京",
-        "startTime": "2017-01-12 08:00",
-        "recevieTime": "2017-01-12 09:45",
-        "contactName": "王菲",
-        "contactTel": "15708434450",
-        "orderType": 2,
-        "tplId": "48007",
-        "totalSalePrice": 0,
-        "totalPayCash": 881.6,
-        "totalFacePrice": 840,
-        "totalPurPrice": 831.6,
-        "totalOtherFee": 50,
-        "totalRefundFee": 0,
-        "legs": null,
-        "remark": null
-      };
-								
-								
-								
-								
-								
-								
-								
-//								var planeOrder = data.data.air_order_create_response.ticketTrade;
-//								mui.toast("正在提交订单!");
-//								plus.nativeUI.closeWaiting();//关闭等待框
-								
+//							alert(JSON.stringify(data.data.body.air_order_create_response.ticketTrade));
+							plus.nativeUI.closeWaiting();//关闭等待框
+							if(data.data.body.air_order_create_response.ticketTrade || !data.data.body.air_order_create_response.ticketTrade ==''){
+								var planeOrder = data.data.body.air_order_create_response.ticketTrade;
 								openview({
 									view:'planeRecord.html',
 									extrasobj:{planeOrder:planeOrder}
 								})
+							}else{
+								mui.toast("提交订单失败！");
 							}
 
 						},
 						error:function(xhr,type,errorThrown){
 							console.log('响应失败  !');
+							plus.nativeUI.closeWaiting();//关闭等待框
+							mui.toast("提交订单失败！");
 						}
 					});
 					
-//				}
+				}
 				
 			}
 		})
