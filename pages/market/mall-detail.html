@@ -372,7 +372,12 @@
 								  <div class="mui-slider-group mui-slider-loop">
 								    <!--支持循环，需要重复图片节点-->
 								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+								    	<%if(infoData[infoData.length-1].bannerPic){%>
+								    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+								    		<%}else{%>
+								    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
+								    			<%} %>
+								    	
 								    </div>
 								    <% for(var i=0;i<infoData.length;i++){ %>
 								    <div class="mui-slider-item">
@@ -664,7 +669,7 @@
 		                    
 		                    //评论
 		                    var cemmentObj = {}
-		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
+//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
 		                    for(var i = 0;i < commentobj.length;i++){
 										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
 										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
@@ -685,7 +690,7 @@
 		                    		var shopName = obj.getAttribute("data-shop");
 		                    		var goodsId = obj.getAttribute("data-gdId");
 		                    		var storeid = obj.getAttribute("data-shopId");
-		                    		////alert(storeid)
+		                    		 alert(storeid)
 		                    		var goodsName = obj.getAttribute("data-gdName");
 		                    		var goodsImg = obj.getAttribute("data-gdImg");
 		                    		var goodsPrice = priceChange;
@@ -734,7 +739,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-//		                    		////alert(JSON.stringify(cartStorage))
+		                    		 alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
@@ -750,7 +755,7 @@
 											orderStorage =[];
 			                    			orderStorage.push(cartObj);
 			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-			                    		 ////alert(plus.storage.getItem("$orderStorage"));
+			                    		 alert(plus.storage.getItem("$orderStorage"));
 			                    			
 			                    			openview({
 											 	view:"market-order.html", 
