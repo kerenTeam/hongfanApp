@@ -121,15 +121,15 @@
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand"><%= list[i].name%><span class="ageBox xsmallSize"><%= list[i].sex%></span>
 									<span class="mui-pull-right">
-					                	<%= list[i].area%> <%= list[i].address%>
+					                	<%= list[i].area%> <%= list[i].address%> 距离<%= list[i].distance %>m
 						            </span>
 								</div>
 								<div class="title text-block"><%= list[i].occupation%></div>
 								<div class="price">
-									<%= list[i].competency%>
 									<% for(var j=0; j<list[i].competency.length; j++){%>
 										<span class="tag"><%= list[i].competency[j]%></span>
 									<%}%>
+									
 								</div>
 								<!--<span class="mui-icon mui-icon-arrowright goto"></span>-->
 							</div>
@@ -161,34 +161,76 @@
 	//搜索显示列表
 	mui.plusReady(function(){
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		var area = plus.webview.currentWebview().area;
-		var street = plus.webview.currentWebview().street;
+		var address = plus.webview.currentWebview().area.trim();
+		var street = plus.webview.currentWebview().street.trim();
+		var longitude = plus.webview.currentWebview().longitude;
 		var oldtoken = plus.storage.getItem('oldToken');
+		console.log(street+address);
+		
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
-			data:{area:'成华区',address:'桂溪街道'},  
+			data:{area:street,address:address},  
 			dataType:'json',//服务器返回json格式数据 
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	 
 			headers:{"token":oldtoken},    
 			success:function(data){
-//				console.log('列表返回'+JSON.stringify(data));
-				if(data.errno == 0){
-					if(data.data.length){  
-						var dataobj = {};
-						for(var i=0; i<data.data.length; i++){
-							data.data[i].competency = eval("("+data.data[i].competency+")");
-						}
-						dataobj.list = data.data; 
-						console.log(dataobj.list); 
-						//获取并渲染用户信息
-						var html=template("listinfo",dataobj);
-						document.getElementById("listinfodiv").innerHTML = html;
-					}else{
-						mui('#nulldiv')[0].style.display = 'block';
+//				alert(data.data[0].competency);
+				//表示A点纬度和经度，Lat2 Lung2 表示B点纬度和经度；
+				var strArr1 = longitude.split(',');
+				Lat1 = strArr1[0];
+				Lung1 = strArr1[1];
+				
+				for(var i=0;i<data.data.length;i++){
+					var strArr2 = data.data[i].x_y.split(',');
+					Lat2 = strArr2[0];
+					Lung2 = strArr2[1];
+//					
+					GetDistance(Lat1,Lung1,Lat2,Lung2);
+					//进行经纬度转换为距离的计算
+				    function Rad(d){
+				       	return d * Math.PI / 180.0;//经纬度转换成三角函数中度分表形式。
+				    }
+				    //计算距离，参数分别为第一点的纬度，经度；第二点的纬度，经度
+				    function GetDistance(lat1,lng1,lat2,lng2){
+				        var radLat1 = Rad(lat1);
+				        var radLat2 = Rad(lat2);
+				        var a = radLat1 - radLat2;//为两点纬度之差
+				        var b = Rad(lng1) - Rad(lng2);//为两点经度之差
+				        var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2)+Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+				        s = s *6378.137 ;// EARTH_RADIUS;
+				        s = Math.round(s * 10000) / 10; //输出为米
+				        s = parseInt(s); //输出为米
+				        data.data[i].distance=s;
+				    } 
+				}
+				//定义一个比较器
+				function compare(propertyName) {
+				    return function(object1, object2) {
+				      	var value1 = object1[propertyName];
+				      	var value2 = object2[propertyName];
+				      	if (value2 < value1) {
+				        	return 1;
+				      	} else if (value2 > value1) {
+				       		return -1;
+				      	} else {
+				        	return 0;
+				      	}
+				    }
+				}
+				//使用方法
+				data.data.sort(compare("distance"));
+				if(data.data.length){  
+					var dataobj = {};
+					for(var i=0; i<data.data.length; i++){
+						data.data[i].competency = eval("("+data.data[i].competency+")");
 					}
+					dataobj.list = data.data; 
+					console.log(dataobj.list); 
+						//获取并渲染用户信息
+					var html=template("listinfo",dataobj);
+					document.getElementById("listinfodiv").innerHTML = html;
 				}else{
-					mui.toast("获取数据失败");
 					mui('#nulldiv')[0].style.display = 'block';
 				}
 				plus.nativeUI.closeWaiting();//关闭等待框

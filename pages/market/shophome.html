@@ -139,6 +139,12 @@
 				margin-top: 15px;
 				height: 50px !important;
 			}
+			#description{
+				width: 100%;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 	<body>
@@ -403,11 +409,12 @@
 //		alert(storeId);
 		
 		//获取店铺详情
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		mui.ajax(serverUrl +'/api/mall/storeinfo',{
 			data:{store_id: storeId},
 			dataType:'json',
 			type:'post',
-			timeout:1000,
+			timeout:10000,
 			headers:{"token":oldToken},	 
 			success:function(data,type,xhr){
 //				alert(JSON.stringify(data.data.pic));
@@ -437,7 +444,7 @@
 					data:{currentPage:1,numsPerPage:10,recommend:1,storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc',store_id: storeId},
 					dataType:'json',
 					type:'post',
-					timeout:1000,
+					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data1,type,xhr){ 
 //						 alert(data1.data.return.data[0].tag)
@@ -454,6 +461,7 @@
 						var html=template("allGoods-detail",alldata);
 						document.getElementById("allGoods").innerHTML=html;
 						
+						plus.nativeUI.closeWaiting();//关闭等待框
 						//跳转详情
 						window.goInfo =  function(goodsId){
 							 openview({
