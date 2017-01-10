@@ -173,7 +173,7 @@
 					</li>
 					<li class="clearfloat">
 						<a href="javascript:;" id="mapAddress">
-							<p class="fl">所在街道</p>
+							<p class="fl">所在社区</p>
 							<button id='showCityPicker3' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
 							<div id='cityResult3' class="ui-alert"><span id="area"></span></div>
 						</a>
@@ -225,12 +225,14 @@
 				var jiedao = mui('#jiedao')[0].value;
 				//alert(area+"  "+jiedao)
 				if(area && jiedao){
+					var longitude = document.getElementById('area').value;
+//					alert(longitude);
 					openview({
 						view:'lawyerList.html',
-						extrasobj:{area:area,street:jiedao}
+						extrasobj:{area:area,street:jiedao,longitude:longitude}
 					})
 				}else{
-					mui.toast('请输入地区和街道');
+					mui.toast('请选择所在社区');
 				}
 				
 			}
@@ -239,7 +241,6 @@
 				
 				$.init();
 				$.ready(function() {
-					//地址选择三级联动
 					var cityPicker3 = new $.PopPicker({
 						layer: 1
 					});
@@ -249,6 +250,8 @@
 					showCityPickerButton.addEventListener('tap', function(event) {
 						cityPicker3.show(function(items) {  
 							doc.getElementById('area').innerText = (items[0] || {}).text + " ";
+							doc.getElementById('area').value = (items[0] || {}).value;
+//							alert((items[0] || {}).value);
 							//返回 false 可以阻止选择框的关闭
 							//return false;
 						});
@@ -271,19 +274,19 @@
       	mui.init();
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken');
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			
 			//推荐帮帮团
 			mui.ajax(serverUrl+'/api/localservice/recommendhelper',{
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					console.log(data);
 //					alert(data.data[0].competency);
 					for(var i = 0;i < data.data.length;i++ ){
 						data.data[i].competency = eval("("+data.data[i].competency+")");
-//						data.data[i].headPic = eval("("+data.data[i].headPic+")");
 					}
 					var helpObj = {};
 					helpObj.myUrl = serverimgUrl;
@@ -291,8 +294,7 @@
 					var html = template('helper-detail',helpObj);
 					document.getElementById('helper').innerHTML = html; 
 					
-//					plus.webview.currentWebview().close();//关闭当前页面
-//					mui.fire(plus.webview.getWebviewById('personal/address.html'),'refreshAd');//打开指定页面
+					plus.nativeUI.closeWaiting();//关闭等待框
 				},
 				error:function(xhr,type,errorThrown){
 					alert('响应失败  !');
