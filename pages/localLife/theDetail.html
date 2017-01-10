@@ -111,12 +111,12 @@
 					<div class="mui-slider">
 						  <div class="mui-slider-group mui-slider-loop">
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[pic.length-1].banner%>" class="goodsImg"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= picurl%><%= pic[pic.length-1].picImg%>" class="goodsImg"></a></div>
 						    <% for(var i=0; i<pic.length; i++) {%>
-						    	<div class="mui-slider-item"><a><img src="<%= pic[i].banner%>" class="goodsImg"></a></div>
+						    	<div class="mui-slider-item"><a><img src="<%= picurl%><%= pic[i].picImg%>" class="goodsImg"></a></div>
 						    <% }%>	
 						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= pic[0].banner%>" class="goodsImg"></a></div>
+						    <div class="mui-slider-item mui-slider-item-duplicate"><a><img src="<%= picurl%><%= pic[0].picImg%>" class="goodsImg"></a></div>
 						  </div>
 			            <div class="mui-slider-indicator">
 							<div class="mui-indicator mui-active"></div>
@@ -195,13 +195,12 @@
 				success:function(data){
 					//alert(mytoken);
 					console.log('获取数据返回'+JSON.stringify(data));
+					console.log('获取数据返回',data);
 					if(data.errno == 0){
 						var objdata = {};
-//						data.data[0].create_time = data.data[0].create_time.split('T')[0]
-						objdata.list = data.data; 
-						
+						objdata.list = data.data;
+						objdata.picurl = serverimgUrl;
 						objdata.pic = JSON.parse(objdata.list[0].pic);//轮播图
-						console.log(objdata.pic);
 						var html=template("details",objdata);
 						document.getElementById("main").innerHTML=html;
 						plus.nativeUI.closeWaiting();

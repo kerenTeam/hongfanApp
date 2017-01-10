@@ -248,7 +248,12 @@
 					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
-								<img src="<%=myurl%><%= list[i].thumb %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+								<% if(list[i].thumb && list[i].thumb != undefined){%>
+									<img src="<%=myurl%><%= list[i].thumb %>"/>
+								<% }else{%>
+									<img src="../../img/market/none.png"/>
+								<% }%>	
+								
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
@@ -282,18 +287,31 @@
 			var oldToken = plus.storage.getItem('oldToken');
 			//获取页面传值 商品分类id
 			var goodcatId = plus.webview.currentWebview().goodscatId;
-			
+			var can1 = 'sales',can2 = 'desc';
 			//按照选择排序
 			window.order = function(orderType,sequence){
-				var pagenum = 10,CcurrentPage = 1;
+				can1 = orderType,can2 = sequence;
+				var pagenum = 10,CcurrentPage = 1,sequence1 = sequence;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:goodcatId,recommend:'',differentiate:1,storeid:0,brand:'',keyword:'',order_type:orderType,desc:sequence},
+					data:{
+						currentPage:CcurrentPage,
+						numsPerPage:pagenum,
+						categoryid:goodcatId,
+						recommend:'',
+						differentiate:1,
+						storeid:'',
+						brand:'',
+						keyword:'',
+						order_type:can1,
+						desc:can2
+					},
 					type:'post',
-					timeout:10000,
+					timeout:10000, 
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){ 
-					console.log(JSON.stringify(data));
+//					console.log(JSON.stringify(data));
 					if(data.errno == 0){
 						if(data.data.return.data.length){
 							var objdata = {};
@@ -311,26 +329,38 @@
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight == scrollHeight){
+						　　if(scrollTop + windowHeight >= scrollHeight){
 								//加载下一部分
 							  var nowpage = ++CcurrentPage;
 								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 									console.log('可以请求数据');
+									
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:goodcatId,recommend:'',differentiate:1,storeId:0,brand:'',keyword:'',order_type:orderType,desc:sequence}, 
+										data:{
+											currentPage:nowpage,
+											numsPerPage:pagenum,
+											categoryid:goodcatId,
+											recommend:'',
+											differentiate:1,
+											storeid:'',
+											brand:'',
+											keyword:'',
+											order_type:can1,
+											desc:can2
+										},
 										type:'post',
 										timeout:10000,
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){ 
-											console.log(JSON.stringify(data));
+//											console.log(JSON.stringify(data));
 											if(data.errno == 0){
 												var objdata = {};
 												objdata.myurl = serverimgUrl;
 												objdata.list = data.data.return.data;
 												var html=template("goodsList-detail",objdata);
 												document.getElementById("goodsList").innerHTML+=html;
-												mui("#upload")[0].innerHTML = "上滑加载 ";
+												mui("#upload")[0].innerHTML = " ";
 											}else{
 												--CcurrentPage;//请求失败,继续请求当前页
 												mui.toast("获取数据失败");
@@ -340,7 +370,7 @@
 										error:function(xhr,type,errorThrown){
 											--CcurrentPage;//请求失败,继续请求当前页
 											mui.toast("当前网络不好请重试");
-										}
+										} 
 									});
 								}else{
 									mui("#upload")[0].innerHTML = "到底了";
@@ -351,6 +381,8 @@
 						
 					}else{
 						mui.toast('没有数据');
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
 					plus.nativeUI.closeWaiting();//关闭等待框
 				},
@@ -364,7 +396,7 @@
 				$('.Sort-eject').removeClass('grade-w-roll');
 				$('.grade-eject').removeClass('grade-w-roll');
 			}
-			order('sales','desc');//初始化
+			order(can1,can2);//初始化
 			//跳转详情
 			window.goInfo =  function(goodsId){ 
 				 openview({

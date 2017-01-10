@@ -147,7 +147,7 @@
 								<div class="title">搜索历史</div>
 								<ul>
 									<%for(var i=data.length-1;i>=0;i--){%>
-										<li class="link-url"><span class="mui-icon mui-icon-search"></span> <%=data[i]%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+										<li class="link-url searchli"><span class="mui-icon mui-icon-search"></span> <%=data[i]%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 									<%}%>
 									 <li class="clear clearStr">清除搜索记录</li>
 								</ul>
@@ -157,14 +157,57 @@
 				</script> 
 		 </div>
 		 <!--搜索结果-->
-		    <section class="historyBox searchOut" style=""> 
-				<ul>
-					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
-					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
-					<li class="link-url"><span class="mui-icon mui-icon-search"></span> 食物<span class="mui-icon mui-icon-arrowright fr"></span></li>
-				</ul>
+		    <section class="historyBox searchOut" id="searchOut" style="margin-top: -13px;"> 
+		    	 
 			</section>
+			<script type="text/html" id="searchOutTpl">
+		    		<ul>
+		    		<!--房产-->
+		    			<%if(searchData.local_house.length!=0){%>
+		    				<%for(var i=0;i < searchData.local_house.length;i++){%>
+		    			   		<li onclick="opendetails1('<%=searchData.local_house[i].house_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.local_house[i].name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%>
+		    		<!--本地服务-->
+		    			<%if(searchData.local_service.length!=0){%>
+		    				<%for(var i=0;i < searchData.local_service.length;i++){%>
+		    			   		<li onclick="opendetails2('<%=searchData.local_service[i].id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.local_service[i].name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%>
+		    		<!--商城-->
+		    			<%if(searchData.goods.length!=0){%>
+		    				<%for(var i=0;i < searchData.goods.length;i++){%>
+		    			   		<li onclick="opendetails3('<%=searchData.goods[i].goods_id%>','<%=searchData.goods[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.goods[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%>
+		    		<!--二手市场-->
+		    			<%if(searchData.local_used_market.length!=0){%>
+		    				<%for(var i=0;i < searchData.local_used_market.length;i++){%>
+		    			   		<li onclick="opendetails4('<%=searchData.local_used_market[i].id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.local_used_market[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%>
+		    		<!--帮帮团成员-->
+		    			<%if(searchData.service_help_user.length!=0){%>
+		    				<%for(var i=0;i < searchData.service_help_user.length;i++){%>
+		    			   		<li onclick="opendetails5('<%=searchData.service_help_user[i].helper_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.service_help_user[i].name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%>
+		    		<!--义工活动-->
+		    			<%if(searchData.service_volunteer_activities.length!=0){%>
+		    				<%for(var i=0;i < searchData.service_volunteer_activities.length;i++){%>
+		    			   		<li onclick="opendetails6('<%=searchData.service_volunteer_activities[i].id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.service_volunteer_activities[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%>
+		    		<!--活动-->
+		    			<%if(searchData.system_activity.length!=0){%>
+		    				<%for(var i=0;i < searchData.system_activity.length;i++){%>
+		    			   		<li onclick="opendetails7('<%=searchData.system_activity[i].id%>','<%=searchData.system_activity[i].type%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData.system_activity[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%> 
+					</ul>
+		    	</script>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
@@ -203,7 +246,6 @@
 			window.submitTest = function(){
 				if($("input").val()!=''){ 
 					var words=$("input").val();
-					mui.toast("请输入搜索内容！");
 					if(searchStorage.length != 0) {
 						var flag = false;
 						for(var i = 0; i < searchStorage.length; i++) {
@@ -218,20 +260,59 @@
 						if(flag) {
 							searchStorage.push(words);
 						}
-					} else { 
+					}else{ 
 						searchStorage.push(words);
 						
 					} 
 					plus.storage.setItem('$searchStorage', JSON.stringify(searchStorage)); 
-					alert(JSON.stringify(searchStorage))
+//					alert(JSON.stringify(searchStorage)); 
+					
 					$("#container").css("display","none");
-					$(".searchOut").css("display","block");
+					$(".searchOut").css("display","block"); 
+					//执行搜索
+					doSearch(words);
+					
 				}else{
+					
+					mui.toast("请输入搜索内容！");
 					$("#container").css("display","block");
 					$(".searchOut").css("display","none");
 				} 
 			}
 			
+			
+			function doSearch(words){
+					plus.nativeUI.showWaiting()
+					var oldtoken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/index/search',{
+						data:{search:words},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldtoken},	 
+						success:function(data,type,xhr){ 
+							plus.nativeUI.closeWaiting();
+							
+							if(data.errno==0){
+								if(data.data.local_house.length!=0 || data.data.local_service.length!=0 || data.data.local_used_market.length!=0 || data.data.goods.length!=0 || data.data.service_help_user.length!=0 || data.data.service_volunteer_activities.length!=0 || data.data.system_activity.length!=0){
+								 var searchObj = {};
+								 searchObj.searchData = data.data;
+								// alert(template("searchOutTpl",searchObj))
+								 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
+							}else{
+								document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 40%;'>换其它的试试呢</div>"
+							}
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting()
+							console.log('响应失败  !');
+						}
+					});
+			}
+			
+			
+			//缓存记录 渲染
 			var recordObj = {};
 			recordObj.data= searchStorage;
 			if(searchStorage.length){
@@ -249,21 +330,94 @@
 			})
 			//搜索某一条 缓存 
 			$('.searchli').click(function(e){
-			    e.preventDefault();
-			    alert("执行搜索")
+			    e.preventDefault(); 
+			    $("#container").css("display","none");
+				$(".searchOut").css("display","block"); 
+			   // alert($(this).text())
+			    doSearch($.trim($(this).text()))
 			})
 		})
 			
-			  
-			//输入搜索
-//			document.getElementById('words').addEventListener('change', function() {
-//				$('.searchRecord').css('display','none');
-//				var words = this.parentNode.getElementsByTagName('input')[0].value;
-//				if(words == '') {
-//					mui.toast("请输入食材或菜名");
-//				} else {
-//					
-//				}
-//			});
+		//跳转   房产详情
+		function opendetails1(id){
+			openview({
+				view:'build-detail.html', 
+				extrasobj:{name:id}
+			})
+		}	  
+		//跳转 服务详情
+		function opendetails2(id){
+			openview({
+				view:'theDetail.html',
+				extrasobj:{name:id}
+			})
+		} 
+		//跳转 商品详情
+		function opendetails3(id,did){
+			if(did == 1){
+				openview({
+					view:'../market/mall-detail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			if(did == 2){
+				openview({
+					view:'../market/jifen-detail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			if(did == 3){
+				openview({
+					view:'../market/yphDetail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			if(did == 4){
+				openview({
+					view:'../market/hometown-detail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			
+		} 
+	//跳转 跳蚤市场
+	function opendetails4(id){
+			openview({
+				view:'Fleadetails.html',
+				extrasobj:{name:id}
+			})
+		} 
+	//跳转 帮帮团
+	function opendetails5(id){
+			openview({ 
+				view:'../serveForPeople/around.html',
+				id:'volunActivityDetail',
+				extrasobj:{activityId:id}
+			})
+		} 
+	//跳转 义工团队
+	function opendetails6(id){
+			openview({ 
+				view:'../serveForPeople/volunActivityDetail.html',
+				id:'volunActivityDetail',
+				extrasobj:{activityId:id}
+			})
+		} 
+	//跳转活动
+	function opendetails7(id,typeid){
+			if(typeid == 1){
+				openview({
+					view:'../activity/activityDetail.html',
+					extrasobj:{activityId:id}
+				})
+			}
+			if(typeid == 2){
+				openview({
+					view:'../activity/couponDetail.html',
+					extrasobj:{storeCouponId:id}
+				})
+			}
+		 
+		} 
 	</script>
 </html>

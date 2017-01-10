@@ -44,7 +44,7 @@
 						订单号 :<span id="orderId" style="display: inline-block;word-break: break-all;"></span>
 					</div>
 				</div>
-				<div class="zhifulist">
+				<!--<div class="zhifulist">
 					<ul>
 						<li>
 							<img src="../../img/yinghangka.svg"/>
@@ -62,9 +62,9 @@
 							<p>推荐有支付宝账户的用户使用</p>
 						</li>
 					</ul>
-				</div>
+				</div>-->
 				
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">模拟支付</button>
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">货到付款</button>
 			</div>
 		</div>
 	</body>
@@ -126,19 +126,19 @@ mui.plusReady(function() {
 				data:{order_id:orderId},
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldtoken},	 
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting();
 //					alert(JSON.stringify(data)) ;
-					 mui.toast("支付成功"); 
-					  
-					 plus.webview.getWebviewById("market/market-order.html").close();
-					 
-					 plus.webview.currentWebview().close();
-					openview({
+					 mui.toast("提交成功"); 
+					  	openview({
 						view:"../personal/sc-order.html"
 					})
+					// plus.webview.getWebviewById("market-order").close(); 
+					 plus.close(plus.webview.getWebviewById("market-order"));
+					 plus.webview.currentWebview().close();
+				
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting()
