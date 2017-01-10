@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>购票记录</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
+		<script src="../../js/hmt.js" type="text/javascript"></script>
+		<script src="../../js/mui.min.js" type="text/javascript"></script>
+		<style type="text/css">
+			.notice .tab-hd,.orderbh,dl.list dt, dl.list dd,dl.list{
+				box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				overflow-y: hidden;
+			}
+			.notice .tab-bd .tab-pal{
+				border-top: 1px solid #eee;
+			}
+			.notice .tab-bd .tab-pal dl{
+				background-color: #efeff4;
+			}
+			.notice .tab-bd{
+				padding-top: 10px;
+			}
+			.notice li.active{
+				border-bottom: 2px solid red;
+				box-sizing: border-box;
+				color: red;
+			}
+			dl.list dt, dl.list dd, dl.list{
+				margin-bottom: 10px;
+				background-color: #fff;
+				border: none!important;
+			}
+			dl.listtwo dd>.react{
+				border-top: 1px solid #EFEFF4;
+			}
+			dl.listtwo dd{
+				padding: 0;
+			}
+			.pricetwo{
+				position: absolute !important;
+				top: 0;
+				right: 0;
+				display: inline-block !important;
+				text-align: right;
+				line-height: 20px;
+			}
+			.react:last-child{
+				margin-bottom: 0;
+			}
+			.state{
+				color: #ff5601 !important;
+				font-size: 12px !important;
+			}
+			.tab-hd{
+				height: 41px !important;
+				border-bottom: 1px solid #EFEFF4 !important;
+			}
+			.tab-nav li{
+				height: 40px !important;
+			}
+			.tab-hdtwo{
+				overflow-x: scroll;
+				white-space: nowrap;
+				background: none;
+			}
+			.notice .tab-hdtwo li {
+				float: none!important;
+			    width: 50%;
+			    display: inline-block;
+			    white-space: nowrap;
+			    height: auto;
+			    line-height: 40px !important;
+		    }
+		    ::-webkit-scrollbar {
+				width: 0!important;
+				opacity: 1!important;
+			}
+			.poi-name{
+				word-break: break-all;
+				white-space: normal;
+				color: #32B16C;
+				font-size: 14px;
+			}
+			/*Bjiang*/
+			.ticketT{
+				padding-left: 10px;
+				font-size: 14px !important;
+			}
+			.gray{
+				color: #999;
+			}
+			.big{
+				font-size: 16px;
+				margin-bottom: 15px;
+			}
+			.tiny{
+				font-size: 12px;
+				line-height: 18px;
+			}
+			.dark{
+				color: #666;
+			}
+			.nothing{
+				display: block;
+				background-color: #EFEFF4;
+				margin-top: 60px;
+				text-align: center;
+			}
+			.nothing img{
+				display: block;
+				margin: 20px auto;
+				width: 80px;
+			}
+			.nothing p{
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="hasManyCity hasManyCitytwo" id="header">
+			<a class="fl fanhui mui-action-back"><i class="iconfont icon-fanhui"></i></a>
+			<div class="header-tit">
+				购票记录
+			</div>		
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="main"> 
+			<div class="notice">
+				<div class="tab-hd tab-hdtwo">
+					<ul class="tab-nav">
+					  <li class="active" id="planebtn" data-statusId="-1">飞机</li>
+					  <li data-statusId="0" id="trainbtn">火车</li>
+					  <!--<li data-statusId="1">代支付</li>-->
+					  <!--<li data-statusId="2">退款单</li>-->
+					</ul>
+				</div>
+				<div class="tab-bd">
+					<div class="tab-pal">
+						<dl class="list listtwo list-in" id="infolistdiv" style="display: none;"></dl>
+						<!--火车票-->
+						<script type="text/html" id="infolist">
+							<dd onclick="openD('<%= tradeNo%>')">
+								<div class="orderbh box-s">
+									<img src="../../img/tickets/t.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">火车票</span>
+									<span class="fr state"><%= stateName%></span>
+								</div>
+								<a class="react mui-row">
+									<div class="mui-col-sm-6 mui-col-xs-6">
+										<p class="black big"><%= startStation%>&nbsp;<span class="gray">→</span>&nbsp;<%= recevieStation%></p>
+									</div>
+									<div class="mui-col-sm-6 mui-col-xs-6">
+										<div class="pricetwo">
+											<p class="black big">¥<%= totalPurPrice%></p>
+										</div>	
+									</div>
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="dark tiny"><%= tradeNo%></p>
+									</div>
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="tiny">车次 <%= trainNo%>(<%= remark%>)</p>
+									</div>
+								</a>
+							</dd>
+						</script>
+						<!--飞机票-->
+						<script type="text/html" id="infolist2">
+							<dd onclick="openD2('<%= tradeNo%>')">
+								<div class="orderbh box-s">
+									<img src="../../img/tickets/p.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">飞机票</span>
+									<span class="fr state"><%= stateName%></span>
+								</div>
+								<a class="react mui-row">
+									<div class="mui-col-sm-6 mui-col-xs-6">
+										<p class="black big"><%= startStation%>&nbsp;<span class="gray">→</span>&nbsp;<%= recevieStation%></p>
+									</div>
+									<div class="mui-col-sm-6 mui-col-xs-6">
+										<div class="pricetwo">
+											<p class="black big">¥<%= totalPurPrice%></p>
+										</div>	
+									</div>
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="dark tiny"><%= tradeNo%></p>
+									</div>
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="tiny">车次 <%= trainNo%></p>
+									</div>
+								</a>
+							</dd>
+						</script>
+						<div id="noOrder" style="display: none;">
+							<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" />
+							<span style="display:block;text-align: center;padding: 20px;">您还没有相关的购票记录</span>
+					    </div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</body>  
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+
+	<script type="text/javascript"> 
+	mui.plusReady(function(){
+		var oldToken = plus.storage.getItem('oldToken'); 
+		var userid = plus.storage.getItem('userid');
+		
+		window.loadTfun = function(){//加载火车列表的方法
+			document.getElementById("infolistdiv").innerHTML = '';
+			mui('#infolistdiv')[0].style.display = 'none';
+			//获取用户千米网信息
+			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+			mui.ajax(serverUrl+'/api/qianmi/billorder',{
+				data:{userid:0,type:3},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){ 
+					console.log('票列返回'+JSON.stringify(data))
+					var dataobj=data.data;
+					if(dataobj.length>0){
+						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
+							var tradeNo = JSON.parse(dataobj[i].data);
+							if(!tradeNo.errorToken){
+								var orderItem = tradeNo.train_order_create_response.ticketTrade.tradeNo;
+								mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
+									data:{tradeNo:orderItem},
+									dataType:'json',
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){ 
+										var dataobj = data.data.train_order_detail_response.ticketTrade;
+										var html=template("infolist",dataobj);
+										document.getElementById("infolistdiv").innerHTML += html;
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast('一条加载失败,请重试');
+									}
+								});
+							}
+							if(i == dataobj.length -1){//铺完后关闭loading
+								mui('#infolistdiv')[0].style.display = 'block';
+								var time1 = setTimeout(function(){
+									plus.nativeUI.closeWaiting();
+								},600)
+							} 
+						}
+					}else{
+						plus.nativeUI.closeWaiting();
+						mui('#noOrder')[0].style.display = 'block';
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui('#noOrder')[0].style.display = 'block';
+					mui.toast('加载失败,请重试');
+				}
+			});
+		}
+		window.loadPfun = function(){//加载飞机列表的方法
+			document.getElementById("infolistdiv").innerHTML = '';
+			mui('#infolistdiv')[0].style.display = 'none';
+			//获取用户千米网信息
+			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+			mui.ajax(serverUrl+'/api/qianmi/billorder',{
+				data:{userid:userid,type:4},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){ 
+					console.log('票列返回',data);
+					var dataobj=data.data;
+					if(dataobj.length>0){
+						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
+							var tradeNo = JSON.parse(dataobj[i].data);
+							console.log('票列返回',tradeNo);
+							if(!tradeNo.errorToken){
+								var orderItem = tradeNo.air_order_create_response.ticketTrade.tradeNo;
+								mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
+									data:{tradeNo:orderItem},
+									dataType:'json',
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){ 
+										var dataobj = data.data.train_order_detail_response.ticketTrade;
+										var html=template("infolist2",dataobj);
+										document.getElementById("infolistdiv").innerHTML += html;
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast('一条加载失败,请重试');
+									}
+								});
+							}
+							if(i == dataobj.length -1){//铺完后关闭loading
+								mui('#infolistdiv')[0].style.display = 'block'; 
+								var time1 = setTimeout(function(){
+									plus.nativeUI.closeWaiting();
+								},600)
+							} 
+						}
+					}else{
+						plus.nativeUI.closeWaiting();
+						mui('#noOrder')[0].style.display = 'block';
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui('#noOrder')[0].style.display = 'block';
+					mui.toast('加载失败,请重试');
+				}
+			});
+		}
+		loadPfun();//默认加载飞机列表
+		mui('#planebtn')[0].onclick = function(){//点击加载飞机
+			if(this.className != 'active'){
+				mui('#planebtn')[0].className = 'active';
+				mui('#trainbtn')[0].className = '';
+			}
+			loadPfun();
+		}
+		mui('#trainbtn')[0].onclick = function(){//点击加载火车
+			if(this.className != 'active'){
+				mui('#trainbtn')[0].className = 'active';
+				mui('#planebtn')[0].className = '';
+			}
+			loadTfun();
+		}
+		
+	})
+	
+	function openD2(argu1){//点击查看机票订单详情
+		openview({
+			view:'planeRecordDetail.html',
+			extrasobj:{tradeNo:argu1}
+		})
+	}
+	function openD(argu1){//打开火车详情
+		openview({
+			view:'trainRecord.html',
+			extrasobj:{Tordernum:argu1}
+		})
+	}
+	</script>
+</html>
