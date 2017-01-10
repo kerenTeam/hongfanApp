@@ -401,6 +401,7 @@
 			var baoxianid;//保险编号
 			var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 			var oldToken = plus.storage.getItem('oldToken');
+			var userid = plus.storage.getItem('userid');
 			//获取上页面数据,并显示
 			var details1 = plus.webview.currentWebview().details; 
 			mui('#Tfrom')[0].innerHTML = details1.from;
@@ -510,6 +511,7 @@
 								var gradenum = data.data.train_items_list_response.items.item[0].itemId;//标号
 								mui.ajax(serverUrl+'/api/qianmi/trainordercreate',{//开始预定
 									data:{
+										userid:userid,
 										from:details1.from,
 										to:details1.End,
 										date:details1.timeall,
@@ -525,88 +527,6 @@
 									timeout:10000,
 									headers:{"token":oldToken},	              				
 									success:function(data,type,xhr){
-										
-										var data1 = {
-										  "errno": 0,
-										  "errmsg": "",
-										  "data": {
-										    "body": {
-										      "train_order_create_response": {
-										        "ticketTrade": {
-										          "ticketOrders": {
-										            "ticketOrder": [
-										              {
-										                "orderNo": "P170107171991191",
-										                "title": "游向前 2017-01-10 07:55 成都东-广州南 G1318",
-										                "state": 0,
-										                "stateName": "交易中",
-										                "itemId": "5500201",
-										                "passengerName": "游向前",
-										                "passengerTel": "17781694509",
-										                "idcardType": 0,
-										                "idcardNo": "513701199405236539",
-										                "ticketNo": "513701199405236539",
-										                "salePrice": 0,
-										                "payCash": 818.5,
-										                "facePrice": 816.5,
-										                "purPrice": 817.5,
-										                "otherFee": 1,
-										                "refundFee": 0,
-										                "feeDetail": "816.5+1",
-										                "insurance": {
-										                  "insuranceNo": "I170107171991192",
-										                  "state": 0,
-										                  "insuranceInfo": null,
-										                  "userName": "游向前",
-										                  "salePrice": 0,
-										                  "payCash": 4.5,
-										                  "purPrice": 4.5,
-										                  "facePrice": 5,
-										                  "userTel": "17781694509",
-										                  "itemId": "9200601",
-										                  "saleOrderNo": null,
-										                  "insurancePolicyNo": null,
-										                  "itemCash": 4.5
-										                },
-										                "seatType": 0,
-										                "seatName": "二等座",
-										                "seatInfo": null,
-										                "saleOrderNo": null,
-										                "ticketType": 0
-										              }
-										            ]
-										          },
-										          "tradeNo": "T170107171991190",
-										          "ctime": "2017-01-07 17:55:17",
-										          "title": "G1318 07:55 成都东-广州南",
-										          "state": 0,
-										          "stateName": "预定中",
-										          "billState": 0,
-										          "billTime": "",
-										          "etime": "",
-										          "trainNo": "G1318",
-										          "startStation": "成都东",
-										          "recevieStation": "广州南",
-										          "startTime": "2017-01-10 07:55",
-										          "recevieTime": "",
-										          "contactName": "游向前",
-										          "contactTel": "17781694508",
-										          "orderType": 1,
-										          "tplId": "48068",
-										          "totalSalePrice": 0,
-										          "totalPayCash": 823,
-										          "totalFacePrice": 821.5,
-										          "totalPurPrice": 822,
-										          "totalOtherFee": 1,
-										          "totalRefundFee": 0,
-										          "legs": null,
-										          "remark": null
-										        }
-										      }
-										    },
-										    "new_qianmi_order_id": 143
-										  }
-										}
 										console.log('预定返回'+JSON.stringify(data));
 										console.log(data);
 										if(data.errno == 0){
