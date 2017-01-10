@@ -85,9 +85,8 @@
 				<div class="list clearfloat fl box-s">
 						<div class="top clearfloat box-s">
 							<div class="zuo clearfloat fl">
-								<img src="<%= memberLi[i].pic %>"/>
+								<img src="<%= myUrl %><%= memberLi[i].pic %>"/>
 							</div>
-							
 						</div>
 						<div class="top clearfloat box-s second">
 							<p class="tit fl"><%= memberLi[i].name %></p>
@@ -123,7 +122,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	              				
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data[0].card_id));
+//					alert(JSON.stringify(eval("("+data.data[0].avatar+")")[0].picImg));
 					var carId = JSON.stringify(data.data[0].card_id);
 					mui.ajax(serverUrl+'/api/useraccount/mycard ',{
 						data:{"card_id":carId},
@@ -134,6 +133,7 @@
 //							alert(JSON.stringify(data.data));
 							var memberObj = {};
 							memberObj.memberLi = data.data;
+							memberObj.myUrl = serverimgUrl;
 							var html = template('memberList-detail', memberObj);
 							document.getElementById('memberList').innerHTML = html;
 							plus.nativeUI.closeWaiting();
