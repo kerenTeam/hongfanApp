@@ -203,6 +203,7 @@
 			var myuserid = plus.storage.getItem('userid');
 			console.log(oldToken);
 			//积分列表
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			mui.ajax(serverUrl+'/api/useraccount/userintergral',{
 				data:{"userid":myuserid},
 				type:'post',
@@ -219,6 +220,7 @@
 					var date = new Date();
 					var time = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + '时';
 					$('#thisTime').html(time);
+					plus.nativeUI.closeWaiting();//关闭等待框
 //					alert(time);
 				},
 				error:function(xhr,type,errorThrown){

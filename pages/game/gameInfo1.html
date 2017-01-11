@@ -190,31 +190,43 @@
 		</div>
 	</body>
 	<script type="text/javascript"> 
+		//如果是ios则隐藏下载按钮
+	    if (/android/i.test(navigator.userAgent)){//判断为android  
+	    }else if (/ipad|iphone/i.test(navigator.userAgent)){//判断为ios  
+	        mui('#downGame')[0].remove();
+//	        window.location = "mqq:open";//判断是否安装qq，否则打开Appstore
+//			setTimeout( function(){ 
+//				window.location="itms-apps://itunes.apple.com/cn/app/wang-pai-zhan-jian-wan-ren/id1058754904?l=en&mt=8";
+//			}, 30);
+	    }else{//pc端访问  
+	       mui('#downGame')[0].remove();
+	    }  
+	
 		mui.plusReady(function(){
-	   var id= plus.webview.currentWebview().gameid;
+	   	var id= plus.webview.currentWebview().gameid;
 	 
 	 		// 创建下载任务
 			window.createDownload = function() {
 			 
-					document.getElementById("download").innerHTML = "安装中";
-					document.getElementById("gameOver").style.display="inline-block";
-					alert('http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846259')
-					var dtask = plus.downloader.createDownload( "http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846259", {}, function ( d, status ) {
-						// 下载完成
-						if ( status == 200 ) { 
-							document.getElementById("download").innerHTML = "打开";
-							document.getElementById("gameOver").style.display="none";
-							d.filename = d.filename;
-							alert( "Download success: " + d.filename );
-							document.getElementById("download").onclick = function(){ 
-								plus.runtime.openFile(d.filename);
-				           } 
-						} else {
-							 alert( "Download failed: " + status ); 
-						}  
-					});
-					//dtask.addEventListener( "statechanged", onStateChanged, false );
-					dtask.start();  
+				document.getElementById("download").innerHTML = "安装中";
+				document.getElementById("gameOver").style.display="inline-block";
+				alert('http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846259')
+				var dtask = plus.downloader.createDownload( "http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846259", {}, function ( d, status ) {
+					// 下载完成
+					if ( status == 200 ) { 
+						document.getElementById("download").innerHTML = "打开";
+						document.getElementById("gameOver").style.display="none";
+						d.filename = d.filename;
+						alert( "Download success: " + d.filename );
+						document.getElementById("download").onclick = function(){ 
+							plus.runtime.openFile(d.filename);
+			           } 
+					} else {
+						 alert( "Download failed: " + status ); 
+					}  
+				});
+				//dtask.addEventListener( "statechanged", onStateChanged, false );
+				dtask.start();  
 				
 			}
             //取消下载任务
