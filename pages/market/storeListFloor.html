@@ -227,7 +227,7 @@
 		    		<% for(var i=0;i<list.length;i++){ %>
 		    			<li data-id="<%=list[i].id%>"><%=list[i].type_name%></li>
 		    			<%}%>
-		   </script> 
+		    	</script> 
 		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
@@ -236,7 +236,7 @@
 					<div id="storeItem"></div>
 				</div>
 				<div class="upload text-center text-xs gray" id="upload"></div>
-				<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+					<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
 					<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 					<br />
 					没有相关信息
@@ -246,7 +246,11 @@
 		
 		<!--模板渲染数据-->
 		<script id="storeItem-detail" type="text/html">
-			  
+			<%if(recommentLi.length==0){%>
+				<!--<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>-->
+			<%}else{%>
+				
+				
 				<% for(var i=0;i<recommentLi.length;i++){ %>
 					  
 					 <dl class="list" id="goodsList">
@@ -274,14 +278,14 @@
 							</a>
 						</dd>
 					</dl>
-				<% } %> 
+				<% } %>
+			<%}%>
 		</script>
 	</body>
 
 	<script type="text/javascript">
 		mui.init();
-		mui.plusReady(function(){
-		 plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		mui.plusReady(function(){ 
 		 var oldToken = plus.storage.getItem('oldToken');
 		 order('','');//初始化
 		 //获取业态
@@ -326,7 +330,7 @@
 		  function order(floor,commercial_type_name){
  				var currentPage =1, numsPerPage=8;
 			
-			
+			plus.nativeUI.showWaiting()
 			mui.ajax(serverUrl +'/api/mall/storelist',{
 				data:{currentPage:currentPage,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},//以及业态
 				dataType:'json',
@@ -335,18 +339,17 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					plus.nativeUI.closeWaiting(); 
-					if(data.data.return.data.length){
-					var recommentObj = {};  
-					recommentObj.myurl = serverimgUrl;
-					recommentObj.recommentLi = data.data.data;
-//					recommentObj.recommentImg = img;
-					var html2 = template('storeItem-detail',recommentObj);
-					document.getElementById('storeItem').innerHTML= html2;
-					mui("#upload")[0].innerHTML = "";
-					}else{	
-						mui("#upload")[0].innerHTML = ""; 
-						mui('#nulldiv')[0].style.display = 'block';
-					 
+				//	 alert(JSON.stringify(data)) 
+					if(data.errno == 0){
+						if(data.data.data.length!=0){
+							  mui('#nulldiv')[0].style.display = 'none';
+							var recommentObj = {};  
+								recommentObj.myurl = serverimgUrl;
+								recommentObj.recommentLi = data.data.data;
+			//					recommentObj.recommentImg = img;
+								var html2 = template('storeItem-detail',recommentObj);
+								document.getElementById('storeItem').innerHTML= html2;
+									mui("#upload")[0].innerHTML = "";
 		                    	//上滑加载
 		                   $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
@@ -372,40 +375,36 @@
 						//					recommentObj.recommentImg = img;
 											var html2 = template('storeItem-detail',recommentObj);
 											document.getElementById('storeItem').innerHTML+= html2;
-											mui("#upload")[0].innerHTML = "上滑加载 ";
+												mui("#upload")[0].innerHTML = " ";
 											}else{
 												--CcurrentPage;//请求失败,继续请求当前页
 												mui.toast("获取数据失败");
 											}
-											plus.nativeUI.closeWaiting();//关闭等待框
+											plus.nativeUI.closeWaiting();//关闭等待框 
 										},
 										error:function(xhr,type,errorThrown){
-											--CcurrentPage;//请求失败,继续请求当前页
-											mui.toast("当前网络不好请重试");
-										}
+												--currentPage;//请求失败,继续请求当前页
+												mui.toast("当前网络不好请重试");
+											}
 									});
-								}else{
-									mui("#upload")[0].innerHTML = "到底了";
-								}
-								//加载下一部分结束
+							}else{
+								mui("#upload")[0].innerHTML = "到底了";
+							}
+							//加载下一部分结束
 							　　}
 						});
-						
-					}else{ 
-						mui.toast('没有数据');
-						mui("#upload")[0].innerHTML = ""; 
-						mui('#nulldiv')[0].style.display = 'block';
+					}else{
+						 document.getElementById('storeItem').innerHTML = ''
+					 		mui("#upload")[0].innerHTML = ""; 
+						    mui('#nulldiv')[0].style.display = 'block';
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
-					},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
-					mui.toast('没有数据');
-				}
-				}); 
-				 
-			}
-				 
+				
+						 
+					}else{
+						document.getElementById('storeItem').innerHTML = ''
+					 		mui("#upload")[0].innerHTML = ""; 
+						    mui('#nulldiv')[0].style.display = 'block';
+					 	}
 				},
 				error:function(xhr,type,errorThrown){
 					//alert('响应失败  !');

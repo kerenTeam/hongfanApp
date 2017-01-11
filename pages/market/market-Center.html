@@ -180,7 +180,7 @@
 			}
 			.gocart{
 				position: fixed;
-				display: none;
+				display: block;
 				right: 0.2rem;
 				bottom: 0.2rem;
 				height: 0.5rem;
@@ -464,17 +464,19 @@
 		mui.plusReady(function(){
 			//去购物车
 			document.getElementsByClassName("gocart")[0].addEventListener('tap',function () {
-			//当前页
-	 		     plus.webview.getWebviewById('market/market-Center.html').close();
+			//当前页 
+//			alert(plus.webview.getWebviewById('market'))
+	 		     plus.webview.getWebviewById('market').close();
+ 
 			    //获得主页面的webview
 			    var main = plus.webview.getLaunchWebview();
 			    //触发主页面的gohome事件
 			    mui.fire(main,'gohome',{hrefid:'cart'});
-			    setTimeout(function(){
+			    
 			    	main.show();
 			    	mui.back();
 			    	plus.webview.currentWebview().close();
-			    },200);
+			 
 			});
 			
 			var token=plus.storage.getItem("oldToken");//获取token

@@ -174,7 +174,7 @@ mui.plusReady(function() {
 });
 
 var w=null;
-var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php/?total=1';
+var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php?total=1';
 //http://hiji.hifete.com/app/api/controller/aliPay.php
 
 // 支付方法
@@ -232,14 +232,13 @@ function payfun(id){
 //		data:dataJson,
 //		dataType:'json',//服务器返回json格式数据
 //		type:'post',//HTTP请求类型
-//		headers:{"token":oldtoken},	
+		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
 		success:function(data){
-			plus.nativeUI.closeWaiting()
-			alert(JSON.stringify(data))
-			console.log('后台返回',data); 
-			var data = data.replace(/\%22/g, '"');
-			 alert(data);
+			plus.nativeUI.closeWaiting()  
+//			var data = data.data;
+			alert('后台返回'+data)
+			var data = data.replace(/\%22/g, '"'); 
 			console.log("----- 请求订单成功 -----"); 
 			var varpay;
 			if(id == 'wxpay'){
