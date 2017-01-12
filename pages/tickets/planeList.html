@@ -416,9 +416,10 @@
 			mui.ajax(serverUrl +'/api/qianmi/airstationslist',{
 				dataType:'json',
 				type:'post',
-				timeout:30000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+					console.log('三字码获取成功')
 //					alert(JSON.stringify(data.data.air_stations_list_response.stations.station));
 					dataReturn = data.data.air_stations_list_response.stations.station;
 					for(var i = 0;i<dataReturn.length;i++){
@@ -437,9 +438,10 @@
 						data:{pageNo : 0,itemName:'',itemId:'',pageSize:10},
 						dataType:'json',
 						type:'post',
-						timeout:20000,
+						timeout:10000,
 						headers:{"token":oldToken},	 
 						success:function(data,type,xhr){
+							console.log('标准商品序列号获取成功')
 //							alert(JSON.stringify(data.data.air_items_list_response.items.item[0].itemId));
 							numReturn = data.data.air_items_list_response.items.item;
 							for(var j = 0;j<numReturn.length;j++){
@@ -450,7 +452,7 @@
 									data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
 									dataType:'json',
 									type:'post',
-									timeout:20000,
+									timeout:30000,
 									headers:{"token":oldToken},	 
 									success:function(data,type,xhr){
 //										alert(data.data.airlines_list_response.airlines);
@@ -478,13 +480,17 @@
 										}
 									},
 									error:function(xhr,type,errorThrown){
-										console.log('航线列表响应失败  !');
+										console.log('当前网络不好，请重试!');
+										mui.toast('请求超时，请重试!');
+										plus.webview.currentWebview().close();
 									}
 								});
 							}
 						},
 						error:function(xhr,type,errorThrown){
 							console.log('标准商品序列号响应失败  !');
+							mui.toast('请求超时，请重试!');
+							plus.webview.currentWebview().close();
 						}
 					});
 					
@@ -493,6 +499,8 @@
 				},
 				error:function(xhr,type,errorThrown){
 					console.log('三字码响应失败  !');
+					mui.toast('请求超时，请重试!');
+					plus.webview.currentWebview().close();
 				}
 			});
 			
