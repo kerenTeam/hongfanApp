@@ -67,6 +67,25 @@
 				margin: 0 5px;
 				position: relative;
 			}
+				.gocart{
+				position: fixed;
+				right: 0.2rem;
+				bottom: 0.2rem;
+				height: 0.5rem;
+				width: 0.5rem;
+				background-color: #f53c42;
+				border-radius: 50%;
+				border: 0;
+				box-sizing: border-box;
+				z-index: 999;
+				padding: 0;
+				text-align: center;
+				line-height: 0.5rem;
+				box-shadow: 0px 0px 2px 2px rgba(208, 145, 145, 0.4);
+			}
+			.gocart img{
+				width: 60%;
+			} 
 			dl.list dt:not(:last-child):after, dl.list dd:not(:last-child):after,dl.list:not(:last-child):after{
 				content: '';
 				position: absolute;
@@ -196,7 +215,7 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		 
-		 
+		 <div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div> 
 		<div id="container">		
 			<div id="main">
 				<div class="guess-like">
@@ -256,6 +275,22 @@
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
+			//去购物车
+			document.getElementsByClassName("gocart")[0].addEventListener('tap',function () {
+			//当前页 
+//			alert(plus.webview.getWebviewById('market'))
+	 		     plus.webview.getWebviewById('youpinhui-Center').close();
+ 
+			    //获得主页面的webview
+			    var main = plus.webview.getLaunchWebview();
+			    //触发主页面的gohome事件
+			    mui.fire(main,'gohome',{hrefid:'cart'});
+			    
+			    	main.show();
+			    	mui.back();
+			    	plus.webview.currentWebview().close();
+			 
+			});
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken'); 
 		 plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
@@ -265,7 +300,7 @@
 				data:{currentPage:currentPage,numsPerPage:numsPerPage},
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting()

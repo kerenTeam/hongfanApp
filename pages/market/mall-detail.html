@@ -372,7 +372,12 @@
 								  <div class="mui-slider-group mui-slider-loop">
 								    <!--支持循环，需要重复图片节点-->
 								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+								    	<%if(infoData[infoData.length-1].bannerPic){%>
+								    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+								    		<%}else{%>
+								    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
+								    			<%} %>
+								    	
 								    </div>
 								    <% for(var i=0;i<infoData.length;i++){ %>
 								    <div class="mui-slider-item">
@@ -452,7 +457,7 @@
 							</div>
 							<ul class="farm clearfloat Cul">
 								<%if(cemmentData.length==0){%>
-									<div style="font-size:14px;color:gray;padding: 5px;text-align: center;">暂无评论</div>
+									<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无评论</div>
 										<%}else{%>
 											<%for(var i=0;i<cemmentData.length;i++){%>
 											<li class="mui-row Cli">
@@ -548,7 +553,12 @@
 					     			<ul>
 					     				<%if(choose.parameter[i].child_value.length!=0){%>
 					     					<%for(var j=0;j<choose.parameter[i].child_value.length;j++){%>
+					     						<%if(choose.parameter[i].child_value[j].equivalence){%>
 					     						<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+				     						    <%}else{%>
+				     						    <li class="ra3" data-priceStep="0"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+	
+				     						   <% }%>
 				     						<%}%>
 				     					<%}%> 
 						     		</ul>
@@ -623,8 +633,7 @@
 		                     //详情
 		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
 		                     ////alert(data.data.goodsInfo.parameter);
-		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
-		                     
+		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");  
 		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
 		                     var chooseO = {};
@@ -649,12 +658,12 @@
 				                     	
 		                     	})
 		                     	chooseli.click(function(){
-//		                     		////alert(oldstep)
+		                     		 alert(oldstep)
 		                     		oldstep=newstep;
 											$(this).addClass('cur');
 											$(this).siblings().removeClass('cur');
 				                     	  newstep = $(this).attr("data-priceStep");
-//				                     	////alert(newstep)
+				                     	 alert(newstep)
 				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
 				                     	 $('#priceChange').html(priceChange)
 										})
@@ -664,7 +673,7 @@
 		                    
 		                    //评论
 		                    var cemmentObj = {}
-		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
+//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
 		                    for(var i = 0;i < commentobj.length;i++){
 										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
 										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
@@ -685,7 +694,7 @@
 		                    		var shopName = obj.getAttribute("data-shop");
 		                    		var goodsId = obj.getAttribute("data-gdId");
 		                    		var storeid = obj.getAttribute("data-shopId");
-		                    		////alert(storeid)
+		                    		 alert(storeid)
 		                    		var goodsName = obj.getAttribute("data-gdName");
 		                    		var goodsImg = obj.getAttribute("data-gdImg");
 		                    		var goodsPrice = priceChange;
@@ -734,7 +743,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-//		                    		////alert(JSON.stringify(cartStorage))
+		                    		 alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");
@@ -750,7 +759,7 @@
 											orderStorage =[];
 			                    			orderStorage.push(cartObj);
 			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-			                    		 ////alert(plus.storage.getItem("$orderStorage"));
+			                    		 alert(plus.storage.getItem("$orderStorage"));
 			                    			
 			                    			openview({
 											 	view:"market-order.html", 

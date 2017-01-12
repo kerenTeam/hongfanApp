@@ -69,7 +69,7 @@
 					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.fee %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl">要参加</button>
 					
 					<div class="black acl"><img src="../../img/serveForPeople/actime.png" alt="" /> 活动时间<small class="fr gray"><%= objData.time %></small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray"><%= objData.begin_time %>到<%= objData.end_time %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray"><%= objData.begin_time %> 到 <%= objData.end_time %></small></div>
 					<div class="black acl"><img src="../../img/serveForPeople/baom.png" alt="" /> 报名费用<small class="fr gray">
 						<% if(objData.fee >0){ %>
 							￥<%= objData.fee %>
@@ -83,10 +83,7 @@
 					 
 					<div class="grayd">活动详情：
 						<ul class="listContent">
-							<li><%= objData.content %></li>
-							<!--<li>14:00相亲活动正式开始，进入游戏互动交友的乐园;</li>
-							<li>18:30相亲活动结束，参会人员可享免费晚餐;</li>
-							<li>19:30-22:00嘉年华演出;</li>-->
+							<li id="content"></li>
 						</ul>
 					</div> 
 				</article>
@@ -116,15 +113,18 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data[0]));
+//					alert(JSON.stringify(data.data[0].content));
 					var dateObj={};
 		       		data.data[0].time = data.data[0].time.split('T')[0]; 
 		       		data.data[0].begin_time = data.data[0].begin_time.split('T')[0]; 
 		       		data.data[0].end_time = data.data[0].end_time.split('T')[0]; 
+		       		
+		       		
 					dateObj.objData=data.data[0];
 					dateObj.myUrl=serverimgUrl;
 					mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
 					plus.nativeUI.closeWaiting();
+					document.getElementById('content').innerHTML = data.data[0].content; 
 				},
 				error:function(xhr,type,errorThrown){
 					alert('响应失败  !');

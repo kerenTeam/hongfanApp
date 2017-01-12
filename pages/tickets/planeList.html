@@ -419,7 +419,8 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//						alert(JSON.stringify(data.data.air_stations_list_response.stations.station));
+					console.log('三字码获取成功')
+//					alert(JSON.stringify(data.data.air_stations_list_response.stations.station));
 					dataReturn = data.data.air_stations_list_response.stations.station;
 					for(var i = 0;i<dataReturn.length;i++){
 						//起飞地点三字码
@@ -431,66 +432,79 @@
 							arrivePlace = dataReturn[i].code;
 						}
 					}
+					
+					//获取标准商品序列号
+					mui.ajax(serverUrl +'/api/qianmi/airitemslist',{
+						data:{pageNo : 0,itemName:'',itemId:'',pageSize:10},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){
+							console.log('标准商品序列号获取成功')
+//							alert(JSON.stringify(data.data.air_items_list_response.items.item[0].itemId));
+							numReturn = data.data.air_items_list_response.items.item;
+							for(var j = 0;j<numReturn.length;j++){
+								itemId = numReturn[j].itemId;
+		//						alert(arrive)
+								//获取航线列表
+								mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
+									data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
+									dataType:'json',
+									type:'post',
+									timeout:30000,
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){
+//										alert(data.data.airlines_list_response.airlines);
+//										alert(JSON.stringify(data.data.airlines_list_response.airlines));
+										var dataObj = data.data.airlines_list_response.airlines;
+										if(!dataObj || dataObj == ''){
+											plus.nativeUI.closeWaiting();
+											alert('没有航线信息,请重新输入航线！');
+											plus.webview.currentWebview().close();
+										}else{
+											dataObj = data.data.airlines_list_response.airlines.airline;
+											var adObj = {};
+											adObj.adLi = data.data.airlines_list_response.airlines.airline;
+											var html = template('goodsList-detail',adObj);
+											document.getElementById('goodsList').innerHTML = html;
+											plus.nativeUI.closeWaiting();
+											//点击机票进入详情
+											window.goPlane = function(flightNo,flightCompanyCode){
+		//										alert(flightNo);
+												openview({ 
+													view:'planeDetail.html',
+													extrasobj:{flightNo:flightNo,flightCompanyCode:flightCompanyCode,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
+												})
+											}
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('当前网络不好，请重试!');
+										mui.toast('请求超时，请重试!');
+										plus.webview.currentWebview().close();
+									}
+								});
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							console.log('标准商品序列号响应失败  !');
+							mui.toast('请求超时，请重试!');
+							plus.webview.currentWebview().close();
+						}
+					});
+					
+					
+					
 				},
 				error:function(xhr,type,errorThrown){
-					console.log('响应失败  !');
+					console.log('三字码响应失败  !');
+					mui.toast('请求超时，请重试!');
+					plus.webview.currentWebview().close();
 				}
 			});
 			
-			//获取标准商品列表信息
-			mui.ajax(serverUrl +'/api/qianmi/airitemslist',{
-				data:{pageNo : 0,itemName:'',itemId:'',pageSize:10},
-				dataType:'json',
-				type:'post',
-				timeout:15000,
-				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data.air_items_list_response.items.item[0].itemId));
-					numReturn = data.data.air_items_list_response.items.item;
-					for(var j = 0;j<numReturn.length;j++){
-						itemId = numReturn[j].itemId;
-//						alert(arrive)
-						//获取航线列表
-						mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
-							data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
-							dataType:'json',
-							type:'post',
-							timeout:15000,
-							headers:{"token":oldToken},	 
-							success:function(data,type,xhr){
-//								alert(data.data.airlines_list_response.airlines);
-								var dataObj = data.data.airlines_list_response.airlines;
-								if(!dataObj || dataObj == ''){
-									plus.nativeUI.closeWaiting();
-									alert('没有航线信息,请重新输入航线！');
-									plus.webview.currentWebview().close();
-								}else{
-									dataObj = data.data.airlines_list_response.airlines.airline;
-									var adObj = {};
-									adObj.adLi = data.data.airlines_list_response.airlines.airline;
-									var html = template('goodsList-detail',adObj);
-									document.getElementById('goodsList').innerHTML = html;
-									plus.nativeUI.closeWaiting();
-									//点击机票进入详情
-									window.goPlane = function(flightNo,flightCompanyCode){
-//										alert(flightNo);
-										openview({ 
-											view:'planeDetail.html',
-											extrasobj:{flightNo:flightNo,flightCompanyCode:flightCompanyCode,fromPlace:fromPlace,arrivePlace:arrivePlace,fromTime:fromTime,itemId:itemId}
-										})
-									}
-								}
-							},
-							error:function(xhr,type,errorThrown){
-								console.log('响应失败  !');
-							}
-						});
-					}
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('响应失败  !');
-				}
-			});
+			
 			
 			
 		})

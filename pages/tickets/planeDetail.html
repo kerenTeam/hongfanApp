@@ -241,41 +241,10 @@
 		</header>
 		<div id="container">		
 				<div class="guess-like">
-					<div class="head" id="airBase">
-						<!--<p class="hMiddle black">12月12日&nbsp;周二</p>
-						<div class="mui-row">
-						    <div class="mui-col-sm-4 mui-col-xs-4 hLeft">
-								<div class="timeBox">
-									<p class="ad black">成都</p>
-									<p>22:40 </p>
-									<p class="ad black">双流机场T2</p>
-								</div>
-					       	</div>
-					        <div class="mui-col-sm-4 mui-col-xs-4 hMiddle">
-					        	<div class="timeBox">
-									<p class="ad black">经停&nbsp;·&nbsp;洛阳</p>
-									<div class="toLine"></div>
-									<p class="ad black">约11时47分</p>
-								</div>
-					        </div>
-					         <div class="mui-col-sm-4 mui-col-xs-4 hRight">
-								<div class="timeBox">
-									<p class="ad black">邻水</p>
-									<p>22:40 </p>
-									<p class="ad black">邻水机场T1</p>
-								</div>
-					       	</div>
-						</div>
-						<div class="black Atips">
-							<ul>
-								<li>国航GJ8792</li>
-								<li class="liCenter">中型机</li>
-								<li>准点率</li>
-							</ul>
-						</div>-->
-					</div>
+					<div class="head" id="airBase"></div>
 					<!--机票基本信息渲染-->
 					<script type="text/html" id="airBase-detail">
+						<p class="hMiddle black" style="line-height: 20px;padding-top: 10px;"><%=fromTime %></p>
 						<div class="mui-row">
 						    <div class="mui-col-sm-4 mui-col-xs-4 hLeft">
 								<div class="timeBox">
@@ -332,16 +301,17 @@
 			var flightCompanyCode = plus.webview.currentWebview().flightCompanyCode;
 			var flightNo = plus.webview.currentWebview().flightNo;
 			var oldToken = plus.storage.getItem('oldToken');
-			
+			 alert(fromPlace+itemId+fromTime+arrivePlace)
 			//获取航线列表
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
 				data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
 				dataType:'json',
 				type:'post',
-				timeout:10000,
+				timeout:30000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+//					alert(JSON.stringify(data))
 					//航线基本信息
 					var objData = data.data.airlines_list_response.airlines.airline;
 					for(var i = 0;i<objData.length;i++){
@@ -350,7 +320,7 @@
 //							alert(JSON.stringify(objData[i]));
 							var adObj = {};
 							adObj.adLi = objData[i];
-							
+							adObj.fromTime = fromTime;
 							var html = template('airBase-detail',adObj);
 							document.getElementById('airBase').innerHTML = html;
 							var adultAirportTax = adObj.adLi.adultAirportTax;//基建费
@@ -366,10 +336,6 @@
 							for(var j = 0;j<airSeatsObj.airSeatsLi.length;j++){
 								airSeatsObj.airSeatsLi[j].discount = airSeatsObj.airSeatsLi[j].discount.toFixed(2)*10;
 								airSeatsObj.airSeatsLi[j].discount = airSeatsObj.airSeatsLi[j].discount.toFixed(1);
-								
-//								airSeatsObj.airSeatsLi[j].discount = airSeatsObj.airSeatsLi[j].discount;
-//								alert(airSeatsObj.airSeatsLi[1].discount);
-//								break
 							}
 							
 							var html2 = template('goodsList-detail',airSeatsObj);
@@ -390,6 +356,8 @@
 				},
 				error:function(xhr,type,errorThrown){
 					console.log('响应失败  !');
+					mui.toast('请求超时，请重试!');
+					plus.webview.currentWebview().close();
 				}
 			});
 		})

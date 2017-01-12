@@ -194,14 +194,21 @@
 								<%for(var i =0;i<orderData.length;i++){%>
 									<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 									<div class="orderbh clearfloat box-s">
-										<span onclick="goShop('<%=orderData[i].storeid%>')"><img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" alt="" /> <%=orderData[i].goods_data[0].goodsData[0].shopName%></span>
+										<span onclick="goShop('<%=orderData[i].storeid%>')">
+											<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+											<%=orderData[i].goods_data[0].goodsData[0].shopName%>
+										</span>
 										<span class="fr state"><%=state[orderData[i].order_status]%></span>
 									</div>
 									<%for(var j =0;j<orderData[i].goods_data[0].goodsData.length;j++){%>
 									<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
 										<div class="dealcard dealcardtwo clearfloat">
 											<div class="dealcard-img imgbox">
-												<img src="<%=orderData[i].goods_data[0].goodsData[j].goodsImg%>">
+												<% if(orderData[i].storeid== 0){ %>
+													<img src="<%=orderData[i].goods_data[0].goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+												<% }else{ %>
+													<img src="<%=myUrl %><%=orderData[i].goods_data[0].goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+												<% } %>
 											</div>
 											<div class="dealcard-block-right dealcard-block-righttwo">
 												<div class="dealcard-brand dealcard-brandtwo single-line">
@@ -312,17 +319,20 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-				//	alert(JSON.stringify(data))
+//					alert(JSON.stringify(data))
+//					alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].storeid))
+//					alert(JSON.stringify(data.data[0].goods_data.goodsData[0]));
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
 						if(data.data.length!=0){ 
 							for(var i=0;i<data.data.length;i++){ 
 								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
 							}
-							// alert(JSON.stringify(data.data[0].goods_data.goodsData[0])) 
+							 
 							
 							var obj={}; 
 							 obj.orderData=data.data;
+							 obj.myUrl=serverimgUrl;
 							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
 							$('.tab-nav li').click(function(){ 
@@ -533,8 +543,7 @@
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){ 
 									plus.nativeUI.closeWaiting();
-								//	alert(JSON.stringify(data))
-							       if(data.data==1){  
+							       	if(data.data==1){  
 							       	  mui.toast("收货成功"); 
 									  load();
 							       }

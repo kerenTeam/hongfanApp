@@ -188,7 +188,7 @@
 		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
-				商品列表
+				土特产列表
 			</div>
 		</header>
 		
@@ -248,9 +248,7 @@
 					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
- 
-								<img src="<%=myUrl%><%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
- 
+								<img src="<%=myUrl %><%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
@@ -292,12 +290,13 @@
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){ 
+					success:function(data,type,xhr){
 					console.log(JSON.stringify(data)); 
+//					alert(JSON.stringify(data.data.return.data[0].thumb)); 
 					if(data.errno == 0){
 						if(data.data.return.data.length){
 							var objdata = {};
-							objdata.myurl = serverimgUrl;
+							objdata.myUrl = serverimgUrl;
 							objdata.list = data.data.return.data;
 							var html=template("goodsList-detail",objdata);
 							document.getElementById("goodsList").innerHTML=html;
@@ -306,6 +305,8 @@
 							mui("#upload")[0].innerHTML = ""; 
 							mui('#nulldiv')[0].style.display = 'block';
 						}
+						plus.nativeUI.closeWaiting();//关闭等待框
+						
 						//滚动到底部加载
 						$(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
@@ -326,7 +327,7 @@
 											console.log(JSON.stringify(data));
 											if(data.errno == 0){
 												var objdata = {};
-												objdata.myurl = serverimgUrl;
+												objdata.myUrl = serverimgUrl;
 												objdata.list = data.data.return.data;
 												var html=template("goodsList-detail",objdata);
 												document.getElementById("goodsList").innerHTML+=html;
@@ -366,6 +367,7 @@
 				$('.grade-eject').removeClass('grade-w-roll');
 			}
 			order('sales','desc');//初始化
+			
 			//跳转详情
 			window.goInfo =  function(goodsId){ 
 				 openview({

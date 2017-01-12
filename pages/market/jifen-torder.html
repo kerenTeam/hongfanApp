@@ -315,6 +315,17 @@
 			.sf:after{
 				height: 0px!important;
 			}
+			.mui-radio.mui-left label {
+			    padding-right: 15px;
+			    padding-left: 46px;
+			    padding-top: 14px;
+			}
+			.mui-radio input[type=radio]:before{
+				font-size: 20px;
+			}
+			.mui-radio input[type=radio]{
+				top: 10px;
+			}
 		</style>
 	</head>
 
@@ -375,7 +386,9 @@
 							<%for(var j =0;j<goodsList.length;j++){%>
 							<% if(goodsList[j].shopName ==  cates[i]){%>
 							<dd class="dd-padding kv-line-r mui-row goodsWrap"> <!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
-								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=goodsList[j].goodsImg%>"/></h6>
+								
+								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>"/></h6>
+								
 								<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8 goods">
 									<p>
 										<%=goodsList[j].goodsName%>
@@ -392,12 +405,12 @@
 							<%}%>
 							 
 								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
-									<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">配送方式：</h6>
-									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
+									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">配送方式：</h6>
+									<div class="clearfloat fr mui-col-sm-4 mui-col-xs-4 goods">
 	 
 										<div class="mui-input-row mui-radio mui-left">
 											<label>到店自提</label>
-											<input name="radio1" type="radio" disabled="">
+											<input name="radio1" type="radio">
 										</div>
 									</div>
 									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
@@ -506,7 +519,7 @@
 			
 			//订单数据模板
 						var data = {};
-						alert(JSON.stringify(orderStorage))
+						//alert(JSON.stringify(orderStorage))
 						data.goodsList = orderStorage;
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
@@ -585,15 +598,13 @@
 						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
 						data.arrMoney=arrMoney; 
-						
+						data.myUrl = serverimgUrl;
 						var html = template('orderData', data);
 						document.getElementById('orderTpl').innerHTML = html;
 					 
  
 		 
-				window.goPay=function(){
-					
-//						alert($("#addid"))
+				window.goPay=function(){ 
 					if($("#addid").length!=0){
 						var yourSFZ = $('#sfzin').val();
 						 
@@ -632,8 +643,7 @@
 								
 								
 							});
-							
-	//					 	alert(JSON.stringify("noticeData "+noticeData));
+							 
 							 alert("orderSubmitData ewrew"+JSON.stringify(orderSubmitData))
 							//优惠券id
 							var coupon_id='';
@@ -656,44 +666,22 @@
 									timeout:1000,
 									headers:{"token":oldtoken},	 
 									success:function(data,type,xhr){
-	//									alert(JSON.stringify(data))
-										//购物车 缓存 
-	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-	        							//alert(cartStorage)
-	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
-										//删除 购物车里 提交的这一条数据 
-										console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
-										for(var i=0;i<orderStorage.length;i++){
-											
-											for(var j=0;j<cartStorage.length;j++){
-												if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
-													 cartStorage.splice(j,1)
-												}
-												//break;
-											}
-											
-											
-										}
-	//									alert("ooooo "+JSON.stringify(cartStorage))
-										plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
+	//							  
 										var list = plus.webview.getWebviewById('cart.html'); 
 												mui.fire(list,'refresh'); 
 										plus.nativeUI.closeWaiting(); 
 	//									alert(JSON.stringify(data))
 										if(data.errno==0){
-											alert(JSON.stringify(data.data))
+										//	alert(JSON.stringify(data.data))
 											var payMent = data.data.payment;
 											var order_id=  data.data.order_id; 
 											plus.webview.currentWebview().close();
 											openview({
-												view:"jifen-order.html",
+												view:"jifen-success.html",
 											 
-											})
-	//										var list = plus.webview.getWebviewById('cart.html'); 
-	//											mui.fire(list,'refresh'); 
+											}) 
 										}else{
-											plus.nativeUI.closeWaiting()
-										   // alert(JSON.stringify(data.data))
+											plus.nativeUI.closeWaiting() 
 										}
 									},
 									error:function(xhr,type,errorThrown){

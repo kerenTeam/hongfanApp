@@ -167,7 +167,7 @@
 				        	</div>
 				        </div>
 				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
-				        	<div class="rechargeItem">
+				        	<div class="rechargeItem rccur">
 				        		<p class="rechargeBig">30元</p>
 				        	</div>
 				        </div>
@@ -247,13 +247,13 @@
 				$(".mui-icon-clear").css("display","block")
 					if(reg_phone.test(mobileNo)){ 
 						$(".mui-icon-clear").css("display","none")
-						$(".rechargeItem").addClass("rechargeItemActive");
+						$(".rccur").addClass("rechargeItemActive");
 						$(".rechargeItemActive").click(function(){
 							var mobileNo = $("#mobileNo").val();
 							if(reg_phone.test(mobileNo)){
 								plus.nativeUI.showWaiting()
 								var rechargeAmount = parseFloat($(this).find("p").html());
-								 //alert(rechargeAmount + " "+mobileNo+" "+myuserid);
+								  alert(rechargeAmount + " "+mobileNo+" "+myuserid);
 								//	充话费接口
 									mui.ajax(serverUrl+'/api/qianmi/createmobilebill',{
 										data:{mobileNo:mobileNo,rechargeAmount:rechargeAmount,userid:myuserid},
@@ -263,7 +263,7 @@
 										headers:{"token":oldToken},	 
 										success:function(data,type,xhr){
 											plus.nativeUI.closeWaiting()
-											//alert(JSON.stringify(data));
+											 alert(JSON.stringify(data));
 											if(data.errno==0){
 												var orderCost = data.data.body.data.orderCost; 
 												var saleAmount = data.data.body.data.saleAmount;
@@ -278,14 +278,15 @@
 											}
 										},
 										error:function(xhr,type,errorThrown){
-											////alert('响应失败  !');
+											 mui.toast('响应失败  !');
+											
 										}
 									}); 
 							}
 							
 						})
 					}else{
-						$(".rechargeItem").removeClass("rechargeItemActive");
+						$(".rccur").removeClass("rechargeItemActive");
 					}
 				}
 		})

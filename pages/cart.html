@@ -43,14 +43,18 @@
 				<%for(var j =0;j<goodsList.length;j++){%>
 				<% if(goodsList[j].shopName ==  cates[i]){%>
 				<dd>
-					<div class="mui-checkbox" style="top: 30%;"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].storeid%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-num="<%=goodsList[j].goodsnum%>" type="checkbox"></div>
-					<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].storeid%>')"><img src="<%=goodsList[j].goodsImg%>" /></a>
-					<div class="goodsInfor"> <!--onclick="goGoods('<%=goodsList[j].goodsId%>')"-->
-						<h2> 
+					<div class="mui-checkbox" style="top: 30%;"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].shopId%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-num="<%=goodsList[j].goodsnum%>" type="checkbox"></div>
+					<% if(goodsList[j].shopName == '爱购保税'){%>
+						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')"><img src="<%=goodsList[j].goodsImg%>" /></a>
+					<%}else{%>
+						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>" /></a>
 
-    <a><%=goodsList[j].goodsName%></a>
-    <span class="num"><%=goodsList[j].goodsnum%></span>
-   </h2>
+						<%}%>
+					<div class="goodsInfor"> <!--onclick="goGoods('<%=goodsList[j].goodsId%>')"-->
+						<h2>  
+						    <a><%=goodsList[j].goodsName%></a>
+						    <span class="num"><%=goodsList[j].goodsnum%></span>
+						   </h2>
 						<div class="priceArea">
 							<div class="extraBrief">
 								<%=goodsList[j].goodText%>
@@ -92,7 +96,7 @@
 		<script type="text/javascript" src="../js/jquery_cart.js"></script>
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-
+		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 	</body>
  
 	<script> 
@@ -101,30 +105,22 @@
 	
 	mui.plusReady(function(){ 
 		
-		window.addEventListener('refresh',function(event){ 
-//	   		alert(1);
+		window.addEventListener('refresh',function(event){  
 			cartload(); 
 		});
 				 
 	cartload();
     function cartload(){
-    	var page = plus.webview.currentWebview().pageId;
-//		alert(page)
+    	var page = plus.webview.currentWebview().pageId; 
 		if(page = "detail"){
 			$(".fanhui").css("display","block")
 		}else{
 			$(".fanhui").css("display","none")
 		}
     	//购物车 缓存 
-        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
-        
-        //alert("goodProp"+cartStorage[0].goodProp)
-     
-//      console.log(cartStorage.length)
+        var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');  
        //订单缓存
-        var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]'); 
-//      console.log(cartStorage.length+" "+plus.storage.getItem('$cartStorage'));
-//      console.log(orderStorage.length);
+        var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]');  
        
        
         	var data = {};
@@ -135,6 +131,7 @@
 				arr.push(cartStorage[i].shopName);
 			}
 			data.cates = arr.unique1();
+			data.myUrl = serverimgUrl;
 			var html2 = template('cartTpl', data);
 			document.getElementById('cartData').innerHTML = html2;
         	mui(".mui-numbox").numbox();
@@ -392,7 +389,6 @@
 						
 						if(plus.storage.getItem('myToken')){ 
 							 
-							mui.toast("您选中了" + ALLcheckLength + "件商品")
 								//订单缓存
 							var orderStorage = [];
 							$("dd").find("input[type='checkbox']:checked").each(function(){ 
@@ -416,12 +412,35 @@
 								
 								
 							})
+							alert(JSON.stringify(orderStorage))
 							plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
-//							alert(JSON.stringify(orderStorage))
-							openview({
-								view: "market/market-order.html",
-								id:"market-order"
-							})
+//							//优品汇 和 普通商家商品分开提交
+//							var flag=0;
+//							for(var t=0;t<orderStorage.length;t++){
+//								if(orderStorage[t].shopId == 0 && orderStorage.length!=1){
+//									plus.nativeUI.alert("保税区商品要分开结算哦!");
+//									flag=1;
+//									break;
+//								}else{
+//									flag=0;
+//								}
+//							}  
+//							 
+//							if(flag == 1){
+//								mui.toast("您选中了" + ALLcheckLength + "件商品");
+//								return 
+//								openview({
+//									view: "market/market-orderY.html",
+//									id:"market-orderY"
+//								})
+//							}else{
+								mui.toast("您选中了" + ALLcheckLength + "件商品") 
+								openview({
+									view: "market/market-order.html",
+									id:"market-order"
+								})
+//							}
+							
 						}else{//没登陆直接打开登录页面
 							mui.toast('请登录');
 							openview({
@@ -447,7 +466,7 @@
 								view:'market/loveBuyList.html'
 							})
 						}
-						
+						 
 					})
 			}
     
@@ -457,11 +476,12 @@
 			//逛逛
 			function hangout(){
 				openview({
-				 	view:"market/market-Center.html"
+				 	view:"market/market.html"
 				 })
 			}
 			//进商品详情
 			function goGoods(gid,did){
+				alert(did)
 				if(did==0){
 					openview({
 					 	view:"market/yphDetail.html",

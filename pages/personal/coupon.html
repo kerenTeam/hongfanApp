@@ -304,7 +304,7 @@
 											</p>
 										</div>
 										<div class="qrcode mui-content-padded">
-											<img src="<%= allLi[i].qrcode %>" data-preview-src="" data-preview-group="1" />
+											<img src="<%= allLi[i].qrcode %>"  onerror="javascript:this.src='../../img/market/nodata.svg';" data-preview-src="" data-preview-group="1" />
 										</div>
 									</div>
 								<% } %>
@@ -432,13 +432,13 @@
 					})
 				}
 				var userId = plus.storage.getItem("userid");
-				
-				console.log(oldToken);
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+//				console.log(oldToken);
 				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
 					data:{userid : userId},
 					dataType:'json',
 					type:'post',
-					timeout:1000,
+					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 //						alert(JSON.stringify(data));
@@ -460,7 +460,8 @@
 						document.getElementById('ableC').innerHTML = html2;
 						var html3 = template('disableC-detail',allC);
 						document.getElementById('disableC').innerHTML = html3;
-
+						plus.nativeUI.closeWaiting();//关闭等待框
+						
 						//点击进入券的详情
 						window.Cdetail = function(Cid){
 							openview({
