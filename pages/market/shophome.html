@@ -308,9 +308,11 @@
 								<div class="dealcard-block-right">
 									<div class="dealcard-brand single-line"><%=recommendData[i].title%></div>
 									<div class="title text-block bage">
-										<span class="mui-badge mui-badge-primary">64G</span>
-										<span class="mui-badge mui-badge-primary">128G</span>
-										<span class="mui-badge mui-badge-primary">64G</span>
+										<% if(recommendData[i].tag!=null && recommendData[i].tag!=''){ %>
+											<% for(var j=0;j<recommendData[i].tag.length;j++){ %>
+												<span class="mui-badge mui-badge-primary"><%= recommendData[i].tag[j].tag_name %></span>
+											<%}%>
+										<%} %>
 									</div>
 									<div class="price mui-row">
 										<div class="mui-col-sm-4 mui-col-xs-4">
@@ -445,7 +447,7 @@
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data1,type,xhr){ 
-//						 alert(data1.data.return.data[0].tag)
+						 alert(data1.data.return.data[0].tag)
 						 for(var m=0; m < data1.data.return.data.length; m++){ 
 							if(data1.data.return.data[m].tag==''){
 							 	data1.data.return.data[m].tag=null;
@@ -482,18 +484,19 @@
 						timeout:10000,//超时时间设置为10秒；	
 						headers:{"token":oldToken}, 
 						success:function(data){
+//							alert(JSON.stringify(data.data.return.data[4]))
 							if(data.errno==0){
 							var dataobj = data.data.return.data;
 							var recommendObj = {};
 								recommendObj.myUrl = serverimgUrl;
 								recommendObj.recommendData = dataobj
-							for(var m=0; m < data.data.return.data.length; m++){ 
-								if(data.data.return.data[m].tag==''){
-								 	data.data.return.data[m].tag=null;
-								}else{
-									data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
-								}
-							}   
+								for(var m=0; m < data.data.return.data.length; m++){ 
+									if(data.data.return.data[m].tag==''){
+								 		data.data.return.data[m].tag=null;
+									}else{
+										data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
+									}
+								}   
 		                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 		                    document.getElementById("moll_recommend2").innerHTML+=template("recommendTpl2",recommendObj);
 		                  	mui(".upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
@@ -515,12 +518,20 @@
 										timeout:10000,//超时时间设置为10秒；	
 										headers:{"token":oldToken}, 
 										success:function(data){
+//										alert(JSON.stringify(data.data.return.data[0]))
 											if(data.errno == 0){
 												var dataobj = data.data.return.data
 												var recommendObj = {}
 													recommendObj.myUrl = serverimgUrl;
 													recommendObj.recommendData = dataobj
-							                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+							                    for(var m=0; m < data.data.return.data.length; m++){ 
+													if(data.data.return.data[m].tag==''){
+												 		data.data.return.data[m].tag=null;
+													}else{
+														data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
+													}
+												}  
+												document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 											}
 											mui("#upload")[0].innerHTML = " ";
 											Spagenum++;//加载成功,当前页+1
@@ -561,6 +572,7 @@
 			},
 			error:function(xhr,type,errorThrown){
 				mui.toast('响应失败  !');
+				plus.webview.currentWebview().close();
 			}
 		});
 	}) 

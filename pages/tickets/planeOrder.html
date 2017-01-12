@@ -513,18 +513,17 @@
 						timeout:15000,
 						headers:{"token":oldToken},
 						success:function(data,type,xhr){
-//							alert(JSON.stringify(data.data.body.air_order_create_response.ticketTrade));
+							alert(JSON.stringify(data.data.body.air_order_create_response.ticketTrade.tradeNo));
 							plus.nativeUI.closeWaiting();//关闭等待框
 							if(data.data.body.air_order_create_response.ticketTrade || !data.data.body.air_order_create_response.ticketTrade ==''){
-								var planeOrder = data.data.body.air_order_create_response.ticketTrade;
+								var planeOrder = data.data.body.air_order_create_response.ticketTrade.tradeNo;
 								openview({
-									view:'planeRecord.html',
-									extrasobj:{planeOrder:planeOrder}
+									view:'planeRecordDetail.html',
+									extrasobj:{tradeNo:planeOrder}
 								})
 							}else{
 								mui.toast("提交订单失败！");
 							}
-
 						},
 						error:function(xhr,type,errorThrown){
 							console.log('响应失败  !');
