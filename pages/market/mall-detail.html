@@ -553,7 +553,12 @@
 					     			<ul>
 					     				<%if(choose.parameter[i].child_value.length!=0){%>
 					     					<%for(var j=0;j<choose.parameter[i].child_value.length;j++){%>
+					     						<%if(choose.parameter[i].child_value[j].equivalence){%>
 					     						<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+				     						    <%}else{%>
+				     						    <li class="ra3" data-priceStep="0"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
+	
+				     						   <% }%>
 				     						<%}%>
 				     					<%}%> 
 						     		</ul>
@@ -628,8 +633,7 @@
 		                     //详情
 		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
 		                     ////alert(data.data.goodsInfo.parameter);
-		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
-		                     
+		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");  
 		                      shopId=data.data.goodsInfo.storeid;     
 		                     //选择弹框
 		                     var chooseO = {};
@@ -654,12 +658,12 @@
 				                     	
 		                     	})
 		                     	chooseli.click(function(){
-//		                     		////alert(oldstep)
+		                     		 alert(oldstep)
 		                     		oldstep=newstep;
 											$(this).addClass('cur');
 											$(this).siblings().removeClass('cur');
 				                     	  newstep = $(this).attr("data-priceStep");
-//				                     	////alert(newstep)
+				                     	 alert(newstep)
 				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
 				                     	 $('#priceChange').html(priceChange)
 										})
