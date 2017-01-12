@@ -193,9 +193,9 @@
 				width: 100%;
 			}
 			#upload{ 
-				text-align: center;padding-bottom: 10px;font-size: 12px;
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
-			#upload img{width: 60px;margin-top: -27px;
+			#upload img{width: 60px;margin-top: -10px;
 			}
 			.gocart{
 				position: fixed;
@@ -389,7 +389,8 @@
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/app.js"></script>	
 	<script type="text/javascript">
- 
+ 		var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数 
 		mui("#storeRcmd")[0].addEventListener('tap',function(){
 			openview({
 			 	view:"localSpList.html"
@@ -428,71 +429,70 @@
 					timeout:10000,//超时时间设置为10秒；	
 					headers:{"token":oldToken}, 
 					success:function(data){
-						console.log('优品汇推荐',data)
-//						alert(JSON.stringify(data))
-						//获取并渲染  eval("("+data1+")");
-						//var dataobj= eval("("+data.data.banner+")"); 
 						if(data.errno==0){
 						plus.nativeUI.closeWaiting();//关闭等待框
 						var dataobj = data.data.return.data
 						var recommendObj = {}
-							recommendObj.myUrl = '';
-							recommendObj.recommendData = dataobj
+						recommendObj.myUrl = '';
+						recommendObj.recommendData = dataobj
 	                    document.getElementById("moll_recommend").innerHTML=template("recommendTpl",recommendObj);
-	                    mui("#upload")[0].innerHTML = "加载更多";
+	                    mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
 	                    	//上滑加载
 	                   	$(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
-								var nowpage = ++currentPage;
-								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
-									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
-									console.log('可以请求数据');
-									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:currentPage,numsPerPage:numsPerPage,recommend:0,differentiate:3,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
-										dataType:'json',//服务器返回json格式数据
-										type:'post',//HTTP请求类型 
-										timeout:10000,//超时时间设置为10秒；	
-										headers:{"token":oldToken}, 
-										success:function(data){
-											console.log('优品汇推荐',data)
-											if(data.errno == 0){
-												var dataobj = data.data.return.data
-												var recommendObj = {}
+								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+									Ypagenum++;//满足加载情况,应到页数+1
+									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,应到'+Ypagenum+'页');
+									var requestfun = function(){
+										mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
+											data:{currentPage:Spagenum,numsPerPage:numsPerPage,recommend:0,differentiate:3,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+											dataType:'json',//服务器返回json格式数据
+											type:'post',//HTTP请求类型 
+											timeout:5000,//超时时间设置为10秒；	
+											headers:{"token":oldToken}, 
+											success:function(data){
+												if(data.errno == 0){
+													var dataobj = data.data.return.data
+													var recommendObj = {}
 													recommendObj.myUrl = '';
 													recommendObj.recommendData = dataobj
-							                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
-							                    mui("#upload")[0].innerHTML = "";
-											}else{
-												--currentPage;//请求失败,继续请求当前页
-												plus.nativeUI.closeWaiting();
-												mui.toast("获取数据失败");
+								                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+												}
+												mui("#upload")[0].innerHTML = " ";
+												Spagenum++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum);
+												console.log('成功+1,应到'+Spagenum);
+											},
+											error:function(xhr,type,errorThrown){
+												//Ypagenum;//失败是应到-1
+												console.log("当前网络不好请重试");
+												requestfun();//失败继续加载
+												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 											}
-											plus.nativeUI.closeWaiting();//关闭等待框
-										},
-										error:function(xhr,type,errorThrown){
-											--currentPage;//请求失败,继续请求当前页
-											mui.toast("当前网络不好请重试");
-										}
-									});
-								}else{
-									mui("#upload")[0].innerHTML = "没有数据了";
+										});
+									}
+									requestfun(); 
+									
+								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "到底了";
 								}
 							}
 						});
 					}else{
-						plus.nativeUI.closeWaiting();
-						mui.toast("获取数据失败");
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
 					
 				}, 
 				error:function(xhr,type,errorThrown){
-					//异常处理；
-					console.log("获取失败！");
-					plus.nativeUI.closeWaiting();
-					mui.toast("当前网络不好请重试");
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
 				}
 			}); 
 			

@@ -37,7 +37,7 @@
 				margin-top: 50px;
 			}
 			#upload{ 
-				text-align: center;padding-bottom: 20px;font-size: 12px;
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
@@ -245,17 +245,22 @@
 			
 		</script>
 		<div class="upload text-center text-xs gray" id="upload"></div>
+		<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+			<br />
+			没有相关信息
+		</div>
 	</body>
 
 	<script type="text/javascript">
-		mui.init();
+		var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
-			
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken'); 
 		 plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//数据渲染
-			var currentPage =1, numsPerPage=5;
+			var currentPage =1, numsPerPage=10;
 			mui.ajax(serverUrl+'/api/mall/youpinexchange',{
 				data:{currentPage:currentPage,numsPerPage:numsPerPage},
 				dataType:'json',
@@ -285,12 +290,13 @@
 								　　var scrollHeight = $(document).height();
 								　　var windowHeight = $(this).height();
 								　　if(scrollTop + windowHeight == scrollHeight){
-									var nowpage = ++currentPage;
-									if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+									if(Spagenum <= data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
 										mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-										console.log('可以请求数据');
+										Ypagenum++;//满足加载情况,应到页数+1
+										console.log('发起请求,实到'+Spagenum+'页');									
+										console.log('发起请求,应到'+Ypagenum+'页');
 										mui.ajax(serverUrl+'/api/mall/youpinexchange',{ 									
-											data:{currentPage:nowpage,numsPerPage:numsPerPage}, 
+											data:{currentPage:Spagenum,numsPerPage:numsPerPage}, 
 											dataType:'json',//服务器返回json格式数据
 											type:'post',//HTTP请求类型 
 											timeout:10000,//超时时间设置为10秒；	
@@ -308,32 +314,33 @@
 													objdata.list = data.data.data;
 													var html=template("goodsList-detail",objdata);
 													document.getElementById("goodsList").innerHTML+=html;
-								                    mui("#upload")[0].innerHTML = "";
-												}else{
-													--currentPage;//请求失败,继续请求当前页
-													plus.nativeUI.closeWaiting();
-													mui.toast("获取数据失败");
 												}
-												plus.nativeUI.closeWaiting();//关闭等待框
+												mui("#upload")[0].innerHTML = " ";
+												Spagenum++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum);
+												console.log('成功+1,应到'+Spagenum);
 											},
 											error:function(xhr,type,errorThrown){
-												--currentPage;//请求失败,继续请求当前页
+												Ypagenum--;//失败是应到-1
 												mui.toast("当前网络不好请重试");
+												mui("#upload")[0].innerHTML = "";
 											}
 										});
-									}else{
+									}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
 										mui("#upload")[0].innerHTML = "到底了";
 									}
-									//加载下一部分结束
-									　　}
-								});
+								  }
+								});//加载下一部分结束
 						}else{
-							document.getElementById("goodsList").innerHTML='暂无商品';
+							mui("#upload")[0].innerHTML = ""; 
+							mui('#nulldiv')[0].style.display = 'block';
 						}
 					}
 				},
 				error:function(xhr,type,errorThrown){
-					console.log('响应失败  !');
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
 				}
 			});
 	 

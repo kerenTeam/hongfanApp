@@ -178,7 +178,7 @@
 				background-image: none !important; 
 			}
 			#upload{ 
-				text-align: center;margin-bottom: 30px;font-size: 15px;
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
@@ -274,7 +274,8 @@
 	</body>
 
 	<script type="text/javascript">
-		mui.init();
+		var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数
 		mui.plusReady(function(){
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
@@ -311,13 +312,13 @@
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
-								//加载下一部分
-							  var nowpage = ++CcurrentPage;
-								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
+								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-									console.log('可以请求数据');
+									Ypagenum++;//满足加载情况,应到页数+1
+									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,应到'+Ypagenum+'页');
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:4,storeId:'',brand:'',keyword:'',order_type:orderType,desc:sequence}, 
+										data:{currentPage:Spagenum,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:4,storeId:'',brand:'',keyword:'',order_type:orderType,desc:sequence}, 
 										type:'post',
 										timeout:10000, 
 										headers:{"token":oldToken},	 
@@ -329,33 +330,34 @@
 												objdata.list = data.data.return.data;
 												var html=template("goodsList-detail",objdata);
 												document.getElementById("goodsList").innerHTML+=html;
-												mui("#upload")[0].innerHTML = "上滑加载 ";
-											}else{
-												--CcurrentPage;//请求失败,继续请求当前页
-												mui.toast("获取数据失败");
 											}
-											plus.nativeUI.closeWaiting();//关闭等待框
+											mui("#upload")[0].innerHTML = " ";
+											Spagenum++;//加载成功,当前页+1
+											console.log('成功+1,实到'+Spagenum);
+											console.log('成功+1,应到'+Spagenum);
 										},
 										error:function(xhr,type,errorThrown){
-											--CcurrentPage;//请求失败,继续请求当前页
+											Ypagenum--;//失败是应到-1
 											mui.toast("当前网络不好请重试");
+											mui("#upload")[0].innerHTML = "";
 										}
 									});
-								}else{
+								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
 									mui("#upload")[0].innerHTML = "到底了";
 								}
-								//加载下一部分结束
-							　　}
-						});
+							　}
+						});//加载下一部分结束
 						
 					}else{
-						mui.toast('没有数据');
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
 					plus.nativeUI.closeWaiting();//关闭等待框
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting();//关闭等待框
-					mui.toast('没有数据');
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
 				}
 				});
 				

@@ -346,36 +346,40 @@
 				<dl class="list" id="goodsList"></dl>
 				<script type="text/html" id="infolist">
 					<% for(var i=0; i<list.length; i++){%>
-						<dd class="goodsItem" onclick="goTrain(<%= list[i].details%>)">
-							<a class="react mui-row">
-								<div class="mui-col-sm-4 mui-col-xs-4">
-									<div class="timeBox">
-										<p class="ad black"><%= list[i].trainNumber%></p>
-										<p><%= list[i].startTime%> </p>
-										<p class="ad"><%= list[i].endTime%>次日</p>
-									</div>
-						       </div>
-						        <div class="mui-col-sm-4 mui-col-xs-4">
-						        	<div class="timeBox">
-										<p class="ad black"><img src="../../img/tickets/time.png"/><%= list[i].runTime%></p>
-										<p class="ad black"><span class="dot"></span><%= list[i].currentStartStationName%></p>
-										<div class="line"></div>
-										<p class="ad black"><span class="dot"></span><%= list[i].currentEndStationName%></p>
-										
-									</div>
-						        </div>
-						        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
-						        	<% if(list[i].Yprice>0){%>
-						        		<p><span class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
-						        	<% }else{%>
-						        		<p><span style="color: #999;" class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
-						        	<% }%>	
-						        	
-						        	<p class="Achange"><%= list[i].Yname%></p>
-						        	<p><%= list[i].Ynum%>张</p>
-						        </div>
-							</a>
-						</dd>
+						<% if(list[i].hide != 'hide'){%>
+							<dd class="goodsItem" name='<%= list[i].hide%>' onclick="goTrain(<%= list[i].details%>)">
+								<a class="react mui-row">
+									<div class="mui-col-sm-4 mui-col-xs-4">
+										<div class="timeBox">
+											<p class="ad black"><%= list[i].trainNumber%></p>
+											<p><%= list[i].startTime%> </p>
+											<p class="ad"><%= list[i].endTime%>次日</p>
+										</div>
+							       </div>
+							        <div class="mui-col-sm-4 mui-col-xs-4">
+							        	<div class="timeBox">
+											<p class="ad black"><img src="../../img/tickets/time.png"/><%= list[i].runTime%></p>
+											<p class="ad black"><span class="dot"></span><%= list[i].currentStartStationName%></p>
+											<div class="line"></div>
+											<p class="ad black"><span class="dot"></span><%= list[i].currentEndStationName%></p>
+											
+										</div>
+							        </div>
+							        <div class="mui-col-sm-4 mui-col-xs-4 airTip">
+							        	<% if(list[i].Yprice>0){%>
+							        		<p><span class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+							        	<% }else{%>
+							        		<p><span style="color: #999;" class="price"><sub>￥</sub><%= list[i].Yprice%></span></p>
+							        	<% }%>	
+							        	
+							        	<p class="Achange"><%= list[i].Yname%></p>
+							        	<p><%= list[i].Ynum%>张</p>
+							        </div>
+								</a>
+							</dd>
+						<% }%>	
+							
+						
 					<%}%>	
 				</script>	
 			</div>
@@ -474,7 +478,7 @@
 					timeout:10000,
 					headers:{"token":oldToken},	              				
 					success:function(data,type,xhr){
-						console.log(data);
+						console.log('火车列表返回',data);
 						console.log('火车列表返回'+JSON.stringify(data));
 						if(data.errno == 0){
 							var Tlist;
@@ -489,63 +493,71 @@
 										Tlist[i].runTime = formatSeconds(Tlist[i].runTime);
 										//优先 硬座(5),其次 硬卧(7), 软卧(8) , 高级软卧,  二等座(0) , 一等座(1), 无座(4) , 商务座(3),
 										var ridetype = Tlist[i].trainSeats.trainSeat;
-										for(var j=0;j<ridetype.length;j++){
-											var funchange = function(){//更改数据代码块
-												Tlist[i].Yprice = ridetype[j].seatPrice;
-												Tlist[i].Yname = ridetype[j].seatName;
-												if(ridetype[j].remainderTrainTickets>100){
-													Tlist[i].Ynum = 100;
-												}else{
-													Tlist[i].Ynum = ridetype[j].remainderTrainTickets;
+										if(ridetype != null){
+											console.log('测试',Tlist[i])
+											for(var j=0;j<ridetype.length;j++){
+												var funchange = function(){//更改数据代码块
+													Tlist[i].Yprice = ridetype[j].seatPrice;
+													Tlist[i].Yname = ridetype[j].seatName;
+													if(ridetype[j].remainderTrainTickets>100){
+														Tlist[i].Ynum = 100;
+													}else{
+														Tlist[i].Ynum = ridetype[j].remainderTrainTickets;
+													}
 												}
-											}
-											if(ridetype[j].seatId==5 && ridetype[j].remainderTrainTickets>0){
-												funchange();
-												break;
-											}
-											if(ridetype[j].seatId==7 && ridetype[j].remainderTrainTickets>0){
-												funchange();
-												break;
-											}
-											if(ridetype[j].seatId==8 && ridetype[j].remainderTrainTickets>0){
-												funchange();
-												break;
-											}
-											if(ridetype[j].seatId==0 && ridetype[j].remainderTrainTickets>0){
-												funchange(); 
-												break;
-											}
-											if(ridetype[j].seatId==1 && ridetype[j].remainderTrainTickets>0){
-												funchange();
-												break;
-											}
-											if(ridetype[j].seatId==4 && ridetype[j].remainderTrainTickets>0){
-												funchange();
-												break;
-											}
-											if(ridetype[j].seatId==3 && ridetype[j].remainderTrainTickets>0){
-												funchange(); 
-												break;
-											}
-											if(ridetype[j].seatId==2 && ridetype[j].remainderTrainTickets>0){
-												funchange(); 
-												break;
-											}
-											if(ridetype[j].seatId==6 && ridetype[j].remainderTrainTickets>0){
-												funchange(); 
-												break;
-											}else{
-												Tlist[i].Yprice = 0;
-												Tlist[i].Yname = '没有票';
-												Tlist[i].Ynum = 0; 
-											}
-										} 
+												if(ridetype[j].seatId==5 && ridetype[j].remainderTrainTickets>0){
+													funchange();
+													break;
+												}
+												if(ridetype[j].seatId==7 && ridetype[j].remainderTrainTickets>0){
+													funchange();
+													break;
+												}
+												if(ridetype[j].seatId==8 && ridetype[j].remainderTrainTickets>0){
+													funchange();
+													break;
+												}
+												if(ridetype[j].seatId==0 && ridetype[j].remainderTrainTickets>0){
+													funchange(); 
+													break;
+												}
+												if(ridetype[j].seatId==1 && ridetype[j].remainderTrainTickets>0){
+													funchange();
+													break;
+												}
+												if(ridetype[j].seatId==4 && ridetype[j].remainderTrainTickets>0){
+													funchange();
+													break;
+												}
+												if(ridetype[j].seatId==3 && ridetype[j].remainderTrainTickets>0){
+													funchange(); 
+													break;
+												}
+												if(ridetype[j].seatId==2 && ridetype[j].remainderTrainTickets>0){
+													funchange(); 
+													break;
+												}
+												if(ridetype[j].seatId==6 && ridetype[j].remainderTrainTickets>0){
+													funchange(); 
+													break;
+												}else{
+													Tlist[i].Yprice = 0;
+													Tlist[i].Yname = '没有票';
+													Tlist[i].Ynum = 0; 
+												}
+											} 
+										}else{
+											alert(i);
+											console.log('Tlist',Tlist);
+											Tlist[i].hide = 'hide';
+										}
 									}
 									
 									dataobj.list = Tlist; 
 									//获取并渲染用户信息
 									var html=template("infolist",dataobj);
 									document.getElementById("goodsList").innerHTML = html;
+									
 								}else{
 									
 								}

@@ -178,7 +178,7 @@
 				background-image: none !important; 
 			}
 			#upload{ 
-				text-align: center;margin-bottom: 30px;font-size: 15px;
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
@@ -221,7 +221,7 @@
 		<div id="container">		
 			<div id="main">
 				<div class="guess-like">
-					<dl class="list" id="goodsList">
+					<dl class="list" id="goodsList" >
 						<!--<dd class="db">
 							<a class="react " href="javascript:;">
 								<div class="moreone">加载更多</div>
@@ -280,7 +280,13 @@
 	</body>
 
 	<script type="text/javascript">
-		mui.init();
+		/*  滚动加载,修复点
+		 * 1,定义全局变量can1,can2,传至 滚动加载中
+		 * 2,定义实到,应到变量是全局
+		 * 3,其他见代码
+		 */
+		var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
@@ -293,7 +299,6 @@
 				can1 = orderType,can2 = sequence;
 				var pagenum = 10,CcurrentPage = 1,sequence1 = sequence;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-				
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
 					data:{
 						currentPage:CcurrentPage,
@@ -311,8 +316,8 @@
 					timeout:10000, 
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){ 
-//					console.log(JSON.stringify(data));
 					if(data.errno == 0){
+						console.log('总条数'+data.data.return.totalPages);
 						if(data.data.return.data.length){
 							var objdata = {};
 							objdata.myurl = serverimgUrl;
@@ -329,16 +334,15 @@
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight >= scrollHeight){
-								//加载下一部分
-							  var nowpage = ++CcurrentPage;
-								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
+						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
+								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//实到页数小于等于总页数时发起请求,并且实到=应到
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-									console.log('可以请求数据');
-									
+									Ypagenum++;//满足加载情况,应到页数+1
+									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,应到'+Ypagenum+'页');									
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
 										data:{
-											currentPage:nowpage,
+											currentPage:Spagenum,
 											numsPerPage:pagenum,
 											categoryid:goodcatId,
 											recommend:'',
@@ -350,37 +354,34 @@
 											desc:can2
 										},
 										type:'post',
-										timeout:10000,
+										timeout:5000, 
 										headers:{"token":oldToken},	 
-										success:function(data,type,xhr){ 
-//											console.log(JSON.stringify(data));
+										success:function(data,type,xhr){
 											if(data.errno == 0){
 												var objdata = {};
 												objdata.myurl = serverimgUrl;
 												objdata.list = data.data.return.data;
 												var html=template("goodsList-detail",objdata);
 												document.getElementById("goodsList").innerHTML+=html;
-												mui("#upload")[0].innerHTML = " ";
-											}else{
-												--CcurrentPage;//请求失败,继续请求当前页
-												mui.toast("获取数据失败");
 											}
-											plus.nativeUI.closeWaiting();//关闭等待框
+											mui("#upload")[0].innerHTML = " ";
+											Spagenum++;//加载成功,当前页+1
+											console.log('成功+1,实到'+Spagenum);
+											console.log('成功+1,应到'+Spagenum);
 										},
 										error:function(xhr,type,errorThrown){
-											--CcurrentPage;//请求失败,继续请求当前页
+											Ypagenum--;//失败是应到-1
 											mui.toast("当前网络不好请重试");
+											mui("#upload")[0].innerHTML = "";
 										} 
 									});
-								}else{
+								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
 									mui("#upload")[0].innerHTML = "到底了";
 								}
-								//加载下一部分结束
-							　　}
+							}//加载下一部分结束
 						});
 						
 					}else{
-						mui.toast('没有数据');
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
 					}
@@ -388,7 +389,8 @@
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting();//关闭等待框
-					mui.toast('没有数据');
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
 				}
 				});
 				

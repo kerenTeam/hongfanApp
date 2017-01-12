@@ -15,9 +15,6 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
-		<!--<script src=" ../../js/hmt.js" type="text/javascript"></script>-->
-		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
 		<script src="../../js/app.js" type="text/javascript" ></script>
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
@@ -316,9 +313,9 @@
 							<p class="tiny">请确保姓名证件填写正确</p>
 				       </div>-->
 				        <div class="">
-				        	<button class="addMan" id="tuipiao" style="display: none;" onclick="returnTrain()">申请退票</button>
-				        	<button class="addMan" id="quxiao" style="display: none;" onclick="returnTrain()">取消订票</button>
-				        	<button class="addMan" id="zhifu" style="display: none;" onclick="returnTrain()">立即支付</button>
+				        	<button class="addMan" id="zhifu" style="display: none;" onclick="zhifufun()">立即支付</button>
+				        	<button class="addMan" id="tuipiao" style="display: none;" onclick="tuipiaofun()">申请退票</button>
+				        	<button class="addMan" id="quxiao" style="display: none;" onclick="quxiaofun()">取消订票</button>
 				        </div>
 					</a>
 				</dd>
@@ -384,59 +381,116 @@
 					</a>
 				</dd>
 			</dl>
+			
+			<dl class="list LastList" id="goodsList">
+				<dd class="goodsItem">
+					<a class="react mui-row">
+				        <div class="">
+				        	<h5 style="margin: 10px;margin-left: -2px;color: #000;">购票须知</h5>
+				        	<p id="changeStipulate" style="line-height: 20px;font-size: 12px;margin: 10px 0;">
+				        		  1.火车票相关业务处理时间为8:00-22:00。 <br />
+							      2.发车前4小时以内退款不做处理，请自行去火车站退票。 <br />
+							      3.不受理改签业务，需用户自行在发车前去车站办理 。<br />
+							      4.火车票新版上线，支持购买卧铺票、硬座，不支持指定无座。 <br />
+							      5.禁止代理商向用户收取票面价格以外的手续费。 <br />
+							      6.提交订单时如提示身份证待核验，乘车人需带二代身份证到火车站通过身份认证才能网上购票。 <br />
+				        	</p>
+				        </div>
+					</a>
+				</dd>
+			</dl>
+			
 		</div>
 	</body>
 	<script type="text/javascript">
+		
 		mui.plusReady(function(){
+			var Orderid = 0;
 			var TorderD = plus.webview.currentWebview().Tordernum;
 			var oldToken = plus.storage.getItem('oldToken');
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-			mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取保险信息
-				data:{tradeNo:TorderD},
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldToken},	              				
-				success:function(data){
-					console.log(data);
-					console.log('详情返回'+JSON.stringify(data));
-					if(data.errno == 0){
-						var Tdatail = data.data.train_order_detail_response.ticketTrade;
-						console.log(Tdatail);
-						switch (Tdatail.stateName){
-							case '已取消':
-							mui('#zhifu')[0].style.display = 'inline-block';
-							break;
+			var loadfun = function(){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+				mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取保险信息
+					data:{tradeNo:TorderD},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	              				
+					success:function(data){
+						console.log(data);
+						console.log('详情返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							var Tdatail = data.data.train_order_detail_response.ticketTrade;
+							console.log(Tdatail);
+							mui('#zhuangtai')[0].innerText =  Tdatail.stateName;
+							mui('#daoda')[0].innerHTML = "( " + Tdatail.startStation +" - " +Tdatail.recevieStation + " )";
+							mui('#Tshouji')[0].innerHTML = Tdatail.contactTel;
+							mui('#Tdindan')[0].innerHTML = Orderid = Tdatail.tradeNo;
+							if(Tdatail.stateName.indexOf('预定')>-1){//显示按钮
+								mui('#zhifu')[0].style.display = 'inline-block';
+								mui('#quxiao')[0].style.display = 'inline-block';
+							}
+							var dataobj = {};
+							dataobj.list = Tdatail.ticketOrders.ticketOrder; 
+							var html=template("infolist",dataobj);
+							document.getElementById("infolistdiv").innerHTML = html;
+						}else{
+							mui.toast('订单信息获取失败,请重试');
 						}
-						mui('#zhuangtai')[0].innerText =  Tdatail.stateName;
-						mui('#daoda')[0].innerHTML = "( " + Tdatail.startStation +" - " +Tdatail.recevieStation + " )";
-						mui('#Tshouji')[0].innerHTML = Tdatail.contactTel;
-						mui('#Tdindan')[0].innerHTML = Tdatail.tradeNo;
-						var dataobj = {};
-//						mui.each(Tdatail.ticketOrders.ticketOrder,function (index,ele) {
-//							var Tarray = ele.seatInfo.split(',');
-//							Tdatail.ticketOrders.ticketOrder[index].seatInfo = Tarray[2]+Tarray[3]+Tarray[4]+Tarray[5];
-//						})
-						dataobj.list = Tdatail.ticketOrders.ticketOrder; 
-						var html=template("infolist",dataobj);
-						document.getElementById("infolistdiv").innerHTML = html;
-					}else{
-						mui.toast('订单信息获取失败,请重试');
+						plus.nativeUI.closeWaiting();
+					},
+					error:function(xhr,type,errorThrown){ 
+						plus.nativeUI.closeWaiting();
+						mui.toast('保险信息获取失败,请重试');
 					}
-					plus.nativeUI.closeWaiting();
-				},
-				error:function(xhr,type,errorThrown){ 
-					plus.nativeUI.closeWaiting();
-					mui.toast('保险信息获取失败,请重试');
-				}
-			});
-			
+				});
+			};
+			loadfun();//加载方法
+			window.tuipiaofun = function(){//点击申请退票
+				alert('退票');
+				alert(Orderid);
+			}
+			window.zhifufun = function(){//点击支付
+//				plus.nativeUI.showWaiting('支付中 ...',{width:'100px',height:'80px'});
+				openview({
+					view:"../market/paysecond.html",
+					id:"paysecond",
+//					extrasobj:{new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount}
+				})
+				
+			}
+			window.quxiaofun = function(){//点击取消
+				plus.nativeUI.showWaiting('取消中 ...',{width:'100px',height:'80px'});
+				mui.ajax(serverUrl+'/api/qianmi/trainordercancel',{
+					data:{tradeNo:Orderid},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	              				
+					success:function(data){
+						if(data.errno == 0){ 
+							if(data.data.train_order_cancel_response.result == 1){
+								mui.fire(plus.webview.getWebviewById('TPRecord'),'refresh',{type:'train'});
+								var timequxiao = setTimeout(function(){
+									plus.webview.currentWebview().close();
+								},500)
+								mui.toast('取消成功');
+							}else{
+								plus.nativeUI.closeWaiting();
+								mui.toast('取消失败,请重试');
+							}
+						}else{
+							plus.nativeUI.closeWaiting();
+							mui.toast('取消失败,请重试');
+						}
+					},
+					error:function(xhr,type,errorThrown){ 
+						plus.nativeUI.closeWaiting();
+						mui.toast('取消失败,请重试');
+					}
+				});
+				
+			}
+				
 		})//read
-		//点击申请退票
-		function returnTrain(){
-			openview({ 
-				view:'trainReturn.html'
-			})
-		}
 	</script>
 
 </html>

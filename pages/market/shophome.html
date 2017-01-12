@@ -20,6 +20,7 @@
 			}
 			#shangjia_tab{position: relative;
 			}
+			.dealcard{margin-bottom: 0;}
 			/*商品列表*/
 			/*这一页*/
 			.grade-eject, .Category-eject, .Sort-eject{
@@ -131,19 +132,16 @@
 				text-align: left;
 			}
 			/*加载*/
-			.upload{ 
-				text-align: center;margin-bottom: 30px;font-size: 15px;line-height: 40px;
+			#upload{ 
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
-			.upload img{
-				width: 60px;
-				margin-top: 15px;
-				height: 50px !important;
+			#upload img{width: 60px;margin-top: -10px;
 			}
 			#description{
 				width: 100%;
 				white-space: nowrap;
 				text-overflow: ellipsis;
-				overflow: hidden;
+				overflow: hidden; 
 			}
 		</style>
 	</head>
@@ -208,12 +206,12 @@
 				<!--第一部分-->
 				<div id="tab1" class="page-center-box dldetail">
 					<dl class="dealcard" id="moll_recommend"></dl>
-					<div class="upload text-center text-xs gray"></div>
+					<div class="upload text-center text-xs gray" id="upload"></div>
 			    </div>
 			    <!--第二部分-->
 			    <div id="tab2" class="page-center-box dldetail" style="display: none;">
 					<dl class="dealcard" id="allGoods"></dl>
-					<div class="upload text-center text-xs gray"></div>
+					<div class="upload text-center text-xs gray" id="upload"></div>
 			    </div>
 			    <!--第三部分-->
 			   	<div id="shangjia_detail" class="page-center-box dldetail" style="display: none;">          
@@ -235,7 +233,7 @@
 		                </div>
 		            </div>
 		            <dl class="dealcard" id="moll_recommend2"></dl>
-					<div class="upload text-center text-xs gray"></div>
+					<div class="upload text-center text-xs gray" id="upload"></div>
 			    </div>
 			    <!--第一部分数据-->
 			    <script type="text/html" id="recommendTpl">
@@ -274,7 +272,7 @@
 					<% for(var i=0;i<list.length;i++){ %>
 						<dd class="goodsItem react" onclick="goInfo(<%= list[i].goods_id%>)">
 							<div class="dealcard-img imgbox">
-								<img src="<%=myUrl %><%= list[i].thumb %>"/>
+								<img src="<%= myurl%><%= list[i].thumb %>"/>
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
@@ -387,7 +385,6 @@
 			dldetail[i].style.top = 220 + immersed + 'px';
 		}
 		window.onscroll = function(){
-			console.log(fangxiang);
 			var Stop = document.documentElement.scrollTop || document.body.scrollTop;
 			if(Stop >= 120){ 
 				mui('#shangjia_tab')[0].style.position = 'fixed';
@@ -401,6 +398,8 @@
 	})();
 </script>
 <script type="text/javascript"> 
+	var Spagenum = 2;//实到页数
+	var Ypagenum = 1;//应到页数 
 	mui.plusReady(function(){
 		//获取token
 		var oldToken=plus.storage.getItem("oldToken");
@@ -430,7 +429,6 @@
 				if(data.data.logo == '' || data.data.logo == null){
 					$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
 				}else{
-					alert(data.data.pic)
 					$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
 				}
 				if(data.data.pic == '' || data.data.pic == null){
@@ -485,7 +483,6 @@
 						headers:{"token":oldToken}, 
 						success:function(data){
 							if(data.errno==0){
-							plus.nativeUI.closeWaiting();//关闭等待框
 							var dataobj = data.data.return.data;
 							var recommendObj = {};
 								recommendObj.myUrl = serverimgUrl;
@@ -499,19 +496,20 @@
 							}   
 		                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 		                    document.getElementById("moll_recommend2").innerHTML+=template("recommendTpl2",recommendObj);
-		                    mui(".upload")[0].innerHTML = "加载更多";
+		                  	mui(".upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 //		                   	上滑加载
-							 $(window).scroll(function(){
+					 $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
-								var nowpage = ++currentPage;
-								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
-									mui(".upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-									console.log('可以请求数据');
+								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+									Ypagenum++;//满足加载情况,应到页数+1
+									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,应到'+Ypagenum+'页');	
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:nowpage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+										data:{currentPage:Spagenum,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
 										dataType:'json',//服务器返回json格式数据
 										type:'post',//HTTP请求类型 
 										timeout:10000,//超时时间设置为10秒；	
@@ -523,35 +521,33 @@
 													recommendObj.myUrl = serverimgUrl;
 													recommendObj.recommendData = dataobj
 							                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
-							                    mui(".upload")[0].innerHTML = "";
-											}else{
-												--currentPage;//请求失败,继续请求当前页
-												plus.nativeUI.closeWaiting();
-												mui.toast("获取数据失败");
 											}
-											plus.nativeUI.closeWaiting();//关闭等待框
+											mui("#upload")[0].innerHTML = " ";
+											Spagenum++;//加载成功,当前页+1
+											console.log('成功+1,实到'+Spagenum);
+											console.log('成功+1,应到'+Spagenum);
 										},
 										error:function(xhr,type,errorThrown){
-											--currentPage;//请求失败,继续请求当前页
+											Ypagenum--;//失败是应到-1
 											mui.toast("当前网络不好请重试");
+											mui("#upload")[0].innerHTML = "";
 										}
 									});
-								}else{
-									mui(".upload")[0].innerHTML = "到底了";
+								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "到底了";
 								}
-							//加载下一部分结束
 							　　}
-						});
+						});//加载下一部分结束
 						}else{
 							plus.nativeUI.closeWaiting();
 							mui.toast("获取数据失败");
 						}
-						
+						plus.nativeUI.closeWaiting();//关闭等待框
 					}, 
 					error:function(xhr,type,errorThrown){
-						//异常处理；
-						console.log("获取失败！");
-						mui.toast("当前网络不好请重试");
+						plus.nativeUI.closeWaiting();//关闭等待框
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
 			}); 
 			

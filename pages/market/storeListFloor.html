@@ -172,7 +172,7 @@
 				background-image: none !important; 
 			}
 			#upload{ 
-				text-align: center;margin-bottom: 30px;font-size: 15px;
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
 			#upload img{width: 60px;margin-top: -15px;
 			}
@@ -284,7 +284,8 @@
 	</body>
 
 	<script type="text/javascript">
-		mui.init();
+		var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
 		 plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		 var oldToken = plus.storage.getItem('oldToken');
@@ -336,55 +337,57 @@
 				data:{currentPage:currentPage,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},//以及业态
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					plus.nativeUI.closeWaiting();    
-					//alert(JSON.stringify(data)) 
 					var recommentObj = {};  
 					recommentObj.myurl = serverimgUrl;
 					recommentObj.recommentLi = data.data.data;
 //					recommentObj.recommentImg = img;
 					var html2 = template('storeItem-detail',recommentObj);
 					document.getElementById('storeItem').innerHTML= html2;
-					mui("#upload")[0].innerHTML = "";
-		                    	//上滑加载
-		                   $(window).scroll(function(){
+					mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+		               //上滑加载
+	                   $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
-							var nowpage = ++currentPage;
-							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+							if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
 								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-								console.log('可以请求数据');
-									mui.ajax(serverUrl +'/api/mall/storelist',{
-										data:{currentPage:currentPage,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},
-										dataType:'json',
-										type:'post',
-										timeout:1000,
-										headers:{"token":oldToken},	 
-										success:function(data,type,xhr){
-											plus.nativeUI.closeWaiting();
-											var recommentObj = {};  
-											recommentObj.myurl = serverimgUrl;
-											recommentObj.recommentLi = data.data.data;
-						//					recommentObj.recommentImg = img;
-											var html2 = template('storeItem-detail',recommentObj);
-											document.getElementById('storeItem').innerHTML+= html2;
-											 
-										},
-										error:function(xhr,type,errorThrown){
-												--currentPage;//请求失败,继续请求当前页
-												mui.toast("当前网络不好请重试");
-											}
-									});
-							}else{
+								Ypagenum++;//满足加载情况,应到页数+1
+								console.log('发起请求,实到'+Spagenum+'页');									
+								console.log('发起请求,应到'+Ypagenum+'页');
+								mui.ajax(serverUrl +'/api/mall/storelist',{
+									data:{currentPage:Spagenum,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},
+									dataType:'json',
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){
+										plus.nativeUI.closeWaiting();
+										var recommentObj = {};  
+										recommentObj.myurl = serverimgUrl;
+										recommentObj.recommentLi = data.data.data;
+										var html2 = template('storeItem-detail',recommentObj);
+										document.getElementById('storeItem').innerHTML+= html2;
+										mui("#upload")[0].innerHTML = " ";
+										Spagenum++;//加载成功,当前页+1
+										console.log('成功+1,实到'+Spagenum);
+										console.log('成功+1,应到'+Spagenum);
+										 
+									},
+									error:function(xhr,type,errorThrown){
+										Ypagenum--;//失败是应到-1
+										mui.toast("当前网络不好请重试");
+										mui("#upload")[0].innerHTML = "";
+									}
+								});
+							}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
 								mui("#upload")[0].innerHTML = "到底了";
 							}
-							//加载下一部分结束
-							　　}
-						});
+						  }
+					  });//加载下一部分结束
 					//点击进入详情
 					window.openStore = function(store_id){
 //						alert(store_id);
@@ -394,11 +397,12 @@
 							extrasobj:{storeId:store_id}
 						})
 					}
+					plus.nativeUI.closeWaiting();//关闭等待框
 				},
 				error:function(xhr,type,errorThrown){
-					//alert('响应失败  !');
-					plus.nativeUI.closeWaiting();
-					mui.toast("网络不好请重试")
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block'; 
 				}
 			});
 			
