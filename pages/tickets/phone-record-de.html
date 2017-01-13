@@ -180,7 +180,7 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<!--详情内容-->
 		<div id="main">
-			<div class="deal">
+			<div class="deal" style="display: none;">
 				<div class="farm">
 					<div class="top rentingtop box-s">
 						<div class="icon">
@@ -258,10 +258,12 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						plus.nativeUI.closeWaiting()
+						
 						//alert(JSON.stringify(data));
 						if(data.errno==0){
+							mui(".deal")[0].style.display="block"
 							var infoData = eval("("+data.data.data+")").data;
-							mui("#amount")[0].innerHTML = "-"+parseFloat(infoData.orderCost).toFixed(2);
+							mui("#amount")[0].innerHTML = "<sub>￥"+parseFloat(infoData.orderCost).toFixed(2)+"</sub>";
 							mui("#itemName")[0].innerHTML = infoData.itemName;
 							mui("#phoneCharge")[0].innerHTML = infoData.rechargeAccount;
 							mui("#saleAmount")[0].innerHTML = "￥"+parseFloat(infoData.saleAmount).toFixed(2);
