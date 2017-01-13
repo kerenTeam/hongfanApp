@@ -262,7 +262,7 @@
     	</div>	
     	<div class="cashlist clearfloat" id="userList"> 
     		<ul>
-				<li class="box-s2"> 
+				<li class="box-s2" id="writeOff1"> 
 					<div class="writeOff">
     					<p class="fl mui-navigate-right"><img style="margin-right: 10px;margin-left: 2px;" src="../img/center/sss.png"/>商户核销</p> 
     				</div>
@@ -318,7 +318,7 @@
 									//显示核销
 									if(data.data[0].gid == 5){
 										 mui('.writeOff')[0].style.display = 'block';
-										 mui('.writeOff')[0].addEventListener('tap',function(){
+										 mui('#writeOff1')[0].addEventListener('tap',function(){
 											openview({
 												view:'personal/barcode_scan.html' 
 											});
@@ -358,12 +358,14 @@
 						if(plus.storage.getItem('myToken')){ 
 							if(mui('.dao')[0].innerHTML == "签到"){
 								//执行签到 
+								plus.nativeUI.showWaiting('签到中 ...',{width:'100px',height:'80px'});
 								mui.ajax(serverUrl+'/api/index/cheking',{
 									data:{"userid":myuserid,"intergral_float":2050},
 									type:'post',
 									timeout:10000,
 									headers:{"token":oldtoken},	              				
 									success:function(data){
+										plus.nativeUI.closeWaiting();
 										console.log('签到返回'+JSON.stringify(data));
 										if(data.errno == 0){
 											mui.toast('签到成功'); 
@@ -372,6 +374,7 @@
 										}
 									},
 									error:function(xhr,type,errorThrown){
+										plus.nativeUI.closeWaiting();
 										mui.toast('签到失败'); 
 									}
 								});

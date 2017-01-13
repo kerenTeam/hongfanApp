@@ -396,57 +396,64 @@
 							</div>
 							<!--轮播图结束-->
 						</script>
+						
 						<div id="gdBrief"></div>
+						
 						<script type="text/html" id="briefTpl">
 							<div class="top clearfloat box-s">
-							<div class="shang clearfloat">
-								<div class="zuo clearfloat fl">
-									<%=brief.title%>
+								<div class="shang clearfloat">
+									<div class="zuo clearfloat fl">
+										<%=brief.title%>
+									</div>
+									<div class="you clearfloat fr">
+										<ul>
+											<li>
+											 	<a onclick="goShop()">
+													<i class="iconfont icon-shangcheng"></i>
+													<p>商家</p>
+												</a>
+											</li>
+										</ul>
+									</div>
 								</div>
-								<div class="you clearfloat fr">
-									<ul>
-										<li>
-										 	<a onclick="goShop()">
-												<i class="iconfont icon-shangcheng"></i>
-												<p>商家</p>
-											</a>
-										</li>
-									</ul>
+								<div class="xia clearfloat">
+									<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
 								</div>
+								<div class="xia">
+									 <div class="mui-row">
+								        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
+								        	<%if(!brief.postage){%>
+								           		<p class="box-s">快递：免邮</p>
+								            <%}else{%>
+								             <p class="box-s">快递：<%=brief.postage%>元</p>
+								            <%}%>
+								        </div>
+								        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
+								            <p class="box-s">销量：<%=brief.sales%>笔</p>
+								        </div>
+								        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
+								            <p class="box-s">重庆</p> 
+								        </div>
+								  	</div>
+								</div>
+								<div class="farmtc" id="disPay" style="display: none;">
+									<p class="bt" style="color: #f39826;padding-left: 10px;">该商品只做展示，暂不支持线上购买</p>
+								</div>
+								
 							</div>
-							<div class="xia clearfloat">
-								<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
+							<div class="farmtc clearfloat mt10">
+								<p class="bt box-s">商品详情</p>
 							</div>
-							<div class="xia">
-								 <div class="mui-row">
-							        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
-							        	<%if(!brief.postage){%>
-							           		<p class="box-s">快递：免邮</p>
-							            <%}else{%>
-							             <p class="box-s">快递：<%=brief.postage%>元</p>
-							            <%}%>
-							        </div>
-							        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-							            <p class="box-s">销量：<%=brief.sales%>笔</p>
-							        </div>
-							        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
-							            <p class="box-s">重庆</p> 
-							        </div>
-							  	</div>
+							<div class="farm clearfloat">
+								<div class="top rentingtop clearfloat box-s">
+									<div id="textInfo"></div>
+									 
+								</div>					
 							</div>
 							
-						</div>
-						<div class="farmtc clearfloat mt10">
-							<p class="bt box-s">商品详情</p>
-						</div>
-						<div class="farm clearfloat">
-							<div class="top rentingtop clearfloat box-s">
-								<div id="textInfo"></div>
-								 
-							</div>					
-						</div>
-						
 						</script>
+						
+						
 						
 						
 						
@@ -610,208 +617,217 @@
 						headers:{"token":token}, 
 						success:function(data){
 							console.log(JSON.stringify(data))
+//							alert(JSON.stringify(data.data.goodsInfo.differentiate))
+							
 							
 							if(data.errno==0){ 
 								plus.nativeUI.closeWaiting();
-							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
-							var commentobj = data.data.comments;
-							//var content = data.data.comments
-							//banner
-							var infoObj = {}
-								infoObj.myUrl = serverimgUrl;
-								infoObj.infoData = dataobj;
-		                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
-		                      var gallery = mui(".mui-slider");
-										gallery.slider({
-											interval: 3000 //设置自动轮播周期为3s
-										});
-										
-//										////alert(eval("("+data.data.goodsInfo.content+")"))
-										
-		                    //简介
-		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
-		                     //详情
-		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
-		                     ////alert(data.data.goodsInfo.parameter);
-		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");  
-		                      shopId=data.data.goodsInfo.storeid;     
-		                     //选择弹框
-		                     var chooseO = {};
-		                     chooseO.choose = data.data.goodsInfo;
-		                     chooseO.myUrl = serverimgUrl;
-		                     document.getElementById("cartBox").innerHTML=template("boxTpl",chooseO);
-		                     mui(".mui-numbox").numbox();
-		                     var priceChange =parseInt($("#priceChange").html());
-		                     $('.choose').each(function(){
-		                     	var chooseli = $(this).find("li");
-		                     	
-		                     		var oldstep=0,newstep=0;
-		                     	chooseli.each(function(){
-		                     		if($(this).attr("data-Inventory")==0){
-				                     		$(this).css("display","block")
-				                     	}
-		                     		chooseli.eq(0).addClass("cur");
-				                     	if($(this).attr("data-priceStep")==0){
-				                     		
-				                     		oldstep = $(this).attr("data-priceStep");
-				                     	}  
-				                     	
-		                     	})
-		                     	chooseli.click(function(){
-		                     		 alert(oldstep)
-		                     		oldstep=newstep;
-											$(this).addClass('cur');
-											$(this).siblings().removeClass('cur');
-				                     	  newstep = $(this).attr("data-priceStep");
-				                     	 alert(newstep)
-				                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
-				                     	 $('#priceChange').html(priceChange)
-										})
-		                     	
-		                     })
-		                    
-		                    
-		                    //评论
-		                    var cemmentObj = {}
-//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
-		                    for(var i = 0;i < commentobj.length;i++){
-										commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
-										commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
-										commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
-									}
-								cemmentObj.myUrl = serverimgUrl;
-								cemmentObj.cemmentData = commentobj; 
-								
-		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
-		                    	
-
-		                   // plus.storage.removeItem('$cartStorage');
-		                    //购物车 缓存
-		                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
-		                   
-		                    window.cartStorageF=function(obj){ 
-		                     	if($('.cur').length == $(".choose").length){ 
-		                    		var shopName = obj.getAttribute("data-shop");
-		                    		var goodsId = obj.getAttribute("data-gdId");
-		                    		var storeid = obj.getAttribute("data-shopId");
-		                    		 alert(storeid)
-		                    		var goodsName = obj.getAttribute("data-gdName");
-		                    		var goodsImg = obj.getAttribute("data-gdImg");
-		                    		var goodsPrice = priceChange;
-		                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
-		                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
-		                    		var goodText=''; 
-		                    		var goodProp=[];
-		                    		$('.textType').each(function(){
-		                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+";";
-		                    			var prop = {};
-		                    			prop.parameter_name=$(this).find("p").html();
-		                    			prop.child_parameter_name=$(this).find(".cur").html();
-		                    			goodProp.push(prop)
-		                    		})  
-		                    		//////alert(JSON.stringify(goodProp))
-		                    		//当前商品对象
-									var cartObj={};
-		                    		cartObj.goodsId=goodsId;
-		                    		cartObj.shopName=shopName;
-		                    		cartObj.shopId=storeid;
-		                    		cartObj.goodsName=goodsName;
-		                    		cartObj.goodsImg=goodsImg;
-		                    		cartObj.goodsPrice=goodsPrice;
-		                    		cartObj.goodsPostfee=goodsPostfee;
-		                    		cartObj.goodsnum=goodsnum;
-		                    		cartObj.goodText=goodText;
-		                    		cartObj.goodProp=goodProp;
-		                    		
-		                    		if(goNum ==1){
-		                    			if(cartStorage.length != 0) {
-									var flag = false;
-									for(var i = 0; i < cartStorage.length; i++) {
-										if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) { 
-											 
-												cartStorage[i].goodsnum=parseInt(cartStorage[i].goodsnum)+parseInt(goodsnum); 
-											flag = false;
-											break;
-										} else {
-											flag = true;
-										}
-									}
-									if(flag) {
-		                    		cartStorage.push(cartObj); 
-									}
-								} else { 
-		                    		cartStorage.push(cartObj); 
-								}  
-		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-		                    		 alert(JSON.stringify(cartStorage))
-		                    		$(".am-share").removeClass("am-modal-active");
-		                    		$(".sharebg ").removeClass("sharebg-active");
-		                    		mui.toast("已成功加入购物车");
-		                    		//webview 购物车页面 刷新
-		                    		  //获得列表界面的webview
-									var list= plus.webview.getWebviewById('cart.html');
-									//触发列表界面的自定义事件（refresh）,从而进行数据刷新
-									mui.fire(list,'refresh'); 
-
-		                    		}else{
-		                    			
-		                    			if(plus.storage.getItem('myToken')){ 
-											orderStorage =[];
-			                    			orderStorage.push(cartObj);
-			                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-			                    		 alert(plus.storage.getItem("$orderStorage"));
-			                    			
-			                    			openview({
-											 	view:"market-order.html", 
-											 	id:"market-order"
-											 })
-										}else{//没登陆直接打开登录页面
-											mui.toast('请登录');
-											openview({
-												view:'../login.html'
+								var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
+								var commentobj = data.data.comments;
+								//var content = data.data.comments
+								//banner
+								var infoObj = {}
+									infoObj.myUrl = serverimgUrl;
+									infoObj.infoData = dataobj;
+			                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
+			                      var gallery = mui(".mui-slider");
+											gallery.slider({
+												interval: 3000 //设置自动轮播周期为3s
 											});
+											
+	//										////alert(eval("("+data.data.goodsInfo.content+")"))
+	
+									
+			                    //简介
+			                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
+			                     //只做展示的商品
+								if(data.data.goodsInfo.differentiate=='5'){
+									mui('.footerone')[0].remove();
+									mui('#moll_comment')[0].remove();
+									mui('#disPay')[0].style.display='block';
+								}	
+			                     //详情
+			                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     ////alert(data.data.goodsInfo.parameter);
+			                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");  
+			                      shopId=data.data.goodsInfo.storeid;     
+			                     //选择弹框
+			                     var chooseO = {};
+			                     chooseO.choose = data.data.goodsInfo;
+			                     chooseO.myUrl = serverimgUrl;
+			                     document.getElementById("cartBox").innerHTML=template("boxTpl",chooseO);
+			                     mui(".mui-numbox").numbox();
+			                     var priceChange =parseInt($("#priceChange").html());
+			                     $('.choose').each(function(){
+			                     	var chooseli = $(this).find("li");
+			                     	
+			                     		var oldstep=0,newstep=0;
+			                     	chooseli.each(function(){
+			                     		if($(this).attr("data-Inventory")==0){
+					                     		$(this).css("display","block")
+					                     	}
+			                     		chooseli.eq(0).addClass("cur");
+					                     	if($(this).attr("data-priceStep")==0){
+					                     		
+					                     		oldstep = $(this).attr("data-priceStep");
+					                     	}  
+					                     	
+			                     	})
+			                     	chooseli.click(function(){
+			                     		 alert(oldstep)
+			                     		oldstep=newstep;
+												$(this).addClass('cur');
+												$(this).siblings().removeClass('cur');
+					                     	  newstep = $(this).attr("data-priceStep");
+					                     	 alert(newstep)
+					                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
+					                     	 $('#priceChange').html(priceChange)
+											})
+			                     	
+			                     })
+			                    
+			                    
+			                    //评论
+			                    var cemmentObj = {}
+	//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
+			                    for(var i = 0;i < commentobj.length;i++){
+											commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0,10)+' '+commentobj[i].seller_ctime.substring(11,16);
+											commentobj[i].comment_pic = eval("("+commentobj[i].comment_pic+")");
+											commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
 										}
-		                    			
-		                    			
-		                    			
-		                    		}
-		                    		
-		                    		
-		                    		
-		                    		
-		                    	}else{
-		                    		mui.toast("请选择商品属性");
-		                    	}
-		                    }
-				//评论
-				 //mui.previewImage();
-							}else{
+									cemmentObj.myUrl = serverimgUrl;
+									cemmentObj.cemmentData = commentobj; 
+									
+			                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
+			                    	
+								
+			                   // plus.storage.removeItem('$cartStorage');
+			                    //购物车 缓存
+			                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
+			                   
+			                    window.cartStorageF=function(obj){ 
+			                     	if($('.cur').length == $(".choose").length){ 
+			                    		var shopName = obj.getAttribute("data-shop");
+			                    		var goodsId = obj.getAttribute("data-gdId");
+			                    		var storeid = obj.getAttribute("data-shopId");
+			                    		 alert(storeid)
+			                    		var goodsName = obj.getAttribute("data-gdName");
+			                    		var goodsImg = obj.getAttribute("data-gdImg");
+			                    		var goodsPrice = priceChange;
+			                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
+			                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
+			                    		var goodText=''; 
+			                    		var goodProp=[];
+			                    		$('.textType').each(function(){
+			                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+";";
+			                    			var prop = {};
+			                    			prop.parameter_name=$(this).find("p").html();
+			                    			prop.child_parameter_name=$(this).find(".cur").html();
+			                    			goodProp.push(prop)
+			                    		})  
+			                    		//////alert(JSON.stringify(goodProp))
+			                    		//当前商品对象
+										var cartObj={};
+			                    		cartObj.goodsId=goodsId;
+			                    		cartObj.shopName=shopName;
+			                    		cartObj.shopId=storeid;
+			                    		cartObj.goodsName=goodsName;
+			                    		cartObj.goodsImg=goodsImg;
+			                    		cartObj.goodsPrice=goodsPrice;
+			                    		cartObj.goodsPostfee=goodsPostfee;
+			                    		cartObj.goodsnum=goodsnum;
+			                    		cartObj.goodText=goodText;
+			                    		cartObj.goodProp=goodProp;
+			                    		
+			                    		if(goNum ==1){
+			                    			if(cartStorage.length != 0) {
+										var flag = false;
+										for(var i = 0; i < cartStorage.length; i++) {
+											if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) { 
+												 
+													cartStorage[i].goodsnum=parseInt(cartStorage[i].goodsnum)+parseInt(goodsnum); 
+												flag = false;
+												break;
+											} else {
+												flag = true;
+											}
+										}
+										if(flag) {
+			                    		cartStorage.push(cartObj); 
+										}
+									} else { 
+			                    		cartStorage.push(cartObj); 
+									}  
+			                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+			                    		 alert(JSON.stringify(cartStorage))
+			                    		$(".am-share").removeClass("am-modal-active");
+			                    		$(".sharebg ").removeClass("sharebg-active");
+			                    		mui.toast("已成功加入购物车");
+			                    		//webview 购物车页面 刷新
+			                    		  //获得列表界面的webview
+										var list= plus.webview.getWebviewById('cart.html');
+										//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+										mui.fire(list,'refresh'); 
+	
+			                    		}else{
+			                    			
+			                    			if(plus.storage.getItem('myToken')){ 
+												orderStorage =[];
+				                    			orderStorage.push(cartObj);
+				                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
+				                    		 alert(plus.storage.getItem("$orderStorage"));
+				                    			
+				                    			openview({
+												 	view:"market-order.html", 
+												 	id:"market-order"
+												 })
+											}else{//没登陆直接打开登录页面
+												mui.toast('请登录');
+												openview({
+													view:'../login.html'
+												});
+											}
+			                    			
+			                    			
+			                    			
+			                    		}
+			                    		
+			                    		
+			                    		
+			                    		
+			                    	}else{
+			                    		mui.toast("请选择商品属性");
+			                    	}
+			                    }
+					//评论
+					 //mui.previewImage();
+								}else{
+									plus.nativeUI.closeWaiting();
+									mui.toast("网络不好请重试！")
+								}
+								 
+			                   
+							},  
+							error:function(xhr,type,errorThrown){
+								//异常处理； 
 								plus.nativeUI.closeWaiting();
-								mui.toast("网络不好请重试！")
+								mui.toast("当前网络不好请重试"); 
 							}
-							 
-		                   
-						},  
-						error:function(xhr,type,errorThrown){
-							//异常处理； 
-							plus.nativeUI.closeWaiting();
-							mui.toast("当前网络不好请重试"); 
-						}
-				}); 
-				//跳转商家详情
-				window.goShop = function(){ 
-					console.log(shopId);
-					openview({
-						view:"shophome.html",
-						extrasobj:{storeId:shopId}
-					})
-				}
-				window.gocart = function(){
-					openview({
-							view:"../cart.html",
-							extrasobj:{pageId:"detail"}
+					}); 
+					//跳转商家详情
+					window.goShop = function(){ 
+						console.log(shopId);
+						openview({
+							view:"shophome.html",
+							extrasobj:{storeId:shopId}
 						})
-				}
+					}
+					window.gocart = function(){
+						openview({
+								view:"../cart.html",
+								extrasobj:{pageId:"detail"}
+							})
+					}
 					mui.previewImage();			
 		}) 
 		

@@ -74,10 +74,10 @@
 				box-shadow: 0 0 10px #555;
 			}
 			#upload{ 
-				text-align: center;margin: 30px;font-size: 15px;
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
-			#upload img{width: 60px;margin-top: -15px;
-			} 
+			#upload img{width: 60px;margin-top: -10px;
+			}
 			.branddiv{display: -webkit-box;
 				-webkit-box-orient: vertical;
 				-webkit-line-clamp: 2;
@@ -227,6 +227,8 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
+	var Spagenum = 2;//实到页数
+	var Ypagenum = 1;//应到页数 
 	Loading(1,10,'','','','','price');//加载数据,包括上滑加载
 	//添加刷新监听
 	document.addEventListener('refresh', function() {
@@ -280,13 +282,13 @@
 					　　var scrollHeight = $(document).height();
 					　　var windowHeight = $(this).height();
 					　　if(scrollTop + windowHeight == scrollHeight){
-						//加载下一部分
-						var nowpage = ++gin1;
-						if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
+						if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
 							mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-							console.log('可以请求数据');
+							Ypagenum++;//满足加载情况,应到页数+1
+							console.log('发起请求,实到'+Spagenum+'页');									
+							console.log('发起请求,应到'+Ypagenum+'页');
 							mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-								data:{currentPage:gin1,
+								data:{currentPage:Spagenum,
 									numsPerPage:gin2,
 									type:gin3,
 									price_Starting:gin4,
@@ -307,33 +309,33 @@
 										//获取并渲染用户信息
 										var html=template("infolist",dataobj);
 										document.getElementById("infolistdiv").innerHTML += html;
-										mui("#upload")[0].innerHTML = "上滑加载 ";
-									}else{
-										--gin1;//请求失败,继续请求当前页
-										mui.toast("获取数据失败");
 									}
-									plus.nativeUI.closeWaiting();//关闭等待框
+									mui("#upload")[0].innerHTML = " ";
+									Spagenum++;//加载成功,当前页+1
+									console.log('成功+1,实到'+Spagenum);
+									console.log('成功+1,应到'+Spagenum);
 								},
 								error:function(xhr,type,errorThrown){
-									--gin1;//请求失败,继续请求当前页
+									Ypagenum--;//失败是应到-1
 									mui.toast("当前网络不好请重试");
+									mui("#upload")[0].innerHTML = "";
 								}
 							});
-						}else{
+						}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
 							mui("#upload")[0].innerHTML = "到底了";
 						}
-						//加载下一部分结束
-						　　}
-					});
+				　　         }
+					});//加载下一部分结束
 				}else{
-					mui.toast("没有数据");
+					mui("#upload")[0].innerHTML = ""; 
 					mui('#nulldiv')[0].style.display = 'block';
 				}
 				plus.nativeUI.closeWaiting();//关闭等待框
 			},
 			error:function(xhr,type,errorThrown){
 				plus.nativeUI.closeWaiting();//关闭等待框
-				mui.toast("当前网络不好请重试");
+				mui("#upload")[0].innerHTML = ""; 
+				mui('#nulldiv')[0].style.display = 'block';
 			}
 		});
 	});	

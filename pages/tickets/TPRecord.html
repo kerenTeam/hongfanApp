@@ -168,7 +168,7 @@
 										<p class="dark tiny"><%= tradeNo%></p>
 									</div>
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="tiny">车次 <%= trainNo%>(<%= remark%>)</p>
+										<p class="tiny">车次 <%= trainNo%></p>
 									</div>
 								</a>
 							</dd>
@@ -213,51 +213,84 @@
 
 	<script type="text/javascript"> 
 	mui.plusReady(function(){
+		var loadflag = false;
+		
+		document.addEventListener('refresh', function(obj) {
+			var typeid = obj.detail.type;
+			loadflag = true; 
+			if(typeid == 'train'){
+				mui('#trainbtn')[0].onclick();
+			}
+		});
+		
 		var oldToken = plus.storage.getItem('oldToken'); 
 		var userid = plus.storage.getItem('userid');
 		
 		window.loadTfun = function(){//加载火车列表的方法
 			document.getElementById("infolistdiv").innerHTML = '';
+			mui('#noOrder')[0].style.display = 'none';
+			var idarray = [];
 			mui('#infolistdiv')[0].style.display = 'none';
 			//获取用户千米网信息
-			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+			if(!loadflag){
+				plus.nativeUI.showWaiting('连接中 ...', {width: '100px',height: '80px'});
+			}
 			mui.ajax(serverUrl+'/api/qianmi/billorder',{
-				data:{userid:0,type:3},
+				data:{userid:userid,type:3},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-					console.log('票列返回'+JSON.stringify(data))
 					var dataobj=data.data;
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
+							
 							var tradeNo = JSON.parse(dataobj[i].data);
 							if(!tradeNo.errorToken){
 								var orderItem = tradeNo.train_order_create_response.ticketTrade.tradeNo;
-								mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
-									data:{tradeNo:orderItem},
+								idarray.push(orderItem);
+							}
+						}
+						var numload = 0;
+						mui.each(idarray,function (index,element) {//遍历请求详情
+							console.log('我是遍历');
+							mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
+									data:{tradeNo:element},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
 									headers:{"token":oldToken},	 
-									success:function(data,type,xhr){ 
+									success:function(data,type,xhr){
+										numload++;
+										console.log('我是请求成功');
 										var dataobj = data.data.train_order_detail_response.ticketTrade;
 										var html=template("infolist",dataobj);
 										document.getElementById("infolistdiv").innerHTML += html;
+										console.log(numload)
+										if(numload == idarray.length){//铺完后关闭loading
+											console.log('我是最后一次');
+											mui('#infolistdiv')[0].style.display = 'block';
+											var time1 = setTimeout(function(){
+												plus.nativeUI.closeWaiting();
+											},500)
+										} 
 									},
 									error:function(xhr,type,errorThrown){
+										numload++;
+										if(numload == idarray.length){//铺完后关闭loading
+											console.log('我是最后一次')
+											mui('#infolistdiv')[0].style.display = 'block';
+											var time1 = setTimeout(function(){
+												plus.nativeUI.closeWaiting();
+											},500)
+										} 
+
 										mui.toast('一条加载失败,请重试');
 									}
 								});
-							}
-							if(i == dataobj.length -1){//铺完后关闭loading
-								mui('#infolistdiv')[0].style.display = 'block';
-								var time1 = setTimeout(function(){
-									plus.nativeUI.closeWaiting();
-								},600)
-							} 
-						}
+						})
+						
 					}else{
 						plus.nativeUI.closeWaiting();
 						mui('#noOrder')[0].style.display = 'block';
@@ -272,9 +305,13 @@
 		}
 		window.loadPfun = function(){//加载飞机列表的方法
 			document.getElementById("infolistdiv").innerHTML = '';
+			var idarray = [];
 			mui('#infolistdiv')[0].style.display = 'none';
+			mui('#noOrder')[0].style.display = 'none';
 			//获取用户千米网信息
-			plus.nativeUI.showWaiting('加载中 ...', {width: '100px',height: '80px'});
+			if(!loadflag){
+				plus.nativeUI.showWaiting('连接中 ...', {width: '100px',height: '80px'});
+			}
 			mui.ajax(serverUrl+'/api/qianmi/billorder',{
 				data:{userid:userid,type:4},
 				dataType:'json',
@@ -282,37 +319,55 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-					console.log('票列返回',data);
 					var dataobj=data.data;
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
+							
 							var tradeNo = JSON.parse(dataobj[i].data);
-							console.log('票列返回',tradeNo);
 							if(!tradeNo.errorToken){
 								var orderItem = tradeNo.air_order_create_response.ticketTrade.tradeNo;
-								mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
-									data:{tradeNo:orderItem},
+								idarray.push(orderItem);
+							}
+						}
+						var numload = 0;
+						mui.each(idarray,function (index,element) {//遍历请求详情
+							console.log('我是遍历');
+							mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
+									data:{tradeNo:element},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
 									headers:{"token":oldToken},	 
-									success:function(data,type,xhr){ 
+									success:function(data,type,xhr){
+										numload++;
+										console.log('我是请求成功');
 										var dataobj = data.data.train_order_detail_response.ticketTrade;
 										var html=template("infolist2",dataobj);
 										document.getElementById("infolistdiv").innerHTML += html;
+										console.log(numload)
+										if(numload == idarray.length){//铺完后关闭loading
+											console.log('我是最后一次');
+											mui('#infolistdiv')[0].style.display = 'block';
+											var time1 = setTimeout(function(){
+												plus.nativeUI.closeWaiting();
+											},500)
+										} 
 									},
 									error:function(xhr,type,errorThrown){
+										numload++;
+										if(numload == idarray.length){//铺完后关闭loading
+											console.log('我是最后一次')
+											mui('#infolistdiv')[0].style.display = 'block';
+											var time1 = setTimeout(function(){
+												plus.nativeUI.closeWaiting();
+											},500)
+										} 
+
 										mui.toast('一条加载失败,请重试');
 									}
 								});
-							}
-							if(i == dataobj.length -1){//铺完后关闭loading
-								mui('#infolistdiv')[0].style.display = 'block'; 
-								var time1 = setTimeout(function(){
-									plus.nativeUI.closeWaiting();
-								},600)
-							} 
-						}
+						})
+						
 					}else{
 						plus.nativeUI.closeWaiting();
 						mui('#noOrder')[0].style.display = 'block';

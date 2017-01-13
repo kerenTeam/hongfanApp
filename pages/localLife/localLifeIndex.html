@@ -56,15 +56,15 @@
 			.mui-icon{line-height: 50px;}	
 			.mui-icon .iconfont{font-size: 18px;} 
  			.tuangouwidth{height: 195px;} 
-			.icon-list .icon{margin-bottom: 10px;} 
-			.icon-list .icon-circle{width: 50px;height: 50px;margin-bottom: 5px;}
+			/*.icon-list .icon{margin-bottom: 10px;}*/ 
+			/*.icon-list .icon-circle{width: 50px;height: 50px;margin-bottom: 5px;}*/
 			.swiper-pagination-bullet-active{background-color: rgba(245,60,66,0.6);}
 			.sy_limit_buy .locatLabel_switch .box{width: 29% !important;}
 			.mui-table-view-cell p{font-size: 12px;line-height: 16px;margin-top: 10px;}
 			.overyou{width: auto !important;overflow-x: scroll !important;min-height: 100px;} 
 			.txt_center{color: #555;font-size: 13px;white-space: nowrap;text-overflow: ellipsis;margin-bottom: 15px;padding: 0 5px;margin-top: 5px;}
 			.sy_title{border: none;padding-top: 0;padding-left: 0;} 
-			.caini{border-bottom: 1px solid rgba(0,0,0,0.1);}
+			.caini{border-bottom: 1px solid #EFEFF4;}
 			.left{border-left: 0.03rem solid #f53c42;padding-left: 10px;}
 			.slider{margin-bottom: 0;}
 			.mb10{margin-bottom: 10px;}
@@ -77,12 +77,20 @@
 			.null{text-align: center;}
 			.null img{margin-top: 7%;width: 30%;margin-bottom: 3%;}
 			.icon-list .icon-circle {
-			    width:54px;
-			    height: 54px; 
-			    margin-bottom: 10px;
-			    padding: 15%;
+			    width:50px;
+			    height: 50px; 
+			    /*padding-top: 10px;*/
+			    /*margin-bottom: -2px;*/
 			}
-			
+			.icon-list .icon-circle img{
+				/*padding-top: 10px;*/
+			    width:30px;
+			    height: 30px; 
+			}
+			.icon-desc{
+				font-size: 12px !important;
+				/*padding-top: -20px !important;*/
+			}
 			.slider, .mb10{
 				border-bottom: none !important;
 			}
@@ -141,6 +149,8 @@
 		            </div> 
 				</script>
 			</div>
+				
+			<!--分类选择-->	
 			<div class="swiper-container swiper-container2" style="background-color: #fff;padding-bottom: 10px;">
 				<div class="swiper-wrapper tuangouwidth">
 					<div class="swiper-slide">
@@ -148,12 +158,12 @@
 						<!--有数据显示-->
 						<script type="text/html" id="column">
 							<% for(var i=0; i<list.length; i++){%>
-								<li class="icon">
+								<li class="icon" style="margin-top: 10px;">
 									<a class="<%= classnames[i]%>">
 										<span class="icon-circle bluegray" style="background-color:<%= list[i].icon_color%>;">
 											<img src="<%= list[i].iconpic%>">
 										</span>
-										<span class="icon-desc" style="font-size: 12px;"><%= list[i].name%></span>
+										<span class="icon-desc"><%= list[i].name%></span>
 									</a>
 								</li>
 							<% }%>	
@@ -163,7 +173,7 @@
 						<ul class="icon-list" id="columndiv2">
 							<!--没有数据显示--> 
 							<img src="../../img/nullinfo.svg" id="kuimg" style="display: none;" >
-							<!--<p>没有了</p>-->	
+							<p>没有了</p>	
 						</ul>
 						<!--有数据显示-->
 						<script type="text/html" id="column2">
@@ -203,6 +213,7 @@
 			</div>
 			<div class="swiper-pagination swiper-pagination2 diandian"></div>
 		</div>
+		
 			
 		<!--广告-->
 		<div class="mui-row" style="background-color: white;margin: 10px 0;" id="ad"></div> 
@@ -233,10 +244,10 @@
 					<div class="swiper-wrapper" id="Advdiv"></div> 
 					<script type="text/html" id="Adv">
 						<% for(var i=0; i<list.length; i++){%>
-							<div class="box swiper-slide">
+							<div class="box swiper-slide" style="border: 1px solid #EFEFF4;">
 								<a href="javascript:;" onclick="opendetails(<%= list[i].id%>)">
 									<img src="<%= list[i].logo%>" onerror="javascript:this.src='../../img/market/banner.png';">
-									<p class="txt_center overflow_clear"><%= list[i].name%></p>
+									<p class="txt_center overflow_clear" style="text-indent: 5px;"><%= list[i].name%></p>
 								</a>
 							</div>
 						<% }%>	
@@ -253,7 +264,6 @@
 				<ul class="mui-table-view" id="recommendsdiv">
 					<div id="tuijiannull" style="padding: 20px;text-align: center;display: none;">暂时没有了</div>
 				</ul>
-				<!--猜你喜欢-->
 				<script type="text/html" id="recommends">
 					<% if(list.length >= 3){%>
 						<% for(var i=0; i<3; i++){%>
@@ -294,8 +304,8 @@
 						</li>
 					<% }%>
 				</script>
-				<div id="more">
-					更多推荐 <img src="../../img/more.svg"/> 
+				<div id="more" style="padding-top: 10px;">
+					更多推荐 
 				</div>
 			</div>
 		</div>

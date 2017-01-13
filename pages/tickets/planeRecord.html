@@ -400,6 +400,7 @@
 	<script type="text/javascript">
 		var tradeNo;
 		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
 //			var tradeNo = plus.webview.currentWebview().tradeNo;
@@ -447,7 +448,9 @@
 			//修改星期日期时间结束
 			mui('#startTime1')[0].innerHTML=planeOrder.startTime.substring(11,planeOrder.startTime.toString().Length-11);
 			mui('#recevieTime')[0].innerHTML=planeOrder.recevieTime.substring(11);
-			mui('#totalPayCash')[0].innerHTML=planeOrder.totalPayCash;
+			var totalPayCash = planeOrder.totalPayCash;
+			mui('#totalPayCash')[0].innerHTML= totalPayCash;
+			
 //			mui('#totalOtherFee')[0].innerHTML=planeOrder.totalOtherFee;
 			
 			//乘机人信息
@@ -455,6 +458,8 @@
 			orderObj.orderList = planeOrder.ticketOrders.ticketOrder;
 			var html = template('orderList-detail',orderObj);
 			document.getElementById('orderList').innerHTML = html;
+			plus.nativeUI.closeWaiting();//关闭等待框
+			
 			
 			//点击取消订单
 			window.cancelPlane = function(){
@@ -481,6 +486,15 @@
 							}
 						});
 					}
+				})
+			}
+			//点击去支付
+			window.goPay = function(){
+//				alert(tradeNo + totalPayCash)
+				openview({
+					view:"payTickets.html",
+//					id:"paysecond",
+					extrasobj:{new_qianmi_order_id:tradeNo,orderCost:totalPayCash,ticketType:plane}
 				})
 			}
 		})
