@@ -43,7 +43,6 @@
 			}
 			.dealcard, .cinemacard{margin-top: 45px;
 			}
-			
 			/*banner图片固定高度比例*/
 			.goodsImg{
 				position: relative;
@@ -73,7 +72,6 @@
 			.time img{
 				width: 15px;
 				margin-right: 5px;
-				/*margin-top: -2px;*/
 			}
 			.mui-btn-block {
 				font-size: 16px;
@@ -253,12 +251,8 @@
 				extrasobj:{storeId:storeId}
 			})
 		}
-		
-		
 		mui.plusReady(function(){
-//			plus.storage.removeItem('$gotCoupon');//清除缓存
 			var storeCouponId = plus.webview.currentWebview().storeCouponId;
-			
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
@@ -272,8 +266,6 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 //					alert(data.data.system_activity);
-					
-					
 					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
 					var dateObj={};
 			       	//处理获取的数据
@@ -305,6 +297,7 @@
 					//点击领取优惠券
 					window.getCoupon = function(e,getCouponId){
 						//判断是否登录并获取缓存token
+						plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 						if(plus.storage.getItem('myToken')){
 							var userId = plus.storage.getItem("userid");
 							mui.ajax(serverUrl+'/api/index/getcoupon',{
@@ -314,17 +307,18 @@
 								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){
-	//								alert(JSON.stringify(data));
 									if(data.errno == 0){
-										alert("领取成功！");
+										mui.toast("领取成功！");
 										e.getElementsByClassName('waitGet')[0].style.display = 'none';
 										e.getElementsByClassName('got')[0].style.display = 'block';
 										e.onclick = function(){}
 										//已领取的存缓存
 										gotCouponId.push(getCouponId);
 										plus.storage.setItem('$gotCoupon', JSON.stringify(gotCouponId)); 
+										plus.nativeUI.closeWaiting();
 									}else{
 										alert("领取失败，请重试！")
+										plus.nativeUI.closeWaiting();
 									}
 								},
 								error:function(xhr,type,errorThrown){
@@ -337,7 +331,6 @@
 								view:'../login.html'
 							})
 						}
-						
 					}
 				},
 				error:function(xhr,type,errorThrown){
