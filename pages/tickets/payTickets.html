@@ -72,23 +72,14 @@
 <script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 var pays={}; 
-
 mui.plusReady(function() { 
-	
-	var billId = plus.webview.currentWebview().billId;
-	var saleAmount = plus.webview.currentWebview().saleAmount;
-	
-	//获取缓存
-	var myuserid = plus.storage.getItem('userid'); 
-	var oldtoken = plus.storage.getItem('oldToken');
+	//获取,显示总价,订单号
 	var orderCost = plus.webview.currentWebview().total_fee;
 	var orderId1 = plus.webview.currentWebview().Orderidnum;
-	var bodystr = plus.webview.currentWebview().body;
 	document.getElementById('payMoney').innerHTML = orderCost;
 	document.getElementById('orderId').innerHTML = orderId1;
 	//系统检测获取支付通道
 	plus.payment.getChannels(function(channels){
-		console.log(JSON.stringify(channels));
 		for(var i in channels){
 			var channel=channels[i];
 			// 过滤掉不支持的支付通道：暂不支持360相关支付
@@ -107,38 +98,6 @@ mui.plusReady(function() {
 	},function(e){
 		plus.nativeUI.alert("支付失败，请重试",null,"提示");
 	});
-//	alert(oldtoken+" "+ orderId)
-//	 mui(document.body).on('tap', '.mui-btn', function(e) {
-//	 	plus.nativeUI.showWaiting(); 
-//	 	mui.ajax(serverUrl+'/api/qianmi/paybill',{
-//				data:{new_qianmi_order_id:orderId,billId:billId},
-//				dataType:'json',
-//				type:'post',
-//				timeout:1000,
-//				headers:{"token":oldtoken},	 
-//				success:function(data,type,xhr){ 
-//					plus.nativeUI.closeWaiting();
-////					alert(JSON.stringify(data)) ;
-//					 mui.toast("支付成功"); 
-//					 //mui.back();
-//					 setTimeout(function(){
-//					 	openview({
-//							view:"../tickets/phone-record-de.html",
-//							extrasobj:{qianmiOrderID:orderId}
-//						})
-//					 
-//					 },1000)
-//					 	
-//					// plus.webview.currentWebview().close();
-//				},
-//				error:function(xhr,type,errorThrown){
-//					plus.nativeUI.closeWaiting()
-//					console.log('响应失败  !');
-//				}
-//			});
-//      });
-	
-	
 	// 检测是否安装支付服务
 	function checkServices(pc){ 
 		if(!pc.serviceReady){
@@ -158,24 +117,18 @@ mui.plusReady(function() {
 			},pc.description);
 		}
 	}
-	//系统检测获取支付通道结束
-});
+});//ready
 
-var w=null;
 var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php';
 //http://hiji.hifete.com/app/api/controller/aliPay.php
 //var PAYSERVER='http://Aaron.lan:7200/api/alipay/payment'
 // 支付方法 
 function payfun(id){
-	var varpay;
-	var dataJson;
-	
+	var varpay,dataJson;
 	if(id=='alipay'||id=='wxpay'){//调用支付功能
-		alert("1  "+id)
 		plus.nativeUI.showWaiting();
 		if(id == 'alipay'){ 
 			gopay();
-
 		}else if(id=='wxpay'){//微信
 			//重组的支付验证数据
 			varpay = {
@@ -206,84 +159,115 @@ function payfun(id){
 	}
 	
 	function gopay(){
-		mui.fire(plus.webview.getWebviewById('trainRecord'),'refresh');
-	// 请求支付订单
-	var orderCost = plus.webview.currentWebview().total_fee;
-	var bodystr = plus.webview.currentWebview().body;
-	var tradeNostr = plus.webview.currentWebview().Orderidnum;
-	var Orderidfanhui1 = plus.webview.currentWebview().Orderidfanhui;
-	alert(Orderidfanhui1+'返回');
-	var oldtoken = plus.storage.getItem('oldToken');
-	mui.ajax(PAYSERVER,{ 
-		data:{body:bodystr,subject:'',total_fee:orderCost},
-		headers:{"token":oldtoken},	
-		timeout:10000,//超时时间设置为10秒；
-		success:function(data){
-			plus.nativeUI.closeWaiting(); 
-//			var data = data.data; 
-//			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
-//          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&'); 
-			console.log('后台数据',data);
-			console.log("----- 请求订单成功 -----"); 
+		var orderCost = plus.webview.currentWebview().total_fee;//订单总价
+		var bodystr = plus.webview.currentWebview().body;
+		var tradeNostr = plus.webview.currentWebview().Orderidnum;
+		var Orderidfanhui1 = plus.webview.currentWebview().Orderidfanhui;//订单id
+		var feiji = plus.webview.currentWebview().typestr;
+		var myuserid = plus.storage.getItem('userid');
+		var oldtoken = plus.storage.getItem('oldToken');
+		
+//		alert(Orderidfanhui1+'订单id');
+//		alert(bodystr+'bodystr');
+//		alert(orderCost+'总价');
+//		alert(feiji+'类型');
+		
+		mui.ajax(serverUrl+'/api/alipay/payment',{ 
+			data:{body:bodystr,subject:'飞机,火车支付',total_fee:'',out_trade_no:Orderidfanhui1}, 
+			type:'post',//HTTP请求类型 
+			headers:{"token":oldtoken},	
+			timeout:10000,//超时时间设置为10秒；
+			success:function(data){
+				plus.nativeUI.closeWaiting(); 
+				console.log('后台支付数据',data);
 				plus.nativeUI.showWaiting();
-			var varpay; 
-			if(id == 'wxpay'){ 
-			}else{ 
-				//支付宝
-				varpay = data;
-				console.log('支付宝',varpay);
+				var varpay; 
+				if(id == 'wxpay'){ 
+				}else{ 
+					//支付宝
+					varpay = data.data;
+					console.log('支付宝需数据',varpay);
 					plus.nativeUI.closeWaiting();
-				plus.payment.request(pays[id],varpay,function(result){
-					console.log("----- 支付成功 -----"+JSON.stringify(result));
-					var aa = JSON.parse(result.rawdata);
-					var outorderinfo = queryStr(aa.result).out_trade_no;
-					outorderinfo = outorderinfo.replace(/\"/g, "");
-					var sendData;
-					console.log("outorderinfo  "+outorderinfo);
-					var myuserid = plus.storage.getItem('userid');  
-					plus.nativeUI.showWaiting();
-					//支付千米网
-					var zhifuqinmiwang = function(){
-						mui.ajax(serverUrl+'/api/qianmi/trainorderpay',{
-							data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1},	
-							dataType:'json',//服务器返回json格式数据
-							type:'post',//HTTP请求类型 
-							timeout:10000,//超时时间设置为10秒；
-							headers:{"token":oldtoken},	
-							success:function(data){ 
-								console.log('支付成功',data);
-								mui.fire(plus.webview.getWebviewById('trainRecord'),'refresh');
-								var timequxiao = setTimeout(function(){
-									plus.webview.currentWebview().close();
-								},500)
-								mui.toast("支付成功");
-							},
-							error:function(xhr,type,errorThrown){
-								//异常处理；
-//								zhifuqinmiwang();
-								console.log(type);
-							}
-						});
-					}
-					zhifuqinmiwang();
-				},function(e){
-					console.log("----- 支付失败 -----");
-					console.log("["+e.code+"]："+e.message);
-					plus.nativeUI.closeWaiting();
-					plus.nativeUI.alert("支付失败");
-				});
-//			 
+					plus.payment.request(pays[id],varpay,function(result){
+						console.log('支付宝返回',result);
+						plus.nativeUI.showWaiting();
+						var zhifuqinmiwang = function(){//支付千米网,火车票
+							mui.ajax(serverUrl+'/api/qianmi/trainorderpay',{
+								data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1},	
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型 
+								timeout:10000,//超时时间设置为10秒；
+								headers:{"token":oldtoken},	
+								success:function(data){
+									console.log('千米网火车支付',data);
+									if(!data.data.qianmiPay.subErrors){
+										plus.nativeUI.alert("支付成功");
+										mui.fire(plus.webview.getWebviewById('trainRecord'),'refresh');
+										var timequxiao = setTimeout(function(){
+											plus.webview.currentWebview().close();
+										},500)
+									}else{
+										plus.nativeUI.closeWaiting();
+										plus.nativeUI.alert("预定失败,请联系客服");
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									//异常处理；
+//									zhifuqinmiwang();
+									plus.nativeUI.closeWaiting();
+									plus.nativeUI.alert("预定失败,请联系客服");
+								}
+							});
+						}
+						var zhifuqinmiwang2 = function(){//支付千米网,飞机票
+							mui.ajax(serverUrl+'/api/qianmi/airorderpay',{
+								data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1},	
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型 
+								timeout:10000,//超时时间设置为10秒；
+								headers:{"token":oldtoken},	
+								success:function(data){ 
+									console.log('千米网飞机支付',data);
+									if(!data.data.qianmiPay.subErrors){
+										plus.nativeUI.alert("支付成功");
+										mui.fire(plus.webview.getWebviewById('planeRecordDetail'),'refresh');
+										var timequxiao = setTimeout(function(){
+											plus.webview.currentWebview().close();
+										},500)
+									}else{
+										plus.nativeUI.closeWaiting();
+										plus.nativeUI.alert("预定失败,请联系客服");
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									//异常处理；
+	//								zhifuqinmiwang();
+									plus.nativeUI.closeWaiting();
+									plus.nativeUI.alert("预定失败,请联系客服");
+								}
+							});
+						}
+						if(feiji){
+							zhifuqinmiwang2();//飞机
+						}else{
+							zhifuqinmiwang();//火车
+						}
+						
+					},function(e){
+						console.log("["+e.code+"]："+e.message);
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.alert("支付失败");
+					});
+	//			 
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				//异常处理；
+				console.log("----- 请求订单失败 -----");
+				plus.nativeUI.closeWaiting();
+				plus.nativeUI.alert("获取订单信息失败！");
 			}
-		},
-		error:function(xhr,type,errorThrown){
-			//异常处理；
-			console.log(type);
-			console.log("----- 请求订单失败 -----");
-			console.log( xhr.status );
-			plus.nativeUI.closeWaiting();
-			plus.nativeUI.alert("获取订单信息失败！");
-		}
-	});
+		});
 	}
 	
 	
