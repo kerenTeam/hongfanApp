@@ -150,7 +150,7 @@
 						<dl class="list listtwo list-in" id="infolistdiv" style="display: none;"></dl>
 						<!--火车票-->
 						<script type="text/html" id="infolist">
-							<dd onclick="openD('<%= tradeNo%>')">
+							<dd onclick="openD('<%= tradeNo%>','<%= id%>')">
 								<div class="orderbh box-s">
 									<img src="../../img/tickets/t.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">火车票</span>
 									<span class="fr state"><%= stateName%></span>
@@ -161,14 +161,14 @@
 									</div>
 									<div class="mui-col-sm-6 mui-col-xs-6">
 										<div class="pricetwo">
-											<p class="black big">¥<%= totalPurPrice%></p>
+											<p class="black big">¥<%= totalPayCash%></p>
 										</div>	
 									</div>
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="dark tiny"><%= tradeNo%></p>
+										<p class="dark tiny">车次 <%= trainNo%><span style="float: right;"><%= tradeNo%></span></p>
 									</div>
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="tiny">车次 <%= trainNo%></p>
+										<p class="tiny"><%= ctime%></p>
 									</div>
 								</a>
 							</dd>
@@ -186,14 +186,14 @@
 									</div>
 									<div class="mui-col-sm-6 mui-col-xs-6">
 										<div class="pricetwo">
-											<p class="black big">¥<%= totalPurPrice%></p>
+											<p class="black big">¥<%= totalPayCash%></p>
 										</div>	
 									</div>
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="dark tiny"><%= tradeNo%></p>
+										<p class="dark tiny">车次 <%= trainNo%><span style="float: right;"><%= tradeNo%></span></p>
 									</div>
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="tiny">车次 <%= trainNo%></p>
+										<p class="tiny"><%= ctime%></p>
 									</div>
 								</a>
 							</dd>
@@ -242,6 +242,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
+					
 					var dataobj=data.data;
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
@@ -249,14 +250,17 @@
 							var tradeNo = JSON.parse(dataobj[i].data);
 							if(!tradeNo.errorToken){
 								var orderItem = tradeNo.train_order_create_response.ticketTrade.tradeNo;
-								idarray.push(orderItem);
+								idarray.push({
+									order:orderItem,
+									idnum:dataobj[i].id
+								});
 							}
 						}
 						var numload = 0;
 						mui.each(idarray,function (index,element) {//遍历请求详情
-							console.log('我是遍历');
+							console.log('我是遍历'+element.idnum);
 							mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
-									data:{tradeNo:element},
+									data:{tradeNo:element.order},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
@@ -265,6 +269,15 @@
 										numload++;
 										console.log('我是请求成功');
 										var dataobj = data.data.train_order_detail_response.ticketTrade;
+										mui.each(dataobj.ticketOrders.ticketOrder,function (index,element) {//如有退款
+											if(index == 0){
+												if(element.stateName == '已退款'){
+													dataobj.stateName = '已退款';
+												}
+											}
+										})
+										dataobj.id = element.idnum;
+										console.log('数据',dataobj);
 										var html=template("infolist",dataobj);
 										document.getElementById("infolistdiv").innerHTML += html;
 										console.log(numload)
@@ -320,6 +333,7 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
 					var dataobj=data.data;
+					console.log('飞机',dataobj);
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
 							
@@ -404,10 +418,11 @@
 			extrasobj:{tradeNo:argu1}
 		})
 	}
-	function openD(argu1){//打开火车详情
+	function openD(argu1,argu2){//打开火车详情
 		openview({
 			view:'trainRecord.html',
-			extrasobj:{Tordernum:argu1}
+			id:'trainRecord',
+			extrasobj:{Tordernum:argu1,Orderidfanhui:argu2}
 		})
 	}
 	</script>

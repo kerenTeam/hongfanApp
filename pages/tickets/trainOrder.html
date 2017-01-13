@@ -530,15 +530,19 @@
 										console.log('预定返回'+JSON.stringify(data));
 										console.log(data);
 										if(data.errno == 0){
+											console.log('预定',data); 
 											if(data.data.body.subErrors){
 												plus.nativeUI.closeWaiting();
 												mui.toast(data.data.body.subErrors[0].message);
 											}else{
 //												var TorderD = data.data.body.train_order_create_response.ticketTrade; 
 												var Tordernum11 = data.data.body.train_order_create_response.ticketTrade.tradeNo;
+												var Orderidfanhui2 = data.data.new_qianmi_order_id;
+												alert(Orderidfanhui2+'返回');
 												openview({
 													view:'trainRecord.html',
-													extrasobj:{Tordernum:Tordernum11}
+													id:'trainRecord',
+													extrasobj:{Tordernum:Tordernum11,Orderidfanhui:Orderidfanhui2}
 												})
 											}
 										}else{
