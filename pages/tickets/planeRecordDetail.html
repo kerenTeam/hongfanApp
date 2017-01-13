@@ -391,9 +391,10 @@
 		var tradeNo;
 		var orderNos=[];
 		mui.plusReady(function(){
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			var oldToken = plus.storage.getItem('oldToken');
 			tradeNo = plus.webview.currentWebview().tradeNo; 
-//			//alert(tradeNo);
+			alert(tradeNo);
 			console.log(oldToken);
 			mui.ajax(serverUrl +'/api/qianmi/airorderdetail',{
 				data:{tradeNo:tradeNo},//订单主编号
@@ -402,7 +403,7 @@
 				timeout:15000,
 				headers:{token:oldToken},	 
 				success:function(data,type,xhr){
-//					//alert(JSON.stringify(data));
+					alert(JSON.stringify(data));
 					var planeOrder = data.data.air_order_detail_response.ticketTrade;
 					//将数据铺入
 					mui('#tradeNo')[0].innerHTML=planeOrder.tradeNo;
@@ -410,9 +411,10 @@
 					console.log(tradeNo);
 					mui('#title')[0].innerHTML=planeOrder.title;
 					mui('#orderNo')[0].innerHTML=planeOrder.ticketOrders.ticketOrder.length;
-				
+
 					//订单状态
 					if(planeOrder.billState == 0){//待支付
+//						alert('待支付')
 						mui('#stateName')[0].innerHTML="待支付";
 						mui('.goReturn')[0].remove();
 					}else if(planeOrder.state == 2 && !planeOrder.billState == 0){
@@ -466,6 +468,8 @@
 						orderNos.push(orderNo);
 					}
 					
+					plus.nativeUI.closeWaiting();//关闭等待框
+					
 					
 					//点击取消订单
 					window.cancelPlane = function(){
@@ -478,7 +482,7 @@
 									timeout:15000,
 									headers:{token:oldToken},	 
 									success:function(data,type,xhr){
-//										//alert(JSON.stringify(data));
+//										alert(JSON.stringify(data));
 										if(data.data.air_order_cancel_response.result==1){
 											mui.toast("取消订单成功！");
 										}else{
@@ -507,7 +511,7 @@
 									timeout:15000,
 									headers:{token:oldToken},	 
 									success:function(data,type,xhr){
-										//alert(JSON.stringify(data));
+										alert(JSON.stringify(data));
 										if(data.data.air_order_refund_response.result==1){
 											mui.toast("退票成功！");
 										}else{

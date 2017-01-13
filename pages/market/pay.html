@@ -69,27 +69,12 @@
 		</div>
 	</body>
 <script src="../../js/mui.min.js"></script> 
-<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>-->
 <script type="text/javascript">
 var pays={}; 
-
+var serverUrl='http://Aaron.lan:7200';
 mui.plusReady(function() { 
-
-//	mui(".fanhui")[0].addEventListener("tap",function(){ 
-//		if(plus.webview.getWebviewById("market/market-order.html")){
-//			plus.webview.getWebviewById("market/market-order.html").close(); 
-//		}else{
-//			plus.webview.getWebviewById("market-order.html").close(); 
-//		}
-//		
-//		openview({
-//			view:'../personal/sc-order.html',
-//			extrasobj:{pageId:"pay"}
-//		}) 
-//		plus.webview.currentWebview().close();
-//	})
-
-
+ 
 	//获取缓存
 	var myuserid = plus.storage.getItem('userid'); 
 
@@ -174,10 +159,10 @@ mui.plusReady(function() {
 });
 
 var w=null;
-var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php?total=1';
+//var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php';
 //http://hiji.hifete.com/app/api/controller/aliPay.php
-
-// 支付方法
+var PAYSERVER='http://Aaron.lan:7200/api/alipay/payment'
+// 支付方法 
 function payfun(id){
 	var varpay;
 	var dataJson;
@@ -227,35 +212,36 @@ function payfun(id){
 	function gopay(){
 	alert("3 "+id)
 	// 请求支付订单
-	 var oldtoken = plus.storage.getItem('oldToken');
-	mui.ajax(PAYSERVER,{ 
-//		data:dataJson,
-//		dataType:'json',//服务器返回json格式数据
-//		type:'post',//HTTP请求类型
+	var oldtoken = plus.storage.getItem('oldToken');
+	mui.ajax(PAYSERVER,{  
 		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
 		success:function(data){
-			plus.nativeUI.closeWaiting()  
-//			var data = data.data;
-			alert('后台返回'+data)
-			var data = data.replace(/\%22/g, '"'); 
+			plus.nativeUI.closeWaiting() 
+			var data = data.data; 
+//			alert(data)
+//			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
+//          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&').replace(/":/g, '="'); 
+            alert(data)
+			console.log(data)
 			console.log("----- 请求订单成功 -----"); 
-			var varpay;
-			if(id == 'wxpay'){
-//			 
+				plus.nativeUI.showWaiting();
+			var varpay; 
+			if(id == 'wxpay'){ 
 			}else{ 
 				//支付宝
 				varpay = data;
 				console.log('支付宝',varpay);
+					plus.nativeUI.closeWaiting()
 				plus.payment.request(pays[id],varpay,function(result){
-					outLine("----- 支付成功 -----");
+					console.log("----- 支付成功 -----"+JSON.stringify(result));
 					var aa = JSON.parse(result.rawdata);
 					var outorderinfo = queryStr(aa.result).out_trade_no;
 					outorderinfo = outorderinfo.replace(/\"/g, "");
 					var sendData;
-					console.log(outorderinfo);
+					console.log("outorderinfo  "+outorderinfo);
 				 
-						sendData = {"dis":"AlipayOk","orderid":orderid,"outorderinfo":outorderinfo,"trade_no":""};
+					//sendData = {"dis":"AlipayOk","orderid":orderid,"outorderinfo":outorderinfo,"trade_no":""};
 					 
 					//修改状态
 //					mui.ajax('http://www.ban9wan.com/API/API_Pay',{
@@ -295,8 +281,8 @@ function payfun(id){
 //						}
 //					});
 				},function(e){
-					outLine("----- 支付失败 -----");
-					outLine("["+e.code+"]："+e.message);
+					console.log("----- 支付失败 -----");
+					console.log("["+e.code+"]："+e.message);
 //					console.log("["+e.code+"]："+e.message);
 					plus.nativeUI.closeWaiting();
 					plus.nativeUI.alert("支付失败");
@@ -317,6 +303,15 @@ function payfun(id){
 	
 	
 	
+}
+
+function queryStr(str) {
+    var r = str.slice(1).split("&"),
+        e = {};
+    return r.forEach(function(r) {
+        var t;
+        r && (t = r.split("="), 2 === t.length && (e[t[0]] = t[1]))
+    }), e
 }
 </script>
 </html>

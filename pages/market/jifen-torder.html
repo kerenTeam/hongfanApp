@@ -199,20 +199,20 @@
 				line-height: 16px;
 			}
 			
-			.tipsWrap {
+			.tipsWrap,.ztWrap {
 				padding: 0 0.15rem !important;
 			}
 			
-			.tipsWrap input {
+			.tipsWrap input,.ztWrap input {
 				padding: 0 !important;
 			}
 			
-			.tipsWrap h6 {
+			.tipsWrap h6,.ztWrap h6 {
 				line-height: 40px;
 				margin-right: 0;
 			}
 			
-			.tipsWrap h6 .goods {
+			.tipsWrap h6 .goods,.ztWrap h6 .goods {
 				padding-left: 0;
 			}
 			
@@ -404,19 +404,20 @@
 							<%}%>
 							<%}%>
 							 
-								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
-									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">配送方式：</h6>
+								<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
+									<input type="hidden" class="isziti" value="0"/>
+									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提：</h6>
 									<div class="clearfloat fr mui-col-sm-4 mui-col-xs-4 goods">
 	 
-										<div class="mui-input-row mui-radio mui-left">
-											<label>到店自提</label>
-											<input name="radio1" type="radio">
+										<div class="mui-input-row mui-radio mui-left ddRadio">
+											<label>是</label>
+											<input name="radio<%=i%>" value="0" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" type="radio">
 										</div>
 									</div>
 									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
-										 <div class="mui-input-row mui-radio mui-left">
-											<label>卖家配送</label>
-											<input name="radio1" type="radio" checked="checked">
+										 <div class="mui-input-row mui-radio mui-left ddRadio">
+											<label>否</label>
+											<input name="radio<%=i%>" value="1" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" type="radio" checked="checked">
 										</div>
 									</div>
 								</dd>
@@ -602,7 +603,30 @@
 						var html = template('orderData', data);
 						document.getElementById('orderTpl').innerHTML = html;
 					 
- 
+ 				//自提 or 配送  更新 邮费 和 分组价格 和 总价 
+				        $("dd .ddRadio").each(function(){  
+				        	$(this).find("input[type='radio']").click(function(){  
+				        			var isZt = $(this).val();
+					        		var dataPostfee= parseFloat($(this).attr("data-postfee")); 
+					        		if(isZt == 0){   
+					        			if($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val() == 0){
+					        				
+					        			 
+					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(1)
+					        			} 
+					        		//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
+					        		}
+					        		if(isZt == 1){   
+					        			if($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val() == 1){ 
+					        				 
+					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
+					        			}
+					        			//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
+					        		} 
+					        	  
+				        		
+				        	})
+				        })
 		 
 				window.goPay=function(){ 
 					if($("#addid").length!=0){
@@ -629,8 +653,27 @@
 									if(orderSubmitData[i].goodsData[0].diffrentiate == 2){ 
 											orderSubmitData[i].order_type = 4; 
 									}
-									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
 									 
+									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
+									 if(orderSubmitData[i].storeid == 0 ){
+											orderSubmitData[i].isBySelf = 0;
+										}else{
+											 var isBySelfDIV = document.getElementsByClassName("ztWrap");
+											 for(var m=0;m<isBySelfDIV.length;m++){
+											 	var thisShopID = isBySelfDIV[m].getAttribute("data-id");
+											 	if(orderSubmitData[i].storeid == thisShopID){
+											 		var isBySelf = isBySelfDIV[m].getElementsByClassName("isziti")[0].value; 
+//											 		alert(isBySelf)
+											 		if(isBySelf == 0){
+											 			orderSubmitData[i].isBySelf = 0;
+											 		}else{
+											 			orderSubmitData[i].isBySelf = 1;
+											 			orderSubmitData[i].postFee = 0;
+											 		}
+											 	}
+											 }
+										}
+									
 										orderSubmitData[i].notice = notice;
 									}
 								}
