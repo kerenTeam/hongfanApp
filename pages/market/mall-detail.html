@@ -360,155 +360,150 @@
 		<div class="goBack">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		</div>
-		<div id="container">		
-			<div id="main">		
-				<div class="warp warptwo clearfloat">
-					<div class="detail clearfloat">
-						<div id="moll_info"></div>
-							
-						<script type="text/html" id="infoTpl">
-							<!--轮播图-->
-							<div class="mui-slider">
-								  <div class="mui-slider-group mui-slider-loop">
-								    <!--支持循环，需要重复图片节点-->
-								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<%if(infoData[infoData.length-1].bannerPic){%>
-								    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
-								    		<%}else{%>
-								    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
-								    			<%} %>
-								    	
-								    </div>
-								    <% for(var i=0;i<infoData.length;i++){ %>
-								    <div class="mui-slider-item">
-								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
-								    	</a>
-								    </div>
-								    	<% } %>
-								    <!--支持循环，需要重复图片节点-->
-								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
-								    	</a>
-								    </div>
-								  </div>
-							</div>
-							<!--轮播图结束-->
-						</script>
-						
-						<div id="gdBrief"></div>
-						
-						<script type="text/html" id="briefTpl">
-							<div class="top clearfloat box-s">
-								<div class="shang clearfloat">
-									<div class="zuo clearfloat fl">
-										<%=brief.title%>
-									</div>
-									<div class="you clearfloat fr">
-										<ul>
-											<li>
-											 	<a onclick="goShop()">
-													<i class="iconfont icon-shangcheng"></i>
-													<p>商家</p>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<div class="xia clearfloat">
-									<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
-								</div>
-								<div class="xia">
-									 <div class="mui-row">
-								        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
-								        	<%if(!brief.postage){%>
-								           		<p class="box-s">快递：免邮</p>
-								            <%}else{%>
-								             <p class="box-s">快递：<%=brief.postage%>元</p>
-								            <%}%>
-								        </div>
-								        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-								            <p class="box-s">销量：<%=brief.sales%>笔</p>
-								        </div>
-								        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
-								            <p class="box-s">重庆</p> 
-								        </div>
-								  	</div>
-								</div>
-								<div class="farmtc" id="disPay" style="display: none;">
-									<p class="bt" style="color: #f39826;padding-left: 10px;">该商品只做展示，暂不支持线上购买</p>
-								</div>
-								
-							</div>
-							<div class="farmtc clearfloat mt10">
-								<p class="bt box-s">商品详情</p>
-							</div>
-							<div class="farm clearfloat">
-								<div class="top rentingtop clearfloat box-s">
-									<div id="textInfo"></div>
-									 
-								</div>					
-							</div>
-							
-						</script>
-						
-						
-						
-						
-						
-						<div id="moll_comment"></div>
-						<script type="text/html" id="commentTpl">
-							<div class="farmtc clearfloat mt10">
-								<p class="bt box-s">商品评价</p>
-							</div>
-							<ul class="farm clearfloat Cul">
-								<%if(cemmentData.length==0){%>
-									<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无评论</div>
-										<%}else{%>
-											<%for(var i=0;i<cemmentData.length;i++){%>
-											<li class="mui-row Cli">
-												<div class="mui-col-sm-2 mui-col-xs-2 user-head">
-													<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
-											    		<img src="../../img/10.png" class="radius comtPic" alt="" />
-											    	<%}else{%> 
-														<img src="<%=myUrl%><%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
-													<%}%>
-												</div>
-												<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
-							                        <div class="am-comment-author left">
-							                        	<p><b class="black"><%=cemmentData[i].nickname%></b></p>
-							                        </div>
-							                        <time class="text-sm right gray">
-							                            <%=cemmentData[i].seller_ctime%>
-							                        </time>
-							                        <div class="clear"></div>
-							                        <div class="commentStar">
-								                   		<%for(var j = 0;j<cemmentData[i].grade_star;j++){%>
-								                   			<img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
-								                   			<%}%><small style="color: red;"><%=cemmentData[i].grade_star%>分</small>
-								                   	</div>
-								                   	<div class="comment"><%=cemmentData[i].seller_comment%></div>
-								                   	<div class="clear"></div>
-								                   	
-							                        <div class="clear"></div>
-								                    <div class="padding-h-xs mui-row">
-													<%if(cemmentData[i].comment_pic.length!=0){%>
-								                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
-								                    	<div class="inlineBlock mui-col-sm-3 mui-col-xs-3" style="display:inline-block;height: 0.5rem;overflow:hidden;">
-								                    	<img src="<%=myUrl%><%=cemmentData[i].comment_pic[j].picImg%>" style="width: 100%;overflow: hidden;height: 0.5rem" data-preview-src="" data-preview-group="<%=i+1%>" />
-								                    	</div>
-								                    	<%}%>	 
-								                    <%}%>
-							                    </div>
-											</div>
-										</li> 
-									<%}%>
-								<%}%> 
-							</ul>
-						</script>
+		<div class="warp warptwo clearfloat" style="padding-bottom: 50px;">
+			<div class="detail clearfloat">
+				<div id="moll_info"></div>
+				<script type="text/html" id="infoTpl">
+					<!--轮播图-->
+					<div class="mui-slider">
+						  <div class="mui-slider-group mui-slider-loop">
+						    <!--支持循环，需要重复图片节点-->
+						    <div class="mui-slider-item mui-slider-item-duplicate">
+						    	<%if(infoData[infoData.length-1].bannerPic){%>
+						    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+						    		<%}else{%>
+						    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
+						    			<%} %>
+						    	
+						    </div>
+						    <% for(var i=0;i<infoData.length;i++){ %>
+						    <div class="mui-slider-item">
+						    	<a>
+						    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
+						    	</a>
+						    </div>
+						    	<% } %>
+						    <!--支持循环，需要重复图片节点-->
+						    <div class="mui-slider-item mui-slider-item-duplicate">
+						    	<a>
+						    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
+						    	</a>
+						    </div>
+						  </div>
 					</div>
-				</div>
+					<!--轮播图结束-->
+				</script>
+				
+				<div id="gdBrief"></div>
+				
+				<script type="text/html" id="briefTpl">
+					<div class="top clearfloat box-s">
+						<div class="shang clearfloat">
+							<div class="zuo clearfloat fl">
+								<%=brief.title%>
+							</div>
+							<div class="you clearfloat fr">
+								<ul>
+									<li>
+									 	<a onclick="goShop()">
+											<i class="iconfont icon-shangcheng"></i>
+											<p>商家</p>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="xia clearfloat">
+							<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
+						</div>
+						<div class="xia">
+							 <div class="mui-row">
+						        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
+						        	<%if(!brief.postage){%>
+						           		<p class="box-s">快递：免邮</p>
+						            <%}else{%>
+						             <p class="box-s">快递：<%=brief.postage%>元</p>
+						            <%}%>
+						        </div>
+						        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
+						            <p class="box-s">销量：<%=brief.sales%>笔</p>
+						        </div>
+						        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
+						            <p class="box-s">重庆</p> 
+						        </div>
+						  	</div>
+						</div>
+						<div class="farmtc" id="disPay" style="display: none;">
+							<p class="bt" style="color: #f39826;padding-left: 10px;">该商品只做展示，暂不支持线上购买</p>
+						</div>
+						
+					</div>
+					<div class="farmtc clearfloat mt10">
+						<p class="bt box-s">商品详情</p>
+					</div>
+					<div class="farm clearfloat">
+						<div class="top rentingtop clearfloat box-s">
+							<div id="textInfo"></div>
+							 
+						</div>					
+					</div>
+					
+				</script>
+				
+				
+				
+				
+				
+				<div id="moll_comment"></div>
+				<script type="text/html" id="commentTpl">
+					<div class="farmtc clearfloat mt10">
+						<p class="bt box-s">商品评价</p>
+					</div>
+					<ul class="farm clearfloat Cul">
+						<%if(cemmentData.length==0){%>
+							<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无评论</div>
+								<%}else{%>
+									<%for(var i=0;i<cemmentData.length;i++){%>
+									<li class="mui-row Cli">
+										<div class="mui-col-sm-2 mui-col-xs-2 user-head">
+											<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
+									    		<img src="../../img/10.png" class="radius comtPic" alt="" />
+									    	<%}else{%> 
+												<img src="<%=myUrl%><%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
+											<%}%>
+										</div>
+										<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
+					                        <div class="am-comment-author left">
+					                        	<p><b class="black"><%=cemmentData[i].nickname%></b></p>
+					                        </div>
+					                        <time class="text-sm right gray">
+					                            <%=cemmentData[i].seller_ctime%>
+					                        </time>
+					                        <div class="clear"></div>
+					                        <div class="commentStar">
+						                   		<%for(var j = 0;j<cemmentData[i].grade_star;j++){%>
+						                   			<img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
+						                   			<%}%><small style="color: red;"><%=cemmentData[i].grade_star%>分</small>
+						                   	</div>
+						                   	<div class="comment"><%=cemmentData[i].seller_comment%></div>
+						                   	<div class="clear"></div>
+						                   	
+					                        <div class="clear"></div>
+						                    <div class="padding-h-xs mui-row">
+											<%if(cemmentData[i].comment_pic.length!=0){%>
+						                    	<%for(var j=0;j<cemmentData[i].comment_pic.length;j++){%>
+						                    	<div class="inlineBlock mui-col-sm-3 mui-col-xs-3" style="display:inline-block;height: 0.5rem;overflow:hidden;">
+						                    	<img src="<%=myUrl%><%=cemmentData[i].comment_pic[j].picImg%>" style="width: 100%;overflow: hidden;height: 0.5rem" data-preview-src="" data-preview-group="<%=i+1%>" />
+						                    	</div>
+						                    	<%}%>	 
+						                    <%}%>
+					                    </div>
+									</div>
+								</li> 
+							<%}%>
+						<%}%> 
+					</ul>
+				</script>
 			</div>
 		</div>
 		<!--footerone star-->
