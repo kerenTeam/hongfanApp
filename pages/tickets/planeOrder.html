@@ -333,7 +333,7 @@
 							<p class="black">手机号码 </p>
 				       	</div>
 				        <div class="mui-col-sm-9 mui-col-xs-9">
-				        	<input type="text" name="" id="contactPhone" value="" class="phone" placeholder="用于接收短信(必填)"/>
+				        	<input type="text" name="" id="contactPhone" value="" class="phone" placeholder="用于接收短信(必填)" style="font-family: '微软雅黑';"/>
 				        </div>
 					</a>
 				</dd>
@@ -513,13 +513,14 @@
 						timeout:15000,
 						headers:{"token":oldToken},
 						success:function(data,type,xhr){
-							alert(JSON.stringify(data.data.body.air_order_create_response.ticketTrade.tradeNo));
 							plus.nativeUI.closeWaiting();//关闭等待框
 							if(data.data.body.air_order_create_response.ticketTrade || !data.data.body.air_order_create_response.ticketTrade ==''){
 								var planeOrder = data.data.body.air_order_create_response.ticketTrade.tradeNo;
+								Orderidfanhui1 = data.data.new_qianmi_order_id;
 								openview({
 									view:'planeRecordDetail.html',
-									extrasobj:{tradeNo:planeOrder}
+									id:'planeRecordDetail',
+									extrasobj:{tradeNo:planeOrder,Orderidfanhui:Orderidfanhui1}
 								})
 							}else{
 								mui.toast("提交订单失败！");
@@ -543,12 +544,10 @@
 					$(thisP).parents('.aPerson').remove();
 					//重新计算人数和价格
 					var acountP = $('.aPerson').length;
-//					alert(acountP);
 					if(acountP==0){
 						$('#subPerson').html(0);
 						$('#subPrice').html(0.00);
 					}else{
-//						alert(settlePrice);
 						$('#subPerson').html(acountP);
 						var newPrice = settlePrice*acountP;//总价计算
 						$('#subPrice').html(newPrice.toFixed(2));

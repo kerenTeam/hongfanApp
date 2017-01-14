@@ -93,7 +93,6 @@
 			<div id="main">
 				<div style="background-color: white;" id="Alist"></div>
 				</div>
-				
 				<!--渲染数据-->
 				<script type="text/html" id="Alist-detail">
 					<% for(var i = 0;i<objData.length;i++){ %>
@@ -103,7 +102,7 @@
 								 	<% if(!objData[i].picImg || objData[i].picImg == ''){ %>
 										<img src="../../img/market/nodata.svg" class="goodsImg">
 									<% }else{ %>
-										<img src="<%= myUrl %><%= objData[i].picImg %>" alt="" />
+										<img src="<%= myUrl %><%= objData[i].logo %>" alt="" />
 									<% } %>
 								 </div>
 								 <div class="fl acright">
@@ -133,8 +132,7 @@
 			//铺数据
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
-			console.log(oldToken);
-			
+//			console.log(oldToken);
 			mui.ajax(serverUrl+'/api/index/couponoractivity',{
 				data:{type:2},
 				dataType:'json',
@@ -154,11 +152,10 @@
 					plus.nativeUI.closeWaiting();
 				},
 				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
 					alert('响应失败  !');
 				}
 			});
-			
-			
 		});
 	</script>
 </html>

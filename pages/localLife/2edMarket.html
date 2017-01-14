@@ -15,30 +15,6 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		
 		<style type="text/css">
-			.mui-bar{
-				height: 50px;
-			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
-			}
-			.mui-bar .mui-icon{
-				padding: 0;
-			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
-			}
-			.mui-bar-nav{
-				box-shadow: none;
-			}
-			.mui-icon{
-				line-height: 50px;
-			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
-			}
-			.dealcard, .cinemacard{
-				margin-top: 45px;
-			}
 			.dealcard .dealcard-img img{
 				height: 60px;
 				overflow: hidden; 
@@ -46,7 +22,6 @@
 		 	.shoucang .iconfont{
 				font-size: 18px;
 			}
-			
 			.dealcard .title, .dealcard .price{
 				margin-top: 20px;
 				font-size: 12px;
@@ -54,12 +29,6 @@
 			.coupon p{
 				margin: 10px 0 3px;
 				
-			}
-			sub{
-				bottom: 0;
-			}
-			#main{
-				padding-bottom: 30px;
 			}
 			#thePlus{
 				position: fixed;
@@ -72,11 +41,6 @@
 				color: #fff;
 				border-radius: 50%;
 				box-shadow: 0 0 10px #555;
-			}
-			#upload{ 
-				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
-			}
-			#upload img{width: 60px;margin-top: -10px;
 			}
 			.branddiv{display: -webkit-box;
 				-webkit-box-orient: vertical;
@@ -100,7 +64,6 @@
 				-webkit-transform: scaleY(.5);
 			}
 			.dealcard dd a{padding-bottom: 13px;}
-			.dealcard{margin-top: 36px;}
 			div.screening>ul{border: none;}
 			div.screening>ul>li{border-left: solid 1px rgba(0,0,0,0.1);}
 			.dealcard .coupon{border: none;}
@@ -164,21 +127,6 @@
 			<div id="main">
 				<section class="dealcard-waimai">
 					<dl class="dealcard" id="infolistdiv">
-						<!--<dd class="page-link">
-							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="../../img/theList/2edmarket.jpg" alt=""> </div>
-								<div class="dealcard-block-right">
-									<div class="brand">九成新手机</div>
-									<div class="title ">
-										真机实拍/180天质保/顺丰包邮
-									</div>
-									<div class="coupon ">
-										<p><sub>￥</sub>2000<sub>起</sub></p>
-										<span>已售19</span>
-									</div>
-								</div>
-							</a>
-						</dd>-->
 					</dl>
 					<script type="text/html" id="infolist">
 						<% for(var i=0; i<list.length; i++){%>
@@ -187,16 +135,15 @@
 									<div class="dealcard-img imgbox"> <img src="<%= list[i].list_pic%>" alt=""> </div>
 									<div class="dealcard-block-right">
 										<div class="brand branddiv"><%= list[i].title%></div>
-										<div class="title ">
+										<div class="title " style="padding-top: 5px;">
 											地址:<%= list[i].address%>
-												<% if(list[i].isbusiness == 1){%> 
-													<b class="typespan" id="">商家 </b>
-												<% }else{%>
-													<b class="typespan" id="">个人</b>
-												<% }%>	
-
+											<% if(list[i].isbusiness == 1){%> 
+												<b class="typespan">商家 </b>
+											<% }else{%>
+												<b class="typespan">个人</b>
+											<% }%>	
 										</div>
-										<div class="coupon ">
+										<div class="coupon" style="padding-top: 5px;">
 											<p>
 												电话: <%= list[i].phone%>
 											</p>
@@ -209,7 +156,7 @@
 					</script>
 				</section>
 				<div class="upload text-center text-xs gray" id="upload"></div>
-				<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+				<div id="nulldiv" style="text-align:center;font-size: 14px;color: #999;display: none;">
 					<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 					<br />
 					没有相关信息
@@ -282,48 +229,48 @@
 					　　var scrollHeight = $(document).height();
 					　　var windowHeight = $(this).height();
 					　　if(scrollTop + windowHeight == scrollHeight){
-						if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
-							mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-							Ypagenum++;//满足加载情况,应到页数+1
-							console.log('发起请求,实到'+Spagenum+'页');									
-							console.log('发起请求,应到'+Ypagenum+'页');
-							mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-								data:{currentPage:Spagenum,
-									numsPerPage:gin2,
-									type:gin3,
-									price_Starting:gin4,
-									price_point:gin44,
-									is_business:gin5,
-									orderType:gin6}, 
-								dataType:'json',//服务器返回json格式数据
-								type:'post',//HTTP请求类型 
-								timeout:10000,//超时时间设置为10秒；	
-								headers:{"token":oldtoken}, 
-								success:function(data){
-									if(data.errno == 0){
-										var dataobj = {};
-										mui.each(data.data.data,function (index,ele) {
-											data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
-										})
-										dataobj.list = data.data.data; 
-										//获取并渲染用户信息
-										var html=template("infolist",dataobj);
-										document.getElementById("infolistdiv").innerHTML += html;
+							if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+								Ypagenum++;//满足加载情况,应到页数+1
+								console.log('发起请求,实到'+Spagenum+'页');									
+								console.log('发起请求,应到'+Ypagenum+'页');
+								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+									data:{currentPage:Spagenum,
+										numsPerPage:gin2,
+										type:gin3,
+										price_Starting:gin4,
+										price_point:gin44,
+										is_business:gin5,
+										orderType:gin6}, 
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型 
+									timeout:10000,//超时时间设置为10秒；	
+									headers:{"token":oldtoken}, 
+									success:function(data){
+										if(data.errno == 0){
+											var dataobj = {};
+											mui.each(data.data.data,function (index,ele) {
+												data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
+											})
+											dataobj.list = data.data.data; 
+											//获取并渲染用户信息
+											var html=template("infolist",dataobj);
+											document.getElementById("infolistdiv").innerHTML += html;
+										}
+										mui("#upload")[0].innerHTML = " ";
+										Spagenum++;//加载成功,当前页+1
+										console.log('成功+1,实到'+Spagenum);
+										console.log('成功+1,应到'+Spagenum);
+									},
+									error:function(xhr,type,errorThrown){
+										Ypagenum--;//失败是应到-1
+										mui.toast("当前网络不好请重试");
+										mui("#upload")[0].innerHTML = "";
 									}
-									mui("#upload")[0].innerHTML = " ";
-									Spagenum++;//加载成功,当前页+1
-									console.log('成功+1,实到'+Spagenum);
-									console.log('成功+1,应到'+Spagenum);
-								},
-								error:function(xhr,type,errorThrown){
-									Ypagenum--;//失败是应到-1
-									mui.toast("当前网络不好请重试");
-									mui("#upload")[0].innerHTML = "";
-								}
-							});
-						}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
-							mui("#upload")[0].innerHTML = "到底了";
-						}
+								});
+							}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "到底了";
+							}
 				　　         }
 					});//加载下一部分结束
 				}else{

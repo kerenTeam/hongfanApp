@@ -260,6 +260,7 @@
 			}
 			#zhuangtai{font-size: 16px;font-weight: normal;}
 			#daoda{font-size: 14px;font-weight: normal;color: #555555;}
+			.hasManyCitytwo .header-tit{left: 45%;}
 		</style>
 	</head>
 	<body>
@@ -323,38 +324,37 @@
 			<dl class="list">
 				<dd>
 					<div class="orderbh box-s">
-						<span class="black">乘客（1人）</span>
+						<span class="black chengkerenshu">乘客（人）</span>
 						<span class="fr">
 							<div class="pricetwo">
-								<p class="black big">¥500</p>
+								<p class="black big zongjia"></p>
 							</div>	
 						</span>
 					</div>
-					<a class="react mui-row react2" id="infolistdiv"></a>
+					<div id="infolistdiv"></div>
 					<script type="text/html" id="infolist">
-						<% for(var i=0; i<list.length; i++){%>
-							<div class="mui-col-sm-9 mui-col-xs-9">
-								<p class="black big"><%= list[i].passengerName%><sub class="gray"></sub></p>
-							</div>
-							<div class="mui-col-sm-3 mui-col-xs-3">
-								<div class="fr">
-									<p class="black"><%= list[i].seatName%></p>
-								</div>	
-							</div>
-							<div class="mui-col-sm-9 mui-col-xs-9">
-								<p class="black big"><%= list[i].idcardNo%></p>
-							</div>
-							<div class="mui-col-sm-3 mui-col-xs-3">
-								<div class="fr">
-									<p class="black">￥<%= list[i].facePrice%></p>
-								</div>	
-							</div>
-							<div class="mui-col-sm-9 mui-col-xs-9">
-								<p class="black big"><%= list[i].seatInfo%></p>
-							</div>
-							<div class="mui-col-sm-3 mui-col-xs-3">
-								
-							</div>	
+						<% for(var i=0; i<list.length; i++){%> 
+							<a class="react mui-row react2" id="">
+								<div class="mui-col-sm-9 mui-col-xs-9">
+									<p class="black big"><%= list[i].passengerName%><sub class="gray"></sub></p>
+								</div>
+								<div class="mui-col-sm-3 mui-col-xs-3">
+									<div class="fr">
+										<p class="black"><%= list[i].seatName%></p>
+									</div>	
+								</div>
+								<div class="mui-col-sm-9 mui-col-xs-9">
+									<p class="black big"><%= list[i].idcardNo%></p>
+								</div>
+								<div class="mui-col-sm-3 mui-col-xs-3">
+									<div class="fr">
+										<p class="black">￥<%= list[i].facePrice%></p>
+									</div>	
+								</div>
+								<div class="mui-col-sm-9 mui-col-xs-9">
+									<p class="black big"><%= list[i].seatInfo%></p>
+								</div>
+							</a>
 						<% }%>	
 					</script>
 				</dd>
@@ -405,12 +405,15 @@
 	<script type="text/javascript">
 		
 		mui.plusReady(function(){
-			var Orderid = 0;
+			var Orderid = 0,Totalnum = 0,suborderstr = '',Orderidfanhui1 = '';
+			var Orderidfanhui1 =  plus.webview.currentWebview().Orderidfanhui;
+			var body1,total_fee1;//支付所需参数
 			var TorderD = plus.webview.currentWebview().Tordernum;
 			var oldToken = plus.storage.getItem('oldToken');
+			
 			var loadfun = function(){
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-				mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取保险信息
+				mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取详情
 					data:{tradeNo:TorderD},
 					type:'post',
 					timeout:10000,
@@ -425,10 +428,33 @@
 							mui('#daoda')[0].innerHTML = "( " + Tdatail.startStation +" - " +Tdatail.recevieStation + " )";
 							mui('#Tshouji')[0].innerHTML = Tdatail.contactTel;
 							mui('#Tdindan')[0].innerHTML = Orderid = Tdatail.tradeNo;
-							if(Tdatail.stateName.indexOf('预定')>-1){//显示按钮
+							mui('.zongjia')[0].innerHTML = '￥'+Tdatail.totalPayCash;
+							Totalnum = Tdatail.totalSalePrice;
+							mui('.chengkerenshu')[0].innerHTML = '乘客（'+Tdatail.ticketOrders.ticketOrder.length+'人）';
+							//显示按钮
+							if(Tdatail.stateName.indexOf('预定')>-1){
 								mui('#zhifu')[0].style.display = 'inline-block';
 								mui('#quxiao')[0].style.display = 'inline-block';
+							}else if(Tdatail.stateName.indexOf('完成')>-1){
+								mui('#tuipiao')[0].style.display = 'inline-block';
 							}
+							//退票子订单
+							var suborder = Tdatail.ticketOrders.ticketOrder;
+							mui.each(suborder,function (index,element) {
+								if(index == 0){
+									suborderstr = element.orderNo;
+									if(element.stateName == '已退款'){
+										mui('#tuipiao')[0].style.display = 'none';
+										mui('#zhuangtai')[0].innerText =  '已退款';
+									}
+								}else{
+									suborderstr += ','+element.orderNo;
+								}
+							})
+							//支付参数赋值
+							body1 = Tdatail.title;
+							total_fee1 = Tdatail.totalPayCash;
+							
 							var dataobj = {};
 							dataobj.list = Tdatail.ticketOrders.ticketOrder; 
 							var html=template("infolist",dataobj);
@@ -445,18 +471,47 @@
 				});
 			};
 			loadfun();//加载方法
+			document.addEventListener('refresh', function() {
+				loadfun();//加载方法
+			});
+			
 			window.tuipiaofun = function(){//点击申请退票
-				alert('退票');
-				alert(Orderid);
+				plus.nativeUI.showWaiting('退票中 ...',{width:'100px',height:'80px'});
+				mui.ajax(serverUrl+'/api/qianmi/trainorderrefund',{
+					data:{orderNos:suborderstr},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	              				
+					success:function(data){
+						console.log('退票',data);
+						if(data.errno == 0){ 
+							if(data.data.train_order_refund_response.result == 1){
+								mui.fire(plus.webview.getWebviewById('TPRecord'),'refresh',{type:'train'});
+								var timequxiao = setTimeout(function(){
+									plus.webview.currentWebview().close();
+								},500)
+								mui.toast('退票成功');
+							}else{ 
+								plus.nativeUI.closeWaiting();
+								mui.toast('取消失败,请重试');
+							}
+						}else{
+							plus.nativeUI.closeWaiting();
+							mui.toast('取消失败,请重试');
+						}
+					},
+					error:function(xhr,type,errorThrown){ 
+						plus.nativeUI.closeWaiting();
+						mui.toast('取消失败,请重试');
+					}
+				});
 			}
 			window.zhifufun = function(){//点击支付
-//				plus.nativeUI.showWaiting('支付中 ...',{width:'100px',height:'80px'});
 				openview({
-					view:"../market/paysecond.html",
-					id:"paysecond",
-//					extrasobj:{new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount}
+					view:"payTickets.html",
+					id:"payTickets",
+					extrasobj:{body:body1,total_fee:total_fee1,Orderidnum:Orderid,Orderidfanhui:Orderidfanhui1}
 				})
-				
 			}
 			window.quxiaofun = function(){//点击取消
 				plus.nativeUI.showWaiting('取消中 ...',{width:'100px',height:'80px'});
