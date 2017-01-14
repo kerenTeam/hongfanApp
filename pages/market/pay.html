@@ -41,7 +41,7 @@
 						<img src="../../img/market/waitPay.svg" style="width: 5rem;display: block;text-align:center;margin:auto;vertical-align: middle;margin-bottom: 1rem;" alt="" />总计 :￥<span id="payMoney"></span>
 					</div> 
 					<div class="allmoney" style="font-size: 12px;padding-left: 10px;"> 
-						订单号 :<span id="orderId" style="display: inline-block;word-break: break-all;"></span>
+						订单号 :<span id="orderIdd" style="display: inline-block;word-break: break-all;"></span>
 					</div>
 				</div>
 				<div class="zhifulist">
@@ -62,9 +62,7 @@
 							<p>推荐有支付宝账户的用户使用</p>
 						</li>
 					</ul>
-				</div>
-				
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">货到付款</button>
+				</div> 
 			</div>
 		</div>
 	</body>
@@ -72,17 +70,18 @@
 <!--<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>-->
 <script type="text/javascript">
 var pays={}; 
-var serverUrl='http://Aaron.lan:7200';
+//var serverUrl='http://Aaron.lan:7200';
 mui.plusReady(function() { 
  
 	//获取缓存
 	var myuserid = plus.storage.getItem('userid'); 
-
-	var orderId = plus.webview.currentWebview().order_id;
+	var orderId = plus.webview.currentWebview().uuid; 
+	
 	console.log(orderId)
 	var payMent = plus.webview.currentWebview().payMent;
+	alert(payMent+" "+ orderId)
 	document.getElementById('payMoney').innerHTML = payMent;
-	document.getElementById('orderId').innerHTML = orderId;
+	document.getElementById('orderIdd').innerHTML = orderId;
 	
 	
 	
@@ -159,24 +158,18 @@ mui.plusReady(function() {
 });
 
 var w=null;
-//var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php';
-//http://hiji.hifete.com/app/api/controller/aliPay.php
+//var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php'; 
 var PAYSERVER='http://Aaron.lan:7200/api/alipay/payment'
 // 支付方法 
 function payfun(id){
 	var varpay;
 	var dataJson;
 	
-	if(id=='alipay'||id=='wxpay'){//调用支付功能
-		alert("1  "+id)
+	if(id=='alipay'||id=='wxpay'){
+		//调用支付功能
 		plus.nativeUI.showWaiting();
 		if(id == 'alipay'){ 
-			//获取后台返回数据
-			
-			//订单号
-			var orderId = plus.webview.currentWebview().order_id;
-			dataJson = {"dis":"AliPay","orderid":orderId};
-			alert("2 "+orderId)
+			//获取后台返回数据 
 				gopay();
 
 		}else if(id=='wxpay'){//微信
@@ -210,36 +203,51 @@ function payfun(id){
 	
 	
 	function gopay(){
-	alert("3 "+id)
 	// 请求支付订单
-	var oldtoken = plus.storage.getItem('oldToken');
-	mui.ajax(PAYSERVER,{  
+	var oldtoken = plus.storage.getItem('oldToken'); 
+   // var uuid = plus.webview.currentWebview().uuid;
+    var orderId = plus.webview.currentWebview().uuid; 
+	mui.ajax(PAYSERVER,{ 
+		data:{total_fee:'',subject:'HI集生活',body:'HI集生活',out_trade_no:orderId},
+		type:'post',//HTTP请求类型
 		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
 		success:function(data){
-			plus.nativeUI.closeWaiting() 
-			var data = data.data; 
+			plus.nativeUI.closeWaiting()
+			var data = data.data;
 //			alert(data)
 //			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
 //          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&').replace(/":/g, '="'); 
-            alert(data)
 			console.log(data)
 			console.log("----- 请求订单成功 -----"); 
 				plus.nativeUI.showWaiting();
 			var varpay; 
-			if(id == 'wxpay'){ 
+			if(id == 'wxpay'){  
 			}else{ 
 				//支付宝
 				varpay = data;
 				console.log('支付宝',varpay);
-					plus.nativeUI.closeWaiting()
+					plus.nativeUI.showWaiting()
 				plus.payment.request(pays[id],varpay,function(result){
+					plus.nativeUI.closeWaiting()
 					console.log("----- 支付成功 -----"+JSON.stringify(result));
-					var aa = JSON.parse(result.rawdata);
-					var outorderinfo = queryStr(aa.result).out_trade_no;
-					outorderinfo = outorderinfo.replace(/\"/g, "");
-					var sendData;
-					console.log("outorderinfo  "+outorderinfo);
+				 	 plus.nativeUI.alert("支付成功");
+				 	
+					
+				 	 //关闭 订单页  
+				 	 if(plus.webview.getWebviewById("market-order")){
+				 	 	plus.webview.getWebviewById("market-order").close(); 
+				 	 }
+				 	    
+					 	 setTimeout(function(){
+						 	openview({
+								view:"../personal/orderDetail.html",
+								id:"orderDetail",
+								extrasobj:{orderId:orderId}
+							}) 
+						 },1000)
+					
+					
 				 
 					//sendData = {"dis":"AlipayOk","orderid":orderid,"outorderinfo":outorderinfo,"trade_no":""};
 					 

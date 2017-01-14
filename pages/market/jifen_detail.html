@@ -490,7 +490,8 @@
 		<div class="footerone clearfloat">
 		 
 			<div class="right clearfloat fl" style="width:100%!important;"> 
-                <a onClick="toshare(2)" class="btn btnone fl" style="width:100%!important;">立即兑换</a>
+				 <a class="btn btnone fl cg1" style="width:100%!important;display: none;">立即兑换</a>
+                <a onClick="toshare(2)" class="btn btnone fl cg2" style="width:100%!important;">立即兑换</a>
 			</div>
 		</div>
 		<!--footerone end-->
@@ -545,11 +546,13 @@
 	</body>
 	<script src="../../js/app.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
-	<script src="../../js/mui.min.js"></script>
-	<script src="../../js/mui.zoom.js"></script>
-	<script src="../../js/mui.previewimage.js"></script>
+	<script src="../../js/mui.min.js"></script> 
 	<script type="text/javascript"> 
 		mui.plusReady(function(){ 
+			
+			
+			
+			
 			var shopId;
 			//获取token
 			var token=plus.storage.getItem("oldToken"); 
@@ -637,7 +640,44 @@
 								cemmentObj.cemmentData = commentobj; 
 								
 		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
-		                    	
+		                   
+		                   
+		                   
+		                   //获取积分
+			
+							mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+								data:{"userid":myuserid},
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldtoken},	              				
+								success:function(data,type,xhr){
+									var intergral=0;
+									console.log('获取用户数据返回'+JSON.stringify(data));
+									if(data.errno == 0){
+										   intergral = data.data[0].intergral;
+										  // alert(intergral)
+										   if(intergral==null){
+										   	intergral=0;
+										   }
+										  var priceChange =parseInt($("#priceChange").html());
+										  if(intergral<priceChange){
+										  	document.getElementsByClassName('.cg1')[0].style.display="block";
+										  	document.getElementsByClassName('.cg2')[0].style.display="none";
+										  }
+										 //document.getElementById("jf").innerHTML = intergral; 
+									}else{
+										mui.toast('获取用户信息失败');
+										console.log(data.errmsg);
+										
+									    plus.nativeUI.closeWaiting()
+									}
+								 
+								},
+								error:function(xhr,type,errorThrown){
+									alert('响应失败  !');
+								}
+							});
+		                   
 
 		                   // plus.storage.removeItem('$cartStorage');
 		                    //购物车 缓存
@@ -669,7 +709,7 @@
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
 		                    		cartObj.shopName=shopName;
-		                    		cartObj.storeid=storeid;
+		                    		cartObj.shopId=storeid;
 		                    		cartObj.goodsName=goodsName;
 		                    		cartObj.goodsImg=goodsImg;
 		                    		cartObj.diffrentiate=diffrentiate;
