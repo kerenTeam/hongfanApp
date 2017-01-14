@@ -100,7 +100,7 @@
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
 														<span></span>
-														<img src="<%=data.goods_data[0].goodsData[i].goodsImg%>"/>
+														<img src="<%=myUrl%><%=data.goods_data[0].goodsData[i].goodsImg%>"/>
 													</div>
 													<div class="dealcard-block-right">
 														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.goods_data[0].goodsData[i].goodsName%></span> <span class="fr">￥<b><%=data.goods_data[0].goodsData[i].goodsPrice%></b></span></div>
@@ -231,7 +231,9 @@
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
-			
+			if(plus.webview.getWebviewById("pay")){ 
+			   plus.webview.getWebviewById("pay").close();
+			}
 			window.addEventListener('refresh',function(event){
 				 
 				load();
@@ -257,6 +259,7 @@
 				       if(data.errno===0){
 					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
 					        var orderInfo = {};
+					        orderInfo.myUrl = serverimgUrl;
 					        orderInfo.data= data.data[0];
 					        console.log("orderInfo.data "+JSON.stringify(data.data[0]))
 					        document.getElementById("orderInfo").innerHTML = template("orderTpl",orderInfo);

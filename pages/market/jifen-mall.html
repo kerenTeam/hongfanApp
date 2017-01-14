@@ -155,7 +155,13 @@
 							<% } %>
 							<%}%>
 						</script>
+						<div class="clearfloat"></div>
 						<div class="upload text-center text-xs gray" id="upload"></div>
+						<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+							<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+							<br />
+							没有相关信息
+						</div>
 					</ul>
 					<div class="clear"></div>
 				</div>
@@ -199,7 +205,6 @@
 				timeout:10000,
 				headers:{"token":oldtoken},	              				
 				success:function(data,type,xhr){
-					plus.nativeUI.closeWaiting()
 					var intergral=0;
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
@@ -208,10 +213,12 @@
 						   if(intergral==null){
 						   	intergral=0;
 						   }
-						 document.getElementById("jf").innerHTML = intergral;
+						 document.getElementById("jf").innerHTML = intergral; 
 					}else{
 						mui.toast('获取用户信息失败');
 						console.log(data.errmsg);
+						
+					    plus.nativeUI.closeWaiting()
 					}
 				 
 				},
@@ -240,11 +247,8 @@
 							var html=template("goodsList-detail",objdata);
 							document.getElementById("goodsList").innerHTML=html;
 							mui("#upload")[0].innerHTML = "";
-						}else{	
-							mui("#upload")[0].innerHTML = ""; 
-							mui('#nulldiv')[0].style.display = 'block';
-						}
-						//滚动到底部加载
+							plus.nativeUI.closeWaiting();
+							//滚动到底部加载
 						$(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
@@ -286,6 +290,12 @@
 								//加载下一部分结束
 							　　}
 						});
+						 
+						}else{	
+							document.getElementById("#upload")[0].innerHTML = ""; 
+							document.getElementById('#nulldiv')[0].style.display = 'block';
+							plus.nativeUI.closeWaiting()
+						}
 						
 					}else{
 						mui.toast('没有数据');

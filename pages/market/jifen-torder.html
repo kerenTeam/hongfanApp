@@ -13,16 +13,9 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
-		<link rel="stylesheet" href="../../css/reset.css">
-		<!--<link href="../../css/mui.picker.min.css" rel="stylesheet" />
-		<link href="../../css/mui.poppicker.css" rel="stylesheet" />-->
+		<link rel="stylesheet" href="../../css/reset.css"> 
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
-		<!--<script type="text/javascript" src="../../js/swiper.min.js"></script>-->
-		<!--<script src="../../js/mui.picker.min.js"></script>
-		<script src="../../js/mui.poppicker.js"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		<style type="text/css">
 			.mui-bar {
 				height: 50px;
@@ -265,8 +258,7 @@
 			}
 			.mui-checkbox{
 				position: absolute;
-				top: 50%;
-				margin-top: -18px;
+				/*top: 50%;*/ 
 				right: 0;
 			}
 			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
@@ -315,17 +307,7 @@
 			.sf:after{
 				height: 0px!important;
 			}
-			.mui-radio.mui-left label {
-			    padding-right: 15px;
-			    padding-left: 46px;
-			    padding-top: 14px;
-			}
-			.mui-radio input[type=radio]:before{
-				font-size: 20px;
-			}
-			.mui-radio input[type=radio]{
-				top: 10px;
-			}
+		 
 		</style>
 	</head>
 
@@ -407,18 +389,8 @@
 								<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
 									<input type="hidden" class="isziti" value="0"/>
 									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提：</h6>
-									<div class="clearfloat fr mui-col-sm-4 mui-col-xs-4 goods">
-	 
-										<div class="mui-input-row mui-radio mui-left ddRadio">
-											<label>是</label>
-											<input name="radio<%=i%>" value="0" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" type="radio">
-										</div>
-									</div>
-									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
-										 <div class="mui-input-row mui-radio mui-left ddRadio">
-											<label>否</label>
-											<input name="radio<%=i%>" value="1" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" type="radio" checked="checked">
-										</div>
+									<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
+	 									<div class="mui-checkbox ddRadio"><input name="checkbox" class="groupCheck" type="checkbox"></div> 
 									</div>
 								</dd>
 							<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
@@ -605,25 +577,15 @@
 					 
  				//自提 or 配送  更新 邮费 和 分组价格 和 总价 
 				        $("dd .ddRadio").each(function(){  
-				        	$(this).find("input[type='radio']").click(function(){  
+				        	$(this).find("input[type='checkbox']").click(function(){  
 				        			var isZt = $(this).val();
-					        		var dataPostfee= parseFloat($(this).attr("data-postfee")); 
-					        		if(isZt == 0){   
-					        			if($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val() == 0){
-					        				
-					        			 
+					        		var dataPostfee= parseFloat($(this).attr("data-postfee"));  
+					        			if($(this).prop('checked')==true){  
 					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(1)
+					        			}else{ 
+					        				$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0)
 					        			} 
-					        		//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
-					        		}
-					        		if(isZt == 1){   
-					        			if($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val() == 1){ 
-					        				 
-					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
-					        			}
-					        			//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
-					        		} 
-					        	  
+					        		 
 				        		
 				        	})
 				        })
@@ -647,15 +609,16 @@
 							//买家留言
 							var noticeData=[];  
 							$(".tipsWrap").each(function(){
+								alert("tipsWrap "+$(this).attr("data-id"))
 								var notice = $(this).find("input").val();
 								for(var i=0;i<orderSubmitData.length;i++){
-									orderSubmitData[i].sendAddress = MYaddress;
-									if(orderSubmitData[i].goodsData[0].diffrentiate == 2){ 
-											orderSubmitData[i].order_type = 4; 
-									}
-									 
+									orderSubmitData[i].sendAddress = MYaddress; 
 									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
-									 if(orderSubmitData[i].storeid == 0 ){
+											if(orderSubmitData[i].goodsData[0].diffrentiate == 2){ 
+											orderSubmitData[i].order_type = 4; 
+									} 
+										alert($(this).attr("data-id")+"  "+orderSubmitData[i].storeid)
+									    if(orderSubmitData[i].storeid == 0 ){
 											orderSubmitData[i].isBySelf = 0;
 										}else{
 											 var isBySelfDIV = document.getElementsByClassName("ztWrap");
@@ -663,7 +626,7 @@
 											 	var thisShopID = isBySelfDIV[m].getAttribute("data-id");
 											 	if(orderSubmitData[i].storeid == thisShopID){
 											 		var isBySelf = isBySelfDIV[m].getElementsByClassName("isziti")[0].value; 
-//											 		alert(isBySelf)
+											 		alert("isBySelf "+isBySelf)
 											 		if(isBySelf == 0){
 											 			orderSubmitData[i].isBySelf = 0;
 											 		}else{
@@ -708,17 +671,15 @@
 									type:'post',
 									timeout:1000,
 									headers:{"token":oldtoken},	 
-									success:function(data,type,xhr){
-	//							  
-										var list = plus.webview.getWebviewById('cart.html'); 
-												mui.fire(list,'refresh'); 
+									success:function(data,type,xhr){ 
+									 
 										plus.nativeUI.closeWaiting(); 
 	//									alert(JSON.stringify(data))
 										if(data.errno==0){
 										//	alert(JSON.stringify(data.data))
 											var payMent = data.data.payment;
 											var order_id=  data.data.order_id; 
-											plus.webview.currentWebview().close();
+//											plus.webview.currentWebview().close();
 											openview({
 												view:"jifen-success.html",
 											 

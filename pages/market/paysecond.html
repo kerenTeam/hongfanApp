@@ -62,9 +62,7 @@
 							<p>推荐有支付宝账户的用户使用</p>
 						</li>
 					</ul>
-				</div>
-				
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">模拟支付</button>
+				</div> 
 			</div>
 		</div>
 	</body>
@@ -160,9 +158,8 @@ mui.plusReady(function() {
 });
 
 var w=null;
-var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php';
-//http://hiji.hifete.com/app/api/controller/aliPay.php
-//var PAYSERVER='http://Aaron.lan:7200/api/alipay/payment'
+//var PAYSERVER='http://hiji.hifete.com/app/api/controller/aliPay.php'; 
+var PAYSERVER='http://Aaron.lan:7200/api/alipay/payment'
 // 支付方法 
 function payfun(id){
 	var varpay;
@@ -222,11 +219,12 @@ function payfun(id){
 	var total_fee =  plus.webview.currentWebview().orderCost;
 	mui.ajax(PAYSERVER,{ 
 		data:{body:body,subject:'',total_fee:total_fee},
+		type:"post",
 		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
 		success:function(data){
 			plus.nativeUI.closeWaiting() 
-//			var data = data.data; 
+			var data = data.data; 
 	 
 //			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
 //          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&'); 
@@ -241,17 +239,12 @@ function payfun(id){
 				console.log('支付宝',varpay);
 					plus.nativeUI.closeWaiting()
 				plus.payment.request(pays[id],varpay,function(result){
-					console.log("----- 支付成功 -----"+JSON.stringify(result));
-					var aa = JSON.parse(result.rawdata);
-					var outorderinfo = queryStr(aa.result).out_trade_no;
-					outorderinfo = outorderinfo.replace(/\"/g, "");
-					var sendData;
-					console.log("outorderinfo  "+outorderinfo);
+					console.log("----- 支付成功 -----"+JSON.stringify(result)); 
+					
 					var myuserid = plus.storage.getItem('userid');  
 					var orderId = plus.webview.currentWebview().new_qianmi_order_id;
 					console.log(orderId)
-					var billId = plus.webview.currentWebview().billId;
-					sendData = {"userid":myuserid,"orderid":orderId,"billId":billId,"noiftyData": result};
+					var billId = plus.webview.currentWebview().billId; 
 					console.log(billId)
 					 
 					 plus.nativeUI.showWaiting()

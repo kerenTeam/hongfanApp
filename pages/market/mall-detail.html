@@ -371,27 +371,46 @@
 							<div class="mui-slider">
 								  <div class="mui-slider-group mui-slider-loop">
 								    <!--支持循环，需要重复图片节点-->
-								    <div class="mui-slider-item mui-slider-item-duplicate">
+								    <%if(infoData && infoData.length!=0){%>
+								    	 <div class="mui-slider-item mui-slider-item-duplicate">
 								    	<%if(infoData[infoData.length-1].bannerPic){%>
 								    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
 								    		<%}else{%>
 								    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
 								    			<%} %>
 								    	
-								    </div>
-								    <% for(var i=0;i<infoData.length;i++){ %>
-								    <div class="mui-slider-item">
-								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
-								    	</a>
-								    </div>
-								    	<% } %>
-								    <!--支持循环，需要重复图片节点-->
-								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
-								    	</a>
-								    </div>
+										    </div>
+										    <% for(var i=0;i<infoData.length;i++){ %>
+										    <div class="mui-slider-item">
+										    	<a>
+										    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
+										    	</a>
+										    </div>
+										    	<% } %>
+										    <!--支持循环，需要重复图片节点-->
+										    <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
+										    	</a>
+										    </div>
+								    	<%}else{%>
+								    		 <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		<div class="mui-slider-item">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		 <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		<%}%>
+								   
 								  </div>
 							</div>
 							<!--轮播图结束-->
@@ -417,7 +436,12 @@
 									</div>
 								</div>
 								<div class="xia clearfloat">
-									<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
+									<%if(brief.price){%>
+										<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
+										<%}else{%>
+											<p class="jifen fl box-s"><sub>￥</sub><samp>0</samp></p>
+											<%}%>
+									
 								</div>
 								<div class="xia">
 									 <div class="mui-row">
@@ -429,7 +453,12 @@
 								            <%}%>
 								        </div>
 								        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-								            <p class="box-s">销量：<%=brief.sales%>笔</p>
+								        	<%if(brief.sales){%>
+								        		 <p class="box-s">销量：<%=brief.sales%>笔</p>
+								        		<%}else{%>
+								            <p class="box-s">销量：0笔</p>
+								            <%}%>
+								           
 								        </div>
 								        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
 								            <p class="box-s">重庆</p> 
@@ -543,7 +572,11 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
+		     			<%if(choose.thumb){%> 
 		     			<img src="<%=myUrl%><%=choose.thumb%>" data-preview-src="" />
+		     			<%}else{%>
+		     			<img src="../../img/market/none.png" data-preview-src="" />
+		     			<%}%>
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
@@ -551,7 +584,7 @@
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
-		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
+		     		<%if(choose.parameter){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
 		     				<%if(choose.parameter[i].parameter_name){%>
 		     				<div class="middle clearfloat textType">
@@ -618,22 +651,27 @@
 						success:function(data){
 							console.log(JSON.stringify(data))
 //							alert(JSON.stringify(data.data.goodsInfo.differentiate))
-							
-							
+							 
 							if(data.errno==0){ 
-								plus.nativeUI.closeWaiting();
-								var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
-								var commentobj = data.data.comments;
-								//var content = data.data.comments
-								//banner
-								var infoObj = {}
-									infoObj.myUrl = serverimgUrl;
-									infoObj.infoData = dataobj;
-			                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
-			                      var gallery = mui(".mui-slider");
-											gallery.slider({
-												interval: 3000 //设置自动轮播周期为3s
-											});
+								plus.nativeUI.closeWaiting(); 
+								if(!data.data.goodsInfo.good_pic){
+									data.data.goodsInfo.good_pic = null;
+								}
+									var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
+							 
+									var commentobj = data.data.comments;
+									//var content = data.data.comments
+									//banner
+									var infoObj = {}
+										infoObj.myUrl = serverimgUrl;
+										infoObj.infoData = dataobj;
+				                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
+				                      var gallery = mui(".mui-slider");
+												gallery.slider({
+													interval: 3000 //设置自动轮播周期为3s
+												});
+								 
+								
 											
 	//										////alert(eval("("+data.data.goodsInfo.content+")"))
 	
@@ -647,7 +685,12 @@
 									mui('#disPay')[0].style.display='block';
 								}	
 			                     //详情
-			                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     if(data.data.goodsInfo.content){
+			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     }else{
+			                     	document.getElementById("textInfo").innerHTML='<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+			                     }
+			                    
 			                     ////alert(data.data.goodsInfo.parameter);
 			                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");  
 			                      shopId=data.data.goodsInfo.storeid;     
@@ -715,6 +758,9 @@
 			                    		var goodsImg = obj.getAttribute("data-gdImg");
 			                    		var goodsPrice = priceChange;
 			                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
+			                    		if(!goodsPostfee){
+			                    			goodsPostfee = 0;
+			                    		}
 			                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
 			                    		var goodText=''; 
 			                    		var goodProp=[];
