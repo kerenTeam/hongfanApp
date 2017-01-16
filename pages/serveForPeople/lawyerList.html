@@ -116,14 +116,18 @@
 					<a onclick="forHelp(<%= list[i].helper_id%>)"class="react">
 						<div class="dealcard">
 							<div class="dealcard-img">
-								<img src="<%= myUrl %><%= list[i].headPic%>" onerror="javascript:this.src='../../img/10.png/';">
+								<%if(!list[i].headPic || list[i].headPic == " "){%>
+									<img src="../../img/10.png"/>
+								<%}else{%>
+									<img src="<%= url%><%= list[i].headPic%>"/>
+								<%}%>	
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand"><%= list[i].name%><span class="ageBox xsmallSize"><%= list[i].sex%></span>
 									<span class="mui-pull-right">
 					                	<%= list[i].area%> <%= list[i].address%> 距离<%= list[i].distance %>m
 						            </span>
-								</div>
+								</div> 
 								<div class="title text-block"><%= list[i].occupation%></div>
 								<div class="price">
 									<% for(var j=0; j<list[i].competency.length; j++){%>
@@ -168,8 +172,7 @@
 		var longitude = plus.webview.currentWebview().longitude;
 		var oldtoken = plus.storage.getItem('oldToken');
 		console.log(street+address);
-//		alert(street+address);
-		
+
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
 			data:{area:street,address:address},  
@@ -178,8 +181,7 @@
 			timeout:10000,//超时时间设置为10秒；	 
 			headers:{"token":oldtoken},    
 			success:function(data){
-//				alert(data.data);
-				//表示A点纬度和经度，Lat2 Lung2 表示B点纬度和经度；
+				console.log('列表',data);
 				var strArr1 = longitude.split(',');
 				Lat1 = strArr1[0];
 				Lung1 = strArr1[1];
@@ -210,7 +212,6 @@
 				//定义一个比较器
 				function compare(propertyName) {
 				    return function(object1, object2) {
-				    	console.log(object1);
 				      	var value1 = object1[propertyName];
 				      	var value2 = object2[propertyName];
 				      	if (value2 < value1) {
@@ -230,8 +231,7 @@
 						data.data[i].competency = eval("("+data.data[i].competency+")");
 					}
 					dataobj.list = data.data; 
-					dataobj.myUrl = serverimgUrl; 
-					console.log(dataobj.list); 
+					dataobj.url = serverimgUrl;
 						//获取并渲染用户信息
 					var html=template("listinfo",dataobj);
 					document.getElementById("listinfodiv").innerHTML = html;

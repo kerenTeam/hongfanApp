@@ -194,7 +194,7 @@
 								<%for(var i=0;i<lData.length;i++){%>
 									<li class="mui-table-view-cell mui-media" onclick="goInfo('<%=lData[i].id%>')">
 										<a href="javascript:;">
-											<img class="mui-media-object mui-pull-left" src="<%=myUrl %><%=lData[i].picImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';" >
+											<img class="mui-media-object mui-pull-left" src="<%= myUrl2%><%=lData[i].picImg%> ">
 											<div class="mui-media-body" style="line-height: 25px;">
 												<%=lData[i].title%> 
 											</div>
@@ -245,10 +245,10 @@
 		mui.ajax(serverUrl+'/api/localservice/volunteeractivities',{
 			dataType:'json',
 			type:'post',
-			timeout:1000,
+			timeout:10000,
 			headers:{"token":oldToken},	 
 			success:function(data){  
-//				alert(JSON.stringify(data.data))
+				console.log('列表',data);
 				if(data.errno==0){ 
 					if(data.data.length!=0){
 						for(var t=0;t<data.data.length;t++){  
@@ -263,7 +263,8 @@
 				plus.nativeUI.closeWaiting();
 			},
 			error:function(xhr,type,errorThrown){
-				alert('响应失败  !');
+				plus.nativeUI.closeWaiting();
+				mui.toast('当前网络不好,请重试');
 			}
 		});
 		//banner跳转
@@ -297,15 +298,16 @@
 				bannerObj.url = serverimgUrl;
 				var html = template('banner-detail',bannerObj);
 				document.getElementById('banner').innerHTML = html;
-				plus.nativeUI.closeWaiting();//关闭等待框
 				//轮播图,获得slider插件对象
 				var gallery = mui('.mui-slider');
 				gallery.slider({
 				  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
 				});
+				plus.nativeUI.closeWaiting();//关闭等待框
 			},
 			error:function(xhr,type,errorThrown){
-				alert('响应失败  !');
+				plus.nativeUI.closeWaiting();//关闭等待框
+				mui.toast('当前网络不好,请重试');
 			}
 		}); 
 	})

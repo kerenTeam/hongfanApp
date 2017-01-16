@@ -385,9 +385,9 @@
 							<% if(goodsList[j].shopName ==  cates[i]){%>
 							<dd class="dd-padding kv-line-r mui-row goodsWrap"> <!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
 								<% if(goodsList[j].shopName == '爱购保税'){%>
-								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=goodsList[j].goodsImg%>"/></h6>
+								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
 								<%}else{%>
-								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myurl%><%=goodsList[j].goodsImg%>"/></h6>
+								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myurl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
 
 									<%}%>
 								<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8 goods">
@@ -429,19 +429,10 @@
 							<%if(shopID[i]!=0){%>
 								<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
 									<input type="hidden" class="isziti" value="0"/>
-									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提：</h6>
-									<div class="clearfloat fr mui-col-sm-4 mui-col-xs-4 goods">
-	 
-										<div class="mui-input-row mui-radio mui-left ddRadio">
-											<label>是</label>
-											<input name="radio<%=i%>" value="0" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" type="radio">
-										</div>
-									</div>
-									<div class="clearfloat fr mui-col-sm-5 mui-col-xs-5 goods">
-										 <div class="mui-input-row mui-radio mui-left ddRadio">
-											<label>否</label>
-											<input name="radio<%=i%>" value="1" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" type="radio" checked="checked">
-										</div>
+									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提</h6>
+									 
+									<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
+	 									<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" class="groupCheck" type="checkbox" style="right: 5px;"></div> 
 									</div>
 								</dd>
 							<%}%>
@@ -709,7 +700,6 @@
 							 orderSubmitData.push(orderList);
 						}
 						
-							 //alert("orderSubmitData "+JSON.stringify(orderSubmitData))
 						
 						////alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
@@ -732,7 +722,6 @@
 						  	if(totalPay<0){
 						  		totalPay =0;
 						  	}
-						  		//alert("countTotalPay"+totalPay)
 						  		$("#submit_order").html(totalPay)
 						  }
 						  
@@ -861,11 +850,9 @@
 						})
 				//自提 or 配送  更新 邮费 和 分组价格 和 总价 
 				        $("dd .ddRadio").each(function(){  
-				        	$(this).find("input[type='radio']").click(function(){  
-				        			var isZt = $(this).val();
+				        	$(this).find("input[type='checkbox']").click(function(){ 
 					        		var dataPostfee= parseFloat($(this).attr("data-postfee")); 
-					        		if(isZt == 0){   
-					        			if($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val() == 0){
+					        			if($(this).prop('checked')==true){
 					        				
 					        				var curPost =parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
 					        				$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(curPost-dataPostfee);
@@ -873,11 +860,7 @@
 					        				 
 					        			 countTotalPay();
 					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(1)
-					        			} 
-					        		//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
-					        		}
-					        		if(isZt == 1){   
-					        			if($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val() == 1){ 
+					        			}else{
 					        				var curPost =parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
 					        				$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(curPost+dataPostfee)
 					        				if(dataPostfee==0){
@@ -890,8 +873,8 @@
 					        				 countTotalPay();
 					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
 					        			}
-					        			//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
-					        		} 
+					        		//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
+					        	 
 					        	  
 				        		
 				        	})
@@ -925,8 +908,6 @@
 									if(orderSubmitData[i].storeid == $(this).attr("data-id")){ 
 										if(orderSubmitData[i].storeid == 0 ){
 											orderSubmitData[i].order_type = 2;
-										}else if(orderSubmitData[i].storeid == -1 ){
-											orderSubmitData[i].order_type = 3;
 										}else{
 											orderSubmitData[i].order_type = 1;
 										}
@@ -969,7 +950,7 @@
 									coupon_id =$(this).attr("data-id");
 								}
 							}) 
-							alert("coupon_id "+coupon_id)
+//							alert("coupon_id "+coupon_id)
 							//积分使用
 							var isIntergal=0;
 							if($("#coupon").find("input[type='checkbox']:checked").length==1){
@@ -980,17 +961,21 @@
 								isIntergal=0;
 							}
 							var goodsdata = JSON.stringify(orderSubmitData);
+							console.log("goodsdata"+goodsdata)
 							var notice = JSON.stringify(noticeData); 
+							//获取总价
+							var payTotal =parseFloat($("#submit_order").html()).toFixed(2);
+							
+							
 							//提交
-							 alert("orderSubmitData 1234ewrew"+"优惠券 "+coupon_id+" "+JSON.stringify(orderSubmitData))
+//							 alert("orderSubmitData 1234ewrew"+"优惠券 "+coupon_id+" "+JSON.stringify(orderSubmitData))
 			 					mui.ajax(serverUrl+'/api/mall/neworder',{
-									data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
+									data:{userid:myuserid,addressid:addressid,paytotal:payTotal,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
 									headers:{"token":oldtoken},	 
 									success:function(data,type,xhr){
-									alert(JSON.stringify(data))
 	
 										//购物车 缓存 
 	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
@@ -1017,19 +1002,19 @@
 	//									//alert(JSON.stringify(data))
 										if(data.errno==0){
 										//	//alert(JSON.stringify(data.data))
-											var payMent = data.data.payment;
-											var order_id=  data.data.order_id;
-											////alert("payMent "+payMent + " order_id"+order_id);
-//											plus.webview.currentWebview().close();
+											var payMents = data.data.paytotal;
+											var order_id = data.data.order_id;
+											var uuid = data.data.order_UUID; 
+											
 											openview({
 												view:"../market/pay.html",
-												extrasobj:{payMent:payMent,order_id:order_id}
+												id:"pay",
+												extrasobj:{payMent:payMents,uuid:uuid}
 											})
-	//										var list = plus.webview.getWebviewById('cart.html'); 
-	//											mui.fire(list,'refresh'); 
+//												plus.webview.currentWebview().close();
+
 										}else{
-											plus.nativeUI.closeWaiting()
-										   // //alert(JSON.stringify(data.data))
+											plus.nativeUI.closeWaiting() 
 										}
 									},
 									error:function(xhr,type,errorThrown){

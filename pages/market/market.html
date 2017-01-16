@@ -361,7 +361,7 @@
 								<br/>
 								<p>停车</p>
 							</td>
-							<td>
+							<td class="moviePage">
 								<!--<div class="market-icon icon4">-->
 									<img src="../../img/market/mv1.png"/>
 								<!--</div>-->
@@ -483,7 +483,12 @@
 				<% for(var i=0;i<outList.length;i++){ %>
 					<div class="sy_recmd typeDis" style="background-color: #fff;">
 						<div class="imgpt" onclick="goConncilList(<%= outList[i].main.id %>)">
-						 	<img src="<%=myUrl %><%= outList[i].main.picImg %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+							<%if(outList[i].main.picImg){%>
+								<img src="<%=myUrl %><%= outList[i].main.picImg %>" name="<%=myUrl %><%= outList[i].main.picImg %>" onerror="javascript:this.src='../../img/market/banner.png';" />
+							<%}else{%>
+								<img src="../../img/market/banner.png" alt="" />
+							<%}%>	
+						 	
 						 	<div class="trangle"></div>
 						</div>
 						<div class="npbk" id="<%= outList[i].goods_list %>">
@@ -491,7 +496,11 @@
 								<% for(var j=0;j<outList[i].minor.length;j++){ %>
 									<div class="nplist" onclick="goConncilGood(<%= outList[i].minor[j].goods_id %>)" style="margin-top: 10px;">
 										<div class="npimg">
-											<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+											<%if(outList[i].minor[j].thumb){%>
+												<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" name="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+											<%}else{%>
+												<img src="../../img/market/none.png" alt="出错"  /> 
+											<%}%>	
 										</div>
 										<h4><%= outList[i].minor[j].title %></h4>
 										<div class="nprice">￥<%= outList[i].minor[j].price %></div>
@@ -501,7 +510,11 @@
 								<% for(var j=0;j<5;j++){ %>
 									<div class="nplist" onclick="goConncilGood(<%= outList[i].minor[j].goods_id %>)" style="margin-top: 10px;">
 										<div class="npimg">
-											<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+											<%if(outList[i].minor[j].thumb){%>
+												<img src="<%=myUrl %><%= outList[i].minor[j].thumb %>" name="<%=myUrl %><%= outList[i].minor[j].thumb %>" alt="" onerror="javascript:this.src='../../img/market/banner.png';" />
+											<%}else{%>
+												<img src="../../img/market/none.png" alt="出错"  /> 
+											<%}%>
 										</div>
 										<h4><%= outList[i].minor[j].title %></h4>
 										<div class="nprice">￥<%= outList[i].minor[j].price %></div>
@@ -527,9 +540,16 @@
 			var sales = document.getElementsByClassName('sales')[0];
 			var wifi = document.getElementsByClassName('wifi')[0];
 			var mtshop = document.getElementsByClassName('mtshop')[0];
+			var moviePage = document.getElementsByClassName('moviePage')[0];
 			bcenter.addEventListener('tap', function(){
 				openview({
 					view:'market-Center.html',
+				});
+			});
+			moviePage.addEventListener('tap', function(){
+				openview({
+					view:'movieTpl.html',
+					extrasobj:{bannerUrl:"http://m.spider.com.cn/movie20/theatersDetails.html?id=DX20004102"}
 				});
 			});
 			jfenmall.addEventListener('tap', function(){

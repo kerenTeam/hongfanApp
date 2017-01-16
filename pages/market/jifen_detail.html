@@ -365,7 +365,7 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		</div>
 		<div id="container">		
-			<div id="main">		
+			<div id="main" style="margin-top: 0!important;">		
 				<div class="warp warptwo clearfloat">
 					<div class="detail clearfloat">
 						<div id="moll_info"></div>
@@ -375,22 +375,46 @@
 							<div class="mui-slider">
 								  <div class="mui-slider-group mui-slider-loop">
 								    <!--支持循环，需要重复图片节点-->
-								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
-								    </div>
-								    <% for(var i=0;i<infoData.length;i++){ %>
-								    <div class="mui-slider-item">
-								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
-								    	</a>
-								    </div>
-								    	<% } %>
-								    <!--支持循环，需要重复图片节点-->
-								    <div class="mui-slider-item mui-slider-item-duplicate">
-								    	<a>
-								    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
-								    	</a>
-								    </div>
+								    <%if(infoData && infoData.length!=0){%>
+								    	 <div class="mui-slider-item mui-slider-item-duplicate">
+								    	<%if(infoData[infoData.length-1].bannerPic){%>
+								    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+								    		<%}else{%>
+								    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
+								    			<%} %>
+
+										    </div>
+										    <% for(var i=0;i<infoData.length;i++){ %>
+										    <div class="mui-slider-item">
+										    	<a>
+										    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
+										    	</a>
+										    </div>
+										    	<% } %>
+										    <!--支持循环，需要重复图片节点-->
+										    <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
+										    	</a>
+										    </div>
+								    	<%}else{%>
+								    		 <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		<div class="mui-slider-item">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		 <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		<%}%>
+
 								  </div>
 							</div>
 							<!--轮播图结束-->
@@ -490,7 +514,8 @@
 		<div class="footerone clearfloat">
 		 
 			<div class="right clearfloat fl" style="width:100%!important;"> 
-                <a onClick="toshare(2)" class="btn btnone fl" style="width:100%!important;">立即兑换</a>
+				 <a class="btn btnone fl cg1" style="width:100%!important;display: none;">立即兑换</a>
+                <a onClick="toshare(2)" class="btn btnone fl cg2" style="width:100%!important;">立即兑换</a>
 			</div>
 		</div>
 		<!--footerone end-->
@@ -508,7 +533,11 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     		 
+		     			<%if(choose.thumb){%>
 		     			<img src="<%=myUrl%><%=choose.thumb%>" data-preview-src="" />
+		     			<%}else{%>
+		     			<img src="../../img/market/none.png" data-preview-src="" />
+		     			<%}%>
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
@@ -516,7 +545,7 @@
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
-		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
+		     		<%if(choose.parameter){%> 
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
 		     				<%if(choose.parameter[i].parameter_name){%> 
 		     				<div class="middle clearfloat textType">
@@ -545,11 +574,13 @@
 	</body>
 	<script src="../../js/app.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
-	<script src="../../js/mui.min.js"></script>
-	<script src="../../js/mui.zoom.js"></script>
-	<script src="../../js/mui.previewimage.js"></script>
+	<script src="../../js/mui.min.js"></script> 
 	<script type="text/javascript"> 
 		mui.plusReady(function(){ 
+			
+			
+			
+			
 			var shopId;
 			//获取token
 			var token=plus.storage.getItem("oldToken"); 
@@ -571,7 +602,10 @@
 							
 							if(data.errno==0){ 
 								plus.nativeUI.closeWaiting();
-							var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
+							if(!data.data.goodsInfo.good_pic){
+									data.data.goodsInfo.good_pic = null;
+								}
+									var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
 							var commentobj = data.data.comments;
 							//var content = data.data.comments
 							//banner
@@ -589,7 +623,11 @@
 		                    //简介
 		                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 		                     //详情
-		                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     if(data.data.goodsInfo.content){
+			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     }else{
+			                     	document.getElementById("textInfo").innerHTML='<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+			                     }
 		                    //   alert(data.data.goodsInfo.parameter);
 		                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")"); 
 		                      shopId=data.data.goodsInfo.storeid;     
@@ -637,7 +675,44 @@
 								cemmentObj.cemmentData = commentobj; 
 								
 		                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
-		                    	
+		                   
+		                   
+		                   
+		                   //获取积分
+							var myuserid = plus.storage.getItem('userid'); 
+							mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+								data:{"userid":myuserid},
+								type:'post',
+								timeout:10000,
+								headers:{"token":token},	              				
+								success:function(data,type,xhr){
+									var intergral=0;
+									console.log('获取用户数据返回'+JSON.stringify(data));
+									if(data.errno == 0){
+										   intergral = data.data[0].intergral;
+										 //  alert(intergral)
+										   if(intergral==null){
+										   	intergral=0;
+										   }
+										  var priceChange =parseInt($("#priceChange").html());
+										  if(intergral<priceChange){
+										  	document.getElementsByClassName('.cg1')[0].style.display="block";
+										  	document.getElementsByClassName('.cg2')[0].style.display="none";
+										  }
+										 //document.getElementById("jf").innerHTML = intergral; 
+									}else{
+										mui.toast('获取用户信息失败');
+										console.log(data.errmsg);
+										
+									    plus.nativeUI.closeWaiting()
+									}
+								 
+								},
+								error:function(xhr,type,errorThrown){
+									alert('响应失败  !');
+								}
+							});
+		                   
 
 		                   // plus.storage.removeItem('$cartStorage');
 		                    //购物车 缓存
@@ -669,7 +744,7 @@
 									var cartObj={};
 		                    		cartObj.goodsId=goodsId;
 		                    		cartObj.shopName=shopName;
-		                    		cartObj.storeid=storeid;
+		                    		cartObj.shopId=storeid;
 		                    		cartObj.goodsName=goodsName;
 		                    		cartObj.goodsImg=goodsImg;
 		                    		cartObj.diffrentiate=diffrentiate;

@@ -175,7 +175,7 @@
 				100% {
 					opacity: 0;
 				}
-			} 
+			}
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
 				width: 10px;
@@ -226,7 +226,7 @@
 			.goBack{
 				position: fixed;
 				left: 15px;
-				top: 15px;
+				top: 40px;
 				background-color: rgba(0,0,0,0.5);
 				width: 40px;
 				height: 40px;
@@ -316,7 +316,7 @@
 			.footerone .left ul li{
 				width: 100%;
 			}
-			
+
 			.comment{
 				display: block;
 			}
@@ -360,83 +360,123 @@
 		<div class="goBack">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		</div>
-		<div class="warp warptwo clearfloat" style="padding-bottom: 50px;">
-			<div class="detail clearfloat">
-				<div id="moll_info"></div>
-				<script type="text/html" id="infoTpl">
-					<!--轮播图-->
-					<div class="mui-slider">
-						  <div class="mui-slider-group mui-slider-loop">
-						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate">
-						    	<%if(infoData[infoData.length-1].bannerPic){%>
-						    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
-						    		<%}else{%>
-						    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
-						    			<%} %>
-						    	
-						    </div>
-						    <% for(var i=0;i<infoData.length;i++){ %>
-						    <div class="mui-slider-item">
-						    	<a>
-						    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
-						    	</a>
-						    </div>
-						    	<% } %>
-						    <!--支持循环，需要重复图片节点-->
-						    <div class="mui-slider-item mui-slider-item-duplicate">
-						    	<a>
-						    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
-						    	</a>
-						    </div>
-						  </div>
-					</div>
-					<!--轮播图结束-->
-				</script>
-				
-				<div id="gdBrief"></div>
-				
-				<script type="text/html" id="briefTpl">
-					<div class="top clearfloat box-s">
-						<div class="shang clearfloat">
-							<div class="zuo clearfloat fl">
-								<%=brief.title%>
+		<div id="container">
+			<div id="main" style="margin-top: 0!important;">
+				<div class="warp warptwo clearfloat">
+					<div class="detail clearfloat">
+						<div id="moll_info"></div>
+
+						<script type="text/html" id="infoTpl">
+							<!--轮播图-->
+							<div class="mui-slider">
+								  <div class="mui-slider-group mui-slider-loop">
+								    <!--支持循环，需要重复图片节点-->
+								    <%if(infoData && infoData.length!=0){%>
+								    	 <div class="mui-slider-item mui-slider-item-duplicate">
+								    	<%if(infoData[infoData.length-1].bannerPic){%>
+								    		<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg"></a>
+								    		<%}else{%>
+								    			<a><img src="../../img/market/none.png" class="goodsImg"></a>
+								    			<%} %>
+
+										    </div>
+										    <% for(var i=0;i<infoData.length;i++){ %>
+										    <div class="mui-slider-item">
+										    	<a>
+										    		<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg">
+										    	</a>
+										    </div>
+										    	<% } %>
+										    <!--支持循环，需要重复图片节点-->
+										    <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg">
+										    	</a>
+										    </div>
+								    	<%}else{%>
+								    		 <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		<div class="mui-slider-item">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		 <div class="mui-slider-item mui-slider-item-duplicate">
+										    	<a>
+										    		<img src="../../img/market/none.png" class="goodsImg">
+										    	</a>
+										    </div>
+								    		<%}%>
+
+								  </div>
 							</div>
-							<div class="you clearfloat fr">
-								<ul>
-									<li>
-									 	<a onclick="goShop()">
-											<i class="iconfont icon-shangcheng"></i>
-											<p>商家</p>
-										</a>
-									</li>
-								</ul>
+							<!--轮播图结束-->
+						</script>
+
+						<div id="gdBrief"></div>
+
+						<script type="text/html" id="briefTpl">
+							<div class="top clearfloat box-s">
+								<div class="shang clearfloat">
+									<div class="zuo clearfloat fl">
+										<%=brief.title%>
+									</div>
+									<div class="you clearfloat fr">
+										<ul>
+											<li>
+											 	<a onclick="goShop()">
+													<i class="iconfont icon-shangcheng"></i>
+													<p>商家</p>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div class="xia clearfloat">
+									<%if(brief.price){%>
+										<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
+										<%}else{%>
+											<p class="jifen fl box-s"><sub>￥</sub><samp>0</samp></p>
+											<%}%>
+
+								</div>
+								<div class="xia">
+									 <div class="mui-row">
+								        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
+								        	<%if(!brief.postage){%>
+								           		<p class="box-s">快递：免邮</p>
+								            <%}else{%>
+								             <p class="box-s">快递：<%=brief.postage%>元</p>
+								            <%}%>
+								        </div>
+								        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
+								        	<%if(brief.sales){%>
+								        		 <p class="box-s">销量：<%=brief.sales%>笔</p>
+								        		<%}else{%>
+								            <p class="box-s">销量：0笔</p>
+								            <%}%>
+
+								        </div>
+								        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
+								            <p class="box-s">重庆</p>
+								        </div>
+								  	</div>
+								</div>
+								<div class="farmtc" id="disPay" style="display: none;">
+									<p class="bt" style="color: #f39826;padding-left: 10px;">该商品只做展示，暂不支持线上购买</p>
+								</div>
+
 							</div>
-						</div>
-						<div class="xia clearfloat">
-							<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp></p>
-						</div>
-						<div class="xia">
-							 <div class="mui-row">
-						        <div class="mui-col-sm-4 mui-col-xs-4 Mleft">
-						        	<%if(!brief.postage){%>
-						           		<p class="box-s">快递：免邮</p>
-						            <%}else{%>
-						             <p class="box-s">快递：<%=brief.postage%>元</p>
-						            <%}%>
-						        </div>
-						        <div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
-						            <p class="box-s">销量：<%=brief.sales%>笔</p>
-						        </div>
-						        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
-						            <p class="box-s">重庆</p> 
-						        </div>
-						  	</div>
-						</div>
+							
+							
+						
 						<div class="farmtc" id="disPay" style="display: none;">
 							<p class="bt" style="color: #f39826;padding-left: 10px;">该商品只做展示，暂不支持线上购买</p>
 						</div>
-						
+
 
 					</div>
 					<div class="farmtc clearfloat mt10">
@@ -445,16 +485,16 @@
 					<div class="farm clearfloat">
 						<div class="top rentingtop clearfloat box-s">
 							<div id="textInfo"></div>
-							 
-						</div>					
+
+						</div>
 					</div>
-					
+
 				</script>
-				
-				
-				
-				
-				
+
+
+
+
+
 				<div id="moll_comment"></div>
 				<script type="text/html" id="commentTpl">
 					<div class="farmtc clearfloat mt10">
@@ -469,7 +509,7 @@
 										<div class="mui-col-sm-2 mui-col-xs-2 user-head">
 											<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
 									    		<img src="../../img/10.png" class="radius comtPic" alt="" />
-									    	<%}else{%> 
+									    	<%}else{%>
 												<img src="<%=myUrl%><%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
 											<%}%>
 										</div>
@@ -488,7 +528,7 @@
 						                   	</div>
 						                   	<div class="comment"><%=cemmentData[i].seller_comment%></div>
 						                   	<div class="clear"></div>
-						                   	
+
 					                        <div class="clear"></div>
 						                    <div class="padding-h-xs mui-row">
 											<%if(cemmentData[i].comment_pic.length!=0){%>
@@ -496,25 +536,25 @@
 						                    	<div class="inlineBlock mui-col-sm-3 mui-col-xs-3" style="display:inline-block;height: 0.5rem;overflow:hidden;">
 						                    	<img src="<%=myUrl%><%=cemmentData[i].comment_pic[j].picImg%>" style="width: 100%;overflow: hidden;height: 0.5rem" data-preview-src="" data-preview-group="<%=i+1%>" />
 						                    	</div>
-						                    	<%}%>	 
+						                    	<%}%>
 						                    <%}%>
 					                    </div>
 									</div>
-								</li> 
+								</li>
 							<%}%>
-						<%}%> 
+						<%}%>
 					</ul>
 				</script>
 			</div>
 		</div>
 		<!--footerone star-->
 		<div class="footerone clearfloat">
-			 
+
 			<div class="left clearfloat fl">
 				<ul>
 					<li>
 					 	<a onclick="gocart()">
-							<img src="../../img/market/cartIcon.svg" alt="" /> 
+							<img src="../../img/market/cartIcon.svg" alt="" />
 						</a>
 					</li>
 				</ul>
@@ -539,7 +579,11 @@
 		     	<div class="top clearfloat">
 		     		<div class="tu clearfloat fl">
 		     			<span></span>
+		     			<%if(choose.thumb){%>
 		     			<img src="<%=myUrl%><%=choose.thumb%>" data-preview-src="" />
+		     			<%}else{%>
+		     			<img src="../../img/market/none.png" data-preview-src="" />
+		     			<%}%>
 		     		</div>
 		     		<div class="you clearfloat fl">
 		     			<p class="tit overflow_clear "><%=choose.title%></p>
@@ -547,7 +591,7 @@
 		     		</div>
 		     	</div>
 		     	<div class="Mscroll">
-		     		<%if(choose.parameter.length!=0 || choose.parameter!=null || choose.parameter!=''){%> 
+		     		<%if(choose.parameter){%>
 		     			<%for(var i=0;i<choose.parameter.length;i++){%>
 		     				<%if(choose.parameter[i].parameter_name){%>
 		     				<div class="middle clearfloat textType">
@@ -560,12 +604,12 @@
 					     						<li class="ra3" data-priceStep="<%=choose.parameter[i].child_value[j].equivalence%>"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
 				     						    <%}else{%>
 				     						    <li class="ra3" data-priceStep="0"  data-Inventory="<%=choose.parameter[i].child_value[j].Inventory%>"><%=choose.parameter[i].child_value[j].child_parameter_name%></li>
-	
+
 				     						   <% }%>
 				     						<%}%>
-				     					<%}%> 
+				     					<%}%>
 						     		</ul>
-					     		</div>		     		
+					     		</div>
 					     	</div>
 					     	<%}%>
 	     				<%}%>
@@ -581,11 +625,11 @@
 		     		</div>
 		     	</div>
 		     	</div>
-		     </div>		     
+		     </div>
 		</div>
 		<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.postage%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 			</script>
-		
+
 		</div>
 	</body>
 	<script src="../../js/app.js"></script>
@@ -593,47 +637,52 @@
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
-	<script type="text/javascript"> 
-		mui.plusReady(function(){ 
+	<script type="text/javascript">
+		mui.plusReady(function(){
 			var shopId;
 			//获取token
-			var token=plus.storage.getItem("oldToken"); 
+			var token=plus.storage.getItem("oldToken");
 			console.log(token)
 			//获取页面传值 商品id
-			var goodId = plus.webview.currentWebview().goodsId; 
-//			var goodId = 1; 
+			var goodId = plus.webview.currentWebview().goodsId;
+//			var goodId = 1;
 			////alert(goodId);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//请求商品详情
 			mui.ajax(serverUrl+'/api/mall/goodsinfo', {
 					data: {goodsId:goodId},
 					dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型 
-						timeout:10000,//超时时间设置为10秒；	
-						headers:{"token":token}, 
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						headers:{"token":token},
 						success:function(data){
 							console.log(JSON.stringify(data))
 //							alert(JSON.stringify(data.data.goodsInfo.differentiate))
-							
-							
-							if(data.errno==0){ 
+
+							if(data.errno==0){
 								plus.nativeUI.closeWaiting();
-								var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
-								var commentobj = data.data.comments;
-								//var content = data.data.comments
-								//banner
-								var infoObj = {}
-									infoObj.myUrl = serverimgUrl;
-									infoObj.infoData = dataobj;
-			                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
-			                      var gallery = mui(".mui-slider");
-											gallery.slider({
-												interval: 3000 //设置自动轮播周期为3s
-											});
-											
+								if(!data.data.goodsInfo.good_pic){
+									data.data.goodsInfo.good_pic = null;
+								}
+									var dataobj =eval("("+data.data.goodsInfo.good_pic+")");
+
+									var commentobj = data.data.comments;
+									//var content = data.data.comments
+									//banner
+									var infoObj = {}
+										infoObj.myUrl = serverimgUrl;
+										infoObj.infoData = dataobj;
+				                        document.getElementById("moll_info").innerHTML=template("infoTpl",infoObj);
+				                      var gallery = mui(".mui-slider");
+												gallery.slider({
+													interval: 3000 //设置自动轮播周期为3s
+												});
+
+
+
 	//										////alert(eval("("+data.data.goodsInfo.content+")"))
-	
-									
+
+
 			                    //简介
 			                     document.getElementById("gdBrief").innerHTML=template("briefTpl",{brief:data.data.goodsInfo});
 			                     //只做展示的商品
@@ -641,12 +690,17 @@
 									mui('.footerone')[0].remove();
 									mui('#moll_comment')[0].remove();
 									mui('#disPay')[0].style.display='block';
-								}	
+								}
 			                     //详情
-			                    document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     if(data.data.goodsInfo.content){
+			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     }else{
+			                     	document.getElementById("textInfo").innerHTML='<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+			                     }
+
 			                     ////alert(data.data.goodsInfo.parameter);
-			                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");  
-			                      shopId=data.data.goodsInfo.storeid;     
+			                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
+			                      shopId=data.data.goodsInfo.storeid;
 			                     //选择弹框
 			                     var chooseO = {};
 			                     chooseO.choose = data.data.goodsInfo;
@@ -656,7 +710,7 @@
 			                     var priceChange =parseInt($("#priceChange").html());
 			                     $('.choose').each(function(){
 			                     	var chooseli = $(this).find("li");
-			                     	
+
 			                     		var oldstep=0,newstep=0;
 			                     	chooseli.each(function(){
 			                     		if($(this).attr("data-Inventory")==0){
@@ -664,25 +718,25 @@
 					                     	}
 			                     		chooseli.eq(0).addClass("cur");
 					                     	if($(this).attr("data-priceStep")==0){
-					                     		
+
 					                     		oldstep = $(this).attr("data-priceStep");
-					                     	}  
-					                     	
+					                     	}
+
 			                     	})
 			                     	chooseli.click(function(){
-			                     		 alert(oldstep)
+//			                     		 alert(oldstep)
 			                     		oldstep=newstep;
 												$(this).addClass('cur');
 												$(this).siblings().removeClass('cur');
 					                     	  newstep = $(this).attr("data-priceStep");
-					                     	 alert(newstep)
+//					                     	 alert(newstep)
 					                     	 priceChange=priceChange+parseInt(newstep)-parseInt(oldstep);
 					                     	 $('#priceChange').html(priceChange)
 											})
-			                     	
+
 			                     })
-			                    
-			                    
+
+
 			                    //评论
 			                    var cemmentObj = {}
 	//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
@@ -692,27 +746,30 @@
 											commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
 										}
 									cemmentObj.myUrl = serverimgUrl;
-									cemmentObj.cemmentData = commentobj; 
-									
+									cemmentObj.cemmentData = commentobj;
+
 			                    document.getElementById("moll_comment").innerHTML=template("commentTpl",cemmentObj);
-			                    	
-								
+
+
 			                   // plus.storage.removeItem('$cartStorage');
 			                    //购物车 缓存
-			                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
-			                   
-			                    window.cartStorageF=function(obj){ 
-			                     	if($('.cur').length == $(".choose").length){ 
+			                    var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
+
+			                    window.cartStorageF=function(obj){
+			                     	if($('.cur').length == $(".choose").length){
 			                    		var shopName = obj.getAttribute("data-shop");
 			                    		var goodsId = obj.getAttribute("data-gdId");
 			                    		var storeid = obj.getAttribute("data-shopId");
-			                    		 alert(storeid)
+//			                    		 alert(storeid)
 			                    		var goodsName = obj.getAttribute("data-gdName");
 			                    		var goodsImg = obj.getAttribute("data-gdImg");
 			                    		var goodsPrice = priceChange;
 			                    		var goodsPostfee = obj.getAttribute("data-gdPostfee");
+			                    		if(!goodsPostfee){
+			                    			goodsPostfee = 0;
+			                    		}
 			                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
-			                    		var goodText=''; 
+			                    		var goodText='';
 			                    		var goodProp=[];
 			                    		$('.textType').each(function(){
 			                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+";";
@@ -720,7 +777,7 @@
 			                    			prop.parameter_name=$(this).find("p").html();
 			                    			prop.child_parameter_name=$(this).find(".cur").html();
 			                    			goodProp.push(prop)
-			                    		})  
+			                    		})
 			                    		//////alert(JSON.stringify(goodProp))
 			                    		//当前商品对象
 										var cartObj={};
@@ -734,14 +791,14 @@
 			                    		cartObj.goodsnum=goodsnum;
 			                    		cartObj.goodText=goodText;
 			                    		cartObj.goodProp=goodProp;
-			                    		
+
 			                    		if(goNum ==1){
 			                    			if(cartStorage.length != 0) {
 										var flag = false;
 										for(var i = 0; i < cartStorage.length; i++) {
-											if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) { 
-												 
-													cartStorage[i].goodsnum=parseInt(cartStorage[i].goodsnum)+parseInt(goodsnum); 
+											if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
+
+													cartStorage[i].goodsnum=parseInt(cartStorage[i].goodsnum)+parseInt(goodsnum);
 												flag = false;
 												break;
 											} else {
@@ -749,13 +806,13 @@
 											}
 										}
 										if(flag) {
-			                    		cartStorage.push(cartObj); 
+			                    		cartStorage.push(cartObj);
 										}
-									} else { 
-			                    		cartStorage.push(cartObj); 
-									}  
+									} else {
+			                    		cartStorage.push(cartObj);
+									}
 			                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
-			                    		 alert(JSON.stringify(cartStorage))
+//			                    		 alert(JSON.stringify(cartStorage))
 			                    		$(".am-share").removeClass("am-modal-active");
 			                    		$(".sharebg ").removeClass("sharebg-active");
 			                    		mui.toast("已成功加入购物车");
@@ -763,18 +820,18 @@
 			                    		  //获得列表界面的webview
 										var list= plus.webview.getWebviewById('cart.html');
 										//触发列表界面的自定义事件（refresh）,从而进行数据刷新
-										mui.fire(list,'refresh'); 
-	
+										mui.fire(list,'refresh');
+
 			                    		}else{
-			                    			
-			                    			if(plus.storage.getItem('myToken')){ 
+
+			                    			if(plus.storage.getItem('myToken')){
 												orderStorage =[];
 				                    			orderStorage.push(cartObj);
 				                    			plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
-				                    		 alert(plus.storage.getItem("$orderStorage"));
-				                    			
+//				                    		 alert(plus.storage.getItem("$orderStorage"));
+
 				                    			openview({
-												 	view:"market-order.html", 
+												 	view:"market-order.html",
 												 	id:"market-order"
 												 })
 											}else{//没登陆直接打开登录页面
@@ -783,14 +840,14 @@
 													view:'../login.html'
 												});
 											}
-			                    			
-			                    			
-			                    			
+
+
+
 			                    		}
-			                    		
-			                    		
-			                    		
-			                    		
+
+
+
+
 			                    	}else{
 			                    		mui.toast("请选择商品属性");
 			                    	}
@@ -801,17 +858,17 @@
 									plus.nativeUI.closeWaiting();
 									mui.toast("网络不好请重试！")
 								}
-								 
-			                   
-							},  
+
+
+							},
 							error:function(xhr,type,errorThrown){
-								//异常处理； 
+								//异常处理；
 								plus.nativeUI.closeWaiting();
-								mui.toast("当前网络不好请重试"); 
+								mui.toast("当前网络不好请重试");
 							}
-					}); 
+					});
 					//跳转商家详情
-					window.goShop = function(){ 
+					window.goShop = function(){
 						console.log(shopId);
 						openview({
 							view:"shophome.html",
@@ -824,9 +881,9 @@
 								extrasobj:{pageId:"detail"}
 							})
 					}
-					mui.previewImage();			
-		}) 
-		
-	</script> 
+					mui.previewImage();
+		})
 
-</html> 
+	</script>
+
+</html>

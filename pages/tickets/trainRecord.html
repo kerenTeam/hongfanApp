@@ -413,7 +413,7 @@
 			
 			var loadfun = function(){
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-				mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取保险信息
+				mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{//获取详情
 					data:{tradeNo:TorderD},
 					type:'post',
 					timeout:10000,
@@ -454,28 +454,7 @@
 							//支付参数赋值
 							body1 = Tdatail.title;
 							total_fee1 = Tdatail.totalPayCash;
-							//取支付id 
-							alert(Orderid);
-							mui.ajax(serverUrl+'/api/qianmi/billorderinfo',{//获取保险信息
-								data:{qianmiOrderID:Orderid},
-								type:'post',
-								timeout:10000,
-								headers:{"token":oldToken},	              				
-								success:function(data){
-									console.log('记录',data);
-									console.log('记录返回'+JSON.stringify(data));
-									if(data.errno == 0){
-										
-									}else{
-										mui.toast('订单信息获取失败,请重试');
-									}
-									plus.nativeUI.closeWaiting();
-								},
-								error:function(xhr,type,errorThrown){ 
-									plus.nativeUI.closeWaiting();
-									mui.toast('保险信息获取失败,请重试');
-								}
-							});
+							
 							var dataobj = {};
 							dataobj.list = Tdatail.ticketOrders.ticketOrder; 
 							var html=template("infolist",dataobj);
@@ -493,7 +472,6 @@
 			};
 			loadfun();//加载方法
 			document.addEventListener('refresh', function() {
-				alert('我刷星了刷新');
 				loadfun();//加载方法
 			});
 			
@@ -512,7 +490,7 @@
 								var timequxiao = setTimeout(function(){
 									plus.webview.currentWebview().close();
 								},500)
-								mui.toast('取消成功');
+								mui.toast('退票成功');
 							}else{ 
 								plus.nativeUI.closeWaiting();
 								mui.toast('取消失败,请重试');
@@ -529,13 +507,17 @@
 				});
 			}
 			window.zhifufun = function(){//点击支付
-				alert(Orderid);
-				alert(Orderidfanhui1+'返回');
-				openview({
-					view:"payTickets.html",
-					id:"payTickets",
-					extrasobj:{body:body1,total_fee:total_fee1,Orderidnum:Orderid,Orderidfanhui:Orderidfanhui1}
-				})
+				if(mui('#zhuangtai')[0].innerText == '预定中'){
+					mui.toast('还在预定中,请稍候尝试!');
+					loadfun();//加载方法
+				}else{
+					openview({
+						view:"payTickets.html",
+						id:"payTickets",
+						extrasobj:{body:body1,total_fee:total_fee1,Orderidnum:Orderid,Orderidfanhui:Orderidfanhui1}
+					})
+				}
+				
 			}
 			window.quxiaofun = function(){//点击取消
 				plus.nativeUI.showWaiting('取消中 ...',{width:'100px',height:'80px'});

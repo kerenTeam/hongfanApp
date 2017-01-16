@@ -125,6 +125,7 @@
 			.nothing p{
 				text-align: center;
 			}
+			#main{padding-top: 0 !important;}
 		</style>
 	</head>
 	<body>
@@ -175,7 +176,7 @@
 						</script>
 						<!--飞机票-->
 						<script type="text/html" id="infolist2">
-							<dd onclick="openD2('<%= tradeNo%>')">
+							<dd onclick="openD2('<%= tradeNo%>','<%= id%>')">
 								<div class="orderbh box-s">
 									<img src="../../img/tickets/p.png" style="width: 0.2rem;vertical-align: middle;" /><span class="ticketT black">飞机票</span>
 									<span class="fr state"><%= stateName%></span>
@@ -220,6 +221,8 @@
 			loadflag = true; 
 			if(typeid == 'train'){
 				mui('#trainbtn')[0].onclick();
+			}else{
+				mui('#planebtn')[0].onclick();
 			}
 		});
 		
@@ -242,7 +245,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-					
+					console.log('库存订房',data);
 					var dataobj=data.data;
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
@@ -340,14 +343,18 @@
 							var tradeNo = JSON.parse(dataobj[i].data);
 							if(!tradeNo.errorToken){
 								var orderItem = tradeNo.air_order_create_response.ticketTrade.tradeNo;
-								idarray.push(orderItem);
+								idarray.push({
+									order:orderItem,
+									idnum:dataobj[i].id
+								});
+								
 							}
 						}
 						var numload = 0;
 						mui.each(idarray,function (index,element) {//遍历请求详情
 							console.log('我是遍历');
 							mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
-									data:{tradeNo:element},
+									data:{tradeNo:element.order},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
@@ -356,6 +363,7 @@
 										numload++;
 										console.log('我是请求成功');
 										var dataobj = data.data.train_order_detail_response.ticketTrade;
+										dataobj.id = element.idnum;
 										var html=template("infolist2",dataobj);
 										document.getElementById("infolistdiv").innerHTML += html;
 										console.log(numload)
@@ -412,10 +420,11 @@
 		
 	})
 	
-	function openD2(argu1){//点击查看机票订单详情
+	function openD2(argu1,argu2){//点击查看机票订单详情
 		openview({
 			view:'planeRecordDetail.html',
-			extrasobj:{tradeNo:argu1}
+			id:'planeRecordDetail',
+			extrasobj:{tradeNo:argu1,Orderidfanhui:argu2}
 		})
 	}
 	function openD(argu1,argu2){//打开火车详情
