@@ -443,10 +443,10 @@
 			var Timetoken = null;
 			var oldToken = null; 
 			oldToken = plus.storage.getItem('oldToken');
-			console.log(oldToken);
 			clearInterval(Timetoken);
 			againfun();
 			Timetoken = setInterval(function(){//等待oldToken加载方法
+				console.log('计时器');
 				if(plus.storage.getItem('oldToken')){
 					clearInterval(Timetoken);
 					oldToken = plus.storage.getItem('oldToken');
@@ -525,7 +525,7 @@
 						});
 					}
 				};
-			}//重载方法结束
+			
 			
 			//banner
 			mui.ajax(serverUrl+'/api/index/banner',{
@@ -537,7 +537,9 @@
 				success:function(data,type,xhr){
 	//				alert(JSON.stringify(data))
 					bannerObj={};
-					bannerObj.bannerList = eval("("+data.data.banner+")");
+					if(data.data.banner){
+						bannerObj.bannerList = eval("("+data.data.banner+")");
+					}
 					bannerObj.url = serverimgUrl;
 					var html = template('banner-detail',bannerObj);
 					document.getElementById('banner').innerHTML = html;
@@ -582,9 +584,9 @@
 				})
 			}
 			var currentPage =1, numsPerPage=4;
- 			//热门推荐 数据渲染 
+ 			//热门推荐 数据渲染  
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-				data: {currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
 				dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型 
 					timeout:10000,//超时时间设置为10秒；	
@@ -612,7 +614,7 @@
 									console.log('发起请求,实到'+Spagenum+'页');									
 									console.log('发起请求,应到'+Ypagenum+'页');
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:Spagenum,numsPerPage:numsPerPage,isRecommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+										data:{currentPage:Spagenum,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
 										dataType:'json',//服务器返回json格式数据
 										type:'post',//HTTP请求类型 
 										timeout:10000,//超时时间设置为10秒；	
@@ -651,7 +653,8 @@
 					mui("#upload")[0].innerHTML = ""; 
 				}
 			}); 
-		})();
+			}//重载方法结束
+		});
 	</script>	
 	</body>
 	

@@ -64,7 +64,7 @@
 					</ul>
 				</div>
 				
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">模拟支付</button>
+				<button type="button" style="display: none;" class="mui-btn mui-btn-danger mui-btn-block">模拟支付</button>
 			</div>
 		</div>
 	</body>
@@ -190,10 +190,12 @@ function payfun(id){
 					plus.nativeUI.closeWaiting();
 					plus.payment.request(pays[id],varpay,function(result){
 						console.log('支付宝返回',result);
+						var result = JSON.stringify(result);
+						console.log('支付宝返回str',result);
 						plus.nativeUI.showWaiting();
 						var zhifuqinmiwang = function(){//支付千米网,火车票
 							mui.ajax(serverUrl+'/api/qianmi/trainorderpay',{
-								data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1},	
+								data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1,payresult:result},	
 								dataType:'json',//服务器返回json格式数据
 								type:'post',//HTTP请求类型 
 								timeout:10000,//超时时间设置为10秒；
@@ -204,7 +206,7 @@ function payfun(id){
 										plus.nativeUI.alert("支付成功");
 										mui.fire(plus.webview.getWebviewById('trainRecord'),'refresh');
 										var timequxiao = setTimeout(function(){
-											plus.webview.currentWebview().close();
+//											plus.webview.currentWebview().close();
 										},500)
 									}else{
 										plus.nativeUI.closeWaiting();
@@ -221,7 +223,7 @@ function payfun(id){
 						}
 						var zhifuqinmiwang2 = function(){//支付千米网,飞机票
 							mui.ajax(serverUrl+'/api/qianmi/airorderpay',{
-								data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1},	
+								data:{userid:myuserid,tradeNo:tradeNostr,orderid:Orderidfanhui1,payresult:result},	
 								dataType:'json',//服务器返回json格式数据
 								type:'post',//HTTP请求类型 
 								timeout:10000,//超时时间设置为10秒；

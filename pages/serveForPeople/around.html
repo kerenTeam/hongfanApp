@@ -284,7 +284,6 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					console.log(data);
-//					alert(data.data[0].competency);
 					for(var i = 0;i < data.data.length;i++ ){
 						data.data[i].competency = eval("("+data.data[i].competency+")");
 					}
@@ -293,11 +292,10 @@
 						helpObj.helpLi = data.data;
 					var html = template('helper-detail',helpObj);
 					document.getElementById('helper').innerHTML = html; 
-					
 					plus.nativeUI.closeWaiting();//关闭等待框
 				},
 				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
+					mui.toast('当前网络不好,请重试');
 				}
 			}); 
 		})();
