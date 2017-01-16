@@ -507,11 +507,17 @@
 				});
 			}
 			window.zhifufun = function(){//点击支付
-				openview({
-					view:"payTickets.html",
-					id:"payTickets",
-					extrasobj:{body:body1,total_fee:total_fee1,Orderidnum:Orderid,Orderidfanhui:Orderidfanhui1}
-				})
+				if(mui('#zhuangtai')[0].innerText == '预定中'){
+					mui.toast('还在预定中,请稍候尝试!');
+					loadfun();//加载方法
+				}else{
+					openview({
+						view:"payTickets.html",
+						id:"payTickets",
+						extrasobj:{body:body1,total_fee:total_fee1,Orderidnum:Orderid,Orderidfanhui:Orderidfanhui1}
+					})
+				}
+				
 			}
 			window.quxiaofun = function(){//点击取消
 				plus.nativeUI.showWaiting('取消中 ...',{width:'100px',height:'80px'});
