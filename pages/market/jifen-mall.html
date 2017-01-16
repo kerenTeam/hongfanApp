@@ -44,10 +44,10 @@
 			    margin: 0 0 0.2rem 0;
 		}
 		/*加载*/
-			#upload{ 
-				text-align: center;margin-bottom: 15px;margin-top:15px;font-size: 12px;
-			}
-			#upload img{width: 60px;margin-top: -27px;}
+		#upload{ 
+			text-align: center;margin-bottom: 15px;margin-top:15px;font-size: 12px;
+		}
+		#upload img{width: 60px;margin-top: -27px;}
 		.jifenbtn{
 			margin-top: -0.05rem;
 		    background-color: #f53c42;
@@ -135,11 +135,11 @@
 									<div class="pub_img">
 										<a class="rcdPadding">
 											<%if(list[i].thumb){%>
-												<img src="<%=myurl%><%= list[i].thumb %>"></a>
-												<%}else{%>
-													<img src="../../img/market/mhot2.jpg"></a>
-													<%}%>
-											
+												<img src="<%=myurl%><%= list[i].thumb %>">
+											<%}else{%>
+												<img src="../../img/market/mhot2.jpg">
+											<%}%>
+										</a>
 									</div>
 									<div class="pub_wz">
 										<h3 class="jftit"><%= list[i].title %></h3>
@@ -182,9 +182,9 @@
         		id:"jifen-order",  
         	})
 		 }
-	 mui.plusReady(function(){
-	 			var myuserid = plus.storage.getItem('userid');
-					var oldtoken = plus.storage.getItem('oldToken');
+	 	mui.plusReady(function(){
+	 		var myuserid = plus.storage.getItem('userid');
+			var oldtoken = plus.storage.getItem('oldToken');
 	        plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取积分
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
@@ -215,82 +215,81 @@
 			});
 			
 			//获取积分商品
-				var pagenum =6,CcurrentPage = 1;
-				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:2,storeid:'',brand:'',keyword:'',order_type:'',desc:''},
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},	 
-					success:function(data,type,xhr){ 
-					console.log(JSON.stringify(data));
-					if(data.errno == 0){
-						if(data.data.return.data.length){
-							var objdata = {};
-							objdata.myurl = serverimgUrl;
-							data.data.return.data.price = parseInt(data.data.return.data.price);
-							objdata.list = data.data.return.data;
-							
-							var html=template("goodsList-detail",objdata);
-							document.getElementById("goodsList").innerHTML=html;
-							mui("#upload")[0].innerHTML = "";
-						}else{	
-							mui("#upload")[0].innerHTML = ""; 
-							mui('#nulldiv')[0].style.display = 'block';
-						}
-						//滚动到底部加载
-						$(window).scroll(function(){
-						　　var scrollTop = $(this).scrollTop();
-						　　var scrollHeight = $(document).height();
-						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight == scrollHeight){
-								//加载下一部分
-							  var nowpage = ++CcurrentPage;
-								if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
-									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-									console.log('可以请求数据');
-									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:2,storeid:'',brand:'',keyword:'',order_type:'',desc:''}, 
-										type:'post',
-										timeout:10000,
-										headers:{"token":oldtoken},	 
-										success:function(data,type,xhr){ 
-											console.log(JSON.stringify(data));
-											if(data.errno == 0){
-												var objdata = {};
-												objdata.myurl = serverimgUrl;
-												objdata.list = data.data.return.data;
-												var html=template("goodsList-detail",objdata);
-												document.getElementById("goodsList").innerHTML+=html;
-												mui("#upload")[0].innerHTML = "上滑加载 ";
-											}else{
-												--CcurrentPage;//请求失败,继续请求当前页
-												mui.toast("获取数据失败");
-											}
-											plus.nativeUI.closeWaiting();//关闭等待框
-										},
-										error:function(xhr,type,errorThrown){
-											--CcurrentPage;//请求失败,继续请求当前页
-											mui.toast("当前网络不好请重试");
-										}
-									});
-								}else{
-									mui("#upload")[0].innerHTML = "到底了";
-								}
-								//加载下一部分结束
-							　　}
-						});
+			var pagenum =6,CcurrentPage = 1;
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
+				data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:2,storeid:'',brand:'',keyword:'',order_type:'',desc:''},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){ 
+				console.log(JSON.stringify(data));
+				if(data.errno == 0){
+					if(data.data.return.data.length){
+						var objdata = {};
+						objdata.myurl = serverimgUrl;
+						data.data.return.data.price = parseInt(data.data.return.data.price);
+						objdata.list = data.data.return.data;
 						
-					}else{
-						mui.toast('没有数据');
+						var html=template("goodsList-detail",objdata);
+						document.getElementById("goodsList").innerHTML=html;
+						mui("#upload")[0].innerHTML = "";
+					}else{	
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
+					//滚动到底部加载
+					$(window).scroll(function(){
+					　　var scrollTop = $(this).scrollTop();
+					　　var scrollHeight = $(document).height();
+					　　var windowHeight = $(this).height();
+					　　if(scrollTop + windowHeight == scrollHeight){
+							//加载下一部分
+						  var nowpage = ++CcurrentPage;
+							if(nowpage<=data.data.return.totalPages){//当前页小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+								console.log('可以请求数据');
+								mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
+									data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',recommend:'',differentiate:2,storeid:'',brand:'',keyword:'',order_type:'',desc:''}, 
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldtoken},	 
+									success:function(data,type,xhr){ 
+										console.log(JSON.stringify(data));
+										if(data.errno == 0){
+											var objdata = {};
+											objdata.myurl = serverimgUrl;
+											objdata.list = data.data.return.data;
+											var html=template("goodsList-detail",objdata);
+											document.getElementById("goodsList").innerHTML+=html;
+											mui("#upload")[0].innerHTML = "上滑加载 ";
+										}else{
+											--CcurrentPage;//请求失败,继续请求当前页
+											mui.toast("获取数据失败");
+										}
+										plus.nativeUI.closeWaiting();//关闭等待框
+									},
+									error:function(xhr,type,errorThrown){
+										--CcurrentPage;//请求失败,继续请求当前页
+										mui.toast("当前网络不好请重试");
+									}
+								});
+							}else{
+								mui("#upload")[0].innerHTML = "到底了";
+							}
+							//加载下一部分结束
+						}
+					});
+				}else{
 					mui.toast('没有数据');
 				}
-				});
+				plus.nativeUI.closeWaiting();//关闭等待框
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting();//关闭等待框
+				mui.toast('没有数据');
+			}
+		});
 	 })
 	</script>
 </html>
