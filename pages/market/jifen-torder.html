@@ -368,9 +368,12 @@
 							<%for(var j =0;j<goodsList.length;j++){%>
 							<% if(goodsList[j].shopName ==  cates[i]){%>
 							<dd class="dd-padding kv-line-r mui-row goodsWrap"> <!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
-								
-								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>"/></h6>
-								
+								<% if(goodsList[j].goodsImg){%>
+								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
+								<%}else{%>
+							<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="../../img/market/none.png"/></h6>
+
+									<%}%>
 								<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8 goods">
 									<p>
 										<%=goodsList[j].goodsName%>
@@ -565,7 +568,7 @@
 							 orderSubmitData.push(orderList);
 						}
 						
-							 alert("orderSubmitData "+JSON.stringify(orderSubmitData))
+							// alert("orderSubmitData "+JSON.stringify(orderSubmitData))
 						
 						//alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
@@ -598,18 +601,18 @@
 								width: '100px',
 								height: '80px'
 							});
-							alert($("#addid").length)
+						//	alert($("#addid").length)
 							//地址
 							var MYaddress = {};
 							var addressid =$("#addid").attr("data-id");
 							MYaddress.people = $("#addid").attr("data-name");
 							MYaddress.addressNow = $("#addid").attr("data-address");
 							MYaddress.phoneNow =  $("#addid").attr("data-phone");
-							 alert("addressid "+addressid);
+							// alert("addressid "+addressid);
 							//买家留言
 							var noticeData=[];  
 							$(".tipsWrap").each(function(){
-								alert("tipsWrap "+$(this).attr("data-id"))
+								//alert("tipsWrap "+$(this).attr("data-id"))
 								var notice = $(this).find("input").val();
 								for(var i=0;i<orderSubmitData.length;i++){
 									orderSubmitData[i].sendAddress = MYaddress; 
@@ -617,7 +620,7 @@
 											if(orderSubmitData[i].goodsData[0].diffrentiate == 2){ 
 											orderSubmitData[i].order_type = 4; 
 									} 
-										alert($(this).attr("data-id")+"  "+orderSubmitData[i].storeid)
+									//	alert($(this).attr("data-id")+"  "+orderSubmitData[i].storeid)
 									    if(orderSubmitData[i].storeid == 0 ){
 											orderSubmitData[i].isBySelf = 0;
 										}else{
@@ -626,7 +629,7 @@
 											 	var thisShopID = isBySelfDIV[m].getAttribute("data-id");
 											 	if(orderSubmitData[i].storeid == thisShopID){
 											 		var isBySelf = isBySelfDIV[m].getElementsByClassName("isziti")[0].value; 
-											 		alert("isBySelf "+isBySelf)
+											 	//	alert("isBySelf "+isBySelf)
 											 		if(isBySelf == 0){
 											 			orderSubmitData[i].isBySelf = 0;
 											 		}else{
@@ -650,23 +653,21 @@
 								
 							});
 							 
-							 alert("orderSubmitData ewrew"+JSON.stringify(orderSubmitData))
+							
 							//优惠券id
 							var coupon_id='';
 							$(".quanc").each(function(){
 								if($(this).css("display")=="block"){
 									coupon_id =$(this).attr("data-id");
 								}
-							})
-							alert(myuserid+" coupon_id "+coupon_id)
+							}) 
 							 
-							var goodsdata = JSON.stringify(orderSubmitData);
-							var notice = JSON.stringify(noticeData);
-	//						 alert(goodsdata)
+							var goodsdata = JSON.stringify(orderSubmitData); 
+							var notice = JSON.stringify(noticeData); 
 							//提交
 							console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
 			 					mui.ajax(serverUrl+'/api/mall/neworder',{
-									data:{userid:myuserid,addressid:addressid,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:1},
+									data:{userid:myuserid,addressid:addressid,paytotal:0,goodsdata:goodsdata,notice:notice,coupon_id:'',isIntergal:1},
 									dataType:'json',
 									type:'post',
 									timeout:1000,
@@ -674,7 +675,7 @@
 									success:function(data,type,xhr){ 
 									 
 										plus.nativeUI.closeWaiting(); 
-	//									alert(JSON.stringify(data))
+										alert(JSON.stringify(data))
 										if(data.errno==0){
 										//	alert(JSON.stringify(data.data))
 											var payMent = data.data.payment;
