@@ -192,59 +192,11 @@
 			</div>
 		</header>
 		
-		 <div class="screening" id="screeningdiv" style="top: 50px;">
-		    <ul>
-		        <li class="Brand">综合</li>
-		        <li class="Regional" onclick="order('sales','asc')">销量</li>
-		        <li class="Sort">价格</li>
-		    </ul>
-		</div>
 		
-		<div class="Category-eject">
-		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="order('create_time','asc')">新品</li>
-		        <li onclick="order('comments','asc')">评价</li>
-		    </ul>
-		</div>
-		<!--<div class="grade-eject">
-		    <ul class="grade-w" id="gradew">
-		        <li onclick="order('sales','asc')">从高到低</li>
-		    </ul>
-		</div>-->
-		<div class="Sort-eject Sort-height">
-		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="order('price','desc')">从高到低</li>
-		        <li onclick="order('price','asc')">从低到高</li>
-		    </ul>
-		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main">
-				<div class="guess-like">
-					<dl class="list" id="goodsList">
-						<dd class="goodsItem">
-					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
-						<div class="dealcard">
-							<div class="dealcard-img imgbox">
-								<img src="<%=myUrl %><%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand single-line"><%= list[i].title %></div>
-								<div class="title text-block bage">
-								</div>
-								<div class="price mui-row">
-									<div class="mui-col-sm-4 mui-col-xs-4">
-										<span class="strong-color">￥</span><span class="strong"><%= list[i].price %></span>
-									</div>
-									<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价<%= list[i].comments %>条</span>
-									<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售<%= list[i].sales %></span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</dd>
-					</dl>
-				</div>
+				<div id="goodsList"></div>
 				<div class="upload text-center text-xs gray" id="upload"></div>
 				<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
 					<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
@@ -256,33 +208,64 @@
 		
 		<!--模板渲染数据-->
 		<script id="goodsList-detail" type="text/html">
-			<%if(list.length==0){%>
-				<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
-			<%}else{%>
-				<% for(var i=0;i<list.length;i++){ %>
-				<dd class="goodsItem">
-					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
-						<div class="dealcard">
-							<div class="dealcard-img imgbox">
-								<img src="<%=myUrl %><%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand single-line"><%= list[i].title %></div>
-								<div class="title text-block bage">
-								</div>
-								<div class="price mui-row">
-									<div class="mui-col-sm-4 mui-col-xs-4">
-										<span class="strong-color">￥</span><span class="strong"><%= list[i].price %></span>
-									</div>
-									<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价<%= list[i].comments %>条</span>
-									<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售<%= list[i].sales %></span>
-								</div>
-							</div>
+			<div class="guess-like">
+					<dl class="list">
+					  	<div class="screening" id="screeningdiv" style="top: 50px;">
+						    <ul>
+						        <li class="Brand">综合</li>
+						        <li class="Regional" onclick="order('sales','asc')">销量</li>
+						        <li class="Sort">价格</li>
+						    </ul>
 						</div>
-					</a>
-				</dd>
-			<% } %>
-			<%}%>
+						
+						<div class="Category-eject">
+						    <ul class="Category-w" id="Categorytw">
+						        <li onclick="order('create_time','asc')">新品</li>
+						        <li onclick="order('comments','asc')">评价</li>
+						    </ul>
+						</div>
+						<!--<div class="grade-eject">
+						    <ul class="grade-w" id="gradew">
+						        <li onclick="order('sales','asc')">从高到低</li>
+						    </ul>
+						</div>-->
+						<div class="Sort-eject Sort-height">
+						    <ul class="Sort-Sort" id="Sort-Sort">
+						        <li onclick="order('price','desc')">从高到低</li>
+						        <li onclick="order('price','asc')">从低到高</li>
+						    </ul>
+						</div>
+					
+					<%if(list.length==0){%>
+						<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
+					<%}else{%>
+						<% for(var i=0;i<list.length;i++){ %>
+						<dd class="goodsItem">
+							<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
+								<div class="dealcard">
+									<div class="dealcard-img imgbox">
+										<img src="<%=myUrl %><%= list[i].thumb %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
+									</div>
+									<div class="dealcard-block-right">
+										<div class="dealcard-brand single-line"><%= list[i].title %></div>
+										<div class="title text-block bage">
+										</div>
+										<div class="price mui-row">
+											<div class="mui-col-sm-4 mui-col-xs-4">
+												<span class="strong-color">￥</span><span class="strong"><%= list[i].price %></span>
+											</div>
+											<span class="mui-col-sm-4 mui-col-xs-4 middle Lgray">评价<%= list[i].comments %>条</span>
+											<span class="mui-col-sm-4 mui-col-xs-4 right Lgray">已售<%= list[i].sales %></span>
+										</div>
+									</div>
+								</div>
+							</a>
+						</dd>
+					<% } %>
+					<%}%>
+					
+					</dl>
+				</div>
 			
 		</script>
 	</body>
@@ -291,39 +274,34 @@
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数
 		mui.plusReady(function(){
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
-			//获取页面传值 商品分类id
-			var goodcatId = plus.webview.currentWebview().goodscatId;
 			
+				var can1 = 'sales',can2 = 'desc';
+			//获取页面传值 商品分类id
+			var goodcatId = plus.webview.currentWebview().goodscatId; 
 			//按照选择排序
 			window.order = function(orderType,sequence){
 				var pagenum = 8,CcurrentPage = 1;
+					can1 = orderType,can2 = sequence;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
-					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',isRecommend:'',differentiate:4,storeid:'',brand:'',keyword:'',order_type:'',desc:sequence},
+					data:{currentPage:CcurrentPage,numsPerPage:pagenum,categoryid:'',isRecommend:'',differentiate:4,storeid:'',brand:'',keyword:'',order_type:can1,desc:can2},
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
-					console.log(JSON.stringify(data)); 
+					success:function(data,type,xhr){  
 //					alert(JSON.stringify(data.data.return.data[0].thumb)); 
-					if(data.errno == 0){
-						if(data.data.return.data.length){
+					if(data.errno == 0){ 
+						if(data.data.return.data.length!=0){ 
 							var objdata = {};
 							objdata.myUrl = serverimgUrl;
 							objdata.list = data.data.return.data;
 							var html=template("goodsList-detail",objdata);
 							document.getElementById("goodsList").innerHTML=html;
 							mui("#upload")[0].innerHTML = "";
-						}else{	
-							mui("#upload")[0].innerHTML = ""; 
-							mui('#nulldiv')[0].style.display = 'block';
-						}
-						plus.nativeUI.closeWaiting();//关闭等待框
-						
-						//滚动到底部加载
+								//滚动到底部加载
 						$(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
@@ -335,7 +313,7 @@
 									console.log('发起请求,实到'+Spagenum+'页');									
 									console.log('发起请求,应到'+Ypagenum+'页');
 									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{  
-										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:'',isRecommend:'',differentiate:4,storeId:'',brand:'',keyword:'',order_type:'',desc:sequence}, 
+										data:{currentPage:nowpage,numsPerPage:pagenum,categoryid:'',isRecommend:'',differentiate:4,storeId:'',brand:'',keyword:'',order_type:can1,desc:can2}, 
  
 										type:'post',
 										timeout:10000, 
@@ -365,6 +343,13 @@
 								}
 							　}
 						});//加载下一部分结束
+						}else{	
+							mui("#upload")[0].innerHTML = ""; 
+							mui('#nulldiv')[0].style.display = 'block';
+						}
+						plus.nativeUI.closeWaiting();//关闭等待框
+						
+					
 						
 					}else{
 						mui("#upload")[0].innerHTML = ""; 
@@ -388,7 +373,7 @@
 			//跳转详情
 			window.goInfo =  function(goodsId){ 
 				 openview({
-				 	view:"hometown-detail.html",
+				 	view:"mall-detail.html",
 				 	extrasobj:{goodsId:goodsId}
 				 })
 			}
