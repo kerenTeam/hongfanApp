@@ -21,6 +21,8 @@
 		<script type="text/javascript" src="../../js/swiper.min.js"></script>
 		<script src="../../js/mui.picker.min.js"></script>
 		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
 		
 		
 		<style type="text/css">
@@ -42,44 +44,30 @@
 				opacity: 1;
 				border: none;
 			}
-			.banner{
-				height: initial;
+			.mui-slider-item{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+			}
+			.mui-slider-item img{
+				position: absolute;
+				width: 100%; 
+				height:100%;
+				top: 0;
 			}
 			.mui-slider{
 				margin-top: 50px;
 			}
-			.mui-slider .mui-slider-group .mui-slider-item{
-				display: inline-flex;
-			}
-			.mui-bar{
-				height: 50px;
-			}
-			.mui-title,.mui-icon{
-				line-height: 50px;
-			}
-			.mui-bar .mui-icon{
-				padding: 0;
-			}
-			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
-				color: #fff;
-			}
-			.mui-bar-nav{
-				box-shadow: none;
-			}
-			.mui-icon{
-				line-height: 50px;
-			}	
-			.mui-icon .iconfont{
-				font-size: 18px;
-			}
+			
 			.caiPrice{
 				margin: 20px 0 10px;
 			}
-			.caiPrice .mui-col-xs-4{
+			.caiPrice .mui-col-xs-6{
 				padding: 0 5px;
 				float: left;
 			}
-			.caiPrice .mui-col-xs-4 button{
+			.caiPrice .mui-col-xs-6 button{
 				border-radius: 0;
 				padding-right: 15px;
 				background-color: #f53c42;
@@ -151,218 +139,183 @@
 		    <h1 class="mui-title">超市比价</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<!--轮播图-->
-		<div class="mui-slider">
-			  <div class="mui-slider-group mui-slider-loop">
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/marketPrice/market-banner.jpg" /></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/marketPrice/market-banner.jpg"></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/marketPrice/market-banner.jpg"></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/marketPrice/market-banner.jpg"></a></div>
-			    <div class="mui-slider-item"><a href="#"><img src="../../img/marketPrice/market-banner.jpg"></a></div>
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../../img/marketPrice/market-banner.jpg" /></a></div>
-			  </div>
-			 <div class="mui-slider-indicator">
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator mui-active"></div>
-            </div> 
-		</div>
-		<!--轮播图结束-->
-		
-		<!--比较选项-->
-		<div class="mui-table clear caiPrice">
-			<div class="mui-col-xs-4">
-				<button id='showUserPicker1' class="mui-btn mui-btn-block showUserPicker" type='button'>超市</button>
-				<div id='userResult1' class="ui-alert"></div>
+		<div id="main">
+			<div id="scroller">
+				<!--轮播图-->
+				<div class="mui-slider" id="banner"></div>
+				<!--banner数据渲染-->
+				<script type="text/html" id="banner-detail">
+					<div class="mui-slider-group mui-slider-loop">
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    </div>
+						<% for(var i=0;i<bannerList.length;i++){ %> 
+					    	<div class="mui-slider-item">
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	</div>
+					     <% } %>
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    </div>
+					</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator mui-active"></div>
+						<% for(var i=0;i<bannerList.length-1;i++){ %>
+					    	<div class="mui-indicator"></div>
+					    <% } %>
+		            </div> 
+				</script>
 			</div>
-			</span>
-			<div class="mui-col-xs-4">
-				<button id='showUserPicker2' class="mui-btn mui-btn-block showUserPicker" type='button'>商品</button>、
-				<div id='userResult2' class="ui-alert"></div>
-			</div>
-			<div class="mui-col-xs-4">
-				<button id='showUserPicker3' class="mui-btn mui-btn-block showUserPicker" type='button'>2016-08-11</button>
-				<div id='userResult2' class="ui-alert"></div>
-			</div>
-		</div>	
-		<div class="pricetable">
-		<ul>
-			<li class="th">商品</li>
-			<li class="th">规格</li>
-			<li class="th">价格</li>
-		</ul>
-		<div id="caiList">
+			<!--比较选项-->
+			<div class="mui-table clear caiPrice">
+				<div class="mui-col-xs-6">
+					<button id='showUserPicker1' class="mui-btn mui-btn-block showUserPicker" type='button'></button>
+					<div id='userResult1' class="ui-alert"></div>
+				</div>
+				</span>
+				<div class="mui-col-xs-6">
+					<button id='showUserPicker2' class="mui-btn mui-btn-block showUserPicker" type='button'></button>、
+					<div id='userResult2' class="ui-alert"></div>
+				</div>
+			</div>	
+			<div class="pricetable">
 			<ul>
-				<li class="row"><p>没有最新菜价！换一天试试。</p></li>
+				<li class="th">商品</li>
+				<li class="th">规格</li>
+				<li class="th">价格</li>
 			</ul>
+			<div id="caiList">
+				<ul>
+					<li class="row"><p>没有最新菜价！换一天试试。</p></li>
+				</ul>
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-		mui.init();
-		mui.ready(function() {
-			//轮播图
-			//获得slider插件对象
-			var gallery = mui('.mui-slider');
-			gallery.slider({
-				  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
-			});
-			
-			//超市名选择
-			var userPicker1 = new mui.PopPicker();
-			userPicker1.setData([{
-				value: 'xsj',
-				text: '新世纪超市'
-			}, {
-				value: 'jlf',
-				text: '家乐福超市'
-			}, {
-				value: 'wem',
-				text: '沃尔玛超市'
-			}, {
-				value: 'bc',
-				text: '重百超市'
-			}]);
-			var showUserPickerButton1 = document.getElementById('showUserPicker1');
-			var userResult1 = document.getElementById('userResult1');
-			showUserPickerButton1.addEventListener('tap', function(event) {
-				userPicker1.show(function(items) {
-					showUserPicker1.innerText = items[0].text;
-				});
-			})
-			//商品选择
-			var userPicker2 = new mui.PopPicker();
-			userPicker2.setData([{
-				value: 'sc',
-				text: '蔬菜'
-			}, {
-				value: 'rl',
-				text: '肉类'
-			}, {
-				value: 'nzp',
-				text: '奶制品'
-			}, {
-				value: 'gh',
-				text: '干货'
-			}]);
-			var showUserPickerButton2 = document.getElementById('showUserPicker2');
-			var userResult2 = document.getElementById('userResult2');
-			showUserPickerButton2.addEventListener('tap', function(event) {
-				userPicker2.show(function(items) {
-					showUserPicker2.innerText = items[0].text;
-				});
-			})
-		})
-	</script>
-	<script type="text/javascript">
 //		mui.init();
-//		mui.ready(function() {
-//			
+		mui.ready(function() {
+//			//获取缓存
+			var oldToken = plus.storage.getItem('oldToken');
+			console.log(oldToken)
 			
-//			//select1
-//			var userPicker1 = new mui.PopPicker();
-//			var data1 = [];
-//			mui.ajax('http://www.krfer.com/API/API_Vegetable?dis=FoodMarket',{
-//				dataType:'json',//服务器返回json格式数据
-//				type:'get',//HTTP请求类型
-//				timeout:10000,//超时时间设置为10秒；	
-//				success:function(data){
-//					var shuju = eval('('+data+')');
-//					for (var i = 0;i < shuju.length;i++) {
-//						var obj = {};
-//						obj.value = shuju[i].foodmarket;
+			//banner
+			mui.ajax(serverUrl+'/api/index/banner',{
+				data:{banner_type:9},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					alert(JSON.stringify(data))
+					bannerObj={};
+					if(data.data.banner){
+						bannerObj.bannerList = eval("("+data.data.banner+")");
+					}
+					bannerObj.url = serverimgUrl;
+					var html=template('banner-detail',bannerObj);
+					document.getElementById('banner').innerHTML = html;
+					plus.nativeUI.closeWaiting();//关闭等待框
+					//轮播图,获得slider插件对象
+					var gallery = mui('.mui-slider');
+					gallery.slider({
+					  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+					});
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast('响应失败  !');
+				}
+			}); 
+			//获取超市名称
+			var marketName,goodsName,dateTime;
+			var userPicker1 = new mui.PopPicker();
+			var userPicker2 = new mui.PopPicker();
+			var userPicker3 = new mui.PopPicker();
+			var data1 = [];
+			var data2 = [];
+			var data3 = [];
+			mui.ajax(serverUrl+'/api/localservice/marhetandgoods',{
+//				data:{marketName:marketName,goodsName:goodsName,dateTime:dateTime},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data.goods_name));
+					//超市名数据
+					var shuju = data.data.market_name;
+					for (var i = 0;i < shuju.length;i++) {
+						var obj = {};
+						obj.text = shuju[i].market_name;
 //						obj.text = shuju[i].foodmarket;
-//						data1.push(obj);
-//					}
-//					userPicker1.setData(data1);
-//					var showUserPickerButton1 = document.getElementById('showUserPicker1');
-//					showUserPickerButton1.innerHTML = data1[0].text;
-//					showUserPickerButton1.addEventListener('tap', function(event) {
-//						userPicker1.show(function(items) {
-//							var aa = JSON.stringify(items[0]);
-//							var obj = eval('('+aa+')');
-//							showUserPickerButton1.innerHTML = obj.text;
-//							caiPrice();
-//							//返回 false 可以阻止选择框的关闭
-//							//return false;
-//						});
-//					}, false);
-//				}
-//			});
-//			
-//			
-//			
-//			//select2
-//			var userPicker2 = new mui.PopPicker();
-//			var data2 = [];
-//			mui.ajax('http://www.krfer.com/API/API_Vegetable?dis=MarketCategorie',{
-//				dataType:'json',//服务器返回json格式数据
-//				type:'get',//HTTP请求类型
-//				timeout:10000,//超时时间设置为10秒；	
-//				success:function(data){
-//					var shuju = eval('('+data+')');
-//					for (var i = 0;i < shuju.length;i++) {
-//						var obj = {};
-//						obj.value = shuju[i].marketcategorie;
-//						obj.text = shuju[i].marketcategorie;
-//						data2.push(obj);
-//					}
-//					userPicker2.setData(data2);
-//					var showUserPickerButton2 = document.getElementById('showUserPicker2');
-//					showUserPickerButton2.innerHTML = data2[0].text;
-//					showUserPickerButton2.addEventListener('tap', function(event) {
-//						userPicker2.show(function(items) {
-//							var aa = JSON.stringify(items[0]);
-//							var obj = eval('('+aa+')');
-//							showUserPickerButton2.innerHTML = obj.text;
-//							caiPrice();
-//							//返回 false 可以阻止选择框的关闭
-//							//return false;
-//						});
-//					}, false);
-//				}
-//			})
-//			//select3
-//			var userPicker3 = new mui.PopPicker();
-//		     
-//			var data3 = [];
-//			mui.ajax('http://www.krfer.com/API/API_Vegetable?dis=Time',{
-//				dataType:'json',//服务器返回json格式数据
-//				type:'get',//HTTP请求类型
-//				timeout:10000,//超时时间设置为10秒；	
-//				success:function(data){
-//					caiPrice();
-//				    var now = new Date(data);
-//				    for(var i=0;i<7;i++){
-//				    	var html = {};
-//				        var date = new Date(now.getTime() - i * 24 * 3600 * 1000);//循环得出每天的日期
-//				        var month = date.getMonth() + 1;
-//				        var day = date.getDate();
-//				        var year = date.getFullYear(); 
-//				        html.value = year+'-'+month+'-'+day;
-//				        html.text = year+'-'+month+'-'+day;
-//				        data3.push(html);
-//				      }
-//					userPicker3.setData(data3);
-//					var showUserPickerButton3 = document.getElementById('showUserPicker3');
-//					showUserPickerButton3.innerHTML = data3[0].text;
-//					showUserPickerButton3.addEventListener('tap', function(event) {
-//						userPicker3.show(function(items) {
-//							var aa = JSON.stringify(items[0]);
-//							var obj = eval('('+aa+')');
-//							showUserPickerButton3.innerHTML = obj.text;
-//							caiPrice();
-//							//返回 false 可以阻止选择框的关闭
-//							//return false;
-//						});
-//					}, false);
-//				}
-//			});
-//			
-//			
-//		})
+						data1.push(obj);
+					}
+					userPicker1.setData(data1);
+					var showUserPickerButton1 = document.getElementById('showUserPicker1');
+					showUserPickerButton1.innerHTML = data1[0].text;
+					marketName = data1[0].text;
+					showUserPickerButton1.addEventListener('tap', function(event) {
+						userPicker1.show(function(items) {
+							showUserPicker1.innerText = items[0].text;
+							marketName = showUserPicker1.innerText;
+						});
+					})
+					//商品数据
+					var shuju2 = data.data.goods_name;
+					for (var i = 0;i < shuju2.length;i++) {
+						var obj2 = {};
+						obj2.text = shuju2[i].goods_name;
+						data2.push(obj2);
+					}
+					userPicker2.setData(data2);
+					var showUserPickerButton2 = document.getElementById('showUserPicker2');
+					showUserPickerButton2.innerHTML = data2[0].text;
+					goodsName = data2[0].text;
+					showUserPickerButton2.addEventListener('tap', function(event) {
+						userPicker2.show(function(items) {
+							showUserPicker2.innerText = items[0].text;
+							goodsName = showUserPicker2.innerText;
+						});
+					})
+					//时间选择
+			        var date = new Date();
+				    var month = date.getMonth() + 1;
+				    var strDate = date.getDate();
+				    if (month >= 1 && month <= 9) {
+				        month = "0" + month;
+				    }
+				    if (strDate >= 0 && strDate <= 9) {
+				        strDate = "0" + strDate;
+				    }
+				    var dateTime = date.getFullYear() + "-" + month + "-" + strDate;
+//					alert(dateTime);
+					//查询菜价
+					getPrice(marketName,goodsName,dateTime);
+					function getPrice(marketName,goodsName,dateTime){
+						mui.ajax(serverUrl+'/api/localservice/parity',{
+							data:{marketName:marketName,goodsName:goodsName,dateTime:dateTime},
+							dataType:'json',
+							type:'post',
+							timeout:1000,
+							headers:{"token":oldToken},	 
+							success:function(data,type,xhr){
+								alert(JSON.stringify(data));
+								//超市名数据
+								
+								
+								
+							},
+							error:function(xhr,type,errorThrown){
+								alert('响应失败  !');
+							}
+						}); 
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			}); 
 //			
 //		//查询菜价
 //		function caiPrice(){
@@ -424,14 +377,7 @@
 //					plus.nativeUI.toast('请求密钥出错');
 //				}
 //		 	});
-//		}
-	</script>
-	<script type="text/javascript">
-		//右滑返回
-//		touClass.call(document);
-//		document.touch('',function(){
-//			mui.back();
-//		});
-	</script>
+		})
+</script>
 	
 </html>
