@@ -62,6 +62,7 @@
 			padding: 0 auto 0.05rem auto;
 		}
 		.Ctitle{
+			color: black;
 			font-size: 0.14rem;
 			line-height: 35px;
 		}
@@ -95,18 +96,27 @@
 				 
 				<!--渲染数据-->
 				<script type="text/html" id="orderTpl">
-					<% for(var i = 0;i<objData.length;i++){ %>
+					<% for(var i = 0;i<orderData.length;i++){ %>
 						<% if(orderData[i].order_type==4){ %>
 						<div class="ddafter">
+							<% if(orderData[i].order_status== 1){ %>
+								<p style="font-size: 0.12rem;border-left: 3px solid orangered; padding-left: 3px;">待发货</p>
+							<%}else if(orderData[i].order_status== 3){%>
+								<p style="font-size: 0.12rem;border-left: 3px solid orangered; padding-left: 3px;">已发货</p>
+								<%}%>
 							<div class="mui-row aclist">
 								 <div class="fl acleft">
-								 	<img src="../../img/market/mhot2.jpg" alt="" />
+								 	<% if(orderData[i].storeid== 0){ %>
+										<img src="<%=orderData[i].goods_data.goodsData[0].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+									<% }else{ %>
+										<img src="<%=myUrl %><%=orderData[i].goods_data.goodsData[0].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+									<% } %>
 								 </div>
 								 <div class="fl acright">
-								 	<p class="gray Ctitle">商品名xxxxxxxxx</p>
-								 	<div class=" "><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" />220</div>
+								 	<p class="gray Ctitle"><%=orderData[i].goods_data.goodsData[0].goodsName%></p>
+								 	<div style="color: red;"><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" /><%=orderData[i].goods_data.goodsData[0].goodsPrice%></div>
 								 	
-								 	<div><img src="../../img/time.png"/><small>兑换时间：2017.01.02</small></div>
+								 	<div><img src="../../img/time.png"/><small>兑换时间：<%=orderData[i].create_time%></small></div>
 								 </div>
 							</div>
 						</div>
@@ -132,7 +142,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-					alert(JSON.stringify(data))
+				//	alert(JSON.stringify(data))
 //					alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].storeid))
 //					alert(JSON.stringify(data.data[0].goods_data.goodsData[0]));
 					plus.nativeUI.closeWaiting(); 

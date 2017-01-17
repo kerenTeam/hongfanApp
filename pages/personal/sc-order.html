@@ -222,15 +222,27 @@
 												</div>
 											</a>
 											<%}%> 
-											<div class="order-bottom clearfloat box-s tip">
-												<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
-													<%if(orderData[i].goods_data.postFee==0){%>
-														(不含运费)
-														<%}else{%>
-															(含运费<%=orderData[i].goods_data.postFee%>)
-															<%}%>
-													</sub></p>
-											</div>
+											<%if(orderData[i].order_status==6 || orderData[i].order_status==7 || orderData[i].order_status==8){%>
+												<div class="order-bottom clearfloat box-s tip" style="border-bottom: 0;">
+													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
+														<%if(orderData[i].goods_data.postFee==0){%>
+															(不含运费)
+															<%}else{%>
+																(含运费<%=orderData[i].goods_data.postFee%>)
+																<%}%>
+														</sub></p>
+												</div>
+											<%}else{%>
+												<div class="order-bottom clearfloat box-s tip">
+													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
+														<%if(orderData[i].goods_data.postFee==0){%>
+															(不含运费)
+															<%}else{%>
+																(含运费<%=orderData[i].goods_data.postFee%>)
+																<%}%>
+														</sub></p>
+												</div>
+												<%}%>
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
@@ -261,9 +273,7 @@
 												</div>
 											<%}%>
 											<%if(orderData[i].order_status==6 || orderData[i].order_status==7 || orderData[i].order_status==8){%>
-												<div class="order-bottom clearfloat box-s"> 
-													<span class="fr">交易金额:<%=orderData[i].amount%>  退款金额：￥<%=orderData[i].amount%></span>
-												</div>
+												 
 											<%}%> 
 											<%if(orderData[i].order_status==9){%>
 												<div class="order-bottom clearfloat box-s"> 
@@ -292,16 +302,13 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		window.openDetail = function(){
-			openview({
-//			 	view:"address-edit.html"
-			})
-		}
+		 
 		
 		mui.plusReady(function(){
-			
-			window.addEventListener('refresh',function(event){
-				 
+			if(plus.webview.getWebviewById("pay")){ 
+			   plus.webview.getWebviewById("pay").close();
+			}
+			window.addEventListener('refresh',function(event){  
 				load();
 			})
 			
@@ -321,7 +328,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
-					alert(JSON.stringify(data))
+				//	alert(JSON.stringify(data))
 //					alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].storeid))
 //					alert(JSON.stringify(data.data[0].goods_data.goodsData[0]));
 					plus.nativeUI.closeWaiting(); 
@@ -330,12 +337,13 @@
 						if(data.data.length!=0){ 
 							for(var i=0;i<data.data.length;i++){ 
 								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
+								
 							}
-							 alert(data.data[0].goods_data.storeid)
+							// alert(data.data[0].goods_data.storeid)
 							
 							var obj={}; 
 							 obj.orderData=data.data;
-							 obj.myUrl=serverimgUrl;
+							 obj.myUrl=serverimgUrl; 
 							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
 							$('.tab-nav li').click(function(){ 
@@ -474,6 +482,8 @@
 				})
 			}
 			window.orderInfo=function(orderId){
+			//	alert(orderId)
+				
 				openview({
 					view:'orderDetail.html',
 					id:'orderDetail',

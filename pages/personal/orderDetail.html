@@ -142,7 +142,7 @@
 										<%}%>
 										<%if(data.is_intergal!=0){%>
 											<li class="gray">
-												<div class="tip-title">积分抵扣<span class="fr">-￥ 1.00</span></div>
+												<div class="tip-title">积分抵扣<span class="fr">-￥ <%=data.is_intergal%></span></div>
 											</li>
 										<%}%>
 										<%if(data.coupon_id!=null){%>
@@ -150,9 +150,15 @@
 											<div class="tip-title">优惠券抵扣<span class="fr">-￥ 10.00</span></div>
 										</li>
 										<%}%>
-									<li>
-										<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=data.goods_data.totalMoney%></span></div>
-									</li>
+										<%if(total_fee){%>
+											<li>
+												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=total_fee%></span></div>
+											</li>
+										<%}else{%>
+											<li>
+												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=data.goods_data.totalMoney%></span></div>
+											</li>
+											<%}%> 
 								</ul>
 							</dd>
 						</dl>
@@ -162,17 +168,19 @@
 									<li>
 										<div class="tip-title">订单编号：<%=data.order_UUID%></div>
 									</li>
-									<%if(data.order_status!=1){%>
+									<%if(data.order_status!=1){%> 
+									<%if(data.pay_no){%>
 									<li>
-										<div class="tip-title">支付方式：微信支付</div>
+										<div class="tip-title">支付方式：<%=data.pay_no.channel.description%></div>
 									</li>
 									<li>
-										<div class="tip-title">交易号：<%=data.pay_no%></div>
+										<div class="tip-title">交易号：<%=out_trade_no%></div>
 									</li>
+									<%}%> 
 									<li>
 										<div class="tip-title">付款时间：2016-01-01&nbsp;16:25</div>
 									</li>
-									<%}%>
+									<%}%> 
 									<li>
 										<div class="tip-title">创建时间：<%=data.create_time%></div>
 									</li>
@@ -218,7 +226,7 @@
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
 				<%}%>
 				<%if(data.order_status==6 || data.order_status==7 || data.order_status==8){%>
-					<span class="fr" style="margin-right: 15px;">交易金额:<%=data.amount%>  退款金额：￥<%=data.amount%></span>
+					<span class="fr" style="margin-right: 15px;">交易金额:<%=total_fee%>  退款金额：￥<%=total_fee%></span>
 				<%}%> 
 				<%if(data.order_status==9){%> 
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button> 
@@ -230,10 +238,8 @@
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
-			if(plus.webview.getWebviewById("pay")){ 
-			   plus.webview.getWebviewById("pay").close();
-			}
-			window.addEventListener('refresh',function(event){ 
+			
+			window.addEventListener('refresh',function(event){  
 				load();
 			})
 			
@@ -256,9 +262,22 @@
 						console.log(JSON.stringify(data.data)) ;
 				       if(data.errno===0){
 					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
-					        var orderInfo = {};
+					       	 var orderInfo = {};
+					       	 if(data.data[0].pay_no){
+					       	 	data.data[0].pay_no = eval("("+data.data[0].pay_no+")");
+					       	 	var aa = JSON.parse(data.data[0].pay_no.rawdata);
+								var out_trade_no = queryStr(aa.result).out_trade_no;
+								out_trade_no = out_trade_no.replace(/\"/g, "");
+								var total_fee =queryStr(aa.result).total_fee; 
+								total_fee = total_fee.replace(/\"/g, "");
+								orderInfo.out_trade_no = out_trade_no;
+					        	orderInfo.total_fee =parseFloat(total_fee);
+					       	 }
+					       
 					        orderInfo.myUrl = serverimgUrl;
 					        orderInfo.data= data.data[0];
+					      
+					        
 					        console.log("orderInfo.data "+JSON.stringify(data.data[0]))
 					        document.getElementById("orderInfo").innerHTML = template("orderTpl",orderInfo);
 					        document.getElementById("button").innerHTML = template("buttonTpl",orderInfo)
@@ -379,5 +398,14 @@
 				})
 			}
 		})
+		function queryStr(str) {
+		    var r = str.slice(1).split("&"),
+		        e = {};
+		    return r.forEach(function(r) {
+		        var t;
+		        r && (t = r.split("="), 2 === t.length && (e[t[0]] = t[1]))
+		    }), e
+		}
 	</script>
+	
 </html>
