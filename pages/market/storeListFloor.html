@@ -44,6 +44,7 @@
 			/*这一页*/
 			.grade-eject, .Category-eject, .Sort-eject{
 				height: 327px;
+				overflow: scroll;
 			}
 			div.screening>ul>li{
 				border-left: 1px solid #eee !important;
@@ -287,9 +288,12 @@
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
-		 plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		
 		 var oldToken = plus.storage.getItem('oldToken');
+		  $(".Sort-eject").removeClass("grade-w-roll");
+		 $(".Category-eject").removeClass("grade-w-roll");
 		 order('','');//初始化
+		
 		 //获取业态
 		 mui.ajax(serverUrl+'/api/mall/mallcategory',{
 				data:{"gid":0},
@@ -328,7 +332,7 @@
 				}
 			});
 		
-			//按照选择排序
+				//按照选择排序
 		  function order(floor,commercial_type_name){
  				var currentPage =1, numsPerPage=8;
 			
@@ -337,60 +341,89 @@
 				data:{currentPage:currentPage,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},//以及业态
 				dataType:'json',
 				type:'post',
-				timeout:10000,
+				timeout:1000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					var recommentObj = {};  
-					recommentObj.myurl = serverimgUrl;
-					recommentObj.recommentLi = data.data.data;
-//					recommentObj.recommentImg = img;
-					var html2 = template('storeItem-detail',recommentObj);
-					document.getElementById('storeItem').innerHTML= html2;
-					mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-		               //上滑加载
-	                   $(window).scroll(function(){
-
+					plus.nativeUI.closeWaiting(); 
+				//	 alert(JSON.stringify(data)) 
+					if(data.errno == 0){
+						if(data.data.data.length!=0){
+							  mui('#nulldiv')[0].style.display = 'none';
+							var recommentObj = {};  
+								recommentObj.myurl = serverimgUrl;
+								recommentObj.recommentLi = data.data.data;
+			//					recommentObj.recommentImg = img;
+								var html2 = template('storeItem-detail',recommentObj);
+								document.getElementById('storeItem').innerHTML= html2;
+									mui("#upload")[0].innerHTML = "";
+		                    	//上滑加载
+		                   $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
-							if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+							var nowpage = ++currentPage;
+							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
 								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-								Ypagenum++;//满足加载情况,应到页数+1
-								console.log('发起请求,实到'+Spagenum+'页');									
-								console.log('发起请求,应到'+Ypagenum+'页');
-								mui.ajax(serverUrl +'/api/mall/storelist',{
-									data:{currentPage:Spagenum,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},
-									dataType:'json',
-									type:'post',
-									timeout:10000,
-									headers:{"token":oldToken},	 
-									success:function(data,type,xhr){
-										plus.nativeUI.closeWaiting();
-										var recommentObj = {};  
-										recommentObj.myurl = serverimgUrl;
-										recommentObj.recommentLi = data.data.data;
-										var html2 = template('storeItem-detail',recommentObj);
-										document.getElementById('storeItem').innerHTML+= html2;
-										mui("#upload")[0].innerHTML = " ";
-										Spagenum++;//加载成功,当前页+1
-										console.log('成功+1,实到'+Spagenum);
-										console.log('成功+1,应到'+Spagenum);
-										 
-									},
-									error:function(xhr,type,errorThrown){
-										Ypagenum--;//失败是应到-1
-										mui.toast("当前网络不好请重试");
-										mui("#upload")[0].innerHTML = "";
-									}
-								});
-							}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+								console.log('可以请求数据');
+									mui.ajax(serverUrl +'/api/mall/storelist',{
+										data:{currentPage:currentPage,numsPerPage:numsPerPage,floor:floor,commercial_type_name:commercial_type_name,subcommercial_type_name:'',store_distinction:1},
+										dataType:'json',
+										type:'post',
+										timeout:1000,
+										headers:{"token":oldToken},	 
+										success:function(data,type,xhr){
+											plus.nativeUI.closeWaiting();
+											if(data.errno == 0){
+											var recommentObj = {};  
+											recommentObj.myurl = serverimgUrl;
+											recommentObj.recommentLi = data.data.data;
+						//					recommentObj.recommentImg = img;
+											var html2 = template('storeItem-detail',recommentObj);
+											document.getElementById('storeItem').innerHTML+= html2;
+											  
+												mui("#upload")[0].innerHTML = " ";
+											}else{
+												--CcurrentPage;//请求失败,继续请求当前页
+												mui.toast("获取数据失败");
+											}
+											plus.nativeUI.closeWaiting();//关闭等待框 
+										},
+										error:function(xhr,type,errorThrown){
+												--currentPage;//请求失败,继续请求当前页
+												mui.toast("当前网络不好请重试");
+											}
+									});
+							}else{
 								mui("#upload")[0].innerHTML = "到底了";
 							}
-						  }
-					  });//加载下一部分结束
-					//点击进入详情
-					window.openStore = function(store_id){
+							//加载下一部分结束
+							　　}
+						});
+					}else{
+						 document.getElementById('storeItem').innerHTML = ''
+					 		mui("#upload")[0].innerHTML = ""; 
+						    mui('#nulldiv')[0].style.display = 'block';
+					}
+				
+						 
+					}else{
+						document.getElementById('storeItem').innerHTML = ''
+					 		mui("#upload")[0].innerHTML = ""; 
+						    mui('#nulldiv')[0].style.display = 'block';
+					 	}
+				},
+				error:function(xhr,type,errorThrown){
+					//alert('响应失败  !');
+					plus.nativeUI.closeWaiting();
+					mui.toast("网络不好请重试")
+				}
+			});
+			
+		} 
+ 
+			//点击进入详情
+					window.goInfo = function(store_id){
 //						alert(store_id);
 						openview({
 							view:'shophome.html',
@@ -398,25 +431,7 @@
 							extrasobj:{storeId:store_id}
 						})
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
-
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
-					mui("#upload")[0].innerHTML = ""; 
-					mui('#nulldiv')[0].style.display = 'block'; 
-				}
-			});
-			
-		} 
-			
-			//跳转详情
-			window.goInfo =  function(goodsId){ 
-				 openview({
-				 	view:"mall-detail.html",
-				 	extrasobj:{goodsId:goodsId}
-				 })
-			}
+		 
 			
 		});
 		
