@@ -660,7 +660,7 @@
 									<p class="tit overflow_clear ">
 										<%=choose.title%>
 									</p>
-									<span>￥<b id="priceChange"><%=choose.price%></b></span>
+									<span>￥<b id="priceChange"><%=choose.price%></b> <small style="color: gray;font-size: 10px;margin-left: 20px;" id="kc"></small></span>
 								</div>
 							</div>
 							<div class="Mscroll">
@@ -736,8 +736,7 @@
 					"token": token
 				},
 				success: function(data) {
-					console.log(JSON.stringify(data))
-						//							alert(JSON.stringify(data.data.goodsInfo.differentiate))
+					console.log(JSON.stringify(data)) 
 
 					if(data.errno == 0) {
 						plus.nativeUI.closeWaiting();
@@ -803,16 +802,16 @@
 								parameteNameo = JSON.parse(data)[0];
 								var parmeter = {};
 								parameteValueo = JSON.parse(data)[1];
-								parmeter.parameteName = parameteNameo;
-								alert(JSON.stringify(parameteNameo))
-								parmeter.parameteValue = parameteValueo;
+								parmeter.parameteName = parameteNameo; 
+								parmeter.parameteValue = parameteValueo; 
 								document.getElementById("parBox").innerHTML = template("partpl", parmeter);
 								$('.choose').each(function() {
 									var chooseli = $(this).find("li");
-
+										 
 									var oldstep = 0,
 										newstep = 0;
 									chooseli.each(function() {
+										chooseli.eq(0).addClass("cur");
 										if($(this).attr("data-Inventory") == 0) {
 											$(this).css("display", "block")
 										}
@@ -823,15 +822,17 @@
 										}
 
 									})
+									querysx();
 									chooseli.click(function() { 
-										
 										oldstep = newstep;
 										$(this).addClass('cur');
 										$(this).siblings().removeClass('cur');
-										newstep = $(this).attr("data-priceStep");
-										//					                     	 alert(newstep)
-										priceChange = priceChange + parseInt(newstep) - parseInt(oldstep);
-										$('#priceChange').html(priceChange)
+										
+										querysx();
+										
+										
+										
+									
 									})
 
 								})
@@ -851,8 +852,7 @@
 						var priceChange = parseInt($("#priceChange").html());
 
 						//评论
-						var cemmentObj = {}
-							//		                    alert('commentobj[0].comment_pic '+ eval("("+commentobj[0].comment_pic+")").comment_pic)
+						var cemmentObj = {} 
 						for(var i = 0; i < commentobj.length; i++) {
 							commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0, 10) + ' ' + commentobj[i].seller_ctime.substring(11, 16);
 							commentobj[i].comment_pic = eval("(" + commentobj[i].comment_pic + ")");
@@ -871,8 +871,7 @@
 								if($('.cur').length == $(".choose").length) {
 									var shopName = obj.getAttribute("data-shop");
 									var goodsId = obj.getAttribute("data-gdId");
-									var storeid = obj.getAttribute("data-shopId");
-									//			                    		 alert(storeid)
+									var storeid = obj.getAttribute("data-shopId"); 
 									var goodsName = obj.getAttribute("data-gdName");
 									var goodsImg = obj.getAttribute("data-gdImg");
 									var goodsPrice = priceChange;
@@ -889,8 +888,7 @@
 										prop.parameter_name = $(this).find("p").html();
 										prop.child_parameter_name = $(this).find(".cur").html();
 										goodProp.push(prop)
-									})
-									alert(JSON.stringify(goodProp))
+									}) 
 										//当前商品对象
 									var cartObj = {};
 									cartObj.goodsId = goodsId;
@@ -923,8 +921,7 @@
 										} else {
 											cartStorage.push(cartObj);
 										}
-										plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage));
-										alert(JSON.stringify(cartStorage))
+										plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage)); 
 										$(".am-share").removeClass("am-modal-active");
 										$(".sharebg ").removeClass("sharebg-active");
 										mui.toast("已成功加入购物车");
@@ -939,8 +936,7 @@
 										if(plus.storage.getItem('myToken')) {
 											orderStorage = [];
 											orderStorage.push(cartObj);
-											plus.storage.setItem("$orderStorage", JSON.stringify(orderStorage));
-											//				                    		 alert(plus.storage.getItem("$orderStorage"));
+											plus.storage.setItem("$orderStorage", JSON.stringify(orderStorage)); 
 
 											openview({
 												view: "market-order.html",
@@ -973,6 +969,55 @@
 					mui.toast("当前网络不好请重试");
 				}
 			});
+			
+			
+			function querysx(){
+				var value1=$.trim($(".cur").eq(0).html()); 
+										if(!value1){
+											value1='';
+										}
+										var value2=$.trim($(".cur").eq(1).html()); 
+										if(!value2){
+											value2='';
+										}
+										var value3=$.trim($(".cur").eq(2).html());
+										if(!value3){
+											value3='';
+										} 
+										var value4=$.trim($(".cur").eq(3).html());
+										if(!value4){
+											value4='';
+										} 
+					     				//查询库存  
+					     				
+										mui.ajax(serverUrl+'/api/mall/goodstock',{
+											data:{"goodsId":goodId,value1:value1,value2:value2,value3:value3,value4:value4}, 
+											type:'post',
+											timeout:10000,
+											headers:{"token":token},	              				
+											success:function(data,type,xhr){ 
+											 if(data.errno!=0){ 
+												$(this).removeClass('cur');
+												mui.toast("该属性商品库存不足")
+
+											 }else{
+											 	$("#kc").html("库存："+data.data)
+											 }
+											
+												//有库存
+												
+//											 	newstep = $(this).attr("data-priceStep"); 
+//												priceChange = priceChange + parseInt(newstep) - parseInt(oldstep);
+//												$('#priceChange').html(priceChange) 
+											},
+											error:function(xhr,type,errorThrown){
+												plus.nativeUI.closeWaiting();
+												mui.toast('响应失败  !');
+											}
+										});
+			}
+			
+			
 			//跳转商家详情
 			window.goShop = function() {
 				console.log(shopId);
