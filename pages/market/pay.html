@@ -80,7 +80,7 @@ mui.plusReady(function() {
 	
 	console.log(orderId)
 	var payMent = plus.webview.currentWebview().payMent;
-	alert(payMent+" "+ orderId)
+	//alert(payMent+" "+ orderId)
 	document.getElementById('payMoney').innerHTML = payMent;
 	document.getElementById('orderIdd').innerHTML = orderId;
 	
@@ -214,79 +214,59 @@ function payfun(id){
 		timeout:10000,//超时时间设置为10秒；
 		success:function(data){
 			plus.nativeUI.closeWaiting()
-			alert(JSON.stringify(data))
+			//alert(JSON.stringify(data))
 			var data = data.data;
-			alert(data)
+			//alert(data)
 //			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
 //          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&').replace(/":/g, '="'); 
 			console.log(data)
 			console.log("----- 请求订单成功 -----"); 
-				plus.nativeUI.showWaiting();
 			var varpay; 
 			if(id == 'wxpay'){  
 			}else{ 
 				//支付宝
 				varpay = data;
-				console.log('支付宝',varpay); 
+				console.log('支付宝',varpay);  
 				plus.payment.request(pays[id],varpay,function(result){ 
 					console.log("----- 支付成功 -----"+JSON.stringify(result));
+					
+				 	plus.nativeUI.closeWaiting();
 				 	 plus.nativeUI.alert("支付成功");
-				 	
 					
 				 	 //关闭 订单页  
 				 	 if(plus.webview.getWebviewById("market-order")){
 				 	 	plus.webview.getWebviewById("market-order").close(); 
 				 	 }
 				 	    
-					 	 setTimeout(function(){
-						 	openview({
-								view:"../personal/orderDetail.html",
-								id:"orderDetail",
-								extrasobj:{orderId:orderId}
-							}) 
-						 },1000)
-					
-					
-				 
-					//sendData = {"dis":"AlipayOk","orderid":orderid,"outorderinfo":outorderinfo,"trade_no":""};
-					 
+					 	 
+					var oldtoken = plus.storage.getItem('oldToken');
+					var orderId = plus.webview.currentWebview().uuid; 
+					//alert("UUID "+orderId)
+					var odrer_id =  plus.webview.currentWebview().orderId;
 					//修改状态
-//					mui.ajax('http://www.ban9wan.com/API/API_Pay',{
-//						//	 {"dis":"AlipayOk","orderid":"订单主键","outorderinfo":"商家订单号","trade_no":"支付宝交易号"}
-//						data:sendData,
-//						dataType:'json',//服务器返回json格式数据
-//						type:'post',//HTTP请求类型
-//						timeout:10000,//超时时间设置为10秒；
-//						success:function(data){
-//							//  -3程序错误  -2验证码错误 -1没有这个订单 0信息存储失败   1成功
-//							var data = eval("(" + data + ")");
-//							if(data == -3){
-//								mui.toast('程序错误');
-//							}
-//							else if(data == -2){
-//								mui.toast('验证码错误');
-//							}
-//							else if(data == -1){
-//								mui.toast('没有这个订单');
-//							}
-//							else if(data == 0){
-//								mui.toast('信息存储失败  ');
-//							}
-//							else if(data == 1){
-//								plus.nativeUI.closeWaiting();
-//								console.log(orderid);
-//								if(orderid == 'vip'){
-//									rechargeOk();
-//								}else{
-//									payok();
-//								}
-//							}
-//						},
-//						error:function(xhr,type,errorThrown){
-//							//异常处理；
-//							console.log(type);
-//						}
-//					});
+					mui.ajax(serverUrl+'/api/mall/paybill',{ 
+						data:{"order_UUID":orderId,"paymenResult":JSON.stringify(result)},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						headers:{"token":oldtoken},	
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							// alert(JSON.stringify(data))
+							 plus.nativeUI.closeWaiting()
+							 
+							 setTimeout(function(){
+							 	openview({
+									view:"../personal/sc-order.html",
+									id:"sc-order",
+								}) 
+							 },1000)
+							 
+						},
+						error:function(xhr,type,errorThrown){
+							//异常处理；
+							console.log(type);
+						}
+					});
 				},function(e){
 					console.log("----- 支付失败 -----");
 					console.log("["+e.code+"]："+e.message);
