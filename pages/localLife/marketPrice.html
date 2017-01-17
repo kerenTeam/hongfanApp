@@ -63,11 +63,11 @@
 			.caiPrice{
 				margin: 20px 0 10px;
 			}
-			.caiPrice .mui-col-xs-6{
+			.caiPrice .mui-col-xs-12{
 				padding: 0 5px;
 				float: left;
 			}
-			.caiPrice .mui-col-xs-6 button{
+			.caiPrice .mui-col-xs-12 button{
 				border-radius: 0;
 				padding-right: 15px;
 				background-color: #f53c42;
@@ -79,13 +79,13 @@
 				line-height: 14px;
 				padding-top: 12px;
 			}
-			.caiPrice .mui-col-xs-4 button span{
+			.caiPrice .mui-col-xs-12 button span{
 				display: block;
 				margin-right: 10px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
-			.caiPrice .mui-col-xs-4 button:after {
+			.caiPrice .mui-col-xs-12 button:after {
 			    content: '';
 			    position: absolute;
 			    top: 50%;
@@ -127,8 +127,14 @@
 			}
 			.ui-alert {
 				text-align: center;
-				padding: 20px 10px;
+				/*padding: 20px 10px;*/
 				font-size: 16px;
+			}
+			#caiList{
+				padding: 0 10px;
+			}
+			#caiList .caiLi{
+				padding: 10px 10px;
 			}
 		</style>
 	</head>
@@ -170,31 +176,36 @@
 			</div>
 			<!--比较选项-->
 			<div class="mui-table clear caiPrice">
-				<div class="mui-col-xs-6">
-					<button id='showUserPicker1' class="mui-btn mui-btn-block showUserPicker" type='button'></button>
+				<div class="mui-col-xs-12">
+					<button id='showUserPicker1' class="mui-btn mui-btn-block showUserPicker" type='button'>新世纪超市</button>
 					<div id='userResult1' class="ui-alert"></div>
 				</div>
 				</span>
-				<div class="mui-col-xs-6">
-					<button id='showUserPicker2' class="mui-btn mui-btn-block showUserPicker" type='button'></button>、
-					<div id='userResult2' class="ui-alert"></div>
-				</div>
 			</div>	
 			<div class="pricetable">
-			<ul>
-				<li class="th">商品</li>
-				<li class="th">规格</li>
-				<li class="th">价格</li>
+			<ul class="mui-row">
+				<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">商品</li>
+				<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">规格</li>
+				<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">价格</li>
 			</ul>
-			<div id="caiList">
-				<ul>
-					<li class="row"><p>没有最新菜价！换一天试试。</p></li>
-				</ul>
-			</div>
+			<div id="caiList"></div>
+			<script type="text/html" id="caiList-detail">
+				<% for(var i = 0;i<li.length;i++){ %>
+					<% if(li.length==0){ %>
+						<li class="row"><p>没有最新菜价！换一天试试。</p></li>
+					<% }else{ %>
+						<div class="mui-row">
+							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].goods_name %></div>
+							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].unit %></div>
+							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %></div>
+						</div>
+					<% } %>
+				<% } %>
+			</script>
 		</div>
 	</body>
 	<script type="text/javascript">
-//		mui.init();
+		
 		mui.ready(function() {
 //			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
@@ -208,7 +219,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					alert(JSON.stringify(data))
+//					alert(JSON.stringify(data))
 					bannerObj={};
 					if(data.data.banner){
 						bannerObj.bannerList = eval("("+data.data.banner+")");
@@ -228,155 +239,56 @@
 				}
 			}); 
 			//获取超市名称
-			var marketName,goodsName,dateTime;
+			var marketName;
 			var userPicker1 = new mui.PopPicker();
-			var userPicker2 = new mui.PopPicker();
-			var userPicker3 = new mui.PopPicker();
-			var data1 = [];
-			var data2 = [];
-			var data3 = [];
-			mui.ajax(serverUrl+'/api/localservice/marhetandgoods',{
-//				data:{marketName:marketName,goodsName:goodsName,dateTime:dateTime},
-				dataType:'json',
-				type:'post',
-				timeout:1000,
-				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data.goods_name));
-					//超市名数据
-					var shuju = data.data.market_name;
-					for (var i = 0;i < shuju.length;i++) {
-						var obj = {};
-						obj.text = shuju[i].market_name;
-//						obj.text = shuju[i].foodmarket;
-						data1.push(obj);
+			userPicker1.setData([{
+				text: '新世纪超市'
+			}, {
+				text: '世纪隆超市'
+			}]);
+			var showUserPickerButton1 = document.getElementById('showUserPicker1');
+			var userResult1 = document.getElementById('userResult1');
+			showUserPickerButton1.addEventListener('tap', function(event) {
+				userPicker1.show(function(items) {
+					showUserPicker1.innerText = items[0].text;
+					marketName = showUserPicker1.innerText;
+					getPrice(marketName);
+				});
+			})
+			//时间
+	        var date = new Date();
+		    var month = date.getMonth() + 1;
+		    var strDate = date.getDate();
+		    if (month >= 1 && month <= 9) {
+		        month = "0" + month;
+		    }
+		    if (strDate >= 0 && strDate <= 9) {
+		        strDate = "0" + strDate;
+		    }
+		    var dateTime = date.getFullYear() + "-" + month + "-" + strDate;
+			//查询菜价
+			getPrice("新世纪超市");
+			function getPrice(marketName){
+				mui.ajax(serverUrl+'/api/localservice/parity',{
+					data:{marketName:marketName},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+//								alert(JSON.stringify(data.data));
+						//超市名数据
+						dataObj={};
+						dataObj.li=data.data;
+						var html=template('caiList-detail',dataObj);
+						document.getElementById('caiList').innerHTML = html;
+						
+					},
+					error:function(xhr,type,errorThrown){
+						alert('响应失败  !');
 					}
-					userPicker1.setData(data1);
-					var showUserPickerButton1 = document.getElementById('showUserPicker1');
-					showUserPickerButton1.innerHTML = data1[0].text;
-					marketName = data1[0].text;
-					showUserPickerButton1.addEventListener('tap', function(event) {
-						userPicker1.show(function(items) {
-							showUserPicker1.innerText = items[0].text;
-							marketName = showUserPicker1.innerText;
-						});
-					})
-					//商品数据
-					var shuju2 = data.data.goods_name;
-					for (var i = 0;i < shuju2.length;i++) {
-						var obj2 = {};
-						obj2.text = shuju2[i].goods_name;
-						data2.push(obj2);
-					}
-					userPicker2.setData(data2);
-					var showUserPickerButton2 = document.getElementById('showUserPicker2');
-					showUserPickerButton2.innerHTML = data2[0].text;
-					goodsName = data2[0].text;
-					showUserPickerButton2.addEventListener('tap', function(event) {
-						userPicker2.show(function(items) {
-							showUserPicker2.innerText = items[0].text;
-							goodsName = showUserPicker2.innerText;
-						});
-					})
-					//时间选择
-			        var date = new Date();
-				    var month = date.getMonth() + 1;
-				    var strDate = date.getDate();
-				    if (month >= 1 && month <= 9) {
-				        month = "0" + month;
-				    }
-				    if (strDate >= 0 && strDate <= 9) {
-				        strDate = "0" + strDate;
-				    }
-				    var dateTime = date.getFullYear() + "-" + month + "-" + strDate;
-//					alert(dateTime);
-					//查询菜价
-					getPrice(marketName,goodsName,dateTime);
-					function getPrice(marketName,goodsName,dateTime){
-						mui.ajax(serverUrl+'/api/localservice/parity',{
-							data:{marketName:marketName,goodsName:goodsName,dateTime:dateTime},
-							dataType:'json',
-							type:'post',
-							timeout:1000,
-							headers:{"token":oldToken},	 
-							success:function(data,type,xhr){
-								alert(JSON.stringify(data));
-								//超市名数据
-								
-								
-								
-							},
-							error:function(xhr,type,errorThrown){
-								alert('响应失败  !');
-							}
-						}); 
-					}
-				},
-				error:function(xhr,type,errorThrown){
-					alert('响应失败  !');
-				}
-			}); 
-//			
-//		//查询菜价
-//		function caiPrice(){
-//			var showUserPickerButton1 = document.getElementById('showUserPicker1').innerHTML;
-//			var showUserPickerButton2 = document.getElementById('showUserPicker2').innerHTML;
-//			var showUserPickerButton3 = document.getElementById('showUserPicker3').innerHTML;
-//			mui.ajax('http://www.krfer.com/API/API_Common',{
-//				data:{"str":showUserPickerButton1+showUserPickerButton2+showUserPickerButton3,"number":7},
-//				dataType:'json',//服务器返回json格式数据
-//				type:'post',//HTTP请求类型
-//				timeout:10000,//超时时间设置为10秒；	              
-//				success:function(data){
-//					var key = data;
-//					mui.ajax('http://www.krfer.com/API/API_Vegetable',{
-//						data:{
-//							"dis":"xc",
-//							"miyao": key,
-//							"number":7,
-//							"vegetable":{
-//								"FoodMarket":showUserPickerButton1,
-//								"MarketCategorie":showUserPickerButton2,
-//								"time":showUserPickerButton3
-//							}
-//						},
-//						dataType:'json',//服务器返回json格式数据
-//						type:'post',//HTTP请求类型
-//						timeout:10000,//超时时间设置为10秒；	 
-//						success:function(data){
-////									'-3程序出错  -2验证错误  -1密钥错误 0没有数据  正确（返回菜价信息）'
-//							if(data == -3){
-//								plus.nativeUI.toast('程序出错');
-//							}
-//							else if(data == -2){
-//								plus.nativeUI.toast('验证错误');
-//							}
-//							else if(data == -1){
-//								plus.nativeUI.toast('密钥错误');
-//							}
-//							else if(data == 0){
-//								document.getElementById('caiList').innerHTML = '<ul class="clear"><li class="row"><p>没有最新菜价！换一天试试。</p></li></ul>';
-//							}
-//							else{
-//								var obj = eval('('+data+')');
-//								var _data = {};
-//								_data.list = obj;
-//								var html = template('test', _data);
-//								document.getElementById('caiList').innerHTML = html;
-//								//alert(data)
-//							}
-//						},
-//						error: function(xhr,type,errorThrown){
-//							//异常处理；
-//							plus.nativeUI.toast('请求出错');
-//						}
-//					})
-//				},
-//				error: function(xhr,type,errorThrown){
-//					//异常处理；
-//					plus.nativeUI.toast('请求密钥出错');
-//				}
-//		 	});
+				}); 
+			}
 		})
 </script>
 	
