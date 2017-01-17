@@ -13,8 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css"> 
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
-		<script src="../../js/hmt.js" type="text/javascript"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<style type="text/css">
 			.notice .tab-hd,.orderbh,dl.list dt, dl.list dd,dl.list{
@@ -190,88 +189,91 @@
 					<div class="tab-bd">
 						<div class="tab-pal">
 							<dl class="list listtwo list-in">
-								
+								 
 								<%for(var i =0;i<orderData.length;i++){%>
-									<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
-									<div class="orderbh clearfloat box-s">
-										<span onclick="goShop('<%=orderData[i].goods_data.storeid%>')">
-											<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
-											<%=orderData[i].goods_data.goodsData[0].shopName%>
-										</span>
-										<span class="fr state"><%=state[orderData[i].order_status]%></span>
-									</div>
-									<%for(var j =0;j<orderData[i].goods_data.goodsData.length;j++){%>
-									<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
-										<div class="dealcard dealcardtwo clearfloat">
-											<div class="dealcard-img imgbox">
-												<% if(orderData[i].storeid== 0){ %>
-													<img src="<%=orderData[i].goods_data.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
-												<% }else{ %>
-													<img src="<%=myUrl %><%=orderData[i].goods_data.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
-												<% } %>
+									<% if(orderData[i].order_type!=4){ %>
+										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
+											<div class="orderbh clearfloat box-s">
+												<span onclick="goShop('<%=orderData[i].goods_data.storeid%>')">
+													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+													<%=orderData[i].goods_data.goodsData[0].shopName%>
+												</span>
+												<span class="fr state"><%=state[orderData[i].order_status]%></span>
 											</div>
-											<div class="dealcard-block-right dealcard-block-righttwo">
-												<div class="dealcard-brand dealcard-brandtwo single-line">
-													<span class="poi-name icon-count-3"><%=orderData[i].goods_data.goodsData[j].goodsName%></span>
-													<div class="price pricetwo">
-														<p>¥<%=orderData[i].goods_data.goodsData[j].goodsPrice%></p>
-														<p class="num">×<%=orderData[i].goods_data.goodsData[j].goodsnum%></p>	
-													</div>	
-												</div>									
+											<%for(var j =0;j<orderData[i].goods_data.goodsData.length;j++){%>
+											<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
+												<div class="dealcard dealcardtwo clearfloat">
+													<div class="dealcard-img imgbox">
+														<% if(orderData[i].storeid== 0){ %>
+															<img src="<%=orderData[i].goods_data.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% }else{ %>
+															<img src="<%=myUrl %><%=orderData[i].goods_data.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% } %>
+													</div>
+													<div class="dealcard-block-right dealcard-block-righttwo">
+														<div class="dealcard-brand dealcard-brandtwo single-line">
+															<span class="poi-name icon-count-3"><%=orderData[i].goods_data.goodsData[j].goodsName%></span>
+															<div class="price pricetwo">
+																<p>¥<%=orderData[i].goods_data.goodsData[j].goodsPrice%></p>
+																<p class="num">×<%=orderData[i].goods_data.goodsData[j].goodsnum%></p>	
+															</div>	
+														</div>									
+													</div>
+												</div>
+											</a>
+											<%}%> 
+											<div class="order-bottom clearfloat box-s tip">
+												<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
+													<%if(orderData[i].goods_data.postFee==0){%>
+														(不含运费)
+														<%}else{%>
+															(含运费<%=orderData[i].goods_data.postFee%>)
+															<%}%>
+													</sub></p>
 											</div>
-										</div>
-									</a>
-									<%}%> 
-									<div class="order-bottom clearfloat box-s tip">
-										<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
-											<%if(orderData[i].goods_data.postFee==0){%>
-												(不含运费)
-												<%}else{%>
-													(含运费<%=orderData[i].goods_data.postFee%>)
-													<%}%>
-											</sub></p>
-									</div>
-									<%if(orderData[i].order_status==1){%>
-										<div class="order-bottom clearfloat box-s">
-											<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
-											<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
-										</div>
+											<%if(orderData[i].order_status==1){%>
+												<div class="order-bottom clearfloat box-s">
+													<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==2){%>
+												<div class="order-bottom clearfloat box-s">
+													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==3){%>
+												<div class="order-bottom clearfloat box-s">
+													<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
+													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==4){%>
+												<div class="order-bottom clearfloat box-s">
+													<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
+													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==5){%>
+												<div class="order-bottom clearfloat box-s">  
+													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==6 || orderData[i].order_status==7 || orderData[i].order_status==8){%>
+												<div class="order-bottom clearfloat box-s"> 
+													<span class="fr">交易金额:<%=orderData[i].amount%>  退款金额：￥<%=orderData[i].amount%></span>
+												</div>
+											<%}%> 
+											<%if(orderData[i].order_status==9){%>
+												<div class="order-bottom clearfloat box-s"> 
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
+												</div>
+											<%}%> 
+										</dd>
+										<%}%>
 									<%}%>
-									<%if(orderData[i].order_status==2){%>
-										<div class="order-bottom clearfloat box-s">
-											<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
-										</div>
-									<%}%>
-									<%if(orderData[i].order_status==3){%>
-										<div class="order-bottom clearfloat box-s">
-											<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
-											<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
-										</div>
-									<%}%>
-									<%if(orderData[i].order_status==4){%>
-										<div class="order-bottom clearfloat box-s">
-											<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
-											<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
-										</div>
-									<%}%>
-									<%if(orderData[i].order_status==5){%>
-										<div class="order-bottom clearfloat box-s">  
-											<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
-											<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
-										</div>
-									<%}%>
-									<%if(orderData[i].order_status==6 || orderData[i].order_status==7 || orderData[i].order_status==8){%>
-										<div class="order-bottom clearfloat box-s"> 
-											<span class="fr">交易金额:<%=orderData[i].amount%>  退款金额：￥<%=orderData[i].amount%></span>
-										</div>
-									<%}%> 
-									<%if(orderData[i].order_status==9){%>
-										<div class="order-bottom clearfloat box-s"> 
-											<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
-										</div>
-									<%}%> 
-								</dd>
-								<%}%>
+									
 								<div id="noOrder" style="display: none;">
 									<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" />
 									<span style="display:block;text-align: center;padding: 20px;">您还没有相关的订单</span>

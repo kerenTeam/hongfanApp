@@ -91,106 +91,78 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main" style="background-color: white;">
-				<div id="Alist"></div>
-				<div class="ddafter">
-					<div class="mui-row aclist">
-						 <div class="fl acleft">
-						 	<img src="../../img/market/mhot2.jpg" alt="" />
-						 </div>
-						 <div class="fl acright">
-						 	<p class="gray Ctitle">商品名xxxxxxxxx</p>
-						 	<div class=" "><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" />220</div>
-						 	
-						 	<div><img src="../../img/time.png"/><small>兑换时间：2017.01.02</small></div>
-						 </div>
-					</div>
-				</div>
-				<div class="ddafter" onclick="activity(<%= objData[i].id %>)">
-					<div class="mui-row aclist">
-						 <div class="fl acleft">
-						 	<img src="../../img/market/mhot2.jpg" alt="" />
-						 </div>
-						 <div class="fl acright">
-						 	<p class="gray Ctitle">商品名xxxxxxxxx</p>
-						 	<div class=" "><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" />220</div>
-						 	
-						 	<div><img src="../../img/time.png"/><small>兑换时间：2017.01.02</small></div>
-						 </div>
-					</div>
-				</div>
-				<div class="ddafter" onclick="activity(<%= objData[i].id %>)">
-					<div class="mui-row aclist">
-						 <div class="fl acleft">
-						 	<img src="../../img/market/mhot2.jpg" alt="" />
-						 </div>
-						 <div class="fl acright">
-						 	<p class="gray Ctitle">商品名xxxxxxxxx</p>
-						 	<div class=" "><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" />220</div>
-						 	
-						 	<div><img src="../../img/time.png"/><small>兑换时间：2017.01.02</small></div>
-						 </div>
-					</div>
-				</div>
-				</div>
-				
+				<div id="orderData"></div>
+				 
 				<!--渲染数据-->
-				<!--<script type="text/html" id="Alist-detail">
+				<script type="text/html" id="orderTpl">
 					<% for(var i = 0;i<objData.length;i++){ %>
-						<div class="ddafter" onclick="activity(<%= objData[i].id %>)">
+						<% if(orderData[i].order_type==4){ %>
+						<div class="ddafter">
 							<div class="mui-row aclist">
 								 <div class="fl acleft">
-								 	<img src="<%= objData[i].pic %>" alt="" />
+								 	<img src="../../img/market/mhot2.jpg" alt="" />
 								 </div>
 								 <div class="fl acright">
-								 	<p class="gray Ctitle"><%= objData[i].store_name %></p>
-								 	<div class="red1"><%= objData[i].title %></div>
-								 	<div><img src="../../img/time.png"/><small>兑换时间：<%= objData[i].begin_time %>&nbsp;~&nbsp;<%= objData[i].end_time %></small></div>
+								 	<p class="gray Ctitle">商品名xxxxxxxxx</p>
+								 	<div class=" "><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" />220</div>
+								 	
+								 	<div><img src="../../img/time.png"/><small>兑换时间：2017.01.02</small></div>
 								 </div>
 							</div>
 						</div>
+						<% } %>
 					<% } %>
-				</script>-->
+				</script>
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-		//点击优惠进入详情
-		function activity(id){
-			openview({
-				view:'couponDetail.html',
-				extrasobj:{storeCouponId:id}
-			})
-		}
+		 
 		mui.plusReady(function(){
 			//铺数据
-//			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
+			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
-			
-//			mui.ajax(serverUrl+'/api/index/couponoractivity',{
-//				data:{type:2},
-//				dataType:'json',
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldToken},	 
-//				success:function(data,type,xhr){
-////					alert(data.data[0].pic);
-//					var dateObj={};
-//					for(var i = 0;i < data.data.length;i++){
-//			       		data.data[i].begin_time = data.data[i].begin_time.split('T')[0]; 
-//			       		data.data[i].end_time = data.data[i].end_time.split('T')[0]; 
-////			       		data.data[i].picImg = serverimgUrl + data.data[i].picImg;
-//			       		data.data[i].pic = serverimgUrl + data.data[i].pic;
-//			       		data.data[i].content = data.data[i].content;
-//					}
-//					dateObj.objData=data.data;
-//					mui('#Alist')[0].innerHTML = template('Alist-detail',dateObj);
-//					plus.nativeUI.closeWaiting();
-//				},
-//				error:function(xhr,type,errorThrown){
-//					alert('响应失败  !');
-//				}
-//			});
+			var oldToken = plus.storage.getItem('oldToken'); 
+			var myuserid = plus.storage.getItem('userid'); 
+			mui.ajax(serverUrl+'/api/mall/orderlist',{
+				data:{userid:myuserid},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){ 
+					alert(JSON.stringify(data))
+//					alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].storeid))
+//					alert(JSON.stringify(data.data[0].goods_data.goodsData[0]));
+					plus.nativeUI.closeWaiting(); 
+					if(data.errno==0){
+						
+						if(data.data.length!=0){ 
+							for(var i=0;i<data.data.length;i++){ 
+								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
+							}
+							 alert(data.data[0].goods_data.storeid)
+							
+							var obj={}; 
+							 obj.orderData=data.data;
+							 obj.myUrl=serverimgUrl;
+							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
+							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
+						 }else{
+							
+					document.getElementById("orderData").innerHTML='<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">您还没有相关的订单</span>';
+						}
+					}else{
+						plus.nativeUI.closeWaiting()
+					 //   alert(JSON.stringify(data.data))
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting()
+					console.log('响应失败  !');
+				}
+			});
 			
 			
 		});
