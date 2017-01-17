@@ -132,11 +132,12 @@
 				text-align: left;
 			}
 			/*加载*/
-			#upload{ 
+			#upload, #upload2{ 
 				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
 			}
 			#upload img{width: 60px;margin-top: -10px;
 			}
+			#upload2 img{width: 30px;margin-top: 0px;}
 			#description{
 				width: 100%;
 				white-space: nowrap;
@@ -210,11 +211,21 @@
 				<div id="tab1" class="page-center-box dldetail">
 					<dl class="dealcard" id="moll_recommend"></dl>
 					<div class="upload text-center text-xs gray" id="upload"></div>
+					<div id="nulldiv1" style="text-align:center;margin-top: 20%;font-size: 14px;color: #999;display: none;">
+						<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+						<br />
+						没有相关信息
+					</div>
 			    </div>
 			    <!--第二部分-->
 			    <div id="tab2" class="page-center-box dldetail" style="display: none;">
 					<dl class="dealcard" id="allGoods"></dl>
-					<div class="upload text-center text-xs gray" id="upload"></div>
+					<div class="upload text-center text-xs gray" id="upload2"></div>
+					<div id="nulldiv2" style="text-align:center;margin-top: 20%;font-size: 14px;color: #999;display: none;">
+						<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+						<br />
+						没有相关信息
+					</div>
 			    </div>
 			    <!--第三部分-->
 			   	<div id="shangjia_detail" class="page-center-box dldetail" style="display: none;">          
@@ -238,6 +249,7 @@
 		            <dl class="dealcard" id="moll_recommend2"></dl>
 					<div class="upload text-center text-xs gray" id="upload"></div>
 			    </div>
+			    
 			    <!--第一部分数据-->
 			    <script type="text/html" id="recommendTpl">
 					<%if(recommendData.length==0){%>
@@ -270,12 +282,17 @@
 						<%}%>
 					<%}%>
 				</script>
-			   	<!--第二部分数据-->
+			   	<!--第二部分数据全部-->
 			    <script type="text/html" id="allGoods-detail">
 					<% for(var i=0;i<list.length;i++){ %>
 						<dd class="goodsItem react" onclick="goInfo(<%= list[i].goods_id%>)">
 							<div class="dealcard-img imgbox">
-								<img src="<%= myurl%><%= list[i].thumb %>"/>
+								<%if(list[i].thumb && list[i].thumb != " "){%>
+									<img src="<%= myurl%><%= list[i].thumb %>"/>
+								<%}else{%>
+									<img name="<%= myurl%><%= list[i].thumb %>" src="../../img/market/none.png"/>
+								<%}%>	
+								
 							</div>
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
@@ -338,7 +355,7 @@
 <script type="text/javascript" src="../../js/app.js" ></script>
 <script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
 <script type="text/javascript">
-	(function(){
+	mui.plusReady(function(){
 		var tablist = mui('#shangjia_tab')[0].getElementsByTagName('a');
 		for(var i=0; i<tablist.length; i++){
 			tablist[i].addEventListener('tap',function(){
@@ -348,21 +365,6 @@
 				this.className = 'on';
 			})
 		}
-		mui('#shangjia_tab')[0].getElementsByTagName('a')[0].addEventListener('tap',function(){
-			//显示第一个选项卡
-			mui('#tab1')[0].style.display = 'block';
-			mui('#tab2')[0].style.display = mui('#shangjia_detail')[0].style.display = 'none';
-		})
-		mui('#shangjia_tab')[0].getElementsByTagName('a')[1].addEventListener('tap',function(){
-			//显示第二个选项卡
-			mui('#tab2')[0].style.display = 'block';
-			mui('#tab1')[0].style.display = mui('#shangjia_detail')[0].style.display = 'none';
-		})
-		mui('#shangjia_tab')[0].getElementsByTagName('a')[2].addEventListener('tap',function(){
-			//显示第三个选项卡
-			mui('#shangjia_detail')[0].style.display = 'block';
-			mui('#tab1')[0].style.display = mui('#tab2')[0].style.display = 'none';
-		})
 		//滚动条
         var fangxiang;
         function scroll(fn) {
@@ -400,185 +402,304 @@
 				mui('#shangjia_tab')[0].style.top = '170px';
 			}
 		}
-	})();
-</script>
-<script type="text/javascript"> 
-	var Spagenum = 2;//实到页数
-	var Ypagenum = 1;//应到页数 
-	mui.plusReady(function(){
-		//获取token
-		var oldToken=plus.storage.getItem("oldToken");
-		//获取页面传值 商品id
-		var storeId = plus.webview.currentWebview().storeId;
-//		alert(storeId);
 		
-		//获取店铺详情
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		mui.ajax(serverUrl +'/api/mall/storeinfo',{
-			data:{store_id: storeId},
-			dataType:'json',
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldToken},	 
-			success:function(data,type,xhr){
-//				alert(JSON.stringify(data.data.pic));
-				$('#storeName').html(data.data.store_name);
-				$('#title2').html(data.data.secondary_name);
-				$('#floorName').html(data.data.store_name);
-				$('#doorNo').html(data.data.floor_name);
-				$('#businessH').html(data.data.business_hours);
-				$('#phoneS').html(data.data.phone);
-				$('#openStaus').html(data.data.op_status);
-				$('#description').html(data.data.description);
-				$('#addressS').html(data.data.block_name);
-				if(data.data.logo == '' || data.data.logo == null){
-					$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
-				}else{
-					$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
-				}
-				if(data.data.pic == '' || data.data.pic == null){
-					$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
-				}else{
-					$('#storeImg').attr('src',serverimgUrl+data.data.pic);
-				}
-				
-				//获取全部商品列表
+		
+		//数据部分
+		var oldToken=plus.storage.getItem("oldToken");
+		var storeId = plus.webview.currentWebview().storeId;
+		var Spagenum = 2,Spagenum2 = 2;//实到页数
+		var Ypagenum = 1,Ypagenum2  = 1;//应到页数
+		var onetab = mui('#shangjia_tab')[0].getElementsByTagName('a')[0],
+			twotab = mui('#shangjia_tab')[0].getElementsByTagName('a')[1],
+			theretab = mui('#shangjia_tab')[0].getElementsByTagName('a')[2];//tabs
+		var flag1 = 0,flag2 = 0,flag3 = 0;//点击次数标杆	
+			
+			
+		//第一个部分
+		onetab.onclick = function(){
+			flag1++;
+			mui('#tab1')[0].style.display = 'block';
+			mui('#tab2')[0].style.display = mui('#shangjia_detail')[0].style.display = 'none';
+			//热门推荐 数据渲染 
+			if(flag1 == 1){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl +'/api/mall/mallgooodslist',{
-					data:{currentPage:1,numsPerPage:10,recommend:1,storeId:0,brand:'',keyword:'',order_type:'sales',desc:'desc',store_id: storeId},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data1,type,xhr){ 
-						 alert(data1.data.return.data[0].tag)
-						 for(var m=0; m < data1.data.return.data.length; m++){ 
-							if(data1.data.return.data[m].tag==''){
-							 	data1.data.return.data[m].tag=null;
-							}else{
-								data1.data.return.data[m].tag= eval("("+data1.data.return.data[m].tag+")");
-							}
-						 }    
-						var alldata = {}; 
-						alldata.list = data1.data.return.data; 
-						alldata.myurl = serverimgUrl; 
-						var html=template("allGoods-detail",alldata);
-						document.getElementById("allGoods").innerHTML=html;
-						
-						plus.nativeUI.closeWaiting();//关闭等待框
-						//跳转详情
-						window.goInfo =  function(goodsId){
-							 openview({
-							 	view:"mall-detail.html",
-							 	extrasobj:{goodsId:goodsId}
-							 })
-						}
+					data:{
+						currentPage:1,
+						numsPerPage:5,
+						recommend:1,
+						categoryid:'',
+						differentiate:'',
+						storeid:storeId,
+						brand:'',
+						keyword:'',
+						order_type:'create_time',
+						desc:'asc'
 					},
-					error:function(xhr,type,errorThrown){
-						mui.toast('响应失败  !');
-					}
-				});
-				
-				//热门推荐 数据渲染 
-				var currentPage =1, numsPerPage=4;
-				mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-					data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:'',store_id:storeId},
 					dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型 
-						timeout:10000,//超时时间设置为10秒；	
-						headers:{"token":oldToken}, 
-						success:function(data){
-//							alert(JSON.stringify(data.data.return.data[4]))
-							if(data.errno==0){
-							var dataobj = data.data.return.data;
-							var recommendObj = {};
-								recommendObj.myUrl = serverimgUrl;
-								recommendObj.recommendData = dataobj
-								for(var m=0; m < data.data.return.data.length; m++){ 
-									if(data.data.return.data[m].tag==''){
-								 		data.data.return.data[m].tag=null;
-									}else{
-										data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
-									}
-								}   
-		                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
-		                    document.getElementById("moll_recommend2").innerHTML+=template("recommendTpl2",recommendObj);
-		                  	mui(".upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-//		                   	上滑加载
-					 $(window).scroll(function(){
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":oldToken}, 
+					success:function(data){
+						console.log('推荐',data); 
+						if(data.errno==0){
+						var dataobj = data.data.return.data;
+						var recommendObj = {};
+						recommendObj.myUrl = serverimgUrl;
+						recommendObj.recommendData = dataobj
+						for(var m=0; m < data.data.return.data.length; m++){ 
+							if(data.data.return.data[m].tag==''){
+						 		data.data.return.data[m].tag=null;
+							}else{
+								data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
+							}
+						}   
+		                document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+		              	mui(".upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+				        //上滑加载
+					    $(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
 						　　var scrollHeight = $(document).height();
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){
 								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
-									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-									Ypagenum++;//满足加载情况,应到页数+1
-									console.log('发起请求,实到'+Spagenum+'页');									
-									console.log('发起请求,应到'+Ypagenum+'页');	
-									mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-										data:{currentPage:Spagenum,numsPerPage:numsPerPage,recommend:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
-										dataType:'json',//服务器返回json格式数据
-										type:'post',//HTTP请求类型 
-										timeout:10000,//超时时间设置为10秒；	
-										headers:{"token":oldToken}, 
-										success:function(data){
-//										alert(JSON.stringify(data.data.return.data[0]))
-											if(data.errno == 0){
-												var dataobj = data.data.return.data
-												var recommendObj = {}
-													recommendObj.myUrl = serverimgUrl;
-													recommendObj.recommendData = dataobj
-							                    for(var m=0; m < data.data.return.data.length; m++){ 
-													if(data.data.return.data[m].tag==''){
-												 		data.data.return.data[m].tag=null;
-													}else{
-														data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
-													}
-												}  
-												document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+										mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+										Ypagenum++;//满足加载情况,应到页数+1
+										console.log('发起请求,实到'+Spagenum+'页');									
+										console.log('发起请求,应到'+Ypagenum+'页');	
+										mui.ajax(serverUrl +'/api/mall/mallgooodslist',{
+											data:{
+												currentPage:Spagenum,
+												numsPerPage:5,
+												recommend:1,
+												categoryid:'',
+												differentiate:'',
+												storeid:storeId,
+												brand:'',
+												keyword:'',
+												order_type:'create_time',
+												desc:'asc'
+											}, 
+											dataType:'json',//服务器返回json格式数据
+											type:'post',//HTTP请求类型 
+											timeout:10000,//超时时间设置为10秒；	
+											headers:{"token":oldToken}, 
+											success:function(data){
+												if(data.errno == 0){
+													var dataobj = data.data.return.data
+													var recommendObj = {}
+														recommendObj.myUrl = serverimgUrl;
+														recommendObj.recommendData = dataobj
+								                    for(var m=0; m < data.data.return.data.length; m++){ 
+														if(data.data.return.data[m].tag==''){
+													 		data.data.return.data[m].tag=null;
+														}else{
+															data.data.return.data[m].tag= eval("("+data.data.return.data[m].tag+")");
+														}
+													}  
+													document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
+												}
+												mui("#upload")[0].innerHTML = " ";
+												Spagenum++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum);
+												console.log('成功+1,应到'+Spagenum);
+											},
+											error:function(xhr,type,errorThrown){
+												Ypagenum--;//失败是应到-1
+												mui.toast("当前网络不好请重试");
+												mui("#upload")[0].innerHTML = "";
 											}
-											mui("#upload")[0].innerHTML = " ";
-											Spagenum++;//加载成功,当前页+1
-											console.log('成功+1,实到'+Spagenum);
-											console.log('成功+1,应到'+Spagenum);
-										},
-										error:function(xhr,type,errorThrown){
-											Ypagenum--;//失败是应到-1
-											mui.toast("当前网络不好请重试");
-											mui("#upload")[0].innerHTML = "";
-										}
-									});
-								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
-									mui("#upload")[0].innerHTML = "到底了";
-								}
-							　　}
-						});//加载下一部分结束
+										});
+									}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
+										mui("#upload")[0].innerHTML = "到底了";
+									}
+								　}
+							});//加载下一部分结束
+						
 						}else{
-							plus.nativeUI.closeWaiting();
-							mui.toast("获取数据失败");
+							mui('#nulldiv1')[0].style.display = 'block';
 						}
 						plus.nativeUI.closeWaiting();//关闭等待框
 					}, 
 					error:function(xhr,type,errorThrown){
 						plus.nativeUI.closeWaiting();//关闭等待框
 						mui("#upload")[0].innerHTML = ""; 
-						mui('#nulldiv')[0].style.display = 'block';
+						mui('#nulldiv1')[0].style.display = 'block';
 					}
-			}); 
-			
-			window.goInfo =  function(goodsId){ 
-				openview({
-				 	view:"mall-detail.html",
-				 	extrasobj:{goodsId:goodsId}
-				})
+				});
 			}
-				
-			},
-			error:function(xhr,type,errorThrown){
-				mui.toast('响应失败  !');
-				plus.webview.currentWebview().close();
+		}
+		
+		
+		//第二个部分
+		twotab.onclick = function(){
+			mui('#tab2')[0].style.display = 'block';
+			mui('#tab1')[0].style.display = mui('#shangjia_detail')[0].style.display = 'none';
+			//获取全部商品列表
+			flag2++;
+			if(flag2 == 1){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				mui.ajax(serverUrl +'/api/mall/mallgooodslist',{
+					data:{
+						currentPage:1,
+						numsPerPage:5,
+						recommend:'',
+						categoryid:'',
+						differentiate:'',
+						storeid:storeId,
+						brand:'',
+						keyword:'',
+						order_type:'create_time',
+						desc:'asc'
+					},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data1,type,xhr){
+						if(data1.errno == 0){
+							console.log('总页数',data1.data.return.totalPages);
+							console.log('全部',data1)	;						
+							 for(var m=0; m < data1.data.return.data.length; m++){ 
+								if(data1.data.return.data[m].tag==''){
+								 	data1.data.return.data[m].tag=null;
+								}else{
+									data1.data.return.data[m].tag= eval("("+data1.data.return.data[m].tag+")");
+								}
+							 }    
+							var alldata = {}; 
+							alldata.list = data1.data.return.data; 
+							alldata.myurl = serverimgUrl; 
+							var html=template("allGoods-detail",alldata);
+							document.getElementById("allGoods").innerHTML=html;
+							$(window).scroll(function(){
+							　　var scrollTop = $(this).scrollTop();
+							　　var scrollHeight = $(document).height();
+							　　var windowHeight = $(this).height();
+							　　if(scrollTop + windowHeight == scrollHeight){
+									if(Spagenum2<=data1.data.return.totalPages && Spagenum2==Ypagenum2+1){//当前页小于等于总页数时请求下一页
+										mui("#upload2")[0].innerHTML = "<img src='../../img/balls.svg' />";
+										Ypagenum2++;//满足加载情况,应到页数+1
+										console.log('发起请求,实到'+Spagenum2+'页');									
+										console.log('发起请求,应到'+Ypagenum2+'页');	
+										mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
+											data:{
+												currentPage:Spagenum2,
+												numsPerPage:5,
+												recommend:'',
+												categoryid:'',
+												differentiate:'',
+												storeid:storeId,
+												brand:'',
+												keyword:'',
+												order_type:'create_time',
+												desc:'asc'
+											}, 
+											dataType:'json',//服务器返回json格式数据
+											type:'post',//HTTP请求类型 
+											timeout:10000,//超时时间设置为10秒；	
+											headers:{"token":oldToken}, 
+											success:function(data1){
+												if(data1.errno == 0){
+													for(var m=0; m < data1.data.return.data.length; m++){ 
+														if(data1.data.return.data[m].tag==''){
+														 	data1.data.return.data[m].tag=null;
+														}else{
+															data1.data.return.data[m].tag= eval("("+data1.data.return.data[m].tag+")");
+														}
+													 }    
+													var alldata = {}; 
+													alldata.list = data1.data.return.data; 
+													alldata.myurl = serverimgUrl; 
+													var html=template("allGoods-detail",alldata);
+													document.getElementById("allGoods").innerHTML+=html;
+												}
+												Spagenum2++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum2);
+												console.log('成功+1,应到'+Ypagenum2);
+											},
+											error:function(xhr,type,errorThrown){
+												Ypagenum2--;//失败是应到-1
+												mui.toast("当前网络不好请重试");
+												mui("#upload")[0].innerHTML = "";
+											}
+										});
+									}else if(Spagenum2 == data1.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
+										mui("#upload2")[0].innerHTML = "到底了";
+									}
+								}
+							});//加载下一部分结束
+						}else{
+							mui('#nulldiv2')[0].style.display = 'block';
+						}						
+						
+						plus.nativeUI.closeWaiting();//关闭等待框
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();//关闭等待框
+						mui.toast('当前网络不好请重试');
+						mui('#nulldiv2')[0].style.display = 'block';
+					}
+				});
 			}
-		});
-	}) 
-	</script>
+		}
+		
+		
+		//第三个部分
+		theretab.onclick = function(){
+			mui('#shangjia_detail')[0].style.display = 'block';
+			mui('#tab1')[0].style.display = mui('#tab2')[0].style.display = 'none';
+			//获取店铺详情\
+			flag3++;
+			if(flag3 == 1){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				mui.ajax(serverUrl +'/api/mall/storeinfo',{
+					data:{store_id: storeId},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						console.log('详情',data);				
+						$('#storeName').html(data.data.store_name);
+						$('#title2').html(data.data.secondary_name);
+						$('#floorName').html(data.data.store_name);
+						$('#doorNo').html(data.data.floor_name);
+						$('#businessH').html(data.data.business_hours);
+						$('#phoneS').html(data.data.phone);
+						$('#openStaus').html(data.data.op_status);
+						$('#description').html(data.data.description);
+						$('#addressS').html(data.data.block_name);
+						if(data.data.logo == '' || data.data.logo == null){
+							$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
+						}else{
+							$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
+						}
+						if(data.data.pic == '' || data.data.pic == null){
+							$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
+						}else{
+							$('#storeImg').attr('src',serverimgUrl+data.data.pic);
+						}
+						plus.nativeUI.closeWaiting();//关闭等待框
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast('当前网络不好');
+						plus.webview.currentWebview().close();
+					}
+				});
+			}
+		}
+		
+		onetab.onclick();//默认显示 
+		window.goInfo =  function(goodsId){
+			openview({
+			 	view:"mall-detail.html",
+			 	create:true,
+			 	extrasobj:{goodsId:goodsId}
+			})
+		}
+	});//read
+</script>
+
 </body>	
 </html>
