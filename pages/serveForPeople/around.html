@@ -189,7 +189,7 @@
 			<script type="text/html" id="helper-detail">
 				<% for(var i = 0;i < helpLi.length;i++){ %>
 					<dd>
-						<a onclick="forHelp(<%= helpLi[i].helper_id %>)"class="react">
+						<a onclick="forHelp(<%= helpLi[i].helper_id %>,'<%= helpLi[i].area %>','<%= helpLi[i].address %>')"class="react">
 							<div class="dealcard">
 								<div class="dealcard-img">
 									<% if(helpLi[i].headPic == null || helpLi[i].headPic == ''){ %>
@@ -284,6 +284,7 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					console.log(data);
+//					alert(JSON.stringify(data.data[0].address))
 					for(var i = 0;i < data.data.length;i++ ){
 						data.data[i].competency = eval("("+data.data[i].competency+")");
 					}
@@ -293,26 +294,28 @@
 					var html = template('helper-detail',helpObj);
 					document.getElementById('helper').innerHTML = html; 
 					plus.nativeUI.closeWaiting();//关闭等待框
+					
+					//点击专家，进入问题发布
+					window.forHelp=function(helpId,address,street){
+						if(plus.storage.getItem('myToken')){
+							openview({
+								view:"linshuiHelpDetail.html",
+								extrasobj:{helpId:helpId,address:address,street:street}
+							})
+						}else{
+							mui.toast('请登录');
+							openview({
+								view:'../login.html'
+							})
+						}
+					}
 				},
 				error:function(xhr,type,errorThrown){
 					mui.toast('当前网络不好,请重试');
 				}
 			}); 
 		})();
-		//点击专家，进入问题发布
-		function forHelp(helpId){
-			if(plus.storage.getItem('myToken')){
-				openview({
-					view:"linshuiHelp.html",
-					extrasobj:{helpId:helpId}
-				})
-			}else{
-				mui.toast('请登录');
-				openview({
-					view:'../login.html'
-				})
-			}
-		}
+		
     </script>
 	</body>
 

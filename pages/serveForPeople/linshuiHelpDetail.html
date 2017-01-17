@@ -91,7 +91,6 @@
 								</div>
 							</div>
 						</a>
-						
 					</dd>
 				</dl>
 			</div>
@@ -112,9 +111,10 @@
 		var street = plus.webview.currentWebview().street;
 		var helpId = plus.webview.currentWebview().helpId;
 		var oldtoken = plus.storage.getItem('oldToken');
+//		alert(address+street)
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
-			data:{area:street,address:address},  
+			data:{area:address,address:street},  
 			dataType:'json',//服务器返回json格式数据 
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	 
@@ -162,11 +162,9 @@
 									view:'../login.html'
 								})
 							}
-						
 						}
 					}
 				}
-//				
 			},
 			error:function(){
 				plus.nativeUI.closeWaiting();//关闭等待框
