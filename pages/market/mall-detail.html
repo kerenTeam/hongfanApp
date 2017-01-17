@@ -691,12 +691,24 @@
 									mui('#moll_comment')[0].remove();
 									mui('#disPay')[0].style.display='block';
 								}
-			                     //详情
-			                     if(data.data.goodsInfo.content){
-			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
-			                     }else{
+			                    //详情
+			                    if(data.data.goodsInfo.content){
+			                     	console.log('详情',data.data.goodsInfo.content);
+			                     	var detailsdom = parseDom(data.data.goodsInfo.content);
+			                     	var detailsimg = detailsdom.getElementsByTagName('img');
+			                     	mui.each(detailsimg,function (index,element) {
+			                     		console.log(element.src.split('pages/market')[1]);
+			                     		element.src = serverimgUrl + element.src.split('pages/market')[1];
+			                     		element.onerror = function(){
+			                     			element.src = '../../img/market/nodata.svg';
+			                     		}
+			                     	})
+			                     	console.log('节点',detailsdom);
+//			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+			                     	document.getElementById("textInfo").appendChild(detailsdom);
+			                    }else{
 			                     	document.getElementById("textInfo").innerHTML='<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
-			                     }
+			                    }
 
 			                     ////alert(data.data.goodsInfo.parameter);
 			                      data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
@@ -882,6 +894,12 @@
 							})
 					}
 					mui.previewImage();
+					
+					function parseDom(arg) {//节点转换方法
+				　　 		var objE = document.createElement("div");
+			　　		 	objE.innerHTML = arg;
+				　　 		return objE;
+					};
 		})
 
 	</script>

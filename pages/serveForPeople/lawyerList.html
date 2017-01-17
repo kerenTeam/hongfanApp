@@ -148,11 +148,13 @@
 <script src="../../js/app.js"></script>
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
+	var address,street;
 	function forHelp(helpId){
 		if(plus.storage.getItem('myToken')){
+//			alert(address,street)
 			openview({
-				view:"linshuiHelp.html",
-				extrasobj:{helpId:helpId}
+				view:"linshuiHelpDetail.html",
+				extrasobj:{helpId:helpId,address:address,street:street}
 			})
 		}else{
 			mui.toast('请登录');
@@ -165,11 +167,12 @@
 	//搜索显示列表
 	mui.plusReady(function(){
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		var address = plus.webview.currentWebview().area.trim();
-		var street = plus.webview.currentWebview().street.trim();
+		address = plus.webview.currentWebview().area.trim();
+		street = plus.webview.currentWebview().street.trim();
 		var longitude = plus.webview.currentWebview().longitude;
 		var oldtoken = plus.storage.getItem('oldToken');
 		console.log(street+address);
+
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
 			data:{area:street,address:address},  
