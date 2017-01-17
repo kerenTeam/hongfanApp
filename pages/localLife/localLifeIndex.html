@@ -222,7 +222,7 @@
 	
 		<div id="index" class="page-center-box">
 			<!--猜你喜欢-->
-			<div class="sy_limit_buy mb10 caini">
+			<div class="sy_limit_buy mb10 caini" style="display: none;"> 
 				<div class="sy_title">
 				<span class="left">猜你喜欢&nbsp;&nbsp;&nbsp;&nbsp;</span>
 			</div>
@@ -412,34 +412,34 @@
 				}
 			});
 			//猜你喜欢
-			mui.ajax(serverUrl+'/api/localservice/localserviceads',{
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},	              				
-				success:function(data){
-					console.log('猜你喜欢返回'+JSON.stringify(data));
-					if(data.errno == 0){ 
-						var objdata = {};
-						mui.each(data.data,function (index,ele) {
-							data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
-						})
-						objdata.myUrl = serverimgUrl;
-						objdata.list = data.data;
-						var html = template("Adv",objdata);
-						document.getElementById("Advdiv").innerHTML=html;
-						plus.nativeUI.closeWaiting();
-						mui('#Mask')[0].style.display = 'none';
-					}else{
-						mui.toast('获取用户信息失败');
-						plus.nativeUI.closeWaiting();
-						console.log(data.errmsg);
-					}
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();
-					mui.toast('响应失败  !');
-				}
-			});
+//			mui.ajax(serverUrl+'/api/localservice/localserviceads',{
+//				type:'post',
+//				timeout:10000,
+//				headers:{"token":oldtoken},	              				
+//				success:function(data){
+//					console.log('猜你喜欢返回'+JSON.stringify(data));
+//					if(data.errno == 0){ 
+//						var objdata = {};
+//						mui.each(data.data,function (index,ele) {
+//							data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+//						})
+//						objdata.myUrl = serverimgUrl;
+//						objdata.list = data.data;
+//						var html = template("Adv",objdata);
+//						document.getElementById("Advdiv").innerHTML=html;
+//						plus.nativeUI.closeWaiting();
+//						mui('#Mask')[0].style.display = 'none';
+//					}else{
+//						mui.toast('获取用户信息失败');
+//						plus.nativeUI.closeWaiting();
+//						console.log(data.errmsg);
+//					}
+//				},
+//				error:function(xhr,type,errorThrown){
+//					plus.nativeUI.closeWaiting();
+//					mui.toast('响应失败  !');
+//				}
+//			});
 			//热门推荐
 			mui.ajax(serverUrl+'/api/localservice/localservicecommend',{
 				type:'post',

@@ -164,7 +164,7 @@
 				<div class="store-header clearfix" id="vfshangdian" style="top: 50px;">
 					<div class="tu">
 						<span></span>
-						<img src="" id="storeLogo"/>
+						<img src="" id="storeLogo" style="display: none;"/>
 					</div>
 					<div class="right fl">
 						<p id="storeName"></p>
@@ -423,7 +423,33 @@
 			//热门推荐 数据渲染 
 			if(flag1 == 1){
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-				mui.ajax(serverUrl +'/api/mall/mallgooodslist',{
+				
+				mui.ajax(serverUrl +'/api/mall/storeinfo',{//加载部分详情
+					data:{store_id: storeId},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){
+						$('#storeName').html(data.data.store_name);
+						$('#title2').html(data.data.secondary_name);
+						$('#floorName').html(data.data.store_name);
+						if(data.data.logo == '' || data.data.logo == null){
+							$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
+						}else{
+							$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
+						}
+						mui('#storeLogo')[0].style = 'block';
+						if(data.data.pic == '' || data.data.pic == null){
+							$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
+						}else{
+							$('#storeImg').attr('src',serverimgUrl+data.data.pic);
+						}
+					},
+					error:function(xhr,type,errorThrown){
+					}
+				});
+				mui.ajax(serverUrl +'/api/mall/mallgooodslist',{//加载推荐
 					data:{
 						currentPage:1,
 						numsPerPage:5,

@@ -147,7 +147,7 @@
 				margin: 10px 0;
 			}
 			.head{
-				background-color: #ffc900;
+				background-color: #dcd5d5;
 				margin-top: 50px;
 			}
 			.hLeft,.hMiddle{
@@ -222,13 +222,13 @@
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
+		<header id="header" class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		    <div class="header-tit">
 				机票
 			</div>
 		</header>
-		<div class="head">
+		<div class="head" id="head" style="top: 50px;">
 			<div class="mui-row">
 			    <div class="mui-col-sm-3 mui-col-xs-3 hLeft">
 					<!--<div class="">-->
@@ -245,6 +245,22 @@
 		        </div>
 			</div>
 		</div>
+		<!--这是单独加模拟状态栏的方法-->
+		<div id="sBar" style="background-color: #f53c42;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+		<script type="text/javascript">
+			var immersed = 0;
+			var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+			    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+			}
+			var statusBar = document.getElementById('sBar');//这是模拟状态栏
+			var headdiv = document.getElementById('header');//这是现有的header
+			var headdiv2 = document.getElementById('head');//这是现有的head
+			document.body.style.paddingTop =  immersed+'px';
+			statusBar&&(statusBar.style.height = immersed+'px');
+			headdiv&&(headdiv.style.top = immersed+'px');
+			headdiv2&&(headdiv2.style.top = parseInt(headdiv2.style.top) + immersed+'px');
+		</script>
 		<div id="main">
 			<div class="guess-like">
 				
@@ -343,7 +359,6 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					console.log('三字码获取成功')
-//					alert(JSON.stringify(data.data.air_stations_list_response.stations.station));
 					dataReturn = data.data.air_stations_list_response.stations.station;
 					for(var i = 0;i<dataReturn.length;i++){
 						//起飞地点三字码
@@ -365,11 +380,9 @@
 						headers:{"token":oldToken},	 
 						success:function(data,type,xhr){
 							console.log('标准商品序列号获取成功')
-//							alert(JSON.stringify(data.data.air_items_list_response.items.item[0].itemId));
 							numReturn = data.data.air_items_list_response.items.item;
 							for(var j = 0;j<numReturn.length;j++){
 								itemId = numReturn[j].itemId;
-		//						alert(arrive)
 								//获取航线列表
 								mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
 									data:{from:fromPlace,itemId:itemId,date:fromTime,to:arrivePlace},
@@ -378,8 +391,7 @@
 									timeout:30000,
 									headers:{"token":oldToken},	 
 									success:function(data,type,xhr){
-//										alert(data.data.airlines_list_response.airlines);
-//										alert(JSON.stringify(data.data.airlines_list_response.airlines));
+										console.log('列表', JSON.stringify(data));
 										var dataObj = data.data.airlines_list_response.airlines;
 										if(!dataObj || dataObj == ''){
 											plus.nativeUI.closeWaiting();
@@ -405,6 +417,7 @@
 									error:function(xhr,type,errorThrown){
 										console.log('当前网络不好，请重试!');
 										mui.toast('请求超时，请重试!');
+										plus.nativeUI.closeWaiting();
 										plus.webview.currentWebview().close();
 									}
 								});
@@ -413,6 +426,7 @@
 						error:function(xhr,type,errorThrown){
 							console.log('标准商品序列号响应失败  !');
 							mui.toast('请求超时，请重试!');
+							plus.nativeUI.closeWaiting();
 							plus.webview.currentWebview().close();
 						}
 					});
@@ -423,6 +437,7 @@
 				error:function(xhr,type,errorThrown){
 					console.log('三字码响应失败  !');
 					mui.toast('请求超时，请重试!');
+					plus.nativeUI.closeWaiting(); 
 					plus.webview.currentWebview().close();
 				}
 			});
