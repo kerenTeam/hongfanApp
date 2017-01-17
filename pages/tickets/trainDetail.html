@@ -163,7 +163,7 @@
 				padding: 10px;
 			}
 			.head{
-				background-color: #ffc900;
+				background-color: #dcd5d5;
 			}
 			dl.list {
 				border-top: none;
@@ -197,6 +197,7 @@
 				火车票详情
 			</div>
 		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container"></div>
 			<script type="text/html" id="infolist">
 				<div class="guess-like">
@@ -272,8 +273,13 @@
 			var newtime = time.split('-')[1] + '-' + time.split('-')[2] + '-' + time.split('-')[0] + ' ' + details.startTime;
 			var date = new Date(newtime);
 			var jiange = formatSeconds(details.runTime);
-			var runhour = parseInt(jiange.split('小时')[0]);//间隔小时
-			var runmin = parseInt(jiange.split('小时')[1]);//间隔分钟
+			var runhour = 0,runmin = 0;
+			if(jiange.indexOf('小时')>-1){
+				runhour = parseInt(jiange.split('小时')[0]);//间隔小时
+				runmin = parseInt(jiange.split('小时')[1]);//间隔分钟
+			}else{
+				runmin = parseInt(jiange.split('分')[0]);//间隔分钟
+			}
 			date.setHours(date.getHours() + runhour);
 			date.setMinutes(date.getMinutes() + runmin);
 			var Emonth;//结束月
