@@ -13,6 +13,8 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
+		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 
@@ -217,6 +219,13 @@
 				text-align: center;
 				color: rgba(255,255,255,0.7);
 			}*/
+			/*.mui-poppicker-body:last-child{
+				display: none;
+			}*/
+			.mui-poppicker-body .mui-picker{
+				width: 50% !important;
+			}
+			
 		</style>
 	</head>
 	<body>
@@ -237,14 +246,15 @@
 				<div style="padding: 10px 10px;">
 					<div id="item1" class="mui-control-content mui-active">
 						<div class="inputWrap">
-						    <div class="mui-input-row">
+						    <div class="mui-input-row" id="mapAddress">
 						        <label>出发</label>
 						        <input type="text" class="InputCss fromAd" placeholder="请输入出发地" id="from">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
 						    </div>
+						</li>
 						</div>
 						<div class="inputWrap">
-						    <div class="mui-input-row">
+						    <div class="mui-input-row" id="mapAddress2">
 						        <label>到达</label>
 						        <input type="text" class="InputCss toAd" placeholder="请输入目的地" id="arrive">
 						        <span class="mui-icon mui-icon-location inputIcon"></span>
@@ -266,7 +276,7 @@
 						    	</div>
 						    </div>
 						</div>-->
-						<div class="changeAd">
+						<div class="changeAd" onclick="changeAd()">
 							<img src="../../img/tickets/change.png"/>
 						</div>
 					</div>
@@ -306,6 +316,50 @@
 		</div>
 		
 	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/mui.picker.min.js"></script>
+	<script src="../../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		//修改地址三级联动为二级联动
+		for(var i=0;i<cityData3.length;i++){
+			for(var j=0;j<cityData3[i].children.length;j++){
+				cityData3[i].children[j].children=[];
+			}
+		}
+		
+//		document.getElementsByClassName('.mui-picker')[2].style.display=none;
+//		alert(document.getElementsByClassName('mui-picker')[0].innerHTML);
+		(function($, doc) {
+			$.init();
+			$.ready(function() {
+				//地址选择三级联动
+				var cityPicker3 = new $.PopPicker({
+					layer: 3
+				});
+				cityPicker3.setData(cityData3);
+				var showCityPickerButton = doc.getElementById('from');
+				var cityResult3 = doc.getElementById('cityResult3');
+//				alert(document.getElementsByClassName('mui-picker')[2].innerHTML);
+				document.getElementsByClassName('mui-picker')[2].remove();
+//				$('.mui-picker')[2].css('display','none');
+				showCityPickerButton.addEventListener('tap', function(event) {
+					cityPicker3.show(function(items) {
+						doc.getElementById('from').value = (items[0] || {}).text + " "+(items[1] || {}).text;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+				var showCityPickerButton2 = doc.getElementById('arrive');
+				showCityPickerButton2.addEventListener('tap', function(event) {
+					cityPicker3.show(function(items) {
+						doc.getElementById('arrive').value = (items[0] || {}).text + " "+(items[1] || {}).text;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+			});
+		})(mui, document);
+	</script>
 	<script type="text/javascript">
 //		function planeRe(){
 //			openview({
@@ -333,19 +387,12 @@
 			});
 			
 			//点击中间的地点切换
-			var changeAd = document.getElementsByClassName('changeAd');
-			changeAd[0].addEventListener('tap', function(){
-				var fromAd = document.getElementsByClassName('fromAd')[0].value;
-				var toAd = document.getElementsByClassName('toAd')[0].value;
-				document.getElementsByClassName('toAd')[0].value= fromAd;
-				document.getElementsByClassName('fromAd')[0].value = toAd;
-			});
-			changeAd[1].addEventListener('tap', function(){
-				var fromAd = document.getElementsByClassName('fromAd')[1].value;
-				var toAd = document.getElementsByClassName('toAd')[1].value;
-				document.getElementsByClassName('toAd')[1].value= fromAd;
-				document.getElementsByClassName('fromAd')[1].value = toAd;
-			});
+			window.changeAd = function(){
+				var fromAd = document.getElementById('from').value;
+				var toAd = document.getElementById('arrive').value;
+				document.getElementById('arrive').value= fromAd;
+				document.getElementById('from').value = toAd;
+			}
 			
 			
 			
@@ -353,9 +400,12 @@
 		
 		//点击搜索
 		function searchPlane(){
-				var from = mui('#from')[0].value;
-				var arrive = mui('#arrive')[0].value;
+				var str1 = mui('#from')[0].value.split(' ');
+				var from = str1[1].split('市')[0];
+				var str2 = mui('#arrive')[0].value.split(' ');
+				var arrive = str2[1].split('市')[0];
 				var fromTime = mui('#fromTime')[0].value;
+//				alert(from+arrive)
 				if(from && arrive && fromTime){
 					//处理事件格式
 					var time1 = fromTime.split('/')[0];

@@ -16,6 +16,7 @@
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/app.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
 		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			.hasManyCitytwo .header-tit{
@@ -103,51 +104,37 @@
 		    	<p>寄快递</p>
 		    </div>
 		</div>
-		<!--<div>
-			<div class="guess-like">
-				<dl class="list" id="goodsList">
-					<dd class="goodsItem" onclick="deliveryDetail()">
-						<a class="react">
-							<p class="tiny">中通快递：1387487646432 
-								<span class="stateD">已发货</span>
-							</p>
-						</a>
-						<div class="mui-row">
-						    <div class="mui-col-sm-3 mui-col-xs-3 goods">
-						    	<img src="../../img/21.jpg"/>
-						    </div>
-						    <div class="mui-col-sm-9 mui-col-xs-9 goodsInfo">
-						    	<p class="black">华为P9华为P9华为P9华为P9华为P9华为P9</p>
-						    	<p class="tiny">快递已发出</p>
-						    	<p class="tiny">12-12&nbsp;15:26:33</p>
-						    </div>
-						</div>
-					</dd>
-					<dd class="goodsItem" onclick="deliveryDetail()">
-						<a class="react">
-							<p class="tiny">中通快递：1387487646432 
-								<span class="stateD">已发货</span>
-							</p>
-						</a>
-						<div class="mui-row">
-						    <div class="mui-col-sm-3 mui-col-xs-3 goods">
-						    	<img src="../../img/21.jpg"/>
-						    </div>
-						    <div class="mui-col-sm-9 mui-col-xs-9 goodsInfo">
-						    	<p class="black">华为P9华为P9华为P9华为P9华为P9华为P9</p>
-						    	<p class="tiny">快递已发出</p>
-						    	<p class="tiny">12-12&nbsp;15:26:33</p>
-						    </div>
-						</div>
-					</dd>
-					<dd class="db">
-						<a class="react " href="javascript:;">
-							<div class="moreone">加载更多</div>
-						</a>
-					</dd>
-				</dl>
+		<div>
+		<div class="guess-like">
+				<dl class="list" id="goodsList"></dl>
 			</div>
-		</div>-->
+			<script type="text/html" id="goodsList-detail">
+				<% for(var i=0;i<li.length;i++){ %>
+					<% if(li[i].order_status==3){ %>
+						<dd class="goodsItem" onclick="deliveryDetail('<%= li[i].shipper_code %>','<%= li[i].logistic_code %>')">
+							<a class="react">
+								<p class="tiny">订单号：<%= li[i].logistic_code %>
+									<span class="stateD">已发货</span>
+								</p>
+							</a>
+							<% for(var j=0;j<li[i].goods_data.goodsData.length;j++){ %>
+								<div class="mui-row">
+								    <div class="mui-col-sm-3 mui-col-xs-3 goods">
+								    	<img src="<%= url %><%= li[i].goods_data.goodsData[j].goodsImg %>"/>
+								    </div>
+								    <div class="mui-col-sm-9 mui-col-xs-9 goodsInfo">
+								    	<p class="black"><%= li[i].goods_data.goodsData[j].goodsName %></p>
+								    	<p class="tiny">快递已发出</p>
+								    	<p class="tiny"><%= li[i].create_time %></p>
+								    </div>
+								</div>
+							<% } %>
+						</dd>
+					<% }else if(!li[i].order_status==3){ %>
+						<div class="nothing"><img src="../../img/theList/del.png"/><p>你没有快递消息哟！</p></div>
+					<% } %>
+				<% } %>
+			</script>
 	</body>
 	<script type="text/javascript">
 		(function(){
@@ -170,6 +157,45 @@
 				})
 			}
 		})();
+		function deliveryDetail(shipper,deliveryNo){
+//			var shipper = "HTKY";
+//			var deliveryNo = "70272900063489";
+			openview({
+				view:'../localLife/deliveryTrace.html',
+				extrasobj:{shipper:shipper,deliveryNo:deliveryNo}//快递公司，订单号
+			})
+		}
+		mui.plusReady(function(){
+			//获取缓存
+			var oldToken = plus.storage.getItem('oldToken');
+			console.log(oldToken);
+			var userId = plus.storage.getItem("userid");
+			mui.ajax(serverUrl+'/api/mall/orderlist',{
+				data:{userid:userId},
+				dataType:'json',
+				type:'post',
+				timeout:1000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+//					alert(JSON.stringify(data.data))
+//					var data.data=[];
+					for(var i=0;i<data.data.length;i++){
+						if(data.data[i].order_status==3){
+							data.data[i].goods_data=JSON.parse(data.data[i].goods_data);
+						}
+					}
+					orderObj={};
+					orderObj.url = serverimgUrl;
+					orderObj.li = data.data;
+					var html = template('goodsList-detail',orderObj);
+					document.getElementById('goodsList').innerHTML = html;
+//					
+				},
+				error:function(xhr,type,errorThrown){
+					alert('响应失败  !');
+				}
+			}); 
+		})
 	</script>
 
 </html>

@@ -826,13 +826,57 @@
 									})
 									
 									chooseli.click(function() { 
+										var cursx = $(this);
 										oldstep = newstep;
-										$(this).addClass('cur');
-										$(this).siblings().removeClass('cur');
+//										$(this).addClass('cur');
+//										$(this).siblings().removeClass('cur');
 										
-										querysx();
+										//querysx();
 										
-										
+										var value1=$.trim($(".cur").eq(0).html()); 
+										if(!value1){
+											value1='';
+										}
+										var value2=$.trim($(".cur").eq(1).html()); 
+										if(!value2){
+											value2='';
+										}
+										var value3=$.trim($(".cur").eq(2).html());
+										if(!value3){
+											value3='';
+										} 
+										var value4=$.trim($(".cur").eq(3).html());
+										if(!value4){
+											value4='';
+										} 
+					     				//查询库存  
+					     				
+										mui.ajax(serverUrl+'/api/mall/goodstock',{
+											data:{"goodsId":goodId,value1:value1,value2:value2,value3:value3,value4:value4}, 
+											type:'post',
+											timeout:10000,
+											headers:{"token":token},	              				
+											success:function(data,type,xhr){ 
+											 
+											 if(data.errno==0){
+													if(data.data==0){  
+													 
+														$("#kc").html("库存:0")
+														mui.toast("该属性商品库存不足") 
+													 }else{
+													 	cursx.removeClass('cur');
+													 	cursx.siblings().removeClass('cur')
+													 	$("#kc").html("库存："+data.data)
+													 }
+												}
+											
+												//有库存 
+											},
+											error:function(xhr,type,errorThrown){
+												plus.nativeUI.closeWaiting();
+												mui.toast('响应失败  !');
+											}
+										});
 										
 									
 									})
@@ -998,14 +1042,17 @@
 											timeout:10000,
 											headers:{"token":token},	              				
 											success:function(data,type,xhr){ 
-//												alert(JSON.stringify(data))
-											 if(data.errno!=0){ 
-												$(".cur").removeClass('cur');
-//												mui.toast("该属性商品库存不足")
-
-											 }else{
-											 	$("#kc").html("库存："+data.data)
-											 }
+												alert(JSON.stringify(data))
+												if(data.errno==0){
+													if(data.data==0){  
+														$('.choose').find("li").removeClass("cur")
+														$("#kc").html("库存:0")
+														mui.toast("该属性商品库存不足") 
+													 }else{
+													 	$("#kc").html("库存："+data.data)
+													 }
+												}
+											 
 											
 												//有库存
 												
