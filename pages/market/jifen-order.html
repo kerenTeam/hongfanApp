@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>优惠</title>
@@ -11,43 +12,48 @@
 		<meta name="format-detection" content="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 		<link rel="stylesheet" href="../../css/reset.css">
-		<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/localHost.css" />
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<style type="text/css">
-		header{
+		header {
 			box-shadow: none!important;
 		}
-		.activityIcon{
+		
+		.activityIcon {
 			width: 0.3rem;
 			margin: 0 5px 0 15px;
 			vertical-align: middle;
 		}
-		dl.list{
+		
+		dl.list {
 			border: none;
 		}
-		.acleft img{ 
+		
+		.acleft img {
 			width: 1rem;
 			height: 1rem;
-			
 		}
-		.acright{ 
-			width:-moz-calc(100% - 1rem);
-			width:-webkit-calc(100% - 1rem);
+		
+		.acright {
+			width: -moz-calc(100% - 1rem);
+			width: -webkit-calc(100% - 1rem);
 			width: calc(100% - 1rem);
 			font-size: 0.14rem;
 			line-height: 0.33rem;
-    		padding-left: 5%;
+			padding-left: 5%;
 		}
-		.ddafter{ 
-			padding:12px 12px;
+		
+		.ddafter {
+			padding: 12px 12px;
 			position: relative;
 		}
-		.ddafter:not(:last-child):after{
+		
+		.ddafter:not(:last-child):after {
 			content: '';
 			position: absolute;
 			width: 100%;
@@ -55,126 +61,148 @@
 			bottom: 0;
 			height: 1px;
 			left: 0;
-			background-color: rgba(0,0,0,0.1);
+			background-color: rgba(0, 0, 0, 0.1);
 			-webkit-transform: scaleY(0.5);
 		}
-		.aclist{
+		
+		.aclist {
 			padding: 0 auto 0.05rem auto;
 		}
-		.Ctitle{
+		
+		.Ctitle {
 			color: black;
 			font-size: 0.14rem;
 			line-height: 35px;
 		}
-	 	.acright img{
-	 		width: 14px;
-	 		margin-right: 5px;
-	 	}
-	 	small{
-	 		color: #999 !important;
-	 	}
-	 	.red1{
-	 		color: #F53C42;
-	 		white-space: nowrap;
-	 		width: 90%;
-	 		overflow: hidden;
-	 		text-overflow: ellipsis;
-	 		font-size: 16px;
-	 		line-height: 35px;
-	 		font-weight: bold;
-	 	}
+		
+		.acright img {
+			width: 14px;
+			margin-right: 5px;
+		}
+		
+		small {
+			color: #999 !important;
+		}
+		
+		.red1 {
+			color: #F53C42;
+			white-space: nowrap;
+			width: 90%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			font-size: 16px;
+			line-height: 35px;
+			font-weight: bold;
+		}
 	</style>
+
 	<body>
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">兑换记录</h1>
-		</header>	
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="container">		
-			<div id="main" style="background-color: white;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			<h1 class="mui-title">兑换记录</h1>
+		</header>
+		<script src="../../js/statusBar.js"></script>
+		<!--状态栏-->
+		<div id="container">
+			<div id="main">
 				<div id="orderData"></div>
-				 
+
 				<!--渲染数据-->
 				<script type="text/html" id="orderTpl">
 					<% for(var i = 0;i<orderData.length;i++){ %>
-						<% if(orderData[i].order_type==4){ %>
-						<div class="ddafter">
-							<% if(orderData[i].order_status== 1){ %>
-								<p style="font-size: 0.12rem;border-left: 3px solid orangered; padding-left: 3px;">待发货</p>
-							<%}else if(orderData[i].order_status== 3){%>
-								<p style="font-size: 0.12rem;border-left: 3px solid orangered; padding-left: 3px;">已发货</p>
-								<%}%>
-							<div class="mui-row aclist">
-								 <div class="fl acleft">
-								 	<% if(orderData[i].storeid== 0){ %>
-										<img src="<%=orderData[i].goods_data.goodsData[0].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
-									<% }else{ %>
-										<img src="<%=myUrl %><%=orderData[i].goods_data.goodsData[0].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
-									<% } %>
-								 </div>
-								 <div class="fl acright">
-								 	<p class="gray Ctitle"><%=orderData[i].goods_data.goodsData[0].goodsName%></p>
-								 	<div style="color: red;"><img src="../../img/market/jifen.svg"alt="" style="width: 0.1rem;" /><%=orderData[i].goods_data.goodsData[0].goodsPrice%></div>
-								 	
-								 	<div><img src="../../img/time.png"/><small>兑换时间：<%=orderData[i].create_time%></small></div>
-								 </div>
+					<% if(orderData[i].order_type==4){ %>
+					<div class="ddafter" style="background-color: white;">
+						<% if(orderData[i].order_status== 3){ %>
+						<p style="font-size: 0.12rem;border-left: 3px solid orangered; padding-left: 3px;margin-bottom: 5px;">已发货</p>
+						<%}else{%>
+						<p style="font-size: 0.12rem;border-left: 3px solid orangered; padding-left: 3px;margin-bottom: 5px;">待发货</p>
+						<%}%>
+						<div class="mui-row aclist">
+							<div class="fl acleft">
+								<% if(orderData[i].storeid== 0){ %>
+								<img src="<%=orderData[i].goods_data.goodsData[0].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+								<% }else{ %>
+								<img src="<%=myUrl %><%=orderData[i].goods_data.goodsData[0].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+								<% } %>
+							</div>
+							<div class="fl acright">
+								<p class="gray Ctitle">
+									<%=orderData[i].goods_data.goodsData[0].goodsName%>
+								</p>
+								<div style="color: red;"><img src="../../img/market/jifen.svg" alt="" style="width: 0.1rem;" />
+									<%=orderData[i].goods_data.goodsData[0].goodsPrice%>
+								</div>
+
+								<div><img src="../../img/time.png" /><small>兑换时间：<%=orderData[i].create_time%></small></div>
 							</div>
 						</div>
-						<% } %>
+					</div>
+					<% } %>
 					<% } %>
 				</script>
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-		 
-		mui.plusReady(function(){
+		mui.plusReady(function() {
 			//铺数据
-			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
+			plus.nativeUI.showWaiting("加载中...", {
+				width: '100px',
+				height: '80px'
+			});
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken);
-			var oldToken = plus.storage.getItem('oldToken'); 
-			var myuserid = plus.storage.getItem('userid'); 
-			mui.ajax(serverUrl+'/api/mall/orderlist',{
-				data:{userid:myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){ 
-				//	alert(JSON.stringify(data))
-//					alert(JSON.stringify(eval("("+data.data[0].goods_data+")")[0].storeid))
-//					alert(JSON.stringify(data.data[0].goods_data.goodsData[0]));
-					plus.nativeUI.closeWaiting(); 
-					if(data.errno==0){
-						
-						if(data.data.length!=0){ 
-							for(var i=0;i<data.data.length;i++){ 
-								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
+			var oldToken = plus.storage.getItem('oldToken');
+			var myuserid = plus.storage.getItem('userid');
+			mui.ajax(serverUrl + '/api/mall/orderlist', {
+				data: {
+					userid: myuserid
+				},
+				dataType: 'json',
+				type: 'post',
+				timeout: 10000,
+				headers: {
+					"token": oldToken
+				},
+				success: function(data, type, xhr) { 
+					plus.nativeUI.closeWaiting();
+					if(data.errno == 0) {
+						var m = 0;
+						if(data.data.length != 0) {
+							for(var i = 0; i < data.data.length; i++) {
+								data.data[i].goods_data = eval("(" + data.data[i].goods_data + ")");
+								if(data.data[i].order_type == 4) {
+									m++;
+ 
+								}
 							}
-							 alert(data.data[0].goods_data.storeid)
-							
-							var obj={}; 
-							 obj.orderData=data.data;
-							 obj.myUrl=serverimgUrl;
-							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
-							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
-						 }else{
-							
-					document.getElementById("orderData").innerHTML='<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">您还没有相关的订单</span>';
+						//	alert("m= " + m)
+							if(m > 0) {
+								var obj = {};
+								obj.orderData = data.data;
+								obj.myUrl = serverimgUrl;
+								document.getElementById("orderData").innerHTML = template("orderTpl", obj);
+							} else {
+								document.getElementById("orderData").innerHTML = '<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">还没有兑换记录哦</span>';
+
+							}
+
+						} else {
+
+							document.getElementById("orderData").innerHTML = '<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">还没有兑换记录哦</span>';
 						}
-					}else{
+					} else {
 						plus.nativeUI.closeWaiting()
-					 //   alert(JSON.stringify(data.data))
+							//   alert(JSON.stringify(data.data))
 					}
 				},
-				error:function(xhr,type,errorThrown){
+				error: function(xhr, type, errorThrown) {
 					plus.nativeUI.closeWaiting()
 					console.log('响应失败  !');
 				}
 			});
-			
-			
+
 		});
 	</script>
+
 </html>
