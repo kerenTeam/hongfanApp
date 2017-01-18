@@ -661,7 +661,7 @@
 									<p class="tit overflow_clear ">
 										<%=choose.title%>
 									</p>
-									<span>￥<b id="priceChange"><%=choose.price%></b> <small style="color: gray;font-size: 10px;margin-left: 20px;" id="kc"></small></span>
+									<span><b id="priceChange"></b> <small style="color: gray;font-size: 10px;margin-left: 20px;" id="kc"></small></span>
 								</div>
 							</div>
 							<div class="Mscroll">
@@ -721,6 +721,7 @@
 			var token = plus.storage.getItem("oldToken");
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId;
+			//alert(goodId)
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
 				height: '80px'
@@ -790,7 +791,15 @@
 						} else {
 							document.getElementById("textInfo").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
 						}
-						//属性 
+					
+						shopId = data.data.goodsInfo.storeid;
+						//选择弹框
+						var chooseO = {}
+						chooseO.choose = data.data.goodsInfo;
+						chooseO.myUrl = serverimgUrl;
+						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
+						mui(".mui-numbox").numbox();
+							//属性 
 
 						// data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
 						var parameteNameo, parameteValueo;
@@ -809,29 +818,22 @@
 								parmeter.parameteName = parameteNameo; 
 								parmeter.parameteValue = parameteValueo; 
 								document.getElementById("parBox").innerHTML = template("partpl", parmeter);
+								$('.choose').each(function() { 
+									$(this).find("li").eq(0).addClass("cur");
+								}) 
+								querysx();
 								$('.choose').each(function() {
 									var chooseli = $(this).find("li");
 										 
 									var oldstep = 0,
 										newstep = 0;
-									chooseli.each(function() {
-										chooseli.eq(0).addClass("cur");
-										if($(this).attr("data-Inventory") == 0) {
-											$(this).css("display", "block")
-										}
-										//			                     		chooseli.eq(0).addClass("cur");
-										if($(this).attr("data-priceStep") == 0) {
-
-											oldstep = $(this).attr("data-priceStep");
-										}
-
-									})
-									querysx();
+									 
+									
 									chooseli.click(function() { 
 										var cursx = $(this);
 										oldstep = newstep;
 										$(this).addClass('cur');
-										$(this).siblings().removeClass('cur');
+										$(this).siblings().removeClass('cur'); 
 										
 										//querysx();
 										
@@ -852,27 +854,43 @@
 											value4='';
 										} 
 					     				//查询库存  
-					     				
+					     			//	alert(value1+value2+value3+value4)
 										mui.ajax(serverUrl+'/api/mall/goodstock',{
 											data:{"goodsId":goodId,value1:value1,value2:value2,value3:value3,value4:value4}, 
 											type:'post',
 											timeout:10000,
 											headers:{"token":token},	              				
 											success:function(data,type,xhr){ 
-											 if(data.errno!=0){ 
-												cursx.removeClass('cur');
-												$("#kc").html("库存:0")
-												mui.toast("该属性商品库存不足")
+										//	 alert(JSON.stringify(data))
+											 if(data.errno==0){
+													if(data.data.stockNms==0){  
+													 	cursx.removeClass('cur'); 
+														$("#kc").html("库存:0")
+//														mui.toast("该属性商品库存不足") 
+														$("#priceChange").html();
+														 $(".mui-input-numbox").val(0);
+														$(".db").removeAttr("onclick")
+														$(".db").css("background","#DDDDDD")
+													 }else{
+													 	cursx.addClass('cur');
+													 	cursx.siblings().removeClass('cur');
+													 	$("#kc").html("库存："+data.data.stockNms)
+													 	// alert(parseFloat(data.data.stockNms))
+													 	  	 mui(".mui-numbox").numbox();
+													 	 $(".mui-input-numbox").val(1);
+													 	// alert($(".mui-numbox").eq(0).attr("data-numbox-max"))
+//													 	$(".mui-numbox").eq(0).attr("data-numbox-max",parseFloat(data.data.stockNms))
+													 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
+//													 	  alert("2  "+$(".mui-numbox").eq(0).attr("data-numbox-max"))
 
-											 }else{
-											 	$("#kc").html("库存："+data.data)
-											 }
+													   $("#priceChange").html("￥"+data.data.price);
+													    priceChange = parseFloat(data.data.price)
+													    $(".db").attr("onclick","cartStorageF(this)")
+														$(".db").css("background","#F53C42")
+													 }
+												} 
 											
-												//有库存
-												
-//											 	newstep = $(this).attr("data-priceStep"); 
-//												priceChange = priceChange + parseInt(newstep) - parseInt(oldstep);
-//												$('#priceChange').html(priceChange) 
+												//有库存 
 											},
 											error:function(xhr,type,errorThrown){
 												plus.nativeUI.closeWaiting();
@@ -890,13 +908,70 @@
 								mui.toast('响应失败  !');
 							}
 						});
-						shopId = data.data.goodsInfo.storeid;
-						//选择弹框
-						var chooseO = {}
-						chooseO.choose = data.data.goodsInfo;
-						chooseO.myUrl = serverimgUrl;
-						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
-						mui(".mui-numbox").numbox();
+							function querysx(cursx){
+				var value1=$.trim($(".cur").eq(0).html()); 
+										if(!value1){
+											value1='';
+										}
+										var value2=$.trim($(".cur").eq(1).html()); 
+										if(!value2){
+											value2='';
+										}
+										var value3=$.trim($(".cur").eq(2).html());
+										if(!value3){
+											value3='';
+										} 
+										var value4=$.trim($(".cur").eq(3).html());
+										if(!value4){
+											value4='';
+										} 
+					     				//查询库存  
+					     			//	alert("value1"+value1+value2+value3+value4)
+										mui.ajax(serverUrl+'/api/mall/goodstock',{
+											data:{"goodsId":goodId,value1:value1,value2:value2,value3:value3,value4:value4}, 
+											type:'post',
+											timeout:10000,
+											headers:{"token":token},	              				
+											success:function(data,type,xhr){ 
+											//	alert(JSON.stringify(data))
+												if(data.errno==0){
+													if(data.data.stockNms==0){  
+														$("#kc").html("库存:0")
+//														mui.toast("该属性商品库存不足") 
+														$("#priceChange").html();
+														$(".db").removeAttr("onclick")
+														$(".db").css("background","#DDDDDD")
+													    $(".mui-input-numbox").val(0);
+													    $(".mui-numbox").eq(0).attr("data-numbox-max",0)
+														
+													}else{ 
+													 	$("#kc").html("库存："+data.data.stockNms)
+													 	 $(".mui-input-numbox").val(1);
+													 	// alert(parseFloat(data.data.stockNms))
+													 	 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
+//													 	  alert("2  "+$(".mui-numbox").eq(0).attr("data-numbox-max"))
+													 	  mui(".mui-numbox").numbox();
+													    $("#priceChange").html("￥"+data.data.price);
+													    
+													    priceChange = parseFloat(data.data.price)
+													    $(".db").attr("onclick","cartStorageF(this)")
+														$(".db").css("background","#F53C42")
+													 }
+												}
+											 
+											
+												//有库存
+												
+//											 	newstep = $(this).attr("data-priceStep"); 
+//												priceChange = priceChange + parseInt(newstep) - parseInt(oldstep);
+//												$('#priceChange').html(priceChange) 
+											},
+											error:function(xhr,type,errorThrown){
+												plus.nativeUI.closeWaiting();
+												mui.toast('响应失败  !');
+											}
+										});
+			}
 						var priceChange = parseInt($("#priceChange").html());
 
 						//评论
@@ -1019,52 +1094,7 @@
 			});
 			
 			
-			function querysx(){
-				var value1=$.trim($(".cur").eq(0).html()); 
-										if(!value1){
-											value1='';
-										}
-										var value2=$.trim($(".cur").eq(1).html()); 
-										if(!value2){
-											value2='';
-										}
-										var value3=$.trim($(".cur").eq(2).html());
-										if(!value3){
-											value3='';
-										} 
-										var value4=$.trim($(".cur").eq(3).html());
-										if(!value4){
-											value4='';
-										} 
-					     				//查询库存  
-					     				
-										mui.ajax(serverUrl+'/api/mall/goodstock',{
-											data:{"goodsId":goodId,value1:value1,value2:value2,value3:value3,value4:value4}, 
-											type:'post',
-											timeout:10000,
-											headers:{"token":token},	              				
-											success:function(data,type,xhr){ 
-											 if(data.errno!=0){ 
-												$(this).removeClass('cur');
-												$("#kc").html("库存:0")
-												mui.toast("该属性商品库存不足")
-
-											 }else{
-											 	$("#kc").html("库存："+data.data)
-											 }
-											
-												//有库存
-												
-//											 	newstep = $(this).attr("data-priceStep"); 
-//												priceChange = priceChange + parseInt(newstep) - parseInt(oldstep);
-//												$('#priceChange').html(priceChange) 
-											},
-											error:function(xhr,type,errorThrown){
-												plus.nativeUI.closeWaiting();
-												mui.toast('响应失败  !');
-											}
-										});
-			}
+		
 			
 			
 			//跳转商家详情

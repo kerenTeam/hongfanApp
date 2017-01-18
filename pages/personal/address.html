@@ -85,12 +85,11 @@
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
-		    <div class="header-tit">
-				管理收货地址
-			</div>
-			<a href="javascript:;" class="fr baocun" onclick="addAd()">新增</a>
+		 
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title">管理收货地址</h1>  
+		    <a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun" onclick="addAd()">新增</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="addressList"></div>
@@ -191,12 +190,14 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						plus.nativeUI.closeWaiting();
-//						alert(JSON.stringify(data.data[0].userid));
 						plus.storage.setItem("userid",userId);//userId做缓存
 						var addressObj = {};
 						addressObj.addressLi = data.data;
 						var html = template('addressList-detail',addressObj);
 						document.getElementById('addressList').innerHTML = html; 
+						if(data.data.length==0){
+							document.getElementById('main').innerHTML='<div class="nothing" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/theList/ad.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">你还没有地址哟！</p></div>';
+						}
 						if(pageid){ 
 							$(".addlist .bottom").css("display","none");
 							$(".addlist").click(function(){

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>为民服务-义工活动</title>
@@ -8,45 +9,60 @@
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/common.css"/>
-		<!--<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>-->
+		<meta name="format-detection" content="address=no"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" /> 
+		<link rel="stylesheet" type="text/css" href="../../css/common.css" /> 
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
 		<style type="text/css">
-			p{
+			p {
 				color: #333;
 			}
-			img{
+			
+			img {
 				width: 100%;
 			}
 		</style>
 	</head>
+
 	<body>
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">义工活动</h1> 
-		</header>	
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="mui-content">	
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			<h1 class="mui-title">义工活动</h1>
+		</header>
+		<script src="../../js/statusBar.js"></script>
+		
+		
+		
+		
+		
+		<!--状态栏-->
+		<div class="mui-content">
 			<div id="teamInfo"></div>
 			<script type="text/html" id="teamTpl">
 				<div class="mui-card">
 					<div class="mui-card-header">
-						<%= objData.title%>
-						<small class="mui-pull-right gray">发布时间：<%= objData.create_time%></small>
+						<div style="width: 100%;text-align: center;">
+							<%= objData.title%>
+						</div>
 					</div>
 					<div class="mui-card-content">
 						<div class="mui-card-content-inner">
-							<div>
-								<p style="text-indent: 2em;"><%= objData.content%></p> 
-							</div>
 							<%if(objData.picImg){%>
-								<img class="mui-col-sm-10" src="<%= url%><%=objData.picImg%>"/>
+							<img class="mui-col-sm-10" src="<%= url%><%=objData.picImg%>" />
 							<%}%>
+							<div>
+								<p style="text-indent: 2em;">
+									<%= objData.content%>
+								</p>
+							</div>
+
 						</div>
 					</div>
-					<div class="mui-card-footer"><p class="gray smallSize">浏览量：<%=objData.read%>次</p></div>
+					<div class="mui-card-footer">
+						<p class="gray smallSize">浏览量：
+							<%=objData.read%>次</p>
+						<small>发布时间：<%= objData.create_time%></small>
+					</div>
 				</div>
 			</script>
 		</div>
@@ -54,29 +70,37 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		mui.plusReady(function(){
+		mui.plusReady(function() {
 			var oldtoken = plus.storage.getItem('oldToken');
-			var activityId = plus.webview.currentWebview().activityId;
-//			alert(activityId);
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			mui.ajax(serverUrl+'/api/localservice/activitieinfo',{
-				type:'post',
-				data:{id:activityId},
-				timeout:10000,
-				headers:{"token":oldtoken},	              				
-				success:function(data,type,xhr){
-					var teamObj={};
-		       		data.data.create_time = data.data.create_time.split('T')[0]; 
-					teamObj.objData=data.data;
-					teamObj.url = serverimgUrl;
-					mui('#teamInfo')[0].innerHTML = template('teamTpl',teamObj);
-					plus.nativeUI.closeWaiting();//关闭等待框
+			var activityId = plus.webview.currentWebview().activityId; 
+			plus.nativeUI.showWaiting('加载中 ...', {
+				width: '100px',
+				height: '80px'
+			}); //显示等待框
+			mui.ajax(serverUrl + '/api/localservice/activitieinfo', {
+				type: 'post',
+				data: {
+					id: activityId
 				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
+				timeout: 10000,
+				headers: {
+					"token": oldtoken
+				},
+				success: function(data, type, xhr) {
+					var teamObj = {};
+					data.data.create_time = data.data.create_time.split('T')[0];
+					teamObj.objData = data.data;
+ 
+					teamObj.url = serverimgUrl;
+					mui('#teamInfo')[0].innerHTML = template('teamTpl', teamObj);
+					plus.nativeUI.closeWaiting(); //关闭等待框
+				},
+				error: function(xhr, type, errorThrown) {
+					plus.nativeUI.closeWaiting(); //关闭等待框
 					mui.toast('当前网络不好,请重试');
 				}
 			});
 		});
 	</script>
+
 </html>
