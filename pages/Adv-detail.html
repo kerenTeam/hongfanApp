@@ -122,7 +122,24 @@
 						adObj.myUrl = serverimgUrl;
 						var html = template('ad-detail',adObj);
 						document.getElementById('ad').innerHTML = html;
+						//详情
+						if(data.data.content) {
+							console.log('详情', data.data.content);
+							var detailsdom = parseDom(data.data.content);
+							var detailsimg = detailsdom.getElementsByTagName('img');
+							mui.each(detailsimg, function(index, element) {
+								console.log(element.src.split('pages')[1]);
+								element.src = serverimgUrl + element.src.split('pages')[1];
+								console.log(element.src);
+								element.onerror = function() {
+									element.src = '../img/market/nodata.svg';
+								}
+							})
+							console.log('节点', detailsdom);
+							//			                     	document.getElementById("textInfo").innerHTML=data.data.content;
 						document.getElementById('AdContent').innerHTML = data.data.content;
+						}  
+						
 						plus.nativeUI.closeWaiting();//关闭等待框
 						
 					},
@@ -131,6 +148,12 @@
 					}
 				});
 			})
+			function parseDom(arg) { //节点转换方法
+				　　
+				var objE = document.createElement("div");　　
+				objE.innerHTML = arg;　　
+				return objE;
+			};
 		</script>
 	</body>
 	

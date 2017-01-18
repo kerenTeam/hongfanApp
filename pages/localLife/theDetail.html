@@ -15,6 +15,7 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		
 		<style type="text/css">
+		
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{width: 10px;
 				height: 10px;
@@ -88,6 +89,9 @@
 			}
 			.merchant .biz-call .phone{margin-top: -7px;}
 			.rentingtopbot {padding-bottom: 40px !important;}
+			.farm .top p span{
+				border-right: 0!important;
+			}
 		</style>
 	</head>
 
@@ -95,7 +99,7 @@
 		<header class="mui-bar mui-bar-nav" id="header">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">详情</h1>
-			<a href="setup.html" class="fr shoucang sousuo mui-icon"><i class="iconfont icon-fenxiang"></i></a>
+			<!--<a href="setup.html" class="fr shoucang sousuo mui-icon"><i class="iconfont icon-fenxiang"></i></a>-->
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
@@ -132,9 +136,20 @@
 					<!--轮播图结束-->
 					<div class="farm clearfloat">
 						<div class="top rentingtop clearfloat box-s">
-							<p><%= list[0].name%></p>
+							<p style="font-size: 0.14rem;"><%= list[0].name%></p>
 							<p class="time">
-								发布时间：<span class="cspan"><%= list[0].create_time.split('T')[0]%></span>
+								发布时间：<span class="cspan" style="font-size: 0.12rem;"><%= list[0].create_time.split('T')[0]%></span>
+								<small class="fr">评分：
+								<%if(list[0].star){%>
+									<%for(var j = 0;j<list[0].star;j++){%>
+										 <img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
+									<%}%>
+									<%}%> 
+										
+										<%for(var j = 0;j<grayStar;j++){%>
+											<img src="../../img/market/graystar.png" style="width: 0.1rem;" alt="" />
+										<%}%> 
+								</small>
 								<!--浏览：413人-->
 							</p>
 						</div>
@@ -202,7 +217,14 @@
 					console.log('获取数据返回',data);
 					if(data.errno == 0){
 						var objdata = {};
+						if(data.data[0].star){
+							var grayStar = 5-parseFloat(data.data[0].star)
+						}else{
+							var grayStar =5
+						}
+//						alert(grayStar)
 						objdata.list = data.data;
+						objdata.grayStar = grayStar;
 						objdata.picurl = serverimgUrl;
 						objdata.pic = JSON.parse(objdata.list[0].pic);//轮播图
 						var html=template("details",objdata);
