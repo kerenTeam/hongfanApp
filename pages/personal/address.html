@@ -190,12 +190,14 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						plus.nativeUI.closeWaiting();
-//						alert(JSON.stringify(data.data[0].userid));
 						plus.storage.setItem("userid",userId);//userId做缓存
 						var addressObj = {};
 						addressObj.addressLi = data.data;
 						var html = template('addressList-detail',addressObj);
 						document.getElementById('addressList').innerHTML = html; 
+						if(data.data.length==0){
+							document.getElementById('main').innerHTML='<div class="nothing" style="background-color: #EFEFF4;margin-top: 60px;"><img src="../../img/theList/ad.png" style="display: block;margin: 20px auto;width: 80px;"/><p style="text-align: center;">你还没有地址哟！</p></div>';
+						}
 						if(pageid){ 
 							$(".addlist .bottom").css("display","none");
 							$(".addlist").click(function(){
