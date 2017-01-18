@@ -136,6 +136,9 @@
 			#caiList .caiLi{
 				padding: 10px 10px;
 			}
+			.noOne{
+				padding: 20px 0;
+			}
 		</style>
 	</head>
 
@@ -191,8 +194,8 @@
 			<div id="caiList"></div>
 			<script type="text/html" id="caiList-detail">
 				<% for(var i = 0;i<li.length;i++){ %>
-					<% if(li.length==0){ %>
-						<li class="row"><p>没有最新菜价！换一天试试。</p></li>
+					<% if(!li.length || li.length==0){ %>
+						<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>
 					<% }else{ %>
 						<div class="mui-row">
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].goods_name %></div>
@@ -210,6 +213,7 @@
 //			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken)
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			
 			//banner
 			mui.ajax(serverUrl+'/api/index/banner',{
@@ -235,6 +239,7 @@
 					});
 				},
 				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();//关闭等待框
 					mui.toast('响应失败  !');
 				}
 			}); 
@@ -256,16 +261,16 @@
 				});
 			})
 			//时间
-	        var date = new Date();
-		    var month = date.getMonth() + 1;
-		    var strDate = date.getDate();
-		    if (month >= 1 && month <= 9) {
-		        month = "0" + month;
-		    }
-		    if (strDate >= 0 && strDate <= 9) {
-		        strDate = "0" + strDate;
-		    }
-		    var dateTime = date.getFullYear() + "-" + month + "-" + strDate;
+//	        var date = new Date();
+//		    var month = date.getMonth() + 1;
+//		    var strDate = date.getDate();
+//		    if (month >= 1 && month <= 9) {
+//		        month = "0" + month;
+//		    }
+//		    if (strDate >= 0 && strDate <= 9) {
+//		        strDate = "0" + strDate;
+//		    }
+//		    var dateTime = date.getFullYear() + "-" + month + "-" + strDate;
 			//查询菜价
 			getPrice("新世纪超市");
 			function getPrice(marketName){
@@ -276,7 +281,10 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-//								alert(JSON.stringify(data.data));
+//						alert(JSON.stringify(data.data));
+						if(!data.data || data.data ==''){
+							mui('#caiList-detail')[0].innerHTML = '<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>';
+						}
 						//超市名数据
 						dataObj={};
 						dataObj.li=data.data;

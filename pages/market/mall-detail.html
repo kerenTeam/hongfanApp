@@ -806,6 +806,7 @@
 								parmeter.parameteName = parameteNameo; 
 								parmeter.parameteValue = parameteValueo; 
 								document.getElementById("parBox").innerHTML = template("partpl", parmeter);
+								querysx();
 								$('.choose').each(function() {
 									var chooseli = $(this).find("li");
 										 
@@ -823,7 +824,7 @@
 										}
 
 									})
-									querysx();
+									
 									chooseli.click(function() { 
 										oldstep = newstep;
 										$(this).addClass('cur');
@@ -997,9 +998,10 @@
 											timeout:10000,
 											headers:{"token":token},	              				
 											success:function(data,type,xhr){ 
+//												alert(JSON.stringify(data))
 											 if(data.errno!=0){ 
-												$(this).removeClass('cur');
-												mui.toast("该属性商品库存不足")
+												$(".cur").removeClass('cur');
+//												mui.toast("该属性商品库存不足")
 
 											 }else{
 											 	$("#kc").html("库存："+data.data)
