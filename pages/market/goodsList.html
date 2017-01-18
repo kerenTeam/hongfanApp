@@ -152,15 +152,84 @@
 			.Regional{
 				background-image: none !important; 
 			}
+			#main{padding-top: 36px !important;}
+			.guess-like{padding-top: 0 !important;}
+			#screendiv{
+				position: fixed;left: 0;top: 50px;height: 400px;width: 100%;background-color: #fff;
+				z-index: 30;color: #555;overflow-y: scroll;padding-bottom: 50px;
+			}
+			.mui-bar{z-index: 40 !important;}
+			#Maskdiv{position: fixed;left: 0px;top: 50px;height: 100%;width: 100%;background-color: rgba(0,0,0,0.4);
+				z-index: 20;}
+			.badyhide{position: fixed;height: 100%;width:100%; top: 0;left: 0;overflow: hidden;}
+			.screenin{padding: 10px;}
+			.screenin h4{    font-size: 14px;
+			    padding-left: 3px;
+			    margin: 4px 1px;}
+			.screenla{display: inline-block;position: relative;margin: 3px;}
+			.screenla label, .screenla span{
+				    display: inline-block;
+				    text-align: center;
+				    border-radius: 30px;
+				    margin: 0 5px;
+				    margin-top: 10px;
+				    box-shadow: 0px 0px 3px #999;
+				    padding: 9px 12px;
+			}
+			.screenla span{background-color: #eee;}
+			.screenla label{position: absolute;width: 100%;height: 100%;border: none;box-shadow: none;}
+			.screenla input{position: absolute;width: 0;height: 0;}
+			.screenla input:checked~span{
+				background-color: rgba(230, 31, 31, 0.82);
+				color: #fff;
+			}
+			.screenin:after{
+				content: '';
+				display: block;
+				height: 1px;
+				background-color: #eee;
+				-webkit-transform: scaleY(.5);
+			}
+			.screenfoot{position:fixed;z-index:31;top: 406px;left: 0; width:100%;height: 45px;line-height: 45px;background-color: #eee;font-size: 14px;}
+			.screenfoot span{float: right;padding: 0 15px;}
 		</style>
 	</head>
-	<body>
-		<header class="mui-bar mui-bar-nav hasManyCity hasManyCitytwo">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
-		    <div class="header-tit">
-				商品列表
-			</div>
+	<body class="">
+		<header class="mui-bar mui-bar-nav" id="header">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title" id="">商品列表</h1>
+			<a class="fr mui-icon" id="screenbtn" style="font-size: 15px;padding-right: 10px;padding-top: 2px;">筛选</a>
 		</header>
+		<div id="Maskdiv" style="display: none;"></div>
+		<div class="screenfoot" id="screenfoot" style="transform: translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;"><span id="determine">确定</span></div>
+		<div id="screendiv" style="transform: translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;">
+			<div class="screenin" id="screenin1">
+				<h4>品牌</h4>
+				<div id="pingpaidiv">
+					<div class="screenla">
+						<label for="sss"></label>
+						<input type="radio" checked="" name="state" id="sss" />
+						<span id="">不限</span>
+					</div>
+				</div>
+				<script type="text/html" id="pingpai">
+					<%for(var i=0; i<list.length; i++){%>
+						<%if(list[i].brand){%>
+							<div class="screenla">
+								<label for=""></label>
+								<input type="radio" name="state" id="" />
+								<span id=""><%= list[i].brand%></span>
+							</div>
+						<%}%>
+					<%}%>	
+				</script>	
+				
+				
+				<div id="" style="margin-bottom: 20px;"></div>
+			</div> 
+			
+			
+		</div>
 		
 		 <div class="screening" id="screeningdiv" style="top: 50px;">
 		    <ul>
@@ -215,6 +284,7 @@
 							<div class="dealcard-block-right">
 								<div class="dealcard-brand single-line"><%= list[i].title %></div>
 								<div class="title text-block bage">
+									品牌: <%= list[i].brand %>
 								</div>
 								<div class="price mui-row">
 									<div class="mui-col-sm-4 mui-col-xs-4">
@@ -241,16 +311,32 @@
 		 */
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 
-		mui.plusReady(function(){
+		mui.plusReady(function(){ 
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			//获取页面传值 商品分类id
 			var goodcatId = plus.webview.currentWebview().goodscatId;
-			var can1 = 'sales',can2 = 'desc';
+			var can1 = 'sales',can2 = 'desc',can3 = '';
+			//显示品牌信息
+			mui.ajax(serverUrl+'/api/mall/mallbrand',{ 									
+				type:'post',
+				timeout:5000, 
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					console.log('品牌返回',data);
+					if(data.errno == 0){
+						var objdata = {};
+						objdata.list = data.data;
+						console.log(objdata.list);
+						var html=template("pingpai",objdata);
+						document.getElementById("pingpaidiv").innerHTML += html;
+					}
+				}
+			});
 			//按照选择排序
-			window.order = function(orderType,sequence){
-				can1 = orderType,can2 = sequence;
+			window.order = function(orderType,sequence,brand){
+				can1 = orderType,can2 = sequence,can3 = brand;
 				var pagenum = 10,CcurrentPage = 1,sequence1 = sequence;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
@@ -261,7 +347,7 @@
 						recommend:'',
 						differentiate:1,
 						storeid:'',
-						brand:'',
+						brand:can3,
 						keyword:'',
 						order_type:can1,
 						desc:can2
@@ -302,7 +388,7 @@
 											recommend:'',
 											differentiate:1,
 											storeid:'',
-											brand:'',
+											brand:can3,
 											keyword:'',
 											order_type:can1,
 											desc:can2
@@ -353,12 +439,51 @@
 				$('.Sort-eject').removeClass('grade-w-roll');
 				$('.grade-eject').removeClass('grade-w-roll');
 			}
-			order(can1,can2);//初始化
+			order(can1,can2,can3);//初始化
+			
+			
+			//筛选
+			var Hscrollbar = 0;
+			var screenin1s = mui('#screenin1')[0].getElementsByClassName('screenla');
+			var upclose = function(){//关闭方法
+				mui('body')[0].className = '';
+				mui('#Maskdiv')[0].style.display = 'none';
+				mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, -401px, 0)';
+				mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, -401px, 0)';
+			}
+			mui('#screenbtn')[0].onclick = function(){
+				if(mui('body')[0].className == 'badyhide'){
+					upclose();
+				}else{//展开
+					Hscrollbar = document.body.scrollTop;//获取滚动条高度
+					mui('body')[0].className = 'badyhide';
+					mui('#Maskdiv')[0].style.display = 'block';
+					mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
+					mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
+					
+				}
+			}
+			//筛选确定
+			mui('#determine')[0].onclick = function(){
+				document.body.scrollTop = Hscrollbar;//设置滚动条高度
+				upclose();
+				for(var i=0; i<screenin1s.length; i++){
+					var nowinput = screenin1s[i].getElementsByTagName('input')[0];
+					if(nowinput.checked == true){
+						var nowstr = screenin1s[i].getElementsByTagName('span')[0].innerHTML;
+						alert(nowstr);
+						order(can1,can2,nowstr);//初始化
+						break;
+					}
+				}
+					
+			}
+			
 			//跳转详情
 			window.goInfo =  function(goodsId){ 
 				 openview({
 				 	view:"mall-detail.html",
-				 	extrasobj:{goodsId:goodsId}
+				 	extrasobj:{goodsId:goodsId} 
 				 })
 			}
 		})();
