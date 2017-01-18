@@ -163,9 +163,8 @@
 				<!--店铺头部开始-->
 				<div class="store-header clearfix" id="vfshangdian" style="top: 50px;">
 					<div class="tu">
-						<span>
-						<img src="../../img/theList/storeLogo.png" id="storeLogo" style="display: none;"/>
-						</span>
+						<span></span>
+						<img src="" id="storeLogo" style="display: none;"/>
 					</div>
 					<div class="right fl">
 						<p id="storeName"></p>
@@ -199,13 +198,13 @@
 				<!--头部切换开始-->
 				<ul id="shangjia_tab">
 					<li>
-						<a class="on">店铺详情</a>
-					</li>
-					<li>
-						<a>推荐商品</a>
+						<a class="on">推荐商品</a>
 					</li>
 					<li>
 						<a>全部商品</a>
+					</li>
+					<li>
+						<a>店铺详情</a>
 					</li>
 				</ul>
 				<!--第一部分-->
@@ -232,10 +231,10 @@
 			   	<div id="shangjia_detail" class="page-center-box dldetail" style="display: none;">          
 		            <div class="imgInfor mb10">
 		                <img src="" id="storeImg">
-		                <!--<div class="nr">
+		                <div class="nr">
 		                    <h2 class="overflow_clear" id="title2">我的小店</h2>
 		                    <p>月售<b class="fontcl1">58</b>份&nbsp;&nbsp;总售<b class="fontcl1">102</b>份</p>
-		                </div>-->
+		                </div>
 		            </div>
 		            <div class="detailNr">
 		                <h3>商家信息</h3>
@@ -410,13 +409,13 @@
 		var storeId = plus.webview.currentWebview().storeId;
 		var Spagenum = 2,Spagenum2 = 2;//实到页数
 		var Ypagenum = 1,Ypagenum2  = 1;//应到页数
-		var onetab = mui('#shangjia_tab')[0].getElementsByTagName('a')[1],
-			twotab = mui('#shangjia_tab')[0].getElementsByTagName('a')[2],
-			theretab = mui('#shangjia_tab')[0].getElementsByTagName('a')[0];//tabs
+		var onetab = mui('#shangjia_tab')[0].getElementsByTagName('a')[0],
+			twotab = mui('#shangjia_tab')[0].getElementsByTagName('a')[1],
+			theretab = mui('#shangjia_tab')[0].getElementsByTagName('a')[2];//tabs
 		var flag1 = 0,flag2 = 0,flag3 = 0;//点击次数标杆	
 			
 			
-		//热门推荐部分
+		//第一个部分
 		onetab.onclick = function(){
 			flag1++;
 			mui('#tab1')[0].style.display = 'block';
@@ -558,7 +557,7 @@
 		}
 		
 		
-		//全部商品部分
+		//第二个部分
 		twotab.onclick = function(){
 			mui('#tab2')[0].style.display = 'block';
 			mui('#tab1')[0].style.display = mui('#shangjia_detail')[0].style.display = 'none';
@@ -672,7 +671,7 @@
 		}
 		
 		
-		//店铺详情部分
+		//第三个部分
 		theretab.onclick = function(){
 			mui('#shangjia_detail')[0].style.display = 'block';
 			mui('#tab1')[0].style.display = mui('#tab2')[0].style.display = 'none';
@@ -697,7 +696,6 @@
 						$('#openStaus').html(data.data.op_status);
 						$('#description').html(data.data.description);
 						$('#addressS').html(data.data.block_name);
-						mui('#storeLogo')[0].style.display='block';
 						if(data.data.logo == '' || data.data.logo == null){
 							$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
 						}else{
@@ -718,7 +716,7 @@
 			}
 		}
 		
-		theretab.onclick();//默认显示 
+		onetab.onclick();//默认显示 
 		window.goInfo =  function(goodsId){
 			openview({
 			 	view:"mall-detail.html",
