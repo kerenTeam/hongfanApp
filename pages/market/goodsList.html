@@ -173,12 +173,15 @@
 			    padding: 7px 10px;
 			    margin: 2px;
 			}
-			.screenla span{background-color: #eee;}
-			.screenla label{position: absolute;width: 100%;height: 100%;border: none;box-shadow: none;}
-			.screenla input{position: absolute;width: 0;height: 0;}
+			.screenla span{border: 1px solid #d2cece;
+			    border-radius: 3px;
+			    box-sizing: border-box;}
+			.screenla label{position: absolute; width: 100%;height: 100%;border: none;box-shadow: none;}
+			.screenla input{position: absolute; width: 0; height: 0;border: none;}
 			.screenla input:checked~span{
 				background-color: rgba(230, 31, 31, 0.82);
 				color: #fff;
+				border: 1px solid rgba(230, 31, 31, 0.82);
 			}
 			.screenin:after{
 				content: '';
@@ -189,18 +192,20 @@
 			}
 			.screenfoot{position:fixed;z-index:31;top: 406px;left: 0; width:100%;height: 45px;line-height: 45px;background-color: #eee;font-size: 14px;}
 			.screenfoot span{float: right;padding: 0 15px;}
+			#upload img{width: 40px;
+    		margin-top: -5px;padding: 4px !important;}
 		</style>
 	</head> 
 	<body class="">
 		 
 		<header class="mui-bar mui-bar-nav" id="header">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="padding-left: 10px;" ></a>
 		    <h1 class="mui-title" id="">商品列表</h1>
-			<a class="fr mui-icon" id="screenbtn" style="font-size: 15px;padding-right: 10px;padding-top: 2px;">筛选</a>
+			<a class="fr mui-icon" id="screenbtn" style="font-size: 15px;padding-right: 14px;padding-top: 2px;">筛选</a>
 		</header>
 		<div id="Maskdiv" style="display: none;"></div>
-		<div class="screenfoot" id="screenfoot" style="transform: translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;"><span id="determine">确定</span></div>
-		<div id="screendiv" style="transform: translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;">
+		<div class="screenfoot" id="screenfoot" style="top:406px;transform: -webkit-translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;"><span id="determine">确定</span></div>
+		<div id="screendiv" style="top:50px;transform: -webkit-translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;">
 			<div class="screenin" id="screenin1">
 				<h4>品牌</h4>
 				<div id="pingpaidiv">
@@ -222,12 +227,17 @@
 					<%}%>	
 				</script>	
 				
-				
 				<div id="" style="margin-bottom: 20px;"></div>
 			</div> 
-			
-			
 		</div>
+		<script type="text/javascript">
+			(function(){//兼容关闭方法
+				mui('body')[0].className = '';
+				mui('#Maskdiv')[0].style.display = 'none';
+				mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, -401px, 0)';
+				mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, -401px, 0)';
+			})(); 
+		</script>
 		 
 		 <div class="screening" id="screeningdiv" style="top: 50px;">
 		    <ul>
@@ -307,8 +317,8 @@
 		 * 2,定义实到,应到变量是全局
 		 * 3,其他见代码
 		 */
-		var Spagenum = 2;//实到页数
-		var Ypagenum = 1;//应到页数 
+		var Spagenum;//实到页数
+		var Ypagenum;//应到页数 
 		mui.plusReady(function(){ 
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
@@ -334,6 +344,8 @@
 			});
 			//按照选择排序
 			window.order = function(orderType,sequence,brand){
+				Spagenum = 2;//实到页数
+				Ypagenum = 1;//应到页数
 				can1 = orderType,can2 = sequence,can3 = brand;
 				var pagenum = 10,CcurrentPage = 1,sequence1 = sequence;
 				mui('#nulldiv')[0].style.display = 'none';
@@ -476,7 +488,7 @@
 				mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, -401px, 0)';
 				mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, -401px, 0)';
 			}
-			mui('#screenbtn')[0].onclick = function(){
+			mui('#screenbtn')[0].addEventListener('tap',function(){
 				if(mui('body')[0].className == 'badyhide'){
 					upclose();
 				}else{//展开
@@ -484,12 +496,12 @@
 					mui('#Maskdiv')[0].style.display = 'block';
 					mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
 					mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
+					
 				}
-			}
+			})
 			//筛选确定
 			var nowstr = '';
 			mui('#determine')[0].onclick = function(){
-				Spagenum = 2,Ypagenum = 1;//应到页数
 				upclose();
 				for(var i=0; i<screenin1s.length; i++){
 					var nowinput = screenin1s[i].getElementsByTagName('input')[0];
@@ -505,7 +517,7 @@
 				}
 			}
 			//其他筛选方法
-			mui('#Salesvolume')[0].onclick = function(){//销量
+			mui('#Salesvolume')[0].onclick = function(){//销量 
 				order('sales','asc',nowstr);
 			}
 			mui('#Newping')[0].onclick = function(){//新品
