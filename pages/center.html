@@ -160,7 +160,6 @@
 			    	<p><span class="denlu denluzhuce" style="z-index: 99;">登录\注册</span></p>
 			    	<p><span class="denlu denluzhuce" id="numjifen" style="z-index: 99;"></span></p>
 			    	<!--<span class="denlu denluzhuce" style="z-index: 99;">登录\注册</span>-->
-			    	
 			    </div>
     			
     		<button type="button" id="screeningdiv" style="top: 10px;" class="mui-btn mui-btn-danger mui-btn-outlined fr dao">签到</button>
@@ -262,17 +261,20 @@
     	</div>	
     	<div class="cashlist clearfloat" id="userList"> 
     		<ul>
-				<li class="box-s2" id="writeOff1"> 
+				<li class="box-s2" id="writeOff1" style="display: none;"> 
 					<div class="writeOff">
     					<p class="fl mui-navigate-right"><img style="margin-right: 10px;margin-left: 2px;" src="../img/center/sss.png"/>商户核销</p> 
     				</div>
 				</li>
     		</ul>
     	</div>	
+    	
+    	
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.plusReady(function(){
+				 // 等待加载PhoneGap 
 				//添加刷新监听
 				document.addEventListener('refresh', function() {
 					Refresh();
@@ -292,6 +294,7 @@
 							headers:{"token":oldtoken},	              				
 							success:function(data,type,xhr){
 								console.log('获取用户数据返回'+JSON.stringify(data));
+//								alert('获取用户数据返回'+JSON.stringify(data));
 								if(data.errno == 0){
 									//显示头像
 									if(data.data[0].avatar){
@@ -315,7 +318,7 @@
 									}
 									
 									//显示核销
-									if(data.data[0].gid == 5){
+									if(data.data[0].gid == 2){
 										 mui('.writeOff')[0].style.display = 'block';
 										 mui('#writeOff1')[0].addEventListener('tap',function(){
 											openview({
@@ -356,6 +359,7 @@
 					mui('.dao')[0].onclick=function(){  
 						if(plus.storage.getItem('myToken')){ 
 							if(mui('.dao')[0].innerHTML == "签到"){
+								alert(myuserid);
 								//执行签到 
 								plus.nativeUI.showWaiting('签到中 ...',{width:'100px',height:'80px'});
 								mui.ajax(serverUrl+'/api/index/cheking',{
@@ -364,10 +368,12 @@
 									timeout:10000,
 									headers:{"token":oldtoken},	              				
 									success:function(data){
+//										alert(JSON.stringify(data))
 										plus.nativeUI.closeWaiting();
 										console.log('签到返回'+JSON.stringify(data));
 										if(data.errno == 0){
 											mui.toast('签到成功');
+											Refresh();
 										}else{
 											mui.toast('每天只能签到一次');
 										}

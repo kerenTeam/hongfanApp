@@ -26,7 +26,7 @@
 		
 		
 		<style type="text/css">
-			/*banner底部导航*/
+			/*banner样式*/
 			.mui-slider-indicator .mui-indicator{
 				width: 10px;
 				height: 10px;
@@ -38,27 +38,22 @@
 				border: none;
 				box-shadow: none;
 			}
-			.mui-slider-indicator .mui-active.mui-indicator{
-				background-color: rgba(245,60,66,0.8);
-				box-shadow: none;
-				opacity: 1;
-				border: none;
-			}
-			.mui-slider-item{
+			#banner{
 				position: relative;
 				width: 100%;
-				padding-top: 42%; 
+				padding-top: 50%; 
 				overflow: hidden;
+				background: url(../../img/bannerback.svg) 50% 50% no-repeat;
+				background-size: 20%;
 			}
-			.mui-slider-item img{
+			.mui-slider .mui-slider-group{
 				position: absolute;
-				width: 100%; 
-				height:100%;
-				top: 0;
+			    height: 100%;
+			    width: 100%;
+			    top: 0;
 			}
-			.mui-slider{
-				margin-top: 50px;
-			}
+			.mui-slider .mui-slider-group .mui-slider-item img{height: 100%;}
+			/*banner样式结束*/
 			
 			.caiPrice{
 				margin: 20px 0 10px;
@@ -185,12 +180,16 @@
 				</div>
 				</span>
 			</div>	
+			<div id="" style="text-align: center;margin-bottom:10px;font-weight:bold;border-top:2px solid #ddd;padding-top:10px;font-size: 14px;color: #666;">
+				今日菜价
+			</div>
 			<div class="pricetable">
-			<ul class="mui-row">
-				<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">商品</li>
-				<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">规格</li>
-				<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">价格</li>
-			</ul>
+				
+				<ul class="mui-row">
+					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">商品</li>
+					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">规格</li>
+					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">价格</li>
+				</ul>
 			<div id="caiList"></div>
 			<script type="text/html" id="caiList-detail">
 				<% for(var i = 0;i<li.length;i++){ %>
@@ -200,7 +199,7 @@
 						<div class="mui-row">
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].goods_name %></div>
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].unit %></div>
-							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %></div>
+							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %>元</div>
 						</div>
 					<% } %>
 				<% } %>
@@ -217,7 +216,7 @@
 			
 			//banner
 			mui.ajax(serverUrl+'/api/index/banner',{
-				data:{banner_type:9},
+				data:{banner_type:4},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
@@ -284,6 +283,9 @@
 //						alert(JSON.stringify(data.data));
 						if(!data.data || data.data ==''){
 							mui('#caiList-detail')[0].innerHTML = '<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>';
+						}
+						for(var i = 0;i<data.data.length;i++){
+							data.data[i].date_price = data.data[i].date_price.toFixed(2);
 						}
 						//超市名数据
 						dataObj={};

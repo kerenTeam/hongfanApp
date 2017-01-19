@@ -46,11 +46,11 @@
 				</div>
 				<div class="zhifulist">
 					<ul>
-						<li>
+						<!--<li>
 							<img src="../../img/yinghangka.svg"/>
 							<h4>银行卡支付</h4>
 							<p>安全急速支付, 无需开通网银</p>
-						</li>
+						</li>-->
 						<li id="wxpay">
 							<img src="../../img/weixing.svg"/>
 							<h4>微信支付</h4>
@@ -83,7 +83,14 @@ mui.plusReady(function() {
 	document.getElementById('payMoney').innerHTML = payMent;
 	document.getElementById('orderIdd').innerHTML = orderId;
 	
-	
+		mui("#wxpay")[0].addEventListener('tap', function(){
+//				openview({
+//					view:"wifi.html"
+//				})
+				openview({
+					view:'../daikaifa.html'
+				});
+			});
 	
 	//系统检测获取支付通道
 	plus.payment.getChannels(function(channels){
@@ -99,7 +106,8 @@ mui.plusReady(function() {
 				document.getElementById('alipay').setAttribute('onclick','payfun("alipay")');
 			}
 			if(channel.id == 'wxpay'){
-				document.getElementById('wxpay').setAttribute('onclick','payfun("wxpay")');
+//				document.getElementById('wxpay').setAttribute('onclick','payfun("wxpay")');
+ 
 			}
 			checkServices(channel);
 		}
