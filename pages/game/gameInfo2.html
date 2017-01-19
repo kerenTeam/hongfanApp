@@ -184,48 +184,116 @@
 				<div style="font-size: 0.1rem;">取消</div>
 			</div>
 			<button id="download" onclick="createDownload(this)" type="button" class="mui-btn mui-btn-success anz">安装  293.1M</button> 
+			<small id="jindu"></small>
 		</div>
 	</body>
-	<script type="text/javascript"> 
-	//如果是ios则隐藏下载按钮
-	    if (/android/i.test(navigator.userAgent)){//判断为android  
-	    }else if (/ipad|iphone/i.test(navigator.userAgent)){//判断为ios  
-	        mui('#downGame')[0].remove();
-	    }else{//pc端访问  
-	       mui('#downGame')[0].remove();
-	    } 
-		mui.plusReady(function(){
-	   var id= plus.webview.currentWebview().gameid;
-	 
-	 		// 创建下载任务
+	<script type="text/javascript">
+		//如果是ios则隐藏下载按钮
+		if(/android/i.test(navigator.userAgent)) { //判断为android  
+		} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+			mui('#downGame')[0].remove();
+		} else { //pc端访问  
+			mui('#downGame')[0].remove();
+		}
+		mui.plusReady(function() {
+			
+			function GetNetWorkState() {
+				var NetStateStr = '未知';
+				var types = {};
+				types[plus.networkinfo.CONNECTION_UNKNOW] = "未知";
+				types[plus.networkinfo.CONNECTION_NONE] = "未连接网络";
+				types[plus.networkinfo.CONNECTION_ETHERNET] = "有线网络";
+				types[plus.networkinfo.CONNECTION_WIFI] = "WiFi网络";
+				types[plus.networkinfo.CONNECTION_CELL2G] = "2G蜂窝网络";
+				types[plus.networkinfo.CONNECTION_CELL3G] = "3G蜂窝网络";
+				types[plus.networkinfo.CONNECTION_CELL4G] = "4G蜂窝网络";
+				NetStateStr = types[plus.networkinfo.getCurrentType()];
+		
+				return NetStateStr;
+			};
+		 
+			// 创建下载任务
 			window.createDownload = function() {
-			 
+				
+				
+				
+				if(GetNetWorkState()=="未连接网络" || GetNetWorkState()=="未知"){
+					plus.nativeUI.alert("未联网状态，不能下载");
+					return;
+				}else if(GetNetWorkState()=="有线网络" || GetNetWorkState()=="3G蜂窝网络" || GetNetWorkState()=="2G蜂窝网络" || GetNetWorkState()=="4G蜂窝网络"){
+					 mui.confirm('非WiFi环境下确定下载？', '提示', ['取消', '确定'], function(e) {
+						if(e.index == 1) { 
+							startDownload()
+						} 
+
+					})
+				}else{
+					startDownload()
+				}
+				
+				
+
+				}
+			//建立下载任务
+			function startDownload(){
+					document.getElementById("jindu").style.display = "block"
 					document.getElementById("download").innerHTML = "安装中";
-					document.getElementById("gameOver").style.display="inline-block"; 
-					var dtask = plus.downloader.createDownload( "http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846262", {}, function ( d, status ) {
+					document.getElementById("gameOver").style.display = "inline-block";
+					var dtask = plus.downloader.createDownload("http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846262", {}, function(d, status) {
 						// 下载完成
-						if ( status == 200 ) { 
-							document.getElementById("download").innerHTML = "打开";
-							document.getElementById("gameOver").style.display="none";
+						if(status == 200) { 
+							
 							d.filename = d.filename;
-							//alert( "Download success: " + d.filename );
-							document.getElementById("download").onclick = function(){ 
+							
+							document.getElementById("download").onclick = function() {
 								plus.runtime.openFile(d.filename);
-				           } 
+							}
 						} else {
-							 plus.nativeUI.alert( "下载失败"); 
-						}  
+							plus.nativeUI.alert("下载失败");
+						}
 					});
 					//dtask.addEventListener( "statechanged", onStateChanged, false );
-					dtask.start();  
-				
+					range("http://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=79346&pack.id=11846262")
+					dtask.start();
 			}
-            //取消下载任务
-            document.getElementById("gameOver").onclick = function(){
-            	plus.downloader.clear();
-            	document.getElementById("download").innerHTML = "安装";
-				document.getElementById("gameOver").style.display="none";
-            }
+			//取消下载任务
+			document.getElementById("gameOver").onclick = function() {
+				plus.downloader.clear(); 
+				stop();
+				document.getElementById("download").innerHTML = "安装 293.1M";
+				          	document.getElementById("jindu").style.display="none";
+
+				document.getElementById("gameOver").style.display = "none";
+			}
+
+			var req = new XMLHttpRequest();
+
+			function range(url) {
+           var percentComplete;
+				// report progress events
+				req.addEventListener("progress", function(event) {
+					if(event.lengthComputable) {
+						 percentComplete = parseFloat((event.loaded / event.total)*100).toFixed(0);
+						document.getElementById("jindu").innerHTML = "(" + percentComplete + "%)";
+							if(document.getElementById("jindu").innerHTML == "(100%)") { 
+								document.getElementById("download").innerHTML = "打开"; 
+							    document.getElementById("gameOver").style.display = "none";
+								 
+							} 
+					}
+				}, false); 
+				req.open("GET", url);
+
+				req.send(); 
+                
+			}
+
+			function stop() {
+				req.abort(); // 终止XMLHttpRequest对象 
+
+				window.stop();
+			}
 		});
+	 
 	</script>
 </html>
