@@ -480,11 +480,11 @@
 <script src="../../js/timedata.js" type="text/javascript" charset="utf-8"></script>
 <script>
 //点击免责申明
-	function disclaimer(){
-		openview({
-			view:'disclaimer.html'
-		})
-	}
+function disclaimer(){
+	openview({
+		view:'disclaimer.html'
+	})
+}
 (function($, doc) {
 	$.init();
 	$.ready(function() {
@@ -792,13 +792,20 @@
 						mui('#Binfo')[0].value = data.data[0].content;
 						//时间段
 						console.log();
-						mui('#showCityPicker2')[0].innerHTML = data.data[0].open_time.split('~')[0];
-						mui('#showCityPicker22')[0].innerHTML = data.data[0].open_time.split('~')[1];
+						if(data.data[0].open_time.indexOf('-')>-1){
+							mui('#showCityPicker2')[0].innerHTML = data.data[0].open_time.split('-')[0];
+							mui('#showCityPicker22')[0].innerHTML = data.data[0].open_time.split('-')[1];	
+						}else{
+							mui('#showCityPicker2')[0].innerHTML = data.data[0].open_time.split('~')[0];
+							mui('#showCityPicker22')[0].innerHTML = data.data[0].open_time.split('~')[1];
+						}
+						
 						mui('#Baddress')[0].value = data.data[0].address;
 						mui('#province')[0].innerHTML = data.data[0].service_cope;
 						mui('#Bcall')[0].value = data.data[0].link_man;
 						mui('#Bphone')[0].value = data.data[0].phone;
 						mui('#Bprice')[0].value = data.data[0].price;
+						mui('#cityResult4')[0].innerHTML = '有身份';
 						mui('#Bclass2')[0].style.display = 'none';
 					}else{  
 						mui.toast('获取用户信息失败');
