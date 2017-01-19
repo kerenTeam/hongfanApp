@@ -7,7 +7,7 @@
 	//这是封装的方法
 	var statusBar = document.createElement("div");//这是模拟状态栏
 	document.body.appendChild(statusBar);
-	statusBar.style.cssText = "background-color: #f53c42;position: fixed;width:100%;top: 0;z-index: 9999";
+	statusBar.style.cssText = "background-color: #f53c42;position: fixed;width:100%;top: 0;z-index: 9999";//状态栏颜色
 	
 	// 获取状态栏的高度
 	var immersed = 0;
@@ -21,7 +21,7 @@
 	document.body.style.paddingTop =  immersed+'px';
 	statusBar&&(statusBar.style.height = immersed+'px');
 	headdiv&&(headdiv.style.top = immersed+'px');
-	//适配下拉菜单
+	//适配下拉筛选菜单
 	var screeningdiv = document.getElementById('screeningdiv');//这是现有的筛选节点
 	if(screeningdiv){
 		screeningdiv.style.top = immersed + 50 +'px';
@@ -31,6 +31,17 @@
 		gradew && (gradew.getElementsByTagName('li')[0].style.paddingTop = immersed+'px');
 		var Sort_Sort = document.getElementById('Sort-Sort');
 		Sort_Sort && (Sort_Sort.getElementsByTagName('li')[0].style.paddingTop = immersed+'px');
+	}
+	//适配有筛选按钮的
+	var screendiv = document.getElementById('screendiv');
+	var screenfoot = document.getElementById('screenfoot');
+	screendiv && (screendiv.style.top = immersed + 50 + 'px');
+	screenfoot && (screenfoot.style.top = immersed + 406 + 'px');
+	//适配店铺详情 
+	var screeningdiv = document.getElementById('vfshangdian');
+	if(screeningdiv){
+		var oldtop = parseInt(screeningdiv.style.top);
+		screeningdiv.style.top = immersed + oldtop +'px';
 	}
 
 //	这是单独加模拟状态栏的方法
