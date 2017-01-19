@@ -26,11 +26,9 @@
 		</style>
 	</head>
 	<body>
-		<header class="hasManyCity hasManyCitytwo hasManyCitythree" id="header">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
-		    <div class="header-tit">
-				支付
-			</div>	
+		 <header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title">支付</h1>   
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
@@ -41,16 +39,16 @@
 						<img src="../../img/market/waitPay.svg" style="width: 5rem;display: block;text-align:center;margin:auto;vertical-align: middle;margin-bottom: 1rem;" alt="" />总计 :￥<span id="payMoney"></span>
 					</div> 
 					<div class="allmoney" style="font-size: 12px;padding-left: 10px;"> 
-						订单号 :<span id="orderId" style="display: inline-block;word-break: break-all;"></span>
+						订单号 :<span id="orderIdo" style="display: inline-block;word-break: break-all;"></span>
 					</div>
 				</div>
 				<div class="zhifulist">
 					<ul>
-						<li>
+						<!--<li>
 							<img src="../../img/yinghangka.svg"/>
 							<h4>银行卡支付</h4>
 							<p>安全急速支付, 无需开通网银</p>
-						</li>
+						</li>-->
 						<li id="wxpay">
 							<img src="../../img/weixing.svg"/>
 							<h4>微信支付</h4>
@@ -62,9 +60,7 @@
 							<p>推荐有支付宝账户的用户使用</p>
 						</li>
 					</ul>
-				</div>
-				
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">模拟支付</button>
+				</div> 
 			</div>
 		</div>
 	</body>
@@ -72,17 +68,28 @@
 <script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 var pays={}; 
-
+var list;
 mui.plusReady(function() { 
  
-
+ list = plus.webview.getWebviewById("apprenticeDetail");
 	//获取缓存
 	var myuserid = plus.storage.getItem('userid'); 
 	var oldtoken = plus.storage.getItem('oldToken');
-	var activityId = plus.webview.currentWebview().activityId; 
+	var orderid = plus.webview.currentWebview().orderid;
+	var activityId = plus.webview.currentWebview().activityId;
 	var price = plus.webview.currentWebview().price;
 	document.getElementById('payMoney').innerHTML = price;
-	document.getElementById('orderId').innerHTML = activityId;
+	document.getElementById('orderIdo').innerHTML = orderid;
+		
+		mui("#wxpay")[0].addEventListener('tap', function(){
+//				openview({
+//					view:"wifi.html"
+//				})
+				openview({
+					view:'../daikaifa.html'
+				});
+			});
+	
 	//系统检测获取支付通道
 	plus.payment.getChannels(function(channels){
 		console.log(JSON.stringify(channels));
@@ -97,37 +104,15 @@ mui.plusReady(function() {
 				document.getElementById('alipay').setAttribute('onclick','payfun("alipay")');
 			}
 			if(channel.id == 'wxpay'){
-				document.getElementById('wxpay').setAttribute('onclick','payfun("wxpay")');
+//				document.getElementById('wxpay').setAttribute('onclick','payfun("wxpay")');
+ 
 			}
 			checkServices(channel);
 		}
 	},function(e){
 		plus.nativeUI.alert("支付失败，请重试",null,"提示");
 	});
-//	alert(oldtoken+" "+ orderId)
-	 mui(document.body).on('tap', '.mui-btn', function(e) {
-	 	plus.nativeUI.showWaiting(); 
-	 	mui.ajax(serverUrl+'/api/localservice/activityjoinpay',{
-				data:{activityid:activityId,userid:myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:1000,
-				headers:{"token":oldtoken},	   
-				success:function(data,type,xhr){ 
-					plus.nativeUI.closeWaiting();
-					alert(JSON.stringify(data)) ;
-					 mui.toast("支付成功"); 
-					   
-					 plus.webview.getWebviewById("apprenticeSub.html").close(); 
-					 mui.back(); 
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting()
-					console.log('响应失败  !');
-				}
-			});
-        });
-	
+ 
 	
 	// 检测是否安装支付服务
 	function checkServices(pc){ 
@@ -151,25 +136,20 @@ mui.plusReady(function() {
 	//系统检测获取支付通道结束
 });
 
-
-
-// 支付方法
+var w=null;
+ 
+// 支付方法 
 function payfun(id){
 	var varpay;
-	if(id=='alipay'||id=='wxpay'){//调用支付功能
+	var dataJson;
+	
+	if(id=='alipay'||id=='wxpay'){
+		//调用支付功能
 		plus.nativeUI.showWaiting();
-		if(id == 'alipay'){//支付宝
-			var data = '后台返回数据';
-			varpay = data;
-			alert('调用支付宝支付一下');
-			plus.payment.request(pays[id],varpay,function(result){
-				//支付成功回调
-				
-			},function(e){
-				//支付失败回调
-				plus.nativeUI.closeWaiting();
-				plus.nativeUI.alert("支付失败");
-			});
+		if(id == 'alipay'){ 
+			//获取后台返回数据 
+				gopay();
+
 		}else if(id=='wxpay'){//微信
 			//重组的支付验证数据
 			varpay = {
@@ -198,6 +178,111 @@ function payfun(id){
 		plus.nativeUI.alert("当前环境不支持此支付通道！",null,"提示");
 		return;
 	}
+	
+	
+	function gopay(){
+	// 请求支付订单
+	var oldtoken = plus.storage.getItem('oldToken'); 
+  
+	var activityId = plus.webview.currentWebview().activityId; 
+	alert("activityId"+activityId)
+  var orderid = plus.webview.currentWebview().orderid; 
+	mui.ajax(PAYSERVER,{ 
+		data:{total_fee:'',subject:'一键钟情',body:'一键钟情',out_trade_no:orderid+activityId},
+		type:'post',//HTTP请求类型
+		headers:{"token":oldtoken},	
+		timeout:10000,//超时时间设置为10秒；
+		success:function(data){
+			plus.nativeUI.closeWaiting()
+			//alert(JSON.stringify(data))
+			var data = data.data;
+			//alert(data)
+//			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
+//          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&').replace(/":/g, '="'); 
+			console.log(data)
+			console.log("----- 请求订单成功 -----"); 
+			var varpay; 
+			if(id == 'wxpay'){  
+			}else{ 
+				//支付宝
+				varpay = data;
+				console.log('支付宝',varpay);  
+				plus.payment.request(pays[id],varpay,function(result){ 
+					console.log("----- 支付成功 -----"+JSON.stringify(result));
+					
+				 	plus.nativeUI.closeWaiting();
+				 	plus.nativeUI.alert("支付成功");
+					
+				 	 //关闭 订单页  
+				 	 if(plus.webview.getWebviewById("apprenticeSub")){
+				 	 	plus.webview.getWebviewById("apprenticeSub").close(); 
+				 	 }
+				 	 var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]')   
+					 	 var achava ={};
+					 	 achava.acid=activityId;
+					 	 achava.userid = plus.storage.getItem('userid');
+					 	 acstorage[0] =achava;
+					 	 plus.storage.setItem("$acstorage",JSON.stringify(achava));
+					 	 alert(JSON.stringify(achava))
+					var oldtoken = plus.storage.getItem('oldToken'); 
+					var odrer_id =  plus.webview.currentWebview().orderId;
+					
+					
+					alert(list)
+					mui.fire(list,"refreash");
+					
+					
+					var price = plus.webview.currentWebview().price;
+					//修改状态
+					mui.ajax(serverUrl+'/api/localservice/activityjoinpay',{ 
+						data:{activityid:activityId,payment:price,userid:plus.storage.getItem('userid')},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						headers:{"token":oldtoken},	
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							// alert(JSON.stringify(data))
+							 plus.nativeUI.closeWaiting()
+						 mui.back()
+							 
+						},
+						error:function(xhr,type,errorThrown){
+							//异常处理；
+							console.log(type);
+						}
+					});
+				},function(e){
+					console.log("----- 支付失败 -----");
+					console.log("["+e.code+"]："+e.message);
+//					console.log("["+e.code+"]："+e.message);
+					plus.nativeUI.closeWaiting();
+					plus.nativeUI.alert("支付失败");
+				});
+//			 
+			}
+		},
+		error:function(xhr,type,errorThrown){
+			//异常处理；
+			console.log(type);
+			console.log("----- 请求订单失败 -----");
+			console.log( xhr.status );
+			plus.nativeUI.closeWaiting();
+			plus.nativeUI.alert("获取订单信息失败！");
+		}
+	});
+	}
+	
+	
+	
+}
+
+function queryStr(str) {
+    var r = str.slice(1).split("&"),
+        e = {};
+    return r.forEach(function(r) {
+        var t;
+        r && (t = r.split("="), 2 === t.length && (e[t[0]] = t[1]))
+    }), e
 }
 </script>
 </html>

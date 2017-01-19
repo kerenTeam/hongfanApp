@@ -58,11 +58,11 @@
 			.caiPrice{
 				margin: 20px 0 10px;
 			}
-			.caiPrice .mui-col-xs-12{
+			.caiPrice .mui-col-xs-6{
 				padding: 0 5px;
 				float: left;
 			}
-			.caiPrice .mui-col-xs-12 button{
+			.caiPrice .mui-col-xs-6 button{
 				border-radius: 0;
 				padding-right: 15px;
 				background-color: #f53c42;
@@ -74,13 +74,13 @@
 				line-height: 14px;
 				padding-top: 12px;
 			}
-			.caiPrice .mui-col-xs-12 button span{
+			.caiPrice .mui-col-xs-6 button span{
 				display: block;
 				margin-right: 10px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
-			.caiPrice .mui-col-xs-12 button:after {
+			.caiPrice .mui-col-xs-6 button:after {
 			    content: '';
 			    position: absolute;
 			    top: 50%;
@@ -90,6 +90,12 @@
 			    border: 5px solid transparent;
 			    border-top: 5px solid #FFFFFF;
 			    margin-top: -2px;
+			}
+			#today{
+				padding-right: 0;
+			}
+			#today:after {
+				display: none;
 			}
 			.pricetable{
 				border-top: 2px solid #ddd;
@@ -174,11 +180,14 @@
 			</div>
 			<!--比较选项-->
 			<div class="mui-table clear caiPrice">
-				<div class="mui-col-xs-12">
+				<div class="mui-col-xs-6">
 					<button id='showUserPicker1' class="mui-btn mui-btn-block showUserPicker" type='button'>新世纪超市</button>
 					<div id='userResult1' class="ui-alert"></div>
 				</div>
-				</span>
+				<div class="mui-col-xs-6">
+					<button  class="mui-btn mui-btn-block" type='button' id="today"></button>
+					<!--<div  class="ui-alert"></div>-->
+				</div>
 			</div>	
 			<div id="" style="text-align: center;margin-bottom:10px;font-weight:bold;border-top:2px solid #ddd;padding-top:10px;font-size: 14px;color: #666;">
 				今日菜价
@@ -199,7 +208,7 @@
 						<div class="mui-row">
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].goods_name %></div>
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].unit %></div>
-							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %>元</div>
+							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %><sub>（元）</sub></div>
 						</div>
 					<% } %>
 				<% } %>
@@ -213,6 +222,15 @@
 			var oldToken = plus.storage.getItem('oldToken');
 			console.log(oldToken)
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			//获取今天的时间
+			var dd = new Date();
+//			dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+			var y = dd.getFullYear();
+			var m = dd.getMonth()+1;//获取当前月份的日期
+			var d = dd.getDate();
+			var today = y+"-"+m+"-"+d; 
+			mui('#today')[0].innerHTML=today;
+//			alert(today);
 			
 			//banner
 			mui.ajax(serverUrl+'/api/index/banner',{
