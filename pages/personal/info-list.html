@@ -31,7 +31,7 @@
 				background-color: #efeff4 !important;
 			}
 			dl.listtwo dd>.react {
-				padding: .2rem .12rem .2rem .15rem;
+				padding: .1rem .12rem .2rem .15rem;
 			}
 			.imgbox{
 				width: 100%;
@@ -69,8 +69,9 @@
 				padding-top: 0;
 			}
 			#main{
-				padding-top: 100px;
+				padding-top: 2px !important;
 			}
+			.dealcard{margin: 0;}
 		</style>
 	</head>
 	<body>
@@ -80,47 +81,63 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
-			<!--<dl class="list listtwo list-in">						
-				<dd onclick="helpRecord()">
-					<a class="react">
-						<div class="dealcard dealcardtwo clearfloat">
-							<div class="mui-row">
-								<div class="mui-col-sm-12 mui-col-xs-12 infoTitle">宏帆广场送您优惠券！</div>
-							    <div class="mui-col-sm-2 mui-col-xs-2">
-							    	<img src="../../img/5755238d18735.png" class="imgbox">
-							    </div>
-							    <div class="mui-col-sm-10 mui-col-xs-10 name">
-							    	宏帆广场想您了！15元专享优惠券送给您，7天有效，购物中心大促火热进行中，赶紧查看！
-							    </div>
-							</div>
-						</div>
-					</a>
-				</dd>
-				<dd onclick="helpRecord()">
-					<a class="react">
-						<div class="dealcard dealcardtwo clearfloat">
-							<div class="mui-row">
-								<div class="mui-col-sm-12 mui-col-xs-12 infoTitle">宏帆广场送您优惠券！</div>
-							    <div class="mui-col-sm-2 mui-col-xs-2">
-							    	<img src="../../img/5755238d18735.png" class="imgbox">
-							    </div>
-							    <div class="mui-col-sm-10 mui-col-xs-10 name">
-							    	宏帆广场想您了！15元专享优惠券送给您，7天有效，购物中心大促火热进行中，赶紧查看！
-							    </div>
-							</div>
-						</div>
-					</a>
-				</dd>
-			</dl>-->
-			<div class="nothing"><img src="../../img/theList/del.png"/><p>你没有通知消息哟！</p></div>
+			<dl class="list listtwo list-in" id="listinfodiv"></dl>
+			<script id="listinfo" type="text/html">
+				<%if(list.length){%>
+					<% for(var i=0;i<list.length;i++){ %>
+						<dd>
+							<a class="react">
+								<div class="dealcard dealcardtwo clearfloat">
+									<div class="mui-row">
+										<div class="mui-col-sm-12 mui-col-xs-12 infoTitle"><%= list[i].title%></div>
+									    <div class="mui-col-sm-2 mui-col-xs-2">
+									    	<img src="../../img/5755238d18735.png" class="imgbox">
+									    </div>
+									    <div class="mui-col-sm-10 mui-col-xs-10 name">
+									    	<%= list[i].content%>
+									    </div>
+									    <div style="text-align: right;font-size: 13px;color: #888;"><%= list[i].create_time.split('T')[0]%></div>
+									</div>
+								</div>
+							</a>
+						</dd>
+					<%}%>
+				<%}%>	
+					
+			</script>	
+				
+			<div class="nothing" style="display: none;"><img src="../../img/theList/del.png"/><p>你没有通知消息哟！</p></div>
 		</div>
 	</body>
+	<script src="../../js/app.js"></script>
+	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
-		function help(){
-			openview({
-				view:'../serveForPeople/around.html'
-			})
-		}
+		mui.plusReady(function(){
+			var myuserid = plus.storage.getItem('userid');
+			var oldtoken = plus.storage.getItem('oldToken'); 
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			mui.ajax(serverUrl+'/api/index/message',{
+					data:{userid:myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data,type,xhr){
+						console.log('消息',data);
+				       	if(data.errno == 0){
+			     			var dataobj = {};
+			     			dataobj.list = data.data;
+			     			var html = template("listinfo",dataobj);
+							document.getElementById("listinfodiv").innerHTML+=html;
+				       	}
+				       	plus.nativeUI.closeWaiting();
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						console.log('当前网络不好,请重试');
+					}
+				});
+		})
 		function helpRecord(){
 			openview({
 				view:'my-answer.html'

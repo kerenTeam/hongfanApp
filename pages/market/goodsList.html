@@ -166,15 +166,12 @@
 			.screenin h4{    font-size: 14px;
 			    padding-left: 3px;
 			    margin: 4px 1px;}
-			.screenla{display: inline-block;position: relative;margin: 3px;}
+			.screenla{display: inline-block;position: relative;margin: 5px 2px;}
 			.screenla label, .screenla span{
-				    display: inline-block;
-				    text-align: center;
-				    border-radius: 30px;
-				    margin: 0 5px;
-				    margin-top: 10px;
-				    box-shadow: 0px 0px 3px #999;
-				    padding: 9px 12px;
+			    display: inline-block;
+			    text-align: center;
+			    padding: 7px 10px;
+			    margin: 2px;
 			}
 			.screenla span{background-color: #eee;}
 			.screenla label{position: absolute;width: 100%;height: 100%;border: none;box-shadow: none;}
@@ -235,21 +232,21 @@
 		 <div class="screening" id="screeningdiv" style="top: 50px;">
 		    <ul>
 		        <li class="Brand">综合</li>
-		        <li class="Regional" onclick="order('sales','asc')">销量</li>
+		        <li class="Regional" id="Salesvolume">销量</li>
 		        <li class="Sort">价格</li>
 		    </ul>
 		</div>
 		
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw">
-		        <li onclick="order('create_time','asc')">新品</li>
-		        <li onclick="order('comments','asc')">评价</li>
+		        <li id="Newping">新品</li>
+		        <li id="evaluate">评价</li>
 		    </ul>
 		</div>
 		<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort">
-		        <li onclick="order('price','desc')">从高到低</li>
-		        <li onclick="order('price','asc')">从低到高</li>
+		        <li id="Hightolow">从高到低</li>
+		        <li id="lowtoHigh">从低到高</li>
 		    </ul>
 		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
@@ -320,7 +317,8 @@
 			var goodcatId = plus.webview.currentWebview().goodscatId;
 			var can1 = 'sales',can2 = 'desc',can3 = '';
 			//显示品牌信息
-			mui.ajax(serverUrl+'/api/mall/mallbrand',{ 									
+			mui.ajax(serverUrl+'/api/mall/mallbrand',{ 	
+				data:{categoryid:goodcatId},
 				type:'post',
 				timeout:5000, 
 				headers:{"token":oldToken},	 
@@ -329,9 +327,8 @@
 					if(data.errno == 0){
 						var objdata = {};
 						objdata.list = data.data;
-						console.log(objdata.list);
 						var html=template("pingpai",objdata);
-						document.getElementById("pingpaidiv").innerHTML += html;
+						document.getElementById("pingpaidiv").innerHTML += html; 
 					}
 				}
 			});
@@ -339,6 +336,7 @@
 			window.order = function(orderType,sequence,brand){
 				can1 = orderType,can2 = sequence,can3 = brand;
 				var pagenum = 10,CcurrentPage = 1,sequence1 = sequence;
+				mui('#nulldiv')[0].style.display = 'none';
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
 					data:{
@@ -371,11 +369,40 @@
 							mui('#nulldiv')[0].style.display = 'block';
 						}
 						//滚动到底部加载
-						$(window).scroll(function(){
-						　　var scrollTop = $(this).scrollTop();
-						　　var scrollHeight = $(document).height();
-						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
+						
+						function getScrollTop(){//滚动条在Y轴上的滚动距离
+						　　var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+						　　if(document.body){
+						　　　　bodyScrollTop = document.body.scrollTop;
+						　　}
+						　　if(document.documentElement){
+						　　　　documentScrollTop = document.documentElement.scrollTop;
+						　　}
+						　　scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+						　　return scrollTop;
+						}
+						function getScrollHeight(){//文档的总高度
+						　　var scrollHeight = 0, bodyScrollHeight = 0, documentScrollHeight = 0;
+						　　if(document.body){
+						　　　　bodyScrollHeight = document.body.scrollHeight;
+						　　}
+						　　if(document.documentElement){
+						　　　　documentScrollHeight = document.documentElement.scrollHeight;
+						　　}
+						　　scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+						　　return scrollHeight;
+						}
+						function getWindowHeight(){//浏览器视口的高度
+						　　var windowHeight = 0;
+						　　if(document.compatMode == "CSS1Compat"){
+						　　　　windowHeight = document.documentElement.clientHeight;
+						　　}else{
+						　　　　windowHeight = document.body.clientHeight;
+						　　}
+						　　return windowHeight;
+						}
+						window.onscroll = function(){
+						　　if(getScrollTop() + getWindowHeight() == getScrollHeight()){
 								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//实到页数小于等于总页数时发起请求,并且实到=应到
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 									Ypagenum++;//满足加载情况,应到页数+1
@@ -420,9 +447,8 @@
 								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
 									mui("#upload")[0].innerHTML = "到底了";
 								}
-							}//加载下一部分结束
-						});
-						
+						　　}
+						};//滚动加载
 					}else{
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
@@ -442,9 +468,7 @@
 			}
 			order(can1,can2,can3);//初始化
 			
-			
 			//筛选
-			var Hscrollbar = 0;
 			var screenin1s = mui('#screenin1')[0].getElementsByClassName('screenla');
 			var upclose = function(){//关闭方法
 				mui('body')[0].className = '';
@@ -456,30 +480,46 @@
 				if(mui('body')[0].className == 'badyhide'){
 					upclose();
 				}else{//展开
-					Hscrollbar = document.body.scrollTop;//获取滚动条高度
 					mui('body')[0].className = 'badyhide';
 					mui('#Maskdiv')[0].style.display = 'block';
 					mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
 					mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
-					
 				}
 			}
 			//筛选确定
+			var nowstr = '';
 			mui('#determine')[0].onclick = function(){
-				document.body.scrollTop = Hscrollbar;//设置滚动条高度
+				Spagenum = 2,Ypagenum = 1;//应到页数
 				upclose();
 				for(var i=0; i<screenin1s.length; i++){
 					var nowinput = screenin1s[i].getElementsByTagName('input')[0];
 					if(nowinput.checked == true){
-						var nowstr = screenin1s[i].getElementsByTagName('span')[0].innerHTML;
-						alert(nowstr);
-						order(can1,can2,nowstr);//初始化
+						nowstr = screenin1s[i].getElementsByTagName('span')[0].innerHTML;
 						break;
 					}
 				}
-					
+				if(nowstr != '不限'){
+					order(can1,can2,nowstr);//初始化
+				}else{
+					nowstr = '';
+				}
 			}
-			
+			//其他筛选方法
+			mui('#Salesvolume')[0].onclick = function(){//销量
+				order('sales','asc',nowstr);
+			}
+			mui('#Newping')[0].onclick = function(){//新品
+				order('create_time','asc',nowstr)
+			}
+			mui('#evaluate')[0].onclick = function(){//评价
+				order('comments','asc',nowstr)
+			}
+			mui('#Hightolow')[0].onclick = function(){//从高到低
+				order('price','desc',nowstr);
+			}
+			mui('#lowtoHigh')[0].onclick = function(){//从低到高
+				order('price','asc',nowstr);
+			}
 			//跳转详情
 			window.goInfo =  function(goodsId){ 
 				 openview({

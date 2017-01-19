@@ -774,12 +774,15 @@
 						if(data.data.goodsInfo.content) {
 							console.log('详情', data.data.goodsInfo.content);
 							var detailsdom = parseDom(data.data.goodsInfo.content);
+							console.log('转化节点',detailsdom);
 							var detailsimg = detailsdom.getElementsByTagName('img');
 							mui.each(detailsimg, function(index, element) {
-								console.log(element.src.split('pages/market')[1]);
-								element.src = serverimgUrl + element.src.split('pages/market')[1];
-								element.onerror = function() {
-									element.src = '../../img/market/nodata.svg';
+								if(element.src.indexOf('pages/market')>-1){
+									console.log(element.src.split('pages/market')[1]);
+									element.src = serverimgUrl + element.src.split('pages/market')[1];
+									element.onerror = function() {
+										element.src = '../../img/market/nodata.svg';
+									}
 								}
 							})
 							console.log('节点', detailsdom);
@@ -1115,7 +1118,6 @@
 			mui.previewImage();
 
 			function parseDom(arg) { //节点转换方法
-				　　
 				var objE = document.createElement("div");　　
 				objE.innerHTML = arg;　　
 				return objE;
