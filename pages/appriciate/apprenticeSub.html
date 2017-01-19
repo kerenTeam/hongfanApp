@@ -62,42 +62,7 @@
 					<li id="Releasebtn">立即报名</li>
 				</ul>
 			</div>
-			<div id="picture" class="mui-popover mui-popover-action mui-popover-bottom">
-				<ul class="mui-table-view">
-					<li class="mui-table-view-cell">
-						<a id="0" href="#" style="color:#8f8f94;font-size: .8em;">选择照片</a>
-					</li>
-					<li class="mui-table-view-cell">
-						<a id="1" href="#">拍照</a>
-					</li>
-					<li class="mui-table-view-cell">
-						<a id="2" href="#">从相册选择</a>
-					</li>
-				</ul>
-				<ul class="mui-table-view">
-					<li class="mui-table-view-cell">
-						<a href="#picture"><b>取消</b></a>
-					</li>
-				</ul>
-			</div>
-			<div id="opt" class="mui-popover mui-popover-action mui-popover-bottom">
-				<ul class="mui-table-view">
-					<li class="mui-table-view-cell">
-						<a id="3" href="#" style="color:#8f8f94;font-size: .8em;">操作</a>
-					</li>
-					<li class="mui-table-view-cell">
-						<a id="4" href="#">查看</a>
-					</li>
-					<li class="mui-table-view-cell">
-						<a id="5" href="#">删除</a>
-					</li>
-				</ul>
-				<ul class="mui-table-view">
-					<li class="mui-table-view-cell">
-						<a href="#opt"><b>取消</b></a>
-					</li>
-				</ul>
-			</div>
+	 
 		</div>
 	</body>
 </html>
@@ -118,6 +83,7 @@
 			document.getElementById('Bprice').innerHTML = "免费";
 		}
 //		alert(apprenticeFee);
+	
 		mui('#Releasebtn')[0].onclick = function(){ 
 			//获取所需data
 			var name = mui('#Bname')[0].value;
@@ -145,7 +111,8 @@
 				mui('#Bage')[0].focus();
 			}
 			else{
-				if(price !== "免费"){
+				if(apprenticeFee !== "免费"){ 
+					plus.nativeUI.showWaiting()
 				//铺数据
 				var oldToken = plus.storage.getItem('oldToken');
 				console.log(oldToken);
@@ -155,23 +122,31 @@
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
+					success:function(data,type,xhr){ 
 						
-						//alert(JSON.stringify(data));
-						var activityId = data.data;
+					 
+						
+						var uuid = data.data.uuid;
+						var activityid = data.data.activityid;
+						 alert(activityid)
 						plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
 						if(data.errno==0){
-							//alert(data) 
+							alert(JSON.stringify(data)) 
 							plus.nativeUI.closeWaiting();
+							 
+							
 							openview({
 								view:'../market/activityPay.html',
-								extrasobj:{activityId:activityId,price:price}
+								id:"activityPay",
+								extrasobj:{orderid:uuid,price:apprenticeFee,activityId:activityid}
 							})
 						//	plus.webview.currentWebview().close();
 							
 						}
 					},
 					error:function(xhr,type,errorThrown){
+						
+							plus.nativeUI.closeWaiting();
 						 alert('网络不好请重试  !');
 					}
 				});		
