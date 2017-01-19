@@ -671,8 +671,8 @@
 									<div class="you clearfloat fr">
 										<div class="mui-numbox margin-top" data-numbox-min="1">
 											<button class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
-											<input id="test" class="mui-input-numbox" type="number" value="0">
-											<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
+											<input id="test" class="mui-input-numbox" type="number" value="" />
+											<button id="upup" class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
 										</div>
 									</div>
 								</div>
@@ -876,6 +876,13 @@
 													 	cursx.addClass('cur');
 													 	cursx.siblings().removeClass('cur');
 													 	$("#kc").html("库存："+data.data.stockNms)
+													 	var Stocknum = data.data.stockNms;
+													 	mui('#upup')[0].onclick = function(){
+													 		var upnum = mui('#test')[0].value;
+													 		if(upnum>Stocknum){
+													 			mui('#test')[0].value = Stocknum;
+													 		}
+													 	}
 													 	// alert(parseFloat(data.data.stockNms))
 													 	  	 mui(".mui-numbox").numbox();
 													 	 $(".mui-input-numbox").val(1);
@@ -947,6 +954,13 @@
 														
 													}else{ 
 													 	$("#kc").html("库存："+data.data.stockNms)
+													 	var Stocknum = data.data.stockNms;
+													 	mui('#upup')[0].onclick = function(){
+													 		var upnum = mui('#test')[0].value;
+													 		if(upnum>Stocknum){
+													 			mui('#test')[0].value = Stocknum;
+													 		}
+													 	}
 													 	 $(".mui-input-numbox").val(1);
 													 	// alert(parseFloat(data.data.stockNms))
 													 	 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
@@ -1003,7 +1017,7 @@
 									if(!goodsPostfee) {
 										goodsPostfee = 0;
 									}
-									var goodsnum = parseFloat($(".mui-input-numbox").val());
+									var goodsnum = parseFloat(mui('#test')[0].value);
 									var goodText = '';
 									var goodProp = [];
 									$('.textType').each(function() {
