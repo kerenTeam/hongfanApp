@@ -102,6 +102,9 @@
 			.greencss{
 				color: #32B16C !important;
 			}
+			#content img{
+				max-width: 100%;
+			}
 		</style>
 	</head>
 
@@ -125,6 +128,9 @@
 							</p>
 							<p class="time greencss">
 								<img src="../../img/add.png"/>活动地点：<%= list.site%>
+							</p>
+							<p class="time ">
+								<img src="../../img/liulan.svg"/>浏览次数：<%= list.read%>  次
 							</p>
 						</div>
 						<div class="biz-call" onclick="openMerchant(<%= list.storeid%>)">
@@ -161,14 +167,31 @@
 			headers:{"token":oldtoken},	               				
 			success:function(data){
 				//alert(mytoken);
-				console.log('活动详情返回'+JSON.stringify(data)); 
+				console.log('活动详情返回',data); 
 				if(data.errno == 0){
 					var objdata = {};
 					objdata.list = data.data.system_activity; 
 					objdata.myUrl = serverimgUrl; 
 					var html=template("details",objdata);
 					document.getElementById("main").innerHTML=html;
-					mui('#content')[0].innerHTML = objdata.list.content;
+					//详情
+					if(objdata.list.content) {
+						var detailsdom = parseDom(objdata.list.content);
+						var detailsimg = detailsdom.getElementsByTagName('img');
+						mui.each(detailsimg, function(index, element) {
+							if(element.src.indexOf('pages/activity')>-1){
+								element.src = serverimgUrl + element.src.split('pages/activity')[1];
+								element.onerror = function() {
+									element.src = '../../img/market/nodata.svg';
+								}
+							}
+						})
+						document.getElementById("content").appendChild(detailsdom);
+					}else{
+						document.getElementById("content").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+					}
+						
+						
 				}else{
 					mui.toast('获取用户信息失败');
 				}
@@ -179,6 +202,11 @@
 				alert('响应失败  !');
 			}
 		});
+		function parseDom(arg) { //节点转换方法
+			var objE = document.createElement("div");　　
+			objE.innerHTML = arg;　　
+			return objE;
+		};
 	});
 	//打开商户详情
 	function openMerchant(id){
