@@ -241,6 +241,9 @@
 														</sub></p>
 												</div>
 												<%}%>
+												
+											<%if(orderData[i].isBySelf==0){%>	
+												
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
@@ -278,6 +281,47 @@
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
 												</div>
 											<%}%> 
+											
+											<%}else{%>
+												
+												<%if(orderData[i].order_status==1){%>
+												<div class="order-bottom clearfloat box-s">
+													
+													<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==2){%>
+												<div class="order-bottom clearfloat box-s">
+													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==3){%>
+												<div class="order-bottom clearfloat box-s">
+													<span class="fl" style="color: palevioletred;">| 已选自提</span>
+													<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a> 
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==4){%>
+												<div class="order-bottom clearfloat box-s">
+													<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
+													<!--<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>-->
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==5){%>
+												<div class="order-bottom clearfloat box-s">  
+													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
+												</div>
+											<%}%>
+											 
+											<%if(orderData[i].order_status==9){%>
+												<div class="order-bottom clearfloat box-s"> 
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
+												</div>
+											<%}%> 
+												
+												<%}%>
 										</dd>
 										<%}%>
 									<%}%>
