@@ -66,7 +66,7 @@
 				<article class="xiangqinPara">
 					<div class="black" style="margin-top: 5%;"><b><%= objData.title %></b></div>
 					<div class="gray"><small><%= objData.joined %>人已参加</small></div>
-					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.fee %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl">要参加</button>
+					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.fee %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl" id="goinfl">要参加</button>
 					
 					<div class="black acl"><img src="../../img/serveForPeople/actime.png" alt="" /> 活动时间<small class="fr gray"><%= objData.time %></small></div>
 					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray"><%= objData.begin_time %> 到 <%= objData.end_time %></small></div>
@@ -98,6 +98,14 @@
 				});
 		}
 		mui.plusReady(function(){
+			
+			window.addEventListener("refreash",function(){
+				load();
+			})
+			load();
+			
+			function load(){
+				
 			//铺数据
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
@@ -121,12 +129,24 @@
 					mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
 					document.getElementById('content').innerHTML = data.data[0].content;
 					plus.nativeUI.closeWaiting();
+					
+				   var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]');
+				   if(acstorage.length!=0){
+					  mui("#goinfl")[0].innerHTML="已参加";
+					  document.getElementById("goinfl").removeAttribute("onclick")
+					  
+					}
+//			
+					
+					
 				},
 				error:function(xhr,type,errorThrown){
 					mui.toast('响应失败  !');
 					plus.nativeUI.closeWaiting();
 				}
 			});
+			}
+			
 		});
 	</script>
 </html>

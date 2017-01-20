@@ -114,34 +114,7 @@ mui.plusReady(function() {
 	},function(e){
 		plus.nativeUI.alert("支付失败，请重试",null,"提示");
 	});
-//	alert(oldtoken+" "+ orderId)
-//	 mui(document.body).on('tap', '.mui-btn', function(e) {
-//	 	plus.nativeUI.showWaiting(); 
-//	 	mui.ajax(serverUrl+'/api/mall/pay',{
-//				data:{order_id:orderId},
-//				dataType:'json',
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldtoken},	 
-//				success:function(data,type,xhr){ 
-//					plus.nativeUI.closeWaiting();
-////					alert(JSON.stringify(data)) ;
-//					 mui.toast("提交成功"); 
-//					  	openview({
-//						view:"../personal/sc-order.html"
-//					})
-//					// plus.webview.getWebviewById("market-order").close(); 
-//					 plus.close(plus.webview.getWebviewById("market-order"));
-//					 plus.webview.currentWebview().close();
-//				
-//				},
-//				error:function(xhr,type,errorThrown){
-//					plus.nativeUI.closeWaiting()
-//					console.log('响应失败  !');
-//				}
-//			});
-//      });
-	
+ 
 	
 	// 检测是否安装支付服务
 	function checkServices(pc){ 
@@ -214,8 +187,9 @@ function payfun(id){
 	var oldtoken = plus.storage.getItem('oldToken'); 
    // var uuid = plus.webview.currentWebview().uuid;
     var orderId = plus.webview.currentWebview().uuid; 
+    var payMent = plus.webview.currentWebview().payMent;
 	mui.ajax(PAYSERVER,{ 
-		data:{total_fee:'',subject:'HI集生活',body:'HI集生活',out_trade_no:orderId},
+		data:{total_fee:payMent,subject:'HI集生活',body:'HI集生活',out_trade_no:orderId},
 		type:'post',//HTTP请求类型
 		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
