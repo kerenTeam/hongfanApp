@@ -49,6 +49,9 @@
 			color: rgba(0,0,0,0.6);
 			margin-top: 6%;  
 		}
+		#content img{
+			width: 100%;
+		}
 	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -65,19 +68,19 @@
 			<div class="ceremonyContent" style="background-color: white;">
 				<article class="xiangqinPara">
 					<div class="black" style="margin-top: 5%;"><b><%= objData.title %></b></div>
-					<div class="gray"><small><%= objData.joined %>人已参加</small></div>
-					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.fee %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl" id="goinfl">要参加</button>
+					<div class="gray"><small><%= objData.numberofpeople %>人已参加</small></div>
+					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.charge %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl" id="goinfl">要参加</button>
 					
-					<div class="black acl"><img src="../../img/serveForPeople/actime.png" alt="" /> 活动时间<small class="fr gray"><%= objData.time %></small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray"><%= objData.begin_time %> 到 <%= objData.end_time %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/actime.png" alt="" /> 活动时间<small class="fr gray"><%= objData.times %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/mybm.png" alt="" /> 报名时间<small class="fr gray"><%= objData.start_time %> 到 <%= objData.end_time %></small></div>
 					<div class="black acl"><img src="../../img/serveForPeople/baom.png" alt="" /> 报名费用<small class="fr gray">
-						<% if(objData.fee >0){ %>
-							￥<%= objData.fee %>
+						<% if(objData.charge >0){ %>
+							￥<%= objData.charge %>
 						<% }else{ %>
 							免费
 						<% } %>
 					</small></div>
-					<div class="black acl"><img src="../../img/serveForPeople/acmap.png" alt="" /> 活动地点<small class="fr gray"><%= objData.site %></small></div>
+					<div class="black acl"><img src="../../img/serveForPeople/acmap.png" alt="" /> 活动地点<small class="fr gray"><%= objData.address %></small></div>
 					<div class="black acl"><img src="../../img/serveForPeople/ban.png" alt="" /> 活动承办方<small class="fr gray"><%= objData.sponsor %></small></div>
 					 
 					<div class="grayd">活动详情：
@@ -91,6 +94,7 @@
 	</body>
 	<script type="text/javascript">
         function gosub(id,fee){
+//      	alert(id+" "+fee)
 			openview({
 					view:'apprenticeSub.html',
 					id:'apprenticeSub',
@@ -110,32 +114,68 @@
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
 			var activityId = plus.webview.currentWebview().activityId;
-//			alert(activityId);
+			//alert(activityId);
 			console.log(oldToken);
-			mui.ajax(serverUrl+'/api/localservice/activityinfo',{
-				data:{id:activityId},
+			mui.ajax('http://192.168.199.191:7200/api/localservice/marriagelist',{
+//				data:{id:activityId},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data.data[0].content));
-					var dateObj={};
-		       		data.data[0].time = data.data[0].time.split('T')[0]; 
-		       		data.data[0].begin_time = data.data[0].begin_time.split('T')[0]; 
-		       		data.data[0].end_time = data.data[0].end_time.split('T')[0]; 
-					dateObj.objData=data.data[0];
-					dateObj.myUrl=serverimgUrl;
-					mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
-					document.getElementById('content').innerHTML = data.data[0].content;
-					plus.nativeUI.closeWaiting();
-					
-				   var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]');
-				   if(acstorage.length!=0){
-					  mui("#goinfl")[0].innerHTML="已参加";
-					  document.getElementById("goinfl").removeAttribute("onclick")
-					  
+//					alert(JSON.stringify(data.data[0]));
+					if(data.errno==0){
+						var dateObj={};
+				       		data.data[0].create_time = data.data[0].create_time.split('T')[0]; 
+				       		data.data[0].start_time = data.data[0].start_time.split('T')[0]; 
+				       		data.data[0].end_time = data.data[0].end_time.split('T')[0]; 
+							dateObj.objData=data.data[0];
+							dateObj.myUrl=serverimgUrl;
+							
+							var joined = parseFloat(data.data[0].numberofpeople);
+							var limit = parseFloat(data.data[0].persons_limit);
+							
+							mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
+							 
+							if(joined==limit){
+								 mui("#goinfl")[0].innerHTML="人数已满";
+							     document.getElementById("goinfl").removeAttribute("onclick")
+							}
+							
+					    if(data.data[0].content) {
+							console.log('详情', data.data[0].content);
+							var detailsdom = parseDom(data.data[0].content);
+							console.log('转化节点',detailsdom);
+							var detailsimg = detailsdom.getElementsByTagName('img');
+							mui.each(detailsimg, function(index, element) {
+								if(element.src.indexOf('pages/appriciate')>-1){
+									console.log(element.src.split('pages/appriciate')[1]);
+									element.src = serverimgUrl + element.src.split('pages/appriciate')[1];
+									element.onerror = function() {
+										element.src = '../../img/market/nodata.svg';
+									}
+								}
+							})
+							console.log('节点', detailsdom);
+							//			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+							document.getElementById("content").appendChild(detailsdom);
+						} else {
+							document.getElementById("content").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+						}
+							
+						   
+							plus.nativeUI.closeWaiting();
+							
+						   var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]');
+					 
+						   if(acstorage.length!=0){
+							  mui("#goinfl")[0].innerHTML="已参加";
+							  document.getElementById("goinfl").removeAttribute("onclick")
+							  
+							} 
 					}
+					
+					
 //			
 					
 					
@@ -146,7 +186,11 @@
 				}
 			});
 			}
-			
+			function parseDom(arg) { //节点转换方法
+				var objE = document.createElement("div");　　
+				objE.innerHTML = arg;　　
+				return objE;
+			};
 		});
 	</script>
 </html>
