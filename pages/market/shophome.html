@@ -223,7 +223,8 @@
 		                    <p>店铺地址：<span id="addressS"></span></p>
 		                    <p>店铺具体位置：<span id="floorName"></span>楼<span id="doorNo"></span>号</p>
 		                    <p>营业时间：<span id="businessH"></span></p>
-		                    <p>联系电话：<span id="phoneS"></span></p>
+		                    <p>联系座机：<span id="phoneS"></span></p>
+		                    <p>联系电话：<span id="tel"></span></p>
 		                    <p>营业状态：<span id="openStaus"></span></p>
 		                    <p>店铺简介：<span id="description2"></span></p>
 		                </div>
@@ -670,6 +671,7 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						console.log('详情',data);	
+						alert(JSON.stringify(data.data));	
 						shoptype = data.data.shop_type;
 						$('#storeName').html(data.data.store_name);
 						$('#title2').html(data.data.secondary_name);
@@ -677,6 +679,7 @@
 						$('#doorNo').html(data.data.floor_name);
 						$('#businessH').html(data.data.business_hours);
 						$('#phoneS').html(data.data.phone);
+						$('#tel').html(data.data.tel);
 						$('#openStaus').html(data.data.op_status);
 						$('#description').html(data.data.description);
 						$('#description2').html(data.data.description);
@@ -686,11 +689,17 @@
 							$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
 						}else{
 							$('#storeLogo').attr('src',serverimgUrl+data.data.pic);
+							$('#storeLogo').error(function(){
+								$('#storeLogo').attr('src',"../../img/theList/storeLogo.png");
+							})
 						}
 						if(data.data.pic == '' || data.data.pic == null){
 							$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
 						}else{
 							$('#storeImg').attr('src',serverimgUrl+data.data.pic);
+							$('#storeImg').error(function(){
+								$('#storeImg').attr('src',"../../img/theList/storeNo.jpg");
+							})
 						}
 						plus.nativeUI.closeWaiting();//关闭等待框
 					},

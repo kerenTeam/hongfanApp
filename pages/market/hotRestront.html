@@ -143,7 +143,7 @@
 			</div>
 			<article>
 				<div class="trangle"></div>
-				<p><%=recommentLi[0].main.content%></p>
+				<p id="yqContent"></p>
 			</article>
 				<div>
 			<% for(var i=0;i<recommentLi[0].minor.length;i++){ %>
@@ -186,7 +186,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					//alert(JSON.stringify(data.data[0].main.id))
+//					alert(JSON.stringify(data.data))
 //					alert(JSON.stringify(data.data[0].minor))
 					data.data[0].main.picImg = eval("("+data.data[0].main.picImg+")")
 					data.data[0].main.create_time=data.data[0].main.create_time.substring(0,10);
@@ -195,6 +195,7 @@
 					recommentObj.recommentLi = data.data;
 					var html2 = template('storeItem-detail',recommentObj);
 					document.getElementById('storeItem').innerHTML= html2;
+					mui('#yqContent')[0].innerHTML=data.data[0].main.content;
 					plus.nativeUI.closeWaiting();  
 					//点击进入详情
 					window.openStore = function(store_id){
