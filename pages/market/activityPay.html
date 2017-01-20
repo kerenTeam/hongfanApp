@@ -183,12 +183,11 @@ function payfun(id){
 	function gopay(){
 	// 请求支付订单
 	var oldtoken = plus.storage.getItem('oldToken'); 
-  
-	var activityId = plus.webview.currentWebview().activityId; 
-	alert("activityId"+activityId)
+  var price = plus.webview.currentWebview().price;
+	var activityId = plus.webview.currentWebview().activityId;  
   var orderid = plus.webview.currentWebview().orderid; 
 	mui.ajax(PAYSERVER,{ 
-		data:{total_fee:'',subject:'一键钟情',body:'一键钟情',out_trade_no:orderid+activityId},
+		data:{total_fee:price,subject:'一键钟情',body:'一键钟情',out_trade_no:orderid+activityId},
 		type:'post',//HTTP请求类型
 		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
@@ -222,13 +221,10 @@ function payfun(id){
 					 	 achava.acid=activityId;
 					 	 achava.userid = plus.storage.getItem('userid');
 					 	 acstorage[0] =achava;
-					 	 plus.storage.setItem("$acstorage",JSON.stringify(achava));
-					 	 alert(JSON.stringify(achava))
+					 	 plus.storage.setItem("$acstorage",JSON.stringify(achava)); 
 					var oldtoken = plus.storage.getItem('oldToken'); 
 					var odrer_id =  plus.webview.currentWebview().orderId;
-					
-					
-					alert(list)
+					 
 					mui.fire(list,"refreash");
 					
 					
