@@ -24,120 +24,40 @@
 		<script src="../../js/swiper.min.js" type="text/javascript" ></script>
 		<script type="text/javascript" src="../../js/index.js"></script>-->
 		<style type="text/css">
-		.normalSize{
-			font-size: 14px !important;
-		}
-		i{
-			font-style: normal;
-		}
-		.smallSize{
-			font-size: 12px !important;
-		}
-		.smallSize i{
-			font-size: 12px !important;
-		}
-			.infocon h4{
-				padding: 20px 0;
-			}
-			.mui-bar-nav{
-				box-shadow: none;
-			}
-			.mui-bar .mui-icon{
-				font-size: 24px !important;
-			}
-			.infomidd{
-				width:100%;
-				padding:0 2%;
-				
-			}
-			.infomidd p {
-				text-align: left;
-				font-size: 15px;
-				line-height: 20px;
-			}
-			
-			.fixfoot{
-				height: 60px;
-				background-color: #F53C42;
-				position: fixed;
-				bottom: 0px;
-			}
-			.fixfoot_le input {
-				background-color: rgba(255,255,255,0.3);
-				margin-top:10px;
-				margin-left:10px;
-				height:35px;
-				border-radius: 20px;
-				border: none;
-				color: #fff;
-			}
-			.fixfoot_le input:-ms-input-placeholder{
-				color:#FFFFFF;
-			}
-			.fixfoot_le input::-webkit-input-placeholder{
-				color:#FFFFFF;
-			}
-			.fixfoot_le{
-				width: 70%;
-			}
-			.fixfoot_ri{
-				width: 30%;
-			}
-			.fixfoot_ri span{
-				color: #fff;
-				font-size: 28px;
-			}
-			.ymt{
-				padding: 0 10px 10px 10px;
-				text-align: center;
-			}
-			.ymt h4{
+			h4{
 				margin:0;
 				padding:0;
 				padding-top:15px;
+				line-height: 25px;
+				text-align: center;
 			}
-			.infomidd .imgSize{
-				width:100%;
-				box-sizing: border-box;
-				margin:0 auto;
+			.mui-pull-right{
+				margin-bottom: 20px;
 			}
-			.devide{
-				margin:0 !important;
-				width:100% !important;				
-				background: #F4F4F4;
-				color:#F53C42;
-				height:30px;
-				line-height: 30px;
-				padding:0 5px;
-				clear: both;
-				text-align: left;
+			.nice{
+				width: 25px;
 			}
-			.mui-table-view-cell a img{
-				width:30px !important;
-				height: 30px !important;
-				border:1px solid #FFFFFF;
-				border-radius: 50%;
+			.niceBtn{
+				background-color: #fff;
+				padding: 10px 30px;
+				
 			}
-			.mui-table-view .mui-media-object {
-				min-width:30px;
-				height:30px;
-			
+			.btnBottom{
+				display: inline-blockblock;
+				margin: 20px !important;
+				float:right;
 			}
-			p{
-				white-space: normal;
+			#main{
+				padding-bottom: 50px;
+				padding: 0 20px;
 			}
-			.lineHeight{
-				display: block;
-				line-height:20px !important;
+			.newsContent{
+				line-height: 20px;
+				margin-top: 20px;
 			}
-			.sendComment{
-				color:#FFFFFF;
-				font-size: 14px;
+			#newsModal{
+				padding-bottom: 50px;
 			}
-			.graytext{
-				color:#999 !important;
-			}
-			
 		</style>
 	</head>
 
@@ -147,192 +67,101 @@
 		    <h1 class="mui-title">详情</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="ymb">
-			<div class="infocon ymt" id="messageBox">
-				
-			</div>
+		<div id="main">
+			<div id="newsModal"></div>
 			<!--新闻详情 模板渲染-->
-			<script type="text/html" id="newsModal">
-				<h4><%=title%></h4>
-				<div class="infomidd">
-					
-					<p>
-					<%=content %>
-					</p>
-					<img class="imgSize" src="<%=pic%>"/>
-					<p class="graytext smallSize"><span class="mui-pull-left">发布人：老年协会</span><span class="mui-pull-right">发布时间：<%=create_time%></span></p>					
-				</div>
-				<p class="devide">全部评论
-					<span class='smallSize mui-pull-right gray'><i class="mui-icon-extra mui-icon-extra-comment newsComment">&nbsp;<%=recommend%> &nbsp;</i><i class="mui-icon-extra mui-icon-extra-like newsLike"></i>&nbsp;<%=red_heart%></span>
-				
-				</p>
+			<script type="text/html" id="newsModal-detail">
+				<h4 style="color: #333;"><%=dataList.title%></h4>
+				<p style="color: #666;line-height: 25px;margin-top: 20px;" id="newContent"></p>
+				<!--<img class="imgSize" src="<%=dataList.pic%>"/>-->
+				<span class="mui-pull-right" style="margin-top: 20px;color: #666;margin-bottom: 20px;">发布时间：<%=dataList.create_time%></span>			
+				<button type="button" class="mui-btn mui-btn-block" style="color: #999;" id="niceBtn"><img src="../../img/nice.png" class="nice"/>&nbsp;<%=dataList.red_heart%></button>
 			</script>
-			<div class="commentList">
-				
-				<ul class="mui-table-view" id="commentList">
-					<li class="mui-table-view-cell">
-						<div class="lineHeight">
-							<img class="mui-media-object mui-pull-left" src="../../img/10.png">
-							<div class="mui-media-body normalSize">
-								<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
-								幸福
-								<p class='smallSize'>11.28 11:39</p>
-	
-								<p class="black">
-									这是楼主的评论。这是楼主的评论。这是楼主的评论。
-								</p>
-								<div class="responseBox">
-									<p class="black">
-										<i class="redcolor">烛光回复@幸福：</i>
-										这是楼主的回复。
-									</p>
-								</div>
-							</div>
-							
-						</div>
-					</li>
-					<li class="mui-table-view-cell">
-						<div class="lineHeight">
-							<img class="mui-media-object mui-pull-left" src="../../img/10.png">
-							<div class="mui-media-body normalSize">
-								<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
-								幸福
-								<p class='smallSize'>11.28 11:39</p>
-	
-								<p class="black">
-									这是楼主的评论。这是楼主的评论。这是楼主的评论。
-								</p>
-								<div class="responseBox">
-									<p class="black">
-										<i class="redcolor">烛光回复@幸福：</i>
-										这是楼主的回复。
-									</p>
-								</div>
-							</div>
-							
-						</div>
-						
-					</li>
-					<li class="mui-table-view-cell mui-media">
-						<div class="lineHeight">
-							<img class="mui-media-object mui-pull-left" src="../../img/10.png">
-							<div class="mui-media-body normalSize">
-								<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
-								幸福
-								<p class='smallSize'>11.28 11:39</p>
-	
-								<p class="black">
-									这是楼主的评论。这是楼主的评论。这是楼主的评论。
-								</p>
-								<div class="responseBox">
-									<p class="black">
-										<i class="redcolor">烛光回复@幸福：</i>
-										这是楼主的回复。
-									</p>
-								</div>
-							</div>
-							
-						</div>
-					</li>
-					<!--新增评论 渲染-->
-					<script type="text/html" id="addCommentModal">
-						<li class="mui-table-view-cell">
-							<div class="lineHeight">
-								<img class="mui-media-object mui-pull-left" src="../../img/10.png">
-								<div class="mui-media-body normalSize">
-									<p class='smallSize mui-pull-right'><i class="mui-icon-extra mui-icon-extra-comment"></i>&nbsp;25 &nbsp;<i class="mui-icon-extra mui-icon-extra-like"></i>&nbsp;10</p>
-									<%if(nickname){%>
-						    			<%= nickname %>
-						    		<%}else{%>
-						    			<%= username %>
-						    		<%}%>
-									<p class='smallSize'>11.28 11:39</p>
-		
-									<p class="black">
-										<%= commentContent %>
-									</p>
-									<div class="responseBox">
-										<p class="black">
-											<i class="redcolor">烛光回复@幸福：</i>
-											这是楼主的回复。
-										</p>
-									</div>
-								</div>
-								
-							</div>							
-						</li>
-					</script>
-				</ul>
-			</div>
-		</div>
-		<div class="fixfoot">
-			<div class="fixfoot_le">
-				<input type="text" class="normalSize" name="" id="commentBox" value="" placeholder="写评论..." />
-			</div>
-			<div class="fixfoot_ri">
-				<table>
-					<tr>
-						<td class="sendComment">发送</td>
-					</tr>
-				</table>
-			</div>
 		</div>
 		<script type="text/javascript">
-			var infolist = mui('.infolist div');
-			for(var i=0; i<infolist.length; i++ ){
-				infolist[i].addEventListener('tap',function(){
-					mui.openWindow({
-						url:'listinfo.html',
-					    styles:{
-					      top:0,//新页面顶部位置 
-					    },
-					    waiting:{
-					      autoShow:false,//自动显示等待框，默认为true
-					    }
-					})
-				})
-			}
-			
 			mui.plusReady(function(){
-				var currWebview=plus.webview.currentWebview();
-				var newsId=currWebview.newsId;
-				var token=plus.storage.getItem("Token");
+				var newsId = plus.webview.currentWebview().newsId;
+				oldToken = plus.storage.getItem('oldToken');
 				//家乡报道的新闻获取
 				mui.ajax(serverUrl+'/api/localreport/localreport',{
-					data:{"currentPage":1,"endPage":3},
+					data:{currentPage:1,numsPerPage:10},
 //					dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型
 					timeout:10000,//超时时间设置为10秒；
-					headers:{"token":token},	 
+					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						for(var i=0;i<data.data.length;i++){
-							if(data.data[i].id==newsId){
-								data.data[i].create_time=data.data[i].create_time.split('.')[0].split('T')[0]+' '+data.data[i].create_time.split('.')[0].split('T')[1];
-								var html=template("newsModal",data.data[i]);	
-								document.getElementById("messageBox").innerHTML=html;							
+						for(var j=0;j<data.data.data.length;j++){
+							if(data.data.data[j].id==newsId){
+//								alert(JSON.stringify(data.data.data[j]))
+								data.data.data[j].create_time=data.data.data[j].create_time.split('.')[0].split('T')[0]
+								var dataObj = {};
+								dataObj.dataList = data.data.data[j];
+								var html=template("newsModal-detail",dataObj);	
+								document.getElementById("newsModal").innerHTML=html;
+//								alert(document.getElementById('newContent').innerHTML);
+								document.getElementById('newContent').innerHTML = data.data.data[j].content;
+								
+								//点赞
+//								plus.storage.removeItem("niceIDs");//清除缓存
+								var niceIDs = JSON.parse(plus.storage.getItem('niceIDs')) || [];//获取缓存
+								if(niceIDs.length>0){
+									for(var n=0;n<niceIDs.length;n++){
+										if(niceIDs[n]==newsId){//判断该报道已经点过赞
+											$('#niceBtn').addClass('mui-btn-danger');
+											$('#niceBtn').css('color','#fff');
+											$('#niceBtn').find('img').attr('src','../../img/afterNice.png');
+											document.getElementById('niceBtn').innerHTML='<img src="../../img/afterNice.png" class="nice"/>&nbsp;'+data.data.data[j].red_heart;
+											break;										
+										}
+										if(n==niceIDs.length-1){
+											mui('#niceBtn')[0].addEventListener('tap',function(){
+												nice();
+											});
+										}
+									}
+								}else{
+									mui('#niceBtn')[0].addEventListener('tap',function(){
+										nice();
+									});
+								}
+								window.nice = function(){
+									var num =parseInt( $('#niceBtn').text());
+									if($('#niceBtn').hasClass('mui-btn-danger')){//取消点赞
+									}else{//点赞
+										//新闻的评论的获取
+										mui.ajax(serverUrl+'/api/localreport/redheart',{
+											data:{reportsID:newsId},
+											type:'post',//HTTP请求类型
+											timeout:10000,//超时时间设置为10秒；
+											headers:{"token":oldToken},	 
+											success:function(data,type,xhr){
+//												alert(JSON.stringify(data));
+												if(data.data==1){
+													mui.toast('点赞成功！');
+													mui.fire(plus.webview.getWebviewById('Hreport/h_report.html'),'refreshNews');//打开指定页面 
+													$('#niceBtn').addClass('mui-btn-danger');
+													$('#niceBtn').css('color','#fff');
+													$('#niceBtn').find('img').attr('src','../../img/afterNice.png');
+													newNo = num + 1;
+													$('#niceBtn').html('<img src="../../img/afterNice.png" class="nice"/>&nbsp;'+newNo);
+													//点过赞的新闻做缓存
+//													alert(typeof(niceIDs));
+													
+													niceIDs.push(newsId);
+													plus.storage.setItem("niceIDs",JSON.stringify(niceIDs));
+												}else{
+													mui.toast('点赞失败，请重试！');
+												}
+											},
+											error:function(xhr,type,errorThrown){
+												console.log(type);
+											}
+										});
+									}
+									
+								}
 							}
 						}
-						//点击评论
-						mui(".devide").on('tap','.newsComment',function(){
-							$("#commentBox").focus();
-							$(this).html(parseInt((this).html())+1);
-							
-						});	
-						//添加评论
-					},
-					error:function(xhr,type,errorThrown){
-						console.log(type);
-					}
-				});
-				//新闻的评论的获取
-				mui.ajax(serverUrl+'/api/localreport/comment',{
-					data:{"reportsID":newsId},
-//					dataType:'json',//服务器返回json格式数据
-					type:'post',//HTTP请求类型
-					timeout:10000,//超时时间设置为10秒；
-					headers:{"token":token},	 
-					success:function(data,type,xhr){
-						//console.log(JSON.stringify(data));	
 					},
 					error:function(xhr,type,errorThrown){
 						console.log(type);
