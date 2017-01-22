@@ -160,6 +160,7 @@
 				top: 50%;
 				margin-top: -20px;
 			}
+			#activityContent img{max-width: 100%;}
 		</style>
 	</head>
 
@@ -191,8 +192,11 @@
 							<p class="time greencss">
 								<img src="../../img/add.png"/>活动地点：<%= objData.system_activity.floor_name %>楼<%= objData.system_activity.door_no %>号
 							</p>
+							<p class="time ">
+								<img src="../../img/liulan.svg"/>浏览次数：<%= objData.system_activity.read%>  次
+							</p>
 						</div>
-						<div class="biz-call" onclick="goStore(<%= objData.system_activity.storeid %>)">
+						<div class="biz-call" style="display: none;" onclick="goStore(<%= objData.system_activity.storeid %>)">
 							<img src="../../img/store.png"/>
 							<p>查看商户</p>
 						</div>
@@ -251,12 +255,15 @@
 				extrasobj:{storeId:storeId}
 			})
 		}
+		function parseDom(arg) { //节点转换方法
+			var objE = document.createElement("div");　　
+			objE.innerHTML = arg;　　
+			return objE;
+		};
 		mui.plusReady(function(){
 			var storeCouponId = plus.webview.currentWebview().storeCouponId;
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
-			console.log(oldToken);
-			
 			//数据渲染
 			mui.ajax(serverUrl+'/api/index/couponoractivityinfo',{
 				data:{id:storeCouponId},
@@ -265,7 +272,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(data.data.system_activity);
+					console.log('详情',data);
 					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
 					var dateObj={};
 			       	//处理获取的数据
@@ -281,7 +288,24 @@
 					dateObj.objData=data.data;
 					dateObj.myUrl=serverimgUrl;
 					mui('#main')[0].innerHTML = template('main-detail',dateObj);
-					mui('#activityContent')[0].innerHTML = data.data.system_activity.content;
+					
+					if(data.data.system_activity.content) {
+						var detailsdom = parseDom(data.data.system_activity.content);
+						var detailsimg = detailsdom.getElementsByTagName('img');
+						mui.each(detailsimg, function(index, element) {
+							if(element.src.indexOf('pages/activity')>-1){
+								element.src = serverimgUrl + element.src.split('pages/activity')[1];
+								element.onerror = function() {
+									element.src = '../../img/market/nodata.svg';
+								}
+							}
+						})
+						document.getElementById("activityContent").appendChild(detailsdom);
+					}else{
+						document.getElementById("activityContent").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+					}
+					
+//					mui('#activityContent')[0].innerHTML = data.data.system_activity.content;
 					plus.nativeUI.closeWaiting();
 					//已领取的缓存，修改样式，点击禁用
 					for(var k = 0;k<gotCouponId.length;k++){

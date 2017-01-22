@@ -197,7 +197,7 @@
 				<ul class="mui-row">
 					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">商品</li>
 					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">规格</li>
-					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">价格</li>
+					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">价格/原价</li>
 				</ul>
 			<div id="caiList"></div>
 			<script type="text/html" id="caiList-detail">
@@ -208,7 +208,11 @@
 						<div class="mui-row">
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].goods_name %></div>
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].unit %></div>
-							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %><sub>（元）</sub></div>
+							<%if(!li[i].orginal_price || li[i].orginal_price==' '){%>
+								<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %>/无<sub>（元）</sub></div>
+							<%}else{%>
+								<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %><%= li[i].orginal_price %><sub>（元）</sub></div>
+							<%}%>	
 						</div>
 					<% } %>
 				<% } %>
@@ -220,7 +224,6 @@
 		mui.plusReady(function() {
 //			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
-			console.log(oldToken)
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//获取今天的时间
 			var dd = new Date();
@@ -298,7 +301,7 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-//						alert(JSON.stringify(data.data));
+						console.log('详情',data);
 						if(!data.data || data.data ==''){
 							mui('#caiList-detail')[0].innerHTML = '<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>';
 						}
