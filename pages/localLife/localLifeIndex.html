@@ -93,6 +93,29 @@
 				margin-bottom: 20px !important;
 			}
 			#recommendsdiv:after{display: none;}
+			.pagebottom {
+			    color: darkgray;
+			    position: relative;
+			    text-align: center;
+			    margin-bottom: 20px;
+			    margin-top: 10px;
+			}
+			.pagebottom:before {
+			    position: absolute;
+			    content: '';
+			    width: 1rem;
+			    right: 15%;
+			    top: 7px;
+			    border-bottom: 1px solid #ddd;
+			}
+			.pagebottom:after {
+			    position: absolute;
+			    content: '';
+			    width: 1rem;
+			    left: 15%;
+			    top: 7px;
+			    border-bottom: 1px solid #ddd;
+			}
 		</style>    
 	</head>
 	<body>
@@ -166,7 +189,7 @@
 										<span class="icon-circle bluegray">
 											<img src="<%= list[i].iconpic%>" >
 										</span>
-										<span class="icon-desc">超市比价</span>
+										<span class="icon-desc">超市特价</span> 
 									</a>
 								</li>
 							<% }%>	
@@ -187,13 +210,13 @@
 									<span class="icon-circle bluegray">
 										<img src="../../img/localLife/chaoshi.svg" onerror="javascript:this.src='../../img/market/banner.png';">
 									</span>
-									<span class="icon-desc">超市比价</span>
+									<span class="icon-desc">超市特价</span>
 								</a>
 							</li>
 						<% }%>	
 					</script>
 				</div>
-			</div>
+			</div> 
 			<div class="swiper-pagination swiper-pagination2 diandian"></div>
 		</div>
 		
@@ -238,8 +261,9 @@
 				</div>
 			</div>
 			<!--首页限时抢购结束-->
+			
 			<!--热门推荐 -->	
-			<div class="jinengxueyuan">
+			<div class="jinengxueyuan" style="display: none;">
 				<div class="sy_limit_buy mb10" style="margin-bottom: 0;">
 					<div class="sy_title">
 					<span class="left">热门推荐&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -295,6 +319,7 @@
 				</div>
 			</div>
 		</div>
+		<div class="pagebottom" style="padding-bottom: 10px;">到底了</div>
 					
 	</body>
 	<script src="../../js/swiper.min.js" type="text/javascript" ></script>
@@ -439,61 +464,62 @@
 //				}
 //			});
 			//热门推荐
-			mui.ajax(serverUrl+'/api/localservice/localservicecommend',{
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},	              				
-				success:function(data){
-					console.log('热门推荐返回'+JSON.stringify(data));
-					if(data.errno == 0){ 
-						if(data.data.length){
-							mui('#Mask')[0].style.display = 'none';
-							var objdata = {};
-							mui.each(data.data,function (index,ele) {
-								data.data[index].logo = eval("("+ele.logo+")")[0].picImg;
-							})
-							objdata.list = data.data;
-							objdata.myUrl = serverimgUrl;
-							var html = template("recommends",objdata);
-							document.getElementById("recommendsdiv").innerHTML = html;
-							if(data.data.length>=3){//大于三条点击更多继续加载;
-								mui('#more')[0].onclick = function(){
-									mui('#more')[0].innerHTML = '<img style="width: 13%;margin-top: -10px;" src="../../img/balls.svg"/>';
-									var Tjiazai = setTimeout(function(){
-										document.getElementById("recommendsdiv").innerHTML = html;
-										mui('#more')[0].style.display = 'none';
-										document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;"><img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>暂无推荐'
-										
-									},500)
-									var html = template("recommends2",objdata);
-
-								}
-							}else{
-								mui('#more')[0].style.display = 'none';
-								document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;"><img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>暂无推荐'
-							}
-							
-							
-						}else{
-							mui('#tuijiannull')[0].style.display = 'block';
-							mui('#more')[0].style.display = 'none';
-						}
-						plus.nativeUI.closeWaiting();
-					}else{
-						mui('#tuijiannull')[0].style.display = 'block';
-						mui('#more')[0].style.display = 'none';
-						mui.toast('获取用户信息失败');
-						plus.nativeUI.closeWaiting();
-						console.log(data.errmsg);
-					}
-				},
-				error:function(xhr,type,errorThrown){
-					mui('#tuijiannull')[0].style.display = 'block';
-					mui('#more')[0].style.display = 'none';
-					plus.nativeUI.closeWaiting();
-					mui.toast('当前网络不好,请重试');
-				}
-			});
+//			mui.ajax(serverUrl+'/api/localservice/localservicecommend',{
+//				type:'post',
+//				timeout:10000,
+//				headers:{"token":oldtoken},	              				
+//				success:function(data){
+//					console.log('热门推荐返回'+JSON.stringify(data));
+//					if(data.errno == 0){ 
+//						if(data.data.length){
+//							mui('#Mask')[0].style.display = 'none';
+//							var objdata = {};
+//							mui.each(data.data,function (index,ele) {
+//								data.data[index].logo = eval("("+ele.logo+")")[0].picImg;
+//							})
+//							objdata.list = data.data;
+//							objdata.myUrl = serverimgUrl;
+//							var html = template("recommends",objdata);
+//							document.getElementById("recommendsdiv").innerHTML = html;
+//							if(data.data.length>=3){//大于三条点击更多继续加载;
+//								mui('#more')[0].onclick = function(){
+//									mui('#more')[0].innerHTML = '<img style="width: 13%;margin-top: -10px;" src="../../img/balls.svg"/>';
+//									var Tjiazai = setTimeout(function(){
+//										document.getElementById("recommendsdiv").innerHTML = html;
+//										mui('#more')[0].style.display = 'none';
+//										document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;"><img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>暂无推荐'
+//										
+//									},500)
+//									var html = template("recommends2",objdata);
+//
+//								}
+//							}else{
+//								mui('#more')[0].style.display = 'none';
+//								document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;"><img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>暂无推荐'
+//							}
+//							
+//							
+//						}else{
+//							mui('#tuijiannull')[0].style.display = 'block';
+//							mui('#more')[0].style.display = 'none';
+//						}
+//						plus.nativeUI.closeWaiting();
+//					}else{
+//						mui('#tuijiannull')[0].style.display = 'block';
+//						mui('#more')[0].style.display = 'none';
+//						mui.toast('获取用户信息失败');
+//						plus.nativeUI.closeWaiting();
+//						console.log(data.errmsg);
+//					}
+//				},
+//				error:function(xhr,type,errorThrown){
+//					mui('#tuijiannull')[0].style.display = 'block';
+//					mui('#more')[0].style.display = 'none';
+//					plus.nativeUI.closeWaiting();
+//					mui.toast('当前网络不好,请重试');
+//				}
+//			});
+			
 		})//plusready
 		Monitor();
 		function Monitor(){
@@ -544,7 +570,7 @@
 					view:'deliveryCenter.html',
 				})
 			});
-			//打开超市比价页面
+			//打开超市特价页面
 			mui('.supermarket')[0].addEventListener('tap',function(){
 				openview({ 
 					view:'marketPrice.html',
