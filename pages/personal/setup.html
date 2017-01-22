@@ -194,7 +194,7 @@
 				timeout:10000,
 				headers:{"token":oldtoken},	              				
 				success:function(data){
-					console.log('获取用户数据返回'+JSON.stringify(data));
+					console.log('获取用户数据返回',data);
 					if(data.errno == 0){
 						if(data.data[0].avatar){ //显示头像
 							var imgurl = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
@@ -205,6 +205,10 @@
 							if(data.data[0].nickname.indexOf('null') == -1){
 								mui('#mynickname')[0].value =data.data[0].nickname; 
 							}
+						}
+						//显示ID
+						if(data.data[0].id_card && data.data[0].id_card!=' '){ 
+							mui('#IDcard')[0].value = data.data[0].id_card;
 						}
 						//显示性别
 						switch (data.data[0].gender){//Nextbtn
@@ -254,6 +258,7 @@
 					}
 				}
 				function upfun1(){
+					alert(IDnum);
 					var fd = new FormData(); 
 					if(touxiang.name){
 						fd.append('avatar',touxiang);
@@ -261,10 +266,11 @@
 			        fd.append('userid',myuserid);  		
 			        fd.append('nickname',mynickname);  		
 			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
-			        var xhr = new XMLHttpRequest(); 	
+			        fd.append('IDCard',IDnum);  		
+			        var xhr = new XMLHttpRequest();  	
 			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
 			    	xhr.onreadystatechange = function(){
-			    		if (xhr.readyState===4) {
+			    		if (xhr.readyState===4) { 
 	    					if (xhr.status===200) {
 	    						plus.nativeUI.closeWaiting();//关闭等待框
 	    						var dataobj = JSON.parse(xhr.responseText);

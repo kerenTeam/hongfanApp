@@ -19,6 +19,22 @@
 		<script type="text/javascript" src="../../js/app.js"></script>
 		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<style type="text/css">
+		/*优化显示*/
+		#banner{
+			position: relative;
+			width: 100%;
+			padding-top: 42%; 
+			overflow: hidden;
+			background: url(../../img/bannerback.svg) 50% 50% no-repeat;
+			background-size: 20%;
+		}
+		.mui-slider .mui-slider-group{
+			position: absolute;
+		    height: 100%;
+		    width: 100%;
+		    top: 0;
+		}
+		.mui-slider .mui-slider-group .mui-slider-item img{height: 100%;}
 		/*banner底部导航*/
 		.mui-slider-indicator .mui-indicator{
 			width: 10px !important;
@@ -80,7 +96,7 @@
 				margin-left: 5%;
 			}
 			.recharge .czhi,.btw{
-				padding: 0 5%;
+				padding: 0 10px;
 				margin: 0;
 			}
 			.clearfloat{
@@ -124,7 +140,7 @@
 			.mui-icon-arrowright{
 				color: #999 !important;
 			}
-			
+			.recharge .czhi p{float: right !important;}
 			.recharge .czhi p, .recharge .czhi span{
 				line-height: 60px;
 				color: #999;
@@ -276,6 +292,7 @@
 		//获取缓存
 		var oldToken = plus.storage.getItem('oldToken');
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		//家乡话banner
 		mui.ajax(serverUrl+'/api/index/banner',{
 			data:{banner_type:2},
 			dataType:'json',
@@ -283,7 +300,7 @@
 			timeout:10000,
 			headers:{"token":oldToken},	 
 			success:function(data,type,xhr){
-//				alert(JSON.stringify(data.data.banner));
+				console.log('列表',data);
 				bannerObj={};
 				bannerObj.bannerList = eval("("+data.data.banner+")");
 				bannerObj.url = serverimgUrl;

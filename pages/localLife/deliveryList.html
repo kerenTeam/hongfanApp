@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>XX详情</title>
+		<title>快递列表</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -125,6 +125,8 @@
 				line-height: 60px;
 				top: 0;
 			}
+			.maskdiv .recordBig, .maskdiv .recordTiny, .maskdiv .mui-icon-arrowright{color: rgba(153, 153, 153, 0.54) !important;}
+			
 		</style>
 	</head>
 	<body>
@@ -138,6 +140,18 @@
 			<div class="deal">
 				<div class="farm">
 					<div class="warpthree clearfloat line">
+						<div class="recharge" onclick="openDelivery('EMS')">
+				    		<div class="czhi box-s">
+								<div class="icon-water icon">
+									<img src="../../img/tickets/ems.png"/>
+								</div>
+								<div class="recordDetail">
+									<p class="recordBig">邮政EMS</p>
+									<p class="recordTiny">大提速，更实惠！快速上门，扫运单条码支付</p>
+									<span class="mui-icon mui-icon-arrowright"></span>
+								</div>
+				    		</div>
+				    	</div>
 				    	<div class="recharge" onclick="openDelivery('SF')">
 				    		<div class="czhi box-s">
 			    				<div class="icon-gas icon">
@@ -150,7 +164,7 @@
 								</div>
 				    		</div>
 				    	</div>
-				    	<div class="recharge" onclick="openDelivery('ZTO')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('ZTO')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/zt.png"/>
@@ -162,7 +176,7 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('DBL')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('DBL')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/db.jpg"/>
@@ -174,7 +188,7 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('KYWL')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('KYWL')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/ky.jpg"/>
@@ -186,7 +200,7 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('ZJS')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('ZJS')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/zjs.png"/>
@@ -198,7 +212,7 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('YD')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('YD')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/yd.png"/>
@@ -210,19 +224,8 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('EMS')">
-				    		<div class="czhi box-s">
-								<div class="icon-water icon">
-									<img src="../../img/tickets/ems.png"/>
-								</div>
-								<div class="recordDetail">
-									<p class="recordBig">邮政EMS</p>
-									<p class="recordTiny">大提速，更实惠！快速上门，扫运单条码支付</p>
-									<span class="mui-icon mui-icon-arrowright"></span>
-								</div>
-				    		</div>
-				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('STO')">
+				    		
+				    	<div class="recharge maskdiv" onclick="openDelivery('STO')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/st.png"/>
@@ -234,7 +237,7 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('HTKY')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('HTKY')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/bs.png"/>
@@ -246,7 +249,7 @@
 								</div>
 				    		</div>
 				    	</div>	
-				    	<div class="recharge" onclick="openDelivery('UC')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('UC')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/ys.png"/>
@@ -258,7 +261,7 @@
 								</div>
 				    		</div>
 				    	</div>
-				    	<div class="recharge" onclick="openDelivery('YTO')">
+				    	<div class="recharge maskdiv" onclick="openDelivery('YTO')">
 				    		<div class="czhi box-s">
 								<div class="icon-water icon">
 									<img src="../../img/tickets/yt.png"/>
@@ -279,10 +282,15 @@
 		(function(){
 			//打开快递公司详情
 			window.openDelivery = function(Shipper){
-				openview({ 
-					view:'delivery.html',
-					extrasobj:{ShipperCode:Shipper}
-				})
+				if(Shipper == 'EMS' || Shipper == 'SF'){
+					openview({ 
+						view:'delivery.html',
+						extrasobj:{ShipperCode:Shipper}
+					})
+				}else{
+					mui.toast('敬请期待');
+				}
+				
 			}
 		})();
 	</script>
