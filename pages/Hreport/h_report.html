@@ -17,37 +17,54 @@
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
-			/*banner底部导航*/
-			.mui-slider-indicator .mui-indicator{
-				width: 10px;
-				height: 10px;
-				border-radius: 8px;
-				background: black;
-				margin-right: 5px;
-				opacity: 0.3;
-				cursor: pointer;
-				border: none;
-				box-shadow: none;
-			}
-			.mui-slider-indicator .mui-active.mui-indicator{
-				background-color: rgba(245,60,66,0.8);
-				box-shadow: none;
-				opacity: 1;
-				border: none;
-			}
+			/*优化显示*/
+		#banner{
+			position: relative;
+			width: 100%;
+			padding-top: 42%; 
+			overflow: hidden;
+			background: url(../../img/bannerback.svg) 50% 50% no-repeat;
+			background-size: 20%;
+		}
+		.mui-slider .mui-slider-group{
+			position: absolute;
+		    height: 100%;
+		    width: 100%;
+		    top: 0;
+		}
+		.mui-slider .mui-slider-group .mui-slider-item img{height: 100%;}
+		/*banner底部导航*/
+		.mui-slider-indicator .mui-indicator{
+			width: 10px !important;
+			height: 10px !important;
+			border-radius: 8px;
+			background: black;
+			margin-right: 5px;
+			opacity: 0.3;
+			cursor: pointer;
+			border: none;
+			box-shadow: none;
+		}
+		.mui-slider-indicator .mui-active.mui-indicator{
+			background-color: rgba(245,60,66,0.8) !important;
+			box-shadow: none;
+			opacity: 1;
+			border: none;
+		}
+		.mui-slider-item{
+			position: relative;
+			width: 100%;
+			padding-top: 42%; 
+			overflow: hidden;
+		}
+		
+		.mui-slider-item img{
+			position: absolute;
+			width: 100%; 
+			height:100%;
+			top: 0;
+		}
 			
-			.mui-slider{
-				margin-top: 50px;
-			}
-			.mui-bar-nav{
-				box-shadow: none;
-			}
-			
-			.infolist div p{
-				margin-top: 15px;
-				line-height: 22px;
-				margin-bottom: 10px;
-			}
 			.editbtn{
 				background-color: #fff;
 				position: absolute;
@@ -71,6 +88,63 @@
 				white-space: normal;
 				color:#333;
 			}
+			.newsContent{
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				line-height: 25px;
+				margin-top: 5px;
+			}
+			.newsTitle{
+				font-size: 18px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: #666;
+				line-height: 20px;
+			}
+			.nice{
+				width: 15px;
+				position: relative;
+				top: 3px;
+			}
+			.newsNice{
+				/*float: right;*/
+				margin-top: 10px;
+			}
+			.nothing{
+				background-color: #EFEFF4;
+			}
+			.nothing img{
+				display: block;
+				margin: 20px auto;
+				width: 80px;
+			}
+			.nothing p{
+				text-align: center;
+				line-height: 50px;
+			}
+			.notice .tab-bd{
+				padding-top: 0;
+			}
+			.newImg{
+				width: 100% !important;
+				height: 100%;
+				float: left !important;
+				margin-right: 20px;
+			}
+			.mui-table-view .mui-media-object.mui-pull-right{
+				margin-left: 5px;
+			}
+			.mui-table-view .mui-media-object{
+				width: 100%;
+				max-width:100%;
+				height: auto;
+				max-height: 50px;
+			}
+			.mui-row{
+				margin: 0 -15px !important;
+			}
 		</style>
 	</head>
 
@@ -79,121 +153,169 @@
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">家乡话</h1>
 		</header>
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<!--轮播图-->
-		<div class="mui-slider" id="focusNews"></div>
-		<!--轮播图结束-->
-		<!--轮播图模版开始-->
-		<script type="text/html" id="focusNewsModal">		
-			<div class="mui-slider-group mui-slider-loop">
-			    <!--支持循环，需要重复图片节点-->
-			    
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="<%= banner[banner.length-1].url %>/<%= banner[banner.length-1].bannerPic %>" /></a></div>
-			    <% for(var i=0;i<banner.length;i++){%>
-			    <div class="mui-slider-item"><a href="#"><img src="<%= banner[banner.length-1].url %>/<%= banner[i].bannerPic %>" /></a></div>
-			  	<%}%>
-			    <!--支持循环，需要重复图片节点-->
-			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="<%= banner[0].bannerPic %>/<%=banner[0].bannerPic %>" /></a></div>
+		<div id="main">
+			<div id="scroller">
+				<!--轮播图-->
+				<div class="mui-slider" id="banner"></div>
+				<!--轮播图结束-->
+				<!--banner数据渲染-->
+				<script type="text/html" id="banner-detail">
+					<div class="mui-slider-group mui-slider-loop">
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+					    	<div class="titleWrap">
+								<p><%=bannerList[bannerList.length-1].name %></p>
+							</div>
+					    </div>
+						<% for(var i=0;i<bannerList.length;i++){ %> 
+					    	<div class="mui-slider-item">
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+					    		<div class="titleWrap">
+									<p><%=bannerList[i].name %></p>
+								</div>
+					    	</div>
+					     <% } %>
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate">
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../../img/market/banner.png';"/>
+					    	<div class="titleWrap">
+								<p><%= bannerList[0].name %></p>
+							</div>
+					    </div>
+					</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator mui-active"></div>
+						<% for(var i=0;i<bannerList.length-1;i++){ %>
+					    	<div class="mui-indicator"></div>
+					    <% } %>
+		            </div> 
+				</script>
 			</div>
-			 <div class="mui-slider-indicator">
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator"></div>
-                <div class="mui-indicator"></div>
-             </div> 			
-		</script>
-		<!--轮播图模版结束-->
-		<!--图文列表开始-->
+		</div>
 		<div class="infolist">
 			<ul class="mui-table-view" id="news"></ul>
 		</div>
-		<!--图文列表结束-->
 		<!--图文列表模板开始-->
 		<script type="text/html" id="newsModal">
-			<% for(var i=0;i<data.length;i++){%>
-			<li class="mui-table-view-cell mui-media openDetail" data-id="<%=data[i].id%>">
-				<a href="javascript:;">
-					<img class="mui-media-object mui-pull-right" src="<%=data[i].pic%>">
-					<div class="mui-media-body">
-						<%= data[i].title %>
-						<p class='mui-ellipsis'><%= data[i].create_time %></p>
-					</div>
-				</a>
-			</li>
+			<% for(var i=0;i<dataList.length;i++){%>
+				<li class="mui-table-view-cell mui-media openDetail" data-id="<%=dataList[i].id%>" onclick="goNews(<%=dataList[i].id%>)">
+					<a href="javascript:;" class="mui-row">
+						<div class="mui-col-sm-3 mui-col-xs-3">
+							<img class="mui-media-object mui-pull-right"  class="newImg" src="<%=myUrl %><%=dataList[i].pic%>">
+						</div>
+						<div class="mui-col-sm-9 mui-col-xs-9" style="padding-left: 15px;">
+							<div class="mui-media-body">
+							<p class="newsTitle"><%= dataList[i].title %></p>
+							<p class="newsContent"></p>
+							<p class="newsNice"><%= dataList[i].create_time %>&nbsp;&nbsp; <span style="float: right;"><img src="../../img/nice.png" class="nice"/>&nbsp;<%= dataList[i].red_heart %></span></p>
+						</div>
+						</div>
+						<!--<img class="mui-media-object mui-pull-right"  class="newImg" src="<%=myUrl %><%=dataList[i].pic%>">-->
+						
+					</a>
+				</li>
 			<%}%>
 		</script>
 		<!--图文列表模板结束-->
-		<div class="editbtn">
+		<!--<div class="editbtn">
 			<img src="../../img/bianjibtn.svg"/>
-		</div>
+		</div>-->
 		
 		<script type="text/javascript">
-			var infolist = mui('.infolist div');
-			
-			for(var i=0; i<infolist.length; i++ ){
-				infolist[i].addEventListener('tap',function(){
-					openview({
-						view:'listinfo.html'
-					});
-				})
-			}
-			//发帖
-			mui('.editbtn')[0].addEventListener('tap',function(){
-				openview({
-					view:'addpost.html'
-				});
-			});
 			mui.plusReady(function(){
-				var token=plus.storage.getItem("Token");
-				//家乡报道的banner获取
-				mui.ajax(serverUrl+'/api/localreport/localreportbanner',{
-					data:{},
-//					dataType:'json',//服务器返回json格式数据
-					type:'post',//HTTP请求类型
-					timeout:10000,//超时时间设置为10秒；
-					headers:{"token":token},	              					
+				var infolist = mui('.infolist div');
+				for(var i=0; i<infolist.length; i++ ){
+					infolist[i].addEventListener('tap',function(){
+						openview({
+							view:'listinfo.html'
+						});
+					})
+				}
+				//获取缓存
+				var oldToken = plus.storage.getItem('oldToken');
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				//家乡话banner
+				mui.ajax(serverUrl+'/api/index/banner',{
+					data:{banner_type:2},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						//获取并渲染焦点新闻信息
-						var html=template("focusNewsModal",data.data[0]);
-						document.getElementById("focusNews").innerHTML=html;
-						mui(".mui-table-view").on("tap",'.openDetail',function(){
-							var newsId=this.getAttribute("data-id");
-							console.log(newsId);
-							openview({
-								view:'listinfo.html',
-								extrasobj:{newsId:newsId}
-							});
-						})
+						console.log('列表',data);
+						bannerObj={};
+						bannerObj.bannerList = eval("("+data.data.banner+")");
+						bannerObj.url = serverimgUrl;
+						var html = template('banner-detail',bannerObj);
+						document.getElementById('banner').innerHTML = html;
+						plus.nativeUI.closeWaiting();//关闭等待框
+						//轮播图,获得slider插件对象
+						var gallery = mui('.mui-slider');
+						gallery.slider({
+						  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+						});
 					},
 					error:function(xhr,type,errorThrown){
-						console.log(type);
+						plus.nativeUI.closeWaiting();//关闭等待框
+						mui.toast('响应失败  !');
 					}
-				});
-				//家乡报道的新闻获取
-				mui.ajax(serverUrl+'/api/localreport/localreport',{
-					data:{"currentPage":1,"endPage":3},
-//					dataType:'json',//服务器返回json格式数据
-					type:'post',//HTTP请求类型
-					timeout:10000,//超时时间设置为10秒；
-					headers:{"token":token},	 
-					success:function(data,type,xhr){
-						//获取并渲染焦点热门信息
-						for(var i=0;i<data.data.length;i++){
-							data.data[i].create_time=data.data[i].create_time.split('.')[0].split('T')[0]+' '+data.data[i].create_time.split('.')[0].split('T')[1];
+				}); 
+//				家乡报道的新闻获取
+				//监听刷新
+				document.addEventListener('refreshNews', function() {
+					RefreshNews();
+					console.log('刷新数据');
+				}) 
+				RefreshNews();
+				function RefreshNews(){
+					mui.ajax(serverUrl+'/api/localreport/localreport',{
+						data:{currentPage:1,numsPerPage:10},
+	//					dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){
+	//						alert(JSON.stringify(data.data.data));
+							if(data.data.data.length ==0){
+								mui('.infolist')[0].innerHTML='<div class="nothing"><img src="../../img/theList/del.png"/><p>还没有家乡话信息哟！</p></div>';
+							}
+							//获取并渲染焦点热门信息
+							for(var i=0;i<data.data.data.length;i++){
+								data.data.data[i].create_time=data.data.data[i].create_time.split('.')[0].split('T')[0];
+	//							mui('.newsContent')[0].innerHTML=data.data.data[i].content;
+							}
+	//						console.log(JSON.stringify(data));
+							dataObj={};
+							dataObj.myUrl = serverimgUrl;
+							dataObj.dataList=data.data.data;
+							var html=template("newsModal",dataObj);
+							document.getElementById("news").innerHTML=html;
+	//						for(var i=0;i<data.data.data.length;i++){
+	//							mui('.newsContent')[0].innerHTML=data.data.data[i].content;
+	//						}
+							
+						},
+						error:function(xhr,type,errorThrown){
+							console.log(type);
+	//						alert(type);
 						}
-//						console.log(JSON.stringify(data));
-						var html=template("newsModal",data);
-						
-						document.getElementById("news").innerHTML=html;
-						
-					},
-					error:function(xhr,type,errorThrown){
-						console.log(type);
+					});
+					
+					//点击进入详情
+					window.goNews = function(newsId){
+						openview({
+							view: "listinfo.html",
+							extrasobj: {
+								newsId: newsId
+							}
+						})
 					}
-				});
-			});
+				}
+				
 			
 			
-			
+			})
 		</script>
 		
 	</body>
