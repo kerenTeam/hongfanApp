@@ -14,10 +14,21 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css"> 
+		
 	</head>
 <style type="text/css">
-	iframe{ 
+	#iframe{ 
 		width: 100%;  
+		min-height: 1000px;
+	}
+	.box-middle{
+		position: fixed!important;
+		top: 50%!important;
+		-webkit-transform: translateY(-30%)!important;
+	}
+	.loadinggif{
+		    top: 50%!important;
+    margin-top: -50%!important;
 	}
 </style>
 	<body>
@@ -27,22 +38,51 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<iframe id="iframe" src=""></iframe>
+		<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
 			mui.init();
 		
 			mui.plusReady(function(){
 				plus.nativeUI.showWaiting()
-				var iframeSrc = plus.webview.currentWebview().bannerUrl;
-//				var name = plus.webview.currentWebview().bannerName;
-				var iframeHeight = window.screen.availHeight;
-					//alert(iframeHeight);
-					document.getElementById('iframe').height = iframeHeight; 
-					//alert(mui("#iframe")[0].style.height)
-					//alert(iframeSrc+" "+name);
+				var iframeSrc = plus.webview.currentWebview().bannerUrl; 
 					mui("#iframe")[0].src =iframeSrc; 
-					plus.nativeUI.closeWaiting();
-//					mui(".mui-title")[0].innerHTML =name;
+					plus.nativeUI.closeWaiting(); 
+
+// 					/**滚动条高**/  
+//					function getWindowScrollTop(win){  
+//					    var scrollTop=0;   
+//					    if(win.document.documentElement&&win.document.documentElement.scrollTop){  
+//					        scrollTop=win.document.documentElement.scrollTop;  
+//					    }else if(win.document.body){   
+//					        scrollTop=win.document.body.scrollTop;}return scrollTop;  
+//					    }  
+//					    return scrollTop;  
+//					}  
+//					/**获取**/  
+//					function getWindowHeight(win){  
+//					    var clientHeight=0;  
+//					    if(win.document.body.clientHeight&&win.document.documentElement.clientHeight){  
+//					        clientHeight = (win.document.body.clientHeight<win.document.documentElement.clientHeight)?win.document.body.clientHeight:win.document.documentElement.clientHeight;  
+//					    }else{  
+//					        clientHeight = (win.document.body.clientHeight>win.document.documentElement.clientHeight)?win.document.body.clientHeight:win.document.documentElement.clientHeight;  
+//					    }  
+//					    return clientHeight;  
+//					}  
+//				
+//				
+//				$(function(){  
+//				    var H = parseInt(getWindowHeight(top))+parseInt(getWindowScrollTop(top)) - 40;//此处的40是class为bottom的div元素高  
+//				    $(".content").css("height",H + "px");  
+//				}); 
+				 
+				$(parent.window).scroll(function(){
+			 
+				  $('.box-middle').css({
+				    top : $(parent.window).scrollTop()
+				  });
+				});
+				
 			})
 		</script>
 	</body>
