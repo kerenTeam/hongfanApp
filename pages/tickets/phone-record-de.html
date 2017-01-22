@@ -248,7 +248,6 @@
 				var oldToken = plus.storage.getItem('oldToken');
 				var myuserid = plus.storage.getItem('userid');
 				var orderId = plus.webview.currentWebview().qianmiOrderID;
-				//alert(orderId)
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/qianmi/billorderinfo',{
 					data:{qianmiOrderID:orderId},
@@ -259,7 +258,6 @@
 					success:function(data,type,xhr){
 						plus.nativeUI.closeWaiting()
 						
-						//alert(JSON.stringify(data));
 						if(data.errno==0){
 							mui(".deal")[0].style.display="block"
 							var infoData = eval("("+data.data.data+")").data;
@@ -268,11 +266,9 @@
 							mui("#phoneCharge")[0].innerHTML = infoData.rechargeAccount;
 							mui("#saleAmount")[0].innerHTML = "￥"+parseFloat(infoData.saleAmount).toFixed(2);
 							mui("#cretime")[0].innerHTML = infoData.orderTime;
-							//alert(eval("("+data.data.data+")").data.orderTime) 
 						}
 					},
 					error:function(xhr,type,errorThrown){
-						////alert('响应失败  !');
 					}
 				}); 
 			})

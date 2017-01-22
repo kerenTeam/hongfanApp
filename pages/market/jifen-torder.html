@@ -434,7 +434,6 @@
 		mui.plusReady(function() {
 //			plus.storage.removeItem('$addressStorage')
 			window.addEventListener('readdstorage', function(event) {
-//				alert(2)
 				orderAdd()
 			});
 			//订单缓存
@@ -467,13 +466,10 @@
 				success: function(data, type, xhr) {
 					if(data.errno == 0) { 
 						plus.nativeUI.closeWaiting()
-//					  alert("ddd "+JSON.stringify(data.data))
 						var addrObj = {};
-//							 alert(plus.storage.getItem("$addressStorage"))
 						if(plus.storage.getItem("$addressStorage")!=null){
 							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
 						}else{
-//							alert("fd")
 							addrObj.obj = data.data; 
 						}
 							
@@ -483,7 +479,6 @@
 					}
 				},
 				error: function(xhr, type, errorThrown) {
-					//alert('响应失败  !');
 					plus.nativeUI.closeWaiting();
 					mui.toast("网络不好请重试")
 				}
@@ -493,12 +488,10 @@
 			
 			//订单数据模板
 						var data = {};
-						//alert(JSON.stringify(orderStorage))
 						data.goodsList = orderStorage;
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
-						//alert(arr.length)
 						data.cates = arr.unique1();
 						for(var i = 0; i < orderStorage.length; i++) {
 							shopID.push(orderStorage[i].shopId);
@@ -506,7 +499,6 @@
 						
 						shopID = shopID.unique1();  
 						data.shopID = shopID;
-						 // alert(JSON.stringify(shopID))
 						for(var i= 0;i<data.shopID.length;i++){
 							//分组邮费小计
 							var groupPostfee=0; 
@@ -566,9 +558,7 @@
 							 orderSubmitData.push(orderList);
 						}
 						
-							// alert("orderSubmitData "+JSON.stringify(orderSubmitData))
 						
-						//alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
 						data.arrMoney=arrMoney; 
@@ -599,18 +589,15 @@
 								width: '100px',
 								height: '80px'
 							});
-						//	alert($("#addid").length)
 							//地址
 							var MYaddress = {};
 							var addressid =$("#addid").attr("data-id");
 							MYaddress.people = $("#addid").attr("data-name");
 							MYaddress.addressNow = $("#addid").attr("data-address");
 							MYaddress.phoneNow =  $("#addid").attr("data-phone");
-							// alert("addressid "+addressid);
 							//买家留言
 							var noticeData=[];  
 							$(".tipsWrap").each(function(){
-								//alert("tipsWrap "+$(this).attr("data-id"))
 								var notice = $(this).find("input").val();
 								for(var i=0;i<orderSubmitData.length;i++){
 									orderSubmitData[i].sendAddress = MYaddress; 
@@ -618,7 +605,6 @@
 											if(orderSubmitData[i].goodsData[0].diffrentiate == 2){ 
 											orderSubmitData[i].order_type = 4; 
 									} 
-									//	alert($(this).attr("data-id")+"  "+orderSubmitData[i].storeid)
 									    if(orderSubmitData[i].storeid == 0 ){
 											orderSubmitData[i].isBySelf = 0;
 										}else{
@@ -627,7 +613,6 @@
 											 	var thisShopID = isBySelfDIV[m].getAttribute("data-id");
 											 	if(orderSubmitData[i].storeid == thisShopID){
 											 		var isBySelf = isBySelfDIV[m].getElementsByClassName("isziti")[0].value; 
-											 	//	alert("isBySelf "+isBySelf)
 											 		if(isBySelf == 0){
 											 			orderSubmitData[i].isBySelf = 0;
 											 		}else{
@@ -661,7 +646,6 @@
 							}) 
 							 
 							var goodsdata = JSON.stringify(orderSubmitData); 
-//							alert("xxx  "+goodsdata[0].goodsdata[0].go)
 							var notice = JSON.stringify(noticeData); 
 							//提交
 							console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
@@ -674,9 +658,7 @@
 									success:function(data,type,xhr){ 
 									 
 										plus.nativeUI.closeWaiting(); 
-										//alert(JSON.stringify(data))
 										if(data.errno==0){
-										//	alert(JSON.stringify(data.data))
 											var payMent = data.data.payment;
 											var order_id=  data.data.order_id; 
 //											plus.webview.currentWebview().close();

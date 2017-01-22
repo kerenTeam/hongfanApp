@@ -330,10 +330,16 @@
 								发布时间：<span class="cspan" style="font-size: 0.12rem;"><%= list[0].create_time.split('T')[0]%></span>
 								<small class="fr">评分：
 								<%if(list[0].star){%>
-									<%for(var j = 0;j<list[0].star;j++){%>
-										 <img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
-									<%}%>
-									<%}%> 
+									<%if(list[0].star>5){%>
+										<%for(var j = 0;j<5;j++){%>
+											 <img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
+										<%}%>
+									<%}else{%>
+										<%for(var j = 0;j<list[0].star;j++){%>
+											 <img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
+										<%}%>
+									<%}%>	
+								<%}%> 
 										
 										<%for(var j = 0;j<grayStar;j++){%>
 											<img src="../../img/market/graystar.png" style="width: 0.1rem;" alt="" />
@@ -404,7 +410,6 @@
 				timeout:10000,
 				headers:{"token":oldtoken},	               				
 				success:function(data){
-					//alert(mytoken);
 					console.log('获取数据返回'+JSON.stringify(data));
 					console.log('获取数据返回',data);
 					if(data.errno == 0){
@@ -414,7 +419,6 @@
 						}else{
 							var grayStar =5
 						}
-//						alert(grayStar)
 						objdata.list = data.data;
 						objdata.grayStar = grayStar;
 						objdata.picurl = serverimgUrl;
@@ -435,7 +439,7 @@
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting();
-					alert('响应失败  !');
+					mui.toast('当前网络不好请重试');
 				}
 			});
 		})

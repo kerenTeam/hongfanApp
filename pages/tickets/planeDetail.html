@@ -300,7 +300,6 @@
 			var flightCompanyCode = plus.webview.currentWebview().flightCompanyCode;
 			var flightNo = plus.webview.currentWebview().flightNo;
 			var oldToken = plus.storage.getItem('oldToken');
-//			 alert(fromPlace+itemId+fromTime+arrivePlace)
 			//获取航线列表
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			mui.ajax(serverUrl +'/api/qianmi/airlineslist',{
@@ -310,13 +309,11 @@
 				timeout:30000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data))
 					//航线基本信息
 					var objData = data.data.airlines_list_response.airlines.airline;
 					for(var i = 0;i<objData.length;i++){
 						//循环获取当前航班号
 						if(objData[i].flightNo == flightNo){
-//							alert(JSON.stringify(objData[i]));
 							var adObj = {};
 							adObj.adLi = objData[i];
 							adObj.fromTime = fromTime;

@@ -613,13 +613,10 @@
 				success: function(data, type, xhr) {
 					if(data.errno == 0) { 
 						plus.nativeUI.closeWaiting()
-//					  //alert("ddd "+JSON.stringify(data.data))
 						var addrObj = {};
-//							 //alert(plus.storage.getItem("$addressStorage"))
 						if(plus.storage.getItem("$addressStorage")!=null){
 							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
 						}else{
-//							//alert("fd")
 							addrObj.obj = data.data; 
 						}
 							
@@ -629,7 +626,6 @@
 					}
 				},
 				error: function(xhr, type, errorThrown) {
-					////alert('响应失败  !');
 					plus.nativeUI.closeWaiting();
 					mui.toast("网络不好请重试")
 				}
@@ -643,16 +639,13 @@
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
-						////alert(arr.length)
 						data.cates = arr.unique1();
 						for(var i = 0; i < orderStorage.length; i++) {
 							shopID.push(orderStorage[i].shopId);
-							//alert(orderStorage[i].shopId)
 						} 
 						
 						shopID = shopID.unique1();  
 						data.shopID = shopID;
-						  //alert(JSON.stringify(shopID))
 						for(var i= 0;i<data.shopID.length;i++){
 							//分组邮费小计
 							var groupPostfee=0; 
@@ -661,7 +654,6 @@
 							 		if(data.shopID[i] == 0){
 							 			groupPostfee+=parseFloat(orderStorage[j].goodsPostfee);
 							 		}else{
-							 			//alert(orderStorage[j].goodsPostfee)
 							 			if(orderStorage[j].goodsPostfee!=0 || !orderStorage[j].goodsPostfee || orderStorage[j].goodsPostfee!=' '){
 									 		groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
 									 		break;
@@ -711,10 +703,6 @@
 						 	}
 							 orderSubmitData.push(orderList);
 						}
-						
-							 //alert("orderSubmitData "+JSON.stringify(orderSubmitData))
-						
-						////alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
 						data.arrMoney=arrMoney; 
@@ -738,7 +726,6 @@
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						   intergral = data.data[0].intergral;
-						  // //alert(intergral)
 						   if(intergral==null){
 						   	intergral=0;
 						   }
@@ -762,13 +749,11 @@
 						})
 				},
 				error:function(xhr,type,errorThrown){
-				//	//alert('响应失败  !');
 				}
 			});
 			var d = new Date();
 			var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
 			 str = formatDate(str, "yyyy.MM.dd");
- 				////alert(str)
 			//获取抵用券
 			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
 					data:{userid : myuserid},
@@ -777,7 +762,6 @@
 					timeout:1000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){
-						////alert("dfdsgfdgf  "+JSON.stringify(data.data));
 						var allC = {};
 						var tpldata=[];
 						
@@ -817,9 +801,7 @@
 				//优惠券计算
 						$(".checkQuan").click(function(){
 							var qid = $(this).attr("data-id");
-							////alert("qid "+qid)
 							var qminus =$(this).attr("data-minus");
-							////alert("qminus "+qminus) 
 							$(this).siblings().find(".quanc").css("display","none");
 							quan=0;
 							if($(this).find(".quanc").css("display")=="block"){ 
@@ -847,12 +829,10 @@
 						})
 					},
 					error:function(xhr,type,errorThrown){
-						//alert('响应失败  !');
 					}
 				}); 
 				//goPay
 				window.goPay=function(){ 
-//						//alert($("#addid"))
 					if($("#addid").length!=0){
 						var yourSFZ = $('#sfzin').val();
 						 
@@ -860,14 +840,12 @@
 								width: '100px',
 								height: '80px'
 							});
-							////alert($("#addid").length)
 							//地址
 							var MYaddress = {};
 							var addressid =$("#addid").attr("data-id");
 							MYaddress.people = $("#addid").attr("data-name");
 							MYaddress.addressNow = $("#addid").attr("data-address");
 							MYaddress.phoneNow =  $("#addid").attr("data-phone");
-						//	 //alert("addressid "+addressid);
 							//买家留言
 							var noticeData=[];  
 							$(".tipsWrap").each(function(){
@@ -875,7 +853,6 @@
 								for(var i=0;i<orderSubmitData.length;i++){
 									orderSubmitData[i].sendAddress = MYaddress;
 									if(orderSubmitData[i].storeid == $(this).attr("data-id")){
-									//	//alert("orderSubmitData0000 "+orderSubmitData[i].storeid)
 										if(orderSubmitData[i].storeid == 0 ){
 											orderSubmitData[i].order_type = 2;
 										}else if(orderSubmitData[i].storeid == -1 ){
@@ -896,8 +873,6 @@
 								
 							});
 							
-	//					 	//alert(JSON.stringify("noticeData "+noticeData));
-							// //alert("orderSubmitData ewrew"+JSON.stringify(orderSubmitData))
 							//优惠券id
 							var coupon_id='';
 							$(".quanc").each(function(){
@@ -908,15 +883,12 @@
 							//积分使用
 							var isIntergal=0;
 							if($("#coupon").find("input[type='checkbox']:checked").length==1){
-	//							 //alert("yes");
 								isIntergal=1
 							}else{
-	//							 //alert("no")
 								isIntergal=0;
 							}
 							var goodsdata = JSON.stringify(orderSubmitData);
 							var notice = JSON.stringify(noticeData);
-	//						 //alert(goodsdata)
 							//提交
 							console.log("orderSubmitData 1234ewrew"+JSON.stringify(orderSubmitData))
 			 					mui.ajax(serverUrl+'/api/mall/neworder',{
@@ -926,11 +898,9 @@
 									timeout:1000,
 									headers:{"token":oldtoken},	 
 									success:function(data,type,xhr){
-	//									//alert(JSON.stringify(data))
 	
 										//购物车 缓存 
 	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-	        							////alert(cartStorage)
 	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
 										//删除 购物车里 提交的这一条数据 
 										console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
@@ -940,32 +910,24 @@
 												if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
 													 cartStorage.splice(j,1)
 												}
-												//break;
 											}
 											
 											
 										}
-	//									//alert("ooooo "+JSON.stringify(cartStorage))
 										plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
 										var list = plus.webview.getWebviewById('cart.html'); 
 												mui.fire(list,'refresh'); 
 										plus.nativeUI.closeWaiting(); 
-	//									//alert(JSON.stringify(data))
 										if(data.errno==0){
-										//	//alert(JSON.stringify(data.data))
 											var payMent = data.data.payment;
 											var order_id=  data.data.order_id;
-											////alert("payMent "+payMent + " order_id"+order_id);
 //											plus.webview.currentWebview().close();
 											openview({
 												view:"../market/pay.html",
 												extrasobj:{payMent:payMent,order_id:order_id}
 											})
-	//										var list = plus.webview.getWebviewById('cart.html'); 
-	//											mui.fire(list,'refresh'); 
 										}else{
 											plus.nativeUI.closeWaiting()
-										   // //alert(JSON.stringify(data.data))
 										}
 									},
 									error:function(xhr,type,errorThrown){
