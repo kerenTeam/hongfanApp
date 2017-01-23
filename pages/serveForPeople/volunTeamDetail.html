@@ -58,7 +58,7 @@
 									<img class="mui-col-sm-10" src="<%= myUrl2%><%=objData[i].picImg%>"/>
 								<%}%>
 								<div>
-									<p style="text-indent: 2em;"><%=objData[i].content%></p> 
+									<p style="text-indent: 2em;" id="vContent"></p> 
 								</div>
 							</div>
 						</div>
@@ -108,7 +108,6 @@
 			timeout:10000,
 			headers:{"token":oldToken},	              				
 			success:function(data,type,xhr){
-//				alert(JSON.stringify(data));
 				if(data.errno == 0){
 					if(data.data.length!=0){
 						var teamObj={};
@@ -118,10 +117,12 @@
 						teamObj.objData=data.data;
 						teamObj.myUrl2 = serverimgUrl;
 						mui('#teamInfo')[0].innerHTML = template('teamTpl',teamObj);
+						for(var t=0;t<data.data.length;t++){  
+			       			mui('#vContent')[0].innerHTML = data.data[t].content;
+			       		} 
 					}else{
 						mui('#teamInfo')[0].innerHTML = 'dddd';
 					}
-					 
 				}else{
 					mui.toast('网络不好请重试！');
 					console.log(data.errmsg);

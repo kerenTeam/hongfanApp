@@ -24,6 +24,9 @@
 		<script src="../../js/swiper.min.js" type="text/javascript" ></script>
 		<script type="text/javascript" src="../../js/index.js"></script>-->
 		<style type="text/css">
+			body{
+				background-color: #fff;
+			}
 			h4{
 				margin:0;
 				padding:0;
@@ -80,6 +83,7 @@
 		</div>
 		<script type="text/javascript">
 			mui.plusReady(function(){
+				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				var newsId = plus.webview.currentWebview().newsId;
 				oldToken = plus.storage.getItem('oldToken');
 				//家乡报道的新闻获取
@@ -124,6 +128,7 @@
 										nice();
 									});
 								}
+								plus.nativeUI.closeWaiting();//关闭等待框
 								window.nice = function(){
 									var num =parseInt( $('#niceBtn').text());
 									if($('#niceBtn').hasClass('mui-btn-danger')){//取消点赞
@@ -165,6 +170,7 @@
 					},
 					error:function(xhr,type,errorThrown){
 						console.log(type);
+						plus.nativeUI.closeWaiting();//关闭等待框
 					}
 				});
 				
