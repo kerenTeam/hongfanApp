@@ -18,6 +18,8 @@
 		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			/*优化显示*/
+			body{padding-bottom: 0 !important;}
+			
 		#banner{
 			position: relative;
 			width: 100%;
@@ -81,9 +83,7 @@
 				height:50px !important;
 				
 			}
-			.infolist{
-				padding-bottom: 80px;
-			}
+			
 			.mui-media-body{
 				white-space: normal;
 				color:#333;
@@ -96,12 +96,18 @@
 				margin-top: 5px;
 			}
 			.newsTitle{
-				font-size: 18px;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
+				font-size: 16px;
 				color: #666;
 				line-height: 20px;
+				
+				/*overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;*/
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+				min-height: 40px;
 			}
 			.nice{
 				width: 15px;
@@ -145,6 +151,22 @@
 			.mui-row{
 				margin: 0 -15px !important;
 			}
+			#upload {
+			    text-align: center;
+			    font-size: 15px;
+			    line-height: 30px;
+			    min-height: 40px;
+			    color: #999;
+			     padding-top: 0 !important; 
+			}
+			#upload img{   
+				width: 33px;
+    			margin-top: 2px;
+    			padding: 0 !important;
+			}
+			.mui-table-view-cell{
+				padding: 6px 15px !important;
+			}
 		</style>
 	</head>
 
@@ -153,6 +175,7 @@
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">家乡话</h1>
 		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 			<div id="scroller">
 				<!--轮播图-->
@@ -196,6 +219,7 @@
 		<div class="infolist">
 			<ul class="mui-table-view" id="news"></ul>
 		</div>
+		<div class="upload text-center text-xs gray" id="upload"></div>
 		<!--图文列表模板开始-->
 		<script type="text/html" id="newsModal">
 			<% for(var i=0;i<dataList.length;i++){%>
@@ -223,6 +247,8 @@
 		</div>-->
 		
 		<script type="text/javascript">
+			var Spagenum;//实到页数
+			var Ypagenum;//应到页数 
 			mui.plusReady(function(){
 				var infolist = mui('.infolist div');
 				for(var i=0; i<infolist.length; i++ ){
@@ -249,7 +275,6 @@
 						bannerObj.url = serverimgUrl;
 						var html = template('banner-detail',bannerObj);
 						document.getElementById('banner').innerHTML = html;
-						plus.nativeUI.closeWaiting();//关闭等待框
 						//轮播图,获得slider插件对象
 						var gallery = mui('.mui-slider');
 						gallery.slider({
@@ -257,7 +282,6 @@
 						});
 					},
 					error:function(xhr,type,errorThrown){
-						plus.nativeUI.closeWaiting();//关闭等待框
 						mui.toast('响应失败  !');
 					}
 				}); 
@@ -269,38 +293,116 @@
 				}) 
 				RefreshNews();
 				function RefreshNews(){
+					Spagenum = 2;//实到页数
+					Ypagenum = 1;//应到页数
 					mui.ajax(serverUrl+'/api/localreport/localreport',{
 						data:{currentPage:1,numsPerPage:10},
-	//					dataType:'json',//服务器返回json格式数据
+						dataType:'json',//服务器返回json格式数据
 						type:'post',//HTTP请求类型
 						timeout:10000,//超时时间设置为10秒；
 						headers:{"token":oldToken},	 
 						success:function(data,type,xhr){
-	//						alert(JSON.stringify(data.data.data));
+							console.log('data',data);
 							if(data.data.data.length ==0){
 								mui('.infolist')[0].innerHTML='<div class="nothing"><img src="../../img/theList/del.png"/><p>还没有家乡话信息哟！</p></div>';
 							}
 							//获取并渲染焦点热门信息
 							for(var i=0;i<data.data.data.length;i++){
 								data.data.data[i].create_time=data.data.data[i].create_time.split('.')[0].split('T')[0];
-	//							mui('.newsContent')[0].innerHTML=data.data.data[i].content;
 							}
-	//						console.log(JSON.stringify(data));
 							dataObj={};
 							dataObj.myUrl = serverimgUrl;
 							dataObj.dataList=data.data.data;
 							var html=template("newsModal",dataObj);
 							document.getElementById("news").innerHTML=html;
-	//						for(var i=0;i<data.data.data.length;i++){
-	//							mui('.newsContent')[0].innerHTML=data.data.data[i].content;
-	//						}
+							plus.nativeUI.closeWaiting();//关闭等待框
+							
+							//滚动到底部加载
+							function getScrollTop(){//滚动条在Y轴上的滚动距离
+							　　var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+							　　if(document.body){
+							　　　　bodyScrollTop = document.body.scrollTop;
+							　　}
+							　　if(document.documentElement){
+							　　　　documentScrollTop = document.documentElement.scrollTop;
+							　　}
+							　　scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+							　　return scrollTop;
+							}
+							function getScrollHeight(){//文档的总高度
+							　　var scrollHeight = 0, bodyScrollHeight = 0, documentScrollHeight = 0;
+							　　if(document.body){
+							　　　　bodyScrollHeight = document.body.scrollHeight;
+							　　}
+							　　if(document.documentElement){
+							　　　　documentScrollHeight = document.documentElement.scrollHeight;
+							　　}
+							　　scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+							　　return scrollHeight;
+							}
+							function getWindowHeight(){//浏览器视口的高度
+							　　var windowHeight = 0;
+							　　if(document.compatMode == "CSS1Compat"){
+							　　　　windowHeight = document.documentElement.clientHeight;
+							　　}else{
+							　　　　windowHeight = document.body.clientHeight;
+							　　}
+							　　return windowHeight;
+							}
+							window.onscroll = function(){
+							　　if(getScrollTop() + getWindowHeight() == getScrollHeight()){
+									if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//实到页数小于等于总页数时发起请求,并且实到=应到
+										mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+										Ypagenum++;//满足加载情况,应到页数+1
+										console.log('发起请求,实到'+Spagenum+'页');									
+										console.log('发起请求,应到'+Ypagenum+'页');									
+										mui.ajax(serverUrl+'/api/localreport/localreport',{
+											data:{currentPage:Spagenum,numsPerPage:10},
+											type:'post',
+											timeout:5000, 
+											headers:{"token":oldToken},	 
+											success:function(data,type,xhr){
+												console.log('列表返回',data);
+												if(data.errno == 0){
+													//获取并渲染焦点热门信息
+													for(var i=0;i<data.data.data.length;i++){
+														data.data.data[i].create_time=data.data.data[i].create_time.split('.')[0].split('T')[0];
+													}
+													dataObj={};
+													dataObj.myUrl = serverimgUrl;
+													dataObj.dataList=data.data.data;
+													var html=template("newsModal",dataObj);
+													document.getElementById("news").innerHTML+=html;
+													plus.nativeUI.closeWaiting();//关闭等待框
+												}
+												
+												
+												mui("#upload")[0].innerHTML = " ";
+												Spagenum++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum);
+												console.log('成功+1,应到'+Spagenum);
+											},
+											error:function(xhr,type,errorThrown){
+												Ypagenum--;//失败是应到-1
+												mui.toast("当前网络不好请重试");
+												mui("#upload")[0].innerHTML = "";
+											} 
+										});
+									}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+										mui("#upload")[0].innerHTML = "到底了"; 
+									}
+							　　}
+							};//滚动加载
 							
 						},
 						error:function(xhr,type,errorThrown){
+							mui("#upload")[0].innerHTML = ""; 
+							plus.nativeUI.closeWaiting();//关闭等待框
 							console.log(type);
-	//						alert(type);
 						}
 					});
+					
+					
 					
 					//点击进入详情
 					window.goNews = function(newsId){
