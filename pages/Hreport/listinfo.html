@@ -59,8 +59,12 @@
 				margin-top: 20px;
 			}
 			#newsModal{
-				padding-bottom: 50px;
+				padding-bottom: 50px; 
 			}
+			#newContent img{
+				max-width: 80%;
+			}
+			body{background-color: #fff !important;}
 		</style>
 	</head>
 
@@ -82,95 +86,118 @@
 			</script>
 		</div>
 		<script type="text/javascript">
+			function parseDom(arg) { //节点转换方法
+				var objE = document.createElement("div");　　
+				objE.innerHTML = arg;　　
+				return objE;
+			};
 			mui.plusReady(function(){
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				var newsId = plus.webview.currentWebview().newsId;
 				oldToken = plus.storage.getItem('oldToken');
 				//家乡报道的新闻获取
-				mui.ajax(serverUrl+'/api/localreport/localreport',{
-					data:{currentPage:1,numsPerPage:10},
-//					dataType:'json',//服务器返回json格式数据
+				mui.ajax(serverUrl+'/api/localreport/posrtsinfo',{
+					data:{reportsID:newsId},
+					dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型
 					timeout:10000,//超时时间设置为10秒；
-					headers:{"token":oldToken},	 
+					headers:{"token":oldToken}, 
 					success:function(data,type,xhr){
-						for(var j=0;j<data.data.data.length;j++){
-							if(data.data.data[j].id==newsId){
-//								alert(JSON.stringify(data.data.data[j]))
-								data.data.data[j].create_time=data.data.data[j].create_time.split('.')[0].split('T')[0]
-								var dataObj = {};
-								dataObj.dataList = data.data.data[j];
-								var html=template("newsModal-detail",dataObj);	
-								document.getElementById("newsModal").innerHTML=html;
-//								alert(document.getElementById('newContent').innerHTML);
-								document.getElementById('newContent').innerHTML = data.data.data[j].content;
-								
-								//点赞
-//								plus.storage.removeItem("niceIDs");//清除缓存
-								var niceIDs = JSON.parse(plus.storage.getItem('niceIDs')) || [];//获取缓存
-								if(niceIDs.length>0){
-									for(var n=0;n<niceIDs.length;n++){
-										if(niceIDs[n]==newsId){//判断该报道已经点过赞
-											$('#niceBtn').addClass('mui-btn-danger');
-											$('#niceBtn').css('color','#fff');
-											$('#niceBtn').find('img').attr('src','../../img/afterNice.png');
-											document.getElementById('niceBtn').innerHTML='<img src="../../img/afterNice.png" class="nice"/>&nbsp;'+data.data.data[j].red_heart;
-											break;										
-										}
-										if(n==niceIDs.length-1){
-											mui('#niceBtn')[0].addEventListener('tap',function(){
-												nice();
-											});
+						console.log('详情',data);
+						if(data.errno == 0){
+							data.data.create_time=data.data.create_time.split('.')[0].split('T')[0]
+							var dataObj = {};
+							dataObj.dataList = data.data;
+							var html=template("newsModal-detail",dataObj);	
+							document.getElementById("newsModal").innerHTML=html;
+							//详情
+							if(data.data.content) {
+								console.log('详情', data.data.content);
+								var detailsdom = parseDom(data.data.content);
+								console.log('转化节点',detailsdom);
+								var detailsimg = detailsdom.getElementsByTagName('img');
+								mui.each(detailsimg, function(index, element) {
+									if(element.src.indexOf('pages/Hreport')>-1){
+										console.log(element.src.split('pages/Hreport')[1]);
+										element.src = serverimgUrl + element.src.split('pages/Hreport')[1];
+										element.onerror = function() {
+											element.src = '../../img/market/nodata.svg';
 										}
 									}
-								}else{
+								})
+								console.log('节点', detailsdom);
+								document.getElementById("newContent").appendChild(detailsdom);
+							} else {
+								document.getElementById("newContent").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+							}
+						}else{
+							mui.toast('当前网络不好, 请重试');
+						}
+						plus.nativeUI.closeWaiting();//关闭等待框
+								
+						//点赞
+						//plus.storage.removeItem("niceIDs");//清除缓存
+						var niceIDs = JSON.parse(plus.storage.getItem('niceIDs')) || [];//获取缓存
+						if(niceIDs.length>0){
+							for(var n=0;n<niceIDs.length;n++){
+								if(niceIDs[n]==newsId){//判断该报道已经点过赞
+									$('#niceBtn').addClass('mui-btn-danger');
+									$('#niceBtn').css('color','#fff');
+									$('#niceBtn').find('img').attr('src','../../img/afterNice.png');
+									document.getElementById('niceBtn').innerHTML='<img src="../../img/afterNice.png" class="nice"/>&nbsp;'+data.data.red_heart;
+									break;										
+								}
+								if(n==niceIDs.length-1){
 									mui('#niceBtn')[0].addEventListener('tap',function(){
 										nice();
 									});
 								}
-								plus.nativeUI.closeWaiting();//关闭等待框
-								window.nice = function(){
-									var num =parseInt( $('#niceBtn').text());
-									if($('#niceBtn').hasClass('mui-btn-danger')){//取消点赞
-									}else{//点赞
-										//新闻的评论的获取
-										mui.ajax(serverUrl+'/api/localreport/redheart',{
-											data:{reportsID:newsId},
-											type:'post',//HTTP请求类型
-											timeout:10000,//超时时间设置为10秒；
-											headers:{"token":oldToken},	 
-											success:function(data,type,xhr){
-//												alert(JSON.stringify(data));
-												if(data.data==1){
-													mui.toast('点赞成功！');
-													mui.fire(plus.webview.getWebviewById('Hreport/h_report.html'),'refreshNews');//打开指定页面 
-													$('#niceBtn').addClass('mui-btn-danger');
-													$('#niceBtn').css('color','#fff');
-													$('#niceBtn').find('img').attr('src','../../img/afterNice.png');
-													newNo = num + 1;
-													$('#niceBtn').html('<img src="../../img/afterNice.png" class="nice"/>&nbsp;'+newNo);
-													//点过赞的新闻做缓存
-//													alert(typeof(niceIDs));
-													
-													niceIDs.push(newsId);
-													plus.storage.setItem("niceIDs",JSON.stringify(niceIDs));
-												}else{
-													mui.toast('点赞失败，请重试！');
-												}
-											},
-											error:function(xhr,type,errorThrown){
-												console.log(type);
-											}
-										});
-									}
-									
-								}
 							}
+						}else{
+							mui('#niceBtn')[0].addEventListener('tap',function(){
+								nice();
+							});
+						}
+						window.nice = function(){
+							var num =parseInt( $('#niceBtn').text());
+							if($('#niceBtn').hasClass('mui-btn-danger')){//取消点赞
+							}else{//点赞
+								//新闻的评论的获取
+								mui.ajax(serverUrl+'/api/localreport/redheart',{
+									data:{reportsID:newsId},
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									headers:{"token":oldToken},	 
+									success:function(data,type,xhr){
+//												alert(JSON.stringify(data));
+										if(data.data==1){
+											mui.fire(plus.webview.getWebviewById('Hreport/h_report.html'),'refreshNews');//打开指定页面 
+											$('#niceBtn').addClass('mui-btn-danger');
+											$('#niceBtn').css('color','#fff');
+											$('#niceBtn').find('img').attr('src','../../img/afterNice.png');
+											newNo = num + 1;
+											$('#niceBtn').html('<img src="../../img/afterNice.png" class="nice"/>&nbsp;'+newNo);
+											//点过赞的新闻做缓存
+//													alert(typeof(niceIDs));
+											
+											niceIDs.push(newsId);
+											plus.storage.setItem("niceIDs",JSON.stringify(niceIDs));
+										}else{
+											mui.toast('点赞失败，请重试！');
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										console.log(type);
+									}
+								});
+							}
+							
 						}
 					},
 					error:function(xhr,type,errorThrown){
-						console.log(type);
 						plus.nativeUI.closeWaiting();//关闭等待框
+						console.log(type);
+						mui.toast('当前网络不好, 请重试');
 					}
 				});
 				
