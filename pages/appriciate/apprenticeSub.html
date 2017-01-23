@@ -76,6 +76,7 @@
 		var myuserid = plus.storage.getItem('userid');
 		var apprenticeId = plus.webview.currentWebview().apprenticeId;
 		var apprenticeFee = plus.webview.currentWebview().apprenticeFee;
+		 
 		console.log(oldtoken);
 		if(apprenticeFee > 0){
 			document.getElementById('Bprice').innerHTML = apprenticeFee;
@@ -110,7 +111,7 @@
 				mui('#Bage')[0].focus();
 			}
 			else{
-				if(apprenticeFee !== "免费"){ 
+				if(apprenticeFee !==0){ 
 					plus.nativeUI.showWaiting()
 				//铺数据
 				var oldToken = plus.storage.getItem('oldToken');
@@ -147,7 +148,8 @@
 						 console.log('网络不好请重试  !');
 					}
 				});		
-			}else{
+			}else{ 
+			 
 				//铺数据
 					var oldToken = plus.storage.getItem('oldToken');
 						console.log(oldToken);
@@ -162,6 +164,16 @@
 								plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
 								if(data.errno==0){
 									mui.toast('报名成功');
+									 var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]')   
+								 	 var achava ={};
+								 	 achava.acid=apprenticeId;
+								 	 achava.userid = plus.storage.getItem('userid');
+								 	 acstorage[0] =achava;
+								 	 plus.storage.setItem("$acstorage",JSON.stringify(achava)); 
+								 	 var list = plus.webview.getWebviewById("apprenticeDetail");
+								 	 mui.fire(list,"refreash");
+								 	 
+								 	 
 									plus.webview.currentWebview().close();
 									plus.nativeUI.closeWaiting();
 								}
