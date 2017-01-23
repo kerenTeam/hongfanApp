@@ -160,7 +160,6 @@
 				var myuserid = plus.storage.getItem('userid');
 				var orderId = plus.webview.currentWebview().orderId;
 				var pageid = plus.webview.currentWebview().pageid;
-				//alert("pageid "+pageid)
 				var oldToken = plus.storage.getItem('oldToken');
 				console.log(oldToken);
 				//获取当前评价商品
@@ -171,7 +170,6 @@
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-					//	alert("zxcxc "+JSON.stringify(data));
 						storeid = eval("("+data.data[0].goods_data+")")[0].storeid;
 						var comPic = serverimgUrl+eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsImg;
 						$('#comPic').attr('src',comPic);
@@ -182,10 +180,6 @@
 //							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
 							var seller_comment = $('#comment').val();
 							var grade_star = $('.mui-icon-star-filled').length;
-						//	alert("1 "+seller_comment);	
-						//	alert("2 "+storeid);
-						//	alert("3 "+myuserid);
-						//	alert("4 "+grade_star);
 							//提交评价
 							
 							if(grade_star==0){
@@ -201,7 +195,6 @@
 								 
 							var formD = new FormData();
 							console.log(Apic);
-//							alert('图片张数'+Apic.length); 
 							for (var j=0; j<Apic.length; j++) {
 //								console.log('添加评论图片');
 								formD.append('pic',Apic[j]);
@@ -245,7 +238,7 @@
 						}
 					},
 					error:function(xhr,type,errorThrown){
-						alert('响应失败  !');
+						console.log('响应失败  !');
 					}
 				});
 				

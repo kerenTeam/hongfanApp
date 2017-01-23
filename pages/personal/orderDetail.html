@@ -244,7 +244,6 @@
 			var myuserid = plus.storage.getItem('userid');
 			var orderId = plus.webview.currentWebview().orderId;
 			var oldtoken = plus.storage.getItem('oldToken');
-		//	alert(orderId);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			
 			load();
@@ -288,12 +287,10 @@
 				});
 			}
 			window.delOrder=function(obj,id,txt){ 
-			//	alert(obj)
 				mui.confirm('确认'+txt+'订单？', '提示', ['取消', '确定'], function(e) {
 					 
 					plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
 						if(e.index == 1) {
-						//	alert("13")
 							mui.ajax(serverUrl+'/api/mall/deleteorder',{
 								data:{userId:myuserid,orderId:id},
 								dataType:'json',
@@ -302,7 +299,6 @@
 								headers:{"token":oldtoken},	 
 								success:function(data,type,xhr){ 
 									plus.nativeUI.closeWaiting();
-									//alert(JSON.stringify(data))
 							       if(data.data==1){ 
 							       	
 							       	var listpage = plus.webview.getWebviewById("personal/sc-order.html"); 
@@ -336,28 +332,24 @@
 				 })
 			}
 			window.goOrder=function(id,payment){
-			//	alert("付款"+id);
 				openview({
 					view:"../market/pay.html",
 					extrasobj:{payMent:payment,order_id:id}
 				})
 			} 
 			window.goComment=function(orderId){
-				//alert("评论"+orderId);
 				openview({
 					view:'comment.html',
 					extrasobj:{orderId:orderId,pageid:'orderDetail'}
 				})
 			}
 			window.viewLogistics=function(id,deliveryNo,shipper){
-				//alert("查看物流"+id+" df "+deliveryNo+" sdd "+shipper)
 				openview({ 
 							view:'../localLife/deliveryTrace.html',
 							extrasobj:{deliveryNo:deliveryNo,shipper:shipper}
 						})
 			}
 			window.orderConfirm=function(id){
-				//alert("确认收货"+id);
 				mui.confirm('确认收货？', '提示', ['取消', '确定'], function(e) {
 					 
 					plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
@@ -370,7 +362,6 @@
 								headers:{"token":oldtoken},	 
 								success:function(data,type,xhr){ 
 									plus.nativeUI.closeWaiting();
-									//alert(JSON.stringify(data))
 							       if(data.data==1){  
 							       	 	var listpage = plus.webview.getWebviewById("personal/sc-order.html"); 
 								       	mui.fire(listpage,'refresh');

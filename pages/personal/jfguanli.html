@@ -217,7 +217,6 @@
 				})
 			}
 			var myuserid = plus.storage.getItem('userid');
-			console.log(oldToken);
 			//积分列表
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
@@ -233,7 +232,7 @@
 					"token": oldToken
 				},
 				success: function(data, type, xhr) {
-//					alert(JSON.stringify(data.data));
+					console.log(data);
 					var scoreObj = {};
 					scoreObj.scoreList = data.data;
 					var html = template('operationList-detail', scoreObj);
@@ -244,7 +243,6 @@
 					var time = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + '时';
 					$('#thisTime').html(time);
 					plus.nativeUI.closeWaiting(); //关闭等待框
-					//					alert(time);
 					//积分余额
 					mui.ajax(serverUrl + '/api/useraccount/userinfo', {
 						data: {
@@ -256,15 +254,16 @@
 							"token": oldToken
 						},
 						success: function(data, type, xhr) {
+							console.log(data);
 							$('#userScore').html(data.data[0].intergral);
 						},
 						error: function(xhr, type, errorThrown) {
-							alert('响应失败  !');
+							console.log('响应失败  !');
 						}
 					});
 				},
 				error: function(xhr, type, errorThrown) {
-					alert('响应失败  !');
+					console.log('响应失败  !');
 				}
 			});
 

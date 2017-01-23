@@ -208,9 +208,9 @@
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].goods_name %></div>
 							<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].unit %></div>
 							<%if(!li[i].orginal_price || li[i].orginal_price==' '){%>
-								<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %>/无<sub>（元）</sub></div>
+								<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><span style="color: red;"><%= li[i].date_price %></span>/无<sub>（元）</sub></div>
 							<%}else{%>
-								<div class="mui-col-sm-4 mui-col-xs-4 caiLi"><%= li[i].date_price %><%= li[i].orginal_price %><sub>（元）</sub></div>
+								<div class="mui-col-sm-4 mui-col-xs-4 caiLi"> <span style="color: red;"><%= li[i].date_price %></span>/<%= li[i].orginal_price %><sub>（元）</sub></div>
 							<%}%>	
 						</div>
 					<% } %>
@@ -232,7 +232,6 @@
 			var d = dd.getDate();
 			var today = y+"-"+m+"-"+d; 
 			mui('#today')[0].innerHTML=today;
-//			alert(today);
 			
 			//banner
 			mui.ajax(serverUrl+'/api/index/banner',{
@@ -242,7 +241,6 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-//					alert(JSON.stringify(data))
 					bannerObj={};
 					if(data.data.banner){
 						bannerObj.bannerList = eval("("+data.data.banner+")");
@@ -319,7 +317,7 @@
 						}
 					},
 					error:function(xhr,type,errorThrown){
-						alert('响应失败  !');
+						mui.toast('当前网络不好请重试');
 					}
 				}); 
 			}

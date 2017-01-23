@@ -76,13 +76,13 @@
 		var myuserid = plus.storage.getItem('userid');
 		var apprenticeId = plus.webview.currentWebview().apprenticeId;
 		var apprenticeFee = plus.webview.currentWebview().apprenticeFee;
+		 
 		console.log(oldtoken);
 		if(apprenticeFee > 0){
 			document.getElementById('Bprice').innerHTML = apprenticeFee;
 		}else{
 			document.getElementById('Bprice').innerHTML = "免费";
 		}
-//		alert(apprenticeFee);
 	
 		mui('#Releasebtn')[0].onclick = function(){ 
 			//获取所需data
@@ -111,7 +111,7 @@
 				mui('#Bage')[0].focus();
 			}
 			else{
-				if(apprenticeFee !== "免费"){ 
+				if(apprenticeFee !==0){ 
 					plus.nativeUI.showWaiting()
 				//铺数据
 				var oldToken = plus.storage.getItem('oldToken');
@@ -145,10 +145,11 @@
 					error:function(xhr,type,errorThrown){
 						
 							plus.nativeUI.closeWaiting();
-						 alert('网络不好请重试  !');
+						 console.log('网络不好请重试  !');
 					}
 				});		
-			}else{
+			}else{ 
+			 
 				//铺数据
 					var oldToken = plus.storage.getItem('oldToken');
 						console.log(oldToken);
@@ -160,16 +161,25 @@
 							headers:{"token":oldToken},	 
 							success:function(data,type,xhr){
 								
-								//alert(JSON.stringify(data));
 								plus.nativeUI.showWaiting('提交中 ...',{width:'100px',height:'80px'});//显示等待框
 								if(data.errno==0){
 									mui.toast('报名成功');
+									 var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]')   
+								 	 var achava ={};
+								 	 achava.acid=apprenticeId;
+								 	 achava.userid = plus.storage.getItem('userid');
+								 	 acstorage[0] =achava;
+								 	 plus.storage.setItem("$acstorage",JSON.stringify(achava)); 
+								 	 var list = plus.webview.getWebviewById("apprenticeDetail");
+								 	 mui.fire(list,"refreash");
+								 	 
+								 	 
 									plus.webview.currentWebview().close();
 									plus.nativeUI.closeWaiting();
 								}
 							},
 							error:function(xhr,type,errorThrown){
-								alert('网络不好请重试  !');
+								mui.toast('网络不好请重试  !');
 							}
 						});		
 					}

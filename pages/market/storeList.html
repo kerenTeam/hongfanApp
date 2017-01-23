@@ -227,8 +227,6 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-				//	alert(JSON.stringify(data.data[0].main.id))
-				//	alert(data.data[0].main.picImg)
 					data.data[0].main.picImg = eval("("+data.data[0].main.picImg+")")
 					plus.nativeUI.closeWaiting();  
 					data.data[0].main.create_time=data.data[0].main.create_time.substring(0,10);
@@ -236,9 +234,7 @@
 					var recommentObj = {};  
 					recommentObj.myurl = serverimgUrl;
 					recommentObj.recommentLi = data.data;
-//					recommentObj.recommentImg = img;
 					var html2 = template('storeItem-detail',recommentObj);
-					//alert(html2)
 					document.getElementById('storeItem').innerHTML= html2;
 //					mui("#upload")[0].innerHTML = "加载更多";
 //		                    	//上滑加载
@@ -280,16 +276,13 @@
 //						});
 					//点击进入详情
 					window.openStore = function(store_id){
-//						alert(store_id);
 						openview({
 							view:'shophome.html',
-//							alert(store_id),
 							extrasobj:{storeId:store_id}
 						})
 					}
 				},
 				error:function(xhr,type,errorThrown){
-					//alert('响应失败  !');
 					plus.nativeUI.closeWaiting();
 					mui.toast("网络不好请重试")
 				}

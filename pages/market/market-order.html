@@ -602,14 +602,10 @@
 				},
 				success: function(data, type, xhr) {
 					if(data.errno == 0) { 
-//						plus.nativeUI.closeWaiting()
-//					  //alert("ddd "+JSON.stringify(data.data))
 						var addrObj = {};
-//							 //alert(plus.storage.getItem("$addressStorage"))
 						if(plus.storage.getItem("$addressStorage")!=null){
 							addrObj.obj = JSON.parse(plus.storage.getItem("$addressStorage")); 
 						}else{
-//							//alert("fd")
 							addrObj.obj = data.data; 
 						}
 							
@@ -619,7 +615,6 @@
 					}
 				},
 				error: function(xhr, type, errorThrown) {
-					////alert('响应失败  !');
 					plus.nativeUI.closeWaiting();
 					mui.toast("网络不好请重试")
 				}
@@ -633,16 +628,13 @@
 						for(var i = 0; i < orderStorage.length; i++) {
 							arr.push(orderStorage[i].shopName);
 						} 
-						////alert(arr.length)
 						data.cates = arr.unique1();
 						for(var i = 0; i < orderStorage.length; i++) {
 							shopID.push(orderStorage[i].shopId);
-							//alert(orderStorage[i].shopId)
 						}  
 						
 						shopID = shopID.unique1();  
 						data.shopID = shopID;
-						  //alert(JSON.stringify(shopID))
 						for(var i= 0;i<data.shopID.length;i++){
 							//分组邮费小计
 							var groupPostfee=0; 
@@ -651,7 +643,6 @@
 							 		if(data.shopID[i] == 0){
 							 			groupPostfee+=parseFloat(orderStorage[j].goodsPostfee);
 							 		}else{
-							 			//alert(orderStorage[j].goodsPostfee)
 							 			if(orderStorage[j].goodsPostfee!=0 || !orderStorage[j].goodsPostfee || orderStorage[j].goodsPostfee!=' '){
 									 		groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
 									 		break;
@@ -705,7 +696,6 @@
 						}
 						
 						
-						////alert("allGroup "+allGroup)
 						data.arrpostFee=arrpostFee;
 						data.arrNum=arrNum;
 						data.arrMoney=arrMoney; 
@@ -743,7 +733,6 @@
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						   intergral = data.data[0].intergral;
-						  // //alert(intergral)
 						   if(intergral==null){
 						   	intergral=0;
 						   }
@@ -759,7 +748,6 @@
 							}else{ 
 								jf=0; 
 							}
-							//alert(jf)
 							countTotalPay()
 //							var nowPAY =parseFloat(allGroup-jf-quan).toFixed(2);
 //								if(nowPAY<=0){
@@ -768,13 +756,11 @@
 						})
 				},
 				error:function(xhr,type,errorThrown){
-				//	//alert('响应失败  !');
 				}
 			});
 			var d = new Date();
 			var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
 			 str = formatDate(str, "yyyy.MM.dd");
- 				////alert(str)
 			//获取抵用券
 			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
 					data:{userid : myuserid},
@@ -783,7 +769,6 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){
-//					 alert("dfdsgfdgf  "+JSON.stringify(data.data));
 						var allC = {};
 						var tpldata=[];
 						
@@ -824,9 +809,7 @@
 				//优惠券计算
 						$(".checkQuan").click(function(){
 							var qid = $(this).attr("data-id");
-							////alert("qid "+qid)
 							var qminus =$(this).attr("data-minus");
-							////alert("qminus "+qminus) 
 							$(this).siblings().find(".quanc").css("display","none");
 							quan=0;
 							if($(this).find(".quanc").css("display")=="block"){ 
@@ -878,7 +861,6 @@
 					        				 countTotalPay();
 					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
 					        			}
-					        		//	alert("自提"+$(this).parentsUntil("dl").find("input[type='hidden']").val())
 					        	 
 					        	  
 				        		
@@ -924,7 +906,6 @@
 											 	var thisShopID = isBySelfDIV[m].getAttribute("data-id");
 											 	if(orderSubmitData[i].storeid == thisShopID){
 											 		var isBySelf = isBySelfDIV[m].getElementsByClassName("isziti")[0].value; 
-//											 		alert(isBySelf)
 											 		if(isBySelf == 0){
 											 			orderSubmitData[i].isBySelf = 0;
 											 		}else{
@@ -955,14 +936,11 @@
 									coupon_id =$(this).attr("data-id");
 								}
 							}) 
-//							alert("coupon_id "+coupon_id)
 							//积分使用
 							var isIntergal=0;
 							if($("#coupon").find("input[type='checkbox']:checked").length==1){
-	//							 //alert("yes");
 								isIntergal=1
 							}else{
-	//							 //alert("no")
 								isIntergal=0;
 							}
 							var goodsdata = JSON.stringify(orderSubmitData);
@@ -973,7 +951,6 @@
 							
 							
 							//提交
-//							 alert("orderSubmitData 1234ewrew"+"优惠券 "+coupon_id+" "+JSON.stringify(orderSubmitData))
 			 					mui.ajax(serverUrl+'/api/mall/neworder',{
 									data:{userid:myuserid,addressid:addressid,paytotal:payTotal,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
 									dataType:'json',
@@ -984,7 +961,6 @@
 										plus.nativeUI.closeWaiting()
 										//购物车 缓存 
 	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-	        							////alert(cartStorage)
 	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
 										//删除 购物车里 提交的这一条数据 
 										console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
@@ -999,16 +975,11 @@
 											
 											
 										}
-	//									//alert("ooooo "+JSON.stringify(cartStorage))
 										plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
 										var list = plus.webview.getWebviewById('cart.html'); 
 												mui.fire(list,'refresh'); 
-	//									//alert(JSON.stringify(data))
 										if(data.errno==0){
-//										 	alert(JSON.stringify(data.data))
 											var payMents = data.data.paytotal;
-//											var order_id = data.data.order_id;
-//											alert(order_id)
 											var uuid = data.data.order_UUID; 
 											
 											openview({
@@ -1016,7 +987,6 @@
 												id:"pay",
 												extrasobj:{payMent:payMents,uuid:uuid}
 											})
-//												plus.webview.currentWebview().close();
 
 										}else{
 											plus.nativeUI.closeWaiting() 
