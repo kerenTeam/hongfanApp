@@ -379,7 +379,7 @@
 							<% if(goodsList[j].shopName ==  cates[i]){%>
 							<dd class="dd-padding kv-line-r mui-row goodsWrap"> <!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
 								<% if(goodsList[j].shopName == '跨境优品'){%>
-								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
+								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4" id="aigou"><img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
 								<%}else{%>
 								   <h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myurl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
 
@@ -422,7 +422,7 @@
 							</dd>
 							<%if(shopID[i]==0){%> 
 								<dd class="dd-padding kv-line-r postfeeWrap">
-								<h6>购买即默认<span onclick="gosearule()" style="color: orangered;"> *海关协议</span></h6>
+								<h6>购买即同意<span onclick="gosearule()" style="color: orangered;"> 《跨境电商购物协议》</span></h6>
 									</dd>
 								<%}%>
 							<%if(shopID[i]!=0){%>
@@ -436,8 +436,8 @@
 								</dd>
 							<%}%>
 							<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
-								<h6 class="addTitle mui-col-sm-1 mui-col-xs-2">备注：</h6>
-								<div class="clearfloat fr mui-col-sm-11 mui-col-xs-10 goods">
+								<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">备注：</h6>
+								<div class="clearfloat fr mui-col-sm-10 mui-col-xs-10 goods">
 									<input type="text" id="" value="" placeholder="选填（对本次交易的说明）" class="tips" />
 								</div>
 							</dd>
@@ -718,12 +718,15 @@
 						  	}
 						  		$("#submit_order").html(totalPay)
 						  }
-						  
+						   
 						   
 			
+			var id_card;
 			
 			//获取积分  和 身份证
-			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+			getInfo();
+		   function getInfo(){
+		    		mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 				data:{"userid":myuserid},
 				type:'post',
 				timeout:10000,
@@ -733,6 +736,8 @@
 					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						   intergral = data.data[0].intergral;
+						   id_card = data.data[0].id_card; 
+						  
 						   if(intergral==null){
 						   	intergral=0;
 						   }
@@ -758,6 +763,7 @@
 				error:function(xhr,type,errorThrown){
 				}
 			});
+		    }
 			var d = new Date();
 			var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
 			 str = formatDate(str, "yyyy.MM.dd");
@@ -874,12 +880,8 @@
 				//goPay
 				window.goPay=function(){  
 					if($("#addid").length!=0){
-						var yourSFZ = $('#sfzin').val();
 						 
-//							plus.nativeUI.showWaiting('加载中 ...', {
-//								width: '100px',
-//								height: '80px'
-//							}); 
+						var yourSFZ = $('#sfzin').val(); 
 							//地址
 							var MYaddress = {};
 							var addressid =$("#addid").attr("data-id");
@@ -949,8 +951,28 @@
 							//获取总价
 							var payTotal =parseFloat($("#submit_order").html()).toFixed(2);
 							
+							if($("#aigou")){
+								getInfo();
+								if(id_card){
+									tijiao()
+								}else{
+									 mui.confirm('购买跨境优品需要身份证号哦？', '提示', ['取消', '确定'], function(e) {
+											if(e.index == 1) { 
+												openview({
+													view:"../personal/setup.html",
+													extrasobj:{pageid:"setup"}
+												}) 
+											} 
+					
+										})
+								}
+							}else{
+								tijiao()
+							}
 							
-							//提交
+							
+							function tijiao(){
+								//提交
 			 					mui.ajax(serverUrl+'/api/mall/neworder',{
 									data:{userid:myuserid,addressid:addressid,paytotal:payTotal,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
 									dataType:'json',
@@ -997,6 +1019,7 @@
 										console.log('响应失败  !');
 									}
 								}); 
+							}
 //						
 					}else{ 
 						plus.nativeUI.closeWaiting()
