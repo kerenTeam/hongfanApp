@@ -193,7 +193,6 @@
 				今日菜价
 			</div>
 			<div class="pricetable">
-				
 				<ul class="mui-row">
 					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">商品</li>
 					<li class="th mui-col-sm-4 mui-col-xs-4 caiLi">规格</li>
@@ -265,16 +264,20 @@
 			var marketName;
 			var userPicker1 = new mui.PopPicker();
 			userPicker1.setData([{
-				text: '世纪隆超市'
+				text: '世纪隆超市',
+				value:'419'
 			}, {
-				text: '新世纪超市'
+				text: '新世纪超市',
+				value:'415'
 			}]);
 			var showUserPickerButton1 = document.getElementById('showUserPicker1');
 			var userResult1 = document.getElementById('userResult1');
 			showUserPickerButton1.addEventListener('tap', function(event) {
 				userPicker1.show(function(items) {
 					showUserPicker1.innerText = items[0].text;
-					marketName = showUserPicker1.innerText;
+					showUserPicker1.value = items[0].value;
+					marketName = showUserPicker1.value;
+//					alert(marketName);
 					getPrice(marketName);
 				});
 			})
@@ -299,19 +302,19 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						console.log('详情',data);
-						if(!data.data || data.data ==''){
-							mui('#caiList-detail')[0].innerHTML = '<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>';
+//						console.log('详情',data);
+						if(!data.data || data.data.length==0){
+							mui('#caiList')[0].innerHTML = '<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>';
+						}else{
+							for(var i = 0;i<data.data.length;i++){
+								data.data[i].date_price = data.data[i].date_price.toFixed(2);
+							}
+							//超市名数据
+							dataObj={};
+							dataObj.li=data.data;
+							var html=template('caiList-detail',dataObj);
+							document.getElementById('caiList').innerHTML = html;
 						}
-						for(var i = 0;i<data.data.length;i++){
-							data.data[i].date_price = data.data[i].date_price.toFixed(2);
-						}
-						//超市名数据
-						dataObj={};
-						dataObj.li=data.data;
-						var html=template('caiList-detail',dataObj);
-						document.getElementById('caiList').innerHTML = html;
-						
 					},
 					error:function(xhr,type,errorThrown){
 						mui.toast('当前网络不好请重试');
