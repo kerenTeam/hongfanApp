@@ -186,7 +186,8 @@ function payfun(id){
 	var oldtoken = plus.storage.getItem('oldToken'); 
    // var uuid = plus.webview.currentWebview().uuid;
     var orderId = plus.webview.currentWebview().uuid; 
-    var payMent = plus.webview.currentWebview().payMent;
+    var payMent =parseFloat(plus.webview.currentWebview().payMent).toFixed(2);
+    
 	mui.ajax(PAYSERVER,{ 
 		data:{total_fee:payMent,subject:'HI集生活',body:'HI集生活',out_trade_no:orderId},
 		type:'post',//HTTP请求类型
@@ -195,9 +196,9 @@ function payfun(id){
 		success:function(data){
 			plus.nativeUI.closeWaiting()
 			var data = data.data;
-			console.log(data)
+		 
 			console.log("----- 请求订单成功 -----"); 
-			var varpay; 
+			var varpay;  
 			if(id == 'wxpay'){  
 			}else{ 
 				//支付宝
@@ -207,7 +208,7 @@ function payfun(id){
 					console.log("----- 支付成功 -----"+JSON.stringify(result));
 					
 				 	plus.nativeUI.closeWaiting();
-				 	 plus.nativeUI.alert("支付成功");
+				 	plus.nativeUI.alert("支付成功");
 					
 				 	 //关闭 订单页  
 				 	 if(plus.webview.getWebviewById("market-order")){

@@ -246,7 +246,7 @@
 												
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
-													<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
+													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
 												</div>
 											<%}%>
@@ -287,7 +287,7 @@
 												<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
 													
-													<a onclick="goOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
+													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
 												</div>
 											<%}%>
@@ -371,8 +371,7 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting(); 
-					if(data.errno==0){
-						
+					if(data.errno==0){ 
 						if(data.data.length!=0){ 
 							for(var i=0;i<data.data.length;i++){ 
 								data.data[i].goods_data=eval("("+data.data[i].goods_data+")"); 
@@ -557,7 +556,7 @@
 			window.goOrder=function(id,payment){
 				openview({
 					view:"../market/pay.html",
-					extrasobj:{payMent:payment,order_id:id}
+					extrasobj:{payMent:payment,uuid:id}
 				})
 			}
 			window.goComment=function(orderId){
