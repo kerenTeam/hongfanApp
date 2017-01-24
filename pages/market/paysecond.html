@@ -219,15 +219,15 @@ function payfun(id){
 	var body = plus.webview.currentWebview().body;
 	var subject = plus.webview.currentWebview().subject;
 	var total_fee = parseFloat(plus.webview.currentWebview().orderCost).toFixed(2);
+	var orderId = plus.webview.currentWebview().new_qianmi_order_id; 
 	mui.ajax(PAYSERVER,{ 
-		data:{body:body,subject:'',total_fee:total_fee},
+		data:{body:body,subject:'',total_fee:total_fee,out_trade_no:orderId},
 		type:"post",
 		headers:{"token":oldtoken},	
 		timeout:10000,//超时时间设置为10秒；
 		success:function(data){
 			plus.nativeUI.closeWaiting() 
-			var data = data.data; 
-	 
+			var data = data.data;   
 //			data = data.replace(/"servic\"/g, 'servic').replace(/"&"/g, '&').replace(/"="/g, '=');  
 //          data = data.replace(/"service/g, 'service').replace(/"="/g, '="').replace(/"&"/g, '"&'); 
 			console.log(data)
