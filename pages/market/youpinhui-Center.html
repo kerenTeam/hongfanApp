@@ -331,7 +331,7 @@
 								<div class="box">
 									<div class="pub_img">
 										<a class="rcdPadding" onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')">
-											<img src="<%=myUrl %><%=recommendData[i].thumb%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
+											<img src="<%=myUrl %><%=recommendData[i].thumb%>" name="<%=recommendData[i].thumb%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
 										</a>
 									</div>
 									<div class="pub_wz">
@@ -396,17 +396,18 @@
 			var currentPage =1, numsPerPage=4;
  			//热门推荐 数据渲染 
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist', { 
-				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,differentiate:4,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
 				dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型 
 					timeout:10000,//超时时间设置为10秒；	
 					headers:{"token":oldToken}, 
 					success:function(data){
+						console.log('热门',data);
 						if(data.errno==0){
 						plus.nativeUI.closeWaiting();//关闭等待框
 						var dataobj = data.data.return.data
 						var recommendObj = {}
-						recommendObj.myUrl = '';
+						recommendObj.myUrl = serverimgUrl;
 						recommendObj.recommendData = dataobj
 	                    document.getElementById("moll_recommend").innerHTML=template("recommendTpl",recommendObj);
 	                    mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
@@ -424,7 +425,7 @@
 									console.log('发起请求,应到'+Ypagenum+'页');
 									var requestfun = function(){
 										mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-											data:{currentPage:Spagenum,numsPerPage:numsPerPage,recommend:0,differentiate:3,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
+											data: {currentPage:Spagenum,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''}, 
 											dataType:'json',//服务器返回json格式数据
 											type:'post',//HTTP请求类型 
 											timeout:5000,//超时时间设置为10秒；	
@@ -433,7 +434,7 @@
 												if(data.errno == 0){
 													var dataobj = data.data.return.data
 													var recommendObj = {}
-													recommendObj.myUrl = '';
+													recommendObj.myUrl = serverimgUrl;
 													recommendObj.recommendData = dataobj
 								                    document.getElementById("moll_recommend").innerHTML+=template("recommendTpl",recommendObj);
 												}
