@@ -404,21 +404,19 @@
 								<%if(shopID[i]==0){%> 
 								<h6>配送方式</h6>
 									<%if(arrpostFee[i]==0 || !arrpostFee[i]||arrpostFee[i]==' '){%>
-											<p class="jifen">税费 免税</p>
-											<%}else{%>
-												<p class="jifen">税费 <%=arrpostFee[i]%>元</p>
-											<%}%> 
+										<p class="jifen">税费 免税</p>	&nbsp;&nbsp;
+										<%}else{%>
+											<p class="jifen">邮费<span id="deliveryFee" style="color: #999;"></span>元</p>&nbsp;&nbsp;
+											<p class="jifen">税费 <%=arrpostFee[i]%>元</p>
+										<%}%> 
 									<%}else{%>
-										
 								<h6>配送方式</h6>
-										<%if(arrpostFee[i]==0 || !arrpostFee[i] ||arrpostFee[i]==' '){%>
-											<p class="jifen">快递 免邮</p>
-											<%}else{%>
-												<p class="jifen">快递 <%=arrpostFee[i]%>元</p>
-											<%}%>
+									<%if(arrpostFee[i]==0 || !arrpostFee[i] ||arrpostFee[i]==' '){%>
+										<p class="jifen">快递 免邮</p>
+										<%}else{%>
+											<p class="jifen">快递 <%=arrpostFee[i]%>元</p>
 										<%}%>
-								
-								
+									<%}%>
 							</dd>
 							<%if(shopID[i]==0){%> 
 								<dd class="dd-padding kv-line-r postfeeWrap">
@@ -561,7 +559,7 @@
 						return true;
 				}
 			});
-			
+				var id_card;
 			//海关协议
 			window.gosearule=function(){
 				openview({
@@ -576,19 +574,19 @@
 			window.addEventListener('readdstorage', function(event) { 
 				orderAdd()
 			});
+			 window.addEventListener('refresh2', function(event) { 
+				 plus.webview.currentWebview().reload()
+			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
-			  console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
+			console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
 				//获取缓存
 			     myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken');
-			
-			
-		 
-			
+//			alert(1)
+//			alert(JSON.stringify(orderStorage));
 			orderAdd();
 			function orderAdd(){
-			 
 				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
 				data: {
 					userid: myuserid,
@@ -608,7 +606,6 @@
 						}else{
 							addrObj.obj = data.data; 
 						}
-							
 						document.getElementById("add_info").innerHTML = template("addrTpl", addrObj);
 						plus.storage.removeItem("$addressStorage")
 						
@@ -623,105 +620,123 @@
 			
 			
 			//订单数据模板
-						var data = {};
-						data.goodsList = orderStorage;
-						for(var i = 0; i < orderStorage.length; i++) {
-							arr.push(orderStorage[i].shopName);
-						} 
-						data.cates = arr.unique1();
-						for(var i = 0; i < orderStorage.length; i++) {
-							shopID.push(orderStorage[i].shopId);
-						}  
-						
-						shopID = shopID.unique1();  
-						data.shopID = shopID;
-						for(var i= 0;i<data.shopID.length;i++){
-							//分组邮费小计
-							var groupPostfee=0; 
-							 for(var j = 0;j<orderStorage.length;j++){
-							 	if(data.shopID[i] == orderStorage[j].shopId){
-							 		if(data.shopID[i] == 0){
-							 			groupPostfee+=parseFloat(orderStorage[j].goodsPostfee);
-							 		}else{
-							 			if(orderStorage[j].goodsPostfee!=0 || !orderStorage[j].goodsPostfee || orderStorage[j].goodsPostfee!=' '){
-									 		groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
-									 		break;
-									 	}else{
-									 		groupPostfee = 0;
-									 	}
-							 		}
-							 	}
-							 	
-							 }
-							 arrpostFee.push(parseFloat(groupPostfee).toFixed(2));
-						}
-						 
-						 
-						 
-						for(var i= 0;i<data.cates.length;i++){
-							//分组 金额 和 数量 小计
-							var groupNum=0,groupMoney=0;
-							 for(var j = 0;j<orderStorage.length;j++){
-							 	if(orderStorage[j].shopName ==  data.cates[i]){
-							 		groupNum+=parseFloat(orderStorage[j].goodsnum);
-							 		groupMoney+=parseFloat(orderStorage[j].goodsPrice)*parseFloat(orderStorage[j].goodsnum); 
-							 	} 
-							 } 
-							 arrNum.push(groupNum);
-							 arrMoney.push(parseFloat(groupMoney)+parseFloat(arrpostFee[i]));
-						}
-						
-						//分组商品总价
-						for(var i=0;i<arrMoney.length;i++){
-							allGroup+=parseFloat(arrMoney[i])
-							
-						}
-						
-						//分商店  订单数据 小计
-						
-						for(var i= 0;i<shopID.length;i++){ 
-							var orderList={};
-							    orderList.storeid=shopID[i];
-							    orderList.postFee = arrpostFee[i];
-							    orderList.totalNum = arrNum[i];
-							    orderList.totalMoney = arrMoney[i];
-							    orderList.goodsData =[]; 
-						 	for(var j = 0;j<orderStorage.length;j++){
-						 	 if(orderStorage[j].shopId == shopID[i]){
-						 	 	orderList.goodsData.push(orderStorage[j])
-						 	 }
-						 	 
+			var data = {};
+			data.goodsList = orderStorage;
+//			alert(JSON.stringify(orderStorage));
+			
+			//邮费
+			var deliveryFee = 0;
+			for(var m = 0;m<orderStorage.length;m++){
+				if(orderStorage[m].goodsDelivery=='' || !orderStorage[m].goodsDelivery){
+					deliveryFee = 0;
+				}else{
+					deliveryFee = parseInt(deliveryFee)+parseInt(orderStorage[m].goodsDelivery);
+				}
+			}
+
+			for(var i = 0; i < orderStorage.length; i++) {
+				arr.push(orderStorage[i].shopName);
+			} 
+			data.cates = arr.unique1();
+			for(var i = 0; i < orderStorage.length; i++) {
+				shopID.push(orderStorage[i].shopId);
+			}  
+			
+
+			shopID = shopID.unique1();  
+			data.shopID = shopID;
+			for(var i= 0;i<data.shopID.length;i++){
+				//分组邮费小计
+				var groupPostfee=0; 
+				 for(var j = 0;j<orderStorage.length;j++){
+				 	if(data.shopID[i] == orderStorage[j].shopId){
+				 		if(data.shopID[i] == 0){
+				 			groupPostfee+=parseFloat(orderStorage[j].goodsPostfee);
+				 		}else{//跨境
+				 			if(orderStorage[j].goodsPostfee!=0 || !orderStorage[j].goodsPostfee || orderStorage[j].goodsPostfee!=' '){
+
+						 		groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
+						 		
+						 		break;
+						 	}else{
+						 		groupPostfee = 0;
+
 						 	}
-							 orderSubmitData.push(orderList);
-						}
-						
-						
-						data.arrpostFee=arrpostFee;
-						data.arrNum=arrNum;
-						data.arrMoney=arrMoney; 
-						data.myurl = serverimgUrl;
-						var html = template('orderData', data);
-						document.getElementById('orderTpl').innerHTML = html;
-						
-						  countTotalPay();
-						  function countTotalPay(){
-						  	var allThis = 0
-						  	var everyGroup = document.getElementsByClassName("groupMoney");
-						  	for(var i=0;i<everyGroup.length;i++){
-						  		allThis+=parseFloat(everyGroup[i].innerHTML);
-						  	
-						  		
-						  	} 
-						  	totalPay=allThis-jf-quan;
-						  	if(totalPay<0){
-						  		totalPay =0;
-						  	}
-						  		$("#submit_order").html(totalPay)
-						  }
-						   
+				 		}
+				 	}
+				 	
+				 }
+				 arrpostFee.push(parseFloat(groupPostfee).toFixed(2));
+			}
+			
+			 
+			 
+			 
+			for(var i= 0;i<data.cates.length;i++){
+				//分组 金额 和 数量 小计
+				var groupNum=0,groupMoney=0;
+				 for(var j = 0;j<orderStorage.length;j++){
+				 	if(orderStorage[j].shopName ==  data.cates[i]){
+				 		groupNum+=parseFloat(orderStorage[j].goodsnum);
+				 		groupMoney+=parseFloat(orderStorage[j].goodsPrice)*parseFloat(orderStorage[j].goodsnum); 
+				 	} 
+				 } 
+				 arrNum.push(groupNum);
+				 arrMoney.push(parseFloat(parseFloat(groupMoney)+parseFloat(arrpostFee[i])+parseFloat(deliveryFee)).toFixed(2));
+			}
+			
+			//分组商品总价
+			for(var i=0;i<arrMoney.length;i++){
+				allGroup+=parseFloat(arrMoney[i])
+				
+			}
+			
+			//分商店  订单数据 小计
+			
+			for(var i= 0;i<shopID.length;i++){ 
+				var orderList={};
+				    orderList.storeid=shopID[i];
+				    orderList.postFee = arrpostFee[i];
+				    orderList.totalNum = arrNum[i];
+				    orderList.totalMoney = arrMoney[i];
+				    orderList.goodsData =[]; 
+			 	for(var j = 0;j<orderStorage.length;j++){
+			 	 if(orderStorage[j].shopId == shopID[i]){
+			 	 	orderList.goodsData.push(orderStorage[j])
+			 	 }
+			 	 
+			 	}
+				 orderSubmitData.push(orderList);
+			}
+			
+			
+			data.arrpostFee=arrpostFee;
+			data.arrNum=arrNum;
+			data.arrMoney=arrMoney; 
+			data.myurl = serverimgUrl;
+			var html = template('orderData', data);
+			document.getElementById('orderTpl').innerHTML = html;
+			if(deliveryFee>0){
+				document.getElementById('deliveryFee').innerHTML=deliveryFee;//跨境邮费
+			}
+			
+			  countTotalPay();
+			  function countTotalPay(){
+			  	var allThis = 0
+			  	var everyGroup = document.getElementsByClassName("groupMoney");
+			  	for(var i=0;i<everyGroup.length;i++){
+			  		allThis+=parseFloat(everyGroup[i].innerHTML);
+			  	} 
+			  	totalPay=allThis-jf-quan;
+			  	if(totalPay<0){
+			  		totalPay =0;
+			  	}
+			  		$("#submit_order").html(totalPay)
+			  }
+			   
 						   
 			
-			var id_card;
+		
 			
 			//获取积分  和 身份证
 			getInfo();
