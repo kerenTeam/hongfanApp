@@ -201,7 +201,9 @@
 				-webkit-transform-style: preserve-3d;
 				transform-style: preserve-3d;
 			}
-			
+			.grade-eject>ul, .Category-eject>ul, .Sort-eject>ul{
+				height: auto!important;
+			}
 			.mui-slider .mui-slider-group .mui-slider-item img {
 				width: auto;
 				height: auto;
@@ -330,6 +332,9 @@
 									<%for(var j = 0;j<list.star;j++){%>
 										 <img src="../../img/market/star.png" style="width: 0.1rem;" alt="" />
 									<%}%>
+									<%for(var j = 0;j<grayStar;j++){%>
+											<img src="../../img/market/graystar.png" style="width: 0.1rem;" alt="" />
+										<%}%> 
 									<%}else{%>
 										<img src="../../img/market/graystar.png" style="width: 0.1rem;" alt="" />
 										<img src="../../img/market/graystar.png" style="width: 0.1rem;" alt="" />
@@ -411,11 +416,19 @@
 				timeout:10000,
 				headers:{"token":oldtoken},	               				
 				success:function(data){
+//					alert(JSON.stringify(data))
 					console.log('获取数据返回'+JSON.stringify(data)); 
 					if(data.errno == 0){
+						if(data.data.star){
+							var grayStar = 5-parseFloat(data.data.star)
+						}else{
+							var grayStar =5
+						}
 						var objdata = {};
 						objdata.picurl = serverimgUrl;
-						data.data.create_time = data.data.create_time.split('T')[0]
+						
+						data.data.create_time = data.data.create_time.split('T')[0] 
+						objdata.grayStar = grayStar;
 						objdata.list = data.data;
 						objdata.url = serverimgUrl;
 						objdata.pic = JSON.parse(objdata.list.pic);//轮播图

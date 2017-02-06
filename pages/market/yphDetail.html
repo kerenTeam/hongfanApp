@@ -428,7 +428,7 @@
 							        </div>
 							        <div class="mui-col-sm-4 mui-col-xs-4 Mright">
 							          	<%if(brief.shipping_free_type==0){%>
-							           		<p class="box-s">包邮类型：不免邮</p>
+							           		<p class="box-s">包邮类型：10元</p>
 							            <%}else if(brief.shipping_free_type==1){%>
 							           		<p class="box-s">包邮类型：全免邮</p>
 							            <%}else if(brief.shipping_free_type==2){%>
@@ -558,6 +558,7 @@
 						headers:{"token":token}, 
 						success:function(data){ 
 							if(data.errno==0){ 
+//								alert(JSON.stringify(data.data.youpin.data.tax_rate))
 								var d = data.data.youpin.data.imglist;//{img1:dd,img2:aa,img3,cc} 
 								var bannerArray = [];
 								if(d){
@@ -565,9 +566,7 @@
 										var vae = Object.keys(d)[t] ;
 										bannerArray.push(d[vae]);
 									} 
-									 
 								}
-								
 							var dataobj =data.data.youpin.data.imglist; 
 							 
 							var infoObj = {};
@@ -642,6 +641,10 @@
 		                    		var goodsnum = parseFloat($(".mui-input-numbox").val());
 		                    		var goodText=''; 
 		                    		var goodProp=[];
+		                    		//邮费做缓存
+				                   	if(data.data.youpin.data.shipping_free_type==0){
+				                   		var goodsDelivery = 10;
+				                  	};
 		                    		$('.textType').each(function(){
 		                    			goodText+=$(this).find("p").html()+":"+$(this).find(".cur").html()+";";
 		                    			var prop = {};
@@ -658,6 +661,7 @@
 		                    		cartObj.goodsImg=goodsImg;
 		                    		cartObj.goodsPrice=goodsPrice;
 		                    		cartObj.goodsPostfee=goodsPostfee;
+		                    		cartObj.goodsDelivery=goodsDelivery;
 		                    		cartObj.goodsnum=goodsnum;
 		                    		cartObj.goodText=goodText;
 		                    		cartObj.goodProp=goodProp;
@@ -682,6 +686,7 @@
 		                    		cartStorage.push(cartObj); 
 								}  
 		                    		plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage));
+//		                    		alert(JSON.stringify(cartStorage))
 		                    		$(".am-share").removeClass("am-modal-active");
 		                    		$(".sharebg ").removeClass("sharebg-active");
 		                    		mui.toast("已成功加入购物车");

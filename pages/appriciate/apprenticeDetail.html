@@ -73,23 +73,25 @@
 		
 		<script type="text/html" id="activity-detail">
 			<div class="imgBox">
-				<img src="<%=myUrl %><%= objData.picImg %>"/>
+				<%if(objData.picImg){%>
+					<img src="<%=myUrl %><%= objData.picImg %>"/>
+				<%}%>
 			</div>
 			<div class="ceremonyContent" style="background-color: white;">
 				<article class="xiangqinPara">
 					<div class="black" style="margin-top: 5%;"><b><%= objData.title %></b></div>
 					<div class="gray"><small><%= objData.numberofpeople %>人已参加</small></div>
 					
-					<div class="displayVip" onclick="govip()">
+					<!--<div class="displayVip" onclick="govip()">
 						<p style="border-left: 3px solid palevioletred; padding-left: 5px; color: palevioletred;">钟情会员</p>
 						<img src="../../img/viplove/cfb.jpg" alt="" />
-						<img src="../../img/viplove/chengxiaoyu.jpeg" alt="" />
-						<img src="../../img/viplove/hjy1.JPG" alt="" />
-						<img src="../../img/viplove/jhy.jpeg" alt="" />
-						<img src="../../img/viplove/jl1.JPG" alt="" />
+						<img src="../../img/viplove/yhy1.jpg" alt="" />
+						<img src="../../img/viplove/zhumeiyan.jpeg" alt="" />
+						<img src="../../img/viplove/ycy.jpg" alt="" />
+						<img src="../../img/viplove/qf2.jpeg" alt="" />
 						<img src="../../img/viplove/lijunping.jpeg" alt="" />
-						<img src="../../img/viplove/ljp1.JPG" alt="" />
-						<img src="../../img/viplove/bc.jpg" alt="" />
+						<img src="../../img/viplove/huangxiaoling.jpg" alt="" />
+						<img src="../../img/viplove/cheghongmei.jpg" alt="" />
 						<img src="../../img/viplove/jy.jpeg" alt="" />
 						<img src="../../img/viplove/ll2.jpeg" alt="" />
 						<img src="../../img/viplove/gx.jpeg" alt="" />
@@ -97,7 +99,7 @@
 						<img src="../../img/viplove/cj.JPG" alt="" />
 						<img src="../../img/viplove/ll.JPG" alt="" />
 						<img src="../../img/viplove/more.png" alt="" />
-					</div>
+					</div>-->
 					 
 					<button type="button" onclick="gosub(<%= objData.id %>,<%= objData.charge %>)" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined goinfl" id="goinfl">要参加</button>
 					
@@ -177,55 +179,63 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+//					alert(JSON.stringify(data))
 					if(data.errno==0){
-						var dateObj={};
-				       		data.data[0].create_time = data.data[0].create_time.split('T')[0]; 
-				       		data.data[0].start_time = data.data[0].start_time.split('T')[0]; 
-				       		data.data[0].end_time = data.data[0].end_time.split('T')[0]; 
-							dateObj.objData=data.data[0];
-							dateObj.myUrl=serverimgUrl;
-							
-							var joined = parseFloat(data.data[0].numberofpeople);
-							var limit = parseFloat(data.data[0].persons_limit);
-							
-							mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
-							 
-							if(joined==limit){
-								 mui("#goinfl")[0].innerHTML="人数已满";
-							     document.getElementById("goinfl").removeAttribute("onclick")
-							}
-							
-					    if(data.data[0].content) {
-							console.log('详情', data.data[0].content);
-							var detailsdom = parseDom(data.data[0].content);
-							console.log('转化节点',detailsdom);
-							var detailsimg = detailsdom.getElementsByTagName('img');
-							mui.each(detailsimg, function(index, element) {
-								if(element.src.indexOf('pages/appriciate')>-1){
-									console.log(element.src.split('pages/appriciate')[1]);
-									element.src = serverimgUrl + element.src.split('pages/appriciate')[1];
-									element.onerror = function() {
-										element.src = '../../img/market/nodata.svg';
-									}
+						for(var i=0;i<data.data.length;i++){
+							if(data.data[i].id==activityId){
+								var dateObj={};
+								data.data[0]=data.data[i];
+					       		data.data[0].create_time = data.data[0].create_time.split('T')[0]; 
+					       		data.data[0].start_time = data.data[0].start_time.split('T')[0]; 
+					       		data.data[0].end_time = data.data[0].end_time.split('T')[0]; 
+								dateObj.objData=data.data[0];
+								dateObj.myUrl=serverimgUrl;
+								
+								var joined = parseFloat(data.data[0].numberofpeople);
+								var limit = parseFloat(data.data[0].persons_limit);
+								
+								mui('#activity')[0].innerHTML = template('activity-detail',dateObj);
+								 
+								if(joined==limit){
+									 mui("#goinfl")[0].innerHTML="人数已满";
+								     document.getElementById("goinfl").removeAttribute("onclick")
 								}
-							})
-							console.log('节点', detailsdom);
-							//			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
-							document.getElementById("content").appendChild(detailsdom);
-						} else {
-							document.getElementById("content").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
-						}
-							
-						   
-							plus.nativeUI.closeWaiting();
-							
-						   var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]');
-//					 plus.storage.removeItem('$acstorage')
-						   if(acstorage.length!=0){
-							  mui("#goinfl")[0].innerHTML="已参加";
-							  document.getElementById("goinfl").removeAttribute("onclick")
-							  
-							} 
+								
+						    if(data.data[0].content) {
+								console.log('详情', data.data[0].content);
+								var detailsdom = parseDom(data.data[0].content);
+								console.log('转化节点',detailsdom);
+								var detailsimg = detailsdom.getElementsByTagName('img');
+								mui.each(detailsimg, function(index, element) {
+									if(element.src.indexOf('pages/appriciate')>-1){
+										console.log(element.src.split('pages/appriciate')[1]);
+										element.src = serverimgUrl + element.src.split('pages/appriciate')[1];
+										element.onerror = function() {
+											element.src = '../../img/market/nodata.svg';
+										}
+									}
+								})
+								console.log('节点', detailsdom);
+								//			                     	document.getElementById("textInfo").innerHTML=data.data.goodsInfo.content;
+								document.getElementById("content").appendChild(detailsdom);
+							} else {
+								document.getElementById("content").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
+							}
+								
+							   
+								plus.nativeUI.closeWaiting();
+								
+							   var acstorage = JSON.parse(plus.storage.getItem('$acstorage')||'[]');
+	//					 plus.storage.removeItem('$acstorage')
+							   if(acstorage.length!=0){
+								  mui("#goinfl")[0].innerHTML="已参加";
+								  document.getElementById("goinfl").removeAttribute("onclick")
+								  
+								} 
+								}
+							}
+						
+						
 					}
 					
 					

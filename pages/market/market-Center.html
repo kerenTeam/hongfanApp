@@ -410,7 +410,10 @@
 					<script type="text/html" id="Adv-detail">
 						<% for(var i=0; i<list.length; i++){%>
 							<div class="box swiper-slide" onclick="goAdv(<%= list[i].id %>)">
-								<p class="overflow_clear"><img src="<%= myUrl %><%= list[i].pic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/><%= list[i].title%></p>
+								<p class="overflow_clear">
+									<img src="<%= myUrl %><%= list[i].pic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+									<span style="height: 50px!important;display: block;"><%= list[i].title%></span>
+								</p>
 							</div>
 						<% }%>
 					</script>
@@ -451,7 +454,7 @@
 									<h3 class="overflow_clear"><a onclick="goInfo('<%=recommendData[i].goods_id%>','<%=recommendData[i].storeid%>')"><%=recommendData[i].title%></a></h3>
 									<div class="nr_box mui-row">
 										<div class="mui-col-sm-6 mui-col-xs-6">
-								        	<p class="fl fontcl2">¥<%=recommendData[i].price%></p>
+								        	<p class="fl fontcl2">￥<%=recommendData[i].price%></p>
 								      	</div>
 								        <div class="mui-col-sm-6 mui-col-xs-6 saled">
 											<p class="fl fontcl2" style="float: right;"><sub class=" black9" style="text-align: right;">已售<%=recommendData[i].sales%></sub></p>
@@ -624,7 +627,7 @@
 			var currentPage =1, numsPerPage=4;
 			//热门推荐 数据渲染
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-				data: {currentPage:currentPage,numsPerPage:numsPerPage,isRecommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
 				dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型
 					timeout:10000,//超时时间设置为10秒；

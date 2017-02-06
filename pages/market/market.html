@@ -318,16 +318,34 @@
 				<div class="mui-slider-group mui-slider-loop">
 				    <!--支持循环，需要重复图片节点-->
 				    <div class="mui-slider-item mui-slider-item-duplicate">
-				    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+				    	<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
+				    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+				    	<% }else{ %>
+				    		<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>')">
+					    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					   		</a>
+				    	<% } %>
 				    </div>
 					<% for(var i=0;i<bannerList.length;i++){ %> 
-				    	<div class="mui-slider-item">
-				    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+					    <div class="mui-slider-item">
+							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
+					    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<% }else{ %>
+					    		<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>')">
+						    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						   		</a>
+					    	<% } %>
 				    	</div>
-				     <% } %>
+				    <% } %>
 				    <!--支持循环，需要重复图片节点-->
 				    <div class="mui-slider-item mui-slider-item-duplicate">
-				    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+						<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
+				    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+				    	<% }else{ %>
+				    		<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
+					    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					   		</a>
+				    	<% } %>
 				    </div>
 				</div>
 				<div class="mui-slider-indicator">
@@ -344,7 +362,7 @@
 						温馨提示:
 					</div>
 					<div class="mui-col-sm-10 mui-col-xs-10">
-						<marquee style="line-height: 40px;color: #666;">亲！Hi集试运行阶段，如有不便及问题请及时反馈小HI，小HiQQ：3146223908，谢谢理解并支持！我们将努力做得更好！</marquee>
+						<marquee style="line-height: 40px;color: #666;">亲！Hi集试运行阶段，如有不便及建议请及时反馈小HI（点击首页右下角小蜜蜂）谢谢理解并支持！我们将努力做得更好！</marquee>
 					</div>
 				</div>
 			</div>
@@ -415,8 +433,8 @@
 				</table>
 				
 			</div>
-			<div class="sy_recmd">
-				<!--精选频道-->
+			<!--精选频道-->
+			<!--<div class="sy_recmd">
 				<div class="sy_title mb10">
 					<span class="left">精选频道</span>
 					<a href="#" class="fr morethree">更多&gt;&gt;</a>
@@ -449,7 +467,6 @@
 					<div class="clear"></div>
 				</div>
 				
-			</div>
 			
 			<!--会场-->
 			<div id="outStore">
@@ -596,16 +613,13 @@
 			});
 			mui('#Parking')[0].addEventListener('tap',function(){
 				openview({
-					view:"../daikaifa.html"
+					view:"../park.html"
 				})
 			})
 			wifi.addEventListener('tap', function(){
-//				openview({
-//					view:"wifi.html"
-//				})
 				openview({
-					view:'../daikaifa.html'
-				});
+					view:"../wifi.html"
+				})
 			});
 
 			mtshop.addEventListener('tap', function(){
@@ -613,16 +627,16 @@
 					view:"storeListFloor.html"
 				})
 			});
-			mui("#storeRcmd")[0].addEventListener('tap',function(){
-				openview({
-					 	view:"storeList.html"
-					 })
-			}) 
-			mui("#hotRestront")[0].addEventListener('tap',function(){
-				openview({
-					 	view:"hotRestront.html"
-					 })
-			})
+//			mui("#storeRcmd")[0].addEventListener('tap',function(){
+//				openview({
+//					 	view:"storeList.html"
+//					 })
+//			}) 
+//			mui("#hotRestront")[0].addEventListener('tap',function(){
+//				openview({
+//					 	view:"hotRestront.html"
+//					 })
+//			})
 			 
 			//banner跳转
 			window.bannerGo=function(url,name){ 

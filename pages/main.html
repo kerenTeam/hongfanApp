@@ -289,7 +289,7 @@
 			.mContent{
 				position: relative;
 				width: 100%;
-				padding-top: 23%;
+				padding-top: 30%;
 				overflow: hidden;
 			}
 			.mContent img{
@@ -408,16 +408,34 @@
 					<div class="mui-slider-group mui-slider-loop">
 					    <!--支持循环，需要重复图片节点-->
 					    <div class="mui-slider-item mui-slider-item-duplicate">
-					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
+					    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<% }else{ %>
+					    		<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>')">
+						    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						   		</a>
+					    	<% } %>
 					    </div>
 						<% for(var i=0;i<bannerList.length;i++){ %> 
-					    	<div class="mui-slider-item">
-					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
-					    	</div>
+					    <div class="mui-slider-item">
+							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
+					    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<% }else{ %>
+					    		<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>')">
+						    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						   		</a>
+					    	<% } %>
+					    </div>
 					    <% } %>
 					    <!--支持循环，需要重复图片节点-->
 					    <div class="mui-slider-item mui-slider-item-duplicate">
-					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+							<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
+					    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<% }else{ %>
+					    		<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
+						    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						   		</a>
+					    	<% } %>
 					    </div>
 					</div>
 					<div class="mui-slider-indicator">
@@ -435,7 +453,9 @@
 						温馨提示:
 					</div>
 					<div class="mui-col-sm-10 mui-col-xs-10">
-						<marquee style="line-height: 40px;color: #666;">亲！Hi集试运行阶段，如有不便及问题请及时反馈小HI，小HiQQ：3146223908，谢谢理解并支持！我们将努力做得更好！</marquee>
+						<marquee style="line-height: 40px;color: #666;">
+							亲！Hi集试运行阶段，如有不便及建议请及时反馈小HI（点击首页右下角小蜜蜂）谢谢理解并支持！我们将努力做得更好！
+						</marquee>
 					</div>
 				</div>
 			</div>	
@@ -472,12 +492,12 @@
 			<!--家乡味道-->
 			<div class="mainModal" style="position: relative;" onclick="yearTasty()">
 				<div class="mContent">
-					<img src="../img/main2.jpg"/>
-					<div class="mBack">
+					<img src="../img/main2.png"/>
+					<!--<div class="mBack">
 						<div class="mInner">
 							<p class="mTitle">家乡味道</p>
 						</div>
-					</div>
+					</div>-->
 				</div>
 			</div> 
 			<!--原生态-->
@@ -501,12 +521,12 @@
 							</a>
 						</div>
 						<div class="mui-col-sm-4 mui-col-xs-4 tcDiv">
-							<a class="react tcA" onclick="goInfo(3359)">
-								<img src="http://hiji.hifete.com/Upload/goods/2017-01-18_202718.png" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
-								<div class="tcTitle">火焰无核</div>
+							<a class="react tcA" onclick="goInfo(3354)">
+								<img src="http://hiji.hifete.com/Upload/goods/2017-01-18_203235.png" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
+								<div class="tcTitle">鲫鱼</div>
 								<div class="price mui-row">
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="strong-color"><sub>￥</sub>50</p>
+										<p class="strong-color"><sub>￥</sub>30</p>
 									</div>
 									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>评价<%= list[i].comments %>条</sub></span>-->
 									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>已售<%= list[i].sales %></sub></span>-->
@@ -514,12 +534,12 @@
 							</a>
 						</div>
 						<div class="mui-col-sm-4 mui-col-xs-4 tcDiv">
-							<a class="react tcA" onclick="goInfo(3381)">
-								<img src="http://hiji.hifete.com/Upload/goods/2017-01-18_145507.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
-								<div class="tcTitle">青川黑木耳</div>
+							<a class="react tcA" onclick="goInfo(3351)">
+								<img src="http://hiji.hifete.com/Upload/goods/2017-01-17_140623.png" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
+								<div class="tcTitle">土鸭蛋</div>
 								<div class="price mui-row">
 									<div class="mui-col-sm-12 mui-col-xs-12">
-										<p class="strong-color"><sub>￥</sub>140</p>
+										<p class="strong-color"><sub>￥</sub>5</p>
 									</div>
 									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>评价<%= list[i].comments %>条</sub></span>-->
 									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>已售<%= list[i].sales %></sub></span>-->
@@ -558,9 +578,51 @@
 					<span class="left"><img src="../img/sfc.png"/>私房秘制</span>
 				</div> 
 				<div class="sy_recmd_list_box">
-					<div id="sf" class="mui-row"></div>
+					<div id="sf" class="mui-row">
+						<div class="mui-col-sm-4 mui-col-xs-4 tcDiv">
+							<a class="react tcA" onclick="goInfo(3456)">
+								<img src="http://hiji.hifete.com/Upload/goods/2017-01-22_155029.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
+								<div class="tcTitle">【胖多多】鸭翅膀</div>
+								<div class="price mui-row">
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="strong-color"><sub>￥</sub>22</p>
+									</div>
+									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>评价<%= list[i].comments %>条</sub></span>-->
+									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>已售<%= list[i].sales %></sub></span>-->
+								</div>
+							</a>
+						</div>
+						<div class="mui-col-sm-4 mui-col-xs-4 tcDiv">
+							<a class="react tcA" onclick="goInfo(3210)">
+								<img src="http://hiji.hifete.com/Upload/goods/2017-01-17_114532.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
+								<div class="tcTitle">【口水刘】土豆</div>
+								<div class="price mui-row">
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="strong-color"><sub>￥</sub>10</p>
+									</div>
+									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>评价<%= list[i].comments %>条</sub></span>-->
+									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>已售<%= list[i].sales %></sub></span>-->
+								</div>
+							</a>
+						</div>
+						<div class="mui-col-sm-4 mui-col-xs-4 tcDiv">
+							<a class="react tcA" onclick="goInfo(3455)">
+								<img src="http://hiji.hifete.com/Upload/goods/2017-01-22_154836.png" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg"/>
+								<div class="tcTitle">【胖多多】豆干</div>
+								<div class="price mui-row">
+									<div class="mui-col-sm-12 mui-col-xs-12">
+										<p class="strong-color"><sub>￥</sub>15</p>
+									</div>
+									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>评价<%= list[i].comments %>条</sub></span>-->
+									<!--<span class="mui-col-sm-6 mui-col-xs-6"><sub>已售<%= list[i].sales %></sub></span>-->
+								</div>
+							</a>
+						</div>
+						
+						
+					</div>
 				</div> 
-				<script type="text/html" id="sf-detail">
+				<!--<script type="text/html" id="sf-detail">
 					<%if(list.length==0){%>
 						<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
 					<%}else{%>
@@ -580,30 +642,30 @@
 							</div>
 						<% } %>
 					<% } %>
-				</script> 
+				</script> -->
 			</div>
 			<!--爱回家-->
 			<div class="mainModal" style="position: relative;" onclick="goHome()">
 				<div class="mContent">
-					<img src="../img/main4.jpg"/>
-					<div class="mBack">
+					<img src="../img/main4.png"/>
+					<!--<div class="mBack">
 						<div class="mInner">
 							<p class="mTitle">爱回家</p>
 						</div>
-					</div>
+					</div>-->
 				</div>
 			</div> 
 			<div class="sy_recmd" style="padding-top: 10px;padding-bottom:10px;background-color: #fff;">
 				<div class="sy_recmd_list_box">
 					<div id="ahj" class="mui-row">
 						<div class="mui-col-sm-3 mui-col-xs-3 tcDiv vipDiv">
-							<img src="../img/viplove/zouxuemei.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(1)" class="tcImg vipImg"/>
+							<img src="../img/viplove/yhy1.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(1)" class="tcImg vipImg"/>
 						</div>
 						<div class="mui-col-sm-3 mui-col-xs-3 tcDiv vipDiv">
-							<img src="../img/viplove/zhangyidan.jpeg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(2)" class="tcImg vipImg"/>
+							<img src="../img/viplove/zhumeiyan.jpeg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(2)" class="tcImg vipImg"/>
 						</div>
 						<div class="mui-col-sm-3 mui-col-xs-3 tcDiv vipDiv">
-							<img src="../img/viplove/zh1.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(3)" class="tcImg vipImg"/>
+							<img src="../img/viplove/qf2.jpeg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(3)" class="tcImg vipImg"/>
 						</div>
 						<div class="mui-col-sm-3 mui-col-xs-3 tcDiv vipDiv">
 							<img src="../img/viplove/ly.jpg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(4)" class="tcImg vipImg"/>
@@ -615,10 +677,10 @@
 							<img src="../img/viplove/xhf.JPG" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(6)" class="tcImg vipImg"/>
 						</div>
 						<div class="mui-col-sm-3 mui-col-xs-3 tcDiv vipDiv">
-							<img src="../img/viplove/ll.jpeg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(6)" class="tcImg vipImg"/>
+							<img src="../img/viplove/ll.jpeg" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(7)" class="tcImg vipImg"/>
 						</div>
 						<div class="mui-col-sm-3 mui-col-xs-3 tcDiv vipDiv">
-							<img src="../img/viplove/ll.JPG" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(6)" class="tcImg vipImg"/>
+							<img src="../img/viplove/ll.JPG" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" onclick="goVip(8)" class="tcImg vipImg"/>
 						</div>
 					</div>
 				</div> 
@@ -629,12 +691,12 @@
 			<!--家乡生活（本地生活）-->
 			<div class="mainModal" style="position: relative;" onclick="localLife()">
 				<div class="mContent">
-					<img src="../img/main3.png"/>
-					<div class="mBack">
+					<img src="../img/mainJx.jpg"/>
+					<!--<div class="mBack">
 						<div class="mInner">
 							<p class="mTitle">家乡生活</p>
 						</div>
-					</div>
+					</div>-->
 				</div>
 			</div> 
 			<!--新增小模块-->
@@ -672,21 +734,21 @@
 			</div> -->
 			
 			<!--帮帮团-->
-			<div class="mainModal" style="position: relative;" onclick="helpYou()">
-				<div class="mContent">
-					<img src="../img/main3.jpg"/>
-					<div class="mBack">
-						<div class="mInner">
-							<p class="mTitle">为您排忧</p>
-						</div>
-					</div>
+			<div class="mainModal" style="position: relative;" onclick="helpYou()" style="height: 100%;">
+				<div class="mContent" style="padding-top: 60%;">
+					<img src="../img/main3.png" style="height: auto;"/>
+					<!--<div class="mBack">-->
+						<!--<div class="mInner">-->
+							<!--<p class="mTitle">为您排忧</p>-->
+						<!--</div>-->
+					<!--</div>-->
 				</div>
 			</div> 
-			<div class="sy_recmd" style="padding-top: 10px;padding-bottom:10px;background-color: #fff;">
+			<!--<div class="sy_recmd" style="padding-top: 10px;padding-bottom:10px;background-color: #fff;">
 				<div class="sy_recmd_list_box">
 					<div id="bbt" class="mui-row"></div>
-				</div> 
-				<script type="text/html" id="bbt-detail">
+				</div> -->
+				<!--<script type="text/html" id="bbt-detail">
 					<%if(helpLi.length==0){%>
 						<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
 					<%}else{%>
@@ -698,17 +760,13 @@
 									<% }else{ %> 
 										<img src="<%=myUrl%><%= helpLi[i].headPic %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="tcImg circle"/>
 									<% } %>
-									<!--<div class="tcTitle center"><%= helpLi[i].name %></div>-->
-									<!--<div class="price mui-row">-->
-										<!--<p class="center"><sub><%= helpLi[i].address %></sub></p>-->
-										<!--<p class="center"><sub><%= helpLi[i].occupation %></sub></p>-->
-									<!--</div>-->
+									
 								</a>
 							</div>
 						<% } %>
 					<% } %>
-				</script> 
-			</div>
+				</script> -->
+			<!--</div>-->
 		
 			<!--推荐列表-->
 			<div class="sy_recmd">
@@ -847,7 +905,7 @@
 		//点击进入爱回家（）
 		function goHome(){
 			openview({
-				view:'appriciate/apprenticeDetail.html'
+				view:'appriciate/appriciate.html'
 			})
 		}
 		//点击进入本地生活
@@ -876,7 +934,7 @@
 			clearInterval(Timetoken);
 			againfun();
 			Timetoken = setInterval(function(){//等待oldToken加载方法
-				console.log('计时器');
+//				console.log('计时器');
 				if(plus.storage.getItem('oldToken')){
 					clearInterval(Timetoken);
 					oldToken = plus.storage.getItem('oldToken');
@@ -923,9 +981,9 @@
 				});
 				fil.addEventListener('tap', function(){
 					openview({
-						view:'appriciate/apprenticeDetail.html',
+						view:'appriciate/appriciate.html',
 						id:"apprenticeDetail",
-						extrasobj:{activityId:1}
+//						extrasobj:{activityId:1}
 					});
 				});
 				loveBuy.addEventListener('tap', function(){
@@ -969,15 +1027,22 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					console.log('banner',data);
+					
+					
 					bannerObj={};
 					if(data.data.banner){
 						bannerObj.bannerList = eval("("+data.data.banner+")");
+						console.log('banner图',bannerObj.bannerList);
+//						alert(JSON.stringify(bannerObj.bannerList[0]));
+						bannerObj.url = serverimgUrl;
+						var html = template('banner-detail',bannerObj);
+						
+						
+						document.getElementById('banner').innerHTML = html;
+						plus.nativeUI.closeWaiting();//关闭等待框
 					}
-					console.log('banner图',bannerObj.bannerList);
-					bannerObj.url = serverimgUrl;
-					var html = template('banner-detail',bannerObj);
-					document.getElementById('banner').innerHTML = html;
-					plus.nativeUI.closeWaiting();//关闭等待框
+//					for(var a=0;a<data.data)
+		 			
 					//轮播图,获得slider插件对象
 					var gallery = mui('.mui-slider');
 					gallery.slider({
@@ -1038,8 +1103,8 @@
 						objdata.list = data.data.return.data;
 //						var html=template("ttc-detail",objdata);
 //						document.getElementById("ttc").innerHTML=html;
-						var html2=template("sf-detail",objdata);
-						document.getElementById("sf").innerHTML=html2;
+//						var html2=template("sf-detail",objdata);
+//						document.getElementById("sf").innerHTML=html2;
 					}
 				}else{
 					
@@ -1051,53 +1116,16 @@
 				}
 			});
 			
-			//帮帮团
-			mui.ajax(serverUrl+'/api/localservice/recommendhelper',{
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){
-					console.log(data);
-					for(var i = 0;i < data.data.length;i++ ){
-						data.data[i].competency = eval("("+data.data[i].competency+")");
-					}
-					var helpObj = {};
-					helpObj.myUrl = serverimgUrl;
-						helpObj.helpLi = data.data;
-					var html = template('bbt-detail',helpObj);
-					document.getElementById('bbt').innerHTML = html; 
-					plus.nativeUI.closeWaiting();//关闭等待框
-					
-					//点击专家，进入问题发布
-					window.forHelp=function(helpId,address,street){
-						if(plus.storage.getItem('myToken')){
-							openview({
-								view:"serveForPeople/linshuiHelpDetail.html",
-								extrasobj:{helpId:helpId,address:address,street:street}
-							})
-						}else{
-							mui.toast('请登录');
-							openview({
-								view:'login.html'
-							})
-						}
-					}
-				},
-				error:function(xhr,type,errorThrown){
-					mui.toast('当前网络不好,请重试');
-				}
-			}); 
-			
  			//热门推荐 数据渲染  
  			var currentPage =1, numsPerPage=4;
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist', {
-				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type: 'price',desc:''},
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,recommend:1,differentiate:1,storeId:'',brand:'',keyword:'',order_type:'price',desc:''},
 				dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型 
 					timeout:10000,//超时时间设置为10秒；	
 					headers:{"token":oldToken}, 
 					success:function(data){
+						
 						//获取并渲染  eval("("+data1+")");
 						//var dataobj= eval("("+data.data.banner+")"); 
 						if(data.errno==0){

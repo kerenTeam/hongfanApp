@@ -36,7 +36,7 @@
 			<%if(goodsList.length==0){%>
 				<div style="text-align: center;" onclick="hangout()">
 					<img src="../img/market/blankCart.png" style="width:30%;margin: auto;display: block;margin-top: 40%;" alt="" />
-					
+
 				</div>
 			
 			<%}else{%>
@@ -44,18 +44,20 @@
 			<dl class="cart">
 				<dt><div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
 				<div class="shopName"><img class="cartLogo" src="../img/573a7a6742999.png" style="margin-right: 5px;"> <%=cates[i]%></div>
-  <a class="edit">| 编辑</a>
- </dt>
+				  <a class="edit">| 编辑</a>
+				 </dt>
 				<%for(var j =0;j<goodsList.length;j++){%>
 				<% if(goodsList[j].shopName ==  cates[i]){%>
 				<dd>
-					<div class="mui-checkbox" style="top: 30%;"><input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].shopId%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-num="<%=goodsList[j].goodsnum%>" type="checkbox"></div>
+					<div class="mui-checkbox" style="top: 30%;">
+						<input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].shopId%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-gdDelivery="<%=goodsList[j].goodsDelivery%>" data-num="<%=goodsList[j].goodsnum%>" type="checkbox"></div>
 					<% if(goodsList[j].shopName == '跨境优品'){%>
-						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')"><img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../img/market/none.png';"/></a>
+						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')">
+							<img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../img/market/none.png';"/>
+						</a>
 					<%}else{%>
 						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../img/market/none.png';"/></a>
-
-						<%}%>
+					<%}%>
 					<div class="goodsInfor"> <!--onclick="goGoods('<%=goodsList[j].goodsId%>')"-->
 						<h2>  
 						    <a><%=goodsList[j].goodsName%></a>
@@ -127,8 +129,8 @@
         var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');  
        //订单缓存
         var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]');  
-       
-       
+
+//     alert(JSON.stringify(orderStorage));
         	var data = {};
 			data.goodsList = cartStorage; 
 			var arr = [];
@@ -391,8 +393,7 @@
 					} else {
 						
 						if(plus.storage.getItem('myToken')){ 
-							 
-								//订单缓存
+							//订单缓存
 							var orderStorage = [];
 							$("dd").find("input[type='checkbox']:checked").each(function(){ 
 								var orderObj = {};
@@ -411,6 +412,7 @@
 								orderObj.goodsImg = $(this).attr("data-gdImg");
 								orderObj.goodsPrice = $(this).attr("data-gdprice");
 								orderObj.goodsPostfee = $(this).attr("data-gdPostfee");
+								orderObj.goodsDelivery = $(this).attr("data-gdDelivery");
 								orderStorage.push(orderObj) 
 								
 								

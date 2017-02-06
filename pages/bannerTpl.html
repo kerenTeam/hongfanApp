@@ -14,8 +14,22 @@
 <style type="text/css">
 	iframe{ 
 		width: 100%; 
+		overflow: hidden;
+		max-width: 100%; 
+		min-width: 100%; 
 		margin-top: 50px; 
 	}
+	iframe body iframe{
+		width: 100% !important;
+	}
+	img{
+		width: 100% !important;
+	}
+	/*#iframe{ 
+		width: 100%;  
+		min-height: 1000px;
+	}*/
+	
 </style>
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -25,6 +39,7 @@
 		<script src="../js/statusBar.js"></script><!--状态栏-->
 		<iframe id="iframe" src=""></iframe>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/jquery.min.js"></script>
 		<script type="text/javascript">
 			mui.init();
 		
@@ -32,9 +47,15 @@
 				var iframeSrc = plus.webview.currentWebview().bannerUrl;
 				var name = plus.webview.currentWebview().bannerName;
 				var iframeHeight = window.screen.availHeight;
+				var iframeWidth = window.screen.availWidth;
+
 					document.getElementById('iframe').height = iframeHeight; 
+					document.getElementById('iframe').width = iframeWidth; 
+//					$('#iframe').css('max-width','720px'); 	
 					mui("#iframe")[0].src =iframeSrc; 
 					mui(".mui-title")[0].innerHTML =name;
+
+					console.log(iframeSrc);
 			})
 		</script>
 	</body>
