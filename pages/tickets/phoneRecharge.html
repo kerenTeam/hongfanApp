@@ -156,7 +156,7 @@
 				    <div class="mui-row">
 				        <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 				        	<div class="rechargeItem">
-				        		<p class="rechargeBig">10元</p>
+				        		<p class="rechargeBig">1元</p>
 				            	<!--<p class="rechargeTiny">售价29.97元</p>-->
 				        	</div>
 				        </div>
@@ -250,32 +250,36 @@
 						$(".rechargeItemActive").click(function(){
 							var mobileNo = $("#mobileNo").val();
 							if(reg_phone.test(mobileNo)){
-								plus.nativeUI.showWaiting()
+								plus.nativeUI.showWaiting();
 								var rechargeAmount = parseFloat($(this).find("p").html());
-								//	充话费接口
+									//充话费接口
 									mui.ajax(serverUrl+'/api/qianmi/createmobilebill',{
 										data:{mobileNo:mobileNo,rechargeAmount:rechargeAmount,userid:myuserid},
 										dataType:'json',
 										type:'post',
-										timeout:10000,
+										timeout:1000,
 										headers:{"token":oldToken},
 										success:function(data,type,xhr){
-											plus.nativeUI.closeWaiting();
+											console.log('充值',data);
 											if(data.errno==0){
-												var orderCost = data.data.body.data.orderCost; 
-												var saleAmount = data.data.body.data.saleAmount;
-												var subject = data.data.body.data.itemName;
-												var billId = data.data.body.data.billId;
-												var newOrderID = data.data.new_qianmi_order_id;
+												var orderCost = data.data.body.data.orderCost; //总价
+												var saleAmount = data.data.body.data.saleAmount;//实际价格
+												var subject = data.data.body.data.itemName;//名称
+												var billId = data.data.body.data.billId;//订单号
+												var newOrderID = data.data.new_qianmi_order_id; 
+												var aliPayURL = data.data.aliPayURL;
 												openview({
 													view:"../market/paysecond.html",
 													id:"paysecond",
-													extrasobj:{new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount,pageid:"phoneRecharge",body:data.data.body,subject:subject}
+													extrasobj:{aliPayURL:aliPayURL,new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount,pageid:"phoneRecharge",body:data.data.body,subject:subject}
 												})
 											}
+											plus.nativeUI.closeWaiting();
 										},
 										error:function(xhr,type,errorThrown){
-											 mui.toast('响应失败  !');
+											plus.nativeUI.closeWaiting();
+											mui.toast('当前网络不好,请重试');
+											console.log('响应失败!')
 											
 										}
 									}); 
