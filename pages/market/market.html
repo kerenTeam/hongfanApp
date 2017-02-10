@@ -340,7 +340,7 @@
 				    <!--支持循环，需要重复图片节点-->
 				    <div class="mui-slider-item mui-slider-item-duplicate">
 						<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
-				    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+				    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 				    	<% }else{ %>
 				    		<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
 					    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
@@ -662,7 +662,9 @@
 					console.log('banner',data);
 					if(data.errno==0){
 						bannerObj={};
-						bannerObj.bannerList = eval("("+data.data.banner+")");
+//						bannerObj.bannerList = eval("("+data.data.banner+")");
+						bannerObj.bannerList = JSON.parse(data.data.banner);
+						console.log(bannerObj.bannerList);
 						bannerObj.url = serverimgUrl;
 						var html = template('banner-detail',bannerObj);
 						document.getElementById('banner').innerHTML = html;
