@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>问题反馈</title> 
+		<title>评价晒单</title> 
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css"> 
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
@@ -170,13 +170,14 @@
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						storeid = eval("("+data.data[0].goods_data+")")[0].storeid;
-						var comPic = serverimgUrl+eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsImg;
+//						alert(JSON.stringify(data))
+						storeid = eval("("+data.data[0].goods_data+")").storeid; 
+						var comPic = eval("("+data.data[0].goods_data+")").goodsData[0].goodsImg;
 						$('#comPic').attr('src',comPic);
 											
 						//点击发送
 						window.sendCom = function(){
-							var goodsid = eval("("+data.data[0].goods_data+")")[0].goodsData[0].goodsId;
+							var goodsid = eval("("+data.data[0].goods_data+")").goodsData[0].goodsId;
 //							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
 							var seller_comment = $('#comment').val();
 							var grade_star = $('.mui-icon-star-filled').length;

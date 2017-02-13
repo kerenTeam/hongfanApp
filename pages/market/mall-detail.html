@@ -356,24 +356,8 @@
 				overflow-y: scroll;
 				z-index: -1;
 				padding: 5px 0;
-			}
-			
-			.sdetail {
-				/*height: 490px;*/
-			}
-			
-			.footerone .left {
-				width: 15%;
-			}
-			
-			.footerone .right {
-				width: 85%;
-			}
-			
-			.footerone .left ul li {
-				width: 100%;
-			}
-			
+			} 
+		  
 			.comment {
 				display: block;
 			}
@@ -512,7 +496,11 @@
 								</div>
 								<div class="xia clearfloat">
 									<%if(brief.price){%>
-									<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;"><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;">原价 <del>￥<%=brief.original_price%></del></small></p>
+										<%if(brief.originalprice){%>
+											<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;"><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;">原价 <del>￥<%=brief.originalprice%></del></small></p>
+											<%}else{%>
+											<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;"><%=brief.price%></samp></p>
+												<%}%>
 									<%}else{%>
 									<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;">0</samp></p>
 									<%}%>
@@ -629,6 +617,11 @@
 								<img src="../../img/market/cartIcon.svg" alt="" />
 							</a>
 						</li>
+						<li>
+							<a  onclick="openQQ()">
+								<img src="../../img/market/custom.svg" style="width: 25px;vertical-align: middle;margin-top: 3px;"/>
+							</a>
+						</li>
 					</ul>
 				</div>
 				<div class="right clearfloat fl">
@@ -715,7 +708,17 @@
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
-		
+	var qq;
+			//打开qq对话框
+				function openQQ(){
+					if(/android/i.test(navigator.userAgent)) { //判断为android  
+						document.location.href="mqqwpa://im/chat?chat_type=wpa&uin="+qq;
+					} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+						document.location.href="mqq://im/chat?chat_type=wpa&uin="+qq+"&version=1&src_type=web";
+					} else { //pc端访问  
+		//				mui('#downGame')[0].remove();
+					}
+				}
 		mui.plusReady(function() {
 			var shopId;
 			//获取token
@@ -739,7 +742,7 @@
 					"token": token
 				},
 				success: function(data) {
-					alert(JSON.stringify(data)); 
+					console.log(JSON.stringify(data)); 
 
 					if(data.errno == 0) {
 						plus.nativeUI.closeWaiting();
@@ -750,6 +753,7 @@
 						var dataobj = eval("(" + data.data.goodsInfo.good_pic + ")");
 
 						var commentobj = data.data.comments;
+						    qq = data.data.goodsInfo.qq;
 						//var content = data.data.comments
 						//banner
 						var infoObj = {}

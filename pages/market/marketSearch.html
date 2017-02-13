@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>搜索</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<style type="text/css">
+		 .mui-search:before{
+		 	top:58%;
+		 }
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-action-back{
+				line-height: 50px !important;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{
+				color: #fff;
+			}
+			.mui-bar-nav{
+				box-shadow: none;
+			}
+			.mui-icon .iconfont{
+				font-size: 18px;
+			}
+		
+			.theSearch{
+				width: 100%;
+				background-color: #fff;
+				margin-top: 50px;
+				padding-top: 1px;
+			}
+			.mui-input-row .mui-btn+input, .mui-input-row label+input, .mui-input-row:last-child{
+				margin: 10px;
+			}
+			input[type=search]{
+				margin-bottom: 10px;
+			}
+			.mui-icon-search,.mui-icon-arrowright{
+				color: #ddd;
+				vertical-align: middle;
+			}
+			 .searchOut{
+			 	display: none;
+			 	position: absolute;
+			 	top: 0px;
+			 	width: 100%; 
+			 }
+			 .mui-icon-back:before, .mui-icon-left-nav:before {
+				margin-left: 10%;
+			}
+			 #searchdiv{width: 86%;float: left;border-bottom: 1px solid #fff;height: 45px;}
+			 .mui-bar{padding: 0 1%;}
+			 #words{height: 100%;background: none;border: none;padding: 0;margin: 0;padding-top: 8px;
+    padding-left: 7px;padding-right: 8px;color: #fff;width: 100%;text-align: left;}
+		    #words::-webkit-input-placeholder {color:rgba(255, 255, 255, 0.54);}
+		#searchdiv img{width: 7%;margin-left: 9px;margin-bottom:7px;} 
+		.historyBox{padding-top: 63px;}
+		#searchf{display: inline-block;width: 87%;margin-top: 5px;}
+		#searchOut{padding-top: 95px;}
+		.historyBox li{    padding-right: 60px;
+		    overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;}
+	    .historyBox li span:last-child{position: absolute;right: 10px;}
+		</style> 
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="width: 12%;float: left;margin: 0;padding: 0;"></a>
+		    <!--<h1 class="mui-title">搜索</h1>-->
+		    <div id="searchdiv" >
+		    	<form onsubmit="submitTest();return false;" id="searchf">
+		    		<input type="search" id="words" class="" placeholder="请输入搜索内容">
+				</form>
+		    	
+		    	<img src="../../img/sousuo.svg"/ onclick="submitTest();" >
+		    </div>
+		     
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="container">
+			<!--<section class="hotBox" style="margin-top: 50px;">
+				<div class="title">热门搜索</div>
+				<ul class="hotKeyUl">
+					<li>
+						<a href="#">酒店</a>
+					</li>
+					<li>
+						<a href="#">火锅</a>
+					</li>
+					<li>
+						<a href="#">料理</a>
+					</li>
+					<li>
+						<a href="#">酒店</a>
+					</li>
+					<li>
+						<a href="#">电影</a>
+					</li>
+					<li>
+						<a href="#">家政</a>
+					</li>
+					<li>
+						<a href="#">洗车</a>
+					</li>
+					<li>
+						<a href="#">美妆</a>
+					</li>
+				</ul>
+			</section>-->
+			
+			<!--搜索历史-->
+			
+			<div id="record">
+				 
+			</div>
+				<script id="recordTpt2" type="text/html">
+					<section class="historyBox" style="">
+					<div class="title">搜索历史</div>
+					<ul>
+					 	<li class="clear clearStr">暂无搜索历史</li>
+					</ul>
+				</section>
+				</script>	
+				<script id="recordTpt" type="text/html">
+					<%if(data.length==0){%>
+						<!--<div class="searchRecord">
+							&nbsp;&nbsp;搜索记录:无
+						</div> -->
+						<%}else{%>
+							<section class="historyBox" style="">
+								<div class="title">搜索历史</div>
+								<ul>
+									<%for(var i=data.length-1;i>=0;i--){%>
+										<li class="link-url searchli"><span class="mui-icon mui-icon-search"></span> <%=data[i]%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+									<%}%>
+									 <li class="clear clearStr">清除搜索记录</li>
+								</ul>
+							</section> 
+							<%}%>
+					
+				</script> 
+		 </div>
+		 <!--搜索结果-->
+		    <section class="historyBox searchOut" id="searchOut" style="margin-top: -13px;font-size: 14px;color: #777;"> 
+		    	 
+			</section>
+			<script type="text/html" id="searchOutTpl">
+		    		<ul>
+		    		<!--商城-->
+		    			<%if(searchData.length!=0){%>
+		    				<%for(var i=0;i < searchData.length;i++){%>
+		    			   		<li onclick="opendetails3('<%=searchData[i].goods_id%>','<%=searchData[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span> <%=searchData[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+		    				<%}%>
+		    			<%}%> 
+					</ul>
+		    	</script>
+	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			//自动弹出输入法
+		  	var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+			    if (mui.os.android) {
+			        var main = plus.android.runtimeMainActivity();
+			        var Context = plus.android.importClass("android.content.Context");
+			        InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+			        imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+			    } else {
+			        nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+			    }
+			};
+			var showSoftInput = function() {
+			    if (mui.os.android) {
+			        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+			    } else {
+			        nativeWebview.plusCallMethod({
+			            "setKeyboardDisplayRequiresUserAction": false
+			        });
+			    }
+		        //此处可写具体逻辑设置获取焦点的input
+		        setTimeout(function() {
+			       var inputElem = document.getElementById('words');
+	               inputElem.focus(); 
+                }, 200); 
+			};
+	    	initNativeObjects();
+	    	showSoftInput();
+			
+			//缓存记录
+			var searchStorageM =JSON.parse(plus.storage.getItem("$searchStorageM") || '[]');
+			//搜索方法
+			window.submitTest = function(){
+				if($("input").val()!=''){ 
+					var words=$("input").val();
+					if(searchStorageM.length != 0) {
+						var flag = false;
+						for(var i = 0; i < searchStorageM.length; i++) {
+							if(searchStorageM[i] == words) {
+								searchStorageM[i] = words;
+								flag = false;
+								break;
+							} else {
+								flag = true;
+							}
+						}
+						if(flag) {
+							searchStorageM.push(words);
+						}
+					}else{ 
+						searchStorageM.push(words);
+						
+					} 
+					plus.storage.setItem('$searchStorageM', JSON.stringify(searchStorageM)); 
+					$("#container").css("display","none");
+					$(".searchOut").css("display","block"); 
+					//执行搜索
+					doSearch(words);
+				}else{
+					mui.toast("请输入搜索内容！");
+					$("#container").css("display","block");
+					$(".searchOut").css("display","none");
+				} 
+			}
+			function doSearch(words){
+					plus.nativeUI.showWaiting()
+					var oldtoken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/mall/mallsearch',{
+						data:{goodsName:words},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldtoken},	 
+						success:function(data,type,xhr){ 
+//							alert(JSON.stringify(data))
+							plus.nativeUI.closeWaiting();
+							
+							if(data.errno==0){
+								if(data.data.length!=0){
+								 var searchObj = {};
+								 searchObj.searchData = data.data;
+								 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
+							}else{
+								document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
+							}
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting()
+							console.log('响应失败  !');
+						}
+					});
+			}
+			//缓存记录 渲染
+			var recordObj = {};
+			recordObj.data= searchStorageM;
+			if(searchStorageM.length){
+				var htmlrecord = template('recordTpt', recordObj);
+			}else{
+				var htmlrecord = template('recordTpt2', recordObj);
+			}
+		    document.getElementById('record').innerHTML = htmlrecord;
+		    //清除记录
+		    mui('.clearStr')[0].addEventListener('tap',function(){
+			 	plus.storage.removeItem("$searchStorageM");
+			 	$('.link-url').css("display","none");
+			 	mui(".clearStr")[0].innerHTML="暂无搜索历史"; 
+			})
+			//搜索某一条 缓存 
+			$('.searchli').click(function(e){
+			    e.preventDefault(); 
+			    $("#container").css("display","none");
+				$(".searchOut").css("display","block"); 
+			   $("input").val($(this).text());
+			    doSearch($.trim($(this).text()))
+			})
+		})
+		 
+		//跳转 商品详情
+		function opendetails3(id,did){
+			if(did == 1){
+				openview({
+					view:'mall-detail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			if(did == 2){
+				openview({
+					view:'jifen-detail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			if(did == 3){
+				openview({
+					view:'yphDetail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			if(did == 4){
+				openview({
+					view:'hometown-detail.html',
+					extrasobj:{goodsId:id}
+				})
+			}
+			
+		} 
+	 
+	</script>
+</html>

@@ -97,7 +97,12 @@
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
 														<span></span>
-														<img src="<%=myUrl%><%=data.goods_data.goodsData[i].goodsImg%>"/>
+															<%if(data.goods_data.storeid == 0){%>
+															<img src="<%=data.goods_data.goodsData[i].goodsImg%>"/>
+															<%}else{%>
+																<img src="<%=myUrl%><%=data.goods_data.goodsData[i].goodsImg%>"/>
+															<%}%>
+														
 													</div>
 													<div class="dealcard-block-right">
 														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.goods_data.goodsData[i].goodsName%></span> <span class="fr">￥<b><%=data.goods_data.goodsData[i].goodsPrice%></b></span></div>
@@ -143,9 +148,9 @@
 												<div class="tip-title">积分抵扣<span class="fr">-￥ <%=data.is_intergal%></span></div>
 											</li>
 										<%}%>
-										<%if(data.coupon_id!=null){%>
+										<%if(!data.coupon_id){%>
 										<li class="gray">
-											<div class="tip-title">优惠券抵扣<span class="fr">-￥ 10.00</span></div>
+											<div class="tip-title">优惠券抵扣<span class="fr">等待后台返回</span></div>
 										</li>
 										<%}%>
 										<%if(total_fee){%>
@@ -154,7 +159,7 @@
 											</li>
 										<%}else{%>
 											<li>
-												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=data.goods_data.totalMoney%></span></div>
+												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=data.goods_data.totalMoney%></span><small class="fr">等待后台返回</small></div>
 											</li>
 											<%}%> 
 								</ul>
