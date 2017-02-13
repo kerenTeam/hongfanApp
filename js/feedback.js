@@ -23,7 +23,7 @@
 	mui.plusReady(function() {
 		myuserid = plus.storage.getItem('userid');
 		oldtoken = plus.storage.getItem('oldToken');
-		alert(oldtoken)
+//		alert(oldtoken)
 		//设备信息，无需修改
 		feedback.deviceInfo = {
 			appid: plus.runtime.appid, 
