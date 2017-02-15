@@ -232,7 +232,15 @@
 												</div>
 											<%}else{%>
 												<div class="order-bottom clearfloat box-s tip">
-													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
+													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;
+														<%if(orderData[i].order_status==1){%>
+															<%if(orderData[i].fee_name){%>
+																<%=orderData[i].fee_name%> <span style="color: orange;"><%=orderData[i].fee%></span>
+															<%}else{%>
+																订单调整 <span style="color: orange;"><%=orderData[i].fee%></span>
+																<%}%>
+																<%}%>
+														合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
 														<%if(orderData[i].goods_data.postFee==0){%>
 															(不含运费)
 															<%}else{%>
@@ -375,6 +383,17 @@
 						if(data.data.length!=0){ 
 							for(var i=0;i<data.data.length;i++){ 
 								data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
+								if(data.data[i].fee){
+									
+									data.data[i].goods_data.totalMoney = parseFloat(data.data[i].goods_data.totalMoney+data.data[i].fee).toFixed(2)
+									
+									if(data.data[i].fee>0){
+										data.data[i].fee = "+￥"+data.data[i].fee;
+									}else{
+										data.data[i].fee = "-￥"+data.data[i].fee;
+									}
+									 
+								}
 							}
 //							alert(data.data[1].goods_data.goodsData[0].goodsImg)
 							var obj={}; 
@@ -493,7 +512,7 @@
 			
 				 
 			
-			//数组去重
+	    //数组去重
 		Array.prototype.unique1 = function() {
 			var res = [this[0]];
 			for(var i = 1; i < this.length; i++) {

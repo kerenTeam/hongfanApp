@@ -134,6 +134,17 @@
 						<dl id="deal-terms" class="list">
 							<dd class="dd-padding dd-paddingfour">
 								<ul>
+									<%if(data.order_status==1){%>
+										<%if(data.fee_name){%>
+										<li class="gray">
+											<div class="tip-title"><%=data.fee_name%><span class="fr"><%=data.fee%></span></div>
+										</li> 
+										<%}else{%>
+										<li class="gray">
+											<div class="tip-title">订单调整<span class="fr"><%=data.fee%></span></div>
+										</li> 
+											<%}%>
+											<%}%>
 									<%if(data.goods_data.fee==0){%>
 									<li class="gray">
 										<div class="tip-title">运费<span class="fr">￥ <%=data.goods_data.fee%></span></div>
@@ -264,6 +275,17 @@
 						console.log(JSON.stringify(data.data)) ;
 				       if(data.errno===0){
 					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
+					       	 if(data.data[0].fee){
+									
+									data.data[0].goods_data.totalMoney = parseFloat(data.data[0].goods_data.totalMoney+data.data[0].fee).toFixed(2)
+									
+									if(data.data[0].fee>0){
+										data.data[0].fee = "+￥"+data.data[0].fee;
+									}else{
+										data.data[0].fee = "-￥"+data.data[0].fee;
+									}
+									 
+								}
 					       	 var orderInfo = {};
 					       	 if(data.data[0].pay_no){
 					       	 	data.data[0].pay_no = eval("("+data.data[0].pay_no+")");
