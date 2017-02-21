@@ -45,10 +45,10 @@
 				<img src="../img/center/main.png" style="height: 27px;"/><br />
 				<span class="mui-tab-label">首 页</span>
 			</a>
-			<!--<a id="find" class="mui-tab-item" href="rush.html">-->
-				<!--<span class="mui-icon mui-icon-camera"></span>-->
-				<!--<span class="mui-tab-label">发现</span>-->
-			<!--</a>-->
+			<a id="find" class="mui-tab-item" href="find.html">
+				<span class="mui-icon mui-icon-camera"></span>
+				<span class="mui-tab-label">发现</span>
+			</a>
 			<a id="cart" class="mui-tab-item muidingwei" href="cart.html" style="position: relative !important;top: 2px !important;">
 				<!--<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>-->
 				<!--<i class="demo-icon icon-shopping-bag"></i>-->
@@ -67,8 +67,8 @@
 		<script type="text/javascript" charset="utf-8">
 			 //mui初始化
 			mui.init();
-//			var subpages = ['main.html', 'rush.html', 'cart.html', 'center.html'];
-			var subpages = ['main.html', 'cart.html', 'center.html'];
+			var subpages = ['main.html', 'find.html', 'cart.html', 'center.html'];
+//			var subpages = ['main.html', 'cart.html', 'center.html'];
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
@@ -76,6 +76,23 @@
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
+				
+				//获取当前应用版本号
+				var wgtVer=null;
+					function plusReady(){
+					    // ......
+					    // 获取本地应用资源版本号
+					    plus.runtime.getProperty(plus.runtime.appid,function(inf){
+					        wgtVer=inf.version;
+					        console.log("当前应用版本："+wgtVer);
+					    });
+					}
+					if(window.plus){
+					    plusReady();
+					}else{
+					    document.addEventListener('plusready',plusReady,false);
+					}
+				
 				Sign();
 				var timeSign = null;
 				clearInterval(timeSign);
@@ -118,7 +135,7 @@
 				}//登录方法结束
 				
 				var self = plus.webview.currentWebview();
-				for (var i = 0; i < 3; i++) {
+				for (var i = 0; i < 4; i++) {
 					var temp = {};
 					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
 					if (i > 0) {
