@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>发现详情</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" href="../../css/one.css">
+		<!--<link rel="stylesheet" type="text/css" href="../../css/find.css"/>-->
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
+		<script src="../../js/mui.min.js"></script> 
+		<script src="../../js/app.js"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js"></script>
+		<style type="text/css">
+		.comment{ 
+			padding-bottom: 20px;
+		}
+		 	 .heart {
+				background:url(../../img/market/web_heart_animation.png);
+				background-position:left;
+				background-repeat:no-repeat;
+				height:60px;
+				width:60px;
+				cursor:pointer;
+				position:absolute;
+				left:-14px;
+				top: -10px;
+				background-size:2900%;
+			}
+			.innerheart{
+				height:56px;
+				width:50px;
+				display: inline-block;
+			    left: -36px;
+			    top: -21px; 
+			} 
+			#main {
+				background-color: white!important;
+			}
+			
+			img {
+				width: 100%;
+			}
+			
+			.txtinfo {
+				background-color: white;
+				padding: 5px 10px;
+				line-height: 1.4;
+				letter-spacing: 1px;
+			}
+			
+			.mark {
+				color: coral;
+				margin: 0 2px;
+			}
+			
+			.view {
+				padding: 5px 15px;
+				color: gray;
+			}
+			
+			.view span {
+				color: lightgray;
+				font-size: 20px;
+			}
+			
+			.looker {
+				overflow: hidden;
+				padding: 8px;
+				white-space: nowrap;
+			}
+			
+			.looker li {
+				display: inline-block;
+				border: 1px solid lightgray;
+				border-radius: 50%;
+				padding: 1px;
+				overflow: hidden;
+				width: 0.38rem;
+				height: 0.38rem;
+				margin: 4px;
+				text-align: center;
+			}
+			
+			.looker li:last-child {
+				color: white;
+				line-height: 0.35rem;
+				background: lightgray;
+			}
+			
+			.looker li img {
+				border-radius: 50%;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.noComment {
+				margin: auto;
+				width: 1rem;
+				text-align: center;
+			}
+			
+			.noComment p {
+				padding: 0.1rem 0 0.2rem;
+				font-size: 12px;
+			}
+			
+			.commentNums {
+				padding: 15px 0;
+				text-align: center;
+				background: #EEEEEE;
+			}
+			
+			.oa-contact-cell.mui-table .mui-table-cell {
+				padding: 11px 0;
+				vertical-align: middle;
+			}
+			
+			.oa-contact-cell {
+				position: relative;
+				margin: -11px 0;
+			}
+			
+			.oa-contact-avatar {
+				width: 35px;
+				height: 35px!important;
+			}
+			
+			.oa-contact-avatar img {
+				border-radius: 50%;
+				height: 35px;
+			}
+			
+			.oa-contact-content {
+				width: 100%;
+			}
+			
+			.oa-contact-name {
+				font-size: 14px;
+				margin-right: 20px;
+			}
+			
+			.oa-contact-name{
+				float: left;
+			}
+			
+			.comment .mui-table-view-cell:after {
+				height: 0px!important;
+				-webkit-transform: none;
+				background-color: none;
+			}
+			
+			.cheader {
+				position: relative;
+			}
+			
+			.cheader img {
+				position: absolute;
+				top: 5%;
+			}
+			
+			.oaright {
+				position: relative;
+				left: 15px;
+			}
+			
+			.oaright:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				content: '';
+				left: 0;
+				height: 1px!important;
+				-webkit-transform: scaleY(0.5);
+				background-color: #eee;
+			}
+			.oaright p {
+				word-break: break-all;
+				color: rgba(0, 0, 0, 0.6);
+				font-size: 13px;
+				padding-top: 5px;
+				line-height: 1.5;
+			}
+			
+			.ifcmt {
+				padding-bottom: 40px;
+			}
+			
+			.cocmt {
+				width: 97%;
+				background-color: whitesmoke;
+				padding: 5px;
+				border-radius: 5px;
+				margin: 10px 0;
+			}
+			
+			.cocmt span {
+				color: skyblue;
+			}
+			
+			.cocmt p:last-child {
+				color: skyblue;
+			}
+			
+			.ctime {
+				font-size: 10px;
+				color: #C0C0C0;
+				margin-top: 5px;
+			}
+			
+			.mui-table-view-cell.mui-active {
+				background-color: none!important;
+			}
+			
+			.cmtinput {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				height: 40px;
+				display: table;
+				width: 100%;
+				background-color: whitesmoke;
+			}
+			
+			.cmtinput>div {
+				display: table-cell;
+			}
+			
+			.inputmn {
+				position: relative;
+				background-color: white;
+				color: gray;
+				width: 80%;
+			}
+			
+			.innerInput {
+				margin: 10px!important;
+				line-height: 20px;
+				border-left: 2px solid palevioletred;
+			}
+			.inputmn img{
+				position: absolute;
+				width: 30px;
+				top: 50%;
+				margin-top: -15px;
+				right: 0;
+				height: 30px;
+			}
+			@media (max-width: 340px) {
+				.looker li {
+					width: 0.32rem;
+					height: 0.32rem;
+				}
+				.looker li:last-child {
+					line-height: 0.32rem;
+				}
+			}
+			
+			@media (min-width: 400px) {
+				.looker li {
+					width: 0.42rem;
+					height: 0.42rem;
+				}
+				.looker li:last-child {
+					line-height: 0.42rem;
+				}
+			}
+			
+			.heart:hover,
+			.heart:focus {
+				background-position: right;
+			}
+			
+			@-webkit-keyframes heartBlast {
+				0% {
+					background-position: left;
+				}
+				100% {
+					background-position: right;
+				}
+			}
+			
+			@keyframes heartBlast {
+				0% {
+					background-position: left;
+				}
+				100% {
+					background-position: right;
+				}
+			}
+			
+			.heartAnimation {
+				display: inline-block;
+				-webkit-animation-name: heartBlast;
+				animation-name: heartBlast;
+				-webkit-animation-duration: .8s;
+				animation-duration: .8s;
+				-webkit-animation-iteration-count: 1;
+				animation-iteration-count: 1;
+				-webkit-animation-timing-function: steps(28);
+				animation-timing-function: steps(28);
+				background-position: right;
+			}
+			
+			.feed p {
+				font-family: "Microsoft YaHei", 'Georgia', Times, Times New Roman, serif;
+				font-size: 25px;
+			}
+			
+			.feed {
+				margin-bottom: : 20px;
+				position: relative;
+			}
+			
+			.likeCount {
+				font-size: 12px;
+				display: inline-block;
+				color: #999999;
+				vertical-align: middle1!important;
+			}
+			.oaright:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				content: '';
+				left: 0;
+				height: 1px!important;
+				-webkit-transform: scaleY(0.5);
+				background-color: #ccc;
+			}
+			.oaf:after{
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				content: '';
+				left: 0;
+				height: 0px!important;
+				-webkit-transform: none!important;
+				background-color: #ccc;
+			}
+			.innerCml .cheader img{
+				width: 30px;
+				height: 30px;
+			}
+			.allc{
+				background: whitesmoke;
+				padding: 10px 20px;
+				border-bottom: 1px solid white;
+			}
+			</style>
+		</head>
+	
+		<body>
+			<header class="mui-bar mui-bar-nav" id="header"> 
+			    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			    <h1 class="mui-title findUser">45条回复</h1>
+			    <!--<a href="javascript:;" style="line-height: 50px;color:white;font-size: 25px;" class="fr baocun">+</a>-->
+			</header>
+			<script src="../../js/statusBar.js"></script>
+			<!--状态栏-->
+			<!--<div id="container">-->
+			<div id="main">
+			 
+					<!--有评论-->
+					<div class="comment"> 
+						<ul class="mui-table-view-striped mui-table-view-condensed" style="padding: 20px 0;">
+							 
+							<li class="mui-table-view-cell cmlist">
+								<div class="mui-slider-cell">
+									<div class="oa-contact-cell mui-table">
+										<div class="oa-contact-avatar mui-table-cell cheader">
+											<!--<img src="../../img/10.png" />-->
+											<img src="../../img/market/ag.jpeg" />
+										</div>
+										<div class="oa-contact-content mui-table-cell oaright oaf">
+											<div class="mui-clearfix">
+												<h4 class="oa-contact-name">xxx</h4>
+												<span class="mui-pull-right orp"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>
+												<div class="feed mui-pull-right" id="feed3">
+													<div class="heart innerheart" id="like3" rel="like"></div>
+													<div class="likeCount" id="likeCount3">14</div>
+												</div>
+											</div>
+	
+											<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
+											<p class="oa-contact-email mui-h6">
+												dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
+											</p>
+											 
+										</div>
+									</div>
+								</div>
+							</li>
+							
+						</ul>
+						<p class="allc">评论<span class="mui-pull-right">45条</span></p>
+						<!--回复评论-->
+						<ul class="mui-table-view-striped mui-table-view-condensed" style="background-color: whitesmoke;padding: 20px;">
+							 <li class="mui-table-view-cell cmlist innerCml orp">
+								<div class="mui-slider-cell">
+									<div class="oa-contact-cell mui-table">
+										<div class="oa-contact-avatar mui-table-cell cheader">
+											<!--<img src="../../img/10.png" />-->
+											<img src="../../img/market/ag.jpeg" />
+										</div>
+										<div class="oa-contact-content mui-table-cell oaright">
+											<div class="mui-clearfix">
+												<h4 class="oa-contact-name">xxx</h4>
+												<!--<span class="mui-pull-right"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>-->
+												<div class="feed mui-pull-right" id="feed3">
+													<div class="heart innerheart" id="like3" rel="like"></div>
+													<div class="likeCount" id="likeCount3">14</div>
+												</div>
+											</div>
+	
+											<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
+											<p class="oa-contact-email mui-h6">
+												dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
+											</p>
+											 
+										</div>
+									</div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell cmlist innerCml orp">
+								<div class="mui-slider-cell">
+									<div class="oa-contact-cell mui-table">
+										<div class="oa-contact-avatar mui-table-cell cheader">
+											<!--<img src="../../img/10.png" />-->
+											<img src="../../img/market/ag.jpeg" />
+										</div>
+										<div class="oa-contact-content mui-table-cell oaright">
+											<div class="mui-clearfix">
+												<h4 class="oa-contact-name">xxx</h4>
+												<!--<span class="mui-pull-right"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>-->
+												<div class="feed mui-pull-right" id="feed3">
+													<div class="heart innerheart" id="like3" rel="like"></div>
+													<div class="likeCount" id="likeCount3">14</div>
+												</div>
+											</div>
+	
+											<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
+											<p class="oa-contact-email mui-h6">
+												dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
+											</p>
+											 
+										</div>
+									</div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell cmlist innerCml orp">
+								<div class="mui-slider-cell">
+									<div class="oa-contact-cell mui-table">
+										<div class="oa-contact-avatar mui-table-cell cheader">
+											<!--<img src="../../img/10.png" />-->
+											<img src="../../img/market/ag.jpeg" />
+										</div>
+										<div class="oa-contact-content mui-table-cell oaright">
+											<div class="mui-clearfix">
+												<h4 class="oa-contact-name">xxx</h4>
+												<!--<span class="mui-pull-right"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>-->
+												<div class="feed mui-pull-right" id="feed3">
+													<div class="heart innerheart" id="like3" rel="like"></div>
+													<div class="likeCount" id="likeCount3">14</div>
+												</div>
+											</div>
+	
+											<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
+											<p class="oa-contact-email mui-h6">
+												dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
+											</p>
+											 
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+			 
+				
+		 	
+		 	    <!--评论输入框-->
+		 	    <div class="cmtinput">
+		 	    	<div class="inputmn orp"><div class="innerInput">发射评论~</div><img src="../../img/keyboard.svg" alt="" /></div>
+		 	    	<div class="feed" id="feed1"> 
+						<div class="heart " id="like1" rel="like"></div> <div class="likeCount" style="visibility: hidden;" id="likeCount1">14</div>
+					</div>
+					 
+		 	    	<div class="sharef" style="position: relative;">
+		 	    		<img src="../../img/market/sharef.png" style="width: 20px;position: absolute;top: 10px;right: 10px;"/>
+		 	    	</div>
+		 	    </div>
+		 	    
+				
+		</div>	
+			
+	</body>
+    <script type="text/javascript">
+    	function findInfo(){
+    		openview({
+				view: "find/findInfo.html",
+				extrasobj: {
+					userId: 1
+				}
+			})
+    	} 
+		$('.heart').on("click",function(){
+			event.preventDefault()
+	        event.stopPropagation();
+				var A=$(this).attr("id");
+				var B=A.split("like");
+				var messageID=B[1];
+				var C=parseInt($("#likeCount"+messageID).html());
+				$(this).css("background-position","")
+				var D=$(this).attr("rel");
+		
+				if(D === 'like') {
+					$("#likeCount"+messageID).html(C+1);
+					$(this).addClass("heartAnimation").attr("rel","unlike");
+				}
+				else{
+					$("#likeCount"+messageID).html(C-1);
+					$(this).removeClass("heartAnimation").attr("rel","like");
+					$(this).css("background-position","left");
+				}
+			});
+	 
+	    $(".cocmt").click(function(){
+	    	
+	    	event.preventDefault()
+	    	event.stopPropagation();
+	    	openview({
+				view: "innerComment.html",
+				extrasobj: {
+					userId: 1
+				}
+			})
+	    })
+		//回复跳转
+		$(".orp").click(function(){
+			mui.openWindow({
+			    url:"repComment.html",
+			    id:"repComment",
+			    show:{ 
+			      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
+			      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+			    },
+			     waiting:{
+			      autoShow:false,//自动显示等待框，默认为true
+			    }
+			})
+		})
+    </script>
+</html> 
