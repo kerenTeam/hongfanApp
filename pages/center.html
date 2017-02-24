@@ -16,7 +16,7 @@
 		<link rel="stylesheet" href="../css/one.css">
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		
-		<style type="text/css">
+		<style type="text/css"> 
 			.muibackdrop{display: none;}
 			.white{color:#FFFFFF !important;}
 			.editImg{position: relative;}
@@ -187,10 +187,9 @@
 			    		<b class="denlu denluzhuce" style="display: inline-block;min-height: 20px;" id="numjifen"> </b>
 			    		<span class="cpage"><span style="vertical-align: middle;">个人主页</span><img src="../img/you.svg" alt="" /></span>
 			    	</p>
-			    	<!--<p></p>-->
-			    	<div id="" style="margin-top: 30px;font-size: 13px;">
-			    		<span id="">关注 100</span>
-			    		<span id="" style="margin-left: 10px;">被关注 10</span>
+			    	<div style="margin-top: 10px;font-size: 13px;display: none;"> 
+			    		<span id="follow1" style="display:inline-block;padding: 5px 0;">关注 100</span>
+			    		<span id="follow2" style="margin-left: 10px;display:inline-block;padding: 5px 0;">被关注 10</span>
 			    	</div>
 			    </div>
     			<button type="button" id="screeningdiv" style="top: 10px;" class="mui-btn mui-btn-danger mui-btn-outlined fr dao">签到</button>
@@ -245,10 +244,11 @@
     				<td class="aClick myCHAGE"><img style="width: 25px;padding-bottom: 3px;" src="../img/duihuan.svg"/>兑换</td>
     				<td class="aClick wodeyouhuijuan"><img  src="../img/youhuijuan.svg"/>优惠卷</td>
     			</tr>
-    			<tr> 
+    			<tr style="border-bottom: none;"> 
     				<td class="aClick integral_oder"><img style="width: 25px;padding-bottom: 3px;" src="../img/jifen.svg"/>积分</td> 
     				<td class="aClick" id="writeOff1" style="display: none;"><img style="width: 26px;padding-bottom: 2px;" src="../img/hexiao1.svg"/>核销</td> 
-    				<td class="aClick aboutUs"><img  src="../img/guanyu.svg"/>关于</td> 
+    				<!--<td class="aClick aboutUs"><img  src="../img/guanyu.svg"/>关于</td>--> 
+    				<td class="aClick shezhi"><img  src="../img/shezhi.svg"/>设置</td> 
     			</tr>
     		</table>
     	</div>
@@ -298,6 +298,8 @@
 									}else{
 										mui('#numjifen')[0].innerHTML = '积分: '+data.data[0].intergral;
 									}
+									//显示关注
+									
 									
 									//显示核销
 									if(data.data[0].gid == 2){
@@ -410,7 +412,7 @@
 						}
 					});
 					//我的快递
-					mui('.wmai-order')[0].addEventListener('tap',function(){
+					mui('.wmai-order')[0].addEventListener('tap',function(){ 
 						if(plus.storage.getItem('myToken')){ 
 							openview({
 								view:'personal/my-delivery.html'
@@ -531,10 +533,23 @@
 						}
 					});
 					//关于我们
-					mui('.aboutUs')[0].addEventListener('tap',function(){
-						if(plus.storage.getItem('myToken')){ 
+//					mui('.aboutUs')[0].addEventListener('tap',function(){
+//						if(plus.storage.getItem('myToken')){ 
+//							openview({
+//								view:'end.html' 
+//							});
+//						}else{//没登陆直接打开登录页面
+//							mui.toast('请登录');
+//							openview({
+//								view:'login.html'
+//							});
+//						}
+//					});	
+					//设置
+					mui('.shezhi')[0].addEventListener('tap',function(){
+						if(!plus.storage.getItem('myToken')){ 
 							openview({
-								view:'end.html' 
+								view:'personal/shezhi.html' 
 							});
 						}else{//没登陆直接打开登录页面
 							mui.toast('请登录');
@@ -542,8 +557,7 @@
 								view:'login.html'
 							});
 						}
-					});	
-					
+					});
 				}//刷新	
 			});
 		</script>
