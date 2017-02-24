@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>发布发现</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" href="../../css/one.css">
+		<link rel="stylesheet" type="text/css" href="../../css/find.css" />
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<style type="text/css">
+		#imgUpload {
+			display: none;
+		}
+		
+		.ptet {
+			font-size: 12px;
+			border: none;
+		}
+		
+		label {
+			vertical-align: top;
+			width: calc((100%-20px)*2/5);
+		}
+		
+		.ptet {
+			width: calc((100%-20px)*3/5);
+		}
+		
+		.publishf {
+			padding: 10px;
+		}
+		
+		.addbg {
+			padding: 0 10px;
+		}
+		
+		.mui-badge {
+			padding: 5px 10px;
+			margin: 5px;
+			background: #eee;
+		}
+		
+		.mui-badge:not(:last-child) {
+			color: palevioletred;
+		}
+		
+		.location {
+			padding: 20px;
+			border-top: 10px solid #EEEEEE;
+		}
+		
+		.location img {
+			width: 0.3rem;
+			margin-right: 10px;
+		}
+		
+		.addbgs {
+			margin-right: 2px;
+			color: coral;
+			padding: 0 2px;
+		}
+		
+		.disbg {
+			margin: 0 10px;
+			min-height: 30px;
+			line-height: 1.2;
+		}
+		
+		[contenteditable=true] {
+			display: inline-block;
+			/*width: 100%;*/
+			vertical-align: middle;
+			min-height: (1em * line-height);
+			/*1个input的高度*/
+		}
+	</style>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="mui-icon mui-pull-left bigSize back" style="font-size: 0.14rem;">取消</a>
+			<h1 class="mui-title findUser">发布</h1>
+			<a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun">发送</a>
+		</header>
+		<script src="../../js/statusBar.js"></script>
+		<!--状态栏-->
+		<!--<div id="container">-->
+		<div id="main">
+			<div class="publishf clearfix">
+				<div class="ptet fr">
+					<div class="disbg" contenteditable="true">
+					</div>
+				</div>
+
+				<label class="fl">
+						 
+							<div class="text-center gray" id="preview">
+								<img src="../../img/publisf.svg" style="width: 1rem;"/>
+							</div>
+					 
+						<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
+				 </label>
+			</div>
+			<!--添加标签-->
+			<div class="addbg">
+				<span class="mui-badge">#风景#</span><span class="mui-badge">#美食#</span><span class="mui-badge">#风景#</span><span class="mui-badge">#美食#</span><span class="mui-badge">#话#</span><span class="mui-badge">#热血#</span><span class="mui-badge" id="addbg">#添加标签</span>
+			</div>
+
+			<!--地理定位-->
+			<div class="location">
+				<img src="../../img/location.svg" alt="" /><span id="mapAddress">我的位置</span>
+				<div class="fr">
+					<span></span>
+					<div class="mui-switch mui-switch-mini">
+						<div class="mui-switch-handle"></div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+
+	<script type="text/javascript">
+		//选择标签
+		$(".addbg .mui-badge:not(:last-child)").click(function() {
+			var bg = '<span class="addbgs" contenteditable="false">' + $(this).html() + '</span>';
+			$(".disbg").append(bg)
+		})
+		mui.plusReady(function() {
+			$(".back").on("tap", function() {
+					var btnArray = ['否', '是'];
+					mui.confirm('确定取消吗？', '提示', btnArray, function(e) {
+						if(e.index == 1) {
+							mui.back()
+						} else {}
+					})
+				})
+				//自动弹出输入法
+
+			var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+				if(mui.os.android) {
+					var main = plus.android.runtimeMainActivity();
+					var Context = plus.android.importClass("android.content.Context");
+					InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+					imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				} else {
+					nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+				}
+			};
+			var showSoftInput = function() {
+				if(mui.os.android) {
+					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+				} else {
+					nativeWebview.plusCallMethod({
+						"setKeyboardDisplayRequiresUserAction": false
+					});
+				}
+				//此处可写具体逻辑设置获取焦点的input
+				setTimeout(function() {
+					var inputElem = document.getElementsByClassName('disbg')[0];
+					inputElem.focus();
+				}, 200);
+			};
+			initNativeObjects();
+			showSoftInput();
+
+			//新增标签 
+			document.getElementById("addbg").addEventListener('tap', function(e) {
+				e.detail.gesture.preventDefault(); //修复iOS 8.x平台存在的bug，使用plus.nativeUI.prompt会造成输入法闪一下又没了
+				var btnArray = ['取消', '确定'];
+				mui.prompt('请输入标签名：', '', '新增标签', btnArray, function(e) {
+					if(e.index == 1) {
+						if(e.value) {
+							var vl = $.trim(e.value);
+							var bg = '<span class="addbgs" contenteditable="false">#' + vl + '#</span>';
+							$(".disbg").append(bg)
+						}
+
+					} else {
+						info.innerText = '你点了取消按钮';
+					}
+				})
+
+			});
+
+			//地图定位
+			var watchId;
+
+			function geoInf(position) {
+				var str = "";
+				str += "地址：" + position.addresses + "\n"; //获取地址信息
+				str += "坐标类型：" + position.coordsType + "\n";
+				var timeflag = position.timestamp; //获取到地理位置信息的时间戳；一个毫秒数；
+				str += "时间戳：" + timeflag + "\n";
+				var codns = position.coords; //获取地理坐标信息；
+				var lat = codns.latitude; //获取到当前位置的纬度；
+				str += "纬度：" + lat + "\n";
+				var longt = codns.longitude; //获取到当前位置的经度
+				str += "经度：" + longt + "\n";
+				var alt = codns.altitude; //获取到当前位置的海拔信息；
+				str += "海拔：" + alt + "\n";
+				var accu = codns.accuracy; //地理坐标信息精确度信息；
+				str += "精确度：" + accu + "\n";
+				var altAcc = codns.altitudeAccuracy; //获取海拔信息的精确度；
+				str += "海拔精确度：" + altAcc + "\n";
+				var head = codns.heading; //获取设备的移动方向；
+				str += "移动方向：" + head + "\n";
+				var sped = codns.speed; //获取设备的移动速度；
+				str += "移动速度：" + sped;
+				console.log(JSON.stringify(position));
+				//outLine( str );
+				//alert(position.addresses);
+				longitude = (position.coords.longitude).toFixed(6);
+				latitude = (position.coords.latitude).toFixed(6);
+				//alert("当前位置的纬度："+latitude+" 经度："+longitude);
+				//alert(position.street)
+				$('#mapAddress').html(position.address.street + "" + position.address.poiName)
+			}
+			// 通过定位模块获取位置信息
+			function getGeocode() {
+				//outSet( "获取定位位置信息:" );
+				plus.geolocation.getCurrentPosition(geoInf, function(e) {
+					outSet("获取定位位置信息失败：" + e.message);
+				}, {
+					geocode: true,
+					provider: 'amap'
+				});
+			}
+			//是否显示位置
+			$('.mui-switch').click(function() {
+				if($(this).hasClass("mui-active")) {
+					getGeocode();
+				} else {
+					$('#mapAddress').html("我的位置")
+				}
+			})
+
+		})
+
+		//图片上传文件方法	
+		function previewImage(file) {
+			var MAXWIDTH = 350;
+			var MAXHEIGHT = 249;
+			var div = findPreview(file.parentNode);
+			if(file.files && file.files[0]) {
+				filepic = file.files[0];
+				div.innerHTML = '<img id=imghead>';
+				var img = div.lastChild;
+				img.onload = function() {
+					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+					img.width = rect.width;
+					img.height = rect.height;
+				}
+				var reader = new FileReader();
+				reader.onload = function(evt) {
+					img.src = evt.target.result;
+				}
+				reader.readAsDataURL(file.files[0]);
+			}
+		}
+
+		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+			var param = {
+				top: 0,
+				left: 0,
+				width: width,
+				height: height
+			};
+			if(width > maxWidth || height > maxHeight) {
+				rateWidth = width / maxWidth;
+				rateHeight = height / maxHeight;
+
+				if(rateWidth > rateHeight) {
+					param.width = maxWidth;
+					param.height = Math.round(height / rateWidth);
+				} else {
+					param.width = Math.round(width / rateHeight);
+					param.height = maxHeight;
+				}
+			}
+			param.left = Math.round((maxWidth - param.width) / 2);
+			param.top = Math.round((maxHeight - param.height) / 2);
+			return param;
+		}
+
+		function findPreview(parent) {
+			var childs = parent.childNodes;
+			for(var i = 0; i < childs.length; i++) {
+				if(childs[i].id == "preview")
+					return childs[i];
+			}
+			return div = document.getElementById('preview');
+		}
+		
+		
+		
+		//发送 发布
+		mui('.baocun')[0].addEventListener('tap',function(){ 
+//			plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});
+			var text = $('.disbg').text() || null;
+			alert(text) 
+			var touxiang = mui('#imgUpload')[0].files[0] || {};
+			alert(touxiang.length)
+			mui.plusReady(function(){ 
+				var myuserid = plus.storage.getItem('userid');
+				var oldtoken = plus.storage.getItem('oldToken');
+				 
+				function upfun1(){
+					var fd = new FormData(); 
+					if(touxiang.name){
+						fd.append('avatar',touxiang);
+					}else{
+						alert(5)
+					}
+//			        fd.append('userid',myuserid);  		
+//			        fd.append('nickname',mynickname);  		
+//			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
+//			        fd.append('IDCard',IDnum);  		
+//			        var xhr = new XMLHttpRequest();  	
+//			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
+//			    	xhr.onreadystatechange = function(){
+//			    		if (xhr.readyState===4) { 
+//	    					if (xhr.status===200) {
+//	    						plus.nativeUI.closeWaiting();//关闭等待框
+//	    						var dataobj = JSON.parse(xhr.responseText);
+//	    						console.log('修改'+xhr.responseText);
+//	    						if(dataobj.errno == 0){
+//	    							mui.toast('修改成功');	 
+//	    							//触发跳转页面刷新
+//									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+//									if(plus.webview.getWebviewById('market-order')){ 
+//										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
+//									}
+//									var time2 = setTimeout(function(){
+//										plus.webview.currentWebview().close();
+//									},500)
+//	    						}else{
+//	    							mui.toast('保存失败');	
+//	    						}
+//	    					}else{
+//	    						mui.toast('响应失败');	
+//	    					}
+//	    				}
+//			        } 
+//			        xhr.setRequestHeader("token",oldtoken);
+//			        xhr.send(fd);
+				}
+			})
+		})
+	</script>
+
+</html>
