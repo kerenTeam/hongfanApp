@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>设置</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css"> 
+			body{background-color: #f2f1ee;}
+			.liafter:after{
+				content: '';
+				display: block;
+				height: 1px;
+				background-color: rgba(0,0,0,0.1);
+				-webkit-transform: scaleY(.5);
+			}
+			#main li{height: 55px;line-height: 55px;padding-left: 20px; background-color: #fff;font-size: 15px;color: #333;}
+			#main li span{font-size: 20px;color: #999;float: right;margin: 18px 10px 0;} 
+			.aClick:active{background-color: #eee !important;}
+			#xieyi{text-align: center;margin-top: 60px;color: #e21919;font-size: 13px;}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title">设置</h1>  
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="main"> 
+			<ul>
+				<li class="aClick" id="editdata" style="margin-top: 70px;">编辑资料<span class="mui-icon mui-icon-arrowright"></span></li>
+				<li class="liafter aClick" style="margin-top: 20px;">修改密码<span class="mui-icon mui-icon-arrowright"></span></li>
+				<li class="aClick">检查更新</li>
+				<li class="aClick" id="aboutme" style="margin-top: 20px;">关于<span class="mui-icon mui-icon-arrowright"></span></li>
+				<li class="aClick" id="Signout" style="margin-top: 20px;text-align: center;padding: 0;color: #e21919;;">退出登录</li>
+			</ul>
+			<div id="xieyi">
+				HI集用户协议
+			</div>
+			<div id="" style="text-align: center;margin-top: 40px;color: #777;font-size: 11px;line-height: 20px;"> 
+				© 红帆广场集团  &nbsp; hiji.com<br /> 
+				当前版本号: v1.30
+			</div>
+	    </div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js"></script> 
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			//关于
+			mui('#aboutme')[0].addEventListener('tap',function(){
+				openview({
+					view:'../end.html' 
+				});
+			})
+			//协议
+			mui('#xieyi')[0].addEventListener('tap',function(){
+				openview({
+					view:'../agreement.html' 
+				});
+			})
+			//编辑资料
+			mui('#editdata')[0].addEventListener('tap',function(){
+				openview({
+					view:'setup.html' 
+				});
+			})
+			//退出登录
+			mui('#Signout')[0].addEventListener('tap',function(){
+		        mui.confirm('确认退出登录？', '提示', ['取消', '确定'], function(e) {
+		            if (e.index == 1) {
+			            plus.storage.removeItem('myToken');
+						plus.storage.removeItem('userid');
+						plus.storage.removeItem('Acc_pass');
+						mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+						plus.nativeUI.showWaiting('退出中 ...',{width:'100px',height:'80px'});
+						var time2 = setTimeout(function(){
+							plus.nativeUI.closeWaiting();
+							plus.webview.currentWebview().close();
+							mui.toast('退出成功');
+						},500)	
+		            }
+		        })
+			});
+			
+		});	
+			
+	</script>
+	
+	
+</html>
