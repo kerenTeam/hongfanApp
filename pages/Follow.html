@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>关注</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no"> 
+		<link rel="stylesheet" type="text/css" href="../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/reset.css">  
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
+		<!--引入模板引擎-->
+		<script src="../js/artTemplate-native.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<style type="text/css">
+            .userAvator{  
+				width: 0.4rem;  
+				height: 0.4rem;  
+				border-radius: 50%;
+				margin-right: 10px;
+			}
+			 .follow{
+				position: relative;
+				background-color: white;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				padding:10px 15px;
+				justify-content: space-between;
+			} 
+			 .fllmg{
+			 	width: 100%;
+			 }
+			 
+			 .follow:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 1px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.3);
+				background: #CACACA;
+				bottom: 0;
+			 }
+			 .follow:first-child:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 0px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.3);
+				background: #CACACA;
+				bottom: 0;
+			 }
+			 .follow:before{
+			 	position: absolute;
+			 	content: '';
+			 	height: 1px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.3);
+				background: #CACACA;
+				top: 0;
+			 }
+			 .follow button{
+				font-size: 0.12rem;
+				height: 0.28rem;
+				width: 0.7rem; 
+			}
+			
+			.fchidl{
+				font-size: 0.12rem;
+				/*color: darkgray;*/
+			}
+			.fchidl img{
+				/*vertical-align: middle;*/
+			}
+			.fchidl>div{
+				vertical-align: middle;
+				display: inline-block;
+			    font-size: 0.11rem;	
+			    text-align: left; 
+			 }
+		 .fchidl>div span{
+		 	color: cadetblue;
+		 	font-size: 0.11rem;
+		 }
+		 .fchidl>div small{
+		 	vertical-align: middle;
+		 	color: #C0C0C0; 
+		 }
+		 .listt{
+		 	background: white;
+		 }
+		 .timef{
+		 	width: 0.1rem;
+		 	
+		 }
+		 .tieCt{
+		 	padding: 10px 15px;
+		 }
+		 .tieCt p span{
+		 	color: coral;
+		 	margin-right: 5px;
+		 }
+		 .tieCt img{
+		 	width: 0.13rem; 
+		 }
+		 .tieCt small{
+		 	vertical-align: middle;
+		 	margin-right: 20px;
+		 }
+		 .heart {
+			background: url(../img/market/web_heart_animation.png);
+		    background-position: left;
+		    background-repeat: no-repeat;
+		    height: 65px;
+		    width: 65px;
+		    cursor: pointer;
+		    position: absolute;
+		    left: -40px;
+		    top: -21px;
+		    background-size: 2900%;
+			}
+		 .heart:hover,
+			.heart:focus {
+				background-position: right;
+			}
+			
+			@-webkit-keyframes heartBlast {
+				0% {
+					background-position: left;
+				}
+				100% {
+					background-position: right;
+				}
+			}
+			
+			@keyframes heartBlast {
+				0% {
+					background-position: left;
+				}
+				100% {
+					background-position: right;
+				}
+			}
+			
+			.heartAnimation {
+				display: inline-block;
+				-webkit-animation-name: heartBlast;
+				animation-name: heartBlast;
+				-webkit-animation-duration: .8s;
+				animation-duration: .8s;
+				-webkit-animation-iteration-count: 1;
+				animation-iteration-count: 1;
+				-webkit-animation-timing-function: steps(28);
+				animation-timing-function: steps(28);
+				background-position: right;
+			}
+			
+			.feed p {
+				font-family: "Microsoft YaHei", 'Georgia', Times, Times New Roman, serif;
+				font-size: 25px;
+			}
+			
+			.feed {
+				
+				margin-bottom: : 20px;
+				position: relative;
+			}
+			
+			.likeCount {
+				font-size: 12px;
+				display: inline-block;
+				color: #999999;
+				vertical-align: middle!important;
+			}
+			.ffbot{
+				display: flex;
+				justify-content: flex-end;
+			}
+	</style>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
+		    <h1 class="mui-title" id="confirmbtn1">关注</h1> 
+		</header>
+		<script src="../js/statusBar.js"></script>
+		<!--状态栏-->
+		<!--<div id="container">-->
+		<div id="main">
+			<!--推荐关注-->
+			<div class="follow" style="background-color: whitesmoke;"> 
+				<div class="fchidl">
+					<img src="../img/market/ag.jpeg" class="userAvator" />
+					<div> 到底发生的<br><br><span>同城好友</span></div>
+				</div>
+				<button type="button" class="mui-btn mui-btn-success hadF">
+					+ 关注
+				</button>
+			</div>
+			
+			<!--列表-->
+			<div class="listt">
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../img/market/ag.jpeg" class="userAvator" />
+						<div> 到底发生的<br><br><img src="../img/time.png" class="timef" alt="" /> <small>2017-01-21 08:12</small></div>
+					</div>
+					
+				</div>
+				 <img src="../img/market/feg3.png" class="fllmg" alt="" />
+				 <div class="tieCt">
+				 	<p><span>#xxxx#</span><span>#xxxx#</span>xxxxxxxxxxxxxddddddddddddd
+				 	<br/><br/>
+				 	<img src="../img/grayheart.svg" alt="" /> <small>5</small> <img src="../img/graytalking.svg" alt="" /> <small>5</small> 
+				 	</p>
+				 	<div class="ffbot">
+				 		<div class="feed" id="feed1">
+							<div class="heart " id="like1" rel="like"></div>
+							<div class="likeCount" style="visibility: hidden;" id="likeCount1">5</div>
+						</div>
+						<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
+						<div class="sharef">
+							<img src="../img/market/sharef.png" style="width: 20px;" />
+						</div>
+				 	</div>
+				 </div>
+			</div>
+			<div class="listt">
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../img/market/ag.jpeg" class="userAvator" />
+						<div> 到底发生的<br><br><img src="../img/time.png" class="timef" alt="" /> <small>2017-01-21 08:12</small></div>
+					</div>
+					
+				</div>
+				 <img src="../img/market/feg3.png" class="fllmg" alt="" />
+				 <div class="tieCt">
+				 	<p><span>#xxxx#</span><span>#xxxx#</span>xxxxxxxxxxxxxddddddddddddd
+				 	<br/><br/>
+				 	<img src="../img/grayheart.svg" alt="" /> <small>5</small> <img src="../img/graytalking.svg" alt="" /> <small>5</small> 
+				 	</p>
+				 	<div class="ffbot">
+				 		<div class="feed" id="feed1">
+							<div class="heart " id="like1" rel="like"></div>
+							<div class="likeCount" style="visibility: hidden;" id="likeCount1">5</div>
+						</div>
+						<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
+						<div class="sharef">
+							<img src="../img/market/sharef.png" style="width: 20px;" />
+						</div>
+				 	</div>
+				 </div>
+			</div>
+			<div class="listt">
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../img/market/ag.jpeg" class="userAvator" />
+						<div> 到底发生的<br><br><img src="../img/time.png" class="timef" alt="" /> <small>2017-01-21 08:12</small></div>
+					</div>
+					
+				</div>
+				 <img src="../img/market/feg3.png" class="fllmg" alt="" />
+				 <div class="tieCt">
+				 	<p><span>#xxxx#</span><span>#xxxx#</span>xxxxxxxxxxxxxddddddddddddd
+				 	<br/><br/>
+				 	<img src="../img/grayheart.svg" alt="" /> <small>5</small> <img src="../img/graytalking.svg" alt="" /> <small>5</small> 
+				 	</p>
+				 	<div class="ffbot">
+				 		<div class="feed" id="feed1">
+							<div class="heart " id="like1" rel="like"></div>
+							<div class="likeCount" style="visibility: hidden;" id="likeCount1">5</div>
+						</div>
+						<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
+						<div class="sharef">
+							<img src="../img/market/sharef.png" style="width: 20px;" />
+						</div>
+				 	</div>
+				 </div>
+			</div>
+			 
+
+		</div>
+		
+		 
+	</body>
+  <script type="text/javascript">
+  	
+	  $(".listt").on("click",function(){
+	  	event.preventDefault()
+	  	openview({
+			view:'find/findInfo.html',
+			extrasobj:3
+		});
+	  })
+   
+    //点赞
+
+			$('.heart').on("click",function(){
+					event.stopPropagation()
+				var A=$(this).attr("id");
+				var B=A.split("like");
+				var messageID=B[1];
+				var C=parseInt($("#likeCount"+messageID).html());
+				$(this).css("background-position","")
+				var D=$(this).attr("rel");
+		
+				if(D === 'like') {
+					$("#likeCount"+messageID).html(C+1);
+					$(this).addClass("heartAnimation").attr("rel","unlike");
+				}
+				else{
+					$("#likeCount"+messageID).html(C-1);
+					$(this).removeClass("heartAnimation").attr("rel","like");
+					$(this).css("background-position","left");
+				}
+			}); 
+			
+  	$(".hadF").click(function(){
+  		event.stopPropagation()
+  		$(this).toggleClass(" mui-btn-outlined");
+  		 if($(this).hasClass("mui-btn-outlined")){
+  		 	if($(this).hasClass("eachF")){
+  		 		$(this).html("互相关注")
+  		 	}else{
+  		 		$(this).html("已关注")
+  		 	}
+  		 	
+  		 }else{
+  		 	$(this).html("+ 关注")
+  		 }
+  	})
+  	
+  		//回复跳转
+		$(".orp").click(function(){
+			event.stopPropagation()
+			mui.openWindow({
+			    url:"find/repComment.html",
+			    id:"repComment",
+			    show:{ 
+			      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
+			      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+			    },
+			     waiting:{
+			      autoShow:false,//自动显示等待框，默认为true
+			    }
+			})
+		})
+  </script>
+</html>

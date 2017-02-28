@@ -46,15 +46,19 @@
 				<span class="mui-tab-label">首 页</span>
 			</a>
 
-			<a id="find" class="mui-tab-item" href="find.html">
-				<span class="mui-icon mui-icon-camera"></span>
-				<span class="mui-tab-label">发现</span>
-			</a>
 			<a id="cart" class="mui-tab-item muidingwei" href="cart.html" style="position: relative !important;top: 2px !important;">
 				<!--<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>-->
 				<!--<i class="demo-icon icon-shopping-bag"></i>-->
 				<img src="../img/center/car.png" style="height: 27px;"/><br />
 				<span class="mui-tab-label">购物车</span>
+			</a>
+			<a id="find" class="mui-tab-item" href="find_index.html">
+				<span class="mui-icon mui-icon-camera"></span>
+				<span class="mui-tab-label">发现</span>
+			</a>
+			<a id="find" class="mui-tab-item" href="qq.html" >
+				<span class="mui-icon mui-icon-qq"></span>
+				<span class="mui-tab-label">客服</span>
 			</a>
 			<a class="mui-tab-item muidingwei" href="center.html" id="center" style="position: relative !important;top: 2px !important;">
 				<!--<span class="mui-icon mui-icon-person"></span>-->
@@ -68,8 +72,19 @@
 		<script type="text/javascript" charset="utf-8">
 			 //mui初始化
 			mui.init();
-			var subpages = ['main.html', 'find.html', 'cart.html', 'center.html'];
+			//打开qq对话框
+			function openQQ() {
+				if(/android/i.test(navigator.userAgent)) { //判断为android  
+					document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
+				} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+					document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
+				} else { //pc端访问  
+					//				mui('#downGame')[0].remove();
+				}
+			}
+			var subpages = ['main.html', 'cart.html', 'find_index.html','qq.html','center.html'];
 //			var subpages = ['main.html', 'cart.html', 'center.html'];
+ 
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
@@ -153,6 +168,24 @@
 				}
 				
 				
+				//处理父子页面的mask遮罩联动
+			    var mask,oldclose;
+				mask=mui.createMask();
+				//原mask.close方法
+				oldclose=mask.close;
+				//重写mask.close方法
+				mask.close=function(){
+					 if (true) {//写成v == null也行
+					      //alert('-- in father != nopass --');				
+					      //因为点击遮罩时只会执行"mask.close()"，所以v==null，进入这里if模块，调用子页面关闭方法。				
+					      //调用子页面重写close()时，加上参数不让子页面的close()继续传递。				
+					      plus.webview.currentWebview().children()[0].evalJS('mask.close()');
+							}
+							  //关闭本页面遮罩
+		
+		    				oldclose();
+		    		} 
+				
 				
 				Sign();
 				var timeSign = null;
@@ -196,7 +229,7 @@
 				}//登录方法结束
 				
 				var self = plus.webview.currentWebview();
-				for (var i = 0; i < 4; i++) {
+				for (var i = 0; i < 5; i++) {
 					var temp = {};
 					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
 					if (i > 0) {
@@ -215,10 +248,22 @@
 			 //选项卡点击事件
 			mui('.mui-bar-tab').on('tap', 'a', function(e) {
 				var targetTab = this.getAttribute('href');
-//				if(targetTab=="cart.html"){
-//					 
-//				}
-				if (targetTab == activeTab) {
+				if(targetTab=="find_index.html"){ 
+					 mui.openWindow({
+					 	url:"find_index.html",
+					 	id:"find_index",
+					 	style:{"bottom":0,"top":0}
+					 })
+				}else if(targetTab=="qq.html"){
+						if(/android/i.test(navigator.userAgent)) { //判断为android  
+							document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
+						} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+							document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
+						} else { //pc端访问  
+							//				mui('#downGame')[0].remove();
+						}
+				}else{
+					if (targetTab == activeTab) {
 					return;
 				}
 				//显示目标选项卡
@@ -234,6 +279,8 @@
 //					plus.webview.show(targetTab);
 				}
 				//隐藏当前;
+				}
+				
 				plus.webview.hide(activeTab);
 				//更改当前活跃的选项卡
 				activeTab = targetTab;
@@ -251,6 +298,38 @@
 					defaultTab.classList.add('mui-active');
 				}
 			});
+			
+			
+			//父页面遮罩层显隐函数
+			var maskwarp = document.createElement("div");
+			var style = document.createElement("style");
+			function maskshow(){
+				//移出主页面遮罩点击监听
+				maskwarp.removeEventListener('touchstart',hidefun);
+				maskwarp.style.display = 'block';
+				document.body.appendChild(maskwarp);
+				maskwarp.appendChild(style);
+				style.innerHTML =  '.Animation{position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.4);z-index: 1000;animation-name: Animation;animation: Animation 0.1s alternate ;} @-webkit-keyframes Animation{0%{ opacity: 0}10%{ opacity: 0.1}20%{ opacity: 0.2}30%{ opacity: 0.3}40%{ opacity: 0.4}50%{ opacity: 0.5}60%{ opacity: 0.6}70%{ opacity: 0.7}80%{ opacity: 0.8}90%{ opacity: 0.9}100%{ opacity: 1}}';
+				maskwarp.className = 'Animation';
+			}
+			function maskhide(){
+				maskwarp.style.display = 'none';
+			}
+			//点击关闭
+			function taphide(){
+				//alert('调用了点击主页面遮罩方法');
+				maskwarp.addEventListener('touchstart',hidefun);
+				
+			}
+			function hidefun(e){
+				//alert('点击主页面遮罩');
+				e.preventDefault();
+				maskwarp.style.display = 'none';
+				var mainweb = plus.webview.getWebviewById('main.html');
+				mainweb.evalJS("haha()");
+			}
+		  
+			
 		</script>
 	</body>
 
