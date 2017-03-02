@@ -26,7 +26,9 @@
 		</style>
 	</head>
 	<style type="text/css">
-	 
+		.subActive{
+			color: red!important;
+		}
 		#imgUpload {
 			display: none;
 		}
@@ -108,15 +110,18 @@
 			 .ctime{
 			 	margin-right: 15px;
 			 }
-			 .mui-table-view-cell{
-			 	
-			 }
+			.mui-bar-tab a{
+				color: darkgray;
+				display: table-cell;
+				vertical-align: bottom;
+				text-align: center;
+			}
 	</style>
 
 	<body>
 
 		<header id="header" class="mui-bar mui-bar-transparent">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
 			<h1 class="mui-title">个人主页</h1>
 		</header>
 		<script src="../js/statusBar.js"></script>
@@ -166,7 +171,7 @@
 			</div>
 		</div>
 		<p style="padding:0 10px 10px;"><small>TA的动态</small></p>
-		 <ul class="mui-table-view-striped mui-table-view-condensed">
+		 <ul class="mui-table-view-striped mui-table-view-condensed" style="padding-bottom: 51px;">
 							 
 				<li class="mui-table-view-cell cmlist" onclick="findInfo()"> 
 					<div class="mui-slider-cell">
@@ -241,9 +246,44 @@
 					</div>
 				</li>
 			</ul>
+			
+			<!--底部导航-->
+			 
+			<nav class="mui-bar mui-bar-tab">
+				<a onclick="gopage('Follow')">
+					<span class="mui-icon mui-icon-eye"></span>
+					<!--<span class="mui-tab-label">关注</span>-->
+				</a>
+				<a onclick="gopage('find')">
+					<span class="mui-icon mui-icon-pengyouquan"></span>
+					
+					<!--<span class="mui-tab-label">广场</span>-->
+				</a>
+				<a onclick="gopage('publish')">
+					<span class="mui-icon mui-icon-camera"></span>
+					<!--<span class="mui-tab-label">消息</span>-->
+				</a>
+				<a onclick="gopage('message')">
+					<span class="mui-icon mui-icon-chat"><span class="mui-badge mui-badge-danger">6</span></span>
+					<!--<span class="mui-tab-label">消息</span>-->
+				</a>
+				<a class="subActive" onclick="gopage('centerPage')">
+					<span class="mui-icon mui-icon-person"></span>
+					<!--<span class="mui-tab-label">个人主页</span>-->
+				</a>
+			</nav>
 	</body>
 
 	<script type="text/javascript">
+		
+		//导航切换
+	  	function gopage(page){ 
+	  		event.preventDefault()
+	  		openview({
+				view:page+'.html',
+				id:page
+			});
+	  	}
 	
 	   //编辑个人主页
 		 mui('.editPage')[0].addEventListener('tap',function(){

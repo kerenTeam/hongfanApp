@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>搜索</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<!--<link rel="stylesheet" type="text/css" href="../../css/common.css">-->
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
+		<script src="../../js/mui.min.js"></script> 
+		<script src="../../js/app.js"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js"></script>
+	</head>
+	<style type="text/css">
+		header{
+			 height: 50px!important;
+		}
+		.mui-bar-nav{
+			box-shadow: none;
+			-webkit-box-shadow: none;
+		}
+		.searchFind{
+			position: relative;
+		}
+		.sint{
+			right: 0;
+			top: 5px;
+			left: 0;
+			position: absolute;
+			display: flex;
+			align-items: center;
+		}
+		.sint .back{
+			font-size: 0.14rem;
+			color: #F53C42;
+			flex-basis: 40px;
+			margin-left: 10px; 
+			text-align: center;
+		}
+		.fsearch{
+			font-size: 0.12rem!important;
+			padding-left: 30px!important;
+		}
+		.fsearch::-webkit-input-placeholder{
+			color: gray!important;
+			text-align: left;
+			font-size: 0.12rem;
+		}
+		.mui-icon-search{
+			position: absolute;
+			left: 5px;
+			top: 3px;
+			color: gray;
+		}
+		form{
+			width: 100%;
+		}
+		.tabPs{
+			border-bottom: 1px solid #EEEEEE;
+			position: fixed;
+			top: 50px;
+			left: 0;
+			right: 0;
+			height: calc(31px + 0.13rem);
+			z-index: 99;
+		}
+		.tab{
+			/*padding: 0 15px;*/
+			background: white;
+			font-size: 0px;
+			/*display: flex;
+			justify-content: space-around;*/
+		}
+	  
+		.tab div { 
+			padding: 15px 0; 
+			font-size: 0.13rem;
+			display: inline-block;
+			width: 33.33%;
+			text-align: center; 
+		} 
+		.tabActive {  
+			color: #F53C42;
+			/*border-bottom: 2px solid #F53C42;*/
+		}
+		.border{
+			position: absolute;
+			z-index: 99;
+			bottom: 0;
+			left: 0;
+			height: 2px;
+			background-color: #F53C42;
+			-webkit-transition: all 0.5s ease;
+		}
+		.tabcontent {
+			position: relative;
+			top: calc(31px + 0.13rem);
+			display: none;
+		}
+		.taactive{
+			display: block;
+		}
+		.cAvator{
+			width: 0.4rem;  
+				height: 0.4rem;   
+				margin-right: 10px;
+		}
+		   .userAvator{  
+				width: 0.4rem;  
+				height: 0.4rem;  
+				border-radius: 50%;
+				margin-right: 10px;
+			}
+			.tc2 .userAvator{
+				width: 0.3rem;  
+				height: 0.3rem;  
+			 
+			}
+			 .follow{
+			 	top: 50px;
+				position: relative;
+				background-color: white;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				padding:8px 15px;
+				justify-content: space-between;
+			} 
+			 .tc2 .follow{
+			 	padding:15px 15px;
+			 }
+			 .follow:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 1px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.5);
+				background: #F0F0F0;
+				bottom: 0;
+			 }
+			.follow button{
+				font-size: 0.12rem;
+				height: 0.28rem;
+				width: 0.7rem; 
+			}
+			
+			.fchidl>div{
+				color: darkgray;
+			}
+			#tab{
+				display: none;
+			}
+			.history{
+				position: relative;
+				top: 50px; 
+				padding: 15px;
+			} 
+			.history span{
+				vertical-align: middle;
+			}
+			.history img{
+				float: right;
+				width: 0.18rem;
+			}
+			.hisList{
+				margin-top: 15px;
+			}
+			.hisList span{
+				display: inline-block;
+				padding: 10px;
+				background: rgba(0, 0, 0, .1);
+				margin: 5px;
+				border-radius: 3px;
+				color: gray;
+			}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="searchFind">
+				<span class="mui-icon mui-icon-search" onclick="submitTest();"></span>
+				<div class="sint">
+					<form onsubmit="submitTest();return false;" id="searchf"><!--onsubmit="submitTest();return false;" -->
+						<input type="search" class="fsearch" placeholder="搜索标签/用户名/感兴趣的内容">
+					</form>
+					<span class="mui-action-back back">取消</span>
+				</div>
+				
+			</div>  
+		</header>
+		<div id="record">暂无搜索记录</div>
+		<script id="recordTpt" type="text/html">
+					<%if(data.length==0){%>
+						<!--<div class="searchRecord">
+							&nbsp;&nbsp;搜索记录:无
+						</div> -->
+					<%}else{%>
+						<div class="history">
+							  <span>最近搜索</span> <img src="../../img/delet.svg" class="clearStr"  alt="" />
+							  <div class="clear"></div>
+							  <div class="hisList">
+							  	<%for(var i=data.length-1;i>=0;i--){%>
+								  	<span><%=data[i]%></span>
+								 <%}%>
+							  </div>
+						</div>
+						 
+						<%}%> 
+		</script> 
+		
+		
+		<!--tab-->
+		<div id="tab">
+			<div class="tabPs">
+				<div class="tab">
+					<div class="tabActive"><span>内容</span></div>
+					<div><span>标签</span></div>
+					<div><span>用户</span></div>
+				</div>
+				<div class="border"></div>
+			</div>
+			<div class="tabcontent tc1 taactive">  
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/market/ag.jpeg" class="cAvator" /> xxxx
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/miao.jpg" class="cAvator" /> ddddd
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/center/game.png" class="cAvator" /> 你好啊
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/market/bsl.jpeg" class="cAvator" /> 一见你就笑
+					</div> 
+				</div>
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/market/ag.jpeg" class="cAvator" /> xxxx
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/miao.jpg" class="cAvator" /> ddddd
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/center/game.png" class="cAvator" /> 你好啊
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/market/bsl.jpeg" class="cAvator" /> 一见你就笑
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/market/ag.jpeg" class="cAvator" /> xxxx
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/miao.jpg" class="cAvator" /> ddddd
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/center/game.png" class="cAvator" /> 你好啊
+					</div> 
+				</div> 
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/market/bsl.jpeg" class="cAvator" /> 一见你就笑
+					</div> 
+				</div> 
+			</div>
+			<div class="tabcontent tc2">  
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/jin.svg" class="userAvator" /> XX3
+					</div> 
+				</div>
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/jin.svg" class="userAvator" /> XX3
+					</div> 
+				</div>
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/jin.svg" class="userAvator" /> XX3
+					</div> 
+				</div>
+				<div class="follow"> 
+					<div class="fchidl">
+						<img src="../../img/jin.svg" class="userAvator" /> XX3
+					</div> 
+				</div>
+			</div>
+			<div class="tabcontent tc3">  
+				<div class="follow">
+					 
+					<div class="fchidl">
+						<img src="../../img/market/atcenter.jpg" class="userAvator" /> XX
+					</div>
+					<button type="button" class="mui-btn mui-btn-success hadF">
+						关注
+					</button>
+				</div>
+				 <div class="follow">
+					 
+					<div class="fchidl">
+						<img src="../../img/market/atcenter.jpg" class="userAvator" /> XXX
+					</div>
+					<button type="button" class="mui-btn mui-btn-success hadF">
+						关注
+					</button>
+				</div>
+				<div class="follow">
+					 
+					<div class="fchidl">
+						<img src="../../img/market/bsl.jpeg" class="userAvator" /> XXX
+					</div>
+					<button type="button" class="mui-btn mui-btn-success hadF">
+						关注
+					</button>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			//自动弹出输入法
+		  	var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+			    if (mui.os.android) {
+			        var main = plus.android.runtimeMainActivity();
+			        var Context = plus.android.importClass("android.content.Context");
+			        InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+			        imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+			    } else {
+			        nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+			    }
+			};
+			var showSoftInput = function() {
+			    if (mui.os.android) {
+			        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+			    } else {
+			        nativeWebview.plusCallMethod({
+			            "setKeyboardDisplayRequiresUserAction": false
+			        });
+			    }
+		        //此处可写具体逻辑设置获取焦点的input
+		        setTimeout(function() {
+			       var inputElem = document.getElementsByClassName('fsearch')[0];
+	               inputElem.focus(); 
+	            }, 0); 
+			};
+	    	initNativeObjects();
+	    	showSoftInput();
+	    	
+	    	//缓存记录
+			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
+			
+			//缓存记录 渲染
+			var recordObj = {};
+			recordObj.data= searchStorage;
+			if(searchStorage.length){
+				var htmlrecord = template('recordTpt', recordObj); 
+				document.getElementById('record').innerHTML = htmlrecord;
+			} 
+		   
+		    //清除记录
+		    $('.clearStr').click(function(){
+			 	plus.storage.removeItem("$searchStorage");
+			 	$('.history').css("display","none"); 
+			 	 document.getElementById('record').innerHTML = "暂无搜索记录";
+			})
+			//搜索某一条 缓存 
+			$('.hisList span').click(function(e){
+			    e.preventDefault(); 
+			    $("#container").css("display","none");
+				$(".searchOut").css("display","block"); 
+			   $("input").val($(this).text());
+			    doSearch($.trim($(this).text()))
+			})
+			
+			
+			
+	    	//搜索方法
+	    	$("input").focus(function(){
+	    		$(".history").css("display","block");
+				$("#tab").css("display","none");
+	    	})
+			window.submitTest = function(){
+				if($("input").val()!=''){ 
+					var words=$("input").val();
+					if(searchStorage.length != 0) {
+						var flag = false;
+						for(var i = 0; i < searchStorage.length; i++) {
+							if(searchStorage[i] == words) {
+								searchStorage[i] = words;
+								flag = false;
+								break;
+							} else {
+								flag = true;
+							}
+						}
+						if(flag) {
+							searchStorage.push(words);
+						}
+					}else{ 
+						searchStorage.push(words);
+						
+					} 
+					plus.storage.setItem('$searchStorage', JSON.stringify(searchStorage)); 
+					$(".history").css("display","none");
+					$("#tab").css("display","block"); 
+					//执行搜索
+					doSearch(words);
+				}else{
+					mui.toast("请输入搜索内容！");
+					$(".history").css("display","block");
+					$("#tab").css("display","none");
+				} 
+			}
+			function doSearch(words){
+				$(".history").css("display","none");
+				$("#tab").css("display","block"); 
+				$("input").blur();
+				 //	选项卡tab
+		    var widthF = $(".tab div").eq(0).width()
+		    $('.border').css({"left":(widthF/3)+"px","width":widthF/3+"px"});
+//				alert("执行搜索 ")
+//					plus.nativeUI.showWaiting()
+					var oldtoken = plus.storage.getItem('oldToken');
+//					mui.ajax(serverUrl+'/api/index/search',{
+//						data:{search:words},
+//						dataType:'json',
+//						type:'post',
+//						timeout:10000,
+//						headers:{"token":oldtoken},	 
+//						success:function(data,type,xhr){ 
+//							plus.nativeUI.closeWaiting();
+//							
+//							if(data.errno==0){
+//								if(data.data.local_house.length!=0 || data.data.local_service.length!=0 || data.data.local_used_market.length!=0 || data.data.goods.length!=0 || data.data.service_help_user.length!=0 || data.data.service_volunteer_activities.length!=0 || data.data.system_activity.length!=0){
+//								 var searchObj = {};
+//								 searchObj.searchData = data.data;
+//								 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
+//							}else{
+//								document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
+//							}
+//							}
+//						},
+//						error:function(xhr,type,errorThrown){
+//							plus.nativeUI.closeWaiting()
+//							console.log('响应失败  !');
+//						}
+//					});
+			}
+
+
+		   
+			$(".tab div").click(function() {
+				var i = $(this).index(); 
+		 	    //设置底边框的left 
+		 	    var width = $(this).width();
+		 		var leftSlider = width*i; 
+              	$('.border').css({"left":(leftSlider+width/3)+"px","width":width/3+"px"});
+				$(".tab div").removeClass("tabActive")
+				$(this).addClass("tabActive");
+				if(!$(".tabcontent").eq(i).hasClass("taactive")) {
+					$(".tabcontent").removeClass("taactive");
+					$(".tabcontent").eq(i).addClass("taactive");
+				}
+			})
+			
+			//关注
+				$(".hadF").click(function(){
+			  		event.stopPropagation()
+			  		$(this).toggleClass(" mui-btn-outlined");
+			  		 if($(this).hasClass("mui-btn-outlined")){
+			  		 	if($(this).hasClass("eachF")){
+			  		 		$(this).html("互相关注")
+			  		 	}else{
+			  		 		$(this).html("已关注")
+			  		 	}
+			  		 	
+			  		 }else{
+			  		 	$(this).html("关注")
+			  		 }
+			  	})
+})
+	</script>
+</html>

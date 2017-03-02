@@ -42,7 +42,7 @@
 			 	width: 100%;
 			 }
 			 
-			 .follow:after{
+			 .follow:(not:first-child):after{
 			 	position: absolute;
 			 	content: '';
 			 	height: 1px;
@@ -52,16 +52,7 @@
 				background: #CACACA;
 				bottom: 0;
 			 }
-			 .follow:first-child:after{
-			 	position: absolute;
-			 	content: '';
-			 	height: 0px;
-			 	left: 10px;
-			 	right: 10px;
-				-webkit-transform: scaleY(.3);
-				background: #CACACA;
-				bottom: 0;
-			 }
+			  
 			 .follow:before{
 			 	position: absolute;
 			 	content: '';
@@ -189,12 +180,21 @@
 				display: flex;
 				justify-content: flex-end;
 			}
+			.mui-bar-tab a{
+				color: darkgray;
+				display: table-cell;
+				vertical-align: bottom;
+				text-align: center;
+			}
+			#main{
+				padding-bottom: 51px;
+			}
 	</style>
 
 	<body>
 
 		<header class="mui-bar mui-bar-nav">
-		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
+		    <!--<a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>-->
 		    <h1 class="mui-title" id="confirmbtn1">关注</h1> 
 		</header>
 		<script src="../js/statusBar.js"></script>
@@ -292,13 +292,46 @@
 				 </div>
 			</div>
 			 
-
+			<!--底部导航-->
+			 
+			<nav class="mui-bar mui-bar-tab">
+				<a class="subActive" onclick="gopage('Follow')">
+					<span class="mui-icon mui-icon-eye"></span>
+					<!--<span class="mui-tab-label">关注</span>-->
+				</a>
+				<a onclick="gopage('find')">
+					<span class="mui-icon mui-icon-pengyouquan"></span>
+					
+					<!--<span class="mui-tab-label">广场</span>-->
+				</a>
+				<a onclick="gopage('publish')">
+					<span class="mui-icon mui-icon-camera"></span>
+					<!--<span class="mui-tab-label">消息</span>-->
+				</a>
+				<a onclick="gopage('message')">
+					<span class="mui-icon mui-icon-chat"><span class="mui-badge mui-badge-danger">6</span></span>
+					<!--<span class="mui-tab-label">消息</span>-->
+				</a>
+				<a onclick="gopage('centerPage')">
+					<span class="mui-icon mui-icon-person"></span>
+					<!--<span class="mui-tab-label">个人主页</span>-->
+				</a>
+			</nav>
 		</div>
 		
 		 
 	</body>
   <script type="text/javascript">
+  	//导航切换
+  	function gopage(page){ 
+  		event.preventDefault()
+  		openview({
+			view:page+'.html',
+			id:page
+		});
+  	}
   	
+  	//贴子详情
 	  $(".listt").on("click",function(){
 	  	event.preventDefault()
 	  	openview({
@@ -309,25 +342,25 @@
    
     //点赞
 
-			$('.heart').on("click",function(){
-					event.stopPropagation()
-				var A=$(this).attr("id");
-				var B=A.split("like");
-				var messageID=B[1];
-				var C=parseInt($("#likeCount"+messageID).html());
-				$(this).css("background-position","")
-				var D=$(this).attr("rel");
-		
-				if(D === 'like') {
-					$("#likeCount"+messageID).html(C+1);
-					$(this).addClass("heartAnimation").attr("rel","unlike");
-				}
-				else{
-					$("#likeCount"+messageID).html(C-1);
-					$(this).removeClass("heartAnimation").attr("rel","like");
-					$(this).css("background-position","left");
-				}
-			}); 
+	$('.heart').on("click",function(){
+			event.stopPropagation()
+		var A=$(this).attr("id");
+		var B=A.split("like");
+		var messageID=B[1];
+		var C=parseInt($("#likeCount"+messageID).html());
+		$(this).css("background-position","")
+		var D=$(this).attr("rel");
+
+		if(D === 'like') {
+			$("#likeCount"+messageID).html(C+1);
+			$(this).addClass("heartAnimation").attr("rel","unlike");
+		}
+		else{
+			$("#likeCount"+messageID).html(C-1);
+			$(this).removeClass("heartAnimation").attr("rel","like");
+			$(this).css("background-position","left");
+		}
+	}); 
 			
   	$(".hadF").click(function(){
   		event.stopPropagation()

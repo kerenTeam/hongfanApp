@@ -52,11 +52,11 @@
 				<img src="../img/center/car.png" style="height: 27px;"/><br />
 				<span class="mui-tab-label">购物车</span>
 			</a>
-			<a id="find" class="mui-tab-item" href="find_index.html">
+			<a id="find" class="mui-tab-item" href="find.html">
 				<span class="mui-icon mui-icon-camera"></span>
 				<span class="mui-tab-label">发现</span>
 			</a>
-			<a id="find" class="mui-tab-item" href="qq.html" >
+			<a id="qq" class="mui-tab-item" href="qq.html" >
 				<span class="mui-icon mui-icon-qq"></span>
 				<span class="mui-tab-label">客服</span>
 			</a>
@@ -71,7 +71,15 @@
 		
 		<script type="text/javascript" charset="utf-8">
 			 //mui初始化
-			mui.init();
+//			mui.init({
+//				 //预加载
+//				    preloadPages:[
+//				        {
+//					      url:"main.html",
+//					      id:"main"
+//					    }
+//				    ],
+//			});
 			//打开qq对话框
 			function openQQ() {
 				if(/android/i.test(navigator.userAgent)) { //判断为android  
@@ -82,8 +90,8 @@
 					//				mui('#downGame')[0].remove();
 				}
 			}
-			var subpages = ['main.html', 'cart.html', 'find_index.html','qq.html','center.html'];
-//			var subpages = ['main.html', 'cart.html', 'center.html'];
+			var subpages = ['main.html', 'cart.html', 'find.html','qq.html','center.html'];
+			var subpages_id = ['main', 'cart', 'find','qq','center'];
  
 			var subpage_style = {
 				top: '0px',
@@ -231,7 +239,7 @@
 				var self = plus.webview.currentWebview();
 				for (var i = 0; i < 5; i++) {
 					var temp = {};
-					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					var sub = plus.webview.create(subpages[i],subpages[i], subpage_style);
 					if (i > 0) {
 						sub.hide();
 					}else{
@@ -248,12 +256,15 @@
 			 //选项卡点击事件
 			mui('.mui-bar-tab').on('tap', 'a', function(e) {
 				var targetTab = this.getAttribute('href');
-				if(targetTab=="find_index.html"){ 
+				if(targetTab=="find.html"){ 
 					 mui.openWindow({
-					 	url:"find_index.html",
-					 	id:"find_index",
+					 	url:"find.html",
+					 	id:"find",
 					 	style:{"bottom":0,"top":0}
 					 })
+				    
+//					document.getElementsByTagName("nav")[0].style.display="none";
+				
 				}else if(targetTab=="qq.html"){
 						if(/android/i.test(navigator.userAgent)) { //判断为android  
 							document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
@@ -280,6 +291,8 @@
 				}
 				//隐藏当前;
 				}
+					
+				 
 				
 				plus.webview.hide(activeTab);
 				//更改当前活跃的选项卡
