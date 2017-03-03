@@ -198,9 +198,9 @@
 		<div id="record">暂无搜索记录</div>
 		<script id="recordTpt" type="text/html">
 					<%if(data.length==0){%>
-						<!--<div class="searchRecord">
+						<div class="searchRecord">
 							&nbsp;&nbsp;搜索记录:无
-						</div> -->
+						</div> 
 					<%}else{%>
 						<div class="history">
 							  <span>最近搜索</span> <img src="../../img/delet.svg" class="clearStr"  alt="" />
@@ -407,6 +407,7 @@
 				$("#tab").css("display","none");
 	    	})
 			window.submitTest = function(){
+				var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
 				if($("input").val()!=''){ 
 					var words=$("input").val();
 					if(searchStorage.length != 0) {
@@ -490,21 +491,42 @@
 				}
 			})
 			
+			
+			//内容 和 标签 跳转
+			$(".tc1 .follow,.tc2 .follow").click(function(){ 
+				openview({
+					view: "findInfo.html",
+					extrasobj: {
+						userId: 1
+					}
+				})
+			})
+			
 			//关注
-				$(".hadF").click(function(){
-			  		event.stopPropagation()
-			  		$(this).toggleClass(" mui-btn-outlined");
-			  		 if($(this).hasClass("mui-btn-outlined")){
-			  		 	if($(this).hasClass("eachF")){
-			  		 		$(this).html("互相关注")
-			  		 	}else{
-			  		 		$(this).html("已关注")
-			  		 	}
-			  		 	
-			  		 }else{
-			  		 	$(this).html("关注")
-			  		 }
-			  	})
+			$(".tc3 .follow").click(function(){
+				openview({
+					view: "../othersPage.html",
+					extrasobj: {
+						userId: 1
+					}
+				})
+			})
+			
+			
+			$(".hadF").click(function(){
+		  		event.stopPropagation()
+		  		$(this).toggleClass(" mui-btn-outlined");
+		  		 if($(this).hasClass("mui-btn-outlined")){
+		  		 	if($(this).hasClass("eachF")){
+		  		 		$(this).html("互相关注")
+		  		 	}else{
+		  		 		$(this).html("已关注")
+		  		 	}
+		  		 	
+		  		 }else{
+		  		 	$(this).html("关注")
+		  		 }
+		  	})
 })
 	</script>
 </html>

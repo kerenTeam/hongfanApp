@@ -693,7 +693,7 @@
 					<div class="likeCount" style="visibility: hidden;" id="likeCount5">5</div>
 				</div>
 
-				<div class="sharef" style="position: relative;">
+				<div class="sharef" style="position: relative;" onclick="share()">
 					<img src="../../img/market/sharef.png" style="width: 20px;position: absolute;top: 10px;right: 10px;" />
 				</div>
 			</div>
@@ -708,27 +708,27 @@
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
 	 
-		 //点赞
-
-			$('.heart').on("click",function(){
+		 //点赞 
+		$('.heart').on("click",function(){
+	
+			var A=$(this).attr("id");
+			var B=A.split("like");
+			var messageID=B[1];
+			var C=parseInt($("#likeCount"+messageID).html());
+			$(this).css("background-position","")
+			var D=$(this).attr("rel");
+	
+			if(D === 'like') {
+				$("#likeCount"+messageID).html(C+1);
+				$(this).addClass("heartAnimation").attr("rel","unlike");
+			}
+			else{
+				$("#likeCount"+messageID).html(C-1);
+				$(this).removeClass("heartAnimation").attr("rel","like");
+				$(this).css("background-position","left");
+			}
+		}); 
 		
-				var A=$(this).attr("id");
-				var B=A.split("like");
-				var messageID=B[1];
-				var C=parseInt($("#likeCount"+messageID).html());
-				$(this).css("background-position","")
-				var D=$(this).attr("rel");
-		
-				if(D === 'like') {
-					$("#likeCount"+messageID).html(C+1);
-					$(this).addClass("heartAnimation").attr("rel","unlike");
-				}
-				else{
-					$("#likeCount"+messageID).html(C-1);
-					$(this).removeClass("heartAnimation").attr("rel","like");
-					$(this).css("background-position","left");
-				}
-			}); 
 		//内部评论
 		$(".cocmt").click(function() {
 
@@ -767,6 +767,38 @@
 			},200)
 			
 		})
+		
+		//发布者主页
+		$(".findUser").click(function(){
+			openview({
+				view: "../centerPage.html",
+				extrasobj: {
+					userId: 1
+				}
+			})
+		})
+		
+		//查看者  主页
+		$(".looker img").click(function(){
+			openview({
+				view: "../othersPage.html",
+				extrasobj: {
+					userId: 1
+				}
+			})
+		})
+		
+	    //评论者 主页
+	    $(".cheader img").click(function(){
+	    	event.stopPropagation()
+			openview({
+				view: "../othersPage.html",
+				extrasobj: {
+					userId: 1
+				}
+			})
+		})
+		
 		mui.previewImage();
 	</script>
 

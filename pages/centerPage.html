@@ -33,7 +33,7 @@
 			display: none;
 		}
 		#header>*{
-			color: black;
+			color: white;
 		} 
 		#userBox{
 				background-color: #F53C42;
@@ -116,12 +116,20 @@
 				vertical-align: bottom;
 				text-align: center;
 			}
+			.idhiji{
+				position: absolute;
+				text-align: center;
+				bottom: 0.2rem;
+				width: 100%;
+				color: white;
+				z-index: 1;
+			}
 	</style>
 
 	<body>
 
 		<header id="header" class="mui-bar mui-bar-transparent">
-			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">个人主页</h1>
 		</header>
 		<script src="../js/statusBar.js"></script>
@@ -132,6 +140,7 @@
 	    		<img id="mypic1" src="../img/morentouxiang.jpg"/>
 	    		<div id="beijing2"></div> 
 	    			<img src="../img/market/atcenter.jpg" class="userAvator"/> 
+	    			<div class="idhiji">HI集 ID:12345567</div>
 	    	</div>
 	    	<div class="content">
 	    		<div class="mainInfo">
@@ -150,11 +159,11 @@
 						<div>被赞的</div>
 					</div><div class="fchidl">
 						<b>4</b>
-						<div>评论</div>
+						<div>分享的</div>
 					</div>
 					<div class="fchidl">
 						<b>7</b>
-						<div>被评论</div>
+						<div>评论</div>
 					</div>
 				</div>
 	    	</div>
@@ -306,6 +315,32 @@
 			plus.webview.currentWebview().close();
 		    
 		}
+		
+		//滚动监听
+		$(window).scroll(function() { 
+            // Change this to target a different percentage
+            var targetPercentage = 70; 
+            //Change this to set the height of your nav bar so it hides properly. If you have a box shadow you may have to adjust this number to be height + shadow distance
+            var navBarHeight = 50; 
+            //Change this to the ID of the content you are trying to show.
+            var targetID = "#header"; 
+            //Window Math
+            var scrollTo = $(window).scrollTop(), 
+                docHeight = $(document).height(),
+                windowHeight = $(window).height(); 
+            if (scrollTo > navBarHeight) {
+                $(targetID).css({
+                    "background-image": "url(../img/header.png)","background-size":"100%"
+                });
+            } 
+            if (scrollTo < navBarHeight) {
+                $(targetID).css({
+                    "background-image": "none"
+                });
+            } 
+        }).trigger('scroll');
+		
+		
 		//导航切换
 	  	function gopage(page){ 
 	  		event.preventDefault();
@@ -352,13 +387,28 @@
 					view:'find/liked.html' 
 				});
 	    })
+	    //分享的
+	    $(".fft .fchidl:nth-child(3)").on("tap",function(){
+	    	openview({
+					view:'find/shareList.html' 
+				});
+	    })
 	    
-	    //关注 粉丝 
+	    //评论的
+	    $(".fft .fchidl:nth-child(4)").on("tap",function(){
+	    	openview({
+					view:'find/cmt.html' 
+				});
+	    })
+	    
+	    //关注
 	    $(".myfl .fchidl:first-child").on("tap",function(){
 	    	openview({
 					view:'find/follow.html' 
 				});
 	    })
+	    
+	    // 粉丝 
 		$(".myfl .fchidl:last-child").on("tap",function(){
 	    	openview({
 					view:'find/followed.html' 

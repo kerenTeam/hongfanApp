@@ -35,7 +35,7 @@
 			z-index: 99999;
 		}
 		#header>*{
-			color: black;
+			color: white;
 			z-index: 9999;
 		} 
 		#userBox{
@@ -101,7 +101,14 @@
 			 .ctime{
 			 	margin-right: 15px;
 			 }
-		 
+		 .idhiji{
+				position: absolute;
+				text-align: center;
+				bottom: 0.2rem;
+				width: 100%;
+				color: white;
+				z-index: 1;
+			}
 	</style>
 
 	<body>
@@ -117,7 +124,8 @@
 			<div class="clearfloat box-s box-ss" id="userBox">
 	    		<img id="mypic1" src="../img/morentouxiang.jpg"/>
 	    		<div id="beijing2"></div> 
-	    			<img src="../img/market/atcenter.jpg" class="userAvator"/> 
+	    			<img src="../img/market/atcenter.jpg" class="userAvator"/>
+	    			<div class="idhiji">HI集 ID:55667788</div>
 	    	</div>
 	    	<div class="content">
 	    		<div class="mainInfo">
@@ -227,6 +235,30 @@
 	</body>
 
 	<script type="text/javascript">
+		
+	//滚动监听
+	$(window).scroll(function() { 
+        // Change this to target a different percentage
+        var targetPercentage = 70; 
+        //Change this to set the height of your nav bar so it hides properly. If you have a box shadow you may have to adjust this number to be height + shadow distance
+        var navBarHeight = 50; 
+        //Change this to the ID of the content you are trying to show.
+        var targetID = "#header"; 
+        //Window Math
+        var scrollTo = $(window).scrollTop(), 
+            docHeight = $(document).height(),
+            windowHeight = $(window).height(); 
+        if (scrollTo > navBarHeight) {
+            $(targetID).css({
+                "background-image": "url(../img/header.png)","background-size":"100%"
+            });
+        } 
+        if (scrollTo < navBarHeight) {
+            $(targetID).css({
+                "background-image": "none"
+            });
+        } 
+    }).trigger('scroll');
 	
 	//私信
 		 mui('.chat')[0].addEventListener('tap',function(){

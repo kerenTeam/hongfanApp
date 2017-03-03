@@ -215,7 +215,7 @@
     	</div>
     	<!--我的订单-->
     	<div id="wodedin">
-    		<div id="wodedintop" class="aClick group_Order">
+    		<div id="wodedintop" class="aClick group_Order" data-status="all">
     			<!--<img class="dindan" src="../img/dingdan.svg"/>--> 
     			我的订单
     			<span class="mui-icon mui-icon-arrowright span2"></span>
@@ -223,9 +223,9 @@
     		</div>
     		<table border="" cellspacing="" cellpadding="">
     			<tr> 
-    				<td class="aClick"><img  src="../img/fukuan.svg"/>待付款</td> 
-    				<td class="aClick"><img  src="../img/shouhuo.svg"/>待收货</td> 
-    				<td class="aClick"><img  src="../img/pingjia.svg"/>待评价</td>
+    				<td class="aClick" onclick="typeOrder(0)"><img  src="../img/fukuan.svg"/>待付款</td> 
+    				<td class="aClick" onclick="typeOrder(2)"><img  src="../img/shouhuo.svg"/>待收货</td> 
+    				<td class="aClick" onclick="typeOrder(3)"><img  src="../img/pingjia.svg"/>待评价</td>
     			</tr>
     		</table>
     	</div>
@@ -256,6 +256,22 @@
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			//分类订单
+			function typeOrder(type){
+//				alert(type)
+				if(plus.storage.getItem('myToken')){  
+					openview({
+						view:'personal/sc-order.html',
+						id:'sc-order',
+						extrasobj:{status:type}
+					});
+				}else{//没登陆直接打开登录页面
+					mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+				}
+			}
 			mui.plusReady(function(){
 				 // 等待加载PhoneGap 
 				//添加刷新监听
@@ -385,7 +401,7 @@
 							openview({
 								view:'centerPage.html',
 								id:"centerPage",
-								extrasobj:1
+								extrasobj:{"userid":1}
 							});
 //						}
 					})
@@ -399,11 +415,12 @@
 						}
 					});
 					//我的订单
-					mui('.group_Order')[0].addEventListener('tap',function(){
-						if(plus.storage.getItem('myToken')){ 
+					mui('#wodedintop')[0].addEventListener('tap',function(){
+						if(plus.storage.getItem('myToken')){  
 							openview({
 								view:'personal/sc-order.html',
-								id:'sc-order'
+								id:'sc-order',
+								extrasobj:{status:status}
 							});
 						}else{//没登陆直接打开登录页面
 							mui.toast('请登录');
@@ -411,7 +428,10 @@
 								view:'login.html'
 							});
 						}
-					});
+					}); 
+					
+					
+					
 					//我的快递
 					mui('.wmai-order')[0].addEventListener('tap',function(){ 
 						if(plus.storage.getItem('myToken')){ 
@@ -549,14 +569,15 @@
 					//设置
 					mui('.shezhi')[0].addEventListener('tap',function(){
 						if(!plus.storage.getItem('myToken')){ 
-							openview({
-								view:'personal/shezhi.html' 
-							});
-						}else{//没登陆直接打开登录页面
 							mui.toast('请登录');
 							openview({
 								view:'login.html'
 							});
+						}else{//没登陆直接打开登录页面
+							openview({
+								view:'personal/shezhi.html' 
+							});
+							
 						}
 					});
 				}//刷新	
