@@ -10,11 +10,9 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/common.css">
-		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
-		<link rel="stylesheet" href="../../css/reset.css">
-		<link rel="stylesheet" href="../../css/one.css">
+		<link rel="stylesheet" href="../../css/reset.css"> 
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
 		<script src="../../js/mui.min.js"></script> 
 		<script src="../../js/app.js"></script>
@@ -147,38 +145,49 @@
 			
 	</body>
     <script type="text/javascript">
-    	function findInfo(){
-    		openview({
-				view: "find/findInfo.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
-    	}
-    	$(".baocun").click(function(){
-    		openview({
-				view: "find/publish.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
+    	mui.plusReady(function(){
+    		
+    		var type = plus.webview.currentWebview().type;
+    		if(type == 2){
+    			$(".tab span:first-child").removeClass("tabActive");
+    			$(".tab span:last-child").addClass("tabActive");
+    			$(".tabcontent:first-child").removeClass("taactive");
+    			$(".tabcontent:last-child").addClass("taactive");
+    		}
+    		function findInfo(){
+	    		openview({
+					view: "find/findInfo.html",
+					extrasobj: {
+						userId: 1
+					}
+				})
+	    	}
+	    	$(".baocun").click(function(){
+	    		openview({
+					view: "find/publish.html",
+					extrasobj: {
+						userId: 1
+					}
+				})
+	    	})
+	    	$(".tab span").click(function() {
+							var i = $(this).index();
+							$(".tab span").removeClass("tabActive")
+							$(this).addClass("tabActive");
+							if(!$(".tabcontent").eq(i).hasClass("taactive")) {
+								$(".tabcontent").removeClass("taactive");
+								$(".tabcontent").eq(i).addClass("taactive");
+							}
+						})
+	    	$(".ftop figure").click(function(){
+	    		openview({
+					view: "find/thematicActivities.html",
+					extrasobj: {
+						userId: 1
+					}
+				})
+	    	})
     	})
-    	$(".tab span").click(function() {
-						var i = $(this).index();
-						$(".tab span").removeClass("tabActive")
-						$(this).addClass("tabActive");
-						if(!$(".tabcontent").eq(i).hasClass("taactive")) {
-							$(".tabcontent").removeClass("taactive");
-							$(".tabcontent").eq(i).addClass("taactive");
-						}
-					})
-    	$(".ftop figure").click(function(){
-    		openview({
-				view: "find/thematicActivities.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
-    	})
+    	
     </script>
 </html> 

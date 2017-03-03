@@ -355,6 +355,10 @@
 		 
 		
 		mui.plusReady(function(){
+			
+			//获取上一个页面 穿的 订单类型
+			var toOrder_status = plus.webview.currentWebview().status;
+			 
 			if(plus.webview.getWebviewById("pay")){ 
 			   plus.webview.getWebviewById("pay").close();
 			}
@@ -401,6 +405,64 @@
 							 obj.myUrl=serverimgUrl; 
 							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
+							
+							
+							if(toOrder_status == 0){ 
+								$(".tab-nav li").removeClass("active");
+								$(".tab-nav li:nth-of-type(2)").addClass("active");
+								var i=0;
+								$('#noOrder').css('display','none');
+								$('dd').each(function(){
+								var status = $(this).attr("data-id");
+								if(status==1){
+									i++;
+									$(this).css("display","block"); 
+								}else{
+									$(this).css("display","none");
+								}  
+								}) 
+								
+								if(i==0){
+									$('#noOrder').css('display','block');
+								}
+							}
+							if(toOrder_status == 2){
+								$(".tab-nav li").removeClass("active");
+								$(".tab-nav li:nth-of-type(4)").addClass("active");
+								var i=0;
+								$('#noOrder').css('display','none');
+								$('dd').each(function(){
+								var status = $(this).attr("data-id");
+								if(status==3){
+									i++;
+									$(this).css("display","block"); 
+								}else{
+									$(this).css("display","none");
+								}
+								})
+								if(i==0){
+									$('#noOrder').css('display','block');
+								}
+							}
+							if(toOrder_status == 3){
+								$(".tab-nav li").removeClass("active");
+								$(".tab-nav li:nth-of-type(5)").addClass("active");
+								var i=0;
+								$('#noOrder').css('display','none');
+								$('dd').each(function(){
+								var status = $(this).attr("data-id");
+								if(status==4){
+									i++;
+									$(this).css("display","block"); 
+								}else{
+									$(this).css("display","none");
+								}
+								}) 
+								if(i==0){
+									$('#noOrder').css('display','block');
+								}
+							}
+							
 							$('.tab-nav li').click(function(){ 
 								var statusId=$(this).attr("data-statusId"); 
 								$(this).addClass("active");
