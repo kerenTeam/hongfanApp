@@ -24,9 +24,9 @@
 		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
 		<style type="text/css">
 			/*这一页*/
-			.grade-eject, .Category-eject, .Sort-eject{
-				height: 80px;
-			}
+			 .grade-w-roll{
+			 	top: 50px!important;
+			 }
 			div.screening>ul>li{
 				border-left: 1px solid #eee !important;
 			}
@@ -186,12 +186,49 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">跨境优品</h1>
+			<a href="javascript:;" style="line-height: 50px;color:white;" class="fr brand">分类</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
-		 <div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div> 
+		<div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div> 
 		<div id="container">
 			<div id="main">
+				 
+			    <!-- Category -->
+				<div class="Category-eject">
+				    <ul class="Category-w" id="Categorytw">
+				         
+				    </ul>
+				    <script type="text/html" id="fcid">
+				    	<li onclick="Categorytw(this)">全部品牌</li>
+				    	<%for(var i=0;i< list.length;i++){%>
+				    		 <li onclick="Categorytw(this)" data-id = "<%= list[i].catid%>"><%= list[i].catname%></li>
+				    		<%}%>
+				       
+				         
+				    </script>
+				    <ul class="Category-t" id="Categoryt">
+				      
+				    </ul>
+				    <script type="text/html" id="scid"> 
+				    	<%for(var i=0;i< list.length;i++){%>
+				    		 <li onclick="Categoryt(this)" data-id = "<%= list[i].catid%>"><%= list[i].catname%></li>
+				    		<%}%>
+				       
+				         
+				    </script>
+				    <ul class="Category-s" id="Categorys">
+				        
+				    </ul>
+				    <script type="text/html" id="tcid"> 
+				    	<%for(var i=0;i< list.length;i++){%>
+				    		 <li onclick="Categorys(this)" data-id = "<%= list[i].catid%>"><%= list[i].catname%></li>
+				    		<%}%>
+				       <li onclick="Categorys(this)">其他</li>
+				         
+				    </script>
+				</div>
+				
 				 <!--滚动条-->
 				<div class="adNews" style="background-color: #fff;border-bottom: 1px solid #EFEFF4;padding: 0 20px;">
 					<div class="mui-row">
@@ -249,8 +286,11 @@
 			没有相关信息
 		</div>
 	</body>
-
+	<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
+	 
 	<script type="text/javascript">
+
+		 
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
@@ -355,8 +395,127 @@
 					mui('#nulldiv')[0].style.display = 'block';
 				}
 			});
-	 
+			//切换分类
+			var pid = 0;
+			$(".brand").on("tap",function(){
+				
+				
+				$(".Category-eject").toggleClass("grade-w-roll");
+				if($(".Category-eject").hasClass("grade-w-roll")){
+					mui.ajax(serverUrl+'/api/mall/igocategory',{
+						data:{pid:pid},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){
+							  
+							if(data.errno == 0){
+								if(data.data.length != 0){
+									var tyepdata ={};
+									tyepdata.list = data.data;
+									var html=template("fcid",tyepdata);
+									document.getElementById("Categorytw").innerHTML=html;
+								}
+								//点击一级分类
+								 $(".Category-w>li").click(function(){
+							        $(".Category-t").css("left","33.48%");
+							           //获取二级分类
+								        mui.ajax(serverUrl+'/api/mall/igocategory',{
+										data:{pid:$(this).attr("data-id")},
+										dataType:'json',
+										type:'post',
+										timeout:10000,
+										headers:{"token":oldToken},	 
+										success:function(data,type,xhr){ 
+											if(data.errno == 0){
+												if(data.data.length != 0){
+													var tyepdata ={};
+													tyepdata.list = data.data;
+													var html=template("scid",tyepdata);
+													document.getElementById("Categoryt").innerHTML=html;
+													
+													//点击二级分类
+													 	$(document).ready(function(){
+														  $(".Category-t>li").click(function(){
+														      $(".Category-s").css("left","66.96%");
+														      //获取三级分类
+														       mui.ajax(serverUrl+'/api/mall/igocategory',{
+																	data:{pid:$(this).attr("data-id")},
+																	dataType:'json',
+																	type:'post',
+																	timeout:10000,
+																	headers:{"token":oldToken},	 
+																	success:function(data,type,xhr){ 
+																		if(data.errno == 0){
+																			if(data.data.length != 0){
+																				var tyepdata ={};
+																				tyepdata.list = data.data;
+																				var html=template("tcid",tyepdata);
+																				document.getElementById("Categorys").innerHTML=html;
+																			}
+																		}
+																	},
+																	error:function(xhr,type,errorThrown){
+																			plus.nativeUI.closeWaiting();//关闭等待框 
+																		}
+																	})
+														  });
+														  
+														  
+														});
+														window.Categoryt = function(tbj){
+														    var arr = document.getElementById("Categoryt").getElementsByTagName("li");
+														    for (var i = 0; i < arr.length; i++){
+														        var a = arr[i];
+														        a.style.background = "";
+														    };
+														    tbj.style.background = "#fff"
+														}
+												}
+											}
+										},
+										error:function(xhr,type,errorThrown){
+											plus.nativeUI.closeWaiting();//关闭等待框 
+										}
+									})
+							    });
+								window.Categorytw = function(wbj){
+									 
+								    var arr = document.getElementById("Categorytw").getElementsByTagName("li");
+								    for (var i = 0; i < arr.length; i++){
+								        var a = arr[i];
+								        a.style.background = "";
+								    };
+								    wbj.style.background = "#eee";
+								   
+								}
+								
+								
+							}
+							
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();//关闭等待框
+							mui("#upload")[0].innerHTML = ""; 
+							mui('#nulldiv')[0].style.display = 'block';
+						}
+					});
+				}
+			})
+	 		
 			
+			
+			//点击三级分类
+			window.Categorys = function(sbj){
+			    var arr = document.getElementById("Categorys").getElementsByTagName("li");
+			    for (var i = 0; i < arr.length; i++){
+			        var a = arr[i];
+			        a.style.borderBottom = "";
+			    };
+			    sbj.style.borderBottom = "solid 1px #ff7c08";
+			    $(".Category-eject").removeClass("grade-w-roll")
+			}
 			//跳转详情
 			window.goInfo =  function(goodsId,differentiate){ 
 				 openview({
