@@ -143,8 +143,8 @@
 			 	left: 10px;
 			 	right: 10px;
 				-webkit-transform: scaleY(.05);
-				-webkit-transform-origin: 0 bottom;
-				transform-origin: 0 bottom;
+				/*-webkit-transform-origin: 0 bottom;
+				transform-origin: 0 bottom;*/
 				background: #000;
 				bottom: 0;
 			 }
@@ -216,11 +216,10 @@
 						 
 						<%}%> 
 		</script> 
-		
-		
+	
 		<!--tab-->
 		<div id="tab">
-			<div class="tabPs">
+			<div class="tabPs" id="tabPs">
 				<div class="tab">
 					<div class="tabActive"><span>内容</span></div>
 					<div><span>标签</span></div>
@@ -342,6 +341,17 @@
 				</div>
 			</div>
 		</div>
+			
+		<script type="text/javascript">
+				var immersed = 0;
+			 
+				var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+				if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+				    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+				}  
+				$(".tabPs").css("top",immersed+50+"px");
+				$(".tabcontent").css("top","calc(31px + 0.13rem + "+immersed+"px)")
+		</script>
 		
 	</body>
 	<script type="text/javascript">
@@ -447,20 +457,19 @@
 				$("input").blur();
 				 //	选项卡tab
 		    var widthF = $(".tab div").eq(0).width()
-		    $('.border').css({"left":(widthF/3)+"px","width":widthF/3+"px"});
-//				alert("执行搜索 ")
-//					plus.nativeUI.showWaiting()
-					var oldtoken = plus.storage.getItem('oldToken');
-//					mui.ajax(serverUrl+'/api/index/search',{
-//						data:{search:words},
-//						dataType:'json',
-//						type:'post',
-//						timeout:10000,
-//						headers:{"token":oldtoken},	 
-//						success:function(data,type,xhr){ 
-//							plus.nativeUI.closeWaiting();
-//							
-//							if(data.errno==0){
+		    $('.border').css({"left":(widthF/3)+"px","width":widthF/3+"px"}); 
+					plus.nativeUI.showWaiting();
+					var oldtoken = plus.storage.getItem('oldToken'); 
+					mui.ajax(serverUrl+'/api/news/searchnews',{
+						data:{serchValue:words},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldtoken},	 
+						success:function(data,type,xhr){ 
+							plus.nativeUI.closeWaiting();
+							alert(JSON.stringify(data))
+1//							if(data.errno==0){
 //								if(data.data.local_house.length!=0 || data.data.local_service.length!=0 || data.data.local_used_market.length!=0 || data.data.goods.length!=0 || data.data.service_help_user.length!=0 || data.data.service_volunteer_activities.length!=0 || data.data.system_activity.length!=0){
 //								 var searchObj = {};
 //								 searchObj.searchData = data.data;
@@ -468,13 +477,12 @@
 //							}else{
 //								document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
 //							}
-//							}
-//						},
-//						error:function(xhr,type,errorThrown){
-//							plus.nativeUI.closeWaiting()
-//							console.log('响应失败  !');
-//						}
-//					});
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting()
+							console.log('响应失败  !');
+						}
+					});
 			}
 
 
