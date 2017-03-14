@@ -734,7 +734,7 @@
 					<div class="mui-col-sm-2 mui-col-xs-2" style="color: #ec523e !important;line-height: 40px;font-weight: bold;" > 温馨提示:
 				</div>
 				<div class="mui-col-sm-10 mui-col-xs-10">
-					<marquee style="line-height: 40px;color: #666;">
+					<marquee style="line-height: 40px;color: #666;" id="warmthPrompt">
 						亲！Hi集试运行阶段，如有不便及建议请及时反馈小HI（点击首页右下角小蜜蜂）谢谢理解并支持！我们将努力做得更好！
 					</marquee>
 
@@ -1205,7 +1205,7 @@
 					view: 'market/market-Center.html'
 				})
 			}
-			//点击进入年味（优品惠）
+			//点击进入年味（优品惠。）
 			function yearTasty() {
 				openview({
 					view: 'market/youpinhui-Center.html'
@@ -1272,17 +1272,22 @@
 				//跳转页面
 				var Timetoken = null;
 				var oldToken = null;
-				oldToken = plus.storage.getItem('oldToken');
-				clearInterval(Timetoken);
-				againfun();
-				Timetoken = setInterval(function() { //等待oldToken加载方法
-					//				console.log('计时器');
+				if(plus.storage.getItem('oldToken')){
+					oldToken = plus.storage.getItem('oldToken');
+					againfun();
+				}else{
+					clearInterval(Timetoken);
+					Timetoken = setInterval(function() { //等待oldToken加载方法
 					if(plus.storage.getItem('oldToken')) {
 						clearInterval(Timetoken);
 						oldToken = plus.storage.getItem('oldToken');
 						againfun();
 					}
 				}, 200)
+				}
+				
+				
+				
 				
 				
 				
@@ -1449,7 +1454,6 @@
 					}
 
 					//发现展示板块
-
 					$(".tab span").click(function() {
 						var i = $(this).index();
 						$(".tab span").removeClass("tabActive")
@@ -1459,6 +1463,25 @@
 							$(".tabcontent").eq(i).addClass("taactive");
 						}
 					})
+					
+					//温馨提示
+					mui.ajax(serverUrl + '/api/index/prompt', {
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							"token": oldToken
+						},
+						success: function(data, type, xhr) {
+							if (data.errno == 0) {
+								mui('#warmthPrompt')[0].innerHTML = data.data[0].title;
+							} else{
+								
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error(type);
+						}
+					});
 
 					//家乡头条
 					mui.ajax(serverUrl + '/api/localreport/localreport', {
