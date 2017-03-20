@@ -22,14 +22,16 @@
 		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js"></script>
 		<style type="text/css">
-
 		</style>
 	</head>
 	<style type="text/css">
 		#imgUpload {
 			display: none;
+			width: 0;
 		}
-		
+		#preview{
+			width: 30%;
+		}
 		.ptet {
 			font-size: 12px;
 			border: none;
@@ -37,11 +39,15 @@
 		
 		label {
 			vertical-align: top;
-			width: calc((100%-20px)*2/5);
+			width: calc((100% - 20px) * 2 / 5);
+			width: -moz-calc((100% - 20px) * 2 / 5);
+			width: -webkit-calc((100% - 20px) * 2 / 5);
 		}
 		
 		.ptet {
-			width: calc((100%-20px)*3/5);
+			width: calc((100% - 20px) * 3 / 5);
+			width: -webkit-calc((100% - 20px) * 3 / 5);
+			width: -moz-calc((100% - 20px) * 3 / 5);
 		}
 		
 		.publishf {
@@ -79,18 +85,15 @@
 		}
 		
 		.disbg {
-			margin: 0 10px;
+			border: none;
+			padding: 0;
+			font-size: 0.13rem;
+			/*margin: 0 10px;*/
 			min-height: 30px;
 			line-height: 1.2;
 		}
-		
-		[contenteditable=true] {
-			display: inline-block;
-			/*width: 100%;*/
-			vertical-align: middle;
-			min-height: (1em * line-height);
-			/*1个input的高度*/
-		}
+	 
+	 
 	</style>
 
 	<body>
@@ -106,17 +109,17 @@
 		<div id="main">
 			<div class="publishf clearfix">
 				<div class="ptet fr">
-					<div class="disbg" contenteditable="true">
-					</div>
+					<div class="apsan"></div>
+					<textarea class="disbg" rows="5" placeholder="文字，心情，胡思乱想。。。"></textarea>
 				</div>
 
 				<label class="fl">
 						 
 							<div class="text-center gray" id="preview">
-								<img src="../../img/publisf.svg" style="width: 1rem;"/>
+								<a href="#picture"><img src="../../img/publisf.svg" style="width: 1rem;"/></a>
 							</div>
 					 
-						<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
+						<!--<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">-->
 				 </label>
 			</div>
 			<!--添加标签-->
@@ -135,17 +138,34 @@
 				</div>
 			</div>
 
+
+
+			<div id="picture" class="mui-popover mui-popover-action mui-popover-bottom">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a onclick="shareCameraPicture()">拍照</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a onclick="shareGalleryPicture()">选取现有的</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="#picture"><b>取消</b></a>
+					</li>
+				</ul>
+			</div>
+
+
 		</div>
 
 	</body>
 
 	<script type="text/javascript">
-		//选择标签
-		$(".addbg .mui-badge:not(:last-child)").click(function() {
-			var bg = '<span class="addbgs" contenteditable="false">' + $(this).html() + '</span>';
-			$(".disbg").append(bg)
-		})
+	
 		mui.plusReady(function() {
+//			shareGalleryPicture()
+			//返回提示
 			$(".back").on("tap", function() {
 					var btnArray = ['否', '是'];
 					mui.confirm('确定取消吗？', '提示', btnArray, function(e) {
@@ -154,36 +174,16 @@
 						} else {}
 					})
 				})
-				//自动弹出输入法
-
-			var nativeWebview, imm, InputMethodManager;
-			var initNativeObjects = function() {
-				if(mui.os.android) {
-					var main = plus.android.runtimeMainActivity();
-					var Context = plus.android.importClass("android.content.Context");
-					InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
-					imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
-				} else {
-					nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
-				}
-			};
-			var showSoftInput = function() {
-				if(mui.os.android) {
-					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-				} else {
-					nativeWebview.plusCallMethod({
-						"setKeyboardDisplayRequiresUserAction": false
-					});
-				}
-				//此处可写具体逻辑设置获取焦点的input
-				setTimeout(function() {
-					var inputElem = document.getElementsByClassName('disbg')[0];
-					inputElem.focus();
-				}, 200);
-			};
-//			initNativeObjects();
-//			showSoftInput();
-
+			
+			
+		   
+			
+			
+			//选择标签
+			$(".addbg .mui-badge:not(:last-child)").click(function() {
+				var bg = '<span class="addbgs" contenteditable="false">' + $(this).html() + '</span>';
+				$(".apsan").append(bg)
+			})
 			//新增标签 
 			document.getElementById("addbg").addEventListener('tap', function(e) {
 				e.detail.gesture.preventDefault(); //修复iOS 8.x平台存在的bug，使用plus.nativeUI.prompt会造成输入法闪一下又没了
@@ -193,19 +193,13 @@
 						if(e.value) {
 							var vl = $.trim(e.value);
 							var bg = '<span class="addbgs" contenteditable="false">#' + vl + '#</span>';
-							$(".disbg").append(bg)
+							$(".apsan").append(bg)
 						}
-
-					} else {
-						info.innerText = '你点了取消按钮';
-					}
+					} 
 				})
-
 			});
-
 			//地图定位
 			var watchId;
-
 			function geoInf(position) {
 				var str = "";
 				str += "地址：" + position.addresses + "\n"; //获取地址信息
@@ -234,7 +228,10 @@
 				latitude = (position.coords.latitude).toFixed(6);
 				//alert("当前位置的纬度："+latitude+" 经度："+longitude);
 				//alert(position.street)
-				$('#mapAddress').html(position.address.street + "" + position.address.poiName)
+				 
+					$('#mapAddress').html(position.addresses)
+			 
+				
 			}
 			// 通过定位模块获取位置信息
 			function getGeocode() {
@@ -254,64 +251,57 @@
 					$('#mapAddress').html("我的位置")
 				}
 			})
-
 		})
-
 		//图片上传文件方法	
-		function previewImage(file) {
-			var MAXWIDTH = 350;
-			var MAXHEIGHT = 249;
-			var div = findPreview(file.parentNode);
-			if(file.files && file.files[0]) {
-				filepic = file.files[0];
-				div.innerHTML = '<img id=imghead>';
-				var img = div.lastChild;
-				img.onload = function() {
-					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-					img.width = rect.width;
-					img.height = rect.height;
-				}
-				var reader = new FileReader();
-				reader.onload = function(evt) {
-					img.src = evt.target.result;
-				}
-				reader.readAsDataURL(file.files[0]);
-			}
-		}
-
-		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
-			var param = {
-				top: 0,
-				left: 0,
-				width: width,
-				height: height
-			};
-			if(width > maxWidth || height > maxHeight) {
-				rateWidth = width / maxWidth;
-				rateHeight = height / maxHeight;
-
-				if(rateWidth > rateHeight) {
-					param.width = maxWidth;
-					param.height = Math.round(height / rateWidth);
-				} else {
-					param.width = Math.round(width / rateHeight);
-					param.height = maxHeight;
-				}
-			}
-			param.left = Math.round((maxWidth - param.width) / 2);
-			param.top = Math.round((maxHeight - param.height) / 2);
-			return param;
-		}
-
-		function findPreview(parent) {
-			var childs = parent.childNodes;
-			for(var i = 0; i < childs.length; i++) {
-				if(childs[i].id == "preview")
-					return childs[i];
-			}
-			return div = document.getElementById('preview');
+//		var p = "";
+//		if(pic&&pic.realUrl){
+//			p = pic.realUrl;
+//			if(p.substr(0,7)==="file://"){
+//				p=p.substr(7);
+//			}else if(p.sub(0)!=="/"){
+//				p=plus.io.convertLocalFileSystemURL(p);
+//			}
+//		}
+//		var f = new File(p);
+//		var uri = Uri.fromFile(f);
+//		if(f.exists()&&f.isFile()){
+//			console.log("image/*");
+//			intent.setType("image/*");
+//			intent.putExtra(Intent.EXTRA_STREAM,uri);
+//		}else{
+//			console.log("text/plain");
+//			intent.setType("text/plain");
+//		}
+		// 从相册添加图片分享
+		function shareGalleryPicture(){
+			$("#picture").removeClass("mui-active") ;
+			$("#picture").css("display","none");
+			plus.gallery.pick(function(p){
+				// 从相册返回的路径不需要转换可以直接使用 
+				$("#preview img").attr("src",p); 
+		    });
 		}
 		
+		//拍照 
+		function shareCameraPicture(){ 
+			$("#picture").removeClass("mui-active") ;
+			$("#picture").css("display","none");
+			var cmr=plus.camera.getCamera();
+			cmr.captureImage(function(p){
+				plus.io.resolveLocalFileSystemURL(p,function(entry){ 
+					//把拍摄图片的路径转化成 本地文件url
+					p=plus.io.convertLocalFileSystemURL(p); 
+					$("#preview img").attr("src",p); 
+				},function(e){
+					outLine("读取拍照文件错误："+e.message);
+				} );
+			},function(e){
+				outLine( "拍照失败："+e.message );
+			});
+		}
+		
+		
+ 
 		
 		
 		//发送 发布

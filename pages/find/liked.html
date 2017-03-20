@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>关注</title>
+		<title>被赞</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -13,14 +13,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 		<link rel="stylesheet" href="../../css/reset.css">  
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.min.js"></script>
-		<script src="../../js/app.js"></script>
-		<!--引入模板引擎-->
-		<script src="../../js/artTemplate-native.js"></script>
-		<style type="text/css">
-
-		</style>
 	</head>
 	<style type="text/css">
             .userAvator{  
@@ -83,6 +75,9 @@
 		 }
 		 .fchidl>div small{
 		 	color: #C0C0C0; 
+		 	position: absolute;
+		 	right: 10px;
+		 	bottom: 10px;
 		 }
 	</style>
 
@@ -90,53 +85,103 @@
 
 		<header class="mui-bar mui-bar-nav">
 		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
-		    <h1 class="mui-title" id="confirmbtn1">赞</h1> 
+		    <h1 class="mui-title" id="confirmbtn1">被赞</h1> 
 		</header>
-		<script src="../../js/statusBar.js"></script>
-		<!--状态栏-->
-		<!--<div id="container">-->
-		<div id="main">
-			<div class="follow"> 
-				<div class="fchidl">
-					<img src="../../img/market/ag.jpeg" class="userAvator" />
-					<div> 到底发生的<br><br><span>赞了</span> 你的帖子  <small>2017-01-21 08:12</small></div>
-				</div>
-				<img src="../../img/market/feg3.png" class="fllmg" alt="" />
-			</div>
-			 <div class="follow"> 
-				<div class="fchidl">
-					<img src="../../img/market/ag.jpeg" class="userAvator" />
-					<div> 到底发生的<br><br><span>赞了</span> 你的帖子  <small>2017-01-21 08:12</small></div>
-				</div>
-				<img src="../../img/market/feg3.png" class="fllmg" alt="" />
-			</div>
-			<div class="follow"> 
-				<div class="fchidl">
-					<img src="../../img/market/ag.jpeg" class="userAvator" />
-					<div> 到底发生的<br><br><span>赞了</span> 你的帖子  <small>2017-01-21 08:12</small></div>
-				</div>
-				<img src="../../img/market/feg3.png" class="fllmg" alt="" />
-			</div>
-			<div class="follow"> 
-				<div class="fchidl">
-					<img src="../../img/market/ag.jpeg" class="userAvator" />
-					<div> 到底发生的<br><br><span>赞了</span> 你的帖子  <small>2017-01-21 08:12</small></div>
-				</div>
-				<img src="../../img/market/feg3.png" class="fllmg" alt="" />
-			</div>
-
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		
+		<div id="nulldiv" style="padding-top: 50%;text-align:center;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+			<br />
+			还没收到赞
 		</div>
+		<div id="main">
+			<!--<div class="follow"> 
+				<div class="fchidl">
+					<img src="../../img/market/ag.jpeg" class="userAvator" />
+					<div> 到底发生的<br><br><span>赞了</span> 你的帖子  <small>2017-01-21 08:12</small></div>
+				</div>
+				<img src="../../img/market/feg3.png" class="fllmg" alt="" />
+			</div>-->
+		</div>
+		<script type="text/html" id="infolist"> 
+			<% for(var i=0; i<mynewsliker.length; i++){%>
+				<% for(var j=0; j<likerInfo.length; j++){%>
+					<%if(mynewsliker[i].userid == likerInfo[j].user_id){%>
+						<div class="follow" onclick="opendetaile()"> 
+							<div class="fchidl">
+								<%if(likerInfo[j].avatar){ %>
+									<img src="<%= url+likerInfo[j].avatar%>" class="userAvator" />
+								<%}else{ %>
+									<img src="../../img/market/ag.jpeg" class="userAvator" />
+								<%} %>	
+								
+								<div> <%= likerInfo[j].nickname%><br><br><span>赞了</span> 你的帖子  <small><%= mynewsliker[i].create_time.split('T')[0]%></small></div>
+							</div> 
+							<!--<img src="../../img/market/feg3.png" class="fllmg" alt="" />-->
+						</div>
+					<%}else{%>
+						<% break; %>
+					<%}%>	
+				<% }%>
+			<% }%>	
+		</script>
 		
 		 
 	</body>
-  <script type="text/javascript">
-  $(".follow").on("tap",function(){
-  	event.preventDefault()
-  	openview({
-		view:'findInfo.html',
-		extrasobj:3
-	});
-  })
-   
-  </script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/app.js"></script>
+<script src="../../js/artTemplate-native.js"></script>
+<script type="text/javascript">
+	mui.plusReady(function(){
+		var oldtoken = plus.storage.getItem('oldToken');
+		var myuserid = plus.storage.getItem('userid');
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		mui.ajax(serverUrl+'/api/news/newslike',{
+				data:{"userid":myuserid},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},
+				success:function(data,type,xhr){
+					console.log('赞返回',data);
+					if(data.errno==0){
+						if (data.data.mynewsliker.mynewsliker.length) {
+							var dataobj = {};
+							dataobj.url = serverimgUrl;
+							dataobj.mynewsliker = data.data.mynewsliker.mynewsliker;
+							mui.each(data.data.mynewsliker.likerInfo,function (index,element) {
+								if(element.avatar){
+									element.avatar = JSON.parse(element.avatar)[0].picImg;
+								}
+							})
+							dataobj.likerInfo = data.data.mynewsliker.likerInfo; 
+							var html=template("infolist",dataobj);
+							document.getElementById("main").innerHTML = html;
+						} else{//没有数据
+							mui('#nulldiv')[0].style.display = 'block';
+						}
+						plus.nativeUI.closeWaiting();
+					}else{
+						plus.nativeUI.closeWaiting();
+						mui('#nulldiv')[0].style.display = 'block';
+						mui.toast('当前网络不好，请重试！');	
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui('#nulldiv')[0].style.display = 'block';
+					mui.toast('当前网络不好，请重试！');
+					console.log('登录响应失败');
+				}
+			});
+	})
+	function opendetaile(){
+		openview({
+			view:'findInfo.html',
+			extrasobj:3
+		});
+	}
+
+	</script>
 </html>
