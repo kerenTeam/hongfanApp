@@ -239,7 +239,7 @@
 				text-align: center;
 			}
 			
-			.looker li:last-child {
+			.looker li.moreLiked {
 				color: white;
 				line-height: 0.35rem;
 				background: lightgray;
@@ -340,6 +340,7 @@
 			}
 			
 			.ifcmt {
+				margin-top: 10px;
 				padding-bottom: 40px;
 			}
 			
@@ -377,6 +378,7 @@
 				display: table;
 				width: 100%;
 				background-color: whitesmoke;
+				z-index: 1;
 			}
 			
 			.cmtinput>div {
@@ -450,15 +452,14 @@
 				display: inline-block;
 				-webkit-animation-name: heartBlast;
 				animation-name: heartBlast;
-				-webkit-animation-duration: .8s;
-				animation-duration: .8s;
+				-webkit-animation-duration: .3s;
+				animation-duration: .3s;
 				-webkit-animation-iteration-count: 1;
 				animation-iteration-count: 1;
 				-webkit-animation-timing-function: steps(28);
 				animation-timing-function: steps(28);
 				background-position: right;
 			}
-			
 			.feed p {
 				font-family: "Microsoft YaHei", 'Georgia', Times, Times New Roman, serif;
 				font-size: 25px;
@@ -481,11 +482,11 @@
 				position: absolute;
 				top: 50%;
 				left: 50%;
-				line-height: 1.5;
 				-webkit-transform: translate(-50%, -50%);
 			}
 			
 			.findhd>div {
+				vertical-align: middle;
 				display: table-cell; 
 			}
 			
@@ -515,6 +516,9 @@
 				width: 0.1rem!important;
 				height: 0.1rem!important;
 			}
+			.cmlist{
+				padding: 15px 15px;
+			}
 		</style>
 	</head>
 
@@ -526,177 +530,164 @@
 			<div class="findhd">
 				<div style="vertical-align: middle;"><img src="../../img/10.png" class="findUser" alt="" /></div>
 				<div>
-					<span class="fname">为你停留_sdfad</span><br>
-					<span class="ftime">01-17 12:07</span>
+					<span class="fname"></span>
 				</div>
 			</div>
-			<!--<h1 class="mui-title findUser"><img src="../../img/10.png" alt="" /><span class="fname">为你停留_sdfad</span><span class="ftime"><img src="../../img/time.png" alt="" />01-17 12:07</span></h1>-->
 			<a href="javascript:;" style="line-height: 50px;color:white;font-size: 25px;" class="fr baocun">+</a>
 		</header>
 		<script src="../../js/statusBar.js"></script>
 		<!--状态栏-->
 		<!--<div id="container">-->
 		<div id="main">
-			<img src="../../img/market/hbe.png" alt="" data-preview-src="" data-preview-group="1" />
-			<p class="txtinfo">
-				<span class="mark">#赫本#</span><span class="mark">#女神#</span>sfssdfadfadfadf的发送到发送到发送到非安放的好结果与UI本相册去
-
-			</p>
-			 
-			<div class="view"><img src="../../img/serveForPeople/acmap.png" alt="" /> <small style="vertical-align: middle;margin-right: 10px;">xxxxxxx</small> <img src="../../img/eye.svg" alt="" /> <small style="vertical-align: middle;">5W</small></div>
-			<!--分类栏目-->
-			<ul class="looker">
-				<li><img src="../../img/market/ag.jpeg" alt="" /></li>
-				<li><img src="../../img/market/ag.jpeg" alt="" /></li>
-				<li><img src="../../img/market/ag.jpeg" alt="" /></li>
-				<li><img src="../../img/market/ag.jpeg" alt="" /></li>
-				<li><img src="../../img/market/ag.jpeg" alt="" /></li>
-				<li><img src="../../img/market/ag.jpeg" alt="" /></li>
-				<li class="moreLiked">117</li>
-			</ul>
+			<div id="newsInfo"></div>
+			<script type="text/html" id="newsInfoTpl">
+				<%if(recommendData.newsinfodata){%>
+					<!--<img src="<%=myUrl%><%=recommendData.newsinfodata.pic%>" alt="" data-preview-src="" data-preview-group="1" />-->
+					<img src="<%=recommendData.newsinfodata[0].pic%>" alt="" data-preview-src="" data-preview-group="1" />
+					<p class="txtinfo">
+						<%if(recommendData.tags && recommendData.tags.length){%>
+							<%for(var i=0;i<recommendData.tags.length;i++){%>
+								<%if(recommendData.tags[i].tagName){%>
+									<span class="mark">#<%=recommendData.tags[i].tagName%>#</span>
+								<%}%>
+							<%}%>
+						<%}%> <%=recommendData.newsinfodata[0].content%>
+		
+					</p>
+					 
+					<div class="view"><img src="../../img/serveForPeople/acmap.png" alt="" /> <small style="vertical-align: middle;margin-right: 10px;"><%=recommendData.newsinfodata[0].fix%></small> <img src="../../img/eye.svg" alt="" /> <small style="vertical-align: middle;"><%=recommendData.liker.length%></small></div>
+					<!--查看列表-->
+					<%if(recommendData.liker && recommendData.liker.length){%>
+						<ul class="looker">
+							<%if(recommendData.liker.length > 6){%>
+								<%for(var j=0;j<6;j++){%>
+									<%if(recommendData.liker[j].avatar){%>
+										<li><img src="<%=myUrl%><%=recommendData.liker[j].avatar[0].picImg%>" data-id="<%=recommendData.liker[j].user_id%>" alt="" /></li>
+									<%}else{%>
+										<li><img src="../../img/10.png" alt="" data-id="<%=recommendData.liker[j].user_id%>" /></li>
+									<%}%>
+								<%}%>
+								<li data-id="<%=recommendData.newsinfodata[0].userid%>" class="moreLiked"><%=recommendData.liker.length%></li>
+							<%}else{%>
+								<%for(var j=0;j<recommendData.liker.length;j++){%>
+									<%if(recommendData.liker[j].avatar){%>
+										<li><img src="<%=myUrl%><%=recommendData.liker[j].avatar[0].picImg%>" data-id="<%=recommendData.liker[j].user_id%>" alt="" /></li>
+									<%}else{%>
+										<li><img src="../../img/10.png" data-id="<%=recommendData.liker[j].user_id%>" alt="" /></li>
+									<%}%>
+									<%}%>
+							<%}%> 
+						</ul>
+					<%}%>
+					<!--评论输入框-->
+					<div class="cmtinput">
+						<div class="inputmn"> 
+								<div class="innerInput orp" data-friend_news_id="<%=recommendData.newsinfodata[0].news_id%>" data-to_user_id="<%=recommendData.newsinfodata[0].user_id%>">发射评论~</div>
+								<img src="../../img/keyboard.svg" alt="" />
+						</div>
+						<div class="feed" id="feed0">
+							<div class="heart " id="like0" data-id="<%=recommendData.newsinfodata[0].user_id%>" rel="like"></div>
+							<!--<div class="heart heartAnimation" id="like0" data-id="<%=recommendData.newsinfodata.user_id%>" style="display: none;" rel="unlike"></div>-->
+							<div class="likeCount" style="visibility: hidden;" id="likeCount0">0</div>
+						</div>
+		
+						<div class="sharef" style="position: relative;" onclick="share()">
+							<img src="../../img/market/sharef.png" style="width: 20px;position: absolute;top: 10px;right: 10px;" />
+						</div>
+					</div>
+				<%}%> 
+			</script>
+			
+			
 			<div class="ifcmt">
-				<!--未评论-->
-				<div class="noComment">
-					<img src="../../img/nocmt.png" alt="" />
-					<p>快抢沙发吧</p>
-				</div>
-
-				<!--有评论-->
+				
+				<div id="cmtAll"></div>
+				<script type="text/html" id="cmtTpl">
+					<%if(!cmtData.commit.length){%>
+						<!--未评论-->
+						<p class="commentNums">评论 0</p>
+						<div class="noComment">
+							<img src="../../img/nocmt.png" alt="" />
+							<p>快抢沙发吧</p>
+						</div>
+					<%}else{%>
+							<!--有评论-->
 				<div class="comment">
-					<p class="commentNums">评论 11</p>
-					<ul class="mui-table-view-striped mui-table-view-condensed">
-
-						<li class="mui-table-view-cell cmlist">
-							<div class="mui-slider-cell">
-								<div class="oa-contact-cell mui-table">
-									<div class="oa-contact-avatar mui-table-cell cheader">
-										<!--<img src="../../img/10.png" />-->
-										<img src="../../img/market/ag.jpeg" />
-									</div>
-									<div class="oa-contact-content mui-table-cell oaright">
-										<div class="mui-clearfix">
-											<h4 class="oa-contact-name">xxx</h4>
-											<span class="mui-pull-right orp"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>
-											<div class="feed mui-pull-right" id="feed1">
-												<div class="heart innerheart" id="like1" rel="like"></div>
-												<!--红心状态-->
-												<!--<div class="heart heartAnimation" id="like1" rel="unlike"></div>-->
-												<div class="likeCount" id="likeCount1">1</div>
+					
+					<p class="commentNums">评论 <%=cmtData.commit.length%></p>
+					
+						<ul class="mui-table-view-striped mui-table-view-condensed">
+							<%for(var i =cmtData.commit.length-1;i>=0;i--){%>
+								<%if(cmtData.commit[i].to_user_id == 0){%>
+									<li class="mui-table-view-cell cmlist" data-fromUserId="<%=cmtData.commit[i].from_user_id%>" data-commitId="<%=cmtData.commit[i].id%>">
+										<div class="mui-slider-cell">
+											<div class="oa-contact-cell mui-table">
+												<div class="oa-contact-avatar mui-table-cell cheader"> 
+													<%if(cmtData.commit[i].avatar){%>
+													 <img src="<%=myUrl%><%=cmtData.commit[i].avatar[0].picImg%>" onclick="gocmterPage('<%=cmtData.commit[i].from_user_id%>')"/>
+													<%}else{%>
+														<img src="../../img/10.png" onclick="gocmterPage('<%=cmtData.commit[i].from_user_id%>')"/>
+														<%}%>
+												</div>
+												<div class="oa-contact-content mui-table-cell oaright">
+													<div class="mui-clearfix">
+														<h4 class="oa-contact-name"><%=cmtData.commit[i].nickname%></h4>
+														<span class="mui-pull-right orp" data-friend_news_id="<%=cmtData.commit[i].friend_news_id%>" data-to_user_id="<%=cmtData.commit[i].from_user_id%>" data-to_commit_id="<%=cmtData.commit[i].id%>"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>
+														<div class="feed mui-pull-right" id="feed<%=i+1%>">
+																	<%if(cmtData.commit[i].isLike == 1){%>
+																		<!--红心状态-->
+																		<div class="heart innerheart heartAnimation" id="like<%=i+1%>" data-id="<%=cmtData.commit[i].id%>" rel="unlike"></div>
+																	<%}else{%>
+																		<div class="heart innerheart" id="like<%=i+1%>" data-id="<%=cmtData.commit[i].id%>" rel="like"></div>
+																		<%}%> 
+															<div class="likeCount" id="likeCount<%=i+1%>">
+																<%if(cmtData.commit[i].likeNums){%>
+																     <%=cmtData.commit[i].likeNums%>
+																<%}%>
+															</div>
+														</div>
+													</div>
+			
+													<div class="oa-contact-position mui-h6 ctime"><%=cmtData.commit[i].create_time_as%></div>
+													<p class="oa-contact-email mui-h6">
+														<%=cmtData.commit[i].content%>
+													</p>
+													<!--评论的回复-->
+													<div class="othersCmt"></div>
+												</div>
 											</div>
 										</div>
-
-										<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
-										<p class="oa-contact-email mui-h6">
-											dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
-										</p>
-										<!--评论的回复-->
-										<div class="cocmt">
-											<p><span class="ccname">xxxxx:</span>dfsadfadsfadsfadfadsfadfadsfadsfadfsddfsddsafdsafdeertwrtrwtyewtrert</p>
-											<p><span class="ccname">xxxxx:</span>dfsadfadsfadsfadfadsfadf发生大幅度发adsfadsfadfsd</p>
-											<p><span class="ccname">xxxxx:</span>dfsadfadsfadsfadfadsfadfadsfadsfadfsd</p>
-											<p>共45条回复 ></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</li>
-						<li class="mui-table-view-cell cmlist">
-							<div class="mui-slider-cell">
-								<div class="oa-contact-cell mui-table">
-									<div class="oa-contact-avatar mui-table-cell cheader">
-										<!--<img src="../../img/10.png" />-->
-										<img src="../../img/market/ag.jpeg" />
-									</div>
-									<div class="oa-contact-content mui-table-cell oaright">
-										<div class="mui-clearfix">
-											<h4 class="oa-contact-name">xxx</h4>
-											<span class="mui-pull-right orp"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>
-											<div class="feed mui-pull-right" id="feed2">
-												<div class="heart innerheart" id="like2" rel="like"></div>
-												<div class="likeCount" id="likeCount2">2</div>
-											</div>
-										</div>
-
-										<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
-										<p class="oa-contact-email mui-h6">
-											dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
-										</p>
-										 
-									</div>
-								</div>
-							</div>
-						</li>
-						<li class="mui-table-view-cell cmlist">
-							<div class="mui-slider-cell">
-								<div class="oa-contact-cell mui-table">
-									<div class="oa-contact-avatar mui-table-cell cheader">
-										<!--<img src="../../img/10.png" />-->
-										<img src="../../img/market/ag.jpeg" />
-									</div>
-									<div class="oa-contact-content mui-table-cell oaright">
-										<div class="mui-clearfix">
-											<h4 class="oa-contact-name">xxx</h4>
-											<span class="mui-pull-right orp"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>
-											<div class="feed mui-pull-right" id="feed3">
-												<div class="heart innerheart" id="like3" rel="like"></div>
-												<div class="likeCount" id="likeCount3">3</div>
-											</div>
-										</div>
-
-										<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
-										<p class="oa-contact-email mui-h6">
-											dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
-										</p>
-										 
-									</div>
-								</div>
-							</div>
-						</li>
-						<li class="mui-table-view-cell cmlist">
-							<div class="mui-slider-cell">
-								<div class="oa-contact-cell mui-table">
-									<div class="oa-contact-avatar mui-table-cell cheader">
-										<!--<img src="../../img/10.png" />-->
-										<img src="../../img/market/ag.jpeg" />
-									</div>
-									<div class="oa-contact-content mui-table-cell oaright">
-										<div class="mui-clearfix">
-											<h4 class="oa-contact-name">xxx</h4>
-											<span class="mui-pull-right orp"><img src="../../img/market/repeat.svg" style="width: 15px;margin:0 15px 0 10px;"/></span>
-											<div class="feed mui-pull-right" id="feed4">
-												<div class="heart innerheart" id="like4" rel="like"></div> 
-												<div class="likeCount" id="likeCount4">4</div>
-											</div>
-										</div>
-
-										<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
-										<p class="oa-contact-email mui-h6">
-											dadfsdfadXxxxxxxxxxxxDS打发打发打发打发的发送到发送到发送到发送到发送到发送到发到付发打发打发打发斯蒂芬太热问题我惹他娃儿
-										</p>
-										 
-									</div>
-								</div>
-							</div>
-						</li>
-					</ul>
+									</li>
+									<%}%> 
+							<%}%>
+						</ul>
+					 
 				</div>
+			
+						
+						<%}%>
+				</script>
+                <script type="text/html" id="otherCmtTpl">
+                	
+						<%if(cmtData.length!=0){%>
+						    <div class="cocmt" data-cmtid="<%=cmtData[0].to_commit_id%>">
+						    	<%if(cmtData.length>4){%>
+		                		  	<%for(var i=4;i>=0;i--){%>  
+										<p><span class="ccname"><%=cmtData[i].nickname%>:</span><%=cmtData[i].content%></p> 
+									<%}%> 
+								<%}else{%>
+									<%for(var i=cmtData.length-1;i>=0;i--){%>  
+										<p><span class="ccname"><%=cmtData[i].nickname%>:</span><%=cmtData[i].content%></p> 
+									<%}%> 
+								<%}%>
+								<p>共<%=cmtData.length%>条回复</p>		
+							</div>
+						<%}%>
+						 
+                </script>
 			</div>
 
-			<!--评论输入框-->
-			<div class="cmtinput">
-				<div class="inputmn"> 
-						<div class="innerInput orp">发射评论~</div>
-						<img src="../../img/keyboard.svg" alt="" />
-				</div>
-				<div class="feed" id="feed5">
-					<div class="heart " id="like5" rel="like"></div>
-					<div class="likeCount" style="visibility: hidden;" id="likeCount5">5</div>
-				</div>
-
-				<div class="sharef" style="position: relative;" onclick="share()">
-					<img src="../../img/market/sharef.png" style="width: 20px;position: absolute;top: 10px;right: 10px;" />
-				</div>
-			</div>
+			
 	 
 
 		</div>
@@ -707,55 +698,8 @@
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
-	 
-		 //点赞 
-		$('.heart').on("click",function(){
-	
-			var A=$(this).attr("id");
-			var B=A.split("like");
-			var messageID=B[1];
-			var C=parseInt($("#likeCount"+messageID).html());
-			$(this).css("background-position","")
-			var D=$(this).attr("rel");
-	
-			if(D === 'like') {
-				$("#likeCount"+messageID).html(C+1);
-				$(this).addClass("heartAnimation").attr("rel","unlike");
-			}
-			else{
-				$("#likeCount"+messageID).html(C-1);
-				$(this).removeClass("heartAnimation").attr("rel","like");
-				$(this).css("background-position","left");
-			}
-		}); 
+	   
 		
-		//内部评论
-		$(".cocmt").click(function() {
-
-			event.preventDefault()
-			event.stopPropagation();
-			openview({
-				view: "innerComment.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
-		})
-		
-		//回复跳转
-		$(".orp").click(function(){
-			mui.openWindow({
-			    url:"repComment.html",
-			    id:"repComment",
-			    show:{ 
-			      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
-			      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
-			    },
-			     waiting:{
-			      autoShow:false,//自动显示等待框，默认为true
-			    }
-			})
-		})
 		
 		//关注
 		$(".baocun").on("tap",function(){
@@ -766,43 +710,377 @@
 				$(this).remove();
 			},200)
 			
-		})
-		
-		//发布者主页
-		$(".findUser").click(function(){
-			openview({
-				view: "../centerPage.html",
-				extrasobj: {
-					userId: 1
+		}) 
+		mui.plusReady(function(){
+			 
+			var oldtoken = plus.storage.getItem('oldToken');
+			var newsId = plus.webview.currentWebview().newsId;
+			var news_userId = plus.webview.currentWebview().userId;
+			var avtar = plus.webview.currentWebview().avtar;
+			var nickName = plus.webview.currentWebview().nickName;
+			var myuserid = plus.storage.getItem('userid'); 
+			
+			window.addEventListener('refreshCmt',function(event){ 
+				getCmt(); 
+			});
+			
+			if(avtar){ 
+				$(".findUser").attr("src",avtar)
+			}
+			if(nickName){
+				$(".fname").html(nickName)
+			}
+			//发布者主页
+			$(".findUser").click(function(){
+				 if(news_userId == myuserid){
+					openview({
+						view: "../centerPage.html",
+						id:"centerPage",
+						extrasobj: {
+							userId: news_userId
+						}
+					})
+				}else{
+					openview({
+						view: "../othersPage.html",
+						id:"othersPage",
+						extrasobj: {
+							userId: news_userId
+						}
+					})
 				}
 			})
-		})
+			//帖子详情
+			mui.ajax(serverUrl+"/api/news/newsinfo",{
+    			data:{newsid:newsId},
+        		dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){
+					
+					if(data.errno == 0) { 
+						if(data.data){ 
+							var dataobj = data.data; 
+							if(dataobj.liker){
+								for(var i=0;i<dataobj.liker.length;i++){
+									if(dataobj.liker[i].avatar){
+										dataobj.liker[i].avatar = JSON.parse(dataobj.liker[i].avatar)
+									}
+									 
+								}
+							}   
+							var recommendObj = {};
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = dataobj;
+							document.getElementById("newsInfo").innerHTML = template("newsInfoTpl",recommendObj);
+							if(dataobj.liker){
+								for(var i=0;i<dataobj.liker.length;i++){
+									if(dataobj.liker[i].user_id == myuserid){
+										$("#like0").addClass("heartAnimation").attr("rel","unlike");
+										break;
+									}
+									 
+								}
+							} 
+							
+							
+							//查看者  主页
+							$(".looker img").click(function(){
+								openview({
+									view: "../othersPage.html",
+									extrasobj: {
+										userId: $(this).attr("data-id")
+									}
+								})
+							}) 
 		
-		//查看者  主页
-		$(".looker img").click(function(){
-			openview({
-				view: "../othersPage.html",
-				extrasobj: {
-					userId: 1
+							$(".moreLiked").click(function(){
+								openview({
+									view: "othersLiked.html",
+									extrasobj: {
+										newsId: newsId
+									}
+								})
+							})
+							getCmt();
+							
+							//点赞 
+							$('.cmtinput .heart').on("click",function(){ 
+								var A=$(this).attr("id"); 
+								var B=A.split("like"); 
+								var messageID=B[1];
+								var C=parseInt($("#likeCount"+messageID).html()); 
+								$(this).css("background-position","")
+								var likedUserid= $(this).attr("data-id");
+								var D=$(this).attr("rel");
+								if(D === 'like') {
+									$("#likeCount"+messageID).html(C+1);
+									$(this).addClass("heartAnimation").attr("rel","unlike"); 
+									
+									//点赞帖子   
+										likeThis(newsId,likedUserid,myuserid,oldtoken) 
+								}
+								else{  
+									$("#likeCount"+messageID).html(C-1);
+									$(this).removeClass("heartAnimation").attr("rel","like");
+									$(this).css("background-position","left");
+									//取消点赞
+									likeThis(newsId,likedUserid,myuserid,oldtoken)
+								}
+								
+								
+							});
+							
+							
+							//回复跳转
+							$(".orp").click(function(){ 
+								//被评人id
+								var to_user_id = 0; 
+								var to_commit_id = ''
+								//帖子id
+								var friend_news_id = $(this).attr("data-friend_news_id") 
+								mui.openWindow({
+								    url:"repComment.html",
+								    id:"repComment",
+								    show:{ 
+								      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
+								      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+								    },
+								     waiting:{
+								      autoShow:false,//自动显示等待框，默认为true
+								    },
+								    extras:{
+								    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id
+								    }
+								})
+							})
+							
+						}
+		 
+					} 
+					plus.nativeUI.closeWaiting(); //关闭等待框
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting(); 
+					console.log('响应失败  !');
 				}
-			})
-		})
+				 
+        	})
+			
+			function getCmt(){
+				//取得评论信息 用于news详细 和评论详细
+				mui.ajax(serverUrl+"/api/news/newscommit",{
+	    			data:{newsid:newsId,userid:myuserid},
+	        		dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){ 
+						if(data.errno == 0) { 
+							if(data.data){ 
+								var dataobj = data.data;
+								for(var i=0;i<dataobj.commit.length;i++){
+									dataobj.commit[i].news_userid = news_userId; 
+									if(!dataobj.commit[i].nickname){
+										dataobj.commit[i].nickname = "匿名"
+									}else{
+										 
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj.commit[i].nickname)){
+											dataobj.commit[i].nickname = dataobj.commit[i].nickname.substring(0,3)+"****"+dataobj.commit[i].nickname.substring(7,11)
+										}
+									}
+									
+									if(dataobj.commit[i].avatar){
+										dataobj.commit[i].avatar = JSON.parse(dataobj.commit[i].avatar)
+									}
+									
+									dataobj.commit[i].create_time_as = formatDate(dataobj.commit[i].create_time_as, "yyyy.MM.dd hh:mm:ss")
+									for(var j=0;j<dataobj.likeNums.length;j++){
+										if(dataobj.likeNums[j].field == dataobj.commit[i].id){
+											dataobj.commit[i].likeNums = dataobj.likeNums[j].count 
+										}
+									}
+									for(var m=0;m<dataobj.My_favorite_comments.length;m++){
+										if(dataobj.My_favorite_comments[m].commit_id == dataobj.commit[i].id && dataobj.My_favorite_comments[m].commit_like_user_id == myuserid){
+											dataobj.commit[i].isLike = 1; 
+										}
+									} 
+								} 
+								var commentObj = {};
+								commentObj.myUrl = serverimgUrl;
+								commentObj.cmtData = dataobj;
+								document.getElementById("cmtAll").innerHTML = template("cmtTpl", commentObj);  
+								
+								var cmlist = document.getElementsByClassName("cmlist");
+								for(var t=0;t<cmlist.length;t++){
+									var fuserid = cmlist[t].getAttribute("data-fromUserId"); 
+									var cucommitid = cmlist[t].getAttribute("data-commitId"); 
+									    //取得评论的评论 
+										getCmtcmt(t,fuserid,cucommitid)
+								} 
+								
+								//点赞 
+								$('.comment .heart').on("click",function(){ 
+									var A=$(this).attr("id"); 
+									var B=A.split("like"); 
+									var messageID=B[1];
+									var C=parseInt($("#likeCount"+messageID).html());
+									if(!C){
+										C=0;
+									}
+									$(this).css("background-position","")
+									var commitid= $(this).attr("data-id"); 
+									var D=$(this).attr("rel");
+									if(D === 'like') {
+										$("#likeCount"+messageID).html(C+1);
+										$(this).addClass("heartAnimation").attr("rel","unlike"); 
+										
+										//点赞评论 
+										likeCmt(commitid,myuserid,oldtoken) 
+									}
+									else{  
+										
+										//取消点赞评论
+										likeCmt(commitid,myuserid,oldtoken) 
+										
+										var nowLm = C-1;
+										if(nowLm == 0){
+											nowLm ='';
+										}
+										$("#likeCount"+messageID).html(nowLm);
+										$(this).removeClass("heartAnimation").attr("rel","like");
+										$(this).css("background-position","left");
+										
+									}
+									
+									
+								});
+				                
+							}
+			 
+						}else{
+							document.getElementById("cmtAll").innerHTML = '<p class="commentNums">评论 0</p><div class="noComment"><img src="../../img/nocmt.png" alt="" /><p>快抢沙发吧</p></div>'; 
+							
+						}
+						
+						
+						
+						plus.nativeUI.closeWaiting(); //关闭等待框
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting(); 
+						console.log('响应失败  !');
+					}
+					 
+	        	})
+			}
+			 
+			function getCmtcmt(t,fuserid,cucommitid){
+				var newDataObj = [];
+				mui.ajax(serverUrl+"/api/news/newscommit",{
+	    			data:{newsid:newsId,userid:myuserid},
+	        		dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){
+						if(data.errno == 0) { 
+							if(data.data){
+								var dataobj = data.data; 
+								for(var i=0;i<dataobj.commit.length;i++){ 
+									dataobj.commit[i].news_userid = news_userId; 
+									if(!dataobj.commit[i].nickname){
+										dataobj.commit[i].nickname = "匿名"
+									}else{ 
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj.commit[i].nickname)){
+											dataobj.commit[i].nickname = dataobj.commit[i].nickname.substring(0,3)+"****"+dataobj.commit[i].nickname.substring(7,11)
+										}
+									} 
+									if(dataobj.commit[i].to_user_id == fuserid && dataobj.commit[i].to_commit_id == cucommitid){
+									  
+										newDataObj.push(dataobj.commit[i])
+									}
+								}  
+								var commentObj = {};
+								commentObj.myUrl = serverimgUrl;
+								commentObj.cmtData = newDataObj;
+								document.getElementsByClassName("othersCmt")[t].innerHTML = template("otherCmtTpl", commentObj);
+								
+								//回复跳转
+								$(".orp").click(function(){ 
+									//被评人id
+									var to_user_id = $(this).attr("data-to_user_id") 
+									//被评论的评论id
+									var to_commit_id = $(this).attr("data-to_commit_id")  
+									//帖子id
+									var friend_news_id = $(this).attr("data-friend_news_id") 
+									mui.openWindow({
+									    url:"repComment.html",
+									    id:"repComment",
+									    show:{ 
+									      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
+									      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+									    },
+									     waiting:{
+									      autoShow:false,//自动显示等待框，默认为true
+									    },
+									    extras:{
+									    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id
+									    }
+									})
+								})
+								
+							 	//内部评论
+								$(".cocmt").click(function() { 
+									event.stopPropagation(); 
+									openview({
+										view: "innerComment.html",
+										id:"innerComment",
+										extrasobj: {
+											innercmtid: $(this).attr("data-cmtid")
+										}
+									})
+								}) 
+							}
+			 
+						} 
+						
+						
+						
+						plus.nativeUI.closeWaiting(); //关闭等待框
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting(); 
+						console.log('响应失败  !');
+					}
+					 
+	        	})
+			}
 		
-		$(".moreLiked").click(function(){
-			openview({
-				view: "othersLiked.html"
-			})
-		})
 		
-	    //评论者 主页
-	    $(".cheader img").click(function(){
-	    	event.stopPropagation()
-			openview({
-				view: "../othersPage.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
+		    //评论者 主页
+		    window.gocmterPage = function(userId){
+		    	event.stopPropagation()
+		    	if(userId == myuserid){
+		    		openview({
+						view: "../centerPage.html",
+						id:"centerPage",
+						extrasobj: {
+							userId: userId
+						}
+					})
+		    	}else{
+		    		openview({
+						view: "../othersPage.html",
+						id:"othersPage",
+						extrasobj: {
+							userId: userId
+						}
+					})
+		    	}
+				
+			}
 		})
 		
 		mui.previewImage();

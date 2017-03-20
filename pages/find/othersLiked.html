@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>粉丝</title>
+		<title>获赞</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -76,85 +76,76 @@
 		<!--状态栏-->
 		<!--<div id="container">-->
 		<div id="main">
-			<div class="follow">
-				 
-				<div class="fchidl">
-					<img src="../../img/market/atcenter.jpg" class="userAvator" />hi集号 12334345
-				</div>
-				<button type="button" class="mui-btn mui-btn-success mui-btn-outlined eachF hadF">
-					互相关注
-				</button>
-			</div>
-			 <div class="follow">
-				 
-				<div class="fchidl">
-					<img src="../../img/market/atcenter.jpg" class="userAvator" /> 到底发生的
-				</div>
-				<button type="button" class="mui-btn mui-btn-success mui-btn-outlined hadF">
-					已关注
-				</button>
-			</div>
-			<div class="follow">
-				 
-				<div class="fchidl">
-					<img src="../../img/market/bsl.jpeg" class="userAvator" /> 到底发生的
-				</div>
-				<button type="button" class="mui-btn mui-btn-success hadF">
-					关注
-				</button>
-			</div>
-			<div class="follow">
-				 
-				<div class="fchidl">
-					<img src="../../img/market/bsl.jpeg" class="userAvator" /> 到底发生的
-				</div>
-				<button type="button" class="mui-btn mui-btn-success hadF">
-					关注
-				</button>
-			</div>
-			<div class="follow">
-				 
-				<div class="fchidl">
-					<img src="../../img/market/bsl.jpeg" class="userAvator" /> 到底发生的
-				</div>
-				<button type="button" class="mui-btn mui-btn-success hadF">
-					关注
-				</button>
-			</div>
-			<div class="follow">
-				 
-				<div class="fchidl">
-					<img src="../../img/market/bsl.jpeg" class="userAvator" /> 到底发生的
-				</div>
-				<button type="button" class="mui-btn mui-btn-success hadF">
-					关注
-				</button>
-			</div>
-
+			<div id="likerList"></div>
+			<script type="text/html" id="likerListTpl">
+				<%for(var i=0;i<recommendData.liker.length;i++){%>
+					<div class="follow" data-id="<%=recommendData.liker[i].user_id%>">
+						<div class="fchidl">
+							<%if(recommendData.liker[i].avatar){%>
+				                <img src="<%=myUrl%><%=recommendData.liker[i].avatar[0].picImg%>" class="userAvator" alt="" /><%=recommendData.liker[i].nickname%>
+	                        <%}else{%>
+								 <img src="../../img/10.png" class="userAvator" alt="" /><%=recommendData.liker[i].nickname%>
+							<%}%>
+						</div> 
+					</div>
+				<%}%> 
+			</script> 
 		</div>
 		
 		 
 	</body>
   <script type="text/javascript">
-   $(".follow").on("click",function(){
-  	openview({
-		view:'../othersPage.html',
-		extrasobj:3
-	});
-  })
-  	$(".hadF").click(function(){ 
-  		event.stopPropagation()
-  		$(this).toggleClass(" mui-btn-outlined");
-  		 if($(this).hasClass("mui-btn-outlined")){
-  		 	if($(this).hasClass("eachF")){
-  		 		$(this).html("互相关注")
-  		 	}else{
-  		 		$(this).html("已关注")
-  		 	}
-  		 	
-  		 }else{
-  		 	$(this).html("关注")
-  		 }
-  	})
+    
+  	mui.plusReady(function(){
+		var oldtoken = plus.storage.getItem('oldToken');
+		var newsId = plus.webview.currentWebview().newsId;
+			mui.ajax(serverUrl+"/api/news/newsinfo",{
+    			data:{newsid:newsId},
+        		dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){
+					if(data.errno == 0) { 
+						if(data.data){ 
+							var dataobj = data.data; 
+							if(dataobj.liker){
+								for(var i=0;i<dataobj.liker.length;i++){
+									if(dataobj.liker[i].avatar){
+										dataobj.liker[i].avatar = JSON.parse(dataobj.liker[i].avatar)
+									}
+									if(!dataobj.liker[i].nickname){
+										dataobj.liker[i].nickname = "匿名"
+									}else{
+										 
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj.liker[i].nickname)){
+											dataobj.liker[i].nickname = dataobj.liker[i].nickname.substring(0,3)+"****"+dataobj.liker[i].nickname.substring(7,11)
+										}
+									} 
+								}
+							}   
+							var recommendObj = {};
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = dataobj; 
+							document.getElementById("likerList").innerHTML = template("likerListTpl", recommendObj);
+							$(".follow").on("click",function(){ 
+							  	openview({
+									view:'../othersPage.html',
+									extrasobj:{userId:$(this).attr("data-id")}
+								});
+							})
+						}
+		 
+					} 
+					plus.nativeUI.closeWaiting(); //关闭等待框
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting(); 
+					console.log('响应失败  !');
+				}
+				 
+        	})
+	})		
+  	
   </script>
 </html>
