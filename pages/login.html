@@ -176,7 +176,34 @@
 <script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 <script src="../js/app.js"></script>
 <script type="text/javascript">
+	mui.plusReady(function(){
+		var pageid = plus.webview.currentWebview().pageid; 
+			$('.normalSize').removeClass('mui-action-back');
+			$(".normalSize").click(function(){
+	            backindex();
+	        })
+			function backindex(){
+	        	falg = true;
+	            //获得主页面的webview 
+	            var appIndex = plus.webview.getLaunchWebview();
+	            var mainweb = plus.webview.getWebviewById('main.html');
+	            //触发主页面的gohome事件
+	            //mui.fire(appIndex,'gohome',{hrefid:'defaultTab'});
+				console.log(mainweb);
+				console.log(appIndex);
+	            plus.webview.show(appIndex,"fade-in",500);
+	            plus.webview.show(mainweb,"fade-in",500); 
+	            var wvs=plus.webview.all();
+	            console.log(wvs);
+	            
+	        	plus.webview.currentWebview().close();
+	            
+	        }
+	})
 (function(){
+	
+	
+	
 	var account = document.getElementById('account');
 	var password = document.getElementById('password'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则

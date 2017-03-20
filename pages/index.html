@@ -16,7 +16,8 @@
 			html,
 			body {
 				background-color: #efeff4;line-height: 17px !important;font-size: 18px;
-			} 
+			}
+			
 			.demo-icon{
 				display: block;
 			}
@@ -38,7 +39,7 @@
 	</head>
 
 	<body>
-		<nav class="mui-bar mui-bar-tab">
+		<nav class="mui-bar mui-bar-tab" id="header">
 			<a id="defaultTab" class="mui-tab-item mui-active muidingwei" href="main.html" style="position: relative !important;top: 2px !important;">
 				<span class="mui-icon mui-icon-home"></span>
 				<!--<i class="demo-icon icon-home"></i>-->
@@ -256,21 +257,28 @@
 			 //选项卡点击事件
 			mui('.mui-bar-tab').on('tap', 'a', function(e) {
 				var targetTab = this.getAttribute('href');
-				if(targetTab=="find.html"){ 
 					plus.webview.getWebviewById('main.html').hide();
-					 mui.openWindow({
-					 	url:"find.html",
-					 	id:"find",
-					 	style:{"bottom":0,"top":0},
-					 	show:{
-					      aniShow:'fade-in',
-					      duration:300,//页面动画持续时间
-					   	},
-					   	waiting:{
-					      autoShow:false,//自动显示等待框，默认为true
-					    }
-					 })
-				    
+				if(targetTab=="find.html"){
+					if(plus.storage.getItem('myToken')){ 
+							 mui.openWindow({
+							 	url:"find.html",
+							 	id:"find",
+							 	style:{"bottom":0,"top":0},
+							 	show:{
+							      aniShow:'fade-in',
+							      duration:300,//页面动画持续时间
+							   	},
+							   	waiting:{
+							      autoShow:false,//自动显示等待框，默认为true
+							    }
+							 })
+						}else{//没登陆直接打开登录页面
+							mui.toast('请登录');
+							openview({
+								view:'login.html',
+								 extrasobj:{pageid:"find"}
+							});
+						} 
 //					document.getElementsByTagName("nav")[0].style.display="none";
 				
 				}else if(targetTab=="qq.html"){
