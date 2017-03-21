@@ -703,12 +703,19 @@
 		
 		//关注
 		$(".baocun").on("tap",function(){
-			$(this).html('<span class="mui-icon mui-icon-checkmarkempty"></span>')
-			mui.toast("已关注");
-			$(this).fadeOut(400);
-			setTimeout(function(){
-				$(this).remove();
-			},200)
+			if(plus.storage.getItem('myToken')){
+				$(this).html('<span class="mui-icon mui-icon-checkmarkempty"></span>')
+				mui.toast("已关注");
+				$(this).fadeOut(400);
+				setTimeout(function(){
+					$(this).remove();
+				},200)
+			}else{
+				mui.toast('请登录');
+				openview({
+					view:'../login.html'
+				});
+			}
 			
 		}) 
 		mui.plusReady(function(){
@@ -806,28 +813,37 @@
 							getCmt();
 							
 							//点赞 
-							$('.cmtinput .heart').on("click",function(){ 
-								var A=$(this).attr("id"); 
-								var B=A.split("like"); 
-								var messageID=B[1];
-								var C=parseInt($("#likeCount"+messageID).html()); 
-								$(this).css("background-position","")
-								var likedUserid= $(this).attr("data-id");
-								var D=$(this).attr("rel");
-								if(D === 'like') {
-									$("#likeCount"+messageID).html(C+1);
-									$(this).addClass("heartAnimation").attr("rel","unlike"); 
-									
-									//点赞帖子   
-										likeThis(newsId,likedUserid,myuserid,oldtoken) 
+							$('.cmtinput .heart').on("click",function(){
+								if(plus.storage.getItem('myToken')){
+									var A=$(this).attr("id"); 
+									var B=A.split("like"); 
+									var messageID=B[1];
+									var C=parseInt($("#likeCount"+messageID).html()); 
+									$(this).css("background-position","")
+									var likedUserid= $(this).attr("data-id");
+									var D=$(this).attr("rel");
+									if(D === 'like') {
+										$("#likeCount"+messageID).html(C+1);
+										$(this).addClass("heartAnimation").attr("rel","unlike"); 
+										
+										//点赞帖子   
+											likeThis(newsId,likedUserid,myuserid,oldtoken) 
+									}
+									else{  
+										$("#likeCount"+messageID).html(C-1);
+										$(this).removeClass("heartAnimation").attr("rel","like");
+										$(this).css("background-position","left");
+										//取消点赞
+										likeThis(newsId,likedUserid,myuserid,oldtoken)
+									}
+								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									});
 								}
-								else{  
-									$("#likeCount"+messageID).html(C-1);
-									$(this).removeClass("heartAnimation").attr("rel","like");
-									$(this).css("background-position","left");
-									//取消点赞
-									likeThis(newsId,likedUserid,myuserid,oldtoken)
-								}
+								
+								
 								
 								
 							});
@@ -839,21 +855,29 @@
 								var to_user_id = 0; 
 								var to_commit_id = ''
 								//帖子id
-								var friend_news_id = $(this).attr("data-friend_news_id") 
-								mui.openWindow({
-								    url:"repComment.html",
-								    id:"repComment",
-								    show:{ 
-								      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
-								      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
-								    },
-								     waiting:{
-								      autoShow:false,//自动显示等待框，默认为true
-								    },
-								    extras:{
-								    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id
-								    }
-								})
+								var friend_news_id = $(this).attr("data-friend_news_id") ;
+								if(plus.storage.getItem('myToken')){
+									mui.openWindow({
+									    url:"repComment.html",
+									    id:"repComment",
+									    show:{ 
+									      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
+									      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+									    },
+									     waiting:{
+									      autoShow:false,//自动显示等待框，默认为true
+									    },
+									    extras:{
+									    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id
+									    }
+									})
+								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									});
+								}
+								
 							})
 							
 						}
@@ -921,37 +945,44 @@
 								} 
 								
 								//点赞 
-								$('.comment .heart').on("click",function(){ 
-									var A=$(this).attr("id"); 
-									var B=A.split("like"); 
-									var messageID=B[1];
-									var C=parseInt($("#likeCount"+messageID).html());
-									if(!C){
-										C=0;
-									}
-									$(this).css("background-position","")
-									var commitid= $(this).attr("data-id"); 
-									var D=$(this).attr("rel");
-									if(D === 'like') {
-										$("#likeCount"+messageID).html(C+1);
-										$(this).addClass("heartAnimation").attr("rel","unlike"); 
-										
-										//点赞评论 
-										likeCmt(commitid,myuserid,oldtoken) 
-									}
-									else{  
-										
-										//取消点赞评论
-										likeCmt(commitid,myuserid,oldtoken) 
-										
-										var nowLm = C-1;
-										if(nowLm == 0){
-											nowLm ='';
+								$('.comment .heart').on("click",function(){
+									if(plus.storage.getItem('myToken')){
+										var A=$(this).attr("id"); 
+										var B=A.split("like"); 
+										var messageID=B[1];
+										var C=parseInt($("#likeCount"+messageID).html());
+										if(!C){
+											C=0;
 										}
-										$("#likeCount"+messageID).html(nowLm);
-										$(this).removeClass("heartAnimation").attr("rel","like");
-										$(this).css("background-position","left");
-										
+										$(this).css("background-position","")
+										var commitid= $(this).attr("data-id"); 
+										var D=$(this).attr("rel");
+										if(D === 'like') {
+											$("#likeCount"+messageID).html(C+1);
+											$(this).addClass("heartAnimation").attr("rel","unlike"); 
+											
+											//点赞评论 
+											likeCmt(commitid,myuserid,oldtoken) 
+										}
+										else{  
+											
+											//取消点赞评论
+											likeCmt(commitid,myuserid,oldtoken) 
+											
+											var nowLm = C-1;
+											if(nowLm == 0){
+												nowLm ='';
+											}
+											$("#likeCount"+messageID).html(nowLm);
+											$(this).removeClass("heartAnimation").attr("rel","like");
+											$(this).css("background-position","left");
+											
+										}
+									}else{
+										mui.toast('请登录');
+										openview({
+											view:'../login.html'
+										});
 									}
 									
 									
