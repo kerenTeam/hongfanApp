@@ -674,10 +674,22 @@
 				</a>
 			</div>
 			<a style="">
-				<div id="xiaoxi" class="qrcodeBtn"></div>
+				<div id="xiaoxi" class="qrcodeBtn"></div> 
 			</a>
 		</header>
-		<script src="../js/statusBar.js"></script>
+		<div id="sBar" style="background-color: rgb(247, 247, 247);position: fixed;width:100%;top: 0;z-index: 9999"></div>
+		<script type="text/javascript">
+			var immersed = 0;
+			var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+			    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+			}
+			var statusBar = document.getElementById('sBar');//这是模拟状态栏
+			var headdiv = document.getElementById('header');//这是现有的header
+			document.body.style.paddingTop =  immersed+'px';
+			statusBar&&(statusBar.style.height = immersed+'px');
+			headdiv&&(headdiv.style.top = immersed+'px');
+		</script>
 		<!--状态栏-->
 		<!--<div id="container">-->
 			<div id="scroller">
@@ -744,45 +756,70 @@
 		<div class="onetable">
 			<table>
 				<tbody>
+
+					
 					<tr>
 						<td class="market"><img src="../img/theList/shop.png" /><br/>
 							<p>购物中心</p>
 						</td>
+						<td class="tuangou"><img src="../img/theList/tuan.jpg" /><br/>
+							<p>团购</p>
+						</td>
+						<td class="fil"><img src="../img/theList/date.png" /><br/>
+							<p>电影</p>
+						</td>
+						<td class="loveBuy"><img src="../img/theList/tax.png" /><br />
+							<p>优品汇</p>
+						</td>
+					</tr>
+					<tr>
 						<td class="locallife"><img src="../img/theList/life.png" /><br/>
 							<p>本地生活</p>
 						</td>
 						<td class="ticket"><img src="../img/theList/pay.png" /><br />
 							<p>充值缴费</p>
 						</td>
-						<td class="fil"><img src="../img/theList/date.png" /><br/>
-							<p>电影</p>
-						</td>
-					</tr>
-					<tr>
 						<td class="server"><img src="../img/theList/ser.png" /><br/>
 							<p>帮帮团</p>
 						</td>
-						<td class="tuangou"><img src="../img/theList/tuan.jpg" /><br/>
-							<p>团购</p>
-						</td>
 						<td class="h_report"><img src="../img/theList/new.png" /><br/>
 							<p>家乡话</p>
-						</td>
-						<td class="loveBuy"><img src="../img/theList/tax.png" /><br />
-							<p>优品汇</p>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<!--滚动条-->
+		<!--滚动头条-->
 		<div class="adNews" style="background-color: #fff;" id="adNews">
 			<div class="mui-row">
 				<div class="mui-col-sm-3 mui-col-xs-3" style="color: #ec523e !important;line-height: 40px;" >
 				<img src="../img/jxtt.jpg" / width="100%">
 			</div>
-			<div class="mui-col-sm-9 mui-col-xs-9">
-				<marquee style="line-height: 40px;"></marquee>
+			<div class="mui-col-sm-9 mui-col-xs-9" style="height: 40px;">
+				<!--<marquee style="line-height: 40px;"></marquee>-->
+				<div id="div1" style="height:40px;overflow:hidden;">
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			        <a style="display:block;font-size:12px;line-height:20px;height: 20px;color: #555;">“五下乡”活动完美收官</a>
+			    </div> 
+			    <script type="text/javascript">
+			    	var box=document.getElementById("div1"),can=true;
+					box.innerHTML+=box.innerHTML; 
+					box.onmouseover=function(){can=false};
+					box.onmouseout=function(){can=true};
+					new function (){
+					    var stop=box.scrollTop%40==0&&!can;
+					    if(!stop)box.scrollTop==parseInt(box.scrollHeight/2)?box.scrollTop=0:box.scrollTop++;
+					    setTimeout(arguments.callee,box.scrollTop%40?2:2000); 
+					};
+			    </script>
 			</div>
 		</div>
 		</div>
@@ -826,11 +863,11 @@
 		<!--新增小模块-->
 		<table class="tablepay">
 			<tr>
-				<td rowspan="2" style="width: 33.33%;"><img src="../img/market/noodle.jpg" style="width: 100%;" /></td>
+				<td rowspan="2" style="width: 33.33%;"><img src="../img/chong.png" style="width: 100%;" /></td>
 				<td onclick="tinyRecharge()">
 					<img src="../img/tickets/phoneR.png"/><strong>话费</strong>
 				</td>
-				<td onclick="waterRecharge()">
+				<td onclick="waterRecharge()"> 
 					<img src="../img/tickets/waterR.png"/><strong>水费</strong>	
 				</td>
 				

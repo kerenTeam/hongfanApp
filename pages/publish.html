@@ -147,7 +147,7 @@
 			
 			<div class="uppics clearfix" id="uppics2"> 
 		        <div class="onepic">
-		            <!--<input type="file" id="file_input"/>--> 
+		            <input type="file" id="file_input"/> 
 		            <img id="nowpic" src="../img/publisf.svg">
 		        </div>
 		    </div> 
@@ -175,78 +175,77 @@
 <script src="../js/artTemplate-native.js"></script>
 <script type="text/javascript">
 	//选择图片
-//	var onepic = document.getElementsByClassName('onepic')[0];
-//  var uppics = document.getElementsByClassName('uppics')[0];
-//  var time1 = null;
-//  var Apic = [],picobj = {};//存放图片数组
-//  onepic.onclick = function(){
-//  	var file_input = document.getElementById('file_input');
-//      uppics.id = 'uppics2';
-//      var imgnode = document.createElement("div");
-//      clearInterval(time1);
-//      time1 = setInterval(function(){ 
-//          console.log('加载中',file_input.files[0]);
-//          if (file_input.files[0]) {
-//          	if(file_input.files[0].size>0){
-//          		console.log(file_input.files[0]);
-//          		Apic = []; 
-//              	Apic.push(file_input.files[0]); 
-//	                clearInterval(time1);
-//	                var reader = new FileReader();
-//	                var picname = file_input.files[0].name;
-//	                reader.readAsDataURL(file_input.files[0]); 
-//	                reader.onload = function(e){
-//	                	picobj = file_input.files[0]; 
-//	                	mui('#nowpic')[0].src = this.result;
-//	                }
-//	                file_input.value = '';
-//          	}
-//          }
-//      },500)
-//  }
+	var onepic = document.getElementsByClassName('onepic')[0];
+    var uppics = document.getElementsByClassName('uppics')[0];
+    var time1 = null;
+    var Apic = [],picobj = {};//存放图片数组
+    onepic.onclick = function(){
+    	var file_input = document.getElementById('file_input');
+        uppics.id = 'uppics2';
+        var imgnode = document.createElement("div");
+        clearInterval(time1);
+        time1 = setInterval(function(){ 
+            console.log('加载中',file_input.files[0]);
+            if (file_input.files[0]) {
+            	if(file_input.files[0].size>0){
+            		console.log(file_input.files[0]);
+            		Apic = []; 
+                	Apic.push(file_input.files[0]); 
+	                clearInterval(time1);
+	                var reader = new FileReader();
+	                var picname = file_input.files[0].name;
+	                reader.readAsDataURL(file_input.files[0]); 
+	                reader.onload = function(e){
+	                	picobj = file_input.files[0]; 
+	                	mui('#nowpic')[0].src = this.result;
+	                }
+	                file_input.value = '';
+            	}
+            }
+        },500)
+    }
 	//选择图片结束
-	mui.plusReady(function() {
-		var o = imageTool.options;
-		o.uploadUrl = 'http://demo.dcloud.net.cn/helloh5/uploader/upload.php'; //图片上传链接
-		
-		o.multiple = true; //默认只上传一张图片 ，如果要选择多张，请设置为true
-		o.maxPicsCount = 6; //默认一次最多选择10张图片,
-		o.ZoomBox = 1200; //缩放宽高，默认1200px,横图缩放宽度，高度根据比例计算，同理竖图
-		o.ZoomQuality = 89; //压缩图片的质量
-		o.isUpload = true; //默认不上传
-		var mine = plus.webview.currentWebview();
-//		var btn = document.querySelector("button.mui-btn-link");
-		mui('#nowpic')[0].addEventListener('tap',function(){
-			plus.nativeUI.actionSheet({
-					cancel: "取消",
-					buttons: [{
-						title: "从手机相册选择"
-					}, {
-						title: '拍照'
-					}]
-				},
-				function(e) {
-					console.log(JSON.stringify(e));
-					if (e.index == 1) { //点击从相册选择
-						console.log("相册选择");
-						getPics();
-					} else if (e.index == 2) {
-						console.log("拍照");
-						getPics(true);
-					}
-				}
-			);
-		})
-	});
+//	mui.plusReady(function() {
+//		var o = imageTool.options;
+//		o.uploadUrl = 'http://demo.dcloud.net.cn/helloh5/uploader/upload.php'; //图片上传链接
+//		
+//		o.multiple = true; //默认只上传一张图片 ，如果要选择多张，请设置为true
+//		o.maxPicsCount = 6; //默认一次最多选择10张图片,
+//		o.ZoomBox = 1200; //缩放宽高，默认1200px,横图缩放宽度，高度根据比例计算，同理竖图
+//		o.ZoomQuality = 89; //压缩图片的质量
+//		o.isUpload = true; //默认不上传
+//		var mine = plus.webview.currentWebview();
+//		mui('#nowpic')[0].addEventListener('tap',function(){
+//			plus.nativeUI.actionSheet({
+//					cancel: "取消",
+//					buttons: [{
+//						title: "从手机相册选择"
+//					}, {
+//						title: '拍照'
+//					}]
+//				},
+//				function(e) {
+//					console.log(JSON.stringify(e));
+//					if (e.index == 1) { //点击从相册选择
+//						console.log("相册选择");
+//						getPics();
+//					} else if (e.index == 2) {
+//						console.log("拍照");
+//						getPics(true);
+//					}
+//				}
+//			);
+//		})
+//	});
 	
 
-	function getPics(isCamera) {//选择图片方法
-		if (!isCamera) {
-			imageTool.galleryImgs(doPics);
-		} else {
-			imageTool.camera(doPics);
-		}
-	}
+//	function getPics(isCamera) {//选择图片方法
+//		if (!isCamera) {
+//			imageTool.galleryImgs(doPics);
+//		} else {
+//			imageTool.camera(doPics);
+//		}
+//	}
 	
 	function spanclick(obj){
 		if(obj.className == 'active'){
