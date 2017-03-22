@@ -460,7 +460,7 @@
 							<p class="allc">评论<span class="mui-pull-right"><%=innercmtData.length%>条</span></p>
 							<ul class="mui-table-view-striped mui-table-view-condensed" style="background-color: whitesmoke;padding: 20px;">
 								<%for(var i =innercmtData.length-1;i>=0;i--){%>
-									<li class="mui-table-view-cell cmlist innerCml orp" data-friend_news_id="<%=innercmtData[i].friend_news_id%>" data-to_user_id="<%=innercmtData[i].from_user_id%>" data-to_commit_id="<%=innercmtData[i].id%>">
+									<li class="mui-table-view-cell cmlist innerCml orp" data-friend_news_id="<%=innercmtData[i].friend_news_id%>" data-to_user_id="<%=innercmtData[i].from_user_id%>" data-to_user_nickname="<%=innercmtData[i].nickname%>" data-to_commit_id="<%=innercmtData[i].id%>">
 										<div class="mui-slider-cell">
 											<div class="oa-contact-cell mui-table">
 												<div class="oa-contact-avatar mui-table-cell cheader">
@@ -487,61 +487,27 @@
 															</div>
 														</div>
 													</div>
-			
-													<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
-													<p class="oa-contact-email mui-h6">
-														<%=innercmtData[i].content%>
-													</p> 
+			 
+													<div class="oa-contact-position mui-h6 ctime"><%=innercmtData[i].create_time_as%></div>
+													<%if(innercmtData[i].p_commit_id){%>
+														<p class="oa-contact-email mui-h6">
+															回复<span class="toinner">@<%=innercmtData[i].to_user_id%></span>:<%=innercmtData[i].content%>
+														</p> 
+														<%}else{%>
+															<p class="oa-contact-email mui-h6">
+																<%=innercmtData[i].content%>
+															</p> 
+														<%}%>
+													
 													
 												</div>
 											</div>
 										</div>
-									</li>
-									<div id="thirdCmt"></div>
+									</li> 
 								<%}%>
 							</ul>
 						</script>
-						<script type="text/html" id="thidTpl">
-							<%for(var i =innercmtData.length-1;i>=0;i--){%>
-									<li class="mui-table-view-cell cmlist innerCml orp" data-friend_news_id="<%=innercmtData[i].friend_news_id%>" data-to_user_id="<%=innercmtData[i].from_user_id%>" data-to_commit_id="<%=innercmtData[i].id%>">
-										<div class="mui-slider-cell">
-											<div class="oa-contact-cell mui-table">
-												<div class="oa-contact-avatar mui-table-cell cheader">
-													<%if(innercmtData[i].avatar){%>
-														 <img src="<%=myUrl%><%=innercmtData[i].avatar[0].picImg%>" onclick="gocmterPage('<%=innercmtData[i].from_user_id%>')"/>
-														<%}else{%>
-															<img src="../../img/10.png" onclick="gocmterPage('<%=innercmtData[i].from_user_id%>')"/>
-															<%}%>
-												</div>
-												<div class="oa-contact-content mui-table-cell oaright">
-													<div class="mui-clearfix">
-														<h4 class="oa-contact-name"><%=innercmtData[i].nickname%></h4>
-														<div class="feed mui-pull-right" id="feed<%=i+1%>">
-																	<%if(innercmtData[i].isLike == 1){%>
-																		<!--红心状态-->
-																		<div class="heart innerheart heartAnimation" id="like<%=i+1%>" data-id="<%=innercmtData[i].id%>" rel="unlike"></div>
-																	<%}else{%>
-																		<div class="heart innerheart" id="like<%=i+1%>" data-id="<%=innercmtData[i].id%>" rel="like"></div>
-																		<%}%> 
-															<div class="likeCount" id="likeCount<%=i+1%>">
-																<%if(innercmtData[i].likeNums){%>
-																     <%=innercmtData[i].likeNums%>
-																<%}%>
-															</div>
-														</div>
-													</div>
-			
-													<div class="oa-contact-position mui-h6 ctime">2015-11-19 21:29</div>
-													 
-													<p class="oa-contact-email mui-h6">
-														回复<span class="toinner">@xxxx</span>:<%=innercmtData[i].content%>
-													</p>  
-												</div>
-											</div>
-										</div>
-									</li>
-								<%}%>
-						</script>
+						
 					</div>
 			 
 				
@@ -563,14 +529,7 @@
 			
 	</body>
     <script type="text/javascript">
-    	function findInfo(){
-    		openview({
-				view: "find/findInfo.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
-    	}  
+    	
     	
     	mui.init({
 			beforeback: function() { 
@@ -589,7 +548,26 @@
 			var nickName = plus.webview.currentWebview().nickName;
 			var myuserid = plus.storage.getItem('userid');
 			var innercmtid = plus.webview.currentWebview().innercmtid
-			
+//			评论者主页
+//			window.gocmterPage = function(userId){
+//	    		event.stopPropagation()
+//		    	if(userId == myuserid){
+//		    		openview({
+//						view: "../centerPage.html",
+//						extrasobj: {
+//							userId: userId
+//						}
+//					})
+//		    	}else{
+//		    		openview({
+//						view: "../othersPage.html",
+//						extrasobj: {
+//							userId: userId
+//						}
+//					})
+//		    	}
+//		    		
+//	    	}  
 			window.addEventListener('refreshCmt',function(event){ 
 				getCmt(); 
 			});
@@ -638,7 +616,7 @@
 									if(innercmtid == dataobj.commit[i].id){
 										newdata.push(dataobj.commit[i])
 									}
-									if(dataobj.commit[i].to_commit_id == innercmtid){
+									if((dataobj.commit[i].p_commit_id && dataobj.commit[i].p_commit_id == innercmtid) || dataobj.commit[i].to_commit_id == innercmtid){
 										innerData.push(dataobj.commit[i])
 									}
 								} 
@@ -695,8 +673,16 @@
 									var to_user_id = $(this).attr("data-to_user_id") 
 									//被评论的评论id
 									var to_commit_id = $(this).attr("data-to_commit_id")  
+									var to_user_name = $(this).attr("data-to_user_nickname")
 									//帖子id
 									var friend_news_id = $(this).attr("data-friend_news_id") 
+									if($(this).hasClass("innerCml")){
+										//父级评论
+										var p_commit_id = innercmtid;
+									} else{
+										var p_commit_id = 0;
+									}
+									
 									mui.openWindow({
 									    url:"repComment.html",
 									    id:"repComment",
@@ -708,7 +694,7 @@
 									      autoShow:false,//自动显示等待框，默认为true
 									    },
 									    extras:{
-									    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id
+									    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id,p_commit_id:{p_commit_id:p_commit_id,to_user_name:to_user_name}
 									    }
 									})
 								})
