@@ -147,7 +147,7 @@
 			
 			<div class="uppics clearfix" id="uppics2"> 
 		        <div class="onepic">
-		            <input type="file" id="file_input"/> 
+		            <!--<input type="file" id="file_input"/>--> 
 		            <img id="nowpic" src="../img/publisf.svg">
 		        </div>
 		    </div> 
@@ -175,77 +175,63 @@
 <script src="../js/artTemplate-native.js"></script>
 <script type="text/javascript">
 	//选择图片
-	var onepic = document.getElementsByClassName('onepic')[0];
-    var uppics = document.getElementsByClassName('uppics')[0];
-    var time1 = null;
-    var Apic = [],picobj = {};//存放图片数组
-    onepic.onclick = function(){
-    	var file_input = document.getElementById('file_input');
-        uppics.id = 'uppics2';
-        var imgnode = document.createElement("div");
-        clearInterval(time1);
-        time1 = setInterval(function(){ 
-            console.log('加载中',file_input.files[0]);
-            if (file_input.files[0]) {
-            	if(file_input.files[0].size>0){
-            		console.log(file_input.files[0]);
-            		Apic = []; 
-                	Apic.push(file_input.files[0]); 
-	                clearInterval(time1);
-	                var reader = new FileReader();
-	                var picname = file_input.files[0].name;
-	                reader.readAsDataURL(file_input.files[0]); 
-	                reader.onload = function(e){
-	                	picobj = file_input.files[0]; 
-	                	mui('#nowpic')[0].src = this.result;
-	                }
-	                file_input.value = '';
-            	}
-            }
-        },500)
-    }
+	var Apic = [];//图片存放数组 
+	mui.plusReady(function() {
+		mui('#nowpic')[0].addEventListener('tap',function(){
+			plus.nativeUI.actionSheet({
+					cancel: "取消",
+					buttons: [{
+						title: "相册选择"
+					}, {
+						title: '拍照'
+					}]
+				},
+				function(e) {
+					console.log(JSON.stringify(e));
+					if (e.index == 1) { //点击从相册选择
+						galleryImgsSelected();
+					} else if (e.index == 2) {
+						getImage();
+					}
+				}
+			);
+		})
+		function getImage(){//拍照并保存
+			var cmr = plus.camera.getCamera();
+			cmr.captureImage( function ( path ) {
+				plus.io.resolveLocalFileSystemURL(path,function(entry){ 
+					//把拍摄图片的路径转化成 本地文件url
+					path = plus.io.convertLocalFileSystemURL(path);
+					showImg(path);
+				});
+				Apic = [];
+				Apic.push(path);
+				plus.gallery.save( path );
+			}, function ( e ) {
+			}, {filename:"_doc/gallery/",index:1} );
+		}
+		var lfs=null;// 保留上次选择图片列表
+		function galleryImgsSelected(){//从相册中选择图片
+		    plus.gallery.pick( function(e){
+		    	lfs=e.files;
+		    	for(var i in e.files){
+			    	showImg(e.files[i]);
+			    	Apic = [];
+					Apic.push(e.files[i]);
+		    	}
+		    }, function ( e ) {
+		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){
+				plus.nativeUI.alert('只能选择1张图片'); 
+		    }});
+		}
+		function showImg(url){//显示图片
+			if(0!=url.indexOf("file://")){
+				url="file://"+url;
+			}
+			mui('#nowpic')[0].src = url;
+		}
+	});
 	//选择图片结束
-//	mui.plusReady(function() {
-//		var o = imageTool.options;
-//		o.uploadUrl = 'http://demo.dcloud.net.cn/helloh5/uploader/upload.php'; //图片上传链接
-//		
-//		o.multiple = true; //默认只上传一张图片 ，如果要选择多张，请设置为true
-//		o.maxPicsCount = 6; //默认一次最多选择10张图片,
-//		o.ZoomBox = 1200; //缩放宽高，默认1200px,横图缩放宽度，高度根据比例计算，同理竖图
-//		o.ZoomQuality = 89; //压缩图片的质量
-//		o.isUpload = true; //默认不上传
-//		var mine = plus.webview.currentWebview();
-//		mui('#nowpic')[0].addEventListener('tap',function(){
-//			plus.nativeUI.actionSheet({
-//					cancel: "取消",
-//					buttons: [{
-//						title: "从手机相册选择"
-//					}, {
-//						title: '拍照'
-//					}]
-//				},
-//				function(e) {
-//					console.log(JSON.stringify(e));
-//					if (e.index == 1) { //点击从相册选择
-//						console.log("相册选择");
-//						getPics();
-//					} else if (e.index == 2) {
-//						console.log("拍照");
-//						getPics(true);
-//					}
-//				}
-//			);
-//		})
-//	});
-	
-
-//	function getPics(isCamera) {//选择图片方法
-//		if (!isCamera) {
-//			imageTool.galleryImgs(doPics);
-//		} else {
-//			imageTool.camera(doPics);
-//		}
-//	}
 	
 	function spanclick(obj){
 		if(obj.className == 'active'){
@@ -328,27 +314,20 @@
 			mui.toast('请输入内容');
 		}else if(!Apic.length){
 			mui.toast('请选择一张照片');
-		}else{
+		}else{ 
 			plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});
 			mui.plusReady(function(){ 
 				var myuserid = plus.storage.getItem('userid');
 				var oldtoken = plus.storage.getItem('oldToken');
 				//发送数据
-				console.log(mapAddress);
-				var fd = new FormData(); 
-		        fd.append('userid',myuserid);  		
-		        fd.append('content',content);  		
-		        fd.append('fix',mapAddress);//地址 		
-		        fd.append('pic',Apic[0]);  		
-		        fd.append('tags',tagstr);  		
-		        var xhr = new XMLHttpRequest();  	
-		        xhr.open('POST',serverUrl+'/api/news/addnews',true); 	
-		    	xhr.onreadystatechange = function(){
-		    		if (xhr.readyState===4) { 
-    					if (xhr.status===200) {
-    						var dataobj = JSON.parse(xhr.responseText);
-    						console.log('上传返回'+xhr.responseText);
-    						if(dataobj.errno == 0){
+				var task = plus.uploader.createUpload(serverUrl+'/api/news/addnews', 
+					{ method:"POST"},
+					function(back,status){
+						if(status == 200){ 
+							console.log(back.responseText);
+							alert(back.responseText);
+							var dataobj = JSON.parse(back.responseText);
+							if(dataobj.errno == 0){
 								if(plus.webview.getWebviewById('Follow')){//触发关注分享刷新，并打开关注分享
 									mui.fire(plus.webview.getWebviewById('Follow'),'refresh');
 								}
@@ -366,17 +345,24 @@
 									plus.webview.currentWebview().close();
 								},1000);
     						}else{
+    							plus.nativeUI.closeWaiting();//关闭等待框
     							mui.toast('发布失败，请重试！');	
     						}
-    						
-    					}else{
-    						plus.nativeUI.closeWaiting();//关闭等待框
-    						mui.toast('当前网络不好，请重试！');	
-    					}
-    				}
-		        } 
-		        xhr.setRequestHeader("token",oldtoken);
-		        xhr.send(fd);
+						}else{
+							plus.nativeUI.closeWaiting();//关闭等待框
+							mui.toast('当前网络不好，请重试！');	
+						}
+						
+					}
+				);
+				task.setRequestHeader('token',oldtoken);
+				task.addData("userid",myuserid); 
+				task.addData("content",content);
+				task.addData("fix",mapAddress);
+				task.addData("tags",tagstr);
+				task.addFile(Apic[0], {key:"pic"} );
+				task.start();
+
 			})
 		}
 	})

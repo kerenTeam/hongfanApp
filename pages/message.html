@@ -161,16 +161,29 @@
         //导航切换
 	  	function gopage(page){ 
 	  		event.preventDefault();
-	  		if(plus.webview.getWebviewById(page)){
-            	plus.webview.show(page,"fade-in",300);
-            	plus.webview.currentWebview().hide();
-            }else{
-            	openview({
-					view:page+'.html',
-					id:page
-				});
-            }
-	  		
+	  		function fotrue(){
+		  		if(plus.webview.getWebviewById(page)){
+		        	plus.webview.show(page,"fade-in",300);
+		        	plus.webview.currentWebview().hide();
+		        }else{
+		        	openview({
+						view:page+'.html',
+						id:page
+					});
+		        }
+	  		}
+	  		if(page == 'find'){
+	  			fotrue();
+	  		}else{
+	  			if(plus.storage.getItem('myToken')){
+	  				fotrue();
+	  			}else{
+	  				mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+	  			}
+	  		}
 	  	}
  
 	 
