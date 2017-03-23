@@ -295,7 +295,7 @@
         <!--底部导航-->
 		 
         <nav class="mui-bar mui-bar-tab">
-            <a onclick="gopage('Follow')" >
+            <a onclick="gopage('Follow')" > 
                 <span class="mui-icon mui-icon-eye"></span>
                 <!--<span class="mui-tab-label">关注</span>-->
             </a>
@@ -347,18 +347,31 @@
         });
 
         //导航切换
-        function gopage(page){ 
+		function gopage(page){ 
 	  		event.preventDefault();
-	  		if(plus.webview.getWebviewById(page)){
-            	plus.webview.show(page,"fade-in",300);
-            	plus.webview.currentWebview().hide();
-            }else{
-            	openview({
-					view:page+'.html',
-					id:page
-				});
-            }
-	  		
+	  		function fotrue(){
+		  		if(plus.webview.getWebviewById(page)){
+		        	plus.webview.show(page,"fade-in",300);
+		        	plus.webview.currentWebview().hide();
+		        }else{
+		        	openview({
+						view:page+'.html',
+						id:page
+					});
+		        }
+	  		}
+	  		if(page == 'find'){
+	  			fotrue();
+	  		}else{
+	  			if(plus.storage.getItem('myToken')){
+	  				fotrue();
+	  			}else{
+	  				mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+	  			}
+	  		}
 	  	}
 
         function findInfo(userid,newsid,avtar,nickname) {
