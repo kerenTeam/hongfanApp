@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>关注</title>
+		<title>好友动态</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -209,7 +209,7 @@
 
 		<header class="mui-bar mui-bar-nav">
 		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
-		    <h1 class="mui-title" id="confirmbtn1">关注</h1> 
+		    <h1 class="mui-title" id="confirmbtn1">好友动态</h1> 
 		</header>
 		<script src="../js/statusBar.js"></script>
 		<!--状态栏-->
@@ -223,39 +223,56 @@
 							<div class="follow"> 
 								<div class="fchidl"> 
 									<%if(recommendData[i].avatar[0].picImg){%>
-				                       		<img src="<%=myUrl%><%=recommendData[i].avatar[0].picImg%>" class="userAvator" alt="" />
+				                       		<img src="<%=myUrl%><%=recommendData[i].avatar[0].picImg%>" class="userAvator" alt="" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 				                        <%}else{%>
-											<img src="../img/10.png" alt="" class="userAvator" />
+											<img src="../img/10.png" alt="" class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 										<%}%>
 									<div><%=recommendData[i].nickname%><br><br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
 								</div>
 								
 							</div>
 							<img src="<%=recommendData[i].pic%>" class="fllmg" alt="" />
-							<div class="tieCt">
-							 	<p>
-							 		 
-							 		<%=recommendData[i].content%>
-							 	<br/><br/>
-
-							 	</p>
-							 	<div class="ffbot">
-							 		<div class="feed" id="feed<%=i+1%>">
-										<div class="heart " id="like<%=i+1%>" rel="like"></div>
-										<div class="likeCount" style="visibility: hidden;" id="likeCount<%=i+1%>">5</div>
-									</div>
-									<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
-									<div class="sharef">
-										<img src="../img/market/sharef.png" style="width: 20px;" />
-									</div>
-							 	</div>
-							</div>
+							
+							<!--详细信息-->
+							<div class="newsinfo" data-newsId="<%=recommendData[i].news_id%>"></div>
+							
 						</div>
-						<%}%>
-					
+						<%}%> 
 					<%}%>	
 			</script> 
-			
+			<!--详细信息模板-->
+			<script type="text/html" id="newsInfoTpl">
+				<%if(recommendData){%> 
+					<div class="tieCt">
+					 	<p>
+					 		<%if(recommendData.tags.length){%>
+						 		<%for(var j=recommendData.tags.length-1;j>=0;j--){%>
+						 			<span>#<%=recommendData.tags[j].tagName%>#</span>
+						 		<%}%>
+						 	<%}%>
+						 	<%=recommendData.newsinfodata[0].content%>
+					 	<br/><br/>
+						<img src="../img/grayheart.svg" alt="" /> <small><%=recommendData.liker.length%></small><!--<img src="../img/graytalking.svg" alt="" /> <small>5</small>--> 
+					 	</p>
+					 	<div class="ffbot">
+					 		<div class="feed" id="feed<%=recommendData.newsinfodata[0].id%>">
+					 			<%if(recommendData.isLike == 1){%>
+									<!--红心状态-->
+									<div class="heart innerheart heartAnimation" id="like<%=recommendData.newsinfodata[0].news_id%>" data-id="<%=recommendData.newsinfodata[0].news_id%>" rel="unlike"></div>
+								<%}else{%>
+									<div class="heart innerheart" id="like<%=recommendData.newsinfodata[0].news_id%>" data-id="<%=recommendData.newsinfodata[0].news_id%>" rel="like"></div>
+									<%}%> 
+								<div class="likeCount" style="visibility: hidden;" id="likeCount<%=recommendData.newsinfodata[0].news_id%>">5</div>
+							</div>
+							<span class="mui-pull-right orp" data-friend_news_id="<%=recommendData.newsinfodata[0].news_id%>" data-to_user_id="<%=recommendData.newsinfodata[0].user_id%>"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
+							<div class="sharef">
+								<img src="../img/market/sharef.png" style="width: 20px;" />
+							</div>
+					 	</div>
+					</div> 
+				<%}%>
+			</script>
+			<div class="upload text-center text-xs gray" id="upload"></div>
 			<!--底部导航-->
 			 
 			<nav class="mui-bar mui-bar-tab">
@@ -348,56 +365,18 @@
                 }
             })
         }
-   
-    //点赞
-
-	$('.heart').on("click",function(){
-			event.stopPropagation()
-		var A=$(this).attr("id");
-		var B=A.split("like");
-		var messageID=B[1];
-		var C=parseInt($("#likeCount"+messageID).html());
-		$(this).css("background-position","")
-		var D=$(this).attr("rel");
-
-		if(D === 'like') {
-			$("#likeCount"+messageID).html(C+1);
-			$(this).addClass("heartAnimation").attr("rel","unlike");
-		}
-		else{
-			$("#likeCount"+messageID).html(C-1);
-			$(this).removeClass("heartAnimation").attr("rel","like");
-			$(this).css("background-position","left");
-		}
-	}); 
-			
-  	 
-	//回复跳转
-	$(".orp").click(function(){
-		event.stopPropagation()
-		mui.openWindow({
-		    url:"find/repComment.html",
-		    id:"repComment",
-		    show:{ 
-		      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
-		      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
-		    },
-		     waiting:{
-		      autoShow:false,//自动显示等待框，默认为true
-		    }
-		})
-	})
+ 
 	
 	//关注者 主页
-    $(".fchidl img").click(function(){
+    function gootpage(userId){
     	event.stopPropagation()
 		openview({
 			view: "othersPage.html",
 			extrasobj: {
-				userId: 1
+				userId: userId
 			}
 		})
-	})
+	}
     
     
     mui.plusReady(function(){
@@ -422,49 +401,24 @@
 				success:function(data,type,xhr){ 	
 						
 					if(data.errno == 0) { 
-						var dataobj = data.data.data;
-						var infoData = [];
+						var dataobj = data.data.data; 
 						if(dataobj.length != 0){
-							for(var i=0;i<dataobj.length;i++){
+							for(var i=0;i<dataobj.length;i++){ 
 								dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
-								dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
-//								mui.ajax(serverUrl+"/api/news/newsinfo",{
-//					    			data:{newsid:dataobj[i].news_id},
-//					        		dataType:'json',
-//									type:'post',
-//									timeout:10000,
-//									headers:{"token":oldtoken},	 
-//									success:function(data,type,xhr){
-//										if(data.errno == 0) { 
-//											if(data.data){ 
-//												infoData[i] = data.data;
-//										        alert("地方1 "+JSON.stringify(infoData[i]))
-////												if(data.data.liker){
-////													alert(data.data.liker.length)
-////													dataobj[i][likerlength] = data.data.liker.length
-////													alert(dataobj[i].likerlength) 
-////												}
-////												if(data.data.tags){ 
-////													dataobj[i].tags = data.data.tags	
-////												}
-//											}
-//										}
-//									},
-//									error:function(xhr,type,errorThrown){
-//										plus.nativeUI.closeWaiting(); 
-//										console.log('响应失败  !');
-//									}
-//								})
-							}
-						} 
-//						alert(JSON.stringify(infoData))
-						var recommendObj = {};
-						recommendObj.myUrl = serverimgUrl;
-						recommendObj.recommendData = dataobj;
-//						recommendObj.infoData = infoData
-						document.getElementById("typeNews").innerHTML = template("typeNewTpl", recommendObj);
+								dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss"); 
+							} 
+							var recommendObj = {};
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = dataobj; 
+							document.getElementById("typeNews").innerHTML = template("typeNewTpl", recommendObj);
+							var cmlist = document.getElementsByClassName("newsinfo");
+								for(var t=0;t<cmlist.length;t++){
+									var fuserid = cmlist[t].getAttribute("data-newsId");  
+										getInfo(t,fuserid)
+								}
+						}   
 						mui("#upload")[0].innerHTML = "";
-						//上滑加载
+//						上滑加载
 						$(window).scroll(function() {　　
 							var scrollTop = $(this).scrollTop();　　
 							var scrollHeight = $(document).height();　　
@@ -488,36 +442,18 @@
 													for(var i=0;i<dataobj.length;i++){
 														dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
 														dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
-//														mui.ajax(serverUrl+"/api/news/newsinfo",{
-//											    			data:{newsid:dataobj[i].news_id},
-//											        		dataType:'json',
-//															type:'post',
-//															timeout:10000,
-//															headers:{"token":oldtoken},	 
-//															success:function(data,type,xhr){
-//																
-//																if(data.errno == 0) { 
-//																	if(data.data){  
-//																		if(data.data.liker){
-//																			dataobj[i].likerlength = data.data.liker.length		 
-//																		}
-//																		if(data.data.tags){
-//																			dataobj[i].tags = data.data.tags	
-//																		}
-//																	}
-//																}
-//															},
-//															error:function(xhr,type,errorThrown){
-//																plus.nativeUI.closeWaiting(); 
-//																console.log('响应失败  !');
-//															}
-//														})
+//												 
 													}
 												} 
 												var recommendObj = {}
 												recommendObj.myUrl = serverimgUrl;
 												recommendObj.recommendData = dataobj
 												document.getElementById("typeNews").innerHTML += template("typeNewTpl", recommendObj);
+												var cmlist = document.getElementsByClassName("newsinfo");
+												for(var t=0;t<cmlist.length;t++){
+													var fuserid = cmlist[t].getAttribute("data-newsId");  
+														getInfo(t,fuserid)
+												}
 											}
 											mui("#upload")[0].innerHTML = "";
 											Spagenum++; //加载成功,当前页+1
@@ -534,7 +470,7 @@
 									mui("#upload")[0].innerHTML = "到底了";
 								}
 							}
-						});
+						}); 
 					} else {
 						mui("#upload")[0].innerHTML = "";
 					}
@@ -548,7 +484,8 @@
 								userId: $(this).attr("data-userId")
 							}
 						})
-					})
+					}) 
+					
 				},
 				error:function(xhr,type,errorThrown){
 					plus.nativeUI.closeWaiting();
@@ -559,7 +496,104 @@
         	}) 
     		
     	}
-       
+        function getInfo(t,newId){
+        	mui.ajax(serverUrl+"/api/news/newsinfo",{
+    			data:{newsid:newId},
+        		dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){
+					if(data.errno == 0) { 
+						if(data.data){ 
+							if(data.data.liker){
+								for(var i=0;i<data.data.liker.length;i++){
+									if(data.data.liker[i].user_id == myuserid){
+										data.data.isLike = 1;   
+									}
+									 
+								}
+							}
+						}
+						var recommendObj = {}
+							recommendObj.myUrl = serverimgUrl;
+							recommendObj.recommendData = data.data;
+						document.getElementsByClassName("newsinfo")[t].innerHTML = template("newsInfoTpl", recommendObj);
+						
+						//点赞 
+						$('.comment .heart').on("click",function(){
+							events.stopPropagation()
+							if(plus.storage.getItem('myToken')){
+								var A=$(this).attr("id"); 
+								var B=A.split("like"); 
+								var messageID=B[1];
+								var C=parseInt($("#likeCount"+messageID).html());
+								if(!C){
+									C=0;
+								}
+								$(this).css("background-position","")
+								var commitid= $(this).attr("data-id"); 
+								var D=$(this).attr("rel");
+								if(D === 'like') {
+									$("#likeCount"+messageID).html(C+1);
+									$(this).addClass("heartAnimation").attr("rel","unlike"); 
+									
+									//点赞评论 
+									likeCmt(commitid,myuserid,oldtoken) 
+								}
+								else{  
+									
+									//取消点赞评论
+									likeCmt(commitid,myuserid,oldtoken) 
+									
+									var nowLm = C-1;
+									if(nowLm == 0){
+										nowLm ='';
+									}
+									$("#likeCount"+messageID).html(nowLm);
+									$(this).removeClass("heartAnimation").attr("rel","like");
+									$(this).css("background-position","left");
+									
+								}
+							}else{
+								mui.toast('请登录');
+								openview({
+									view:'../login.html'
+								});
+							}
+							
+							
+						});
+						//回复跳转
+						$(".orp").click(function(){ 
+							event.stopPropagation()
+							var to_user_id = 0; 
+							var to_commit_id = ''
+							//帖子id
+							var friend_news_id = $(this).attr("data-friend_news_id")
+							mui.openWindow({
+							    url:"find/repComment.html",
+							    id:"repComment",
+							    show:{ 
+							      aniShow:"slide-in-bottom",//页面显示动画，默认为”slide-in-right“；
+							      duration:"300"//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							    },
+							     waiting:{
+							      autoShow:false,//自动显示等待框，默认为true
+							    },
+							    extras:{
+							    	to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id
+							    }
+							})
+						})
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting(); 
+					console.log('响应失败  !');
+				}
+			})
+        }
     })
     
     

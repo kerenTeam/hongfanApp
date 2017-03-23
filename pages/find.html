@@ -476,6 +476,7 @@
 			var Ypagenum = 1; //应到页数 
         	//获取动态列表
         	function getNews(ctid){
+        		plus.nativeUI.showWaiting()
         		var currentPage = 1,numsPerPage = 10;
         		mui.ajax(serverUrl+"/api/news/newslist",{
         			data:{currentPage:currentPage,numsPerPage:numsPerPage,userid:myuserid,categoryid:ctid,isMyFriendPage:""},
@@ -484,11 +485,15 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){
+						
 						if(data.errno == 0) { 
 							var dataobj = data.data.data; 	
 							if(dataobj.length != 0){
 								for(var i=0;i<dataobj.length;i++){
-									dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+									if(dataobj[i].avatar){
+										dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+									}
+									
 								}
 							} 
 							var recommendObj = {};
