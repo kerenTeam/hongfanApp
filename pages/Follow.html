@@ -189,6 +189,20 @@
 			#main{
 				padding-bottom: 51px;
 			}
+			
+			/*加载*/ 
+			#upload {
+				text-align: center;
+				font-size: 15px;
+				line-height: 30px;
+				min-height: 40px;
+			}
+			
+			#upload img {
+				width: 60px;
+				margin-top: -10px;
+			}
+			
 	</style>
 
 	<body>
@@ -201,97 +215,47 @@
 		<!--状态栏-->
 		<!--<div id="container">-->
 		<div id="main">
-			<!--推荐关注-->
-			<div class="follow" style="background-color: whitesmoke;"> 
-				<div class="fchidl">
-					<img src="../img/market/ag.jpeg" class="userAvator" />
-					<div> 到底发生的<br><br><span>同城好友</span></div>
-				</div>
-				<button type="button" class="mui-btn mui-btn-success hadF">
-					+ 关注
-				</button>
-			</div>
+			<div id="typeNews"></div>
+			<script type="text/html" id="typeNewTpl">
+				<%if(recommendData.length){%>
+					<%for(var i=recommendData.length-1;i>=0;i--){%> 
+						<div class="listt" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=myUrl%><%=recommendData[i].avatar[0].picImg%>','<%=recommendData[i].nickname%>')">
+							<div class="follow"> 
+								<div class="fchidl"> 
+									<%if(recommendData[i].avatar[0].picImg){%>
+				                       		<img src="<%=myUrl%><%=recommendData[i].avatar[0].picImg%>" class="userAvator" alt="" />
+				                        <%}else{%>
+											<img src="../img/10.png" alt="" class="userAvator" />
+										<%}%>
+									<div><%=recommendData[i].nickname%><br><br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
+								</div>
+								
+							</div>
+							<img src="<%=recommendData[i].pic%>" class="fllmg" alt="" />
+							<div class="tieCt">
+							 	<p>
+							 		 
+							 		<%=recommendData[i].content%>
+							 	<br/><br/>
+
+							 	</p>
+							 	<div class="ffbot">
+							 		<div class="feed" id="feed<%=i+1%>">
+										<div class="heart " id="like<%=i+1%>" rel="like"></div>
+										<div class="likeCount" style="visibility: hidden;" id="likeCount<%=i+1%>">5</div>
+									</div>
+									<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
+									<div class="sharef">
+										<img src="../img/market/sharef.png" style="width: 20px;" />
+									</div>
+							 	</div>
+							</div>
+						</div>
+						<%}%>
+					
+					<%}%>	
+			</script> 
 			
-			<!--列表-->
-			<div class="listt">
-				<div class="follow"> 
-					<div class="fchidl">
-						<img src="../img/market/ag.jpeg" class="userAvator" />
-						<div> 到底发生的<br><br><img src="../img/time.png" class="timef" alt="" /> <small>2017-01-21 08:12</small></div>
-					</div>
-					
-				</div>
-				 <img src="../img/market/feg3.png" class="fllmg" alt="" />
-				 <div class="tieCt">
-				 	<p><span>#xxxx#</span><span>#xxxx#</span>xxxxxxxxxxxxxddddddddddddd
-				 	<br/><br/>
-				 	<img src="../img/grayheart.svg" alt="" /> <small>5</small> <img src="../img/graytalking.svg" alt="" /> <small>5</small> 
-				 	</p>
-				 	<div class="ffbot">
-				 		<div class="feed" id="feed1">
-							<div class="heart " id="like1" rel="like"></div>
-							<div class="likeCount" style="visibility: hidden;" id="likeCount1">5</div>
-						</div>
-						<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
-						<div class="sharef">
-							<img src="../img/market/sharef.png" style="width: 20px;" />
-						</div>
-				 	</div>
-				 </div>
-			</div>
-			<div class="listt">
-				<div class="follow"> 
-					<div class="fchidl">
-						<img src="../img/market/ag.jpeg" class="userAvator" />
-						<div> 到底发生的<br><br><img src="../img/time.png" class="timef" alt="" /> <small>2017-01-21 08:12</small></div>
-					</div>
-					
-				</div>
-				 <img src="../img/market/feg3.png" class="fllmg" alt="" />
-				 <div class="tieCt">
-				 	<p><span>#xxxx#</span><span>#xxxx#</span>xxxxxxxxxxxxxddddddddddddd
-				 	<br/><br/>
-				 	<img src="../img/grayheart.svg" alt="" /> <small>5</small> <img src="../img/graytalking.svg" alt="" /> <small>5</small> 
-				 	</p>
-				 	<div class="ffbot">
-				 		<div class="feed" id="feed1">
-							<div class="heart " id="like1" rel="like"></div>
-							<div class="likeCount" style="visibility: hidden;" id="likeCount1">5</div>
-						</div>
-						<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
-						<div class="sharef">
-							<img src="../img/market/sharef.png" style="width: 20px;" />
-						</div>
-				 	</div>
-				 </div>
-			</div>
-			<div class="listt">
-				<div class="follow"> 
-					<div class="fchidl">
-						<img src="../img/market/ag.jpeg" class="userAvator" />
-						<div> 到底发生的<br><br><img src="../img/time.png" class="timef" alt="" /> <small>2017-01-21 08:12</small></div>
-					</div>
-					
-				</div>
-				 <img src="../img/market/feg3.png" class="fllmg" alt="" />
-				 <div class="tieCt">
-				 	<p><span>#xxxx#</span><span>#xxxx#</span>xxxxxxxxxxxxxddddddddddddd
-				 	<br/><br/>
-				 	<img src="../img/grayheart.svg" alt="" /> <small>5</small> <img src="../img/graytalking.svg" alt="" /> <small>5</small> 
-				 	</p>
-				 	<div class="ffbot">
-				 		<div class="feed" id="feed1">
-							<div class="heart " id="like1" rel="like"></div>
-							<div class="likeCount" style="visibility: hidden;" id="likeCount1">5</div>
-						</div>
-						<span class="mui-pull-right orp"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
-						<div class="sharef">
-							<img src="../img/market/sharef.png" style="width: 20px;" />
-						</div>
-				 	</div>
-				 </div>
-			</div>
-			 
 			<!--底部导航-->
 			 
 			<nav class="mui-bar mui-bar-tab">
@@ -388,14 +352,15 @@
   	}
   	
   	//贴子详情
-	  $(".listt").on("click",function(){
-	  	event.preventDefault()
-	  	openview({
-			view:'find/findInfo.html',
-			id:"findInfo",
-			extrasobj:3
-		});
-	  })
+	function findInfo(userid,newsid,avtar,nickname) {
+            openview({
+                view: "find/findInfo.html",
+                id:"findInfo",
+                extrasobj: {
+                    userId: userid,newsId:newsid,avtar:avtar,nickName:nickname
+                }
+            })
+        }
    
     //点赞
 
@@ -419,20 +384,7 @@
 		}
 	}); 
 			
-  	$(".hadF").click(function(){
-  		event.stopPropagation()
-  		$(this).toggleClass(" mui-btn-outlined");
-  		 if($(this).hasClass("mui-btn-outlined")){
-  		 	if($(this).hasClass("eachF")){
-  		 		$(this).html("互相关注")
-  		 	}else{
-  		 		$(this).html("已关注")
-  		 	}
-  		 	
-  		 }else{
-  		 	$(this).html("+ 关注")
-  		 }
-  	}) 
+  	 
 	//回复跳转
 	$(".orp").click(function(){
 		event.stopPropagation()
@@ -459,5 +411,171 @@
 			}
 		})
 	})
+    
+    
+    mui.plusReady(function(){
+    	
+    	var oldtoken = plus.storage.getItem('oldToken');
+        var myuserid = plus.storage.getItem('userid');
+    	
+		var Spagenum = 2; //实到页数
+		var Ypagenum = 1; //应到页数 
+		
+    	//获取好友动态列表
+    	getNews();
+    	
+    	function getNews(){
+    		var currentPage = 1,numsPerPage = 10;
+    		mui.ajax(serverUrl+"/api/news/newslist",{
+    			data:{currentPage:currentPage,numsPerPage:numsPerPage,userid:myuserid,categoryid:'',isMyFriendPage:true},
+        		dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){ 	
+						
+					if(data.errno == 0) { 
+						var dataobj = data.data.data;
+						var infoData = [];
+						if(dataobj.length != 0){
+							for(var i=0;i<dataobj.length;i++){
+								dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+								dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
+//								mui.ajax(serverUrl+"/api/news/newsinfo",{
+//					    			data:{newsid:dataobj[i].news_id},
+//					        		dataType:'json',
+//									type:'post',
+//									timeout:10000,
+//									headers:{"token":oldtoken},	 
+//									success:function(data,type,xhr){
+//										if(data.errno == 0) { 
+//											if(data.data){ 
+//												infoData[i] = data.data;
+//										        alert("地方1 "+JSON.stringify(infoData[i]))
+////												if(data.data.liker){
+////													alert(data.data.liker.length)
+////													dataobj[i][likerlength] = data.data.liker.length
+////													alert(dataobj[i].likerlength) 
+////												}
+////												if(data.data.tags){ 
+////													dataobj[i].tags = data.data.tags	
+////												}
+//											}
+//										}
+//									},
+//									error:function(xhr,type,errorThrown){
+//										plus.nativeUI.closeWaiting(); 
+//										console.log('响应失败  !');
+//									}
+//								})
+							}
+						} 
+//						alert(JSON.stringify(infoData))
+						var recommendObj = {};
+						recommendObj.myUrl = serverimgUrl;
+						recommendObj.recommendData = dataobj;
+//						recommendObj.infoData = infoData
+						document.getElementById("typeNews").innerHTML = template("typeNewTpl", recommendObj);
+						mui("#upload")[0].innerHTML = "";
+						//上滑加载
+						$(window).scroll(function() {　　
+							var scrollTop = $(this).scrollTop();　　
+							var scrollHeight = $(document).height();　　
+							var windowHeight = $(this).height();　　
+							if(scrollTop + windowHeight == scrollHeight) {
+								if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+									Ypagenum++; //满足加载情况,应到页数+1
+									console.log('发起请求,实到' + Spagenum + '页');
+									console.log('发起请求,应到' + Ypagenum + '页');
+									mui.ajax(serverUrl + '/api/news/newslist', {
+										data:{currentPage:Spagenum,numsPerPage:numsPerPage,userid:myuserid,categoryid:ctid,isMyFriendPage:""},
+						        		dataType:'json',
+										type:'post',
+										timeout:10000,
+										headers:{"token":oldtoken},	 
+										success:function(data,type,xhr){  
+											if(data.errno == 0) {
+												var dataobj = data.data.data
+												if(dataobj.length != 0){
+													for(var i=0;i<dataobj.length;i++){
+														dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+														dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
+//														mui.ajax(serverUrl+"/api/news/newsinfo",{
+//											    			data:{newsid:dataobj[i].news_id},
+//											        		dataType:'json',
+//															type:'post',
+//															timeout:10000,
+//															headers:{"token":oldtoken},	 
+//															success:function(data,type,xhr){
+//																
+//																if(data.errno == 0) { 
+//																	if(data.data){  
+//																		if(data.data.liker){
+//																			dataobj[i].likerlength = data.data.liker.length		 
+//																		}
+//																		if(data.data.tags){
+//																			dataobj[i].tags = data.data.tags	
+//																		}
+//																	}
+//																}
+//															},
+//															error:function(xhr,type,errorThrown){
+//																plus.nativeUI.closeWaiting(); 
+//																console.log('响应失败  !');
+//															}
+//														})
+													}
+												} 
+												var recommendObj = {}
+												recommendObj.myUrl = serverimgUrl;
+												recommendObj.recommendData = dataobj
+												document.getElementById("typeNews").innerHTML += template("typeNewTpl", recommendObj);
+											}
+											mui("#upload")[0].innerHTML = "";
+											Spagenum++; //加载成功,当前页+1
+											console.log('成功+1,实到' + Spagenum);
+											console.log('成功+1,应到' + Spagenum);
+										},
+										error: function(xhr, type, errorThrown) {
+											Ypagenum--; //失败是应到-1
+											mui.toast("当前网络不好请重试");
+											mui("#upload")[0].innerHTML = "";
+										}
+									});
+								} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "到底了";
+								}
+							}
+						});
+					} else {
+						mui("#upload")[0].innerHTML = "";
+					}
+					plus.nativeUI.closeWaiting(); //关闭等待框 
+					//发布者主页
+					$(".findUser").click(function(){
+						event.stopPropagation()
+						openview({
+							view: "centerPage.html",
+							extrasobj: {
+								userId: $(this).attr("data-userId")
+							}
+						})
+					})
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui("#upload")[0].innerHTML = "";
+					console.log('响应失败  !');
+				}
+				 
+        	}) 
+    		
+    	}
+       
+    })
+    
+    
+    
   </script>
 </html>
