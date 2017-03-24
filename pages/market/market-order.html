@@ -961,7 +961,7 @@
 								isIntergal=0;
 							}
 							var goodsdata = JSON.stringify(orderSubmitData);
-							console.log("goodsdata"+goodsdata)
+							console.log("goodsdata 445"+goodsdata)
 							var notice = JSON.stringify(noticeData); 
 							//获取总价
 							var payTotal =parseFloat($("#submit_order").html()).toFixed(2);
@@ -996,11 +996,12 @@
 									headers:{"token":oldtoken},	 
 									success:function(data,type,xhr){
 										plus.nativeUI.closeWaiting()
+										console.log("dfsdfa "+JSON.stringify(data))
 										//购物车 缓存 
 	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
 	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
 										//删除 购物车里 提交的这一条数据 
-										console.log("orderStorage   ddsfdf "+JSON.stringify(orderStorage))
+										console.log("orderStorage  "+JSON.stringify(orderStorage))
 										for(var i=0;i<orderStorage.length;i++){
 											
 											for(var j=0;j<cartStorage.length;j++){
@@ -1018,11 +1019,11 @@
 										if(data.errno==0){
 											var payMents = data.data.paytotal;
 											var uuid = data.data.order_UUID; 
-											
+											var product_id = orderSubmitData[0].goodsData[0].goodsId;
 											openview({
 												view:"../market/pay.html",
 												id:"pay",
-												extrasobj:{payMent:payMents,uuid:uuid}
+												extrasobj:{payMent:payMents,uuid:uuid,product_id:product_id}
 											})
 
 										}else{
@@ -1072,35 +1073,7 @@
 			return res;
 		}
 		
-		//格式化时间戳
-		function formatDate(v, format) {
-		    if (!v) return "";
-		    var d = v;
-		    if (typeof v === 'string') {
-		        if (v.indexOf("/Date(") > -1)
-		            d = new Date(parseInt(v.replace("/Date(", "").replace(")/", ""), 10));
-		        else
-		            d = new Date(Date.parse(v.replace(/-/g, "/").replace("T", " ").split(".")[0]));//.split(".")[0] 用来处理出现毫秒的情况，截取掉.xxx，否则会出错
-		    }
-		    var o = {
-		        "M+": d.getMonth() + 1,  //month
-		        "d+": d.getDate(),       //day
-		        "h+": d.getHours(),      //hour
-		        "m+": d.getMinutes(),    //minute
-		        "s+": d.getSeconds(),    //cond
-		        "q+": Math.floor((d.getMonth() + 3) / 3),  //quarter
-		        "S": d.getMilliseconds() //millisecond
-		    };
-		    if (/(y+)/.test(format)) {
-		        format = format.replace(RegExp.$1, (d.getFullYear() + "").substr(4 - RegExp.$1.length));
-		    }
-		    for (var k in o) {
-		        if (new RegExp("(" + k + ")").test(format)) {
-		            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
-		        }
-		    }
-		    return format;
-		};
+		 
 
 	</script>
 
