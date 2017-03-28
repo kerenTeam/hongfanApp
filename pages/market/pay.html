@@ -64,32 +64,23 @@
 					</ul>
 				</div> 
 			</div>
-		</div>
+		</div> 
 	</body>
 <script src="../../js/mui.min.js"></script> 
 <script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>  
+ 
 <script type="text/javascript">
-var pays={}; 
+var pays={};  
 //var serverUrl='http://Aaron.lan:7200';
 mui.plusReady(function() { 
- 
+  
 	//获取缓存
 	var myuserid = plus.storage.getItem('userid'); 
-	var orderId = plus.webview.currentWebview().uuid; 
-	
-	console.log(orderId)
+	var orderId = plus.webview.currentWebview().uuid;  
 	var payMent = plus.webview.currentWebview().payMent;
 	document.getElementById('payMoney').innerHTML = payMent;
 	document.getElementById('orderIdd').innerHTML = orderId;
-	
-		mui("#wxpay")[0].addEventListener('tap', function(){
-//				openview({
-//					view:"wifi.html"
-//				})
-				openview({
-					view:'../daikaifa.html'
-				});
-			});
 	
 	//系统检测获取支付通道
 	plus.payment.getChannels(function(channels){
@@ -105,7 +96,7 @@ mui.plusReady(function() {
 				document.getElementById('alipay').setAttribute('onclick','payfun("alipay")');
 			}
 			if(channel.id == 'wxpay'){
-//				document.getElementById('wxpay').setAttribute('onclick','payfun("wxpay")');
+				document.getElementById('wxpay').setAttribute('onclick','payfun("wxpay")');
  
 			}
 			checkServices(channel);
@@ -152,28 +143,7 @@ function payfun(id){
 				gopay();
 
 		}else if(id=='wxpay'){//微信
-			//重组的支付验证数据
-			varpay = {
-				retcode: 0,//5+固定调起参数
-				retmsg: "ok",//5+固定调起参数
-	            appid: 'sffjdlflnlndfdklk',//AppId,微信开放平台新建应用时产生
-	            noncestr: 'knjdjddnjdjdj',//随机字符串，
-	            package: "Sign=WXpay",//APP支付固定设置参数
-	            partnerid: 'hdndnvndiv',//商户编号，微信开放平台申请微信支付时产生
-	            prepayid: 'nfjbvkkjv',//由上面获取预支付流程获取
-	            timestamp: 'kndnvjdnjvndj',//时间戳
-	            sign: 'dbvjdvjdb'//上面关键参数加密获得
-			}
-			//微信
-			alert('调用微信支付一下');
-			plus.payment.request(pays[id],varpay,function(result){
-				//支付成功回调
-				
-			},function(e){
-				//支付失败回调
-				plus.nativeUI.closeWaiting(); 
-				plus.nativeUI.alert("支付失败");
-			});
+			gowxpay();
 		} 
 	}else{
 		plus.nativeUI.alert("当前环境不支持此支付通道！",null,"提示");
@@ -251,6 +221,85 @@ function payfun(id){
 				});
 //			 
 			}
+		},
+		error:function(xhr,type,errorThrown){
+			//异常处理；
+			console.log(type);
+			console.log("----- 请求订单失败 -----");
+			console.log( xhr.status );
+			plus.nativeUI.closeWaiting();
+			plus.nativeUI.alert("获取订单信息失败！");
+		}
+	});
+	}
+	function gowxpay(){
+	// 请求支付订单
+	var oldtoken = plus.storage.getItem('oldToken'); 
+   // var uuid = plus.webview.currentWebview().uuid;
+    var orderId = plus.webview.currentWebview().uuid; 
+    var payMent = parseFloat(plus.webview.currentWebview().payMent).toFixed(2);
+    var product_id = plus.webview.currentWebview().product_id;
+    //获取ip地址
+    var spbill_create_ip = returnCitySN["cip"]+','+returnCitySN["cname"];
+    
+	mui.ajax(WXPAYSERVER,{ 
+		data:{payType:'app',total_fee:payMent,body:'HI集生活',out_trade_no:orderId,spbill_create_ip:spbill_create_ip,product_id:product_id},
+		type:'post',//HTTP请求类型
+		headers:{"token":oldtoken},	
+		timeout:10000,//超时时间设置为10秒；
+		success:function(data){
+			plus.nativeUI.closeWaiting()
+//			var data = data.data;
+		   alert(JSON.stringify(data))
+			console.log("----- 请求订单成功 -----"); 
+			var varpay;  
+			 data = eval("("+data+")");
+					varpay = {
+						retcode: 0,
+						retmsg: "ok",
+	                    appid: data.appid,
+	                    noncestr: data.noncestr,
+	                    package: "Sign=WXPay",
+	                    partnerid: data.partnerid,
+	                    prepayid: data.prepayid,
+	                    timestamp: parseInt(data.timestamp),
+	                    sign: data.sign
+					}
+					console.log('微信',data);
+					//微信
+					plus.payment.request(pays[id],varpay,function(result){
+						outLine("----- 支付成功 -----");
+						var sendData;
+						if(orderid == 'vip'){
+							sendData = {"dis":"reWXPayOk","id":rechargeId};
+						}else{
+							sendData = {"dis":"ISWXPay","orderid":orderid};
+						}
+						//修改状态
+//						iswxpay();
+//						function iswxpay(){
+//							plus.nativeUI.showWaiting('处理中');
+//							mui.ajax('',{
+//								data:sendData,
+//								dataType:'json',//服务器返回json格式数据
+//								type:'post',//HTTP请求类型
+//								timeout:10000,//超时时间设置为10秒；
+//								success:function(data){
+//									 
+//								},
+//								error:function(xhr,type,errorThrown){
+//									//异常处理；
+//									console.log(type);
+//								}
+//							});
+//						}
+						
+					},function(e){
+						outLine("----- 支付失败 -----");
+						outLine("["+e.code+"]："+e.message);
+	//					console.log("["+e.code+"]："+e.message);
+						plus.nativeUI.alert("支付失败");
+					});
 		},
 		error:function(xhr,type,errorThrown){
 			//异常处理；
