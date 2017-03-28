@@ -86,6 +86,7 @@
 		<script type="text/html" id="infolist"> 
 			<% for(var i=0; i<list.length; i++){%>
 				<div class="follow">
+					<!--这里的注释删不得-->
 					<!--//mui-btn-outlined 已关注--> 
 					<!--//mui-btn-outlined eachF 互相关注-->
 					<!--//eachF 关注(是粉丝)-->
@@ -97,9 +98,19 @@
 						<%} %>	
 						<%= list[i].nickname%>
 					</div>
-					<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF eachF">
-						关注
-					</button> 
+					<% for(var j=0; j<myfollow.length; j++){%>
+						<% if(myfollow[j] == list[i].user_id){%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined eachF">
+								互相关注
+							</button>
+							<% break;%>
+						<% }%>
+						<% if(j == myfollow.length-1){%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF eachF">
+								关注
+							</button> 
+						<% }%>	
+					<% }%>		
 				</div>
 			<% }%>	
 		</script>
@@ -118,36 +129,43 @@
 		var myuserid = plus.storage.getItem('userid');
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui.ajax(serverUrl+'/api/news/myfollow',{
-				data:{"userid":myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},
-				success:function(data,type,xhr){
-					console.log('关注返回',data);
-					if(data.errno==0){
-						if (data.data.followMe.length) {//铺数据
-							var dataobj = {};
-							dataobj.list = data.data.followMe;
-							var html=template("infolist",dataobj);
-							document.getElementById("main").innerHTML = html;
-						} else{//没有数据
-							mui('#nulldiv')[0].style.display = 'block';
+			data:{"userid":myuserid},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},
+			success:function(data,type,xhr){
+				console.log('关注返回',data);
+				if(data.errno==0){
+					if (data.data.followMe.length) {//铺数据
+						var myfollow = [];
+						if(data.data.myFollow.length){
+							mui.each(data.data.myFollow,function (index,element) {
+								myfollow.push(element.user_id);
+							})
 						}
-						plus.nativeUI.closeWaiting();
-					}else{
-						plus.nativeUI.closeWaiting();
+						var dataobj = {};
+						dataobj.list = data.data.followMe;
+						dataobj.myfollow = myfollow;
+						var html=template("infolist",dataobj);
+						document.getElementById("main").innerHTML = html;
+					} else{//没有数据
 						mui('#nulldiv')[0].style.display = 'block';
-						mui.toast('当前网络不好，请重试！');	
 					}
-				},
-				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+				}else{
 					plus.nativeUI.closeWaiting();
 					mui('#nulldiv')[0].style.display = 'block';
-					mui.toast('当前网络不好，请重试！');
-					console.log('登录响应失败');
+					mui.toast('当前网络不好，请重试！');	
 				}
-			});
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting();
+				mui('#nulldiv')[0].style.display = 'block';
+				mui.toast('当前网络不好，请重试！');
+				console.log('登录响应失败');
+			}
+		});
 	})
   	
 	$(".follow").on("click",function(){

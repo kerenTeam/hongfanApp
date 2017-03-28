@@ -106,7 +106,7 @@
 		<script type="text/html" id="infolist"> 
 			<% for(var i=0; i<mynewsliker.length; i++){%>
 				<% for(var j=0; j<likerInfo.length; j++){%>
-					<%if(mynewsliker[i].userid == likerInfo[j].user_id){%>
+					<%if(mynewsliker[i].like_user_id == likerInfo[j].user_id){%> 
 						<div class="follow" onclick="opendetaile()"> 
 							<div class="fchidl">
 								<%if(likerInfo[j].avatar){ %>
@@ -114,7 +114,6 @@
 								<%}else{ %>
 									<img src="../../img/market/ag.jpeg" class="userAvator" />
 								<%} %>	
-								
 								<div> <%= likerInfo[j].nickname%><br><br><span>赞了</span> 你的帖子  <small><%= mynewsliker[i].create_time.split('T')[0]%></small></div>
 							</div> 
 							<!--<img src="../../img/market/feg3.png" class="fllmg" alt="" />-->
@@ -151,10 +150,14 @@
 							dataobj.url = serverimgUrl;
 							dataobj.mynewsliker = data.data.mynewsliker.mynewsliker;
 							mui.each(data.data.mynewsliker.likerInfo,function (index,element) {
-								if(element.avatar){
+								if(element.avatar.indexOf('picImg')>-1){
 									element.avatar = JSON.parse(element.avatar)[0].picImg;
+								}else if(element.avatar){
+									element.avatar = element.avatar;
 								}
+								
 							})
+							console.log(data.data.mynewsliker.likerInfo);
 							dataobj.likerInfo = data.data.mynewsliker.likerInfo; 
 							var html=template("infolist",dataobj);
 							document.getElementById("main").innerHTML = html;

@@ -1,6 +1,6 @@
  
-var serverUrl='http://192.168.199.191:7200'; 
-//var serverUrl='http://192.168.0.128:7200';
+//var serverUrl='http://192.168.199.191:7200'; 
+var serverUrl='http://192.168.0.128:7200';
 //var serverUrl='http://hiji.hifete.com'; 
 //var serverUrl='http://Aaron.lan:7200';
 
@@ -12,7 +12,7 @@ var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 function followBack(thisobj,friendid){
 	event.stopPropagation();
 	function Success(){
-		event.stopPropagation()
+		event.stopPropagation();
 		$(thisobj).toggleClass(" mui-btn-outlined");
 	 	if($(thisobj).hasClass("mui-btn-outlined")){
 	 		if($(thisobj).hasClass("eachF")){
