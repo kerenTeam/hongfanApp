@@ -20,6 +20,9 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/app.js"></script>
 		<script src="../js/artTemplate-native.js"></script>
+		<style type="text/css">
+			#upload img{width: .35rem;}
+		</style>
 	</head>
 	<style type="text/css">
 		.subActive{
@@ -131,7 +134,7 @@
 		.noli{
 			position: relative;overflow: hidden;
 		}
-		.noli:after{
+		.noli:after, #dynamic li:after{
 		    position: absolute;
 		    right: 0;
 		    bottom: 0;
@@ -143,6 +146,7 @@
 		    background-color: #c8c7cc;
 		}
 		.fft b, .follow b{color: #555;}
+		.follow>div{height: 100%;padding-top: 8px;}
 	</style>
 
 	<body>
@@ -158,119 +162,109 @@
 			<div class="clearfloat box-s box-ss" id="userBox">
 	    		<img id="mypic1" src="../img/morentouxiang.jpg"/>
 	    		<div id="beijing2"></div> 
-	    			<img src="../img/market/atcenter.jpg" class="userAvator"/> 
+	    			<img src="../img/market/atcenter.jpg" class="userAvator" id="mypic2"/> 
 	    			<!--<div class="idhiji">HI集 ID:12345567</div>-->
 	    	</div>
 	    	<div class="content">
 	    		<div class="mainInfo">
-	    			<h4 style="color: #555;">扉页 <img src="../img/woman.svg" alt="" style="width: 0.15rem;"/></h4>
+	    			<h4 style="color: #555;"> <span id="nickname">扉页</span> <img id="gender" src="../img/woman.svg" alt="" style="width: 0.15rem;"/></h4>
 	    			<button type="button" class="mui-btn mui-btn-danger mui-btn-outlined editPage">
 						编辑个人信息
 					</button>
 	    		</div> 
 	    		<div class="follow fft">
-					<div class="fchidl">
-						<b>4</b>
+					<div class="fchidl aClick">
+						<b id="likenum">0</b>
 						<div>赞的</div>
 					</div>
-					<div class="fchidl">
-						<b>7</b>
-						<div>被赞的</div>
-					</div><div class="fchidl">
-						<b>4</b>
+					<div class="fchidl aClick">
+						<b id="sharenum">0</b>
 						<div>分享的</div>
 					</div>
-					<div class="fchidl">
-						<b>7</b>
-						<div>评论</div>
+					<div class="fchidl aClick">
+						<b id="fennum">0</b>
+						<div>被关注</div>
+					</div>
+					<div class="fchidl aClick">
+						<b id="follownum">0</b>
+						<div>关注</div>
 					</div>
 				</div>
 	    	</div>
 
 		</div>
-		<div class="follow myfl">
+		<!--<div class="follow myfl">
 			<div class="fchidl chidlL">
 				<b>4</b>
 				<div>关注</div>
 			</div>
-			<div class="fchidl">
+			<div class="fchidl"> 
 				<b>7</b>
 				<div>被关注</div>
 			</div>
-		</div>
-		<p style="padding:0 10px 10px;"><small>我的动态</small></p>
-		 <ul class="mui-table-view-striped mui-table-view-condensed">
-							 
-				<li class="noli cmlist" onclick="findInfo()"> 
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-						 	<!--<div class="oa-contact-avatar mui-table-cell cheader">
-								<img src="../img/market/ag.jpeg" />
-							</div>-->
-							<div class="oa-contact-content mui-table-cell oaright oaf noafter">
-								<div class="mui-clearfix">
-									<div class="oa-contact-position mui-h5 fl tiename">发了贴</div>
-								    <div class="oa-contact-position mui-h6 fr ctime">2015-11-19</div>
-								</div> 
-								<p class="oa-contact-email mui-h5 tiec"> 
-									<img src="../img/market/bsl.jpeg" alt="" />	
-									<span class="onespan">
-										哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									</span>
-								</p>
-							</div>
+		</div>-->
+		<p style="padding: 8px"><small>我的动态</small></p>
+		<style type="text/css">
+			#dynamic{background-color: #fff;}
+			#spandiv{height: 40px;}
+			#spandiv span{line-height: 40px;}
+			#dynamic .spanL{float: left;color: #888;}
+			#dynamic .spanR{float: right;color: #C0C0C0;}
+			#dynamic li{margin-left: 25px;padding-right: 20px;position: relative;padding-bottom: 20px;}
+			#dynamic li:after{left: 0;}
+			#Dcon{padding: 8px;padding-left: 30%;background-color: rgba(242, 241, 238, 0.62);} 
+			#Dcon:after{display: block;content: ' ';clear: both;}
+			#Dcon .imgdiv{width: 34%;margin-left: -41%;float: left;height: 60px;max-height: 60px;overflow: hidden;}
+			#Dcon .imgdiv img{width: 100%;}
+			#Dcon p{padding-top: 5px;line-height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;}
+		</style>
+		<ul id="dynamic">
+			<!--<li class="">
+				<div id="spandiv">
+					<span id="" class="spanL">发了贴</span>
+					<span id="" class="spanR">2017-09-08</span>
+				</div>
+				<div id="Dcon">
+					<div class="imgdiv">
+						<img src="../img/market/bsl.jpeg" alt="" />	
+					</div>
+					<p>哈哈哈哈哈哈哈哈哈哈哈哈哈哈<br/>哈哈哈哈哈哈哈哈哈哈哈哈哈哈<br/>哈哈哈哈哈哈哈哈哈哈哈哈哈哈</p>
+				</div>
+			</li>-->
+		</ul>
+		 
+			<script type="text/html" id="infolist">
+				<% for(var i=0; i<list.length; i++){%>
+				<li class="" onclick="findInfo()">
+					<div id="spandiv">
+						<span id="" class="spanL">发了贴</span>
+						<span id="" class="spanR">
+							<% if(list[i].create_time){%>
+					    		<%= list[i].create_time.split('T')[0]%>
+					    	<% }%>
+						</span>
+					</div>
+					<div id="Dcon">
+						<div class="imgdiv">
+							<% if(list[i].pic){%>
+								<% if(list[i].pic.indexOf('http')>-1){%>
+									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+								<% }else{%>
+									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+								<% }%>	
+							<% }%>		
 						</div>
+						<p><%= list[i].content%></p>
 					</div>
 				</li>
-				<li class="noli cmlist" onclick="findInfo()"> 
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-						 	<!--<div class="oa-contact-avatar mui-table-cell cheader">
-								<img src="../img/market/ag.jpeg" />
-							</div>-->
-							<div class="oa-contact-content mui-table-cell oaright oaf noafter">
-								<div class="mui-clearfix">
-									<div class="oa-contact-position mui-h5 fl tiename">发了贴</div>
-								    <div class="oa-contact-position mui-h6 fr ctime">2015-11-19</div>
-								</div> 
-								<p class="oa-contact-email mui-h5 tiec"> 
-									<img src="../img/market/bsl.jpeg" alt="" />	
-									<span class="onespan">
-										哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									</span>
-								</p>
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="noli cmlist" onclick="findInfo()"> 
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-						 	<!--<div class="oa-contact-avatar mui-table-cell cheader">
-								<img src="../img/market/ag.jpeg" />
-							</div>-->
-							<div class="oa-contact-content mui-table-cell oaright oaf noafter">
-								<div class="mui-clearfix">
-									<div class="oa-contact-position mui-h5 fl tiename">发了贴</div>
-								    <div class="oa-contact-position mui-h6 fr ctime">2015-11-19</div>
-								</div> 
-								<p class="oa-contact-email mui-h5 tiec"> 
-									<img src="../img/market/bsl.jpeg" alt="" />	
-									<span class="onespan">
-										哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									</span>
-								</p>
-							</div>
-						</div>
-					</div>
-				</li>
+				<% }%>	
+			</script>
+			<!--<div class="upload text-center text-xs gray" id="upload"></div>-->
+			<div id="upload" style="padding-bottom: 100px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
 				
-			</ul>
-			<div id="" style="padding-bottom: 70px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
-				没有更多动态了
 			</div>
 			
-			<!--底部导航-->
+			<!--底部导航--> 
 			 
 			<nav class="mui-bar mui-bar-tab">
 				<a onclick="gopage('Follow')">
@@ -378,17 +372,198 @@
 	  			}
 	  		}
 	  	}
-	
-	   //编辑个人主页
-		 mui('.editPage')[0].addEventListener('tap',function(){
-			 
-				openview({
-					view:'personal/setup.html' 
-				});
-			 
+	    //数据处理
+	    var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数 
+	    mui.plusReady(function(){
+	    	var oldtoken = plus.storage.getItem('oldToken');
+			var myuserid = plus.storage.getItem('userid');
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			var loadnum = 0;
+			//头像名字
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data,type,xhr){
+					console.log('获取用户数据返回', data);
+					if(data.errno == 0){
+						//显示头像
+						if(data.data[0].avatar){
+							mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+						}
+						//显示昵称
+						if(data.data[0].nickname != ' '){ 
+							if(data.data[0].nickname.indexOf('null') == -1){
+								mui('#nickname')[0].innerHTML = data.data[0].nickname;
+							}else{
+								mui('#nickname')[0].innerHTML = data.data[0].phone;
+							}
+						}else{
+							mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+						}
+						//显示性别
+						if(data.data[0].gender == '男'){
+							mui('#gender')[0].src = '../img/man.svg';
+							mui('#beijing2')[0].style.backgroundColor = 'rgba(140, 159, 191, 0.67)';
+						}else if(data.data[0].gender == '女'){
+							mui('#gender')[0].src = '../img/woman.svg';
+						}
+					}else{
+						mui.toast('获取用户信息失败'); 
+						console.log(data.errmsg); 
+					}
+					loadnum++;
+				},
+				error:function(xhr,type,errorThrown){
+					loadnum++;
+					mui.toast('获取用户信息响应失败');
+					console.log('获取用户数据,响应失败');
+				}
+			});
+			//赞的条数
+			mui.ajax(serverUrl+'/api/news/newslike',{
+				data:{"userid":myuserid},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},
+				success:function(data,type,xhr){
+					console.log('赞的条数',data)
+					if(data.errno==0){
+						mui('#likenum')[0].innerHTML = data.data.mylikenews.length;
+					}
+					loadnum++;
+				},
+				error:function(xhr,type,errorThrown){
+					loadnum++;
+					mui.toast('当前网络不好，请重试！');
+					console.log('登录响应失败');
+				}
+			});
+			//关注条数
+			mui.ajax(serverUrl+'/api/news/myfollow',{
+				data:{"userid":myuserid},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},
+				success:function(data,type,xhr){
+					console.log('关注条数',data)
+					if(data.errno==0){
+						mui('#fennum')[0].innerHTML = data.data.followMe.length;
+						mui('#follownum')[0].innerHTML = data.data.myFollow.length;
+					}
+					loadnum++;
+				},
+				error:function(xhr,type,errorThrown){
+					loadnum++;
+					mui.toast('当前网络不好，请重试！');
+					console.log('登录响应失败');
+				}
+			});
+			//我的动态
+//			document.getElementById("noinfodiv").innerHTML = '';
+			mui.ajax(serverUrl+'/api/news/newslist',{ 									
+				data:{currentPage:1,numsPerPage:2,userid:myuserid,categoryid:'',isMyFriendPage:true}, 
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型 
+				timeout:10000,//超时时间设置为10秒；	
+				headers:{"token":oldtoken}, 
+				success:function(data){
+					if(data.errno == 0){ 
+						console.log('动态列表返回',data);
+						if(data.data.totalPages){
+							var dataobj = {};
+							mui.each(data.data.data,function (index,ele) {
+								if(ele.pic.indexOf('picImg')>-1){
+									ele.pic = JSON.parse(ele.pic)[0].picImg;
+								}
+							})
+							dataobj.list = data.data.data;
+							dataobj.url = serverimgUrl;
+							
+							//获取并渲染用户信息
+							var html=template("infolist",dataobj);
+							document.getElementById("dynamic").innerHTML += html;
+						}
+						
+						//滚动到底部加载
+						$(window).scroll(function(){
+						　　var scrollTop = $(this).scrollTop();
+						　　var scrollHeight = $(document).height();
+						　　var windowHeight = $(this).height();
+						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
+								if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+									Ypagenum++;//满足加载情况,应到页数+1
+									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,应到'+Ypagenum+'页');
+									mui.ajax(serverUrl+'//api/news/newslist',{ 	
+										data:{currentPage:Spagenum,numsPerPage:2,userid:myuserid,categoryid:'',isMyFriendPage:true}, 
+										dataType:'json',//服务器返回json格式数据 
+										type:'post',//HTTP请求类型 
+										timeout:10000,//超时时间设置为10秒；	
+										headers:{"token":oldtoken}, 
+										success:function(data){
+											console.log('下拉数据',data);
+											if(data.errno == 0){
+												var dataobj = {};
+												mui.each(data.data.data,function (index,ele) {
+													if(ele.pic.indexOf('picImg')>-1){
+														ele.pic = JSON.parse(ele.pic)[0].picImg;
+													}
+												})
+												dataobj.list = data.data.data; 
+												dataobj.url = serverimgUrl;
+												//获取并渲染用户信息
+												var html=template("infolist",dataobj);
+												document.getElementById("dynamic").innerHTML += html;
+											}
+											mui("#upload")[0].innerHTML = ""; 
+											Spagenum++;//加载成功,当前页+1
+											console.log('成功+1,实到'+Spagenum);
+											console.log('成功+1,应到'+Spagenum);
+										},
+										error:function(xhr,type,errorThrown){
+											Ypagenum--;//失败是应到-1
+											mui.toast("当前网络不好请重试");
+											mui("#upload")[0].innerHTML = ""; 
+										}
+									});
+								}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "没有更多了"; 
+								}
+						　　  }
+						});//加载下一部分结束
+					}else{
+						mui("#upload")[0].innerHTML = ""; 
+					}
+					plus.nativeUI.closeWaiting();//关闭等待框
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+				}
+			});
+			//关遮罩
+			var time1 = setInterval(function(){ 
+				console.log(loadnum);
+				if(loadnum == 3){
+			  		plus.nativeUI.closeWaiting();	
+			  		clearInterval(time1);
+				}
+			},100)
+			
+			
+	    })
+   		//编辑个人主页
+		mui('.editPage')[0].addEventListener('tap',function(){
+			openview({
+				view:'personal/setup.html' 
+			});
 		});
-	    
-	    
 	    //帖子 详情
 	    function findInfo(){
     		openview({
@@ -405,149 +580,27 @@
 					view:'find/like.html' 
 				});
 	    })
-	    //被赞的
-	     $(".fft .fchidl:nth-child(2)").on("tap",function(){
-	    	openview({
-					view:'find/liked.html' 
-				});
-	    })
 	    //分享的
-	    $(".fft .fchidl:nth-child(3)").on("tap",function(){
+	    $(".fft .fchidl:nth-child(2)").on("tap",function(){
 	    	openview({
 					view:'find/shareList.html' 
 				});
 	    })
-	    
-	    //评论的
-	    $(".fft .fchidl:nth-child(4)").on("tap",function(){
-	    	openview({
-					view:'find/cmt.html' 
-				});
-	    })
-	    
-	    //关注
-	    $(".myfl .fchidl:first-child").on("tap",function(){
-	    	openview({
-					view:'find/follow.html' 
-				});
-	    })
-	    
 	    // 粉丝 
-		$(".myfl .fchidl:last-child").on("tap",function(){
+	    $(".fft .fchidl:nth-child(3)").on("tap",function(){
 	    	openview({
 					view:'find/followed.html' 
 				});
 	    })
-		//图片上传文件方法	
-		function previewImage(file) {
-			var MAXWIDTH = 350;
-			var MAXHEIGHT = 249;
-			var div = findPreview(file.parentNode);
-			if(file.files && file.files[0]) {
-				filepic = file.files[0];
-				div.innerHTML = '<img id=imghead>';
-				var img = div.lastChild;
-				img.onload = function() {
-					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-					img.width = rect.width;
-					img.height = rect.height;
-				}
-				var reader = new FileReader();
-				reader.onload = function(evt) {
-					img.src = evt.target.result;
-				}
-				reader.readAsDataURL(file.files[0]);
-			}
-		}
+	    //关注
+	    $(".fft .fchidl:nth-child(4)").on("tap",function(){
+	    	openview({
+					view:'find/follow.html'
+				});
+	    })
+	    
 
-		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
-			var param = {
-				top: 0,
-				left: 0,
-				width: width,
-				height: height
-			};
-			if(width > maxWidth || height > maxHeight) {
-				rateWidth = width / maxWidth;
-				rateHeight = height / maxHeight;
-
-				if(rateWidth > rateHeight) {
-					param.width = maxWidth;
-					param.height = Math.round(height / rateWidth);
-				} else {
-					param.width = Math.round(width / rateHeight);
-					param.height = maxHeight;
-				}
-			}
-			param.left = Math.round((maxWidth - param.width) / 2);
-			param.top = Math.round((maxHeight - param.height) / 2);
-			return param;
-		}
-
-		function findPreview(parent) {
-			var childs = parent.childNodes;
-			for(var i = 0; i < childs.length; i++) {
-				if(childs[i].id == "preview")
-					return childs[i];
-			}
-			return div = document.getElementById('preview');
-		}
 		
-		
-		
-//		//发送 发布
-//		mui('.baocun')[0].addEventListener('tap',function(){ 
-////			plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});
-//			var text = $('.disbg').text() || null;
-//			alert(text) 
-//			var touxiang = mui('#imgUpload')[0].files[0] || {};
-//			alert(touxiang.length)
-//			mui.plusReady(function(){ 
-//				var myuserid = plus.storage.getItem('userid');
-//				var oldtoken = plus.storage.getItem('oldToken');
-//				 
-//				function upfun1(){
-//					var fd = new FormData(); 
-//					if(touxiang.name){
-//						fd.append('avatar',touxiang);
-//					}else{
-//						alert(5)
-//					}
-////			        fd.append('userid',myuserid);  		
-////			        fd.append('nickname',mynickname);  		
-////			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
-////			        fd.append('IDCard',IDnum);  		
-////			        var xhr = new XMLHttpRequest();  	
-////			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
-////			    	xhr.onreadystatechange = function(){
-////			    		if (xhr.readyState===4) { 
-////	    					if (xhr.status===200) {
-////	    						plus.nativeUI.closeWaiting();//关闭等待框
-////	    						var dataobj = JSON.parse(xhr.responseText);
-////	    						console.log('修改'+xhr.responseText);
-////	    						if(dataobj.errno == 0){
-////	    							mui.toast('修改成功');	 
-////	    							//触发跳转页面刷新
-////									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-////									if(plus.webview.getWebviewById('market-order')){ 
-////										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
-////									}
-////									var time2 = setTimeout(function(){
-////										plus.webview.currentWebview().close();
-////									},500)
-////	    						}else{
-////	    							mui.toast('保存失败');	
-////	    						}
-////	    					}else{
-////	    						mui.toast('响应失败');	
-////	    					}
-////	    				}
-////			        } 
-////			        xhr.setRequestHeader("token",oldtoken);
-////			        xhr.send(fd);
-//				}
-//			})
-//		})
 	</script>
 
 </html>

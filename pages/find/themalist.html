@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>赞的</title>
+		<title>专题</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -91,8 +91,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav" id="header"> 
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">我赞过的</h1>
-		    <!--<a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun">发布</a>-->
+		    <h1 class="mui-title">专题</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="nulldiv" style="padding-top: 50%;text-align:center;font-size: 14px;color: #999;display: none;">
@@ -101,7 +100,7 @@
 			没有可用信息
 		</div>
 		<div id="main">
-	 		<div id="mainpic" style="display: none;">
+	 		<div id="mainpic" style="display: block;">
 				<!--<div class="boxf" onclick="findInfo()">
 					<div class="pic">
 						<img src="../../img/market/m1.jpg">
@@ -115,24 +114,23 @@
 				</div>-->
 			</div>
 			<script type="text/html" id="infolist"> 
-				<div class="boxf" onclick="findInfo()">
-					<div class="pic">
-						<img src="<%= pic%>">
-						<p class="fTxt">
-							<%= content%>
-						</p>
-						<div class="findUser">
-							<%if(avatar){%>
-								<img src="<%= Purl+avatar%>" alt="" />
-							<%}else{ %>
-								<img src="../../img/market/market-food.jpg" alt="" />
-							<%} %>	
+				<% for(var i=0,leni=list.length; i<leni; i++){%>
+					<div class="boxf" onclick="findInfo()">
+						<div class="pic"> 
+							<% if(list[i].pic.indexOf('http')>-1){%>
+								<img src="<%= list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'">
+							<% }else{%>
+								<img src="<%= url+list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'"><!--<img src="../../img/market/m1.jpg">-->
+							<% }%>	
 							
-							<span><%= nickname%></span> 
+							<p class="fTxt"><%= list[i].content%></p>
+							<div class="findUser">
+								<img src="<%= url+list[i].avatar%>" onerror="this.src = '../../img/zhaoxiangji.svg'" /><span><%= list[i].nickname%></span> 
+							</div>
 						</div>
 					</div>
-				</div>
-			</script>
+				<% }%>	
+			</script> 
 		</div>	
 	</body>
 <script type="text/javascript" src="../../js/jquery.min.js"></script>  
@@ -144,79 +142,49 @@
 	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
+		var q_id = plus.webview.currentWebview().qid;
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-		mui.ajax(serverUrl+'/api/news/newslike',{//请求id列表
-				data:{"userid":myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},
-				success:function(data,type,xhr){
-					console.log('我的喜欢返回',data);
-					if(data.errno==0){
-						if (data.data.mylikenews.length) {//请求id列表
-							var idArray = [];
-							mui.each(data.data.mylikenews,function (index,element) {
-								idArray.push(element.newsid);
-							})
-							console.log(idArray);
-							var numload = 0;
-							mui.each(idArray,function (index,element) {//遍历详情
-								console.log('我是遍历'+element);
-								mui.ajax(serverUrl+'/api/news/newsinfo',{
-									data:{newsid:element}, 
-									dataType:'json',
-									type:'post',
-									timeout:10000,
-									headers:{"token":oldtoken},	 
-									success:function(data,type,xhr){
-										numload++;
-										console.log('我是请求成功');
-										var dataobj = data.data.newsinfodata[0];
-										console.log('数据',dataobj);
-										dataobj.Purl = serverimgUrl;
-										dataobj.avatar = JSON.parse(dataobj.avatar)[0].picImg;
-										var html=template("infolist",dataobj);
-										document.getElementById("mainpic").innerHTML += html;
-										console.log(numload);
-										
-										if(numload == idArray.length){//铺完后关闭loading
-											console.log('我是最后一次');
-											mui('#mainpic')[0].style.display = 'block';
-											var time1 = setTimeout(function(){
-												plus.nativeUI.closeWaiting();
-											},500)
-										} 
-									},
-									error:function(xhr,type,errorThrown){
-										numload++;
-										if(numload == idArray.length){//铺完后关闭loading
-											console.log('我是最后一次')
-											mui('#mainpic')[0].style.display = 'block';
-											var time1 = setTimeout(function(){
-												plus.nativeUI.closeWaiting();
-											},500)
-										} 
-										mui.toast('一条加载失败,请重试');
-									}
-								});
-							})
-						} else{//没有数据
-							mui('#nulldiv')[0].style.display = 'block';
-						}
+		mui.ajax(serverUrl+'/api/news/actnewslist',{//请求id列表
+			data:{"q_id":q_id},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},
+			success:function(data,type,xhr){
+				console.log('专题返回',data);
+				if(data.errno==0){
+					var dataobj = {};
+					if(data.data.length){
+						mui.each(data.data,function (index,element) {
+							if(element.pic){
+								if(element.pic.indexOf('http') == -1){
+									element.pic = JSON.parse(element.pic)[0].picImg;
+									console.log(element.pic); 
+								}
+							}
+							if(element.avatar){ 
+								element.avatar = JSON.parse(element.avatar)[0].picImg;	
+							}
+						})
+						dataobj.list = data.data;
+						dataobj.url = serverimgUrl;
+						mui('#mainpic')[0].innerHTML = template('infolist',dataobj);
 					}else{
-						plus.nativeUI.closeWaiting();
 						mui('#nulldiv')[0].style.display = 'block';
-						mui.toast('当前网络不好，请重试！');	
 					}
-				},
-				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();
+				}else{
 					mui('#nulldiv')[0].style.display = 'block';
-					mui.toast('当前网络不好，请重试！');
-					console.log('登录响应失败');
+					mui.toast('当前网络不好，请重试！');	
 				}
-			});
+				plus.nativeUI.closeWaiting();
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting();
+				mui('#nulldiv')[0].style.display = 'block';
+				mui.toast('当前网络不好，请重试！');
+				console.log('登录响应失败');
+			}
+		});
 	})	
 	
 	function findInfo(){

@@ -159,7 +159,7 @@
 	    	</div>
 	    	<div class="content">
 	    		<div class="mainInfo">
-	    			<h4>扉页 <img src="../img/woman.svg" alt="" style="width: 0.15rem;"/></h4>
+	    			<h4><span id="nickname">扉页 </span> <img id="gender" src="../img/woman.svg" alt="" style="width: 0.15rem;"/></h4>
 	    			<div>
 	    				<button type="button" class="mui-btn mui-btn-warning mui-btn-outlined chat">
 							私信
@@ -285,157 +285,106 @@
     }).trigger('scroll');
 	
 	//私信
-		 mui('.chat')[0].addEventListener('tap',function(){
-			 
-				openview({
-					view:'find/chat.html'
-				});
-			 
+	 mui('.chat')[0].addEventListener('tap',function(){
+		openview({
+			view:'find/chat.html'
 		});
-	    //帖子 详情
-	    function findInfo(){
-    		openview({
-				view: "find/findInfo.html",
-				extrasobj: {
-					userId: 1
-				}
-			})
-    	}
-	    
-	    //关注 粉丝 
-	    $(".fchidl:first-child").on("tap",function(){
-	    	openview({
-					view:'find/follow.html' 
-				});
-	    })
-		$(".fchidl:last-child").on("tap",function(){
-	    	openview({
-					view:'find/followed.html' 
-				});
-	    })
-		//图片上传文件方法	
-		function previewImage(file) {
-			var MAXWIDTH = 350;
-			var MAXHEIGHT = 249;
-			var div = findPreview(file.parentNode);
-			if(file.files && file.files[0]) {
-				filepic = file.files[0];
-				div.innerHTML = '<img id=imghead>';
-				var img = div.lastChild;
-				img.onload = function() {
-					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-					img.width = rect.width;
-					img.height = rect.height;
-				}
-				var reader = new FileReader();
-				reader.onload = function(evt) {
-					img.src = evt.target.result;
-				}
-				reader.readAsDataURL(file.files[0]);
+	});
+    //帖子 详情
+    function findInfo(){
+		openview({
+			view: "find/findInfo.html",
+			extrasobj: {
+				userId: 1
 			}
-		}
-
-		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
-			var param = {
-				top: 0,
-				left: 0,
-				width: width,
-				height: height
-			};
-			if(width > maxWidth || height > maxHeight) {
-				rateWidth = width / maxWidth;
-				rateHeight = height / maxHeight;
-
-				if(rateWidth > rateHeight) {
-					param.width = maxWidth;
-					param.height = Math.round(height / rateWidth);
-				} else {
-					param.width = Math.round(width / rateHeight);
-					param.height = maxHeight;
+		})
+	}
+	//数据处理
+	mui.plusReady(function(){
+		var oldtoken = plus.storage.getItem('oldToken');
+		var myuserid = plus.storage.getItem('userid');
+		var otherid = plus.webview.currentWebview().idnum;
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		var loadnum = 0;
+		//头像名字
+		mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+			data:{"userid":otherid},
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},	              				
+			success:function(data,type,xhr){
+				console.log('获取用户数据返回', data);
+				if(data.errno == 0){
+					//显示头像
+					if(data.data[0].avatar){
+						mui('.userAvator')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+					}
+					//显示昵称
+					if(data.data[0].nickname != ' '){ 
+						if(data.data[0].nickname.indexOf('null') == -1){
+							mui('#nickname')[0].innerHTML = data.data[0].nickname;
+						}else{
+							mui('#nickname')[0].innerHTML = data.data[0].phone;
+						}
+					}else{
+						mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+					}
+					//显示性别
+					if(data.data[0].gender == '男'){
+						mui('#gender')[0].src = '../img/man.svg';
+						mui('#beijing2')[0].style.backgroundColor = 'rgba(140, 159, 191, 0.67)';
+					}else if(data.data[0].gender == '女'){
+						mui('#gender')[0].src = '../img/woman.svg';
+					}
+				}else{
+					mui.toast('获取用户信息失败'); 
+					console.log(data.errmsg); 
 				}
+				loadnum++;
+			},
+			error:function(xhr,type,errorThrown){
+				loadnum++;
+				mui.toast('获取用户信息响应失败');
+				console.log('获取用户数据,响应失败');
 			}
-			param.left = Math.round((maxWidth - param.width) / 2);
-			param.top = Math.round((maxHeight - param.height) / 2);
-			return param;
-		}
-
-		function findPreview(parent) {
-			var childs = parent.childNodes;
-			for(var i = 0; i < childs.length; i++) {
-				if(childs[i].id == "preview")
-					return childs[i];
-			}
-			return div = document.getElementById('preview');
-		}
+		});
 		
-		$(".hadF").click(function(){
-	  		event.stopPropagation()
-	  		$(this).toggleClass(" mui-btn-outlined");
-	  		 if($(this).hasClass("mui-btn-outlined")){
-	  		 	if($(this).hasClass("eachF")){
-	  		 		$(this).html("互相关注")
-	  		 	}else{
-	  		 		$(this).html("已关注")
-	  		 	}
-	  		 	
-	  		 }else{
-	  		 	$(this).html(" + 关注")
-	  		 }
-	  	})
+		//关遮罩
+		var time1 = setInterval(function(){ 
+			console.log(loadnum);
+			if(loadnum == 1){
+		  		plus.nativeUI.closeWaiting();	
+		  		clearInterval(time1);
+			}
+		},100)
+	})
+    //关注 粉丝 
+    $(".fchidl:first-child").on("tap",function(){
+    	openview({
+				view:'find/follow.html' 
+			});
+    })
+	$(".fchidl:last-child").on("tap",function(){
+    	openview({
+				view:'find/followed.html' 
+			});
+    })
 		
-//		//发送 发布
-//		mui('.baocun')[0].addEventListener('tap',function(){ 
-////			plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});
-//			var text = $('.disbg').text() || null;
-//			alert(text) 
-//			var touxiang = mui('#imgUpload')[0].files[0] || {};
-//			alert(touxiang.length)
-//			mui.plusReady(function(){ 
-//				var myuserid = plus.storage.getItem('userid');
-//				var oldtoken = plus.storage.getItem('oldToken');
-//				 
-//				function upfun1(){
-//					var fd = new FormData(); 
-//					if(touxiang.name){
-//						fd.append('avatar',touxiang);
-//					}else{
-//						alert(5)
-//					}
-////			        fd.append('userid',myuserid);  		
-////			        fd.append('nickname',mynickname);  		
-////			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
-////			        fd.append('IDCard',IDnum);  		
-////			        var xhr = new XMLHttpRequest();  	
-////			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
-////			    	xhr.onreadystatechange = function(){
-////			    		if (xhr.readyState===4) { 
-////	    					if (xhr.status===200) {
-////	    						plus.nativeUI.closeWaiting();//关闭等待框
-////	    						var dataobj = JSON.parse(xhr.responseText);
-////	    						console.log('修改'+xhr.responseText);
-////	    						if(dataobj.errno == 0){
-////	    							mui.toast('修改成功');	 
-////	    							//触发跳转页面刷新
-////									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-////									if(plus.webview.getWebviewById('market-order')){ 
-////										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
-////									}
-////									var time2 = setTimeout(function(){
-////										plus.webview.currentWebview().close();
-////									},500)
-////	    						}else{
-////	    							mui.toast('保存失败');	
-////	    						}
-////	    					}else{
-////	    						mui.toast('响应失败');	
-////	    					}
-////	    				}
-////			        } 
-////			        xhr.setRequestHeader("token",oldtoken);
-////			        xhr.send(fd);
-//				}
-//			})
-//		})
+	$(".hadF").click(function(){
+  		event.stopPropagation()
+  		$(this).toggleClass(" mui-btn-outlined");
+  		 if($(this).hasClass("mui-btn-outlined")){
+  		 	if($(this).hasClass("eachF")){
+  		 		$(this).html("互相关注")
+  		 	}else{
+  		 		$(this).html("已关注")
+  		 	}
+  		 	
+  		 }else{
+  		 	$(this).html(" + 关注")
+  		 }
+  	})
+	
 	</script>
 
 </html>
