@@ -120,13 +120,22 @@
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
+                ;
             }
-            
             figure {
+            	width:50%;
+            	padding-top:30%;
+            	overflow: hidden;
                 margin: auto;
                 position: relative;
             }
-            
+            figure img{
+            	width:100%;
+            	height: 100%;
+            	position: absolute;
+            	top: 0;
+            	left: 0;
+            }
             figure figcaption {
                 position: absolute;
                 font-size: 0.16rem;
@@ -230,19 +239,22 @@
                     <div class="mui-indicator"></div>
                 </div>
             </div>
-             
-        <div class="ftop" style="margin: 10px 0;">
-            <figure id="1">
-                <div class="fmask"></div>
-                <figcaption>专题</figcaption>
-                <img src="../img/center/zt.jpg" style="width: 100%;" />
-            </figure>
-            <figure id="2">
-                <div class="fmask"></div>
-                <figcaption>活动</figcaption>
-                <img src="../img/center/acf.png" style="width: 100%;" />
-            </figure>
-        </div>
+        <div id="theame"></div>
+        <script type="text/html" id="theameTpl">
+        	<div class="ftop" style="margin: 10px 0;">
+	            <figure id="1" data-actid="<%=theameData[0].act_id%>">
+	                <div class="fmask"></div>
+	                <figcaption>专题</figcaption>
+	                <img src="<%=theameData[0].act_pic%>" style="width: 100%;" />
+	            </figure>
+	            <figure id="2" data-actid="<%=theameData[1].act_id%>">
+	                <div class="fmask"></div>
+	                <figcaption>活动</figcaption>
+	                <img src="<%=theameData[1].act_pic%>" style="width: 100%;" />
+	            </figure>
+	        </div>
+        </script>
+        
 
         <!--分类栏目-->
         <div id="newsType"></div>
@@ -388,21 +400,8 @@
                 view: "find/findSearch.html", 
             })
         }) 
-        $("figure").eq(0).click(function() { 
-	    	var type = $(this).attr("id"); 
-            openview({
-                view: "find/thematicActivities.html",
-                extrasobj: {
-                    type:type
-                }
-            })
-        })
-        $("figure").eq(1).click(function() { 
-//	    	var type = $(this).attr("id"); 
-             openview({
-				view:"activity/activity.html"
-			})
-        })
+       
+        
        
         
 		$(".goBack").click(function(){
@@ -441,10 +440,45 @@
         }
         
         mui.plusReady(function(){
-        	
-        	// 发现动态的分类 
         	var oldtoken = plus.storage.getItem('oldToken');
         	var myuserid = plus.storage.getItem('userid');
+        	 
+        	//获取海报信息
+        	mui.ajax(serverUrl+"/api/news/activity",{
+        		dataType:'json',
+        		type:'post',
+        		timeout:10000,
+				headers:{"token":oldtoken},	 
+				success:function(data,type,xhr){  
+					if(data.errno == 0){
+						if(data.data.length != 0){ 
+        					var theameObj = {};
+        					theameObj.myurl = serverimgUrl;
+        					theameObj.theameData = data.data;
+        					document.getElementById("theame").innerHTML = template("theameTpl",theameObj);
+        					
+        					//专题 活动切换
+        					 $("figure").click(function() { 
+						    	var type = $(this).attr("id"); 
+						    	var acid = $(this).attr("data-actid")
+					            openview({
+					                view: "find/thematicActivities.html",
+					                extrasobj: {
+					                    type:type,acid:acid
+					                }
+					            })
+					        })
+						}
+					}
+					
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting()
+					console.log('响应失败  !');
+				}
+        	})
+        	
+        	// 发现动态的分类  
         	mui.ajax(serverUrl+"/api/news/category",{ 
         		dataType:'json',
 				type:'post',

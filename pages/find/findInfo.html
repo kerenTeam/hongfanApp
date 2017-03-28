@@ -533,7 +533,7 @@
 					<span class="fname"></span>
 				</div>
 			</div>
-			<a href="javascript:;" style="line-height: 50px;color:white;font-size: 25px;" class="fr baocun">+</a>
+			<a href="javascript:;" style="line-height: 50px;color:white;font-size: 25px;" class="fr baocun yngz">+</a>
 		</header>
 		<script src="../../js/statusBar.js"></script>
 		<!--状态栏-->
@@ -698,26 +698,7 @@
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
-	   
-		
-		
-		//关注
-		$(".baocun").on("tap",function(){
-			if(plus.storage.getItem('myToken')){
-				$(this).html('<span class="mui-icon mui-icon-checkmarkempty"></span>')
-				mui.toast("已关注");
-				$(this).fadeOut(400);
-				setTimeout(function(){
-					$(this).remove();
-				},200)
-			}else{
-				mui.toast('请登录');
-				openview({
-					view:'../login.html'
-				});
-			}
-			
-		}) 
+	    
 		mui.plusReady(function(){
 			 
 			var oldtoken = plus.storage.getItem('oldToken');
@@ -757,6 +738,73 @@
 					})
 				}
 			})
+			
+			//判断是否已关注发布者
+			mui.ajax(serverUrl+'/api/news/myfollow',{
+				data:{"userid":myuserid},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},
+				success:function(data,type,xhr){ 
+					if(data.errno==0){
+						if (data.data.myFollow.length) {
+							for(var i = 0 ;i<data.data.myFollow.length;i++){
+								if(data.data.myFollow[i].user_id == news_userId || news_userId == myuserid){
+									$('.yngz').css("display","none");
+									break;
+								}
+							}
+						}
+						plus.nativeUI.closeWaiting();
+					}else{
+						plus.nativeUI.closeWaiting();
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('当前网络不好，请重试！');
+					console.log('登录响应失败');
+				}
+			});
+			
+			//关注
+			$(".baocun").on("click",function(){
+				if(plus.storage.getItem('myToken')){ 
+					mui.ajax(serverUrl+'/api/news/followsb',{
+						data:{"userid":myuserid,friendid:news_userId},
+						dataType:'json',
+						type:'post',
+						timeout:3000,
+						headers:{"token":oldtoken},
+						success:function(data,type,xhr){
+							console.log('关注操作返回',data);
+							if(data.errno==0){
+								$('.baocun').html('<span class="mui-icon mui-icon-checkmarkempty"></span>');
+								mui.toast("已关注");
+								$('.baocun').fadeOut(400);
+								setTimeout(function(){
+									$(this).remove();
+								},200)
+							}else{
+								mui.toast('当前网络不好，请重试'); 
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast('当前网络不好，请重试');
+							console.error('关注操作响应失败');  
+						}
+					});
+					
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
+				
+			}) 
+			
 			//帖子详情
 			mui.ajax(serverUrl+"/api/news/newsinfo",{
     			data:{newsid:newsId},

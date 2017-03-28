@@ -310,7 +310,12 @@
 			<h1 class="mui-title">私聊</h1>
 		</header>
 		<script src="../../js/statusBar.js" type="text/javascript" charset="utf-8"></script>
-		<pre id='h'></pre>
+		
+		
+		<pre id='h'></pre> 
+		
+	
+				
 		<script id='msg-template' type="text/template">
 			<% for(var i in record){ var item=record[i]; %>
 				<div class="msg-item <%= (item.sender=='self'?' msg-item-self':'') %>" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'>
@@ -337,7 +342,43 @@
 			<% } %>
 		</script>
 		<div class="mui-content">
+			<!--发送者-->
+				<div class="msg-item msg-item-self">
+						<i class="msg-user mui-icon mui-icon-person"></i>
+					 
+					<div class="msg-content">
+						<div class="msg-content-inner">
+							大多数的发生的
+						</div>
+						<div class="msg-content-arrow"></div>
+					</div>
+					<div class="mui-item-clear"></div>
+				</div>
+				<div class="msg-item msg-item-self">
+						<i class="msg-user mui-icon mui-icon-person"></i>
+					 
+					<div class="msg-content">
+						<div class="msg-content-inner"> 
+								<img class="msg-content-image" src="../../img/404.svg" style="max-width: 100px;" /> 
+						</div>
+						<div class="msg-content-arrow"></div>
+					</div>
+					<div class="mui-item-clear"></div>
+				</div> 
+				<!--接收者-->
+				<div class="msg-item" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'> 
+						<img class="msg-user-img" src="../../img/openQQ.png" alt="" /> 
+					<div class="msg-content">
+						<div class="msg-content-inner">
+							xxxxxxxx
+						</div>
+						<div class="msg-content-arrow"></div>
+					</div>
+					<div class="mui-item-clear"></div>
+				</div> 	
+				
 			<div id='msg-list'>
+				
 			</div>
 		</div>
 		<footer>
@@ -349,14 +390,9 @@
 				<button id='msg-sound' type="button" class='input-sound' style="display: none;">按住说话</button>
 			</div>
 			<label for="" class="footer-right">
-				<i id='msg-type' class="mui-icon mui-icon-mic"></i>
+				<i id='msg-type' class=""></i>
 			</label>
-		</footer>
-		<div id='sound-alert' class="rprogress">
-			<div class="rschedule"></div>
-			<div class="r-sigh">!</div>
-			<div id="audio_tips" class="rsalert">手指上滑，取消发送</div>
-		</div>
+		</footer> 
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.imageViewer.js"></script>
 		<script src="../../js/artTemplate-native.js"></script>
@@ -397,11 +433,7 @@
 							//alert("ll");
 						}
 					};
-					var record = [{
-						sender: 'zs',
-						type: 'text',
-						content: '谢谢关注，有事留言给我哦！'
-					}];
+					var record = [];
 					var ui = {
 						body: doc.querySelector('body'),
 						footer: doc.querySelector('footer'),
@@ -419,20 +451,7 @@
 					ui.h.style.width = ui.boxMsgText.offsetWidth + 'px';
 					//alert(ui.boxMsgText.offsetWidth );
 					var footerPadding = ui.footer.offsetHeight - ui.boxMsgText.offsetHeight;
-					var msgItemTap = function(msgItem, event) {
-						var msgType = msgItem.getAttribute('msg-type');
-						var msgContent = msgItem.getAttribute('msg-content')
-						if (msgType == 'sound') {
-							player = plus.audio.createPlayer(msgContent);
-							var playState = msgItem.querySelector('.play-state');
-							playState.innerText = '正在播放...';
-							player.play(function() {
-								playState.innerText = '点击播放';
-							}, function(e) {
-								playState.innerText = '点击播放';
-							});
-						}
-					};
+					 
 					var imageViewer = new $.ImageViewer('.msg-content-image', {
 						dbl: false
 					});
@@ -464,21 +483,16 @@
 						bindMsgList();
 						toRobot(msg.content);
 					};
-					var toRobot = function(info) {
+					var toRobot = function(info) { 
+//						alert(JSON.stringify(info))
 						var apiUrl = 'http://www.tuling123.com/openapi/api';
 						$.getJSON(apiUrl, {
 							"key": 'acfbca724ea1b5db96d2eef88ce677dc',
 							"info": info,
 							"userid": plus.device.uuid
-						}, function(data) {
-							//alert(JSON.stringify(data));
-							record.push({
-								sender: 'zs',
-								type: 'text',
-								content:"已收到，有空回复您哦"
-							});
-							bindMsgList();
 						});
+						
+						
 					};
 
 					function msgTextFocus() {
