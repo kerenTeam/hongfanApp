@@ -112,7 +112,7 @@
 		var address = plus.webview.currentWebview().address;
 		var street = plus.webview.currentWebview().street;
 		var helpId = plus.webview.currentWebview().helpId;
-		var oldtoken = plus.storage.getItem('oldToken');
+		var oldtoken = plus.storage.getItem('oldToken'); 
 		//获取信息
 		mui.ajax(serverUrl+'/api/localservice/searchhelper',{ 									
 			data:{area:address,address:street},  
@@ -121,51 +121,54 @@
 			timeout:10000,//超时时间设置为10秒；	 
 			headers:{"token":oldtoken},    
 			success:function(data){
-				for(var i=0;i<data.data.length;i++){
-					if(data.data[i].helper_id==helpId){
-						
-						mui('#name')[0].innerHTML = data.data[i].name;
-						//年龄判断
-						if(!data.data[i].age==0 ){
-							mui('#age')[0].innerHTML = data.data[i].age+"岁";
-						}else if(!data.data[i].age || data.data[i].age==null){
-							mui('#age')[0].innerHTML = data.data[i].age;
-						}
-						//头像
-						if(data.data[i].headPic){
-							mui('#headPic')[0].src = serverimgUrl + data.data[i].headPic;
-						}else{
-							mui('#headPic')[0].src = "../../img/10.png";
-						}
-						var dataobj = {};
-						dataobj.list = eval("("+ data.data[i].competency +")");
-						//获取并渲染用户信息
-						var html=template("bage",dataobj);
-						document.getElementById("bages").innerHTML = html;
-						
-						mui('#sex')[0].innerHTML = data.data[i].sex;
-						mui('#phone')[0].innerHTML = data.data[i].phone;
-						mui('#info')[0].innerHTML =data.data[i].info;
-						mui('#occupation')[0].innerHTML = data.data[i].occupation;
-						mui('#email')[0].innerHTML = data.data[i].email;
-						mui('#serCoord')[0].innerHTML = data.data[i].address;
-						
-						plus.nativeUI.closeWaiting();//关闭等待框
-						window.helpMe = function(){
-							if(plus.storage.getItem('myToken')){
-								openview({
-									view:"linshuiHelp.html",
-									extrasobj:{helpId:helpId}
-								})
+				console.log("dsdf "+JSON.stringify(data))
+				if(data.data.length != 0){
+					for(var i=0;i<data.data.length;i++){
+						if(data.data[i].helper_id==helpId){
+							
+							mui('#name')[0].innerHTML = data.data[i].name;
+							//年龄判断
+							if(!data.data[i].age==0 ){
+								mui('#age')[0].innerHTML = data.data[i].age+"岁";
+							}else if(!data.data[i].age || data.data[i].age==null){
+								mui('#age')[0].innerHTML = data.data[i].age;
+							}
+							//头像
+							if(data.data[i].headPic){
+								mui('#headPic')[0].src = serverimgUrl + data.data[i].headPic;
 							}else{
-								mui.toast('请登录');
-								openview({
-									view:'../login.html'
-								})
+								mui('#headPic')[0].src = "../../img/10.png";
+							}
+							var dataobj = {};
+							dataobj.list = eval("("+ data.data[i].competency +")");
+							//获取并渲染用户信息
+							var html=template("bage",dataobj);
+							document.getElementById("bages").innerHTML = html;
+							
+							mui('#sex')[0].innerHTML = data.data[i].sex;
+							mui('#phone')[0].innerHTML = data.data[i].phone;
+							mui('#info')[0].innerHTML =data.data[i].info;
+							mui('#occupation')[0].innerHTML = data.data[i].occupation;
+							mui('#email')[0].innerHTML = data.data[i].email;
+							mui('#serCoord')[0].innerHTML = data.data[i].address;
+							
+							window.helpMe = function(){
+								if(plus.storage.getItem('myToken')){
+									openview({
+										view:"linshuiHelp.html",
+										extrasobj:{helpId:helpId}
+									})
+								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									})
+								}
 							}
 						}
 					}
 				}
+						plus.nativeUI.closeWaiting();//关闭等待框
 			},
 			error:function(){
 				plus.nativeUI.closeWaiting();//关闭等待框

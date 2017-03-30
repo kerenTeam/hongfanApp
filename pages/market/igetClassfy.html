@@ -187,7 +187,7 @@
 			.imgpt{
 				position: relative;
 				width: 100%;
-				padding-top: 70.3%;
+				padding-top: 65%;
 				overflow: hidden;
 			}
 			.imgpt img{
@@ -197,6 +197,20 @@
 				width: 100%;
 				height: 100%;
 			}
+			.clasfyItem{
+				position: absolute;
+				top: 50%;
+				-webkit-transform: translateY(-50%);
+				left: 0;
+				right: 0;
+				text-align: center;
+				line-height: 3;
+			}
+			.clasfyItem .itemName{
+				color: white;
+				font-size: 0.2rem;
+				font-weight: 400;
+			} 
 			.trangle{
 				position: absolute;
 			    bottom: 0;
@@ -219,7 +233,19 @@
 			 	margin-right: -50vw;
 			}
 			.npbk ul{
-				margin: 20px 0px 0 15px;
+				margin: 10px 0px 0 15px; 
+				position: relative;
+			}
+			.npbk ul:not(:last-of-type):after{
+				position: absolute;
+				content: '';
+				height: 1px;
+				-webkit-transform: scaleY(0.3);
+				background-color: #EEEEEE;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				transform-origin: bottom;
 			}
 			.npbk ul li{
 				display: inline-block;
@@ -308,49 +334,158 @@
 		 	h4{
 		 		color: #666 !important;
 		 	}
+		 	.itemGo{
+		 		background: none;
+		 		color: white;
+		 		border-radius: 50px;
+		 		font-size: 0.12rem;
+		 		border-color: white;
+		 		padding: 5px 15px;
+		 	}
 		</style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">购物中心</h1>
+			<h1 class="mui-title">优品汇</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏--> 
 		<div id="main">
 			<div id="scroller">
-				<div class="sy_recmd typeDis" style="background-color: #fff;">
-						<div class="imgpt">
-							 
-								<img src="../../img/market/ag.jpg" alt="" />
-						 
-						 	<div class="trangle"></div>
+				<div id="classify"></div>
+				<script type="text/html" id="classifyTpl">
+					<%for(var i=0;i<list.length;i++){%>
+						<div class="sy_recmd typeDis" style="background-color: #fff;">
+							<div class="imgpt"><!-- onclick="goList(<%=list[i].catid%>)"-->
+								<%if(list[i].icon){%>
+									<img src="<%=myUrl%><%=list[i].icon%>" alt="" />
+									<%}else{%>
+										<img src="../../img/igetc1.png" alt="" />
+									<%}%>
+							 	<div class="clasfyItem">
+							 		<div class="itemName"><%=list[i].catname%></div>
+							 		<!--<button type="button" class="mui-btn itemGo" data-catId="<%=list[i].catid%>">
+										入场疯抢 >
+									</button>-->
+							 	</div>
+							 	<div class="trangle"></div>
+							</div>
+							<!--二级分类-->
+							<div class="npbk"> 
+				 				<div class="secClassfy" data-pcatid="<%=list[i].catid%>"></div>
+							</div>
 						</div>
-						<div class="npbk">
-							<ul>
-								<li>xxxxxx</li>
-								<li>xxx</li>
-								<li>xxx</li>
-								<li>xxxx</li>
-								<li>xxxxx</li>
-								<li>xxxxxx</li>
-								<li>xxx</li>
-								<li>xxx</li>
-								<li>xxxx</li>
-								<li>xxxxx</li>
-								<li>xxxxxx</li>
-								<li>xxx</li>
-								<li>xxx</li>
-								<li>xxxx</li>
-								<li>xxxxx</li>
-							</ul> 
-						</div>
-					</div>  
-			
-				<div class="pagebottom" style="padding-bottom: 10px;">到底了</div>
+						<%}%>
+				</script>
+				 <script type="text/html" id="secClassfyTpl">
+				 	<ul>
+				 		<li style="border-left: 2px solid orangered;padding-left: 4px;color: orangered;font-size: 0.14rem;"><%=catname%></li><br />
+				 		<%for(var i=0;i<list.length;i++){%>
+							<li data-secid="<%=list[i].catid%>" onclick="goList(<%=list[i].catid%>)"><%=list[i].catname%></li>
+						<%}%>
+					</ul> 
+				 </script>
 			</div>
 		</div>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
+			//获取 一级分类
+			mui.ajax(serverUrl+'/api/mall/igocategory',{
+						data:{pid:0},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){
+							console.log("一级分类",JSON.stringify(data))  
+							if(data.errno == 0){
+								if(data.data.length != 0){
+									var tyepdata ={};
+									tyepdata.myUrl = serverimgUrl;
+									tyepdata.list = data.data;
+									var html=template("classifyTpl",tyepdata);
+									document.getElementById("classify").innerHTML=html;
+									
+									//请求二级分类
+									var secClassfys = document.getElementsByClassName("secClassfy");
+									//需用for循环 调用方法名传值  用each或者在for循环里面写方法都不可行 因为ajax异步 each直接拿到最后一个	
+									for(var i = 0;i< secClassfys.length;i++){ 
+										var pid = secClassfys[i].getAttribute("data-pcatid"); 
+										console.log("pid ",pid)
+								        getsecid(pid,i);
+									}
+								}
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();//关闭等待框
+							mui("#upload")[0].innerHTML = ""; 
+							mui('#nulldiv')[0].style.display = 'block';
+						}
+					});
+			//获取二级分类
+			function getsecid(pid,i){
+				mui.ajax(serverUrl+'/api/mall/igocategory',{
+					data:{pid:pid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){ 
+						if(data.errno == 0){
+							if(data.data.length != 0){
+								//请求三级分类 
+								for(var j=0;j<data.data.length;j++){
+									getthird(data.data[j].catid,data.data[j].catname,i)
+								}
+//								var tyepdata ={};
+//								tyepdata.list = data.data;
+//								var html=template("secClassfyTpl",tyepdata);
+//								document.getElementsByClassName("secClassfy")[i].innerHTML = html;
+							}
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();//关闭等待框 
+					}
+				})
+			}
+			
+			//三级分类
+			function getthird(catid,catname,i){
+				mui.ajax(serverUrl+'/api/mall/igocategory',{
+					data:{pid:catid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){ 
+						if(data.errno == 0){ 
+							if(data.data.length != 0){ 
+								var tyepdata ={};
+								tyepdata.catname =catname;
+								tyepdata.list = data.data;
+								var html=template("secClassfyTpl",tyepdata);
+								document.getElementsByClassName("secClassfy")[i].innerHTML+= html;
+								 
+							}
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();//关闭等待框 
+					}
+				})
+			}
+			//进入列表
+			window.goList = function(pid){
+				openview({
+				 	view:"loveBuyList.html",
+				 	extrasobj:{pid:pid}
+				 })
+			}
+		})
 	</script>
 	</body>
 	
