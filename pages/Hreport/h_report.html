@@ -27,6 +27,7 @@
 			overflow: hidden;
 			background: url(../../img/bannerback.svg) 50% 50% no-repeat;
 			background-size: 20%;
+			display:none;
 		}
 		.mui-slider .mui-slider-group{
 			position: absolute;
@@ -189,7 +190,7 @@
             	content: '';
             	top: 0;
             	bottom: 0;
-            	width: 1px;
+            	width: 5px;
             	right:-15px;
             	-webkit-transform: scaleX(0.05);
             	background-color: gray;
@@ -210,7 +211,7 @@
             	vertical-align: middle; 
             }
             .findType .active {
-                color: black;
+                color: red;
             }
 		</style>
 	</head>
@@ -226,16 +227,16 @@
 			 <div class="httop">
 			 	<ul class="findType">
 		            <li class="active">头条</li>
-		            <li>家乡</li>
+		            <!--<li>家乡</li>
 		            <li>新闻</li>
 		            <li>房产</li>
 		            <li>汽车</li>
 		            <li>新闻</li>
 		            <li>社会</li>
 		            <li>摄影</li>
-		            <li>娱乐</li> 
+		            <li>娱乐</li> -->
 		        </ul>
-		        <img src="../../img/market/more.svg" onclick="goMoreType()" alt="" />
+		        <img src="../../img/market/more.svg" onclick="goMoreType()" alt="" style="display: none;"/>
 			 </div>
 		        
 		        
@@ -340,9 +341,48 @@
 						});
 					})
 				}
-				//获取缓存
+				
 				var oldToken = plus.storage.getItem('oldToken');
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				//获取分类
+				mui.ajax(serverUrl+'/api/localreport/cates',{
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){ 
+						console.log('分类',data);
+						if (data.errno == 0) {
+							var str = '';
+							mui.each(data.data,function (index,element) {
+								if(index == 0){
+									str = '<li class="active" id ='+element.cate_id+'>'+element.name+'</li>';
+								}else{
+									str += '<li id ='+element.cate_id+'>'+element.name+'</li>';
+								}
+							})
+							mui('.findType')[0].innerHTML = str;
+							mui.each(mui('.findType li'),function (index,element) {
+								element.onclick = function(){
+									if (this.className != 'active') {
+										mui.each(mui('.findType li'),function (index,element) {
+											element.className = '';
+										})	
+										this.className = 'active';
+										RefreshNews(this.id);
+									}
+								}
+							})
+						} else{
+							mui.toast('获取分类失败!'); 
+						}
+						
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast('响应失败  !'); 
+					}
+				});
+				
 				//家乡话banner
 				mui.ajax(serverUrl+'/api/index/banner',{
 					data:{banner_type:2},
@@ -351,7 +391,7 @@
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						console.log('列表',data);
+						console.log('banner',data);
 						bannerObj={};
 						bannerObj.bannerList = eval("("+data.data.banner+")");
 						bannerObj.url = serverimgUrl;
@@ -392,12 +432,14 @@
 					RefreshNews();
 					console.log('刷新数据');
 				}) 
-				RefreshNews();
-				function RefreshNews(){
+				
+				RefreshNews(1);
+				function RefreshNews(cateid){
+					plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 					Spagenum = 2;//实到页数
 					Ypagenum = 1;//应到页数
 					mui.ajax(serverUrl+'/api/localreport/localreport',{
-						data:{currentPage:1,numsPerPage:10},
+						data:{currentPage:1,numsPerPage:10,cateid:cateid},
 						dataType:'json',//服务器返回json格式数据
 						type:'post',//HTTP请求类型
 						timeout:10000,//超时时间设置为10秒；

@@ -158,62 +158,87 @@
 			<script src="../../js/statusBar.js"></script>
 			<!--状态栏-->
 			<!--<div id="container">-->
-			<div id="main"> 
+			<div id="main" style="display: none;"> 
 				 <div class="message msgcmt">
 				 	<div class="msgtxt">
-				 		<h5>web前端工程师 <span><small>【12-20K】</small></span></h5>
+				 		<h5><b id="title">web前端工程师</b>  <span><!--<small>【12-20K】</small>--></span></h5>
 				 		<ul>
-				 			<li><img src="../../img/jcity.svg" alt="" /> 成都</li>
-				 			<li><img src="../../img/jtime.svg" alt="" /> 4-5年</li>
+				 			<li><img src="../../img/jcity.svg" alt="" /> <b style="font-weight: 500;" id="addresss">成都</b> </li>
+				 			<!--<li><img src="../../img/jtime.svg" alt="" /> 4-5年</li>
 				 			<li><img src="../../img/jclt.svg" alt="" /> 本科</li>
-				 			<li><img src="../../img/jtime.svg" alt="" /> 全职</li>
+				 			<li><img src="../../img/jtime.svg" alt="" /> 全职</li>-->
 				 		</ul>
-				 		<small style="color: gray;">职位诱惑：五险一金，项目奖金，年底双薪等</small><br />
+				 		<!--<small style="color: gray;">职位诱惑：五险一金，项目奖金，年底双薪等</small><br />-->
 				 	</div> 
 				 	
 				 </div>
 				 <div class="message msgcmt">
-				 	<div class="msgIcon"><img src="../../img/57dde56e654f4.png"/></div>
+				 	<div class="msgIcon">
+				 		<a class="react phone" id="phonenum" href="tel:0"> 
+							<i class="text-icon" style="color: #b44163;font-size: 45px;">✆</i>
+						</a>
+				 	</div>
 				 	<div class="msgtxt" style="padding-left: 0;padding-right: 15px;"> 
-				 		<small>成都xxxxx有限公司</small><br />
-				 		<small style="color: gray;">成都高新区<br />
-				 		<small style="color: gray;">未融资 | 移动互联网，电子商务 </small>
+				 		<small id="company">成都xxxxx有限公司</small><br />
+				 		<small id="Contact" style="color: gray;">成都高新区<br /></small>
+				 		<small id="telnum" style="color: gray;">未融资 | 移动互联网，电子商务 </small>
 				 	</div> 
-				 </div> 
-		</div>	
-		<!--职位详情-->
-	 	<div class="jobInfo">
-	 		<p><img src="../../img/jobicon.svg" alt="" /> <span class="black">职位描述</span></p><br />
-	 		<div><span class="black">职位诱惑：</span><br />
-					千万级粉丝用户品牌任你“把玩”，
-					创意脑洞“飞”到让你找不着北，
-					成长空间不比“撒哈拉”小，
-					H5只做最牛13的，
-					营销方案不改到客户说“666”不放手。
-					 <br /><br />
-					<span class="black">职位描述：</span><br />
-					1、准备接受各种行业品牌的“摧残”，顺丰、安踏、招行这样的客户都得“服侍”；
-					2、H5方案、微信代运营方案、整合营销策划案你得有一种拿的出手；
-					3、敢想敢做，独立策划能力强的我们都喜欢；
-					4、逻辑思维缜密，撰写方案信手拈来；
-					5、我们也欢迎有想法、渴望成长的的应届毕业生、实习生的加入。
-					 <br /><br />
-					<span class="black">任职要求：</span><br />
-					你可以美/酷的让客户对你百依百顺，但你最好用方案“征服”他，
-					你可以一边coffee一边头脑风暴，但你最好拿出打“dota”的激情去搞定案子，
-					你可以周末自由安排，但你最好听到“H5”就像心爱的小姑凉在召唤，
-					你可以把领导当下属使唤，但你必须拿下案子、拿下案子、拿下案子。
-					万一这些你都不能say yes，那就拿出你的脑洞和诚意，
-					我们约一起，喝个下午茶！
-	 		</div>
-	 	</div>
-	 	
-	 	<!--发送简历-->
-	 	<div class="sendb">
-	 		<button type="button" class="mui-btn mui-btn-danger mui-btn-block mui-btn-outlined">发送简历</button>
-	 	</div>
-	 	
-	 	
-	</body>
+				 </div>
+		 		<!--职位详情-->
+			 	<div class="jobInfo">
+			 		<p><img src="../../img/jobicon.svg" alt="" /> <span class="black">职位描述</span></p><br />
+			 		<div id="contents">
+			 			水水水水水水水水水水水水水水
+			 		</div>
+			 	</div>
+			</div>	
+		
+	<script type="text/javascript">
+		
+		mui.plusReady(function(){ 
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			//获取数据
+			var oldtoken = plus.storage.getItem('oldToken');
+			var nowid = plus.webview.currentWebview().name;
+			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
+				data:{"sericeId":nowid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	               				
+				success:function(data){
+//					alert('获取数据返回'+JSON.stringify(data));
+					console.log('获取数据返回',data);
+					if(data.errno == 0){
+						if (data.data[0].content.indexOf('content')>-1) {
+							mui('#contents')[0].innerHTML = JSON.parse(data.data[0].content).content;
+							mui('#title')[0].innerHTML = JSON.parse(data.data[0].content).title;
+						} else{
+							mui('#contents')[0].innerHTML = data.data[0].content;
+							mui('#title')[0].innerHTML = data.data[0].name;
+						}
+						
+						mui('#addresss')[0].innerHTML = data.data[0].address;
+						mui('#company')[0].innerHTML = data.data[0].name;
+						mui('#Contact')[0].innerHTML = "联系人: "+data.data[0].link_man;
+						mui('#telnum')[0].innerHTML = "电话: "+data.data[0].phone;
+						mui('#phonenum')[0].href = 'tel:'+data.data[0].phone;
+						mui('#main')[0].style.display = 'block';
+						plus.nativeUI.closeWaiting();
+						//轮播图
+						
+					}else{
+						mui.toast('获取用户信息失败');
+						plus.nativeUI.closeWaiting(); 
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('当前网络不好请重试');
+				}
+			});
+		})
+	</script> 	
+</body>
    
 </html> 

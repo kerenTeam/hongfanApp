@@ -141,15 +141,13 @@
 		.fft b, .follow b{color: #555;}	
 	</style>
 
-	<body>
-
+	<body style="display: none;">
 		<header id="header" class="mui-bar mui-bar-transparent">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">xxxxxx</h1>
 		</header>
-		<script src="../js/statusBar.js"></script>
-		<!--状态栏-->
-		<!--<div id="container">-->
+		<script src="../js/statusBar.js"></script><!--状态栏-->
+		<div id="wrapmain" >
 		<div id="main">
 			<div class="clearfloat box-s box-ss" id="userBox">
 	    		<img id="mypic1" src="../img/morentouxiang.jpg"/>
@@ -163,112 +161,99 @@
 	    			<div>
 	    				<button type="button" class="mui-btn mui-btn-warning mui-btn-outlined chat">
 							私信
-						</button>
-						  <button type="button" class="mui-btn mui-btn-success mui-btn-outlined eachF hadF">
-							互相关注
-						</button>
+						</button> 
+						<!--这里的注释删不得-->
+						<!--//mui-btn-outlined 已关注--> 
+						<!--//mui-btn-outlined eachF 互相关注-->
+						<!--//eachF (是粉丝的)关注--> 
+						<!--//  关注-->
+						  <button id="followbtn" type="button" class="mui-btn mui-btn-success hadF  ">
+							+关注
+						</button> 
 	    			</div>
-	    			
-					
 	    		</div> 
-	    		 
 	    	</div>
-
 		</div>
 		<div class="follow">
-			<div class="fchidl chidlL">
-				<b>4</b>
+			<div class="fchidl chidlL " id="follow">
+				<b id="follownum">4</b>
 				<div>关注</div>
 			</div>
-			<div class="fchidl">
-				<b>7</b>
-				<div>被关注</div>
+			<div class="fchidl" id="followed">
+				<b id="fennum">7</b>
+				<div>粉丝</div>
 			</div>
 		</div>
 	<p style="padding:0 10px 10px;"><small>TA的动态</small></p>
-		 <ul class="mui-table-view-striped mui-table-view-condensed">
-							 
-				<li class="noli cmlist" onclick="findInfo()"> 
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-						 	<!--<div class="oa-contact-avatar mui-table-cell cheader">
-								<img src="../img/market/ag.jpeg" />
-							</div>-->
-							<div class="oa-contact-content mui-table-cell oaright oaf noafter">
-								<div class="mui-clearfix">
-									<div class="oa-contact-position mui-h5 fl tiename">发了贴</div>
-								    <div class="oa-contact-position mui-h6 fr ctime">2015-11-19</div>
-								</div> 
-								<p class="oa-contact-email mui-h5 tiec"> 
-									<img src="../img/market/bsl.jpeg" alt="" />	
-									<span class="onespan">
-										哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									</span>
-								</p>
-							</div>
-						</div>
+		<style type="text/css">
+			#dynamic{background-color: #fff;}
+			#spandiv{height: 40px;}
+			#spandiv span{line-height: 40px;}
+			#dynamic .spanL{float: left;color: #888;}
+			#dynamic .spanR{float: right;color: #C0C0C0;}
+			#dynamic li{margin-left: 25px;padding-right: 20px;position: relative;padding-bottom: 20px;}
+			#dynamic li:after{left: 0;}
+			#Dcon{padding: 8px;padding-left: 30%;background-color: rgba(242, 241, 238, 0.62);} 
+			#Dcon:after{display: block;content: ' ';clear: both;}
+			#Dcon .imgdiv{width: 34%;margin-left: -41%;float: left;height: 60px;max-height: 60px;overflow: hidden;}
+			#Dcon .imgdiv img{width: 100%;}
+			#Dcon p{padding-top: 5px;line-height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;}
+		</style>
+ 		<ul id="dynamic">
+			<!--<li class="">
+				<div id="spandiv">
+					<span id="" class="spanL">发了贴</span>
+					<span id="" class="spanR">2017-09-08</span>
+				</div>
+				<div id="Dcon">
+					<div class="imgdiv">
+						<img src="../img/market/bsl.jpeg" alt="" />	
 					</div>
-				</li> 
-				<li class="noli cmlist" onclick="findInfo()">
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-						 	<!--<div class="oa-contact-avatar mui-table-cell cheader">
-								<img src="../img/market/ag.jpeg" />
-							</div>-->
-							<div class="oa-contact-content mui-table-cell oaright oaf noafter">
-								<div class="mui-clearfix">
-									<div class="oa-contact-position mui-h5 fl tiename">发了贴</div>
-								    <div class="oa-contact-position mui-h6 fr ctime">2015-11-19</div>
-								</div> 
-								<p class="oa-contact-email mui-h5 tiec"> 
-									<img src="../img/market/bsl.jpeg" alt="" />	
-									<span class="onespan">
-										哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									</span>
-								</p>
-							</div>
-						</div>
+					<p>哈哈哈哈哈哈哈哈哈哈哈哈哈哈<br/>哈哈哈哈哈哈哈哈哈哈哈哈哈哈<br/>哈哈哈哈哈哈哈哈哈哈哈哈哈哈</p>
+				</div>
+			</li>-->
+		</ul>
+			<script type="text/html" id="infolist">
+				<% for(var i=0; i<list.length; i++){%>
+				<li class="" onclick="findInfo()">
+					<div id="spandiv">
+						<span id="" class="spanL">发了贴</span>
+						<span id="" class="spanR">
+							<% if(list[i].create_time){%>
+					    		<%= list[i].create_time.split('T')[0]%>
+					    	<% }%>
+						</span>
 					</div>
-				</li>
-				<li class="noli cmlist" onclick="findInfo()"> 
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-						 	<!--<div class="oa-contact-avatar mui-table-cell cheader">
-								<img src="../img/market/ag.jpeg" />
-							</div>-->
-							<div class="oa-contact-content mui-table-cell oaright oaf noafter">
-								<div class="mui-clearfix">
-									<div class="oa-contact-position mui-h5 fl tiename">发了贴</div>
-								    <div class="oa-contact-position mui-h6 fr ctime">2015-11-19</div>
-								</div> 
-								<p class="oa-contact-email mui-h5 tiec"> 
-									<img src="../img/market/bsl.jpeg" alt="" />	
-									<span class="onespan">
-										哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									</span>
-								</p>
-							</div>
+					<div id="Dcon">
+						<div class="imgdiv">
+							<% if(list[i].pic){%>
+								<% if(list[i].pic.indexOf('http')>-1){%>
+									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+								<% }else{%>
+									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+								<% }%>	
+							<% }%>		
 						</div>
+						<p><%= list[i].content%></p>
 					</div>
 				</li>
-			</ul>
-			<div id="" style="padding-bottom:30px;padding-top:20px;background-color: #fff;color: #999;text-align: center;"> 
-				没有更多动态了
+				<% }%>	
+			</script>
+			<!--<div class="upload text-center text-xs gray" id="upload"></div>-->
+			<div id="upload" style="padding-bottom: 20px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
+				
 			</div>
-		
+			<!--<div id="" style="padding-bottom:30px;padding-top:20px;background-color: #fff;color: #999;text-align: center;"> 
+				没有更多动态了
+			</div>-->
+		</div>
 	</body>
-
 	<script type="text/javascript">
-		
 	//滚动监听
 	$(window).scroll(function() { 
-        // Change this to target a different percentage
         var targetPercentage = 70; 
-        //Change this to set the height of your nav bar so it hides properly. If you have a box shadow you may have to adjust this number to be height + shadow distance
         var navBarHeight = 50; 
-        //Change this to the ID of the content you are trying to show.
         var targetID = "#header"; 
-        //Window Math
         var scrollTo = $(window).scrollTop(), 
             docHeight = $(document).height(),
             windowHeight = $(window).height(); 
@@ -299,14 +284,17 @@
 			}
 		})
 	}
-	//数据处理
-	mui.plusReady(function(){
+//数据处理
+	var otherid;
+	var Spagenum = 2;//实到页数
+	var Ypagenum = 1;//应到页数
+	mui.plusReady(function(){ 
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
-		var otherid = plus.webview.currentWebview().idnum;
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		otherid = plus.webview.currentWebview().idnum;
+		plus.nativeUI.showWaiting();
 		var loadnum = 0;
-		//头像名字
+		//1.头像名字
 		mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 			data:{"userid":otherid},
 			type:'post',
@@ -322,7 +310,7 @@
 					//显示昵称
 					if(data.data[0].nickname != ' '){ 
 						if(data.data[0].nickname.indexOf('null') == -1){
-							mui('#nickname')[0].innerHTML = data.data[0].nickname;
+							mui('#nickname')[0].innerHTML = mui('.mui-title')[0].innerHTML = data.data[0].nickname;
 						}else{
 							mui('#nickname')[0].innerHTML = data.data[0].phone;
 						}
@@ -348,42 +336,194 @@
 				console.log('获取用户数据,响应失败');
 			}
 		});
+		//2.显示我对他的关注状态
+		mui.ajax(serverUrl+'/api/news/myfollow',{
+			data:{"userid":myuserid},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},
+			success:function(data,type,xhr){
+				loadnum++;
+				var followFlag = false;//我没关注他
+				console.log('关注返回',data);
+				if(data.errno==0){
+					if (data.data.myFollow.length) {
+						mui.each(data.data.myFollow,function (index,element) {//判断我是否关注他
+							if (element.user_id == otherid) {//我关注了他
+								mui('#followbtn')[0].className = 'mui-btn mui-btn-success hadF  mui-btn-outlined';
+								mui('#followbtn')[0].innerHTML = '已关注';   
+								followFlag = true;
+								return false;  
+							}
+							if (index == data.data.myFollow.length -1) {//没关注他
+								mui('#followbtn')[0].className = 'mui-btn mui-btn-success hadF  ';
+								mui('#followbtn')[0].innerHTML = '+关注'; 
+							}
+						})
+					}
+					if(data.data.followMe.length){
+						mui.each(data.data.followMe,function (index,element) {//判断他是否关注我
+							if (element.user_id == otherid) {//他关注了我  
+								if (followFlag) {
+									mui('#followbtn')[0].className = 'mui-btn mui-btn-success hadF  mui-btn-outlined eachF';
+									mui('#followbtn')[0].innerHTML = '互相关注';  
+								} else{
+									mui('#followbtn')[0].className = 'mui-btn mui-btn-success hadF  eachF';
+									mui('#followbtn')[0].innerHTML = '+关注';
+								}
+								return false;
+							}
+						})
+					}	
+					//关注操作
+					mui('#followbtn')[0].onclick = function(){
+						followBack(this,otherid);
+					}
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				loadnum++;
+			}
+		});
+		//3.显示他的关注·粉丝数量
+		mui.ajax(serverUrl+'/api/news/myfollow',{
+			data:{"userid":otherid},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},
+			success:function(data,type,xhr){
+				console.log('关注条数',data)
+				if(data.errno==0){
+					mui('#fennum')[0].innerHTML = data.data.followMe.length;
+					mui('#follownum')[0].innerHTML = data.data.myFollow.length;
+				}
+				loadnum++;
+			},
+			error:function(xhr,type,errorThrown){
+				loadnum++;
+				mui.toast('当前网络不好，请重试！');
+				console.log('登录响应失败');
+			}
+		});
+		//4.他的动态
+		mui.ajax(serverUrl+'/api/news/newslist',{ 									
+			data:{currentPage:1,numsPerPage:2,userid:otherid,categoryid:'',isMyFriendPage:true}, 
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型 
+			timeout:10000,//超时时间设置为10秒；	
+			headers:{"token":oldtoken}, 
+			success:function(data){
+				if(data.errno == 0){ 
+					console.log('动态列表返回',data); 
+					
+					if(data.data.totalPages){
+						var dataobj = {};
+						mui.each(data.data.data,function (index,ele) {
+							if(ele.pic.indexOf('picImg')>-1){
+								ele.pic = JSON.parse(ele.pic)[0].picImg;
+							}
+						})
+						dataobj.list = data.data.data;
+						dataobj.url = serverimgUrl;
+						
+						//获取并渲染用户信息
+						var html=template("infolist",dataobj);
+						document.getElementById("dynamic").innerHTML += html;
+					}else{
+						mui("#upload")[0].innerHTML = "没有动态";
+						mui("#upload")[0].style.paddingTop = mui("#upload")[0].style.paddingBottom = "30px";
+					}
+					
+					//滚动到底部加载
+					$(window).scroll(function(){
+					　　var scrollTop = $(this).scrollTop();
+					　　var scrollHeight = $(document).height();
+					　　var windowHeight = $(this).height();
+					　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
+							if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+								Ypagenum++;//满足加载情况,应到页数+1
+								console.log('发起请求,实到'+Spagenum+'页');									
+								console.log('发起请求,应到'+Ypagenum+'页');
+								mui.ajax(serverUrl+'//api/news/newslist',{ 	
+									data:{currentPage:Spagenum,numsPerPage:2,userid:otherid,categoryid:'',isMyFriendPage:true}, 
+									dataType:'json',//服务器返回json格式数据 
+									type:'post',//HTTP请求类型 
+									timeout:10000,//超时时间设置为10秒；	
+									headers:{"token":oldtoken}, 
+									success:function(data){
+										console.log('下拉数据',data);
+										if(data.errno == 0){
+											var dataobj = {};
+											mui.each(data.data.data,function (index,ele) {
+												if(ele.pic.indexOf('picImg')>-1){
+													ele.pic = JSON.parse(ele.pic)[0].picImg;
+												}
+											})
+											dataobj.list = data.data.data; 
+											dataobj.url = serverimgUrl;
+											//获取并渲染用户信息
+											var html=template("infolist",dataobj);
+											document.getElementById("dynamic").innerHTML += html;
+										}
+										mui("#upload")[0].innerHTML = ""; 
+										Spagenum++;//加载成功,当前页+1
+										console.log('成功+1,实到'+Spagenum);
+										console.log('成功+1,应到'+Spagenum);
+									},
+									error:function(xhr,type,errorThrown){
+										Ypagenum--;//失败是应到-1
+										mui.toast("当前网络不好请重试");
+										mui("#upload")[0].innerHTML = ""; 
+									}
+								});
+							}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+								mui("#upload")[0].innerHTML = "没有更多了"; 
+							}
+					　　  }
+					});//加载下一部分结束
+				}else{
+					mui("#upload")[0].innerHTML = ""; 
+				}
+				loadnum++;
+			},
+			error:function(xhr,type,errorThrown){
+				loadnum++;
+				mui("#upload")[0].innerHTML = ""; 
+			}
+		});
 		
 		//关遮罩
 		var time1 = setInterval(function(){ 
-			console.log(loadnum);
-			if(loadnum == 1){
-		  		plus.nativeUI.closeWaiting();	
+			if(loadnum == 4){
+				var time2 = setTimeout(function(){
+					plus.nativeUI.closeWaiting();
+				},300)
+		  		mui('body')[0].style.display = 'block';
 		  		clearInterval(time1);
 			}
 		},100)
 	})
-    //关注 粉丝 
-    $(".fchidl:first-child").on("tap",function(){
+    // 粉丝 
+    $("#followed").on("tap",function(){
     	openview({
-				view:'find/follow.html' 
-			});
+			view:'find/followed.html',
+			create:true,
+			extrasobj:{idnum:otherid,type:'other'}
+		});
     })
-	$(".fchidl:last-child").on("tap",function(){
+    //关注
+    $("#follow").on("tap",function(){
     	openview({
-				view:'find/followed.html' 
-			});
+			view:'find/follow.html',
+			create:true,
+			extrasobj:{idnum:otherid,type:'other'}
+		});
     })
 		
-	$(".hadF").click(function(){
-  		event.stopPropagation()
-  		$(this).toggleClass(" mui-btn-outlined");
-  		 if($(this).hasClass("mui-btn-outlined")){
-  		 	if($(this).hasClass("eachF")){
-  		 		$(this).html("互相关注")
-  		 	}else{
-  		 		$(this).html("已关注")
-  		 	}
-  		 	
-  		 }else{
-  		 	$(this).html(" + 关注")
-  		 }
-  	})
+
 	
 	</script>
 

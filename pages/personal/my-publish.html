@@ -97,8 +97,8 @@
 					<div class="tab-hd tab-hdtwo">
 						<ul class="tab-nav">
 						  <li id="second_hand">跳蚤市场</li>
-						  <li id="house">房产</li>
-						  <li id="service">服务</li> 
+						  <li id="house">房产信息</li>
+						  <li id="service">服务·招聘</li> 
 						</ul> 
 					</div>
 					
@@ -145,7 +145,12 @@
 							<a class="react" onclick="open1(<%= list[i].id%>)">
 								<div class="dealcard dealcardtwo clearfloat">
 									<div class="dealcard-img imgbox">
-										<img src="<%= list[i].list_pic%>">
+										<%if(list[i].list_pic == 'null'){%>
+											<img style="display: none;" src="<%= list[i].list_pic%>">
+										<% }else{%>
+											<img src="<%= list[i].list_pic%>">
+										<% }%>	
+										
 									</div>
 									<div class="dealcard-block-right dealcard-block-righttwo">
 										<div class="dealcard-brand dealcard-brandtwo single-line">
@@ -206,14 +211,27 @@
 					<script type="text/html" id="infolist3">
 						<% for(var i=0; i<list.length; i++){%>
 							<dd>
-							<a class="react" onclick="open3(<%= list[i].id%>)">
+							<% if(list[i].content.indexOf('content')>-1){%>
+								<a class="react" onclick="open3p(<%= list[i].id%>)">
+							<% }else{%>
+								<a class="react" onclick="open3(<%= list[i].id%>)">
+							<% }%>	
 								<div class="dealcard dealcardtwo clearfloat">
 									<div class="dealcard-img imgbox">
-										<img src="<%= list[i].list_pic%>">
+										<%if(list[i].list_pic == 'null'){%>
+											<img  src="../../img/Recruitment.svg"> 
+										<% }else{%>
+											<img src="<%= list[i].list_pic%>"> 
+										<% }%> 
 									</div>
 									<div class="dealcard-block-right dealcard-block-righttwo">
 										<div class="dealcard-brand dealcard-brandtwo single-line">
-											<span class="poi-name icon-count-3"><%= list[i].name%></span>
+											<% if(list[i].content.indexOf('content')>-1){%>
+												<span class="poi-name icon-count-3"><%= list[i].title%></span>
+											<% }else{%>
+												<span class="poi-name icon-count-3"><%= list[i].name%></span>
+											<% }%>	
+											
 											<p class="state">地址: <%= list[i].address%></p>
 											<div class="mui-row state_bottom">
 										        <div class="mui-col-sm-6 mui-col-xs-6">
@@ -228,7 +246,11 @@
 								</div>
 							</a>
 							<div class="order-bottom clearfloat box-s">
-								<a class="fr confirm" onclick="Bservicefun(<%= mytype%>,<%= list[i].id%>,<%= list[i].type_name%>)">编辑</a>
+								<% if(list[i].content.indexOf('content')>-1){%>
+									<a class="fr confirm" onclick="BservicefunP(<%= list[i].id%>,<%= mytype%>)">编辑</a>
+								<% }else{%>
+									<a class="fr confirm" onclick="Bservicefun(<%= mytype%>,<%= list[i].id%>,<%= list[i].type_name%>)">编辑</a>
+								<% }%>	
 								<a class="fr confirm" onclick="Dservicefun(this,<%= list[i].id%>)">删除</a>
 							</div> 
 						</dd>
@@ -452,13 +474,19 @@ mui.plusReady(function(){
 			headers:{"token":oldtoken},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
-				console.log('我的发布返回'+JSON.stringify(data));
+				console.log('服务',data);
 				if(data.errno == 0){
 					if(data.data.length){
 						mui('#nulldiv')[0].style.display = 'none'; 
 						var dataobj = {};
 						mui.each(data.data,function (index,ele) {
-							data.data[index].list_pic = serverimgUrl + JSON.parse(ele.logo)[0].picImg;
+							if (ele.logo) {
+								data.data[index].list_pic = serverimgUrl + JSON.parse(ele.logo)[0].picImg;
+							} else{
+								ele.title = JSON.parse(ele.content).title;;
+								data.data[index].list_pic = 'null';
+							}
+							
 						})
 						dataobj.list = data.data;
 						dataobj.mytype = 3;
@@ -513,10 +541,25 @@ mui.plusReady(function(){
 			extrasobj:{Bname:id,Btype:type,type_name:type_name} 
 		})
 	}
+	//编辑招聘
+	window.BservicefunP = function(id,type){
+		
+		openview({
+			view:'../localLife/new_job.html',
+			extrasobj:{Bname:id,Btype:type} 
+		})
+	}
 	//打开服务
 	window.open3 = function(id){
 		openview({
 			view:'../localLife/theDetail.html',
+		})
+			extrasobj:{name:id}
+	}
+	//打开招聘
+	window.open3p = function(id){
+		openview({
+			view:'../localLife/recruitInfo.html',
 			extrasobj:{name:id}
 		})
 	}

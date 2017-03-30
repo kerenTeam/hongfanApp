@@ -149,7 +149,7 @@
 		.follow>div{height: 100%;padding-top: 8px;}
 	</style>
 
-	<body>
+	<body style="display: none;">
 
 		<header id="header" class="mui-bar mui-bar-transparent">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
@@ -183,7 +183,7 @@
 					</div>
 					<div class="fchidl aClick">
 						<b id="fennum">0</b>
-						<div>被关注</div>
+						<div>粉丝</div>
 					</div>
 					<div class="fchidl aClick">
 						<b id="follownum">0</b>
@@ -374,11 +374,12 @@
 	  	}
 	    //数据处理
 	    var Spagenum = 2;//实到页数
-		var Ypagenum = 1;//应到页数 
+		var Ypagenum = 1;//应到页数
+		var myuserid;
 	    mui.plusReady(function(){
 	    	var oldtoken = plus.storage.getItem('oldToken');
-			var myuserid = plus.storage.getItem('userid');
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+			myuserid = plus.storage.getItem('userid');
+			plus.nativeUI.showWaiting();
 			var loadnum = 0;
 			//头像名字
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
@@ -473,7 +474,8 @@
 				headers:{"token":oldtoken}, 
 				success:function(data){
 					if(data.errno == 0){ 
-						console.log('动态列表返回',data);
+						console.log('动态列表返回',data); 
+						
 						if(data.data.totalPages){
 							var dataobj = {};
 							mui.each(data.data.data,function (index,ele) {
@@ -487,6 +489,9 @@
 							//获取并渲染用户信息
 							var html=template("infolist",dataobj);
 							document.getElementById("dynamic").innerHTML += html;
+						}else{
+							mui("#upload")[0].innerHTML = "没有动态";
+							mui("#upload")[0].style.paddingTop = mui("#upload")[0].style.paddingBottom = "30px";
 						}
 						
 						//滚动到底部加载
@@ -540,18 +545,21 @@
 					}else{
 						mui("#upload")[0].innerHTML = ""; 
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
+					loadnum++;
 				},
 				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
+					loadnum++;
 					mui("#upload")[0].innerHTML = ""; 
 				}
 			});
 			//关遮罩
 			var time1 = setInterval(function(){ 
 				console.log(loadnum);
-				if(loadnum == 3){
-			  		plus.nativeUI.closeWaiting();	
+				if(loadnum == 4){
+					var time2 = setTimeout(function(){
+						plus.nativeUI.closeWaiting();
+					},300) 
+					mui('body')[0].style.display = 'block';
 			  		clearInterval(time1);
 				}
 			},100)
@@ -589,14 +597,16 @@
 	    // 粉丝 
 	    $(".fft .fchidl:nth-child(3)").on("tap",function(){
 	    	openview({
-					view:'find/followed.html' 
-				});
+				view:'find/followed.html',
+				extrasobj:{idnum:myuserid}
+			});
 	    })
 	    //关注
 	    $(".fft .fchidl:nth-child(4)").on("tap",function(){
 	    	openview({
-					view:'find/follow.html'
-				});
+				view:'find/follow.html',
+				extrasobj:{idnum:myuserid}
+			});
 	    })
 	    
 

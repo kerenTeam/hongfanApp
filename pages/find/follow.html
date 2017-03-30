@@ -90,11 +90,11 @@
 					<!--//mui-btn-outlined 已关注--> 
 					<!--//mui-btn-outlined eachF 互相关注-->
 					<!--//  关注-->
-					<div class="fchidl">
+					<div class="fchidl" onclick="maninfo(<%= list[i].user_id%>)">
 						<%if(!list[i].avatar){ %>
 							<img src="../../img/market/atcenter.jpg" class="userAvator" /> 
 						<%}else{ %>
-							<img src="<%= picurl+list[i].avatar%>" class="userAvator" />
+							<img src="<%= url+list[i].avatar%>" class="userAvator" />
 						<%} %>	
 						<%= list[i].nickname%>
 					</div>
@@ -102,16 +102,52 @@
 					
 					<% for(var j=0; j<followme.length; j++){%>
 						<% if(followme[j] == list[i].user_id){%>
-							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined eachF">
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
 								互相关注
 							</button>
 							<% break;%>
 						<% }%>
 						<% if(j == followme.length-1){%>
-							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF mui-btn-outlined">
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined">
 								已关注
 							</button> 
 						<% }%>	
+					<% }%>	
+				</div>
+			<% }%>	
+		</script>
+		
+		<script type="text/html" id="infolist2"> 
+			<% for(var i=0; i<list.length; i++){%>
+				<div class="follow">
+					<div class="fchidl" onclick="maninfo(<%= list[i].user_id%>,'<%= list[i].status%>')">
+						<%if(!list[i].avatar){ %>
+							<img src="../../img/market/atcenter.jpg" class="userAvator" /> 
+						<%}else{ %>
+							<img src="<%= url+list[i].avatar%>" class="userAvator" />
+						<%} %>	
+						<%= list[i].nickname%>
+					</div>
+					<% if(list[i].status == 'own1'){%>
+						<button type="button" style="display: none;" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   ">
+							+关注
+						</button>
+					<% }else if(list[i].status == 'own2'){%>
+						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined">
+							已关注
+						</button>
+					<% }else if(list[i].status == 'own3'){%>
+						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   ">
+							+关注
+						</button>
+					<% }else if(list[i].status == 'own4'){%>
+						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF ">
+							互相关注
+						</button>
+					<% }else{%>
+						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   eachF">
+							+关注
+						</button>
 					<% }%>	
 				</div>
 			<% }%>	
@@ -128,56 +164,176 @@
 	
 	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
-		var myuserid = plus.storage.getItem('userid');
+		var myuserid = plus.webview.currentWebview().idnum;
+		var useridnow = plus.storage.getItem('userid');
+		var other = plus.webview.currentWebview().type;
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-		mui.ajax(serverUrl+'/api/news/myfollow',{
-			data:{"userid":myuserid},
-			dataType:'json',
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldtoken},
-			success:function(data,type,xhr){
-				console.log('关注返回',data);
-				if(data.errno==0){
-					if (data.data.myFollow.length) {//铺数据
-						var followme = [];
-						if(data.data.myFollow.length){
-							mui.each(data.data.followMe,function (index,element) {
-								followme.push(element.user_id);
-							})
+		downRe(againfun);
+		againfun();
+		function againfun(){
+			if(other){//是他人的关注页 
+				mui.ajax(serverUrl+'/api/news/myfollow',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data,type,xhr){
+						console.log('关注返回',data);
+						if(data.errno==0){
+							if (data.data.myFollow.length) {//铺数据
+								var followme = [];
+								if(data.data.myFollow.length){
+									//请求当前用户信息
+									mui.ajax(serverUrl+'/api/news/myfollow',{
+										data:{"userid":useridnow},
+										dataType:'json',
+										type:'post',
+										timeout:10000,
+										headers:{"token":oldtoken},
+										success:function(data1,type,xhr){ 
+											console.log('关注返回1',data1);
+											if(data1.errno==0){
+												//遍历给出自己和他人关注列表的关系
+												var followFlag = false;//我没关注他
+												mui.each(data.data.myFollow,function (index,element) {
+													if (element.avatar && element.avatar != " ") {
+														if (element.avatar.indexOf("picImg")>-1) {
+															element.avatar = JSON.parse(element.avatar)[0].picImg;
+														}	
+													}
+													if(data1.data.myFollow.length){//判断我是否关注他
+														mui.each(data1.data.myFollow,function (index1,element1) {
+															if(element.user_id == element1.user_id){//我关注了他
+																element.status = 'own2';//我关注他,他没关注我 =》已关注
+																followFlag = true;
+																return false;
+															}
+															if (index1 == data1.data.myFollow.length -1) {//没关注他
+																element.status = 'own3';//我没关注他,他没关注我 =》'mui-btn mui-btn-success hadF  +关注（不是粉丝）'
+															}
+														})
+													}
+													if(data1.data.followMe.length){
+														mui.each(data1.data.followMe,function (index2,element2) {
+															if (element.user_id == element2.user_id) {//他关注了我  
+																if (followFlag) {
+																	element.status = 'own4';//=》互相关注 
+																}else{
+																	element.status = 'own5';//=》+关注 （是粉丝） 
+																}
+																return false;
+															}
+														})
+													}
+													//是否是自己
+													if(element.user_id == useridnow){
+														element.status = 'own1';
+													}
+												})
+												
+												var dataobj = {};
+												dataobj.url = serverimgUrl;
+												dataobj.list = data.data.myFollow;
+												var html=template("infolist2",dataobj);
+												document.getElementById("main").innerHTML = html;	
+												plus.nativeUI.closeWaiting();
+											}else{
+												plus.nativeUI.closeWaiting();
+												mui('#nulldiv')[0].style.display = 'block';
+												mui.toast('当前网络不好，请重试！');	
+											}
+										},
+										error:function(xhr,type,errorThrown){
+											plus.nativeUI.closeWaiting();
+											mui('#nulldiv')[0].style.display = 'block';
+											mui.toast('当前网络不好，请重试！');
+											console.log('登录响应失败');
+										}
+									});						
+									
+								} 
+								
+							} else{//没有数据
+								mui('#nulldiv')[0].style.display = 'block';
+							}
+						}else{
+							plus.nativeUI.closeWaiting();
+							mui('#nulldiv')[0].style.display = 'block';
+							mui.toast('当前网络不好，请重试！');	
 						}
-						var dataobj = {};
-						dataobj.picurl = serverimgUrl;
-						dataobj.list = data.data.myFollow;
-						dataobj.followme = followme;
-						var html=template("infolist",dataobj);
-						document.getElementById("main").innerHTML = html;
-					} else{//没有数据
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
 						mui('#nulldiv')[0].style.display = 'block';
+						mui.toast('当前网络不好，请重试！');
+						console.log('登录响应失败');
 					}
-					plus.nativeUI.closeWaiting();
-				}else{
-					plus.nativeUI.closeWaiting();
-					mui('#nulldiv')[0].style.display = 'block';
-					mui.toast('当前网络不好，请重试！');	
-				}
-			},
-			error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting();
-				mui('#nulldiv')[0].style.display = 'block';
-				mui.toast('当前网络不好，请重试！');
-				console.log('登录响应失败');
-			}
-		});
+				});
+			}else{
+				mui.ajax(serverUrl+'/api/news/myfollow',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data,type,xhr){
+						console.log('关注返回',data);
+						if(data.errno==0){
+							if (data.data.myFollow.length) {//铺数据
+								var followme = [];
+								if(data.data.myFollow.length){
+									mui.each(data.data.followMe,function (index,element) {
+										followme.push(element.user_id);
+									})
+									mui.each(data.data.myFollow,function (index,element) {
+										if (element.avatar && element.avatar != " ") {
+											if (element.avatar.indexOf("picImg")>-1) {
+												element.avatar = JSON.parse(element.avatar)[0].picImg;
+											}	
+										}
+									})
+								}
+								var dataobj = {};
+								dataobj.url = serverimgUrl;
+								dataobj.list = data.data.myFollow;
+								dataobj.followme = followme;
+								var html=template("infolist",dataobj);
+								document.getElementById("main").innerHTML = html;
+							} else{//没有数据
+								mui('#nulldiv')[0].style.display = 'block';
+							}
+							plus.nativeUI.closeWaiting();
+						}else{
+							plus.nativeUI.closeWaiting();
+							mui('#nulldiv')[0].style.display = 'block';
+							mui.toast('当前网络不好，请重试！');	
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui('#nulldiv')[0].style.display = 'block';
+						mui.toast('当前网络不好，请重试！');
+						console.log('登录响应失败');
+					}
+				});
+			}	
+		}	
 	})
   	
-	$(".follow").on("click",function(){
-		event.preventDefault()
-		openview({
-			view:'../othersPage.html',
-				extrasobj:{userId:3}
+	function maninfo(id,type){
+		if (type == 'own1') {
+			openview({
+				view:'../centerPage.html',
+				extrasobj:{idnum:id}
 			});
-	})
-
+		} else{
+			openview({
+				view:'../othersPage.html',
+				extrasobj:{idnum:id}
+			});
+		}
+		
+	}
 </script>
 </html>
