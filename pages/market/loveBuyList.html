@@ -343,63 +343,63 @@
 							        $(".Category-t").css("left","33.48%");
 							           //获取二级分类
 								        mui.ajax(serverUrl+'/api/mall/igocategory',{
-										data:{pid:$(this).attr("data-id")},
-										dataType:'json',
-										type:'post',
-										timeout:10000,
-										headers:{"token":oldToken},	 
-										success:function(data,type,xhr){ 
-											if(data.errno == 0){
-												if(data.data.length != 0){
-													var tyepdata ={};
-													tyepdata.list = data.data;
-													var html=template("scid",tyepdata);
-													document.getElementById("Categoryt").innerHTML=html;
-													
-													//点击二级分类
-													 	$(document).ready(function(){
-														  $(".Category-t>li").click(function(){
-														      $(".Category-s").css("left","66.96%");
-														      //获取三级分类
-														       mui.ajax(serverUrl+'/api/mall/igocategory',{
-																	data:{pid:$(this).attr("data-id")},
-																	dataType:'json',
-																	type:'post',
-																	timeout:10000,
-																	headers:{"token":oldToken},	 
-																	success:function(data,type,xhr){ 
-																		if(data.errno == 0){
-																			if(data.data.length != 0){
-																				var tyepdata ={};
-																				tyepdata.list = data.data;
-																				var html=template("tcid",tyepdata);
-																				document.getElementById("Categorys").innerHTML=html;
+											data:{pid:$(this).attr("data-id")},
+											dataType:'json',
+											type:'post',
+											timeout:10000,
+											headers:{"token":oldToken},	 
+											success:function(data,type,xhr){ 
+												if(data.errno == 0){
+													if(data.data.length != 0){
+														var tyepdata ={};
+														tyepdata.list = data.data;
+														var html=template("scid",tyepdata);
+														document.getElementById("Categoryt").innerHTML=html;
+														
+														//点击二级分类
+														 	$(document).ready(function(){
+															  $(".Category-t>li").click(function(){
+															      $(".Category-s").css("left","66.96%");
+															      //获取三级分类
+															       mui.ajax(serverUrl+'/api/mall/igocategory',{
+																		data:{pid:$(this).attr("data-id")},
+																		dataType:'json',
+																		type:'post',
+																		timeout:10000,
+																		headers:{"token":oldToken},	 
+																		success:function(data,type,xhr){ 
+																			if(data.errno == 0){
+																				if(data.data.length != 0){
+																					var tyepdata ={};
+																					tyepdata.list = data.data;
+																					var html=template("tcid",tyepdata);
+																					document.getElementById("Categorys").innerHTML=html;
+																				}
 																			}
-																		}
-																	},
-																	error:function(xhr,type,errorThrown){
-																			plus.nativeUI.closeWaiting();//关闭等待框 
-																		}
-																	})
-														  });
-														  
-														  
-														});
-														window.Categoryt = function(tbj){
-														    var arr = document.getElementById("Categoryt").getElementsByTagName("li");
-														    for (var i = 0; i < arr.length; i++){
-														        var a = arr[i];
-														        a.style.background = "";
-														    };
-														    tbj.style.background = "#fff"
-														}
+																		},
+																		error:function(xhr,type,errorThrown){
+																				plus.nativeUI.closeWaiting();//关闭等待框 
+																			}
+																		})
+															  });
+															  
+															  
+															});
+															window.Categoryt = function(tbj){
+															    var arr = document.getElementById("Categoryt").getElementsByTagName("li");
+															    for (var i = 0; i < arr.length; i++){
+															        var a = arr[i];
+															        a.style.background = "";
+															    };
+															    tbj.style.background = "#fff"
+															}
+													}
 												}
+											},
+											error:function(xhr,type,errorThrown){
+												plus.nativeUI.closeWaiting();//关闭等待框 
 											}
-										},
-										error:function(xhr,type,errorThrown){
-											plus.nativeUI.closeWaiting();//关闭等待框 
-										}
-									})
+										})
 							    });
 								window.Categorytw = function(wbj){
 									 
@@ -424,7 +424,8 @@
 					});
 				}
 			})
-	 		getList('');
+			var category = plus.webview.currentWebview().pid;
+	 		getList(category);
 			function getList(category_id){
 				//数据渲染
 				var currentPage =1, numsPerPage=10;
@@ -434,7 +435,8 @@
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){ 
+					success:function(data,type,xhr){
+						console.log("是第三方的",JSON.stringify(data))
 						plus.nativeUI.closeWaiting() 
 						if(data.status=="success"){
 								var d = data.data.lists;//{img1:dd,img2:aa,img3,cc} 

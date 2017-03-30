@@ -219,13 +219,16 @@
 			<script type="text/html" id="typeNewTpl">
 				<%if(recommendData.length){%>
 					<%for(var i=recommendData.length-1;i>=0;i--){%> 
-						<div class="listt" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=myUrl%><%=recommendData[i].avatar[0].picImg%>','<%=recommendData[i].nickname%>')">
-							<div class="follow"> 
-								<div class="fchidl"> 
-									<%if(recommendData[i].avatar[0].picImg){%>
+						<%if(recommendData[i].avatar){%>
+							<div class="listt" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=myUrl%><%=recommendData[i].avatar[0].picImg%>','<%=recommendData[i].nickname%>')">
+								<div class="follow"> 
+									<div class="fchidl">
 				                       		<img src="<%=myUrl%><%=recommendData[i].avatar[0].picImg%>" class="userAvator" alt="" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 				                        <%}else{%>
-											<img src="../img/10.png" alt="" class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
+				                        	<div class="listt">
+												<div class="follow"> 
+													<div class="fchidl">
+														<img src="../img/10.png" alt="" class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 										<%}%>
 									<div><%=recommendData[i].nickname%><br><br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
 								</div>
@@ -415,11 +418,19 @@
 						
 					if(data.errno == 0) { 
 						var dataobj = data.data.data; 
+						console.log(JSON.stringify(data))
 						if(dataobj.length != 0){
 							for(var i=0;i<dataobj.length;i++){ 
-								dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
-								dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss"); 
-							} 
+								if(dataobj[i].avatar){
+									dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+								}
+								var dt = new Date(dataobj[i].create_time);
+								var date = [
+								  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+								  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+								].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+								dataobj[i].create_time = date
+							}  
 							var recommendObj = {};
 							recommendObj.myUrl = serverimgUrl;
 							recommendObj.recommendData = dataobj; 
@@ -453,9 +464,16 @@
 												var dataobj = data.data.data
 												if(dataobj.length != 0){
 													for(var i=0;i<dataobj.length;i++){
-														dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
-														dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
-//												 
+														if(dataobj[i].avatar){
+															dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+														}
+//														dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
+												 		var dt = new Date(dataobj[i].create_time);
+														var date = [
+														  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+														  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+														].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+														dataobj[i].create_time = date
 													}
 												} 
 												var recommendObj = {}

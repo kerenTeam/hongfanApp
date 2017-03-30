@@ -171,72 +171,14 @@
 	    	 
 		 
 			<dl class="list" id="helper">
-				
-				<dd>
-						<a onclick="forHelp(1)"class="react">
-							<div class="dealcard">
-								<div class="dealcard-img"> 
-										<img src="../../img/10.png"/> 
-								</div>
-								<div class="dealcard-block-right">
-									<div class="dealcard-brand">胡宪宗  <img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /></div>
-									<div class="title text-block">男 48岁 法律工作者</div>
-									<div class="price">
-									 
-											<span class="tag">婚姻咨询</span>
-										 
-									</div>
-									
-								</div>
-							</div>
-						</a>
-					</dd>
-					
-					<dd>
-						<a onclick="forHelp(1)"class="react">
-							<div class="dealcard">
-								<div class="dealcard-img"> 
-										<img src="../../img/center/aboutUs.png"/> 
-								</div>
-								<div class="dealcard-block-right">
-									<div class="dealcard-brand">胡宪宗  <img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /></div>
-									<div class="title text-block">男 48岁 法律工作者</div>
-									<div class="price">
-									 
-											<span class="tag">婚姻咨询</span><span class="tag">房产纠纷</span>
-										 
-									</div>
-									
-								</div>
-							</div>
-						</a>
-					</dd>
-					<dd>
-						<a onclick="forHelp(1)"class="react">
-							<div class="dealcard">
-								<div class="dealcard-img"> 
-										<img src="../../img/market/feg3.png"/> 
-								</div>
-								<div class="dealcard-block-right">
-									<div class="dealcard-brand">胡宪宗  <img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /><img src="../../img/market/star.png" alt="" /></div>
-									<div class="title text-block">男 48岁 法律工作者</div>
-									<div class="price">
-									 
-											<span class="tag">婚姻咨询</span><span class="tag">房产纠纷</span><span class="tag">邻里纠纷</span>
-										 
-									</div>
-									
-								</div>
-							</div>
-						</a>
-					</dd>
+				 
 			</dl>
 			<script type="text/html" id="helper-detail">
-				<!--<% for(var i = 0;i < helpLi.length;i++){ %>
+				<% for(var i = 0;i < helpLi.length;i++){ %>
 					<dd>
-						<a onclick="forHelp(<%= helpLi[i].helper_id %>,'<%= helpLi[i].area %>','<%= helpLi[i].address %>')"class="react">
+						<a onclick="forHelp(<%= helpLi[i].helper_id %>)" class="react">
 							<div class="dealcard">
-								<div class="dealcard-img">
+								<div class="dealcard-img"> 
 									<% if(helpLi[i].headPic == null || helpLi[i].headPic == ''){ %>
 										<img src="../../img/10.png"/>
 									<% }else{ %> 
@@ -244,21 +186,26 @@
 									<% } %>
 								</div>
 								<div class="dealcard-block-right">
-									<div class="dealcard-brand"><%= helpLi[i].name %>  <sub style="color: #999;">服务社区：<%= helpLi[i].address %></sub></div>
-									<div class="title text-block"><%= helpLi[i].occupation %></div>
+									<div class="dealcard-brand"><%= helpLi[i].name %>  
+										<% for(var j = 0;j < helpLi[i].star;j++){ %>
+												<img src="../../img/market/star.png" alt="" />
+											<% } %></div>
+									<div class="title text-block"><%= helpLi[i].sex%> <%= helpLi[i].age%>岁 <%= helpLi[i].occupation %></div>
 									<div class="price">
-										<% for(var j = 0;j < helpLi[i].competency.length;j++){ %>
-											<span class="tag"><%= helpLi[i].competency[j] %></span>
-										<% } %>
-									</div>
-									
+									 
+											<% for(var j = 0;j < helpLi[i].competency.length;j++){ %>
+												<span class="tag"><%= helpLi[i].competency[j] %></span>
+											<% } %>
+										 
+									</div> 
 								</div>
 							</div>
 						</a>
-					</dd>
-				<% } %>-->
+					</dd> 
+				<% } %>
 				   
 			</script>
+			<img src="../../img/unllfabu.svg" id="nodisplay" style="width: 1rem;margin: auto;display: none;margin-top: 20%;"/>
 	    </div>
 		<script src="../../js/mui.min.js"></script> 
 		<script src="../../js/city.data.js" type="text/javascript" charset="utf-8"></script>
@@ -268,46 +215,39 @@
       	mui.init();
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken');
-//			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			
-//			//推荐帮帮团
-//			mui.ajax(serverUrl+'/api/localservice/recommendhelper',{
-//				dataType:'json',
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldToken},	 
-//				success:function(data,type,xhr){
-//					console.log(data);
-//					for(var i = 0;i < data.data.length;i++ ){
-//						data.data[i].competency = eval("("+data.data[i].competency+")");
-//					}
-//					var helpObj = {};
-//					helpObj.myUrl = serverimgUrl;
-//						helpObj.helpLi = data.data;
-//					var html = template('helper-detail',helpObj);
-//					document.getElementById('helper').innerHTML = html; 
-//					plus.nativeUI.closeWaiting();//关闭等待框
-//					
-//					//点击专家，进入问题发布
-//					window.forHelp=function(helpId,address,street){
-//						if(plus.storage.getItem('myToken')){
-//							openview({
-//								view:"linshuiHelpDetail.html",
-//								extrasobj:{helpId:helpId,address:address,street:street}
-//							})
-//						}else{
-//							mui.toast('请登录');
-//							openview({
-//								view:'../login.html'
-//							})
-//						}
-//					}
-//				},
-//				error:function(xhr,type,errorThrown){
-//					mui.toast('当前网络不好,请重试');
-//				}
-//			}); 
-		//点击专家，进入问题发布
+			//律师团
+			mui.ajax(serverUrl+'/api/localservice/searchlawyer',{
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){ 
+					if(data.errno == 0 ){
+						if(data.data.length){
+							for(var i = 0;i < data.data.length;i++ ){
+								data.data[i].competency = eval("("+data.data[i].competency+")");
+							}
+							var helpObj = {};
+							helpObj.myUrl = serverimgUrl;
+								helpObj.helpLi = data.data;
+							var html = template('helper-detail',helpObj);
+							document.getElementById('helper').innerHTML = html;
+						}else{ 
+							document.getElementById('nodisplay').style.display="block"
+						}
+						 
+					}
+					
+					plus.nativeUI.closeWaiting();//关闭等待框
+					 
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast('当前网络不好,请重试');
+				}
+			}); 
+//		点击专家，进入问题发布
 		window.forHelp=function(lawyerid){
 			if(plus.storage.getItem('myToken')){
 				openview({

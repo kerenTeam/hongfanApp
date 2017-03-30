@@ -720,23 +720,31 @@
 			}
 			//发布者主页
 			$(".findUser").click(function(){
-				 if(news_userId == myuserid){
-					openview({
-						view: "../centerPage.html",
-						id:"centerPage",
-						extrasobj: {
-							userId: news_userId
-						}
-					})
+				if(plus.storage.getItem('myToken')){
+					 if(news_userId == myuserid){
+						openview({
+							view: "../centerPage.html",
+							id:"centerPage",
+							extrasobj: {
+								idnum: news_userId
+							}
+						})
+					}else{
+						openview({
+							view: "../othersPage.html",
+							id:"othersPage",
+							extrasobj: {
+								idnum: news_userId
+							}
+						})
+					}
 				}else{
-					openview({
-						view: "../othersPage.html",
-						id:"othersPage",
-						extrasobj: {
-							userId: news_userId
-						}
-					})
+					mui.toast('请登录');
+						openview({
+							view:'../login.html'
+						});
 				}
+				
 			})
 			
 			//判断是否已关注发布者
@@ -842,21 +850,45 @@
 							
 							//查看者  主页
 							$(".looker img").click(function(){
-								openview({
-									view: "../othersPage.html",
-									extrasobj: {
-										userId: $(this).attr("data-id")
+								if(plus.storage.getItem('myToken')){
+									if($(this).attr("data-id") == myuserid){
+										openview({
+											view: "../centerPage.html",
+											extrasobj: {
+												idnum: $(this).attr("data-id")
+											}
+										})
+									}else{
+										openview({
+											view: "../othersPage.html",
+											extrasobj: {
+												idnum: $(this).attr("data-id")
+											}
+										})
 									}
-								})
+								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									});
+								}
 							}) 
 		
 							$(".moreLiked").click(function(){
-								openview({
-									view: "othersLiked.html",
-									extrasobj: {
-										newsId: newsId
-									}
-								})
+								if(plus.storage.getItem('myToken')){
+									openview({
+										view: "othersLiked.html",
+										extrasobj: {
+											newsId: newsId
+										}
+									})
+								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									});
+								}
+								
 							})
 							getCmt();
 							
@@ -967,7 +999,13 @@
 										dataobj.commit[i].avatar = JSON.parse(dataobj.commit[i].avatar)
 									}
 									
-									dataobj.commit[i].create_time_as = formatDate(dataobj.commit[i].create_time_as, "yyyy.MM.dd hh:mm:ss")
+//									dataobj.commit[i].create_time_as = formatDate(dataobj.commit[i].create_time_as, "yyyy.MM.dd hh:mm:ss")
+									var dt = new Date(dataobj.commit[i].create_time_as);
+									var date = [
+									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+									  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+									dataobj.commit[i].create_time_as = date
 									for(var j=0;j<dataobj.likeNums.length;j++){
 										if(dataobj.likeNums[j].field == dataobj.commit[i].id){
 											dataobj.commit[i].likeNums = dataobj.likeNums[j].count 
@@ -1140,25 +1178,33 @@
 		
 		
 		    //评论者 主页
-		    window.gocmterPage = function(userId){
+		    window.gocmterPage = function(userId){ 
 		    	event.stopPropagation()
-		    	if(userId == myuserid){
-		    		openview({
-						view: "../centerPage.html",
-						id:"centerPage",
-						extrasobj: {
-							userId: userId
-						}
-					})
+		    	if(plus.storage.getItem('myToken')){
+		    		if(userId == myuserid){
+			    		openview({
+							view: "../centerPage.html",
+							id:"centerPage",
+							extrasobj: {
+								idnum: userId
+							}
+						})
+			    	}else{
+			    		openview({
+							view: "../othersPage.html",
+							id:"othersPage",
+							extrasobj: {
+								idnum: userId
+							}
+						})
+			    	}
 		    	}else{
-		    		openview({
-						view: "../othersPage.html",
-						id:"othersPage",
-						extrasobj: {
-							userId: userId
-						}
-					})
+		    		mui.toast('请登录');
+						openview({
+							view:'../login.html'
+						});
 		    	}
+		    	
 				
 			}
 		})

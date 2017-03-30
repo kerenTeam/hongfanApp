@@ -575,7 +575,13 @@
 										dataobj.commit[i].avatar = JSON.parse(dataobj.commit[i].avatar)
 									}
 									
-									dataobj.commit[i].create_time_as = formatDate(dataobj.commit[i].create_time_as, "yyyy.MM.dd hh:mm:ss")
+//									dataobj.commit[i].create_time_as = formatDate(dataobj.commit[i].create_time_as, "yyyy.MM.dd hh:mm:ss")
+									var dt = new Date(dataobj.commit[i].create_time_as);
+										var date = [
+										  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+										  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+										].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+										dataobj.commit[i].create_time_as = date
 									for(var j=0;j<dataobj.likeNums.length;j++){
 										if(dataobj.likeNums[j].field == dataobj.commit[i].id){
 											dataobj.commit[i].likeNums = dataobj.likeNums[j].count 
