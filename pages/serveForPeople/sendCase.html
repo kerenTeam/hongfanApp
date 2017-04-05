@@ -437,7 +437,6 @@
 				 
 		    </div>
 		</div>
-<!--<script type="text/javascript" src="../../js/jquery.min.js"></script>-->
 <script src="../../js/mui.min.js"></script>
 <script src="../../js/app.js"></script>
 <script src="../../js/mui.picker.min.js"></script>
@@ -521,7 +520,7 @@
 						//发送数据
 						var formD = new FormData();
 						formD.append('helper_id',515);
-						formD.append('userid',4);
+						formD.append('userid',myuserid); 
 						formD.append('title',mui('#Bprice')[0].value);
 						formD.append('content',mui('#Binfo0')[0].value);
 						formD.append('file_obj',Apic[0]);
@@ -533,29 +532,31 @@
 						}
 						formD.append('case_type',2);
 						formD.append('case_value',mui('#cityResult3')[0].innerHTML); 
-						formD.append('case_appeal',mui('#Binfo')[0].value); 
-						mui.ajax(serverUrl+'/api/localservice/addhelp',{ 
-							data:formD,
-							dataType:'json',
-							type:'post',
-							timeout:10000,
-							headers:{"token":oldtoken},
-							success:function(data,type,xhr){
-								console.log('发送返回',data);
-								if (data.errno == 0) {
-									mui.toast('发送成功');
-									plus.webview.currentWebview().close();
-								} else{
-									mui.toast('发送数据不正确'); 
-								}
-								plus.nativeUI.closeWaiting();//关闭等待框
-							},
-							error:function(xhr,type,errorThrown){
-								console.log('失败',xhr);
-								plus.nativeUI.closeWaiting();//关闭等待框
-								mui.toast('发送失败！');
-							}
-						});
+						formD.append('case_appeal',mui('#Binfo')[0].value);
+						
+						var xhr = new XMLHttpRequest(); 
+	        			xhr.open('POST',serverUrl+'/api/localservice/addhelp');
+	        			xhr.onreadystatechange = function(){  
+	        				if (xhr.readyState===4) {
+	        					if (xhr.status===200) {  
+	        						var data = JSON.parse(xhr.responseText);
+	        						console.log('发送返回',data);
+									if (data.errno == 0) {
+										mui.toast('发送成功');
+										plus.webview.currentWebview().close();
+									} else{
+										mui.toast('发送数据不正确'); 
+									}
+									plus.nativeUI.closeWaiting();//关闭等待框
+	        					}else{
+	        						console.log('失败',xhr);
+									plus.nativeUI.closeWaiting();//关闭等待框
+									mui.toast('发送失败！');
+	        					}
+	        				}
+				        }
+	        			xhr.setRequestHeader("token",oldtoken);
+	        			xhr.send(formD);
 					} 
 				}
 			}

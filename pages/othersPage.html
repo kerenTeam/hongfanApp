@@ -127,7 +127,7 @@
 		.noli{
 			position: relative;overflow: hidden;
 		}
-		.noli:after{
+		.noli:after, #dynamic li:after{
 		    position: absolute;
 		    right: 0;
 		    bottom: 0;
@@ -138,7 +138,8 @@
 		    transform: scaleY(.2);
 		    background-color: #c8c7cc;
 		}
-		.fft b, .follow b{color: #555;}	
+		.fft b, .follow b{color: #555;}
+		.follow>div{height: 100%;padding-top: 8px;}
 	</style>
 
 	<body style="display: none;">
@@ -175,11 +176,11 @@
 	    	</div>
 		</div>
 		<div class="follow">
-			<div class="fchidl chidlL " id="follow">
+			<div class="fchidl chidlL aClick" id="follow">
 				<b id="follownum">4</b>
 				<div>关注</div>
 			</div>
-			<div class="fchidl" id="followed">
+			<div class="fchidl aClick" id="followed">
 				<b id="fennum">7</b>
 				<div>粉丝</div>
 			</div>
@@ -198,6 +199,7 @@
 			#Dcon .imgdiv{width: 34%;margin-left: -41%;float: left;height: 60px;max-height: 60px;overflow: hidden;}
 			#Dcon .imgdiv img{width: 100%;}
 			#Dcon p{padding-top: 5px;line-height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;}
+			#upload img{width: .35rem;}
 		</style>
  		<ul id="dynamic">
 			<!--<li class="">
@@ -224,13 +226,13 @@
 					    	<% }%>
 						</span>
 					</div>
-					<div id="Dcon">
+					<div id="Dcon" class="aClick2">
 						<div class="imgdiv">
 							<% if(list[i].pic){%>
 								<% if(list[i].pic.indexOf('http')>-1){%>
-									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
 								<% }else{%>
-									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
 								<% }%>	
 							<% }%>		
 						</div>
@@ -239,13 +241,8 @@
 				</li>
 				<% }%>	
 			</script>
-			<!--<div class="upload text-center text-xs gray" id="upload"></div>-->
-			<div id="upload" style="padding-bottom: 20px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
-				
+			<div id="upload" style="padding-bottom: 20px;min-height: 50px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
 			</div>
-			<!--<div id="" style="padding-bottom:30px;padding-top:20px;background-color: #fff;color: #999;text-align: center;"> 
-				没有更多动态了
-			</div>-->
 		</div>
 	</body>
 	<script type="text/javascript">
@@ -437,7 +434,7 @@
 		});
 		//4.他的动态
 		mui.ajax(serverUrl+'/api/news/newslist',{ 									
-			data:{currentPage:1,numsPerPage:2,userid:otherid,categoryid:'',isMyFriendPage:true}, 
+			data:{currentPage:1,numsPerPage:10,userid:otherid,categoryid:'',isMyFriendPage:true}, 
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	
@@ -476,7 +473,7 @@
 								console.log('发起请求,实到'+Spagenum+'页');									
 								console.log('发起请求,应到'+Ypagenum+'页');
 								mui.ajax(serverUrl+'//api/news/newslist',{ 	
-									data:{currentPage:Spagenum,numsPerPage:2,userid:otherid,categoryid:'',isMyFriendPage:true}, 
+									data:{currentPage:Spagenum,numsPerPage:10,userid:otherid,categoryid:'',isMyFriendPage:true}, 
 									dataType:'json',//服务器返回json格式数据 
 									type:'post',//HTTP请求类型 
 									timeout:10000,//超时时间设置为10秒；	
@@ -539,6 +536,8 @@
     	openview({
 			view:'find/followed.html',
 			create:true,
+			id:'followed',
+			reOpen:true,
 			extrasobj:{idnum:otherid,type:'other'}
 		});
     })
@@ -547,6 +546,8 @@
     	openview({
 			view:'find/follow.html',
 			create:true,
+			id:'follow',
+			reOpen:true, 
 			extrasobj:{idnum:otherid,type:'other'}
 		});
     })

@@ -90,7 +90,7 @@
 					<!--//mui-btn-outlined 已关注--> 
 					<!--//mui-btn-outlined eachF 互相关注-->
 					<!--//  关注-->
-					<div class="fchidl" onclick="maninfo(<%= list[i].user_id%>)">
+					<div class="fchidl" onclick="maninfo(<%= list[i].user_id%>,'<%= list[i].status%>')">
 						<%if(!list[i].avatar){ %>
 							<img src="../../img/market/atcenter.jpg" class="userAvator" /> 
 						<%}else{ %>
@@ -98,20 +98,20 @@
 						<%} %>	
 						<%= list[i].nickname%>
 					</div>
-					
-					
-					<% for(var j=0; j<followme.length; j++){%>
-						<% if(followme[j] == list[i].user_id){%>
-							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
-								互相关注
-							</button>
-							<% break;%>
+					<% if(list[i].status != 'own1'){%>
+						<% for(var j=0; j<followme.length; j++){%>
+							<% if(followme[j] == list[i].user_id){%>
+								<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
+									互相关注
+								</button>
+								<% break;%>
+							<% }%>
+							<% if(j == followme.length-1){%>
+								<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined">
+									已关注
+								</button> 
+							<% }%>	
 						<% }%>
-						<% if(j == followme.length-1){%>
-							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined">
-								已关注
-							</button> 
-						<% }%>	
 					<% }%>	
 				</div>
 			<% }%>	
@@ -163,6 +163,7 @@
 <script type="text/javascript">
 	
 	mui.plusReady(function(){
+		console.log(plus.webview.currentWebview().id);
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.webview.currentWebview().idnum;
 		var useridnow = plus.storage.getItem('userid');
@@ -292,6 +293,10 @@
 												element.avatar = JSON.parse(element.avatar)[0].picImg;
 											}	
 										}
+										//是否是自己
+										if(element.user_id == useridnow){
+											element.status = 'own1';
+										}
 									})
 								}
 								var dataobj = {};
@@ -325,15 +330,24 @@
 		if (type == 'own1') {
 			openview({
 				view:'../centerPage.html',
+				id:'centerPage',
+				extrasobj:{idnum:id}
+			});
+		}else if(type){//他人关注列表里 打开 他人主页
+			openview({
+				view:'../othersPage.html',
+				reOpen:true,
+				id:'othersPage', 
 				extrasobj:{idnum:id}
 			});
 		} else{
 			openview({
 				view:'../othersPage.html',
+				reOpen:true,
+				id:'othersPage',
 				extrasobj:{idnum:id}
 			});
 		}
-		
 	}
 </script>
 </html>
