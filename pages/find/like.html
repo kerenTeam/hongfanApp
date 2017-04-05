@@ -117,7 +117,18 @@
 			<script type="text/html" id="infolist"> 
 				<div class="boxf" onclick="findInfo()">
 					<div class="pic">
-						<img src="<%= pic%>">
+						<% if(pic){%>
+							
+							<% if(pic.indexOf('http')>-1){%>
+								<img src="<%= pic%>" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+							<% }else{%> 
+								<!--<img src="<%= %>" onerror="this.src ='../img/zhaoxiangji.svg'"/>-->
+								<img src="<%= Purl+pic%>" alt="<%= Purl+pic%>" onerror="this.src ='../../img/zhaoxiangji.svg',this.style.height = '100%'"/>
+							<% }%>	
+						<% }else{%>
+							<img src="../../img/market/market-food.jpg" alt="" />
+						<% }%>	
+						
 						<p class="fTxt">
 							<%= content%>
 						</p>
@@ -174,6 +185,9 @@
 										console.log('我是请求成功');
 										var dataobj = data.data.newsinfodata[0];
 										console.log('数据',dataobj);
+										if(dataobj.pic.indexOf('picImg')>-1) {
+											dataobj.pic = JSON.parse(dataobj.pic)[0].picImg;
+										}
 										dataobj.Purl = serverimgUrl;
 										dataobj.avatar = JSON.parse(dataobj.avatar)[0].picImg;
 										var html=template("infolist",dataobj);

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>我的帮帮团</title>
+		<title>我的律师团</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -19,7 +19,7 @@
 			.notice .tab-hd,.orderbh,dl.list dt, dl.list dd,dl.list{
 				/*border-bottom: 1px solid #eee;*/
 				border: none;
-			} 
+			}
 			.notice .tab-bd .tab-pal{
 				border-top: 1px solid #eee;
 				
@@ -114,8 +114,7 @@
 		
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">我的帮帮团</h1>  
-		    <a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun" onclick="help()">帮我</a>
+		    <h1 class="mui-title">我的律师团</h1>  
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main" style="padding-top: 5px !important;">
@@ -123,39 +122,27 @@
 			<script type="text/html" id="helpTpl">
 				<dl class="list listtwo list-in">						
 					<%for(var i=0;i<data.length;i++){%>
-						<dd onclick="helpRecord('<%=data[i].id%>')" class="fineB">
+						<dd onclick="helpRecord('<%=data[i].id%>',2)" class="fineB">
 							<a class="react">
 								<div class="dealcard dealcardtwo clearfloat">
-									<!--<div class="mui-row">
-									    <div class="mui-col-sm-2 mui-col-xs-2">
-									    	<%if(data[i].headPic==null){%>
-									    		<img src="../../img/10.png" class="imgbox">
-									    		<%}else{%>
-									    			<img src="<%=data[i].headPic%>" class="imgbox">
-									    			<%}%>
-									    	
-									    </div>
-									    <div class="mui-col-sm-8 mui-col-xs-8 name">
-									    	<%=data[i].name%>
-									    </div>
-									    <div class="mui-col-sm-2 mui-col-xs-2 state">
-									    	
-									    </div>
-									</div>-->
 									<div class="dealcard-brand dealcard-brandtwo single-line">
-										<p class="poi-name">提问：<%=data[i].title%></p>
-										<p class="poi-name">内容：<span><%=data[i].content%></span></p>
+										<p class="poi-name" style="font-size: 17px;"><%=data[i].title%></p>
+										<p class="poi-name "><span class="overTwo" style="color: #888;font-size: 14px;"><%=data[i].content%></span></p>
 										<!--<p class="state">显示中</p>-->
 										<div class="mui-row state_bottom">
-									        <div class="mui-col-sm-6 mui-col-xs-6">
+											<div class="mui-col-sm-6 mui-col-xs-6" style="font-size: 14px;">
+										    	<%= data[i].name%> 律师
+									        </div>
+											
+									        <div class="mui-col-sm-6 mui-col-xs-6" style="display: none;">
 								             	<%if(data[i].state==0){%>
 										    		<span class="mui-badge" style="color: white">暂无回复</span>
 										    	<%}else{%> 
 										    		<span class="mui-badge mui-badge-danger" style="color: white">查看回复</span>
 										    	<%}%>                       
 									        </div>
-									        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-									                                     发布于<%=data[i].create_time%>
+									        <div class="mui-col-sm-6 mui-col-xs-6 state_right" style="float: right;">
+				                                 <%=data[i].create_time%>
 									        </div>
 									    </div>
 									</div>		
@@ -172,15 +159,10 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
-		function help(){
-			openview({
-				view:'../serveForPeople/around.html'
-			})
-		}
-		function helpRecord(id){
+		function helpRecord(id,id2){
 			openview({
 				view:'my-answer.html',
-				extrasobj:{publishId:id}
+				extrasobj:{publishId:id,typeid:id2}
 			})
 		}
 		
@@ -199,14 +181,14 @@
 			function Refresh(){
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/localservice/myhelprequest',{
-					data:{userid:myuserid,case_type:1}, 
+					data:{userid:myuserid,case_type:2}, 
 					dataType:'json',
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){ 
 						plus.nativeUI.closeWaiting();
-						console.log('帮帮团',data);
+						console.log('律师团',data);
 				       if(data.errno===0){
 				       	if(data.data.length!=0){
 				       		for(var t=0;t<data.data.length;t++){ 

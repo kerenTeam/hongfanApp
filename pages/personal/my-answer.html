@@ -229,11 +229,12 @@
 		
 		mui.plusReady(function(){
 			var myuserid = plus.storage.getItem('userid');
-			var publishId = plus.webview.currentWebview().publishId; 
+			var publishId = plus.webview.currentWebview().publishId;
+			var typeidnum = plus.webview.currentWebview().typeid;
 			var oldtoken = plus.storage.getItem('oldToken'); 
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			mui.ajax(serverUrl+'/api/localservice/myhelprequest',{
-					data:{userid:myuserid},
+					data:{userid:myuserid,case_type:typeidnum},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -275,9 +276,9 @@
 					       
 					        
 				       	}
-					     
-					    
-					     
+					    if(typeidnum){//律师
+					    	mui('#helpAnswer')[0].style.display = 'none';
+					    }
 				       }
 					},
 					error:function(xhr,type,errorThrown){

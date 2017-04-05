@@ -244,13 +244,13 @@
 					    	<% }%>
 						</span>
 					</div>
-					<div id="Dcon">
+					<div id="Dcon" class="aClick2">
 						<div class="imgdiv">
 							<% if(list[i].pic){%>
 								<% if(list[i].pic.indexOf('http')>-1){%>
-									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
 								<% }else{%>
-									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg'"/>
+									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
 								<% }%>	
 							<% }%>		
 						</div>
@@ -258,12 +258,9 @@
 					</div>
 				</li>
 				<% }%>	
-			</script>
-			<!--<div class="upload text-center text-xs gray" id="upload"></div>-->
-			<div id="upload" style="padding-bottom: 100px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
-				
+			</script> 
+			<div id="upload" style="padding-bottom: 60px;min-height: 100px; padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
 			</div>
-			
 			<!--底部导航--> 
 			 
 			<nav class="mui-bar mui-bar-tab">
@@ -310,18 +307,12 @@
 		    mui.fire(appIndex,'gohome',{hrefid:'defaultTab'});
 		    plus.webview.show(appIndex,"fade-in",500);
 		    plus.webview.show(mainweb,"fade-in",500); 
-		    if(plus.webview.getWebviewById('Follow')){
-		    	plus.webview.getWebviewById('Follow').close();
-		    }
-		    if(plus.webview.getWebviewById('message')){
-		    	plus.webview.getWebviewById('message').close();
-		    }
-		    if(plus.webview.getWebviewById('centerPage')){
-		    	plus.webview.getWebviewById('centerPage').close();
-		    }
-		    if(plus.webview.getWebviewById('find')){
-		    	plus.webview.getWebviewById('find').close();
-		    }
+		    var closes = ['Follow','message','centerPage','find','followed','follow','othersPage'];
+		    mui.each(closes,function (index,element) {
+		    	if(plus.webview.getWebviewById(element)){
+			    	plus.webview.getWebviewById(element).close();
+			    }
+		    })
 			plus.webview.currentWebview().close();
 		    
 		}
@@ -467,7 +458,7 @@
 			//我的动态
 //			document.getElementById("noinfodiv").innerHTML = '';
 			mui.ajax(serverUrl+'/api/news/newslist',{ 									
-				data:{currentPage:1,numsPerPage:2,userid:myuserid,categoryid:'',isMyFriendPage:true}, 
+				data:{currentPage:1,numsPerPage:10,userid:myuserid,categoryid:'',isMyFriendPage:true}, 
 				dataType:'json',//服务器返回json格式数据
 				type:'post',//HTTP请求类型 
 				timeout:10000,//超时时间设置为10秒；	
@@ -506,7 +497,7 @@
 									console.log('发起请求,实到'+Spagenum+'页');									
 									console.log('发起请求,应到'+Ypagenum+'页');
 									mui.ajax(serverUrl+'//api/news/newslist',{ 	
-										data:{currentPage:Spagenum,numsPerPage:2,userid:myuserid,categoryid:'',isMyFriendPage:true}, 
+										data:{currentPage:Spagenum,numsPerPage:10,userid:myuserid,categoryid:'',isMyFriendPage:true}, 
 										dataType:'json',//服务器返回json格式数据 
 										type:'post',//HTTP请求类型 
 										timeout:10000,//超时时间设置为10秒；	
@@ -538,7 +529,9 @@
 										}
 									});
 								}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].style.paddingBottom='80px';
 									mui("#upload")[0].innerHTML = "没有更多了"; 
+									
 								}
 						　　  }
 						});//加载下一部分结束
@@ -598,6 +591,9 @@
 	    $(".fft .fchidl:nth-child(3)").on("tap",function(){
 	    	openview({
 				view:'find/followed.html',
+				id:'followed',
+				reOpen:true,
+				
 				extrasobj:{idnum:myuserid}
 			});
 	    })
@@ -605,6 +601,8 @@
 	    $(".fft .fchidl:nth-child(4)").on("tap",function(){
 	    	openview({
 				view:'find/follow.html',
+				id:'follow',
+				reOpen:true,
 				extrasobj:{idnum:myuserid}
 			});
 	    })

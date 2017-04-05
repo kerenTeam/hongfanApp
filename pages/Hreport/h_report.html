@@ -9,7 +9,7 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/common.css"/>
 		<!--<link rel="stylesheet" type="text/css" href="../../css/localHost.css"/>-->		
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
@@ -175,26 +175,30 @@
                 overflow-x: scroll;
                 white-space: nowrap;
                 background-color: white;
-                margin-bottom: 5px;
-                padding-right: 35px;
+                
             }
             .findType li {
-            	position: relative;
-                font-size: 14px;
-                display: inline-block;
-                margin: 12px 15px;
-                color: gray;
+            	    position: relative;
+				    font-size: 15px;
+				    display: inline-block;
+				    margin: 0 ;
+				    padding: 10px 18px;
+				    color: #555;
             }
             .findType li:after{
-            	position: absolute;
-            	content: '';
-            	top: 0;
-            	bottom: 0;
-            	width: 5px;
-            	right:-15px;
-            	-webkit-transform: scaleX(0.05);
-            	background-color: gray;
+        	        position: absolute;
+				    content: '';
+				    top: 15px;
+				    bottom: 0;
+				    width: 4px;
+				    height: 15px;
+				    right: -1px;
+				    -webkit-transform: scaleX(0.05);
+				    background-color: rgba(128, 128, 128, 0.52);
             }
+            .findType li:last-child:after{
+            	width: 0px;
+            } 
             .httop{
             	position: relative;
             }
@@ -212,20 +216,23 @@
             }
             .findType .active {
                 color: red;
+                border-bottom: 1px solid red;
             }
+            .mui-table-view:before ,.mui-table-view:after{height: 0;}
+        	.mui-table-view-cell:last-child:after, .mui-table-view-cell:last-child:before{height: 1px;} 
 		</style>
 	</head>
 
-	<body>
+	<body style="background-color: #fff !important;">
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="margin-left: 0;"></a>
 		    <h1 class="mui-title">家乡话</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 			 <!--分类栏目-->
 			 <div class="httop">
-			 	<ul class="findType">
+			 	<ul class="findType fineB">
 		            <li class="active">头条</li>
 		            <!--<li>家乡</li>
 		            <li>新闻</li>
@@ -280,17 +287,6 @@
 			</div>
 			
 		</div>
-		<!--滚动条-->
-			<div class="adNews" style="background-color: #fff;border-bottom: 1px solid #EFEFF4;padding: 0 20px;">
-				<div class="mui-row">
-					<div class="mui-col-sm-3 mui-col-xs-3" style="color: #ec523e !important;line-height: 40px;font-weight: bold;">
-						温馨提示:
-					</div>
-					<div class="mui-col-sm-9 mui-col-xs-9">
-						<marquee id="warmthPrompt" style="line-height: 40px;color: #666;">亲！Hi集试运行阶段，如有不便及建议请及时反馈小HI（点击首页右下角小蜜蜂）谢谢理解并支持！我们将努力做得更好！</marquee>
-					</div>
-				</div>
-			</div>
 		<div class="infolist">
 			<ul class="mui-table-view" id="news"></ul>
 		</div>
@@ -298,7 +294,7 @@
 		<!--图文列表模板开始-->
 		<script type="text/html" id="newsModal">
 			<% for(var i=0;i<dataList.length;i++){%>
-				<li class="mui-table-view-cell mui-media openDetail" data-id="<%=dataList[i].id%>" onclick="goNews(<%=dataList[i].id%>)">
+				<li class="mui-table-view-cell mui-media openDetail aClick" data-id="<%=dataList[i].id%>" onclick="goNews(<%=dataList[i].id%>)">
 					<a href="javascript:;" class="mui-row">
 						<div class="mui-col-sm-3 mui-col-xs-3">
 							<img class="mui-media-object mui-pull-right"  class="newImg" src="<%=myUrl %><%=dataList[i].pic%>">
@@ -356,9 +352,9 @@
 							var str = '';
 							mui.each(data.data,function (index,element) {
 								if(index == 0){
-									str = '<li class="active" id ='+element.cate_id+'>'+element.name+'</li>';
+									str = '<li class="active aClick" id ='+element.cate_id+'>'+element.name+'</li>';
 								}else{
-									str += '<li id ='+element.cate_id+'>'+element.name+'</li>';
+									str += '<li class="aClick" id ='+element.cate_id+'>'+element.name+'</li>';
 								}
 							})
 							mui('.findType')[0].innerHTML = str;
@@ -366,9 +362,9 @@
 								element.onclick = function(){
 									if (this.className != 'active') {
 										mui.each(mui('.findType li'),function (index,element) {
-											element.className = '';
+											element.className = ' aClick';
 										})	
-										this.className = 'active';
+										this.className = 'active aClick';
 										RefreshNews(this.id);
 									}
 								}

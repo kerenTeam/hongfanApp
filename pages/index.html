@@ -15,7 +15,7 @@
 		<style>
 			html,
 			body {
-				background-color: #efeff4;line-height: 17px !important;font-size: 18px;
+				background-color: #efeff4;line-height: 17px !important;font-size: 18px; 
 			}
 			
 			.demo-icon{
@@ -23,7 +23,9 @@
 			}
 			.mui-bar-tab .mui-tab-item{font-size: 12px!important;color: #5d5f6a!important;}
 			.mui-bar{
-				box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+				/*box-shadow: 0 0 1px rgba(0, 0, 0, .1);*/
+				border: none !important;
+				box-shadow: none !important; 
 				background-color: #fff;
 			}; 
 			.mui-bar-tab{
@@ -202,10 +204,11 @@
 				timeSign = setInterval(Sign,7000000);//两小时自动更新一次token
 				function Sign(){//登录方法
 					//设置默认token
+					alert('登陆方法执行了一次');
 					if(!plus.storage.getItem('myToken')){//没有用户token
 						mui.ajax(serverUrl+'/api/useraccount/login',{
 							data:{"phone":18180924082,"password":'12345a'},
-							dataType:'json',
+							dataType:'json', 
 							type:'post',
 							timeout:10000,
 							success:function(data,type,xhr){
@@ -272,13 +275,35 @@
 					    }
 					 })
 				}else if(targetTab=="qq.html"){
-						if(/android/i.test(navigator.userAgent)) { //判断为android  
-							document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
-						} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
-							document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
-						} else { //pc端访问  
-							//				mui('#downGame')[0].remove();
+						plus.share.getServices( function(s){
+							console.log(s);
+							mui.each(s,function (index,element) {
+								if(element.description == 'QQ'){
+									if(element.nativeClient == false){
+										alert('请先安装QQ');
+									}else{ 
+										if(/android/i.test(navigator.userAgent)) { //判断为android  
+											document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
+										} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+											document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
+										}
+									}
+									return false;
+								}
+								
+							})
+						}, function(e){  
+							console.log( "获取分享服务列表失败："+e.message );
+						} );
+						var activeTabid = activeTab.split('.')[0];
+						if(activeTab == 'main.html'){
+							activeTabid = 'defaultTab'; 
 						}
+						var appIndex = plus.webview.getLaunchWebview();
+						var mainweb = plus.webview.getWebviewById(activeTab);
+						mui.fire(appIndex,'gohome',{hrefid:activeTabid}); 
+					    plus.webview.show(mainweb,"fade-in",500); 
+						
 				}else{
 					if (targetTab == activeTab) {
 					return;

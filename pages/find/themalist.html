@@ -158,12 +158,16 @@
 						mui.each(data.data,function (index,element) {
 							if(element.pic){
 								if(element.pic.indexOf('http') == -1){
+									if(element.pic.indexOf('picImg') > -1)
 									element.pic = JSON.parse(element.pic)[0].picImg;
-									console.log(element.pic); 
+									console.log(element.pic);  
 								}
 							}
 							if(element.avatar){ 
-								element.avatar = JSON.parse(element.avatar)[0].picImg;	
+								if(element.avatar.indexOf('http') == -1){
+									if(element.avatar.indexOf('picImg') > -1)
+									element.avatar = JSON.parse(element.avatar)[0].picImg;	 
+								}
 							}
 						})
 						dataobj.list = data.data;
