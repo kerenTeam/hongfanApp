@@ -709,16 +709,16 @@
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
 	var qq;
-			//打开qq对话框
-				function openQQ(){
-					if(/android/i.test(navigator.userAgent)) { //判断为android  
-						document.location.href="mqqwpa://im/chat?chat_type=wpa&uin="+qq;
-					} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
-						document.location.href="mqq://im/chat?chat_type=wpa&uin="+qq+"&version=1&src_type=web";
-					} else { //pc端访问  
-		//				mui('#downGame')[0].remove();
-					}
-				}
+	//打开qq对话框
+		function openQQ(){
+			if(/android/i.test(navigator.userAgent)) { //判断为android  
+				document.location.href="mqqwpa://im/chat?chat_type=wpa&uin="+qq;
+			} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+				document.location.href="mqq://im/chat?chat_type=wpa&uin="+qq+"&version=1&src_type=web";
+			} else { //pc端访问  
+				// mui('#downGame')[0].remove();
+			}
+		}
 		mui.plusReady(function() {
 			var shopId;
 			//获取token
@@ -804,22 +804,21 @@
 						chooseO.myUrl = serverimgUrl;
 						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
 						mui(".mui-numbox").numbox();
-							//属性 
-
-						// data.data.goodsInfo.parameter=eval("("+data.data.goodsInfo.parameter+")");
+						//属性 
+						var allprop;
+						// 请求属性
 						var parameteNameo, parameteValueo;
-						mui.ajax('http://hiji.hifete.com/index.php/Api_goods/get_goods_property', {
+						mui.ajax('http://192.168.0.128:6789/index.php/Api_goods/get_goods_property', {
 							data: {
 								"goods_id": goodId
 							},
 							type: 'post',
 							timeout: 10000,
-							success: function(data, type, xhr) {
-								console.log(JSON.parse(data));
-
+							success: function(data, type, xhr) { 
 								parameteNameo = JSON.parse(data)[0];
 								var parmeter = {};
 								parameteValueo = JSON.parse(data)[1];
+								allprop = JSON.parse(data)[1]
 								parmeter.parameteName = parameteNameo; 
 								parmeter.parameteValue = parameteValueo; 
 								document.getElementById("parBox").innerHTML = template("partpl", parmeter);
@@ -915,7 +914,7 @@
 							}
 						});
 							function querysx(cursx){
-				var value1=$.trim($(".cur").eq(0).html()); 
+										var value1=$.trim($(".cur").eq(0).html()); 
 										if(!value1){
 											value1='';
 										}
@@ -1021,6 +1020,21 @@
 										prop.child_parameter_name = $(this).find(".cur").html();
 										goodProp.push(prop)
 									}) 
+//									alert(JSON.stringify(goodProp)+" "+JSON.stringify(allprop))
+									var j=0; 
+									for(var i = 0; i < allprop.parentlist.length; i++){ 
+										for(var m=0;m < goodProp.length ; m++){ 
+											var vaule = 'value'+(m+1); 
+											if(goodProp[m].child_parameter_name.trim() == allprop.parentlist[i][vaule]){
+												j++;
+												if(j == goodProp.length){
+													var goodsproperty = allprop.parentlist[i].id; 
+												}
+											}
+										}
+										
+										
+									} 
 										//当前商品对象
 									var cartObj = {};
 									cartObj.goodsId = goodsId;
@@ -1031,9 +1045,10 @@
 									cartObj.goodsPrice = goodsPrice;
 									cartObj.goodsPostfee = goodsPostfee;
 									cartObj.goodsnum = goodsnum;
+									cartObj.goods_property = goodsproperty;
 									cartObj.goodText = goodText;
 									cartObj.goodProp = goodProp;
-
+									console.log("cartObj ",JSON.stringify(cartObj))
 									if(goNum == 1) {
 										if(cartStorage.length != 0) {
 											var flag = false;

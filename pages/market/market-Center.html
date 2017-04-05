@@ -288,85 +288,7 @@
 			</div>
 			
 			<!--商品分类-->
-			<div class="moll_typeWrap">
-				<div id="moll_type">
-					<div class="onetable" style="margin-bottom: 0;">
-					<div class="table mui-row" style="padding-bottom: 10px;">
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div> 
-						<div class="mui-col-xs-3">
-							<div class="market-icon">
-								<img src="../../img/bannerback.svg">
-							</div><br>
-							<p style="color: #666;visibility: hidden;">服饰</p>
-						</div>
-					</div>
-				</div>
-				</div> 
-			</div>
-			<script type="text/html" id="typeTpl">
-				<div class="onetable" style="margin-bottom: 0;">
-					<div class="table mui-row" style="padding-bottom: 10px;">
-						<%for(var i=0;i<typeData.length;i++){%>
-							<% if(typeData[i].catname=='土特产'){ %>
-								<div class="mui-col-xs-3" onclick="golocalSp()">
-									<div class="market-icon" style="background-color:<%=typeData[i].icon_color%>;" id="<%=typeData[i].catid%>">
-										<img src="<%=myUrl %><%=typeData[i].icon%>" />
-									</div><br/>
-									<p style="color: #666;"><%=typeData[i].catname%></p>
-								</div>
-							<% }else{ %>
-								<div class="mui-col-xs-3" onclick="goList('<%=typeData[i].catid%>')">
-									<div class="market-icon" style="background-color:<%=typeData[i].icon_color%>;" id="<%=typeData[i].catid%>">
-										<img src="<%=myUrl %><%=typeData[i].icon%>" />
-									</div><br/>
-									<p style="color: #666;"><%=typeData[i].catname%></p>
-								</div>
-							<% } %>
-						<%}%>
-					</div>
-				</div>
-			</script>
+			 
 
 			<!--模块选择-->
 			<!--<div class="mui-row" style="background-color: white;margin: 10px 0;">
@@ -588,34 +510,7 @@
 				}
 			}); 
 			
-			//商城分类 数据渲染
-			mui.ajax(serverUrl+'/api/mall/goodscategory',{
-				data:{parentid:0,type:1},
-				dataType:'json',//服务器返回json格式数据
-				type:'post',//HTTP请求类型 
-				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":token}, 
-				success:function(data){ 
-					console.log('分类',data);
-					if(data.errno==0){
-						var typeObj = {};
-						typeObj.typeData = data.data;
-						typeObj.myUrl = serverimgUrl;
-	                    document.getElementById("moll_type").innerHTML=template("typeTpl",typeObj);
-					}else{
-						plus.nativeUI.closeWaiting();
-						mui.toast("获取数据失败");
-					}
-
-				},
-				error:function(xhr,type,errorThrown){
-					//异常处理；
-					console.log("获取失败！");
-					plus.nativeUI.closeWaiting();
-					mui.toast("当前网络不好请重试");
-				}
-			});
-			
+			 
 			//HOT广告 数据渲染
 			mui.ajax(serverUrl +'/api/index/ads',{
 				data:{ad_type:2},

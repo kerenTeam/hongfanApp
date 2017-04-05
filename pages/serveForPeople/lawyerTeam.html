@@ -176,13 +176,13 @@
 			<script type="text/html" id="helper-detail">
 				<% for(var i = 0;i < helpLi.length;i++){ %>
 					<dd>
-						<a onclick="forHelp(<%= helpLi[i].helper_id %>)" class="react">
+						<a onclick="forHelp(<%= helpLi[i].helper_id %>,'<%= helpLi[i].name %>')" class="react">
 							<div class="dealcard">
 								<div class="dealcard-img"> 
 									<% if(helpLi[i].headPic == null || helpLi[i].headPic == ''){ %>
 										<img src="../../img/10.png"/>
 									<% }else{ %> 
-										<img src="<%=myUrl%><%= helpLi[i].headPic %>"/>
+										<img src="<%=myUrl%><%= helpLi[i].headPic %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 									<% } %>
 								</div>
 								<div class="dealcard-block-right">
@@ -248,11 +248,11 @@
 				}
 			}); 
 //		点击专家，进入问题发布
-		window.forHelp=function(lawyerid){
+		window.forHelp=function(lawyerid,name){
 			if(plus.storage.getItem('myToken')){
 				openview({
 					view:"lawyerInfo.html",
-					extrasobj:{lawyerid:lawyerid}
+					extrasobj:{lawyerid:lawyerid,lawyername:name}
 				})
 			}else{
 				mui.toast('请登录');

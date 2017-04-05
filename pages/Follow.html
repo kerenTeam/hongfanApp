@@ -306,7 +306,8 @@
 		
 		 
 	</body>
-  <script type="text/javascript">
+  <script type="text/javascript"> 
+  	
   	var falg = false; 
   	//安卓返回键
     mui.init({
@@ -402,7 +403,9 @@
     	
 		var Spagenum = 2; //实到页数
 		var Ypagenum = 1; //应到页数 
-		
+		  	
+		//下拉刷新
+	    downRe(getNews);
     	//获取好友动态列表
     	getNews();
     	
@@ -414,8 +417,7 @@
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldtoken},	 
-				success:function(data,type,xhr){ 	
-						
+				success:function(data,type,xhr){
 					if(data.errno == 0) { 
 						var dataobj = data.data.data; 
 						console.log(JSON.stringify(data))
@@ -440,7 +442,9 @@
 									var fuserid = cmlist[t].getAttribute("data-newsId");  
 										getInfo(t,fuserid)
 								}
-						}   
+						}else{
+							document.getElementById("typeNews").innerHTML = "<img src='../img/newsno.svg' style='width: 1rem;margin:auto;display: block;margin-top: 40%;'/><div style='text-align: center;line-height: 1.5;'>快去发布吧</div>"
+						}
 						mui("#upload")[0].innerHTML = "";
 //						上滑加载
 						$(window).scroll(function() {　　
