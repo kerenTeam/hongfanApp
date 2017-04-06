@@ -107,7 +107,7 @@
 			<% for(var i=0; i<mynewsliker.length; i++){%>
 				<% for(var j=0; j<likerInfo.length; j++){%>
 					<%if(mynewsliker[i].like_user_id == likerInfo[j].user_id){%> 
-						<div class="follow" onclick="opendetaile()"> 
+						<div class="follow" onclick="opendetaile('<%=mynewsliker[i].user_id%>','<%=mynewsliker[i].newsid%>','<%= myavater%>','<%=nickname%>')"> 
 							<div class="fchidl">
 								<%if(likerInfo[j].avatar){ %>
 									<img src="<%= url+likerInfo[j].avatar%>" class="userAvator" />
@@ -118,7 +118,6 @@
 							</div> 
 							<!--<img src="../../img/market/feg3.png" class="fllmg" alt="" />-->
 						</div>
-					<%}else{%>
 						<% break; %>
 					<%}%>	
 				<% }%>
@@ -143,7 +142,7 @@
 				timeout:10000,
 				headers:{"token":oldtoken},
 				success:function(data,type,xhr){
-					console.log('赞返回',data);
+					console.log('赞返回',JSON.stringify(data));
 					if(data.errno==0){
 						if (data.data.mynewsliker.mynewsliker.length) {
 							var dataobj = {};
@@ -159,8 +158,43 @@
 							})
 							console.log(data.data.mynewsliker.likerInfo);
 							dataobj.likerInfo = data.data.mynewsliker.likerInfo; 
-							var html=template("infolist",dataobj);
-							document.getElementById("main").innerHTML = html;
+							mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+								data:{"userid":myuserid},
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldtoken},	              				
+								success:function(data,type,xhr){
+									console.log('获取用户数据返回'+JSON.stringify(data));
+									if(data.errno == 0){
+										//头像
+										 
+										if(data.data[0].avatar && data.data[0].avatar.indexOf("[{")!=-1){
+											var myavater = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+										}
+										//昵称
+										if(data.data[0].nickname != ' '){ 
+											if(data.data[0].nickname.indexOf('null') == -1){
+												nickname = data.data[0].nickname;
+											}else{
+												nickname = data.data[0].phone;
+											}
+										}else{
+											nickname = data.data[0].phone;
+										}
+										dataobj.myavater = myavater;
+										dataobj.nickname = nickname;
+										var html=template("infolist",dataobj);
+										document.getElementById("main").innerHTML = html;
+									}else{
+										mui.toast('获取用户信息失败'); 
+										console.log(data.errmsg);
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									console.log('获取用户数据,响应失败');
+								}
+							});
+							
 						} else{//没有数据
 							mui('#nulldiv')[0].style.display = 'block';
 						}
@@ -179,10 +213,14 @@
 				}
 			});
 	})
-	function opendetaile(){
+	function opendetaile(userid, newsid, avtar, nickname){ 
 		openview({
 			view:'findInfo.html',
-			extrasobj:{newsId:4}
+			extrasobj:{
+				userId: userid,
+				newsId: newsid,
+				avtar: avtar,
+				nickName: nickname}
 		});
 	}
 

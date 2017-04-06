@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>被评论</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no"> 
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css">  
+	</head>
+	<style type="text/css">
+            .userAvator{  
+				width: 0.4rem;  
+				height: 0.4rem;  
+				border-radius: 50%;
+				margin-right: 10px;
+			}
+			 .follow{
+				position: relative;
+				background-color: white;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				padding:10px 15px;
+				justify-content: space-between;
+			} 
+			 
+			 .follow:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 1px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.3);
+				background: #CACACA;
+				bottom: 0;
+			 }
+			 .follow:last-child:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 0px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.3);
+				background: #CACACA;
+				bottom: 0;
+			 }
+			.fllmg{ 
+				height: 0.45rem;
+				width: 0.45rem; 
+			}
+			
+			.fchidl{
+				font-size: 0.12rem;
+				/*color: darkgray;*/
+			}
+			.fchidl img{
+				/*vertical-align: middle;*/
+			}
+			.fchidl>div{
+				vertical-align: middle;
+				display: inline-block;
+			    font-size: 0.11rem;	
+			    text-align: left; 
+			 }
+		 .fchidl>div span.cmt{
+		 	color: deepskyblue;
+		 	line-height: 1.5;
+		 	font-size: 0.11rem;
+		 }
+		 .fchidl>div span.cmttxt{
+		 	line-height: 1.5;
+		 	color: gray;
+		 }
+		 .fchidl>div small{
+		 	color: #C0C0C0; 
+		 }
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
+		    <h1 class="mui-title" id="confirmbtn1">私信</h1> 
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="nulldiv" style="padding-top: 50%;text-align:center;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+			<br />
+			没有私信哦
+		</div>
+		<div id="main">
+		 
+		</div>
+		<script type="text/html" id="infolist"> 
+			<% for(var i=0; i<list.length; i++){%>
+				<div class="follow" onclick="opendetaile(<%= list[i].user_id%>,'<%= list[i].avatar%>')"> 
+					<div class="fchidl">
+						<%if(!list[i].avatar){ %>
+							<img src="../../img/market/bsl.jpeg" class="userAvator" />
+						<%}else{ %>
+							<img src="<%= list[i].avatar%>" class="userAvator" />
+						<%} %>	
+						
+						<div><%= list[i].nickname%><span class="cmt"> 私信了你</span> <br><span class="cmttxt"><%= list[i].content%></span></div>
+					</div>
+					<!--<img src="../../img/market/dr.jpeg" class="fllmg" alt="" />-->
+				</div>
+			<% }%>	
+		</script>
+		
+		 
+	</body>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/app.js"></script>
+<script src="../../js/artTemplate-native.js"></script>
+<script type="text/javascript">
+	mui.plusReady(function(){
+		var oldtoken = plus.storage.getItem('oldToken');
+		var myuserid = plus.storage.getItem('userid');
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		
+			//下拉刷新
+	    	downRe(getresponse);
+		
+			getresponse();
+			function getresponse(){
+				mui.ajax(serverUrl+'/api/news/hasnewmsg',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data,type,xhr){
+						console.log('消息返回',JSON.stringify(data));
+						if(data.errno==0){
+							if (data.data.length) {//铺数据
+								mui.each(data.data,function(index,ele){
+									getInfo(ele.fromuserid)
+								})
+								
+							} else{//没有数据
+								mui('#nulldiv')[0].style.display = 'block';
+							}
+							plus.nativeUI.closeWaiting();
+						}else{
+							plus.nativeUI.closeWaiting();
+							mui('#nulldiv')[0].style.display = 'block';
+							mui.toast('当前网络不好，请重试！');	
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui('#nulldiv')[0].style.display = 'block';
+						mui.toast('当前网络不好，请重试！');
+						console.log('登录响应失败');
+					}
+				});
+			}
+			
+			function getInfo(id){
+				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+					data:{"userid":id},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	              				
+					success:function(data,type,xhr){
+						console.log('获取用户数据返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							var dataobj = data.data;
+							//显示头像
+							if(!dataobj[0].nickname){
+										dataobj[0].nickname = "匿名"
+									}
+							if(dataobj[0].avatar){
+								if(dataobj[0].avatar.indexOf("[")!=-1){
+									dataobj[0].avatar =serverimgUrl + JSON.parse(dataobj[0].avatar)[0].picImg;
+								}
+							}else{
+								dataobj[0].avatar = "../../img/10.png"
+							}
+							
+							var dataobj = {};
+							 
+							dataobj.list = data.data;
+							dataobj.picurl = serverimgUrl;
+							var html=template("infolist",dataobj);
+							document.getElementById("main").innerHTML += html;
+						}else{
+							mui.toast('获取用户信息失败'); 
+							console.log(data.errmsg);
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取用户数据,响应失败');
+					}
+				});	
+			}
+			window.opendetaile = function(user_id,Avater){
+		  		//我的请求头像  
+				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+					data:{"userid":myuserid},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	              				
+					success:function(data,type,xhr){
+						console.log('获取用户数据返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							//显示头像
+							
+							if(data.data[0].avatar){
+							    myAvatar =  serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+					            openview({
+									view:'chat.html',
+									extrasobj:{'fromUserId':user_id,'fromAvater':Avater,'myavatar':myAvatar}
+								});
+							} 
+							
+						}else{
+							mui.toast('获取用户信息失败'); 
+							console.log(data.errmsg);
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取用户数据,响应失败');
+					}
+				});	 
+		  	}
+	})
+
+	  	
+</script>
+</html>

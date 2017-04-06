@@ -217,7 +217,6 @@
 			
 			//数据渲染
 			var oldToken = plus.storage.getItem('oldToken');
-
 			console.log(oldToken);
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框 
 			mui.ajax(serverUrl +'/api/mall/shopactivestoreorgoods',{
@@ -229,51 +228,15 @@
 				success:function(data,type,xhr){
 					data.data[0].main.picImg = eval("("+data.data[0].main.picImg+")")
 					plus.nativeUI.closeWaiting();  
-					data.data[0].main.create_time=data.data[0].main.create_time.substring(0,10);
-//					console.log(JSON.stringify( data.data[0].main.create_time )
+					data.data[0].main.create_time=data.data[0].main.create_time.substring(0,10); 
+					var store = data.data[0].main.store_list.split(',');
+					console.log(store[0]);
 					var recommentObj = {};  
 					recommentObj.myurl = serverimgUrl;
 					recommentObj.recommentLi = data.data;
 					var html2 = template('storeItem-detail',recommentObj);
 					document.getElementById('storeItem').innerHTML= html2;
-//					mui("#upload")[0].innerHTML = "加载更多";
-//		                    	//上滑加载
-//		                   $(window).scroll(function(){
-//						　　var scrollTop = $(this).scrollTop();
-//						　　var scrollHeight = $(document).height();
-//						　　var windowHeight = $(this).height();
-//						　　if(scrollTop + windowHeight == scrollHeight){ 
-//							var nowpage = ++currentPage;
-//							if(nowpage<=data.data.totalPages){//当前页小于等于总页数时请求下一页
-//								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-//								console.log('可以请求数据');
-//									mui.ajax(serverUrl +'/api/mall/storelist',{
-//										data:{currentPage:currentPage,numsPerPage:numsPerPage,commercial_type_name:'',subcommercial_type_name:'',store_distinction:3},
-//										dataType:'json',
-//										type:'post',
-//										timeout:1000,
-//										headers:{"token":oldToken},	 
-//										success:function(data,type,xhr){
-//											plus.nativeUI.closeWaiting();
-//											var recommentObj = {};  
-//											recommentObj.myurl = serverimgUrl;
-//											recommentObj.recommentLi = data.data.data;
-//						//					recommentObj.recommentImg = img;
-//											var html2 = template('storeItem-detail',recommentObj);
-//											document.getElementById('storeItem').innerHTML+= html2;
-//											 
-//										},
-//										error:function(xhr,type,errorThrown){
-//												--currentPage;//请求失败,继续请求当前页
-//												mui.toast("当前网络不好请重试");
-//											}
-//									});
-//							}else{
-//								mui("#upload")[0].innerHTML = "到底了";
-//							}
-//							//加载下一部分结束
-//							　　}
-//						});
+//					 
 					//点击进入详情
 					window.openStore = function(store_id){
 						openview({

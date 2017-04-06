@@ -1,12 +1,12 @@
- 
-//var serverUrl='http://192.168.199.191:7200'; 
-var serverUrl='http://192.168.0.128:7200';
+  
+var serverUrl='http://192.168.199.191:7200'; 
+//var serverUrl='http://192.168.0.128:7200';
 //var serverUrl='http://hiji.hifete.com'; 
 var serverUrl0='http://192.168.199.191:7200';  
 
 //var serverUrl='http://Aaron.lan:7200';
 
-//var serverimgUrl='http://192.168.0.128::6789'; 
+//var serverimgUrl='http://192.168.0.128:6789'; 
 var serverimgUrl='http://hiji.hifete.com:6789'; 
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment'; 
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';

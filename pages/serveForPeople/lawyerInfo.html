@@ -99,7 +99,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">胡献忠</h1>
+		    <h1 class="mui-title"></h1>
 		</header>
 		<script src="../../js/statusBar.js" type="text/javascript" charset="utf-8"></script><!--状态栏-->
 		<div id="main">
@@ -110,7 +110,7 @@
 				 		<% if(helpLi.headPic == null || helpLi.headPic == ''){ %>
 								<img src="../../img/10.png"/>
 							<% }else{ %> 
-								<img src="<%=myUrl%><%= helpLi.headPic %>" class="lyavator"/>
+								<img src="<%=myUrl%><%= helpLi.headPic %>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" class="lyavator"/>
 							<% } %> 
 					 	<div class="lawyerCmt">
 					 		<div><big><%=helpLi.name%></big> <span class="mui-badge mui-badge-danger">23年</span> 
@@ -160,7 +160,9 @@
 		}
 		mui.plusReady(function(){
 			var lawyerid = plus.webview.currentWebview().lawyerid;
+			var lawyername = plus.webview.currentWebview().lawyername;
 			var oldtoken = plus.storage.getItem('oldToken');
+			mui('.mui-title')[0].innerHTML = lawyername;
 			plus.nativeUI.showWaiting();
 			//律师团
 			mui.ajax(serverUrl+'/api/localservice/searchlawyer',{

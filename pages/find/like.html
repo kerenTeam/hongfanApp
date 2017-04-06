@@ -115,7 +115,7 @@
 				</div>-->
 			</div>
 			<script type="text/html" id="infolist"> 
-				<div class="boxf" onclick="findInfo()">
+				<div class="boxf" onclick="findInfo('<%=user_id%>','<%=news_id%>','<%= Purl+avatar%>','<%=nickname%>')">
 					<div class="pic">
 						<% if(pic){%>
 							
@@ -183,11 +183,11 @@
 									success:function(data,type,xhr){
 										numload++;
 										console.log('我是请求成功');
-										var dataobj = data.data.newsinfodata[0];
+										var dataobj = data.data.newsinfodata[0]; 
 										console.log('数据',dataobj);
 										if(dataobj.pic.indexOf('picImg')>-1) {
 											dataobj.pic = JSON.parse(dataobj.pic)[0].picImg;
-										}
+										} 
 										dataobj.Purl = serverimgUrl;
 										dataobj.avatar = JSON.parse(dataobj.avatar)[0].picImg;
 										var html=template("infolist",dataobj);
@@ -233,11 +233,14 @@
 			});
 	})	
 	
-	function findInfo(){
+	function findInfo(userid, newsid, avtar, nickname){ 
 		openview({
 			view: "findInfo.html",
 			extrasobj: {
-				userId: 1
+				userId: userid,
+				newsId: newsid,
+				avtar: avtar,
+				nickName: nickname
 			}
 		})
 	}

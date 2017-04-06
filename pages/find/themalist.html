@@ -115,7 +115,7 @@
 			</div>
 			<script type="text/html" id="infolist"> 
 				<% for(var i=0,leni=list.length; i<leni; i++){%>
-					<div class="boxf" onclick="findInfo()">
+					<div class="boxf" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>','<%=list[i].avatar%>','<%=list[i].nickname%>')">
 						<div class="pic"> 
 							<% if(list[i].pic.indexOf('http')>-1){%>
 								<img src="<%= list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'">
@@ -125,7 +125,7 @@
 							
 							<p class="fTxt"><%= list[i].content%></p>
 							<div class="findUser">
-								<img src="<%= url+list[i].avatar%>" onerror="this.src = '../../img/zhaoxiangji.svg'" /><span><%= list[i].nickname%></span> 
+								<img src="<%= list[i].avatar%>" onerror="this.src = '../../img/zhaoxiangji.svg'" /><span><%= list[i].nickname%></span> 
 							</div>
 						</div>
 					</div>
@@ -150,8 +150,7 @@
 			type:'post',
 			timeout:10000,
 			headers:{"token":oldtoken},
-			success:function(data,type,xhr){
-				console.log('专题返回',data);
+			success:function(data,type,xhr){ 
 				if(data.errno==0){
 					var dataobj = {};
 					if(data.data.length){
@@ -162,12 +161,9 @@
 									element.pic = JSON.parse(element.pic)[0].picImg;
 									console.log(element.pic);  
 								}
-							}
-							if(element.avatar){ 
-								if(element.avatar.indexOf('http') == -1){
-									if(element.avatar.indexOf('picImg') > -1)
-									element.avatar = JSON.parse(element.avatar)[0].picImg;	 
-								}
+							} 
+							if(element.avatar.indexOf("[")!=-1){
+								element.avatar =serverimgUrl + JSON.parse(element.avatar)[0].picImg;
 							}
 						})
 						dataobj.list = data.data;
@@ -191,11 +187,11 @@
 		});
 	})	
 	
-	function findInfo(){
+	function findInfo(userid,newsid,avtar,nickname){ 
 		openview({
 			view: "findInfo.html",
 			extrasobj: {
-				userId: 1
+				userId: userid,newsId:newsid,avtar:avtar,nickName:nickname
 			}
 		})
 	}

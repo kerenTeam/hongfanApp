@@ -256,7 +256,7 @@
 			.priceWrap p sub {
 				bottom: 0;
 			}
-			#coupon .mui-checkbox,.checkQuan .mui-checkbox{
+			#coupon .mui-checkbox,.checkQuan .mui-checkbox,.waypay .mui-checkbox{
 				position: absolute;
 				top: 50%;
 				margin-top: -18px;
@@ -308,7 +308,7 @@
 			.sf:after{
 				height: 0px!important;
 			}
-			.mui-checkbox.mui-left label, .mui-radio.mui-left label {
+			.mui-checkbox.mui-left label {
 			    padding-right: 15px;
 			    padding-left: 46px;
 			    padding-top: 14px;
@@ -317,8 +317,53 @@
 				font-size: 20px;
 			}
 			.mui-radio input[type=radio]{
-				top: 10px;
+				top: -20px;
 			}
+			#payChoose{
+				top: 0;
+				left: 0;
+				bottom: 0;
+				z-index: 9999;
+				background-color: rgba(0,0,0,0.2);
+			}
+			#payChoose p{
+				font-size: 0.16rem;
+				padding: 15px;
+			}
+			#payChoose p img{
+				width: 16px;
+			}
+			.paycontent{
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: #EEEEEE;
+			}
+			.mui-popover.mui-popover-action .mui-table-view{
+				margin: 0;
+			}
+			.suborder a{
+				background-color: #F53C42;
+				color: white!important;
+				border-radius: 5px!important;
+				margin: 1px!important;
+				
+			}
+			.paycontent img{
+				width: 30px;
+				margin-right: 15px;
+			}
+			.waypay li{ 
+				color: black;
+				font-size: 0.15rem;
+				text-align: left;
+			}
+			.waypay li img.fr{
+				width: 25px;
+				vertical-align: middle;
+			} 
+			 
 		</style>
 	</head>
 
@@ -546,6 +591,26 @@
 					<a onclick="goPay()" class="comm_btn">提交订单</a>
 				</span>
 			</div>
+			
+			<!--操作表-->
+			<div id="payChoose" class="mui-popover mui-popover-action mui-popover-bottom closePay">
+				<div class="paycontent">
+					<p style="text-align: center;"><span>选择支付方式</span><img src="../../img/close.svg" class="fr closePay" /></p>
+					<ul class="mui-table-view waypay">
+						<li class="mui-table-view-cell">
+							<a href="#" data-pay="alipay"><img src="../../img/alipay2-2.png"/>支付宝<img src="../../img/check2.png" class="fr"/></a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a href="#" data-pay="wxpay"><img src="../../img/weixin2-2.png"/>微信 </a>
+						</li>
+					</ul>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell suborder">
+							<a href="#picture"><b>确定</b></a>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</body>
 	<script src="../../js/app.js"></script>
@@ -567,6 +632,13 @@
 						id:"seaRule"
 					})
 			}
+			$(".paycontent").click(function(){
+				event.stopImmediatePropagation()
+			})
+			$(".closePay").click(function(){
+				event.stopPropagation();
+				$("#payChoose").removeClass("mui-active");
+			})
 			
 		var myuserid,allGroup=0,quan=0,jf=0,orderSubmitData=[],arr =[],arrNum=[],arrMoney =[],arrpostFee=[],shopID=[],totalPay=0;;
 		
@@ -582,9 +654,7 @@
 			console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
 				//获取缓存
 			     myuserid = plus.storage.getItem('userid'); 
-			var oldtoken = plus.storage.getItem('oldToken');
-//			alert(1)
-//			alert(JSON.stringify(orderStorage));
+			var oldtoken = plus.storage.getItem('oldToken'); 
 			orderAdd();
 			function orderAdd(){
 				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
@@ -696,13 +766,18 @@
 			for(var i= 0;i<shopID.length;i++){ 
 				var orderList={};
 				    orderList.storeid=shopID[i];
-				    orderList.postFee = arrpostFee[i];
-				    orderList.totalNum = arrNum[i];
-				    orderList.totalMoney = arrMoney[i];
+//				    orderList.postFee = '10元（测试）';
+				    orderList.express_id = '1（测试）';
+//				    orderList.totalNum = arrNum[i];
+//				    orderList.totalMoney = arrMoney[i];
 				    orderList.goodsData =[]; 
-			 	for(var j = 0;j<orderStorage.length;j++){
+			 	for(var j = 0;j<orderStorage.length;j++){ 
 			 	 if(orderStorage[j].shopId == shopID[i]){
-			 	 	orderList.goodsData.push(orderStorage[j])
+			 	 	var newgoodobj = {};
+			 	 		newgoodobj.goodsid = orderStorage[j].goodsId;
+			 	 		newgoodobj.goods_property = orderStorage[j].goods_property; 
+			 	 		newgoodobj.nums = orderStorage[j].goodsnum;
+			 	 	orderList.goodsData.push(newgoodobj)
 			 	 }
 			 	 
 			 	}
@@ -748,7 +823,7 @@
 				headers:{"token":oldtoken},	              				
 				success:function(data,type,xhr){
 					var intergral=0;
-					console.log('获取用户数据返回'+JSON.stringify(data));
+//					console.log('获取用户数据返回'+JSON.stringify(data));
 					if(data.errno == 0){
 						   intergral = data.data[0].intergral;
 						   id_card = data.data[0].id_card; 
@@ -769,10 +844,6 @@
 								jf=0; 
 							}
 							countTotalPay()
-//							var nowPAY =parseFloat(allGroup-jf-quan).toFixed(2);
-//								if(nowPAY<=0){
-//									nowPAY=0;
-//								} 
 						})
 				},
 				error:function(xhr,type,errorThrown){
@@ -790,7 +861,7 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){
-						console.log("抵用券 ",JSON.stringify(data))
+//						console.log("抵用券 ",JSON.stringify(data))
 						var allC = {};
 						var tpldata=[];
 						for(var i=0;i<data.data.length;i++){
@@ -803,21 +874,24 @@
 								} 
 								if(data.data[i].begin_date!=null){
 									data.data[i].begin_date=formatDate(data.data[i].begin_date, "yyyy.MM.dd");
-								} 
-								if(data.data[i].salerule!=''){ 
-									
-									data.data[i].salerule = eval("("+data.data[i].salerule+")");
-									if(parseFloat(data.data[i].salerule.overflowValue)<=allGroup){  
-										if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
-										    tpldata.push(data.data[i])
-											}
-									} 
-								}else{
-//									data.data[i].salerule = eval("("+data.data[i].salerule+")");
-									if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
-										    tpldata.push(data.data[i])
-											}
 								}
+								if(data.data[i].salerule){
+									if(data.data[i].salerule!=''){ 
+									
+										data.data[i].salerule = eval("("+data.data[i].salerule+")");
+										if(parseFloat(data.data[i].salerule.overflowValue)<=allGroup){  
+											if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
+											    tpldata.push(data.data[i])
+												}
+										} 
+									}else{
+	//									data.data[i].salerule = eval("("+data.data[i].salerule+")");
+										if(data.data[i].begin_date<=str && str<=data.data[i].end_date){ 
+											    tpldata.push(data.data[i])
+												}
+									}
+								}
+								
 								
 							}
 						} 
@@ -897,42 +971,14 @@
 					if($("#addid").length!=0){
 						 
 						var yourSFZ = $('#sfzin').val(); 
-							//地址
-							var MYaddress = {};
-							var addressid =$("#addid").attr("data-id");
-							MYaddress.people = $("#addid").attr("data-name");
-							MYaddress.addressNow = $("#addid").attr("data-address");
-							MYaddress.phoneNow =  $("#addid").attr("data-phone"); 
+							//地址 
+							var addressid =$("#addid").attr("data-id"); 
 							//买家留言
 							var noticeData=[];  
 							$(".tipsWrap").each(function(){
 								var notice = $(this).find("input").val();
-								for(var i=0;i<orderSubmitData.length;i++){
-									orderSubmitData[i].sendAddress = MYaddress;
-									if(orderSubmitData[i].storeid == $(this).attr("data-id")){ 
-										if(orderSubmitData[i].storeid == 0 ){
-											orderSubmitData[i].order_type = 2;
-										}else{
-											orderSubmitData[i].order_type = 1;
-										}
-										if(orderSubmitData[i].storeid == 0 ){
-											orderSubmitData[i].isBySelf = 0;
-										}else{
-											 var isBySelfDIV = document.getElementsByClassName("ztWrap");
-											 for(var m=0;m<isBySelfDIV.length;m++){
-											 	var thisShopID = isBySelfDIV[m].getAttribute("data-id");
-											 	if(orderSubmitData[i].storeid == thisShopID){
-											 		var isBySelf = isBySelfDIV[m].getElementsByClassName("isziti")[0].value; 
-											 		if(isBySelf == 0){
-											 			orderSubmitData[i].isBySelf = 0;
-											 		}else{
-											 			orderSubmitData[i].isBySelf = 1;
-											 			orderSubmitData[i].postFee = 0;
-											 		}
-											 	}
-											 }
-										}
-										
+								for(var i=0;i<orderSubmitData.length;i++){ 
+									if(orderSubmitData[i].storeid == $(this).attr("data-id")){  
 										orderSubmitData[i].notice = notice;
 									}
 								}
@@ -987,9 +1033,20 @@
 							
 							
 							function tijiao(){
+								$("#payChoose").addClass("mui-active");
+								//支付方式选择
+								var payType = $(".waypay li a").find(".fr").parent().attr("data-pay");
+								$(".waypay li a").click(function(){
+									if($(this).not(".fr")){
+									    $(".waypay li a").find("img.fr").remove()
+										$(this).append('<img src="../../img/check2.png" class="fr"/>')
+									}
+									payType = $(".waypay li a").find(".fr").parent().attr("data-pay"); 
+								})  
 								//提交
+								console.log("sdfsd"+goodsdata)
 			 					mui.ajax(serverUrl+'/api/mall/neworder',{
-									data:{userid:myuserid,addressid:addressid,paytotal:payTotal,goodsdata:goodsdata,notice:notice,coupon_id:coupon_id,isIntergal:isIntergal},
+									data:{userid:myuserid,payType:payType,address_id:addressid,storeData:goodsdata,coupon_id:coupon_id,isIntergal:isIntergal},
 									dataType:'json',
 									type:'post',
 									timeout:10000,
@@ -999,9 +1056,9 @@
 										console.log("dfsdfa "+JSON.stringify(data))
 										//购物车 缓存 
 	        							var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
+//	        							console.log("cartStorage   "+plus.storage.getItem('$cartStorage')) 
 										//删除 购物车里 提交的这一条数据 
-										console.log("orderStorage  "+JSON.stringify(orderStorage))
+//										console.log("orderStorage  "+JSON.stringify(orderStorage))
 										for(var i=0;i<orderStorage.length;i++){
 											
 											for(var j=0;j<cartStorage.length;j++){
@@ -1017,15 +1074,16 @@
 										var list = plus.webview.getWebviewById('cart.html'); 
 												mui.fire(list,'refresh'); 
 										if(data.errno==0){
-											console.log(data)
+//											console.log(data)
 											var payMents = data.data.paytotal;
 											var uuid = data.data.order_UUID; 
 											var product_id = orderSubmitData[0].goodsData[0].goodsId;
-											openview({
-												view:"../market/pay.html",
-												id:"pay",
-												extrasobj:{payMent:payMents,uuid:uuid,product_id:product_id}
-											})
+//											alert(payMents+"payMents "+uuid+"uuid")
+//											openview({
+//												view:"../market/pay.html",
+//												id:"pay",
+//												extrasobj:{payMent:payMents,uuid:uuid,product_id:product_id}
+//											})
 
 										}else{
 											plus.nativeUI.closeWaiting() 
