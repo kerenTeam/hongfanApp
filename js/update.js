@@ -15,7 +15,7 @@ if(window.plus){
 // 实际项目中需要更换为自己服务器的地址
 var checkUrl= serverUrl+"/api/index/version";
 function checkUpdate(){
-    plus.nativeUI.showWaiting("检测更新...");
+//  plus.nativeUI.showWaiting("检测更新...");
 //  var xhr=new XMLHttpRequest();
 //  xhr.onreadystatechange=function(){
 //      switch(xhr.readyState){
@@ -53,7 +53,7 @@ function checkUpdate(){
 				mui.toast("等待wgt包下载地址")
 //                  downWgt();  // 下载升级包
                 }else{
-                    plus.nativeUI.alert("无新版本可更新！");
+//                  plus.nativeUI.alert("无新版本可更新！");
                 }
 		},
 		error:function(xhr,type,errorThrown){

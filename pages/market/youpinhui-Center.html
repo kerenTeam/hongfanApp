@@ -68,12 +68,7 @@
 				width: 100% !important;
 				margin: 0 !important;
 				height: 100%;
-			}
-			sub{
-				bottom: 0;
-				font-size: 50%;
-				margin-left: 5px;
-			}
+			} 
 			.fr {
 				position: absolute;
 				float: right;
@@ -196,7 +191,7 @@
 			.sy_recmd_list .pub_wz h3 a{
 				color: #666;
 				line-height: 0.2rem;
-				font-size: 12px;
+				font-size: 0.14rem;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
@@ -236,21 +231,16 @@
 			.sy_title{
 				padding: 0.05rem 0;
 			}
-			
-				position: relative;
-				width: 100%;
-				padding-top: 65%;
-				overflow: hidden;
-			}
+			 
 			.imgpt img{
-				position: absolute;
+				/*position: absolute;*/
 				top: 0;
 				left: 0;
 				width: 100%;
 				height: 100%;
 			}
 			.clasfyItem{
-				position: absolute;
+				/*position: absolute;*/
 				top: 50%;
 				-webkit-transform: translateY(-50%);
 				left: 0;
@@ -302,27 +292,17 @@
 		            </div> 
 				</script>
 			</div>
-			
+			 
 			<div id="classify"></div>
-			<script type="text/html" id="classifyTpl">
-				<%for(var i=0;i<list.length;i++){%>
-					<div class="sy_recmd typeDis" style="background-color: #fff;">
-						<div class="imgpt" onclick="goList(<%=list[i].catid%>)"><!-- onclick="goList(<%=list[i].catid%>)"-->
-							<%if(list[i].icon){%>
-								<img src="<%=myUrl%><%=list[i].icon%>" alt="" />
-								<%}else{%>
-									<img src="../../img/igetc1.png" alt="" />
-								<%}%>
-						 	  	<div class="clasfyItem">
-							 		<div class="itemName"><%=list[i].catname%></div>
-							 		<button type="button" class="mui-btn itemGo" data-catId="<%=list[i].catid%>">
-										入场疯抢 >
-									</button>
-							 	</div>
-						</div>
-						 
-					</div>
-					<%}%>
+			<script type="text/html" id="classifyTpl"> 
+				<ul class="mui-table-view mui-grid-view mui-grid-6">
+					<%for(var i=0;i<list.length;i++){%>
+			            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" onclick="goList(<%=list[i].catid%>)"> 
+							<span class="mui-icon mui-icon-home"></span> 
+		                    <div class="mui-media-body"><%=list[i].catname%></div>
+			            </li>
+		            <%}%>
+		       	</ul> 
 			</script>
 			 
 			<!--推荐列表-->
@@ -358,8 +338,7 @@
 											<div class="mui-col-sm-5 mui-col-xs-5 ">
 									        	<p class="fl fontcl2"><sub>￥</sub><%=list[i].price%></p>
 									       </div>
-									        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
-												<p class="fl fontcl2"><sub class="saled black9">已售<%=list[i].sales%></sub></p>
+									        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p> 
 									      	</div> 
 									     </div>
 									</div>
@@ -572,7 +551,15 @@
 					console.log('响应失败  !');
 				}
 			}); 
-			
+			//进入列表
+			window.goList = function(pid){
+				event.stopPropagation();
+				alert(pid)
+				openview({
+				 	view:"loveBuyList.html",
+				 	extrasobj:{pid:pid}
+				 })
+			}
 		});
 	</script>	
 	</body>
