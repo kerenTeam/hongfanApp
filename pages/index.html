@@ -19,9 +19,9 @@
 			}
 			
 			.demo-icon{
-				display: block;
+				display: block;font-size: 18px;margin-bottom: 2px;  
 			}
-			.mui-bar-tab .mui-tab-item{font-size: 12px!important;color: #5d5f6a!important;}
+			.mui-bar-tab .mui-tab-item{font-size: 10px!important;color: #777 !important;}
 			.mui-bar{
 				/*box-shadow: 0 0 1px rgba(0, 0, 0, .1);*/
 				border: none !important;
@@ -43,29 +43,31 @@
 	<body>
 		<nav class="mui-bar mui-bar-tab" id="header">
 			<a id="defaultTab" class="mui-tab-item mui-active muidingwei" href="main.html" style="position: relative !important;top: 2px !important;">
-				<span class="mui-icon mui-icon-home"></span>
-				<!--<i class="demo-icon icon-home"></i>-->
+				<!--<span class="mui-icon mui-icon-home"></span>-->
+				<i class="demo-icon icon-home"></i>
 				<!--<img src="../img/center/main.png" style="height: 27px;"/><br />-->
 				<span class="mui-tab-label">首 页</span>
 			</a>
 
 			<a id="cart" class="mui-tab-item muidingwei" href="cart.html" style="position: relative !important;top: 2px !important;">
-				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>
-				<!--<i class="demo-icon icon-shopping-bag"></i>-->
+				<!--<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>-->
+				<i class="demo-icon icon-shopping-bag"></i>
 				<!--<img src="../img/center/car.png" style="height: 27px;"/><br />-->
 				<span class="mui-tab-label">购物车</span>
 			</a>
 			<a id="find" class="mui-tab-item" href="find.html" style="position: relative !important;top: 2px !important;">
-				<span class="mui-icon mui-icon-extra mui-icon-extra-find"></span>
+				<!--<span class="mui-icon mui-icon-extra mui-icon-extra-find"></span>-->
+				<i class="demo-icon icon-shopping-bag"></i>
 				<span class="mui-tab-label">发现</span>
 			</a>
 			<a id="qq" class="mui-tab-item" href="qq.html" style="position: relative !important;top: 2px !important;">
-				<span class="mui-icon mui-icon-qq"></span>
+				<!--<span class="mui-icon mui-icon-qq"></span>-->
+				<i class="demo-icon icon-shopping-bag"></i>
 				<span class="mui-tab-label">客服</span>
 			</a>
 			<a class="mui-tab-item muidingwei" href="center.html" id="center" style="position: relative !important;top: 2px !important;">
-				<span class="mui-icon mui-icon-person"></span>
-				<!--<i class="demo-icon icon-user"></i>-->
+				<!--<span class="mui-icon mui-icon-person"></span>-->
+				<i class="demo-icon icon-user"></i>
 				<!--<img src="../img/center/mine.png" style="width: 27px;height: 27px;"/><br />-->
 				<span class="mui-tab-label">我 的</span>
 			</a>
@@ -124,7 +126,6 @@
 				timeSign = setInterval(Sign,7000000);//两小时自动更新一次token
 				function Sign(){//登录方法
 					//设置默认token
-					alert('登陆方法执行了一次');
 					if(!plus.storage.getItem('myToken')){//没有用户token
 						mui.ajax(serverUrl+'/api/useraccount/login',{
 							data:{"phone":18180924082,"password":'12345a'},
@@ -179,9 +180,8 @@
 			var activeTab = subpages[0];
 			 //选项卡点击事件
 			mui('.mui-bar-tab').on('tap', 'a', function(e) {
-				var targetTab = this.getAttribute('href');
+				var targetTab = this.getAttribute('href'); 
 				if(targetTab=="find.html"){ 
-					plus.webview.getWebviewById('main.html').hide();
 					 mui.openWindow({
 					 	url:"find.html",
 					 	id:"find",
@@ -194,6 +194,18 @@
 					      autoShow:false,//自动显示等待框，默认为true
 					    }
 					 })
+					//偷偷返回方法 
+					var activeTabid = activeTab.split('.')[0];
+					if(activeTab == 'main.html'){
+						activeTabid = 'defaultTab'; 
+					}
+					var appIndex = plus.webview.getLaunchWebview();
+					var mainweb = plus.webview.getWebviewById(activeTab);
+					var timemain = setTimeout(function(){
+						mui.fire(appIndex,'gohome',{hrefid:activeTabid});
+						plus.webview.show(mainweb);
+					},600);
+				    
 				}else if(targetTab=="qq.html"){
 						plus.share.getServices( function(s){
 							console.log(s);
@@ -215,6 +227,7 @@
 						}, function(e){  
 							console.log( "获取分享服务列表失败："+e.message );
 						} );
+						//偷偷返回方法
 						var activeTabid = activeTab.split('.')[0];
 						if(activeTab == 'main.html'){
 							activeTabid = 'defaultTab'; 
@@ -222,8 +235,8 @@
 						var appIndex = plus.webview.getLaunchWebview();
 						var mainweb = plus.webview.getWebviewById(activeTab);
 						mui.fire(appIndex,'gohome',{hrefid:activeTabid}); 
-					    plus.webview.show(mainweb,"fade-in",500); 
-						
+					    plus.webview.show(mainweb,"fade-in",500);
+					    
 				}else{
 					if (targetTab == activeTab) {
 					return;
