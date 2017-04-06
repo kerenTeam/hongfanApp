@@ -202,11 +202,17 @@
 									if(element.nativeClient == false){
 										alert('请先安装QQ');
 									}else{ 
-										if(/android/i.test(navigator.userAgent)) { //判断为android  
-											document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
-										} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
-											document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
-										}
+										mui.openWindow({
+										 	url:"http://q.url.cn/s/m0apGLm",
+										 	style:{"bottom":0,"top":0},
+										 	show:{
+										      aniShow:'fade-in',
+										      duration:300,//页面动画持续时间
+										   	},
+										   	waiting:{
+										      autoShow:false,//自动显示等待框，默认为true
+										    }
+										 })
 									}
 									return false;
 								}
@@ -215,6 +221,7 @@
 						}, function(e){  
 							console.log( "获取分享服务列表失败："+e.message );
 						} );
+						
 						var activeTabid = activeTab.split('.')[0];
 						if(activeTab == 'main.html'){
 							activeTabid = 'defaultTab'; 

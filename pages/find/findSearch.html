@@ -268,7 +268,7 @@
 	    					<div class="follow" data-id="<%=searchData.users[i].user_id%>">
 						 
 								<div class="fchidl">
-									<img src="../../img/market/atcenter.jpg" class="userAvator" /> <%=searchData.users[i].nickname%>
+									<img src="<%= searchData.users[i].avatar%>" class="userAvator" /> <%=searchData.users[i].nickname%>
 								</div>
 								<!--<button type="button" class="mui-btn mui-btn-success hadF" data-id="<%=searchData.users[i].user_id%>">
 									关注
@@ -333,7 +333,7 @@
 	    	
 	    	//缓存记录
 			var searchStorage =JSON.parse(plus.storage.getItem("$searchStorage") || '[]');
-			
+			var myuserid = plus.storage.getItem('userid');
 			//缓存记录 渲染
 			var recordObj = {};
 			recordObj.data= searchStorage;
@@ -416,18 +416,37 @@
 							if(data.errno==0){
 								if(data.data.friend_news.length!=0 || data.data.friend_news_tags.length!=0 || data.data.users.length!=0){
 									 var searchObj = {};
+									 if(data.data.users.length){
+									 	for(var i = 0 ;i<data.data.users.length;i++){
+										 	if(data.data.users[i].avatar.indexOf("[")!=-1){
+												data.data.users[i].avatar =serverimgUrl + JSON.parse(data.data.users[i].avatar)[0].picImg;
+											} 
+										 }
+									 }
+									 
 									 searchObj.searchData = data.data;
+									 console.log(JSON.stringify(data.data))
 									 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
 									 
 								    //关注人跳转
 									$(".tc3 .follow").click(function(){
-										var userId = $(this).attr("data-id")
-										openview({
-											view: "../othersPage.html",
-											extrasobj: {
-												userId: userId
-											}
-										})
+										var userId = $(this).attr("data-id"); 
+										if(userId == myuserid){
+											openview({
+												view: "../centerPage.html",
+												extrasobj: {
+													idnum: userId
+												}
+											})
+										}else{
+											openview({
+												view: "../othersPage.html",
+												extrasobj: {
+													idnum: userId
+												}
+											})
+										}
+										
 									})
 									
 									//js控制内容最多显示字数
