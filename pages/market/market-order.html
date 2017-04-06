@@ -1153,20 +1153,20 @@
 											var varpay;  
 											if(id == 'wxpay'){  
 												varpay = {
-													retcode: data.return_code,
-													retmsg: data.return_msg,
+													retcode: 0,
+													retmsg: "ok",
 								                    appid: data.appid,
 								                    noncestr: data.nonce_str,
 								                    package: "Sign=WXPay",
-								                    partnerid: partner_key,
+								                    partnerid: data.mch_id,
 								                    prepayid: data.prepay_id,
 								                    timestamp: parseInt(data.timestamp),
-								                    sign: data.app_sign
+								                    sign: data.sign
 												} 
 												//微信
 												plus.payment.request(pays[id],varpay,function(result){
 													console.log("----- 支付成功 -----");
-													var sendData = {"dis":"ISWXPay","orderid":orderid};
+													 
 												},function(e){
 													console.log("----- 支付失败 -----");
 													console.log("["+e.code+"]："+e.message); 

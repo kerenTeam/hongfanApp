@@ -47,7 +47,7 @@ function checkUpdate(){
 		timeout:3000,
 		headers:{"token":oldtoken},
 		success:function(data,type,xhr){
-			console.log('操作返回',JSON.stringify(data));
+//			alert('操作返回'+JSON.stringify(data));
 			var newVer=data.data.versionNum;
 			if(wgtVer&&newVer&&(wgtVer!=newVer)){
 				mui.toast("等待wgt包下载地址")
