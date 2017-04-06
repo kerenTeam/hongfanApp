@@ -43,31 +43,31 @@
 	<body>
 		<nav class="mui-bar mui-bar-tab" id="header">
 			<a id="defaultTab" class="mui-tab-item mui-active muidingwei" href="main.html" style="position: relative !important;top: 2px !important;">
-				<!--<span class="mui-icon mui-icon-home"></span>-->
-				<i class="demo-icon icon-home"></i>
+				<span class="mui-icon mui-icon-home"></span>
+				<!--<i class="demo-icon icon-home"></i>-->
 				<!--<img src="../img/center/main.png" style="height: 27px;"/><br />-->
 				<span class="mui-tab-label">首 页</span>
 			</a>
 
 			<a id="cart" class="mui-tab-item muidingwei" href="cart.html" style="position: relative !important;top: 2px !important;">
-				<!--<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>-->
-				<i class="demo-icon icon-shopping-bag"></i>
+				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>
+				<!--<i class="demo-icon icon-shopping-bag"></i>-->
 				<!--<img src="../img/center/car.png" style="height: 27px;"/><br />-->
 				<span class="mui-tab-label">购物车</span>
 			</a>
 			<a id="find" class="mui-tab-item" href="find.html" style="position: relative !important;top: 2px !important;">
-				<!--<span class="mui-icon mui-icon-extra mui-icon-extra-find"></span>-->
-				<i class="demo-icon icon-shopping-bag"></i>
+				<span class="mui-icon mui-icon-extra mui-icon-extra-find"></span>
+				<!--<i class="demo-icon icon-shopping-bag"></i>-->
 				<span class="mui-tab-label">发现</span>
 			</a>
 			<a id="qq" class="mui-tab-item" href="qq.html" style="position: relative !important;top: 2px !important;">
-				<!--<span class="mui-icon mui-icon-qq"></span>-->
-				<i class="demo-icon icon-shopping-bag"></i>
+				<span class="mui-icon mui-icon-qq"></span>
+				<!--<i class="demo-icon icon-shopping-bag"></i>-->
 				<span class="mui-tab-label">客服</span>
 			</a>
 			<a class="mui-tab-item muidingwei" href="center.html" id="center" style="position: relative !important;top: 2px !important;">
-				<!--<span class="mui-icon mui-icon-person"></span>-->
-				<i class="demo-icon icon-user"></i>
+				<span class="mui-icon mui-icon-person"></span>
+				<!--<i class="demo-icon icon-user"></i>-->
 				<!--<img src="../img/center/mine.png" style="width: 27px;height: 27px;"/><br />-->
 				<span class="mui-tab-label">我 的</span>
 			</a>
@@ -96,11 +96,8 @@
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				
 				//检查更新
-				checkUpdate();
-				
-				
+//				checkUpdate();
 				//处理父子页面的mask遮罩联动
 			    var mask,oldclose;
 				mask=mui.createMask();
@@ -216,7 +213,7 @@
 									}else{ 
 										mui.openWindow({
 										 	url:"http://q.url.cn/s/m0apGLm",
-										 	style:{"bottom":0,"top":0},
+										 	style:{"bottom":'50px',"top":0},
 										 	show:{
 										      aniShow:'fade-in',
 										      duration:300,//页面动画持续时间
@@ -233,16 +230,17 @@
 						}, function(e){  
 							console.log( "获取分享服务列表失败："+e.message );
 						} );
-						//偷偷返回方法
-
+						//偷偷返回方法 
 						var activeTabid = activeTab.split('.')[0];
 						if(activeTab == 'main.html'){
 							activeTabid = 'defaultTab'; 
 						}
 						var appIndex = plus.webview.getLaunchWebview();
 						var mainweb = plus.webview.getWebviewById(activeTab);
-						mui.fire(appIndex,'gohome',{hrefid:activeTabid}); 
-					    plus.webview.show(mainweb,"fade-in",500);
+						var timemain = setTimeout(function(){
+							mui.fire(appIndex,'gohome',{hrefid:activeTabid});
+							plus.webview.show(mainweb);
+						},600);
 					    
 				}else{
 					if (targetTab == activeTab) {
