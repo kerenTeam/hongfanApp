@@ -356,7 +356,7 @@
 				<script type="text/html" id="classifyTpl">
 					<%for(var i=0;i<list.length;i++){%>
 						<div class="sy_recmd typeDis" style="background-color: #fff;">
-							<div class="imgpt"><!-- onclick="goList(<%=list[i].catid%>)"-->
+							<div class="imgpt" onclick="goList(<%=list[i].catid%>)"><!-- onclick="goList(<%=list[i].catid%>)"-->
 								<%if(list[i].icon){%>
 									<img src="<%=myUrl%><%=list[i].icon%>" alt="" />
 									<%}else{%>
@@ -364,15 +364,15 @@
 									<%}%>
 							 	<div class="clasfyItem">
 							 		<div class="itemName"><%=list[i].catname%></div>
-							 		<!--<button type="button" class="mui-btn itemGo" data-catId="<%=list[i].catid%>">
+							 		<button type="button" class="mui-btn itemGo" data-catId="<%=list[i].catid%>">
 										入场疯抢 >
-									</button>-->
+									</button>
 							 	</div>
 							 	<div class="trangle"></div>
 							</div>
 							<!--二级分类-->
 							<div class="npbk"> 
-				 				<div class="secClassfy" data-pcatid="<%=list[i].catid%>"></div>
+				 				<div class="secClassfy" onclick="goList(<%=list[i].catid%>)" data-pcatid="<%=list[i].catid%>"></div>
 							</div>
 						</div>
 						<%}%>
@@ -393,38 +393,38 @@
 			var oldToken = plus.storage.getItem('oldToken');
 			//获取 一级分类
 			mui.ajax(serverUrl+'/api/mall/igocategory',{
-						data:{pid:0},
-						dataType:'json',
-						type:'post',
-						timeout:10000,
-						headers:{"token":oldToken},	 
-						success:function(data,type,xhr){
-							console.log("一级分类",JSON.stringify(data))  
-							if(data.errno == 0){
-								if(data.data.length != 0){
-									var tyepdata ={};
-									tyepdata.myUrl = serverimgUrl;
-									tyepdata.list = data.data;
-									var html=template("classifyTpl",tyepdata);
-									document.getElementById("classify").innerHTML=html;
-									
-									//请求二级分类
-									var secClassfys = document.getElementsByClassName("secClassfy");
-									//需用for循环 调用方法名传值  用each或者在for循环里面写方法都不可行 因为ajax异步 each直接拿到最后一个	
-									for(var i = 0;i< secClassfys.length;i++){ 
-										var pid = secClassfys[i].getAttribute("data-pcatid"); 
-										console.log("pid ",pid)
-								        getsecid(pid,i);
-									}
-								}
+				data:{pid:0},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldToken},	 
+				success:function(data,type,xhr){
+					console.log("一级分类",JSON.stringify(data))  
+					if(data.errno == 0){
+						if(data.data.length != 0){
+							var tyepdata ={};
+							tyepdata.myUrl = serverimgUrl;
+							tyepdata.list = data.data;
+							var html=template("classifyTpl",tyepdata);
+							document.getElementById("classify").innerHTML=html;
+							
+							//请求二级分类
+							var secClassfys = document.getElementsByClassName("secClassfy");
+							//需用for循环 调用方法名传值  用each或者在for循环里面写方法都不可行 因为ajax异步 each直接拿到最后一个	
+							for(var i = 0;i< secClassfys.length;i++){ 
+								var pid = secClassfys[i].getAttribute("data-pcatid"); 
+								console.log("pid ",pid)
+						        getsecid(pid,i);
 							}
-						},
-						error:function(xhr,type,errorThrown){
-							plus.nativeUI.closeWaiting();//关闭等待框
-							mui("#upload")[0].innerHTML = ""; 
-							mui('#nulldiv')[0].style.display = 'block';
 						}
-					});
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			});
 			//获取二级分类
 			function getsecid(pid,i){
 				mui.ajax(serverUrl+'/api/mall/igocategory',{
@@ -480,6 +480,8 @@
 			}
 			//进入列表
 			window.goList = function(pid){
+				event.stopPropagation();
+				alert(pid)
 				openview({
 				 	view:"loveBuyList.html",
 				 	extrasobj:{pid:pid}

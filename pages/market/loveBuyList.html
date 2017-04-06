@@ -270,7 +270,7 @@
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
  
-								<img src="<%= list[i].pic_url%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
+								<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 
 							</div>
 							<div class="dealcard-block-right">
@@ -447,8 +447,13 @@
 										bannerArray.push(d[vae]);
 									} 
 								} 
+								for(var i in bannerArray){
+									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',')
+								}
 								var objdata = {}; 
 								objdata.list = bannerArray;
+								console.log("bannerArray"+JSON.stringify(bannerArray));
+								
 								var html=template("goodsList-detail",objdata);
 								document.getElementById("goodsList").innerHTML=html;
 								mui("#upload")[0].innerHTML = "";
@@ -475,7 +480,10 @@
 																var vae = Object.keys(d)[t] ;
 																bannerArray.push(d[vae]);
 															} 
-														} 
+														}
+														for(var i in bannerArray){
+															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',')
+														}
 														var objdata = {}; 
 														objdata.list = bannerArray;
 														var html=template("goodsList-detail",objdata);

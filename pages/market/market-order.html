@@ -299,7 +299,7 @@
 			    padding: 0;
 			    text-align: right;
 			    background: none;
-			    outline: none;
+			    console.log: none;
 			    height: auto;
 			    margin: 0;
 			    line-height: 12px;
@@ -1024,11 +1024,11 @@
 							txt="系统未安装“"+pc.description+"”服务，无法完成支付，是否立即安装？";
 							break;
 						}
-						plus.nativeUI.confirm(txt,function(e){
-							if(e.index==0){
-								pc.installService();
-							}
-						},pc.description);
+//						plus.nativeUI.confirm(txt,function(e){
+//							if(e.index==0){
+//								pc.installService();
+//							}
+//						},pc.description);
 					}
 				}
 				//系统检测获取支付通道结束
@@ -1158,18 +1158,18 @@
 								                    appid: data.appid,
 								                    noncestr: data.nonce_str,
 								                    package: "Sign=WXPay",
-								                    partnerid: data.partnerid,
+								                    partnerid: partner_key,
 								                    prepayid: data.prepay_id,
 								                    timestamp: parseInt(data.timestamp),
 								                    sign: data.app_sign
 												} 
 												//微信
 												plus.payment.request(pays[id],varpay,function(result){
-													outLine("----- 支付成功 -----");
+													console.log("----- 支付成功 -----");
 													var sendData = {"dis":"ISWXPay","orderid":orderid};
 												},function(e){
-													outLine("----- 支付失败 -----");
-													outLine("["+e.code+"]："+e.message); 
+													console.log("----- 支付失败 -----");
+													console.log("["+e.code+"]："+e.message); 
 													plus.nativeUI.alert("支付失败");
 												});
 											}else{ 
