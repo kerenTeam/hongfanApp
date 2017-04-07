@@ -77,6 +77,274 @@
 				}, function(error) {
 					plus.nativeUI.alert("支付失败：" + JSON.stringify(error));
 				});
+			 
+				
+				// 检测是否安装支付服务
+				function checkServices(pc){ 
+					if(!pc.serviceReady){
+						var txt=null;
+						switch(pc.id){
+							case "alipay":
+							txt="检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？";
+							break;
+							default:
+							txt="系统未安装“"+pc.description+"”服务，无法完成支付，是否立即安装？";
+							break;
+						}
+//						plus.nativeUI.confirm(txt,function(e){
+//							if(e.index==0){
+//								pc.installService();
+//							}
+//						},pc.description);
+					}
+				}
+				//系统检测获取支付通道结束
+				
+				
+				
+				//goPay
+				window.goPay=function(){  
+					if($("#addid").length!=0){
+						 
+						var yourSFZ = $('#sfzin').val(); 
+							//地址 
+							var addressid =$("#addid").attr("data-id"); 
+							//买家留言
+							var noticeData=[];  
+							$(".tipsWrap").each(function(){
+								var notice = $(this).find("input").val();
+								for(var i=0;i<orderSubmitData.length;i++){ 
+									if(orderSubmitData[i].storeid == $(this).attr("data-id")){  
+										orderSubmitData[i].notice = notice;
+									}
+								}
+								if(notice!=''){
+									var noticeObj={};
+									noticeObj.shopId = $(this).attr("data-id");
+									noticeObj.notice = notice;
+									noticeData.push(noticeObj)
+								}
+								
+								
+							});
+							 
+							//优惠券id
+							var coupon_id=2;
+							$(".quanc").each(function(){
+								if($(this).css("display")=="block"){
+									coupon_id =$(this).attr("data-id");
+								}
+							}) 
+							//积分使用
+							var isIntergal=0;
+							if($("#coupon").find("input[type='checkbox']:checked").length==1){
+								isIntergal=1
+							}else{
+								isIntergal=0;
+							}
+							var goodsdata = JSON.stringify(orderSubmitData);
+							console.log("goodsdata 445"+goodsdata)
+							var notice = JSON.stringify(noticeData); 
+							//获取总价
+							var payTotal =parseFloat($("#submit_order").html()).toFixed(2);
+//							alert($("#aigou").length)
+							if($("#aigou").length!=0){
+								getInfo();
+								if(id_card){
+									tijiao()
+								}else{
+									 mui.confirm('购买跨境优品需要身份证号哦？', '提示', ['取消', '确定'], function(e) {
+											if(e.index == 1) { 
+												openview({
+													view:"../personal/setup.html",
+													extrasobj:{pageid:"setup"}
+												}) 
+											} 
+					
+										})
+								}
+							}else{
+								tijiao()
+							}
+							 
+							function tijiao(){
+								$("#payChoose").addClass("mui-active");
+								$("#totalPayCash").html("￥"+totalPay)
+								 
+							}  
+							// 支付方法 
+							window.payfun = function(id){
+								var varpay;
+								var dataJson;
+								
+								if(id=='alipay'||id=='wxpay'){
+									//调用支付功能
+									plus.nativeUI.showWaiting();
+									if(id == 'alipay'){ 
+										//获取后台返回数据 
+										gopay(id);
+							
+									}else if(id=='wxpay'){//微信
+										gopay(id);
+									} 
+								}else{
+									plus.nativeUI.alert("当前环境不支持此支付通道！",null,"提示");
+									return;
+								}
+								  
+								function gopay(id){ 
+//									alert(myuserid+id+addressid+goodsdata+coupon_id+isIntergal)
+									mui.ajax(serverUrl+'/api/mall/neworder',{
+										data:{userid:myuserid,payType:id,address_id:addressid,storeData:goodsdata,coupon_id:coupon_id,isIntergal:isIntergal},
+										type:'post',//HTTP请求类型
+										headers:{"token":oldtoken},	
+										timeout:10000,//超时时间设置为10秒；
+										success:function(data){
+											plus.nativeUI.closeWaiting() 
+											alert(JSON.stringify(data))
+											var data = data.data;
+											console.log("----- 请求订单成功 -----",JSON.stringify(data)); 
+											//购物车 缓存 
+											var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
+											//删除 购物车里 提交的这一条数据  
+											for(var i=0;i<orderStorage.length;i++){ 
+												for(var j=0;j<cartStorage.length;j++){
+													if(orderStorage[i].goodsId == cartStorage[j].goodsId && orderStorage[i].goodText == cartStorage[j].goodText){
+														 cartStorage.splice(j,1)
+													} 
+												} 
+											}
+											plus.storage.setItem("$cartStorage",JSON.stringify(cartStorage))
+											var list = plus.webview.getWebviewById('cart.html'); 
+												mui.fire(list,'refresh'); 
+											var varpay;  
+											if(id == 'wxpay'){  
+												varpay = {    "return_code": "SUCCESS",
+													    "return_msg": "OK",
+													    "appid": "wx779a1427b1aaeb10",
+													    "partnerid": "1438641502",
+													    "prepayid": "wx2017040619250643f5604d320812898689",
+													    "package": "Sign=WXPay",
+													    "noncestr": "QmASYbWK320x1cSs",
+													    "timestamp": 1491477906,
+													    "sign": "3EC176593C0BBAEFC418DF16A1458703"
+													}
+												//微信
+												plus.payment.request(pays[id],varpay,function(result){
+													console.log("----- 支付成功 -----");
+													 
+												},function(e){
+													console.log("----- 支付失败 -----");
+													console.log("["+e.code+"]："+e.message); 
+													plus.nativeUI.alert("支付失败");
+												});
+											}else{ 
+												//支付宝
+												varpay = data;
+												console.log('支付宝',varpay);  
+												plus.payment.request(pays[id],varpay,function(result){ 
+													console.log("----- 支付成功 -----",JSON.stringify(result));
+													
+												 	plus.nativeUI.closeWaiting();
+												 	plus.nativeUI.alert("支付成功");
+													
+												 	 //关闭 订单页  
+												 	 if(plus.webview.getWebviewById("market-order")){
+												 	 	plus.webview.getWebviewById("market-order").close(); 
+												 	 }
+												 	    
+													 	 
+													var oldtoken = plus.storage.getItem('oldToken');
+													var orderId = plus.webview.currentWebview().uuid; 
+													var odrer_id =  plus.webview.currentWebview().orderId;
+													//修改状态
+					//								mui.ajax(serverUrl+'/api/mall/paybill',{ 
+					//									data:{"order_UUID":orderId,"paymenResult":JSON.stringify(result)},
+					//									dataType:'json',//服务器返回json格式数据
+					//									type:'post',//HTTP请求类型
+					//									headers:{"token":oldtoken},	
+					//									timeout:10000,//超时时间设置为10秒；
+					//									success:function(data){
+					//										 plus.nativeUI.closeWaiting()
+					//										 
+					//										 setTimeout(function(){
+					//										 	openview({
+					//												view:"../personal/sc-order.html",
+					//												id:"sc-order",
+					//											}) 
+					//										 },1000)
+					//										 
+					//									},
+					//									error:function(xhr,type,errorThrown){
+					//										//异常处理；
+					//										console.log(type);
+					//									}
+					//								});
+					//							
+												},function(e){
+													console.log("----- 支付失败 -----");
+													console.log("["+e.code+"]："+e.message);
+								//					console.log("["+e.code+"]："+e.message);
+													plus.nativeUI.closeWaiting();
+													plus.nativeUI.alert("支付失败");
+												});
+								//			 
+											}
+										},
+										error:function(xhr,type,errorThrown){
+											//异常处理；
+											console.log(type);
+											console.log("----- 请求订单失败 -----");
+											console.log( xhr.status );
+											plus.nativeUI.closeWaiting();
+											plus.nativeUI.alert("获取订单信息失败！");
+										}
+									});
+								
+								}
+							 
+							}
+					  
+					}else{ 
+						plus.nativeUI.closeWaiting()
+						mui.toast("您还未选择收货地址哟！")
+					}
+					 
+					
+				}
+				
+		})
+		
+		//进入地址页面
+		function goAddr(){ 
+			openview({
+				view:"../personal/address.html",
+				extrasobj:{pageid:"market-order",userId:myuserid}
+			})
+		}
+		
+		function queryStr(str) {
+		    var r = str.slice(1).split("&"),
+		        e = {};
+		    return r.forEach(function(r) {
+		        var t;
+		        r && (t = r.split("="), 2 === t.length && (e[t[0]] = t[1]))
+		    }), e
+		}
+		//数组去重
+		Array.prototype.unique1 = function() {
+			var res = [this[0]];
+			for(var i = 1; i < this.length; i++) {
+				var repeat = false;
+				for(var j = 0; j < res.length; j++) {
+					if(this[i] == res[j]) {
+						repeat = true;
+						break;
+					}
+				}
+				if(!repeat) {
+					res.push(this[i]);
+				}
 			}
 		</script>
 

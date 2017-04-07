@@ -192,28 +192,30 @@
 									<% if(orderData[i].order_type!=4){ %>
 										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 											<div class="orderbh clearfloat box-s">
-												<span onclick="goShop('<%=orderData[i].goods_data.storeid%>')">
+												<span onclick="goShop('<%=orderData[i].goods_data.Params.goodsData[0].storeid%>')">
 													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
-													<%=orderData[i].goods_data.goodsData[0].shopName%>
+													<% if(orderData[i].goods_data.Params.goodsData[0].shopName){ %>
+														<%=orderData[i].goods_data.Params.goodsData[0].shopName%>
+													<%}%>
 												</span>
 												<span class="fr state"><%=state[orderData[i].order_status]%></span>
 											</div>
-											<%for(var j =0;j<orderData[i].goods_data.goodsData.length;j++){%>
+											<%for(var j =0;j<orderData[i].goods_data.Params.goodsData.length;j++){%>
 											<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
 												<div class="dealcard dealcardtwo clearfloat">
 													<div class="dealcard-img imgbox">
-														<% if(orderData[i].goods_data.storeid == 0){ %>
-															<img src="<%=orderData[i].goods_data.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% if(orderData[i].goods_data.Params.goodsData[0].storeid == 0){ %>
+															<img src="<%=orderData[i].goods_data.Params.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% }else{ %>
-															<img src="<%=myUrl%><%=orderData[i].goods_data.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+															<img src="<%=myUrl%><%=orderData[i].goods_data.Params.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% } %>
 													</div>
 													<div class="dealcard-block-right dealcard-block-righttwo">
 														<div class="dealcard-brand dealcard-brandtwo single-line">
-															<span class="poi-name icon-count-3"><%=orderData[i].goods_data.goodsData[j].goodsName%></span>
+															<span class="poi-name icon-count-3"><%=orderData[i].goods_data.Params.goodsData[j].goods_price.title%></span>
 															<div class="price pricetwo">
-																<p>¥<%=orderData[i].goods_data.goodsData[j].goodsPrice%></p>
-																<p class="num">×<%=orderData[i].goods_data.goodsData[j].goodsnum%></p>	
+																<p>¥<%=orderData[i].goods_data.Params.goodsData[j].goods_price.price%></p>
+																<p class="num">x<%=orderData[i].goods_data.Params.postData.orderStoreData[0].goodsData[j].nums%></p>	
 															</div>	
 														</div>									
 													</div>
@@ -222,7 +224,7 @@
 											<%}%> 
 											<%if(orderData[i].order_status==6 || orderData[i].order_status==7 || orderData[i].order_status==8){%>
 												<div class="order-bottom clearfloat box-s tip" style="border-bottom: 0;">
-													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
+													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.PriceCalculValue%><sub>
 														<%if(orderData[i].goods_data.postFee==0){%>
 															(不含运费)
 															<%}else{%>
@@ -240,7 +242,7 @@
 																订单调整 <span style="color: orange;"><%=orderData[i].fee%></span>
 																<%}%>
 																<%}%>
-														合计:￥</sub><%=orderData[i].goods_data.totalMoney%><sub>
+														合计:￥</sub><%=orderData[i].goods_data.PriceCalculValue%><sub>
 														<%if(orderData[i].goods_data.postFee==0){%>
 															(不含运费)
 															<%}else{%>
@@ -357,8 +359,10 @@
 		mui.plusReady(function(){
 			
 			//获取上一个页面 穿的 订单类型
-			var toOrder_status = plus.webview.currentWebview().status;
-			 
+			var toOrder_status = plus.webview.currentWebview().status; 
+			if(!toOrder_status){
+				toOrder_status =-1;
+			}
 			if(plus.webview.getWebviewById("pay")){ 
 			   plus.webview.getWebviewById("pay").close();
 			}
@@ -383,12 +387,15 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
 					plus.nativeUI.closeWaiting(); 
-					if(data.errno==0){ 
+					if(data.errno==0){
 						if(data.data.length!=0){ 
-							for(var i=0;i<data.data.length;i++){ 
-								data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
-								if(data.data[i].fee){
-									
+							
+							for(var i=0;i<data.data.length;i++){
+								if(data.data[i].goods_data){
+									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
+								}
+								
+								if(data.data[i].fee){ 
 									data.data[i].goods_data.totalMoney = parseFloat(data.data[i].goods_data.totalMoney+data.data[i].fee).toFixed(2)
 									
 									if(data.data[i].fee>0){
@@ -398,15 +405,17 @@
 									}
 									 
 								}
-							}
-//							alert(data.data[1].goods_data.goodsData[0].goodsImg)
+							}console.log(JSON.stringify(data.data[0].goods_data))
 							var obj={}; 
 							 obj.orderData=data.data;
 							 obj.myUrl=serverimgUrl; 
-							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
+							 obj.state = ['等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
-							
-							
+							 
+							if(toOrder_status == -1){
+								$('#noOrder').css('display','none');
+								$("dd").css("display","block")
+							}
 							if(toOrder_status == 0){ 
 								$(".tab-nav li").removeClass("active");
 								$(".tab-nav li:nth-of-type(2)").addClass("active");
@@ -465,8 +474,8 @@
 							
 							$('.tab-nav li').click(function(){ 
 								var statusId=$(this).attr("data-statusId"); 
-								$(this).addClass("active");
 								$(this).siblings().removeClass("active");
+								$(this).addClass("active");
 								if(statusId==-1){
 									$('#noOrder').css('display','none');
 									$("dd").css("display","block")
