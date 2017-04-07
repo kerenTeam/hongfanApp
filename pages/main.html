@@ -755,9 +755,10 @@
 					</div>
 				</script>
 			</div>
+			
 		<div id="main">
-		<!--滚动条-->
-		<div class="adNews" style="background-color: #fff;border-bottom: 1px solid #f8f8f8;padding: 0 15px;">
+		<!--滚动条 温馨提示-->
+		<!--<div class="adNews" style="background-color: #fff;border-bottom: 1px solid #f8f8f8;padding: 0 15px;">
 			<div class="mui-row">
 				<div class="mui-col-sm-2 mui-col-xs-2" style="color: #ec523e !important;line-height: 26px;font-weight: bold;" > 
 					温馨提示:
@@ -768,7 +769,7 @@
 					</marquee>
 				</div>
 			</div>
-		</div>
+		</div>-->
 		<div class="onetable">
 			<table>
 				<tbody>
@@ -844,11 +845,7 @@
 		</div>
 		</div> 
 		<div class="sy_recmd">
-			<div class="sy_title mb10" style="text-align: center;margin-top: 5px;">
-				<span class="left">找好店</span>
-				<a href="#" class="fr morethree">更多&gt;&gt;</a>
-			</div>
-			<div class="sy_recmd_list_box choicenessWrap">
+			<div class="sy_recmd_list_box choicenessWrap" style="padding-top: 5px;">
 				<ul>
 					<li class="sy_recmd_list" id="storeRcmd">
 						<div class="box">
@@ -1187,9 +1184,31 @@
 		</div>
 		</div>
 		<!--</div>-->
- 
+		<div id="clickLeave"></div>
+ 		<script type="text/javascript">
+			var d = null, enterTime = null, leaveTime = null;
+			//离开要触发的函数
+			function leave() {
+				leaveTime = new Date();
+				d = leaveTime.getTime() - enterTime.getTime();
+			}
+			
+			//页面加载完毕后触发
+			document.addEventListener( "plusready", function(){
+				enterTime = new Date();
+				
+				//点击事件执行
+				var leaveBtn = document.getElementById('clickLeave');
+				leaveBtn.addEventListener('tap', function () {
+					leave(); 
+					plus.statistic.eventDuration( "leave",12000, {"pageName": "statistic.html", "stayTime": d} );
+				});
+				
+			}, false );
+ 		</script>
 
 		<script type="text/javascript">
+			
 			
 			//滚动监听
 //				$(window).scroll(function() { 
@@ -1315,6 +1334,8 @@
 			}
 			//点击进入本地生活
 			function localLife() {
+				//触发submit按钮的点击事件
+				mui.trigger(leaveBtn,'tap');
 				openview({
 					view: 'localLife/localLifeIndex.html'
 				})
@@ -1327,6 +1348,7 @@
 			}
 			//发现板块更多
 			function gomore(page){
+				
 				openview({
 					view: page+'.html'
 				})
@@ -1366,6 +1388,8 @@
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数 
 			mui.plusReady(function() {
+//				plus.statistic.eventDuration( "leave", {"pageName": "main.html", "stayTime": 100000} );//统计
+				plus.statistic.eventDuration( "leave", 20000 );
 				window.addEventListener('reload',function(event){
 					plus.webview.currentWebview().reload();
 				});
@@ -1586,24 +1610,24 @@
 						}
 					})
 					
-					//温馨提示
-					mui.ajax(serverUrl + '/api/index/prompt', {
-						type: 'post', //HTTP请求类型
-						timeout: 10000, //超时时间设置为10秒；
-						headers: {
-							"token": oldToken
-						},
-						success: function(data, type, xhr) {
-							if (data.errno == 0) {
-								mui('#warmthPrompt')[0].innerHTML = data.data[0].title;
-							} else{
-								
-							}
-						},
-						error: function(xhr, type, errorThrown) {
-							console.error(type);
-						}
-					});
+					//温馨提示 数据
+//					mui.ajax(serverUrl + '/api/index/prompt', {
+//						type: 'post', //HTTP请求类型
+//						timeout: 10000, //超时时间设置为10秒；
+//						headers: {
+//							"token": oldToken
+//						},
+//						success: function(data, type, xhr) {
+//							if (data.errno == 0) {
+//								mui('#warmthPrompt')[0].innerHTML = data.data[0].title;
+//							} else{
+//								
+//							}
+//						},
+//						error: function(xhr, type, errorThrown) {
+//							console.error(type);
+//						}
+//					});
 
 					//家乡头条
 					mui.ajax(serverUrl + '/api/localreport/localreport', {

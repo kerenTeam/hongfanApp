@@ -1,8 +1,8 @@
   
-var serverUrl='http://192.168.199.191:7200'; 
+//var serverUrl='http://192.168.199.191:7200';
 //var serverUrl='http://192.168.0.128:7200';
-//var serverUrl='http://hiji.hifete.com'; 
-var serverUrl0='http://192.168.199.191:7200';  
+var serverUrl='http://hiji.hifete.com';
+var serverUrl0='http://192.168.199.191:7200'; 
 var partner_key='syet234876fxcvdj58yjdbn475serop8';
 //var serverUrl='http://Aaron.lan:7200';
 
@@ -12,7 +12,7 @@ var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
 //关注和取消关注
-function followBack(thisobj,friendid){
+function followBack(thisobj,friendid){ 
 	event.stopPropagation();
 	function Success(){
 		event.stopPropagation();
