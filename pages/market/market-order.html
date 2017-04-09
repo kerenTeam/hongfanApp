@@ -391,7 +391,36 @@
 			}
 			#totalPayCash{
 				color: red;
-			} 
+			}
+			.choosewl{
+				position: relative;
+				width: 100vw;
+				left: 50%;
+			 	right: 50%;
+			 	margin-left: -50vw;
+			 	margin-right: -50vw;
+				padding: inherit!important;
+			}
+			.choosewl.mui-active a{
+				background: #EEEEEE;
+			}
+			.dlc div{
+				width: 100%;
+				font-size: 0.12rem;
+				line-height: 2;
+				position: relative;
+			}
+			.dlc div:not(:last-of-type):after{
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				content: '';
+				left: 0;
+				height: 1px!important;
+				-webkit-transform: scaleY(0.3);
+				-webkit-transform-origin: bottom;
+				background-color: #D1D2D4;
+			}
 		</style>
 	</head>
 
@@ -467,7 +496,7 @@
 									<p class="price"><sub>￥</sub>
 										<%=goodsList[j].goodsPrice%> <span class="num">×<%=goodsList[j].goodsnum%></span></p>
 									<%if(shopID[i]==0){%>	
-									<samll style="font-size:0.1rem;color: gray;">含税<%=goodsList[j].goodsPostfee%> </samll>
+									<samll style="font-size:0.1rem;color: gray;">含税<%=goodsList[j].goodsDelivery%> </samll>
 									<%}%>
 								</div>
 							</dd>
@@ -475,20 +504,21 @@
 							<%}%>
 							<dd class="dd-padding kv-line-r postfeeWrap">
 								<%if(shopID[i]==0){%> 
-								<h6>配送方式</h6>
+								<h6>配送方式</h6> 
 									<%if(arrpostFee[i]==0 || !arrpostFee[i]||arrpostFee[i]==' '){%>
 										<p class="jifen">税费 免税</p>	&nbsp;&nbsp;
 										<%}else{%>
-											<p class="jifen">邮费<span id="deliveryFee" style="color: #999;"></span>元</p>&nbsp;&nbsp;
-											<p class="jifen">税费 <%=arrpostFee[i]%>元</p>
+											<p class="jifen">默认邮费<span style="color: #999;"><%=arrpostFee[i]%></span>元</p>
 										<%}%> 
 									<%}else{%>
-								<h6>配送方式</h6>
-									<%if(arrpostFee[i]==0 || !arrpostFee[i] ||arrpostFee[i]==' '){%>
-										<p class="jifen">快递 免邮</p>
-										<%}else{%>
-											<p class="jifen">快递 <%=arrpostFee[i]%>元</p>
-										<%}%>
+								
+								<li class="mui-table-view-cell mui-collapse choosewl">
+									<a class="mui-navigate-right" href="#"><h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway">选择物流</span></a>
+									<div class="mui-collapse-content dlc">
+										<div>申通快递</div>
+										<div>中通快递</div> 
+									</div>
+								</li>
 									<%}%>
 							</dd>
 							<%if(shopID[i]==0){%> 
@@ -502,7 +532,7 @@
 									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提</h6>
 									 
 									<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
-	 									<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=shopID[i]%>" data-postfee="<%=arrpostFee[i]%>" class="groupCheck" type="checkbox" style="right: 5px;"></div> 
+	 									<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=shopID[i]%>" data-postfee="0" class="groupCheck" type="checkbox" style="right: 5px;"></div> 
 									</div>
 								</dd>
 							<%}%>
@@ -515,7 +545,7 @@
 							<dd class="kv-line-r dd-padding priceWrap">
 								<p>
 									<sub>共计<span class="groupNum"><%=arrNum[i]%></span>件商品&nbsp;&nbsp;小计:<b style="color: #ff5f32;">￥</b></sub>
-									<span class="J_total-price groupMoney" data-id="<%=arrpostFee[i]%>"><%=arrMoney[i]%></span>
+									<span class="J_total-price groupMoney" data-id="0"><%=arrMoney[i]%></span>
 								</p>
 							</dd>
 						</dl>
@@ -619,7 +649,7 @@
 					<a onclick="goPay()" class="comm_btn">提交订单</a>
 				</span>
 			</div>
-			
+		 
 			<!--操作表-->
 			<div id="payChoose" class="mui-popover mui-popover-action mui-popover-bottom closePay">
 				<div class="paycontent">
@@ -680,7 +710,7 @@
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
-			console.log("orderStorage   "+plus.storage.getItem('$orderStorage'))
+//			alert("orderStorage   "+plus.storage.getItem('$orderStorage'))
 				//获取缓存
 			     myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken'); 
@@ -720,19 +750,8 @@
 			
 			//订单数据模板
 			var data = {};
-			data.goodsList = orderStorage;
-//			alert(JSON.stringify(orderStorage));
+			data.goodsList = orderStorage;  
 			
-			//邮费
-			var deliveryFee = 0;
-			for(var m = 0;m<orderStorage.length;m++){
-				if(orderStorage[m].goodsDelivery=='' || !orderStorage[m].goodsDelivery){
-					deliveryFee = 0;
-				}else{
-					deliveryFee = parseInt(deliveryFee)+parseInt(orderStorage[m].goodsDelivery);
-				}
-			}
-
 			for(var i = 0; i < orderStorage.length; i++) {
 				arr.push(orderStorage[i].shopName);
 			} 
@@ -750,9 +769,9 @@
 				 for(var j = 0;j<orderStorage.length;j++){
 				 	if(data.shopID[i] == orderStorage[j].shopId){
 				 		if(data.shopID[i] == 0){
-				 			groupPostfee+=parseFloat(orderStorage[j].goodsPostfee);
+				 			groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
 				 		}else{//跨境
-				 			if(orderStorage[j].goodsPostfee!=0 || !orderStorage[j].goodsPostfee || orderStorage[j].goodsPostfee!=' '){
+				 			if(orderStorage[j].goodsPostfee || orderStorage[j].goodsPostfee!=' '){
 
 						 		groupPostfee=parseFloat(orderStorage[j].goodsPostfee);
 						 		
@@ -766,22 +785,20 @@
 				 	
 				 }
 				 arrpostFee.push(parseFloat(groupPostfee).toFixed(2));
-			}
-			
-			 
-			 
+			} 
 			 
 			for(var i= 0;i<data.cates.length;i++){
 				//分组 金额 和 数量 小计
-				var groupNum=0,groupMoney=0;
+				var groupNum=0,groupMoney=0,deliveryFee=0;
 				 for(var j = 0;j<orderStorage.length;j++){
 				 	if(orderStorage[j].shopName ==  data.cates[i]){
 				 		groupNum+=parseFloat(orderStorage[j].goodsnum);
-				 		groupMoney+=parseFloat(orderStorage[j].goodsPrice)*parseFloat(orderStorage[j].goodsnum); 
+				 		deliveryFee+=parseFloat(orderStorage[j].goodsDelivery)
+				 		groupMoney+=parseFloat(orderStorage[j].goodsPrice)*parseFloat(orderStorage[j].goodsnum);
 				 	} 
 				 } 
 				 arrNum.push(groupNum);
-				 arrMoney.push(parseFloat(parseFloat(groupMoney)+parseFloat(arrpostFee[i])+parseFloat(deliveryFee)).toFixed(2));
+				 arrMoney.push(parseFloat(groupMoney+deliveryFee)+parseFloat(arrpostFee[i]));
 			}
 			
 			//分组商品总价
@@ -789,7 +806,6 @@
 				allGroup+=parseFloat(arrMoney[i])
 				
 			}
-			
 			//分商店  订单数据 小计
 			
 			for(var i= 0;i<shopID.length;i++){ 
@@ -809,17 +825,18 @@
 			 	}
 				 orderSubmitData.push(orderList);
 			}
-			
-			
 			data.arrpostFee=arrpostFee;
 			data.arrNum=arrNum;
 			data.arrMoney=arrMoney; 
 			data.myurl = serverimgUrl;
 			var html = template('orderData', data);
-			document.getElementById('orderTpl').innerHTML = html;
-			if(deliveryFee>0){
-				document.getElementById('deliveryFee').innerHTML=deliveryFee;//跨境邮费
-			}
+			document.getElementById('orderTpl').innerHTML = html; 
+			
+			//物流选择
+			$(".dlc div").click(function(){
+				$(this).parent().prev().find(".wlway").html($(this).html());
+				$(".choosewl").removeClass("mui-active")
+			})
 			
 			  countTotalPay();
 			  function countTotalPay(){
@@ -1134,7 +1151,7 @@
 										timeout:10000,//超时时间设置为10秒；
 										success:function(data){
 											plus.nativeUI.closeWaiting() 
-											alert(JSON.stringify(data))
+//											alert(JSON.stringify(data))
 											var data = data.data;
 											console.log("----- 请求订单成功 -----",JSON.stringify(data)); 
 											//购物车 缓存 
@@ -1152,15 +1169,16 @@
 												mui.fire(list,'refresh'); 
 											var varpay;  
 											if(id == 'wxpay'){  
-												varpay = {    "return_code": "SUCCESS",
-													    "return_msg": "OK",
+												varpay = {
+													    "retcode": 0,
+													    "retmsg": "ok",
 													    "appid": "wx779a1427b1aaeb10",
-													    "partnerid": "1438641502",
-													    "prepayid": "wx2017040619250643f5604d320812898689",
+													    "noncestr": "15mx7e1lla6xy7ip",
 													    "package": "Sign=WXPay",
-													    "noncestr": "QmASYbWK320x1cSs",
-													    "timestamp": 1491477906,
-													    "sign": "3EC176593C0BBAEFC418DF16A1458703"
+													    "partnerid": "1438641502",
+													    "prepayid": "wx20170407113843df9c4809df0616281832",
+													    "timestamp": 1491536323,
+													    "sign": "3ec176593c0bbaefc418df16a1458703"
 													}
 												//微信
 												plus.payment.request(pays[id],varpay,function(result){
