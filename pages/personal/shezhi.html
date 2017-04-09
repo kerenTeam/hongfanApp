@@ -22,7 +22,7 @@
 				background-color: rgba(0,0,0,0.1);
 				-webkit-transform: scaleY(.5);
 			}
-			#main li{height: 55px;line-height: 55px;padding-left: 20px; background-color: #fff;font-size: 15px;color: #333;}
+			#main li{height: 50px;line-height: 50px;padding-left: 20px; background-color: #fff;font-size: 15px;color: #333;}
 			#main li span{font-size: 20px;color: #999;float: right;margin: 18px 10px 0;} 
 			.aClick:active{background-color: #eee !important;}
 			#xieyi{text-align: center;margin-top: 60px;color: #e21919;font-size: 13px;}
@@ -37,8 +37,8 @@
 		<div id="main"> 
 			<ul>
 				<li class="aClick" id="editdata" style="margin-top: 70px;">编辑资料<span class="mui-icon mui-icon-arrowright"></span></li>
-				<li class="liafter aClick" style="margin-top: 20px;">修改密码<span class="mui-icon mui-icon-arrowright"></span></li>
-				<li class="aClick">检查更新</li>
+				<li class="aClick" id="editpw" style="margin-top: 20px;">修改密码<span class="mui-icon mui-icon-arrowright"></span></li>
+				<li class="aClick" id="appupgrade" style="display: none;">检查更新</li>
 				<li class="aClick" id="aboutme" style="margin-top: 20px;">关于<span class="mui-icon mui-icon-arrowright"></span></li>
 				<li class="aClick" id="Signout" style="margin-top: 20px;text-align: center;padding: 0;color: #e21919;;">退出登录</li>
 			</ul>
@@ -47,15 +47,28 @@
 			</div>
 			<div id="" style="text-align: center;margin-top: 40px;color: #777;font-size: 11px;line-height: 20px;"> 
 				© 红帆广场集团  &nbsp; hiji.com<br /> 
-				当前版本号: v1.30
+				当前版本号: v<span id="version">- - -</span>
 			</div>
 	    </div>
 	</body>
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/artTemplate-native.js"></script> 
+	<script src="../../js/update.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
+			//检测设备信息
+			!function(){
+				plus.runtime.getProperty(plus.runtime.appid,function(inf){//显示当前版本号
+		        	mui('#version')[0].innerHTML = inf.version;
+			    });
+				if(/android/i.test(navigator.userAgent)){
+					mui('#editpw')[0].className += ' liafter';
+					mui('#appupgrade')[0].style.display = 'block'; 
+					mui('#appupgrade')[0].addEventListener('tap',function(){
+						checkUpdate();  
+					})
+				}
+			}();
 			//关于
 			mui('#aboutme')[0].addEventListener('tap',function(){
 				openview({

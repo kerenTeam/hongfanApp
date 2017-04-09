@@ -75,20 +75,16 @@
 		</nav>
 		<script type="text/javascript" src="../js/update.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			 //mui初始化 
-			//打开qq对话框
 			function openQQ() {
 				if(/android/i.test(navigator.userAgent)) { //判断为android  
 					document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
 				} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
 					document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
-				} else { //pc端访问  
-					//				mui('#downGame')[0].remove();
+				} else {//pc端访问  
 				}
 			}
 			var subpages = ['main.html', 'cart.html', 'find.html','qq.html','center.html'];
 			var subpages_id = ['main', 'cart', 'find','qq','center'];
- 
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
@@ -96,8 +92,9 @@
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				//检查更新
-//				checkUpdate();
+				if(/android/i.test(navigator.userAgent)){
+//					checkUpdate(true);
+				}
 				//处理父子页面的mask遮罩联动
 			    var mask,oldclose;
 				mask=mui.createMask();
@@ -204,63 +201,49 @@
 					},600);
 				    
 				}else if(targetTab=="qq.html"){
-						plus.share.getServices( function(s){
-							console.log(s);
-							mui.each(s,function (index,element) {
-								if(element.description == 'QQ'){
-									if(element.nativeClient == false){
-										alert('请先安装QQ');
-									}else{ 
-										mui.openWindow({
-										 	url:"http://q.url.cn/s/m0apGLm",
-										 	style:{"bottom":'50px',"top":0},
-										 	show:{
-										      aniShow:'fade-in',
-										      duration:300,//页面动画持续时间
-										   	},
-										   	waiting:{
-										      autoShow:false,//自动显示等待框，默认为true
-										    }
-										 })
-									}
-									return false;
-								}
-								
-							})
-						}, function(e){  
-							console.log( "获取分享服务列表失败："+e.message );
-						} );
-						//偷偷返回方法 
-						var activeTabid = activeTab.split('.')[0];
-						if(activeTab == 'main.html'){
-							activeTabid = 'defaultTab'; 
-						}
-						var appIndex = plus.webview.getLaunchWebview();
-						var mainweb = plus.webview.getWebviewById(activeTab);
-						var timemain = setTimeout(function(){
-							mui.fire(appIndex,'gohome',{hrefid:activeTabid});
-							plus.webview.show(mainweb);
-						},600);
+					if (targetTab == activeTab) {
+						return;
+					}else{
+						plus.webview.show(targetTab,"fade-in",300); 
+						mui.fire(plus.webview.getWebviewById('qq.html'),'refresh')
+					}
+//						plus.share.getServices( function(s){
+//							console.log(s);
+//							mui.each(s,function (index,element) {
+//								if(element.description == 'QQ'){
+//									if(element.nativeClient == false){
+//										alert('请先安装QQ');
+//									}else{
+//										var w = plus.webview.create( "http://q.url.cn/s/m0apGLm",'m0apGLm',{bottom:'50px'}); 
+//											w.show(); // 显示窗口
+//									}
+//									return false;
+//								}
+//								
+//							})
+//						}, function(e){  
+//							console.log( "获取分享服务列表失败："+e.message );
+//						} );
 					    
 				}else{
 					if (targetTab == activeTab) {
-					return;
-				}
-				//显示目标选项卡
-				//若为iOS平台或非首次显示，则直接显示
-				if(mui.os.ios||aniShow[targetTab]){
+						return;
+					}
+					//显示目标选项卡
+					//若为iOS平台或非首次显示，则直接显示
+//					if(mui.os.ios||aniShow[targetTab]){
+//						plus.webview.show(targetTab,"fade-in",300);
+//					}else{
+						//否则，使用fade-in动画，且保存变量
+	//					var temp = {};
+	//					temp[targetTab] = "true";
+	//					mui.extend(aniShow,temp);
+//						plus.webview.show(targetTab,"fade-in",300); 
+//					}
+				
 					plus.webview.show(targetTab,"fade-in",300);
-				}else{
-					//否则，使用fade-in动画，且保存变量
-//					var temp = {};
-//					temp[targetTab] = "true";
-//					mui.extend(aniShow,temp);
-					plus.webview.show(targetTab,"fade-in",300); 
+					//隐藏当前;
 				}
-				//隐藏当前;
-				}
-					
-				 
 				
 				plus.webview.hide(activeTab);
 				//更改当前活跃的选项卡
