@@ -152,11 +152,24 @@
 	<body style="display: none;">
 
 		<header id="header" class="mui-bar mui-bar-transparent">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">个人主页</h1>
+			<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="centertitle" class="mui-title">个人主页</h1>
 		</header>
-		<script src="../js/statusBar.js"></script>
-		<!--状态栏-->
+		<!--状态栏开始-->
+		<div id="sBar" style="background-color: #9d9d9d;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+		<script type="text/javascript">
+			var immersed = 0;
+			var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+			    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+			}
+			var statusBar = document.getElementById('sBar');//这是模拟状态栏
+			var headdiv = document.getElementById('header');//这是现有的header
+			document.body.style.paddingTop =  immersed+'px';
+			statusBar&&(statusBar.style.height = immersed+'px');
+			headdiv&&(headdiv.style.top = immersed+'px');
+		</script>
+		<!--状态栏结束-->
 		<!--<div id="container">-->
 		<div id="main">
 			<div class="clearfloat box-s box-ss" id="userBox">
@@ -321,17 +334,20 @@
 		$(window).scroll(function() { 
            var navBarHeight = 50;  
             var targetID = "#header"; 
-            //Window Math
             var scrollTo = $(window).scrollTop(); 
             if (scrollTo > navBarHeight) {
                 $(targetID).css({
-                    "background-image": "url(../img/header.png)","background-size":"100%"
+              		//"background-image": "url(../img/header.png)","background-size":"100%"
                 });
+                $('#leftbtn').css({'color':'#666'});
+                $('#centertitle').css({'color':'#666'});
             } 
             if (scrollTo < navBarHeight) {
                 $(targetID).css({
                     "background-image": "none"
                 });
+                $('#leftbtn').css({'color':'#fff'});
+                $('#centertitle').css({'color':'#fff'});
             } 
         }).trigger('scroll');
 		
