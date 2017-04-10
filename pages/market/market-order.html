@@ -421,6 +421,9 @@
 				-webkit-transform-origin: bottom;
 				background-color: #D1D2D4;
 			}
+			.wlway{
+				padding-right: 15px;
+			}
 		</style>
 	</head>
 
@@ -502,7 +505,7 @@
 							</dd>
 							<%}%>
 							<%}%>
-							<dd class="dd-padding kv-line-r postfeeWrap">
+							<dd class="dd-padding kv-line-r postfeeWrap ddwl">
 								<%if(shopID[i]==0){%> 
 								<h6>配送方式</h6> 
 									<%if(arrpostFee[i]==0 || !arrpostFee[i]||arrpostFee[i]==' '){%>
@@ -511,9 +514,8 @@
 											<p class="jifen">默认邮费<span style="color: #999;"><%=arrpostFee[i]%></span>元</p>
 										<%}%> 
 									<%}else{%>
-								
 								<li class="mui-table-view-cell mui-collapse choosewl">
-									<a class="mui-navigate-right" href="#"><h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway">选择物流</span></a>
+									<a class="mui-navigate-right" href="#"><h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">选择物流</span></a>
 									<div class="mui-collapse-content dlc">
 										<div>申通快递</div>
 										<div>中通快递</div> 
@@ -834,6 +836,9 @@
 			
 			//物流选择
 			$(".dlc div").click(function(){
+				if($(this).parent().prev().find(".wlway").html() == "自提"){
+					$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
+				}
 				$(this).parent().prev().find(".wlway").html($(this).html());
 				$(".choosewl").removeClass("mui-active")
 			})
@@ -977,20 +982,16 @@
 					        				
 					        				var curPost =parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
 					        				$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(curPost-dataPostfee);
-					        				$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提')
+					        				$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提');
+//					        				$(this).parentsUntil("#orderTpl").find(".ddwl").html('<h6>配送方式</h6><p class="jifen">自提</p>')
 					        				 
 					        			 countTotalPay();
 					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(1)
 					        			}else{
 					        				var curPost =parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
-					        				$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(curPost+dataPostfee)
-					        				if(dataPostfee==0){
-					        				   $(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('快递 免邮')
-					        					
-					        				}else{
-					        					$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('快递 '+dataPostfee+"元")
-
-					        				}
+					        				$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(curPost+dataPostfee);
+					        				$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('选择物流')
+ 
 					        				 countTotalPay();
 					        			$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
 					        			}

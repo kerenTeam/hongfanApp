@@ -74,17 +74,17 @@
 			 
 			 @media (min-width: 600px) {
 			 	#mainpic {
-			 		-webkit-column-count: 5;
-			 		-moz-column-count: 5;
-			 		column-count: 5;
+			 		-webkit-column-count: 3;
+			 		-moz-column-count: 3;
+			 		column-count: 3;
 			 	}
 			 }
 			 
 			 @media (min-width: 1000px) {
 			 	#mainpic {
-			 		-webkit-column-count: 7;
-			 		-moz-column-count: 7;
-			 		column-count: 7;
+			 		-webkit-column-count: 5;
+			 		-moz-column-count: 5;
+			 		column-count: 5;
 			 	}
 			 }
 			 /*加载*/
@@ -93,7 +93,7 @@
 				text-align: center;
 				font-size: 15px;
 				line-height: 30px;
-				min-height: 40px;
+				
 			}
 			
 			#upload img {
@@ -118,16 +118,16 @@
 			<script type="text/html" id="tagNewTpl">
 				<div id="mainpic">
 					<%for(var i=0;i<recommendData.length;i++){%>
-						<div class="boxf" onclick="findInfo('<%=recommendData[i].news_id%>','<%=recommendData[i].news_id%>','<%=myUrl%><%=recommendData[i].avatar[0].picImg%>','<%=recommendData[i].nickname%>')">
+						<div class="boxf" onclick="findInfo('<%=recommendData[i].news_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')">
 							<div class="pic">
 								<%if(recommendData[i].pic){%>
-									<img src="<%=recommendData[i].pic%>">
+									<img src="<%=myUrl+recommendData[i].pic%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';">
 									<%}else{%>
 										<img src="../../img/market/nodata.svg" alt="" />
 										<%}%> 
 								<div class="findUser">
 									<%if(recommendData[i].avatar){%>
-									<img src="<%=myUrl%><%=recommendData[i].avatar[0].picImg%>" alt="" />
+									<img src="<%=recommendData[i].avatar%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" alt="" />
 									<%}else{%>
 										<img src="../../img/10.png" alt="" />
 										<%}%>
@@ -183,8 +183,9 @@
 						alert(JSON.stringify(data));
 						if(dataobj.length != 0){
 							for(var i=0;i<dataobj.length;i++){
-								if(dataobj[i].avatar && typeof(dataobj[i].avatar) ==={}){
-									dataobj[i].avatar = JSON.parse(dataobj[i].avatar) 
+								dataobj[i].pic = JSON.parse(dataobj[i].pic)[0].picImg;
+								if(dataobj[i].avatar.indexOf("[") != -1) {
+									dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 								}
 							}
 						} 
@@ -215,8 +216,9 @@
 												var dataobj = data.data.data
 												if(dataobj.length != 0){
 													for(var i=0;i<dataobj.length;i++){
-														if(dataobj[i].avatar && typeof(dataobj[i].avatar) =={}){
-															dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+														dataobj[i].pic = JSON.parse(dataobj[i].pic)[0].picImg;
+														if(dataobj[i].avatar.indexOf("[") != -1) {
+															dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 														}
 													}
 												}  
