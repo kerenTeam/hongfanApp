@@ -499,13 +499,14 @@
 										<%if(brief.originalprice){%>
 											<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;"><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;">原价 <del>￥<%=brief.originalprice%></del></small></p>
 											<%}else{%>
-											<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;"><%=brief.price%></samp></p>
+											<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;"><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;">原价 <del>￥<%=brief.price%></del></small></p>
 												<%}%>
 									<%}else{%>
 									<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;">0</samp></p>
 									<%}%>
 
 								</div>
+								
 								<div class="xia">
 									<div class="mui-row">
 										<div class="mui-col-sm-4 mui-col-xs-4 Mleft">
@@ -618,8 +619,13 @@
 							</a>
 						</li>
 						<li>
-							<a  onclick="openQQ()">
+							<a onclick="openQQ()">
 								<img src="../../img/market/custom.svg" style="width: 25px;vertical-align: middle;margin-top: 3px;"/>
+							</a>
+						</li>
+						<li>
+							<a onclick="collect()">
+								<img src="../../img/market/collect.svg" id="collect" style="width: 25px;vertical-align: middle;margin-top: 3px;"/>
 							</a>
 						</li>
 					</ul>
@@ -966,13 +972,7 @@
 														$(".db").css("background","#F53C42")
 													 }
 												}
-											 
-											
-												//有库存
-												
-//											 	newstep = $(this).attr("data-priceStep"); 
-//												priceChange = priceChange + parseInt(newstep) - parseInt(oldstep);
-//												$('#priceChange').html(priceChange) 
+											  
 											},
 											error:function(xhr,type,errorThrown){
 												plus.nativeUI.closeWaiting();
@@ -983,16 +983,16 @@
 						var priceChange = parseInt($(".jifen samp").html());
 //							alert(priceChange)
 						//评论
-//						var cemmentObj = {} 
-//						for(var i = 0; i < commentobj.length; i++) {
-//							commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0, 10) + ' ' + commentobj[i].seller_ctime.substring(11, 16);
-//							commentobj[i].comment_pic = eval("(" + commentobj[i].comment_pic + ")");
-//							commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
-//						}
-//						cemmentObj.myUrl = serverimgUrl;
-//						cemmentObj.cemmentData = commentobj;
-//
-//						document.getElementById("moll_comment").innerHTML = template("commentTpl", cemmentObj);
+						var cemmentObj = {} 
+						for(var i = 0; i < commentobj.length; i++) {
+							commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0, 10) + ' ' + commentobj[i].seller_ctime.substring(11, 16);
+							commentobj[i].comment_pic = eval("(" + commentobj[i].comment_pic + ")");
+							commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
+						}
+						cemmentObj.myUrl = serverimgUrl;
+						cemmentObj.cemmentData = commentobj;
+
+						document.getElementById("moll_comment").innerHTML = template("commentTpl", cemmentObj);
 
 						// plus.storage.removeItem('$cartStorage');
 						//购物车 缓存
@@ -1137,6 +1137,16 @@
 						pageId: "detail"
 					}
 				})
+			}
+			//收藏
+			window.collect = function(){
+				if($("#collect").attr("src") == "../../img/market/collect.svg"){
+					$("#collect").attr("src", "../../img/market/collects.svg");
+					mui.toast("收藏成功")
+				}else{
+					$("#collect").attr("src", "../../img/market/collect.svg");
+					mui.toast("取消收藏")
+				}
 			}
 			mui.previewImage();
 

@@ -522,7 +522,7 @@
 		</style>
 	</head>
 
-	<body>
+	<body style="display: none;">
 
 	 
 		<header class="mui-bar mui-bar-nav" id="header">
@@ -543,7 +543,7 @@
 			<script type="text/html" id="newsInfoTpl">
 				<%if(recommendData.newsinfodata){%>
 					<!--<img src="<%=myUrl%><%=recommendData.newsinfodata.pic%>" alt="" data-preview-src="" data-preview-group="1" />-->
-					<img src="<%=recommendData.newsinfodata[0].pic%>" alt="" data-preview-src="" data-preview-group="1" />
+					<img src="<%=recommendData.newsinfodata[0].pic%>" alt="" data-preview-src="" data-preview-group="1"  onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 					<p class="txtinfo">
 						<%if(recommendData.tags && recommendData.tags.length){%>
 							<%for(var i=0;i<recommendData.tags.length;i++){%>
@@ -746,7 +746,7 @@
 				}
 				
 			})
-			
+			plus.nativeUI.showWaiting();
 			//判断是否已关注发布者
 			mui.ajax(serverUrl+'/api/news/myfollow',{
 				data:{"userid":myuserid},
@@ -846,6 +846,7 @@
 							recommendObj.myUrl = serverimgUrl;
 							recommendObj.recommendData = dataobj;
 							document.getElementById("newsInfo").innerHTML = template("newsInfoTpl",recommendObj);
+							$("body").css("display","block");
 							if(dataobj.liker){
 								for(var i=0;i<dataobj.liker.length;i++){
 									if(dataobj.liker[i].user_id == myuserid){
@@ -916,7 +917,8 @@
 										$(this).addClass("heartAnimation").attr("rel","unlike"); 
 										
 										//点赞帖子   
-											likeThis(newsId,likedUserid,myuserid,oldtoken) 
+											likeThis(newsId,likedUserid,myuserid,oldtoken) ;
+											mui.toast("喜欢成功")
 									}
 									else{  
 										$("#likeCount"+messageID).html(C-1);
@@ -924,6 +926,7 @@
 										$(this).css("background-position","left");
 										//取消点赞
 										likeThis(newsId,likedUserid,myuserid,oldtoken)
+										mui.toast("取消喜欢")
 									}
 								}else{
 									mui.toast('请登录');
@@ -1057,13 +1060,14 @@
 											$(this).addClass("heartAnimation").attr("rel","unlike"); 
 											
 											//点赞评论 
-											likeCmt(commitid,myuserid,oldtoken) 
+											likeCmt(commitid,myuserid,oldtoken);
+											mui.toast("喜欢成功")
 										}
 										else{  
 											
 											//取消点赞评论
 											likeCmt(commitid,myuserid,oldtoken) 
-											
+											mui.toast("取消喜欢")
 											var nowLm = C-1;
 											if(nowLm == 0){
 												nowLm ='';
