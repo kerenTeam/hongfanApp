@@ -1,6 +1,6 @@
 //var serverUrl='http://192.168.199.191:7200';
-var serverUrl='http://192.168.0.128:7200';
-//var serverUrl='http://hiji.hifete.com';
+//var serverUrl='http://192.168.0.128:7200';
+var serverUrl='http://hiji.hifete.com';
 var serverUrl0='http://192.168.199.191:7200'; 
 
 var partner_key='syet234876fxcvdj58yjdbn475serop8';

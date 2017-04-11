@@ -2,12 +2,12 @@
 	/* 使用方法 : 有header是, 置于其下, 有筛选 节点时, 置于其下
 	 * 有筛选节点需保证 <div class="screening" id="screeningdiv">
 	 * 保证下拉框的id
-	 * 其他需单独适配,需用单独加的方法(机票列表,火车列表,个人中心)
+	 * 其他需单独适配,需用单独加的方法(机票列表,火车列表,center，个人主页，他人主页，main，)
 	 */
 	//这是封装的方法
 	var statusBar = document.createElement("div");//这是模拟状态栏
 	document.body.appendChild(statusBar);
-	statusBar.style.cssText = "background-color: #e93128;position: fixed;width:100%;top: 0;z-index: 9999";//状态栏颜色
+	statusBar.style.cssText = "background-color: #af4444;position: fixed;width:100%;top: 0;z-index: 9999";//状态栏颜色
 	
 	// 获取状态栏的高度
 	var immersed = 0;
@@ -45,7 +45,7 @@
 	}
 
 //	这是单独加模拟状态栏的方法
-//	<div id="sBar" style="background-color: #f53c42;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+//	<div id="sBar" style="background-color: #af4444;position: fixed;width:100%;top: 0;z-index: 9999"></div>
 //	<script type="text/javascript">
 //		var immersed = 0;
 //		var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);

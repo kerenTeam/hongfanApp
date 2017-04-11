@@ -69,8 +69,9 @@
 				margin-bottom: 15px;
 			}
 			#userBox{
-				background-color: #F53C42;
-				padding: 12px 0; position: relative;
+				background-color: #eca4a6;
+			    padding: 35px 0 12px;
+				position: relative;
 			}
 			.myInfo{
 				width: 85px;
@@ -152,7 +153,7 @@
 			}
 			#beijing{position: absolute;z-index:10;width: 100%;height: 100%;top: 0;overflow: hidden; -webkit-filter: blur(5px);}
 			#beijing img{width: 100%;position: relative;top: -40%;}
-			#beijing2{position: absolute;z-index:20;width: 100%;height: 100%;top: 0;background-color: rgba(255, 0, 0, 0.67)}
+			#beijing2{position: absolute;z-index:20;width: 100%;height: 100%;top: 0;background-color: rgba(241, 63, 63, 0.76);}
 			#userBox .content{position: relative; z-index: 30;}
 			#numjifen{z-index: 99;font-weight: 500;padding: 0;line-height: 20px;font-size: 14px;}
 			body{background-color: #f8f8f8 !important;} 
@@ -172,6 +173,7 @@
     		#column table tr{border-bottom: 1px solid #f8f8f8;}
     		.cpage{color: white;margin-right: 20px;float: right;margin-top: -5px;}
     		.cpage img{width: 0.15rem;}
+    		#fixdtop{position: fixed;top: 0; height: 25px;width:100%;z-index: 100;} 
 		</style>
 		
 	</head>
@@ -179,6 +181,7 @@
     	<div class="clearfloat box-s box-ss" id="userBox">
     		<div id="beijing"><img id="mypic1" src="../img/morentouxiang.jpg"/></div>
     		<div id="beijing2"></div>
+    		<div id="fixdtop"></div>
     		<div class="content clearfloat fl mui-row white">
 			    <div class="mui-col-sm-4 mui-col-xs-4" style="padding-top: 18px;position: relative;left: 3px;"><img src="../img/morentouxiang.jpg" class="myInfo" id="mypic"/></div>
 			    <div class="mui-col-sm-8 mui-col-xs-8 writing">
@@ -194,15 +197,14 @@
 			    </div>
     			<button type="button" id="screeningdiv" style="top: 10px;" class="mui-btn mui-btn-danger mui-btn-outlined fr dao">签到</button>
     		</div>
-    		
-		    <!--这是单独加模拟状态栏的方法-->
-			<div id="sBar" style="background-color: #f53c42;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+		    <!--这是单独加模拟状态栏的方法            弃用-->
+			<!--<div id="sBar" style="background-color: #af4444;position: fixed;width:100%;top: 0;z-index: 9999"></div>
 			<script type="text/javascript">
-				var immersed = 0;
+				var immersed = 25;
 				var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
 				if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
 				    immersed=parseFloat(ms[2]);// 获取状态栏的高度
-				} 
+				}  
 				var statusBar = document.getElementById('sBar');//这是模拟状态栏
 				var headdiv = document.getElementById('header');//这是现有的header
 				var screeningdiv = document.getElementById('screeningdiv');//这是现有签到节点
@@ -211,8 +213,17 @@
 				headdiv&&(headdiv.style.top = immersed+'px');
 				var oldtop = parseInt(screeningdiv.style.top);
 				screeningdiv&&(screeningdiv.style.top = immersed + oldtop +'px');
-			</script>
+			</script>-->
     	</div>
+    	<script type="text/javascript">
+    		window.onscroll = function(){
+    			if (document.body.scrollTop > 25) {
+    				document.getElementById('fixdtop').style.backgroundColor = '#af4444';
+    			} else{
+    				document.getElementById('fixdtop').style.background = 'none';
+    			}
+    		}
+    	</script>
     	<!--我的订单-->
     	<div id="wodedin">
     		<div id="wodedintop" class="aClick group_Order" data-status="all">
@@ -243,17 +254,16 @@
     				<td class="aClick wodefabu"><img  src="../img/fabu.svg"/>我的发布</td>  
     				<td class="aClick wodedizhi"><img style="width: 26px;padding-bottom: 2px;" src="../img/dizhi.svg"/>我的地址</td> 
     				<td class="aClick myCHAGE"><img style="width: 25px;padding-bottom: 3px;" src="../img/duihuan.svg"/>兑换</td>
-    				
     			</tr>
     			<tr> 
     				<td class="aClick wodeyouhuijuan"><img  src="../img/youhuijuan.svg"/>优惠卷</td>
     				<td class="aClick integral_oder"><img style="width: 25px;padding-bottom: 3px;" src="../img/jifen.svg"/>积分</td>
     				<td class="aClick jfmall"><img src="../img/jfmall.svg"/>积分商城</td> 
-    				<td class="aClick" id="writeOff1"><img style="width: 26px;padding-bottom: 2px;" src="../img/hexiao1.svg"/>核销</td> 
-    				
+    				<td class="aClick shezhi"><img  src="../img/shezhi.svg"/>设置</td> 
     			</tr>
     			<tr>
-    				<td class="aClick shezhi"><img  src="../img/shezhi.svg"/>设置</td> 
+    				
+    				<td class="aClick" id="writeOff1" style="display: none;"><img style="width: 26px;padding-bottom: 2px;" src="../img/hexiao1.svg"/>核销</td> 
     			</tr>
      		</table>
     	</div>
@@ -326,8 +336,8 @@
 									
 									
 									//显示核销
-									if(data.data[0].gid == 2){
-										 mui('.writeOff1')[0].style.display = 'block';
+									if(data.data[0].gid != 2){
+										 mui('#writeOff1')[0].style.display = 'block';
 										 mui('#writeOff1')[0].addEventListener('tap',function(){
 											openview({
 												view:'personal/barcode_scan.html' 
