@@ -624,7 +624,7 @@
 							</a>
 						</li>
 						<li>
-							<a onclick="collect()">
+							<a onclick="collectfun()">
 								<img src="../../img/market/collect.svg" id="collect" style="width: 25px;vertical-align: middle;margin-top: 3px;"/>
 							</a>
 						</li>
@@ -814,7 +814,7 @@
 						var allprop;
 						// 请求属性
 						var parameteNameo, parameteValueo;
-						mui.ajax('http://192.168.0.128:6789/index.php/Api_goods/get_goods_property', {
+						mui.ajax(propUrl+'/index.php/Api_goods/get_goods_property', {
 							data: {
 								"goods_id": goodId
 							},
@@ -1138,16 +1138,7 @@
 					}
 				})
 			}
-			//收藏
-			window.collect = function(){
-				if($("#collect").attr("src") == "../../img/market/collect.svg"){
-					$("#collect").attr("src", "../../img/market/collects.svg");
-					mui.toast("收藏成功")
-				}else{
-					$("#collect").attr("src", "../../img/market/collect.svg");
-					mui.toast("取消收藏")
-				}
-			}
+			
 			mui.previewImage();
 
 			function parseDom(arg) { //节点转换方法
@@ -1156,6 +1147,16 @@
 				return objE;
 			};
 		})
+		//收藏
+		function collectfun(){
+			if($("#collect").attr("src") == "../../img/market/collect.svg"){
+				$("#collect").attr("src", "../../img/market/collects.svg");
+				mui.toast("收藏成功")
+			}else{
+				$("#collect").attr("src", "../../img/market/collect.svg");
+				mui.toast("取消收藏")
+			}
+		}
 	</script>
 
 </html>

@@ -114,9 +114,9 @@
 		<!--<div id="container">-->
 		<div id="main">
 			 
-			<div id="tagNews"></div>
+			<div id="mainpic"></div>
 			<script type="text/html" id="tagNewTpl">
-				<div id="mainpic">
+			 
 					<%for(var i=0;i<recommendData.length;i++){%>
 						<div class="boxf" onclick="findInfo('<%=recommendData[i].news_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')">
 							<div class="pic">
@@ -139,8 +139,7 @@
 								</div>
 							</div>
 						</div>
-					<%}%>
-				</div>
+					<%}%> 
 			</script>
 	 		 
 			<div class="upload text-center text-xs gray" id="upload"></div>
@@ -179,11 +178,12 @@
 				success:function(data,type,xhr){
 					
 					if(data.errno == 0) { 
-						var dataobj = data.data.data; 
-						alert(JSON.stringify(data));
+						var dataobj = data.data.data;  
 						if(dataobj.length != 0){
 							for(var i=0;i<dataobj.length;i++){
-								dataobj[i].pic = JSON.parse(dataobj[i].pic)[0].picImg;
+								if(dataobj[i].pic){
+									dataobj[i].pic = JSON.parse(dataobj[i].pic)[0].picImg;
+								}
 								if(dataobj[i].avatar.indexOf("[") != -1) {
 									dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 								}
@@ -192,7 +192,7 @@
 						var recommendObj = {};
 						recommendObj.myUrl = serverimgUrl;
 						recommendObj.recommendData = dataobj;
-						document.getElementById("tagNews").innerHTML = template("tagNewTpl", recommendObj);
+						document.getElementById("mainpic").innerHTML = template("tagNewTpl", recommendObj);
 						mui("#upload")[0].innerHTML = ""; 
 						//上滑加载
 						$(window).scroll(function() {　　
@@ -216,16 +216,18 @@
 												var dataobj = data.data.data
 												if(dataobj.length != 0){
 													for(var i=0;i<dataobj.length;i++){
-														dataobj[i].pic = JSON.parse(dataobj[i].pic)[0].picImg;
+														if(dataobj[i].pic){
+															dataobj[i].pic = JSON.parse(dataobj[i].pic)[0].picImg;
+														}	
 														if(dataobj[i].avatar.indexOf("[") != -1) {
 															dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 														}
-													}
+													} 
 												}  
 												var recommendObj = {}
 												recommendObj.myUrl = serverimgUrl;
 												recommendObj.recommendData = dataobj
-												document.getElementById("tagNews").innerHTML += template("tagNewTpl", recommendObj);
+												document.getElementById("mainpic").innerHTML += template("tagNewTpl", recommendObj);
 											}
 											mui("#upload")[0].innerHTML = "";
 											Spagenum++; //加载成功,当前页+1
