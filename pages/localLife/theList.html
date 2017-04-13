@@ -79,8 +79,18 @@
 		</header>	
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 			<div id="main">
+				<!--列表loading-->
+				<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
+					line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+					<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
+				</div>
+				<!--列表loading结束-->
+				
 				<section class="dealcard-waimai">
-					<dl class="dealcard" id="infolistdiv"></dl>
+					
+					<dl class="dealcard" id="infolistdiv">
+						
+					</dl>
 					<script type="text/html" id="infolist">
 						<% for(var i=0; i<list.length; i++){%>
 							<dd class="page-link aClick" onclick="opendetails(<%= list[i].id%>)">
@@ -128,7 +138,7 @@
 		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
 		var headtitle = document.getElementById('headtitle');
 		var oldtoken = plus.storage.getItem('oldToken');
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		//添加刷新监听
 		document.addEventListener('refresh', function() {
 			reload();//加载数据,包括上滑加载
@@ -235,10 +245,10 @@
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
+					closeLoad();//关闭列表loading
 				},
 				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
+					closeLoad();//关闭列表loading
 					mui("#upload")[0].innerHTML = ""; 
 					mui('#nulldiv')[0].style.display = 'block';
 				}

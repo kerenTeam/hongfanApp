@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>领HI豆</title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+	</head> 
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize" style="margin-left: 0;"></a>
+		    <h1 class="mui-title" id="confirmbtn1">领HI豆</h1>
+			<span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
+		</header>
+		<script src="../js/statusBar.js"></script><!--状态栏-->
+		<div id="main">
+			<img src="../img/huiyuan.svg" style="width:5rem;margin: auto;padding:15px;display: block;" alt="" />
+			<button type="button" class="mui-btn mui-btn-warning mui-btn-block" style="width: 50%;margin: auto;">领HI豆</button>
+				
+		</div>
+	
+	
+	
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/app.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var myuserid = plus.storage.getItem('userid');
+			var oldtoken = plus.storage.getItem('oldToken');
+			document.onclick=function(){
+				if(plus.storage.getItem('myToken')){  
+						//执行领取  
+						mui.ajax(serverUrl+'/api/index/cheking',{
+							data:{"userid":myuserid,"intergral_float":2050},
+							type:'post',
+							timeout:10000, 
+							headers:{"token":oldtoken},	              				
+							success:function(data){ 
+								plus.nativeUI.closeWaiting();
+								console.log('领取返回'+JSON.stringify(data));
+								if(data.errno == 0){
+									mui.toast('领取成功');
+								  
+									Refresh();
+								}else{
+	//											mui('.dao')[0].innerHTML = "已领取";
+									mui.toast('每天只能领取一次');
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
+								mui.toast('领取失败'); 
+							}
+						}); 
+				}else{//没登陆直接打开登录页面 
+					mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+				}
+			};
+		})
+		
+	</script>
+	</body>
+
+</html>

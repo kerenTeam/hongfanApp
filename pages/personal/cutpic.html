@@ -1,0 +1,146 @@
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>	
+    <title>头像裁剪</title>
+    <script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/dependencies/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/dependencies/underscore.js"></script>
+    <script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/src/pinchzoom.js"></script>
+    <script src="../../js/mui.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('div.pinch-zoom').each(function () {
+                new RTP.PinchZoom($(this), {});
+            });
+        })
+    </script>
+    <script type="text/javascript">try {
+	    var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
+	    var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
+	    var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
+	    var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
+	    var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+	    } catch (ex) { console.error('Error executing AG js: ' + ex); }
+    </script>
+    <style type="text/css">
+        div.pinch-zoom{width: 100%;-webkit-user-drag: none;}
+		body,
+		html{text-align: center;color: white;}
+		body{font-family: Georgia;}
+		div.page{margin: 50px auto 50px auto; max-width: 500px;position: relative;text-align: left;}
+		div.pinch-zoom {position: relative;}
+		div.pinch-zoom a{color: white;position: absolute;bottom: 10px;right: 10px;text-decoration: none; background: #333;padding: 3px;font-size: 11px;}
+		div.pinch-zoom div.description {position: absolute;top: 500px; left: 210px;}
+		div.pinch-zoom div.description h1{font-size: 40px; margin: 0px; margin-bottom: 10px;}
+		div.pinch-zoom div.description p{margin: 0px;}
+		ul{margin: 0;padding: 0;}
+        /*自定义*/
+        *{margin: 0}
+        body{background-color:  rgba(0,0,0,0.4)}
+        div.page{padding: 10px 30px;display: table; height: 100%;width: 100%;max-width: 1000px;box-sizing: border-box;margin: 0;}
+        .div22{display: table-cell;vertical-align: middle;margin: 10px;}
+        .div1{display: table; height: 100%;width: 100%;padding: 10px 30px;box-sizing: border-box;background-color: rgba(0,0,0,0.1);
+            position: fixed;top: 0;pointer-events: none;}
+        .div2{display: table-cell;vertical-align: middle;}
+        .div3{width: 100%;background-color: transparent;border: 2px solid #fff;}
+		.bigSize{color: #555;}
+		#Preservation{line-height: 46px; color: green !important;float: right;margin-right: 5px;}
+    </style>
+    <style media="screen" id='style1'></style>
+    <style media="screen" id='style0'>
+        div.pinch-zoom img{width: 100%;-webkit-user-drag: none;}
+    </style>
+
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+	    <h1 class="mui-title">头像裁剪</h1>  
+	    <a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun" id="Preservation">裁剪</a>
+	</header>
+	<script src="../../js/statusBar.js"></script><!--状态栏-->
+	
+
+    <div class="page">
+        <div class="pinch-zoom-container div22" style=" position: relative;">
+            <div class="pinch-zoom" style="transform-origin: 0% 0% 0px; position: absolute; transform: scale(1, 1) translate(0px, 0px);">
+                <!-- <img id='imgdiv' src="http://manuelstofer.github.io/pinchzoom/demo/frog.jpg"> -->
+                <img id='imgdiv' src="">
+            </div>
+        </div>
+    </div>
+    <div class="div1">
+        <div class="div2">
+            <div class="div3">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    	var nowurl = '';
+    	mui.plusReady(function(){
+    		nowurl = plus.webview.currentWebview().parameter;
+    		mui('#imgdiv')[0].src = nowurl;
+    	})
+        window.onload = function(){
+            var containers = document.getElementsByClassName('pinch-zoom-container');
+            var div3 = document.getElementsByClassName('div3')[0];
+            var imgdiv = document.getElementById('imgdiv');
+            containers[1].style.overflow = 'visible';
+            div3.style.height = div3.offsetWidth;
+            imgdiv.onload = function(){
+            	if (imgdiv.offsetWidth < imgdiv.offsetHeight) {
+	                document.getElementById('style1').innerHTML = '.importantdiv{height: '+div3.offsetWidth+'px !important;}';
+	                document.getElementById('style0').innerHTML = 'div.pinch-zoom img{height: 100%;-webkit-user-drag: none;}';
+	                containers[1].className += ' importantdiv';
+	                document.getElementsByClassName('pinch-zoom')[0].style.height = '100%';
+	                document.getElementsByClassName('pinch-zoom')[0].style.textAlign = 'center';
+	            }
+            }
+        }
+		mui.plusReady(function(){
+			var nowurl = plus.webview.currentWebview().parameter;
+			console.log('图片地址'+nowurl); 
+			function Percentage(num){//转百分比
+				var num1 = num.toFixed(2);
+				var num2 = num1.slice(2,4)+"%";
+				return num2;
+			}
+			
+			mui('#Preservation')[0].addEventListener('tap',function(){
+				var flagnum = mui('.div3')[0].offsetWidth;//框的宽度
+				var sizepic = mui('.pinch-zoom')[0].style.webkitTransform;
+				var zoomnum = sizepic.split('scale(')[1].split(') translate')[0].split(', ')[0];//缩放倍数
+				var LocationX = Math.abs(parseInt(sizepic.split('scale(')[1].split('translate(')[1].split(')')[0].split(',')[0]));//位置X
+				var LocationY = Math.abs(parseInt(sizepic.split('scale(')[1].split('translate(')[1].split(')')[0].split(',')[1]));//位置Y
+				var endHeight = parseInt(mui('#imgdiv')[0].offsetHeight * zoomnum);//最终高
+				var endWidth = parseInt(mui('#imgdiv')[0].offsetWidth * zoomnum);//最终宽
+				console.log(endHeight +'++'+endWidth );
+				
+				var BHeight = Percentage(flagnum/endHeight); console.log('高',BHeight);
+				var Bwidth = Percentage(flagnum/endWidth); console.log('宽',Bwidth);
+				var BTop = Percentage(LocationY/endHeight); console.log('上',BTop);
+				var BLeft = Percentage(LocationX/endWidth); console.log('左',BLeft);
+				
+				plus.zip.compressImage({
+					src:nowurl,//目标
+					dst:"file:///storage/emulated/0/androidesk/portrait/Cutpic.jpg",//结果 
+					overwrite:true,
+					clip:{top:BTop,left:BLeft,width:Bwidth,height:BHeight}		// 裁剪图片尺寸
+				},
+				function() {
+					alert("Compress success!"+ mui('#imgdiv')[0].offsetWidth); 
+				},function(error) {
+					alert("Compress error!");
+				});
+			})
+		})
+		
+    </script>
+
+
+</body>
+</html>

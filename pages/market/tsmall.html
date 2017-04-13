@@ -121,7 +121,7 @@
 			}
 			/*精选频道*/
 			.choiceness {
-				margin-top: 10px;
+				margin-top: 5px;
 				padding-bottom: 5px;
 			}
 			.choiceness p{
@@ -320,7 +320,7 @@
 							<div class="box swiper-slide" onclick="goAdv(<%= list[i].id %>)">
 								<p class="overflow_clear">
 									<img src="<%= myUrl %><%= list[i].pic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
-									<span style="height: 50px!important;display: block;"><%= list[i].title%></span>
+									<span style="display: block;padding: 5px;"><%= list[i].title%></span>
 								</p>
 							</div>
 						<% }%>
@@ -381,7 +381,27 @@
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/app.js"></script>
 	<script type="text/javascript">
-	 	statisticsfun('特色馆主页');//统计代码
+	 	//statisticsfun('特色馆主页');//统计代码
+	 	//统计开始
+			mui.plusReady(function(){
+				var starttime = new Date().getTime();
+				var old_back = mui.back;
+				var flagback = 0;
+				mui.back = function(){//结束计时逻辑代码
+					
+					plus.statistic.eventDuration( "leave", 1000, {'特色馆主页': 888} );//统计
+					old_back();
+				}
+				plus.webview.currentWebview().addEventListener( "popGesture", function(){
+					flagback++;
+					if(flagback == 1){//结束计时逻辑代码
+						
+						plus.statistic.eventDuration( "leave", 1000, {'特色馆主页': 888} );//统计
+					}
+				}, false );
+				
+			})
+			//统计开始结束
 	
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 

@@ -155,7 +155,7 @@
 			}
 			/*精选频道*/
 			.choiceness {
-				margin-top: 10px;
+				margin-top: 5px;
 				padding-bottom: 5px;
 			}
 			.choiceness p{
@@ -366,6 +366,11 @@
 								<br/>
 								<p>购物</p>
 							</td>
+							<td class="findstore"> 
+									<img src="../../img/market/findstore.svg"/> 
+								<br/>
+								<p>找店</p>
+							</td> 
 							<td id="Parking"> 
 									<img src="../../img/market/park1.png"/> 
 								<br/>
@@ -385,11 +390,6 @@
 								<p>优惠</p>
 							</td>
 							
-							<td class="findstore"> 
-									<img src="../../img/market/findstore.svg"/> 
-								<br/>
-								<p>找店</p>
-							</td> 
 						</tr>
 						<!--<tr style="margin-top: 10px;">
 							<td class="mtshop"> 
@@ -440,7 +440,6 @@
 								</div>
 								<div class="choiceness">
 									<p class="overflow_clear"><img src="../../img/market/store.png"/>达人探店</p>
-									<p class="gray">达人为你推荐好店</p>
 								</div>
 							</div>
 						</li>
@@ -451,7 +450,6 @@
 								</div>
 								<div class="choiceness">
 									<p class="overflow_clear"><img src="../../img/market/breakfast.png"/>元气吃货</p>
-									<p class="gray">人气餐厅选择</p>
 								</div>
 							</div>
 						</li>
@@ -553,7 +551,56 @@
 		</div>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		statisticsfun('购物中心主页');//统计代码
+		//statisticsfun('购物中心主页');//统计代码
+		//统计开始
+			mui.plusReady(function(){
+				//时间转化	
+				function formatSeconds(value) {
+		            var theTime = parseInt(value);// 秒
+		            var theTime1 = 0;// 分
+		            var theTime2 = 0;// 小时
+		            if(theTime > 60) {
+		                theTime1 = parseInt(theTime/60);
+		                theTime = parseInt(theTime%60);
+		                if(theTime1 > 60) {
+		                    theTime2 = parseInt(theTime1/60);
+		                    theTime1 = parseInt(theTime1%60);
+		                }
+		            }
+			        var result = ""+parseInt(theTime)+"秒";
+		            if(theTime1 > 0) {
+		                result = ""+parseInt(theTime1)+"分"+result;
+		            }
+		            if(theTime2 > 0) {
+		                result = ""+parseInt(theTime2)+"时"+result;
+		            }
+		            return result;
+		        }
+				
+				var starttime = new Date().getTime();
+				var old_back = mui.back;
+				var flagback = 0;
+				mui.back = function(){//结束计时逻辑代码
+					var endtime = new Date().getTime();
+					var intervaltime = (endtime - starttime)/1000;
+					var timeall = formatSeconds(intervaltime);
+					console.log('购物中心主页'  +  timeall + intervaltime);
+					plus.statistic.eventDuration( "leave", 1000, {'购物中心主页': timeall} );//统计
+					old_back();
+				}
+				plus.webview.currentWebview().addEventListener( "popGesture", function(){
+					flagback++;
+					if(flagback == 1){//结束计时逻辑代码
+						var endtime = new Date().getTime();
+						var intervaltime = (endtime - starttime)/1000;
+						var timeall = formatSeconds(intervaltime);
+						console.log('购物中心主页'  +  timeall + intervaltime);
+						plus.statistic.eventDuration( "leave", 1000, {'购物中心主页': timeall} );//统计
+					}
+				}, false );
+				
+			})
+			//统计开始结束
 		 (function(){
 			//跳转页面
 			var bcenter = document.getElementsByClassName('bcenter')[0];
@@ -607,7 +654,7 @@
 //			});
 			mtactivity.addEventListener('tap', function(){
 				openview({
-					view: "../find/thematicActivities.html",
+					view: "../activity/activity.html",
 					extrasobj: {
 						type: 2,
 						acid: 2
@@ -648,7 +695,7 @@
 		mui.plusReady(function(){ 
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//banner数据渲染
 			mui.ajax(serverUrl+'/api/index/banner',{
 				data:{banner_type:3},

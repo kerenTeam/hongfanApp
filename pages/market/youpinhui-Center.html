@@ -429,7 +429,56 @@
 		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<script src="../../js/app.js"></script>
 		<script type="text/javascript"> 
-			statisticsfun('跨境优品主页');//统计代码
+			//statisticsfun('跨境优品主页');//统计代码
+			//统计开始
+			mui.plusReady(function(){
+				//时间转化	
+				function formatSeconds(value) {
+		            var theTime = parseInt(value);// 秒
+		            var theTime1 = 0;// 分
+		            var theTime2 = 0;// 小时
+		            if(theTime > 60) {
+		                theTime1 = parseInt(theTime/60);
+		                theTime = parseInt(theTime%60);
+		                if(theTime1 > 60) {
+		                    theTime2 = parseInt(theTime1/60);
+		                    theTime1 = parseInt(theTime1%60);
+		                }
+		            }
+			        var result = ""+parseInt(theTime)+"秒";
+		            if(theTime1 > 0) {
+		                result = ""+parseInt(theTime1)+"分"+result;
+		            }
+		            if(theTime2 > 0) {
+		                result = ""+parseInt(theTime2)+"时"+result;
+		            }
+		            return result;
+		        }
+				
+				var starttime = new Date().getTime();
+				var old_back = mui.back;
+				var flagback = 0;
+				mui.back = function(){//结束计时逻辑代码
+					var endtime = new Date().getTime();
+					var intervaltime = (endtime - starttime)/1000;
+					var timeall = formatSeconds(intervaltime);
+					console.log('跨境优品主页'  +  timeall + intervaltime);
+					plus.statistic.eventDuration( "leave", 9999, {'跨境优品主页': 9999} );//统计
+					old_back();
+				}
+				plus.webview.currentWebview().addEventListener( "popGesture", function(){
+					flagback++;
+					if(flagback == 1){//结束计时逻辑代码
+						var endtime = new Date().getTime();
+						var intervaltime = (endtime - starttime)/1000;
+						var timeall = formatSeconds(intervaltime);
+						console.log('跨境优品主页'  +  timeall + intervaltime);
+						plus.statistic.eventDuration( "leave", 9999, {'跨境优品主页': 9999} );//统计
+					}
+				}, false );
+				
+			})
+			//统计开始结束
 			//跳转详情
 			function goInfo(goodsId,differentiate,img) { 
 				openview({
@@ -444,7 +493,7 @@
 				interval: 5000 //自动轮播周期
 			});
 			mui.plusReady(function() {
-				plus.nativeUI.showWaiting('加载中 ...', { width: '100px', height: '80px' }); //显示等待框
+				//plus.nativeUI.showWaiting('加载中 ...', { width: '100px', height: '80px' }); //显示等待框
 				var oldToken = plus.storage.getItem('oldToken');
 
 				//获取 一级分类
@@ -524,6 +573,7 @@
 					timeout: 10000, //超时时间设置为10秒；	
 					headers: { "token": oldToken },
 					success: function(data) {
+						console.log('推荐',data);
 						if(data.status == "success") {
 							
 							var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 

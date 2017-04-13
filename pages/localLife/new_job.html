@@ -385,7 +385,7 @@
 	  
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">招聘发布</h1>  
+		    <h1 class="mui-title" id="titlestr">招聘发布</h1>  
 		    <a  id="Releasebtn" style="line-height: 50px;color:white;" class="fr baocun">提交</a>
 		</header>
 		
@@ -423,9 +423,9 @@
 								<input type="text" class="fr shuru Ynull" name="" id="Bcall" value="" placeholder="请输入发布人名字" />
 							</a>
 						</li>
-						<li class="clearfloat">
+						<li class="clearfloat" id="company">
 							<a class="afterI afterI2">
-								<p class="fl">公司名称</p>
+								<p class="fl" id="">公司名称</p>
 								<input type="text" class="fr shuru Ynull" name="" id="Bcallgong" value="" placeholder="请输入公司名称" />
 							</a>
 						</li>
@@ -459,10 +459,16 @@ function disclaimer(){
 
 <script type="text/javascript">
 	var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+	var typestr = 0;
 	mui.plusReady(function(){
 		//接受上页面参数
 		var Bnowid = plus.webview.currentWebview().Bname;
 		var Btype = plus.webview.currentWebview().Btype;
+		var typestr = plus.webview.currentWebview().type;
+		if(typestr){
+			mui('#titlestr')[0].innerHTML = '求职发布';
+			mui('#company')[0].style.display = 'none';
+		}
 		//上传部分
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
