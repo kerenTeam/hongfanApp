@@ -5,9 +5,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>	
     <title>头像裁剪</title>
-    <script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/dependencies/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/dependencies/underscore.js"></script>
-    <script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/src/pinchzoom.js"></script>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/underscore.js"></script>
+    <script type="text/javascript" src="../../js/pinchzoom.js"></script>
+    <!--<script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/dependencies/underscore.js"></script>-->
+    <!--<script type="text/javascript" src="http://manuelstofer.github.io/pinchzoom/src/pinchzoom.js"></script>-->
     <script src="../../js/mui.min.js"></script>
     <script type="text/javascript">
         $(function () {
@@ -105,9 +107,11 @@
 			var nowurl = plus.webview.currentWebview().parameter;
 			console.log('图片地址'+nowurl); 
 			function Percentage(num){//转百分比
-				var num1 = num.toFixed(2);
-				var num2 = num1.slice(2,4)+"%";
-				return num2;
+//				var num1 = num.toFixed(2);
+//				var num2 = num1.slice(2,4)+"%";
+//				return num2;
+				
+				return parseInt(num*100)+'%';
 			}
 			
 			mui('#Preservation')[0].addEventListener('tap',function(){
@@ -120,22 +124,33 @@
 				var endWidth = parseInt(mui('#imgdiv')[0].offsetWidth * zoomnum);//最终宽
 				console.log(endHeight +'++'+endWidth );
 				
-				var BHeight = Percentage(flagnum/endHeight); console.log('高',BHeight);
-				var Bwidth = Percentage(flagnum/endWidth); console.log('宽',Bwidth);
+				if(endWidth<flagnum){
+					endWidth = flagnum;
+				}
+				if(endHeight<flagnum){
+					endHeight = flagnum;
+				}
+				
+				var BHeight = Percentage(flagnum/endHeight); console.log('高'+BHeight,(flagnum/endHeight));
+				var Bwidth = Percentage(flagnum/endWidth); console.log('宽',Bwidth); 
 				var BTop = Percentage(LocationY/endHeight); console.log('上',BTop);
 				var BLeft = Percentage(LocationX/endWidth); console.log('左',BLeft);
 				
-				plus.zip.compressImage({
-					src:nowurl,//目标
-					dst:"file:///storage/emulated/0/androidesk/portrait/Cutpic.jpg",//结果 
-					overwrite:true,
-					clip:{top:BTop,left:BLeft,width:Bwidth,height:BHeight}		// 裁剪图片尺寸
-				},
-				function() {
-					alert("Compress success!"+ mui('#imgdiv')[0].offsetWidth); 
-				},function(error) {
-					alert("Compress error!");
-				});
+//				console.log('框的宽度',flagnum);
+//				console.log('最终高',endHeight);
+//				console.log('最终宽',endWidth);
+				
+//				plus.zip.compressImage({
+//					src:nowurl,//目标
+//					dst:"file:///storage/emulated/0/androidesk/portrait/Cutpic.jpg",//结果 
+//					overwrite:true,
+//					clip:{top:BTop,left:BLeft,width:Bwidth,height:BHeight}		// 裁剪图片尺寸
+//				},
+//				function() {
+//					alert("Compress success!"+ mui('#imgdiv')[0].offsetWidth); 
+//				},function(error) {
+//					alert("Compress error!");
+//				});
 			})
 		})
 		

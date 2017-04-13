@@ -1145,14 +1145,18 @@
 								function gopay(id){ 
 //									alert(myuserid+id+addressid+goodsdata+coupon_id+isIntergal)
 									mui.ajax(serverUrl+'/api/mall/neworder',{
+//										data:{userid:myuserid,payType:id,address_id:addressid,storeData:goodsdata,coupon_id:coupon_id,isIntergal:isIntergal},
 										data:{userid:myuserid,payType:id,address_id:addressid,storeData:goodsdata,coupon_id:coupon_id,isIntergal:isIntergal},
 										type:'post',//HTTP请求类型
 										headers:{"token":oldtoken},	
 										timeout:10000,//超时时间设置为10秒；
 										success:function(data){
+											console.log('支付',data);
 											plus.nativeUI.closeWaiting() 
 //											alert(JSON.stringify(data))
-											var data = data.data;
+											var dataapp = data.data.app;
+											
+											
 											console.log("----- 请求订单成功 -----",JSON.stringify(data)); 
 											//购物车 缓存 
 											var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]'); 
@@ -1168,24 +1172,16 @@
 											var list = plus.webview.getWebviewById('cart.html'); 
 												mui.fire(list,'refresh'); 
 											var varpay;  
-											if(id == 'wxpay'){  
+											if(id == 'wxpay'){   
 												varpay = {
-													    "retcode": 0,
-													    "retmsg": "ok",
-													    "appid": "wx779a1427b1aaeb10",
-													    "noncestr": "15mx7e1lla6xy7ip",
-													    "package": "Sign=WXPay",
-													    "partnerid": "1438641502",
-													    "prepayid": "wx20170407113843df9c4809df0616281832",
-													    "timestamp": 1491536323,
-													    "sign": "3ec176593c0bbaefc418df16a1458703"
-													}
 												//微信
-												plus.payment.request(pays[id],varpay,function(result){
+												alert(JSON.stringify(dataapp)); 
+												plus.payment.request(pays[id],dataapp,function(result){
 													console.log("----- 支付成功 -----");
 													 
 												},function(e){
 													console.log("----- 支付失败 -----");
+													alert(JSON.stringify("["+e.code+"]："+e.message));
 													console.log("["+e.code+"]："+e.message); 
 													plus.nativeUI.alert("支付失败");
 												});
