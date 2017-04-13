@@ -267,7 +267,7 @@
 			</div>
 		</script>
 
-		<div id="theame"></div>
+		<!--<div id="theame"></div>
 		<script type="text/html" id="theameTpl">
 			<div class="ftop" style="margin: 10px 0;">
 				<figure id="1" data-actid="<%=theameData[0].act_id%>">
@@ -281,7 +281,7 @@
 					<img src="<%=theameData[1].act_pic%>" style="width: 100%;" onerror="javascript:this.src='../img/center/acf.png';" />
 				</figure>
 			</div>
-		</script>
+		</script>-->
 
 		<!--分类栏目-->
 		<div id="newsType"></div>
@@ -457,6 +457,12 @@
 					bannerObj.url = serverimgUrl;
 					var html = template('banner-detail', bannerObj);
 					document.getElementById('banner').innerHTML = html;
+					$("#banner img").click(function(){
+						openview({
+							view:"find/findActivity.html",
+							id:"find/findActivity"
+						})
+					})
 					plus.nativeUI.closeWaiting(); //关闭等待框
 					//轮播图,获得slider插件对象
 					var gallery = mui('.mui-slider');
@@ -470,48 +476,48 @@
 			});
 
 			//获取海报信息
-			mui.ajax(serverUrl + "/api/news/activity", {
-				dataType: 'json',
-				type: 'post',
-				timeout: 10000,
-				headers: { "token": oldtoken },
-				success: function(data, type, xhr) {
-					if(data.errno == 0) {
-						console.log("海报信息 ", JSON.stringify(data));
-						if(data.data.length != 0) {
-							for(var i = 0; i < data.data.length; i++) {
-								if(data.data[i].act_pic.indexOf('http') == -1) {
-									data.data[i].act_pic = serverimgUrl + data.data[i].act_pic;
-									console.log("fsd" + data.data[i].act_pic);
-								}
-							}
-
-							var theameObj = {};
-							theameObj.myurl = serverimgUrl;
-							theameObj.theameData = data.data;
-							document.getElementById("theame").innerHTML = template("theameTpl", theameObj);
-
-							//专题 活动切换
-							$("figure").click(function() {
-								var type = $(this).attr("id");
-								var acid = $(this).attr("data-actid")
-								openview({
-									view: "find/thematicActivities.html",
-									extrasobj: {
-										type: type,
-										acid: acid
-									}
-								})
-							})
-						}
-					}
-
-				},
-				error: function(xhr, type, errorThrown) {
-					plus.nativeUI.closeWaiting()
-					console.log('响应失败  !');
-				}
-			})
+//			mui.ajax(serverUrl + "/api/news/activity", {
+//				dataType: 'json',
+//				type: 'post',
+//				timeout: 10000,
+//				headers: { "token": oldtoken },
+//				success: function(data, type, xhr) {
+//					if(data.errno == 0) {
+//						console.log("海报信息 ", JSON.stringify(data));
+//						if(data.data.length != 0) {
+//							for(var i = 0; i < data.data.length; i++) {
+//								if(data.data[i].act_pic.indexOf('http') == -1) {
+//									data.data[i].act_pic = serverimgUrl + data.data[i].act_pic;
+//									console.log("fsd" + data.data[i].act_pic);
+//								}
+//							}
+//
+//							var theameObj = {};
+//							theameObj.myurl = serverimgUrl;
+//							theameObj.theameData = data.data;
+//							document.getElementById("theame").innerHTML = template("theameTpl", theameObj);
+//
+//							//专题 活动切换
+//							$("figure").click(function() {
+//								var type = $(this).attr("id");
+//								var acid = $(this).attr("data-actid")
+//								openview({
+//									view: "find/thematicActivities.html",
+//									extrasobj: {
+//										type: type,
+//										acid: acid
+//									}
+//								})
+//							})
+//						}
+//					}
+//
+//				},
+//				error: function(xhr, type, errorThrown) {
+//					plus.nativeUI.closeWaiting()
+//					console.log('响应失败  !');
+//				}
+//			})
 
 			// 发现动态的分类  
 			mui.ajax(serverUrl + "/api/news/category", {
