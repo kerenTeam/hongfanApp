@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>native view</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			
+			.mui-bar .mui-pull-left .mui-icon {
+				padding-right: 5px;
+				font-size: 28px;
+			}
+			
+			.mui-bar .mui-btn {
+				font-weight: normal;
+				font-size: 17px;
+			}
+			
+			.mui-bar .mui-btn-link {
+				top: 1px;
+			}
+		</style>
+		
+	</head>
+
+	<body>
+		<div class="mui-content" style="margin-top: 100px;">
+			<p style="margin: 35px 15px;">这个页面的标题栏是使用nativeObj绘制的，开发者可以使用nativeObj绘制图片、文字、背景色、线条等。</p>
+		</div>	
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			var bitmap1=null;
+			mui.plusReady(function(){
+				var oldback = mui.back;
+				
+				var view = new plus.nativeObj.View('test',{top:'0px',left:'0px',height:'44px',width:'100%'});
+	// 绘制图片
+	view.drawBitmap( bitmap1, {top:'0px',left:'0px',width:'100%',height:'100%'}, {top:'auto',left:'auto',width:'100%',height:'100%'} );
+	view.show();
+				view.addEventListener("click", function(e){
+					view.clear();
+				}, false);
+				
+				
+				mui.back = function(){
+//					view.clear();
+					oldback();
+				}
+			})
+			
+		</script>
+	</body>
+</html>
