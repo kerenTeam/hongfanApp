@@ -192,7 +192,9 @@
 			}
 			.screenfoot{position:fixed;z-index:31;top: 406px;left: 0; width:100%;height: 45px;line-height: 45px;background-color: #eee;font-size: 14px;}
 			.screenfoot span{float: right;padding: 0 15px;}
+			#upload{min-height: 30px;line-height: 10px;}
 			#upload img{width: 40px;margin-top: -10px;padding: 4px !important;}
+			.goodsItem{background-color: #fff};
 		</style>
 	</head> 
 	<body class="">
@@ -261,7 +263,14 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 			<div class="guess-like">
-				<dl class="list" id="goodsList" ></dl>
+				<dl class="list" id="goodsList" >
+					<!--列表loading-->
+					<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
+						line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+						<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
+					</div>
+					<!--列表loading结束-->
+				</dl>
 			</div>
 			<div class="upload text-center text-xs gray" id="upload"></div>
 			<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
@@ -277,7 +286,7 @@
 				<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>
 			<%}else{%>
 				<% for(var i=0;i<list.length;i++){ %>
-				<dd class="goodsItem">
+				<dd class="goodsItem aClick">
 					<a class="react" onclick="goInfo(<%= list[i].goods_id %>)">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
@@ -318,7 +327,7 @@
 		var Spagenum;//实到页数
 		var Ypagenum;//应到页数 
 		mui.plusReady(function(){ 
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
 			//获取页面传值 商品分类id
@@ -342,19 +351,20 @@
 			});
 			//按照选择排序
 			window.order = function(orderType,sequence,brand){
+				document.getElementById("goodsList").innerHTML = loadstr;
 				Spagenum = 2;//实到页数
 				Ypagenum = 1;//应到页数
 				can1 = orderType,can2 = sequence,can3 = brand;
 				var pagenum = 10,CcurrentPage = 1,sequence1 = sequence;
 				mui('#nulldiv')[0].style.display = 'none';
-				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+				//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/mall/mallgooodslist',{
 					data:{
 						currentPage:CcurrentPage,
 						numsPerPage:pagenum,
 						categoryid:goodcatId,
 						recommend:'',
-						differentiate:1,
+						differentiate:4, 
 						storeid:'',
 						brand:can3,
 						keyword:'',
@@ -372,7 +382,7 @@
 							objdata.myurl = serverimgUrl;
 							objdata.list = data.data.return.data;
 							var html=template("goodsList-detail",objdata);
-							document.getElementById("goodsList").innerHTML=html;
+							document.getElementById("goodsList").innerHTML += html;
 							mui("#upload")[0].innerHTML = "";
 						}else{	
 							mui("#upload")[0].innerHTML = ""; 
@@ -380,7 +390,7 @@
 						}
 						
 						//滚动到底部加载
-						function getScrollTop(){//滚动条在Y轴上的滚动距离
+						function getScrollTop(){//滚动条在Y轴上的滚动距离 
 						　　var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
 						　　if(document.body){
 						　　　　bodyScrollTop = document.body.scrollTop;
@@ -424,7 +434,7 @@
 											numsPerPage:pagenum,
 											categoryid:goodcatId,
 											recommend:'',
-											differentiate:1,
+											differentiate:4,
 											storeid:'',
 											brand:can3,
 											keyword:'',
@@ -465,10 +475,10 @@
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
 					}
-					plus.nativeUI.closeWaiting();//关闭等待框
+					closeLoad();//关闭列表loading
 				},
 				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();//关闭等待框
+					closeLoad();//关闭列表loading
 					mui("#upload")[0].innerHTML = ""; 
 					mui('#nulldiv')[0].style.display = 'block';
 				}

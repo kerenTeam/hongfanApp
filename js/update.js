@@ -44,7 +44,7 @@ function checkUpdate(hide){
 
 function downWgt(hide){ 
 	!hide && plus.nativeUI.showWaiting('正在下载...',{width:'130px',height:'110px'});
-    console.log(wgtUrl);
+    console.log(wgtUrl); 
     plus.downloader.createDownload('http://192.168.0.128:6789/Upload/xls/H55E3990F.wgt', {filename:"_doc/update/"}, function(d,status){
         if ( status == 200 ) { 
             console.log("下载wgt成功："+d.filename);
