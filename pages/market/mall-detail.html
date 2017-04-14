@@ -1223,6 +1223,34 @@
 		function collectfun(){
 			if($("#collect").attr("src") == "../../img/market/collect.svg"){
 				$("#collect").attr("src", "../../img/market/collects.svg");
+				mui.plusReady(function(){
+					
+					var goodId = plus.webview.currentWebview().goodsId;
+					var myuserid = plus.storage.getItem('userid'); 
+					var oldToken = plus.storage.getItem('oldToken');
+					alert(myuserid+" "+goodId)
+					mui.ajax(serverUrl + '/api/mall/collectformall', {
+						data: {
+							userid: myuserid,
+							type_name:2,
+							collect_id:goodId
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							"token": oldToken
+						},
+						success: function(data) { 
+							alert(JSON.stringify(data))
+							},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							plus.nativeUI.closeWaiting();
+							mui.toast("当前网络不好请重试");
+						}
+					});
+				})
 				mui.toast("收藏成功")
 			}else{
 				$("#collect").attr("src", "../../img/market/collect.svg");

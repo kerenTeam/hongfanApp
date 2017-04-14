@@ -886,31 +886,32 @@
 				<span class="tabActive">每日精选</span>   
 				<span>热门推荐</span> 
 			</div>
-			<div class="tabcontent taactive">
-				<figure>
-					<div class="fmask"></div>
-					<figcaption>我和春天有个约会</figcaption>
-					<img src="../img/market/feg.png" style="width: 100%;" />
-				</figure>
-				<figure>
-					<div class="fmask"></div>
-					<figcaption>别怕美好的一切消失</figcaption>
-					<img src="../img/market/feg2.png" style="width: 100%;" />
-				</figure>
-				<figure>
-					<div class="fmask"></div>
-					<figcaption>像一对疯子那样歌舞狂欢</figcaption>
-					<img src="../img/market/feg3.png" style="width: 100%;" />
-				</figure>
-			</div>
-			<div class="tabcontent">
-
-				<figure>
-					<div class="fmask"></div> 
-					<figcaption>五线谱是偶然来的，你也是偶然来的。不过我给你的信值得写在五线谱里呢。但愿我和你，是一支唱不完的歌。</figcaption>
-					<img src="../img/market/feg4.png" style="width: 100%;" />
-				</figure>
-			</div>
+			<div class="tabcontent taactive" id="tabc1"></div>
+			<script type="text/html" id="tabc1Tpl">
+				<%for(var i =0;i<list.length;i++){%>
+					<figure>
+						<%if(list[i].banner_pic){%>
+							<img src="<%=myUrl+list[i].banner_pic%>" onerror="javascript:this.src='../img/market/feg2.png';" style="width: 100%;" />
+							<%}else{%>
+								<img src="../img/market/feg.png" style="width: 100%;" />
+								<%}%>
+						
+					</figure>
+					<%}%>
+			</script>
+			<div class="tabcontent" id="tabc2"></div>
+			<script type="text/html" id="tabc2Tpl">
+				<%for(var i =0;i<list.length;i++){%>
+					<figure>
+						<%if(list[i].banner_pic){%>
+							<img src="<%=myUrl+list[i].banner_pic%>" style="width: 100%;" onerror="javascript:this.src='../img/market/feg4.png';"/>
+							<%}else{%>
+								<img src="../img/market/feg4.png" style="width: 100%;" />
+								<%}%>
+						
+					</figure>
+					<%}%>
+			</script>
 		</div> 
 		<!--新增小模块-->
 		<table class="tablepay">
@@ -1575,7 +1576,57 @@
 							}
 						})
 					}
-
+					
+					//获取每日精选 热门推荐
+					mui.ajax(serverUrl + '/api/news/commendnews', {
+						data: {
+							type_name: 1
+						},
+						type: 'post',
+						timeout: 10000,
+						headers: {
+							"token": oldToken
+						},
+						success: function(data, type, xhr) {
+							if(data.errno == 0) {
+								if(data.data.length){
+									var findList = {};
+										findList.myUrl = serverimgUrl;
+									    findList.list = data.data;
+									document.getElementById("tabc1").innerHTML = template("tabc1Tpl",findList)   
+								}
+							}
+							plus.nativeUI.closeWaiting(); //关闭等待框
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting(); //关闭等待框
+						}
+					});
+					//获取每日精选 热门推荐
+					mui.ajax(serverUrl + '/api/news/commendnews', {
+						data: {
+							type_name: 2
+						},
+						type: 'post',
+						timeout: 10000,
+						headers: {
+							"token": oldToken
+						},
+						success: function(data, type, xhr) {
+							if(data.errno == 0) {
+								if(data.data.length){
+									var findList = {};
+										findList.myUrl = serverimgUrl;
+									    findList.list = data.data;
+									document.getElementById("tabc2").innerHTML = template("tabc2Tpl",findList)   
+								}
+							}
+							plus.nativeUI.closeWaiting(); //关闭等待框
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting(); //关闭等待框
+						}
+					});
 					//发现展示板块
 					$(".tab span").click(function() {
 						var i = $(this).index();

@@ -37,37 +37,6 @@
 		</header>	
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
-			<!--<div class="special clearfix fineB aClick">
-				<img src="../../img/special.jpg"/>
-				<p class="overTwo">
-					<%= recommendData[i].title%>
-					<br/> <span>限时抢购</span>
-				</p>
-				<div class="S_bottom">
-					<div class="S_bottom1 clearfix">
-						<span>￥999</span> 
-						<a>立即抢购</a>
-					</div>
-					<div class="S_bottom2">
-						<span>￥1299</span>
-						<div class="schedule"><div style="width:50%;"></div></div>
-						<a>已售50% </a>
-					</div>
-				</div>
-			</div>-->
-			<!--<div class="special clearfix fineB aClick">
-				<img src="../../img/special.jpg"/>
-				<p class="overTwo">
-					<%= recommendData[i].title%>
-					<br/> <span>限时抢购</span>
-				</p>
-				<div class="S_bottom">
-					<div class="S_bottom1 clearfix">
-						<span>￥999 <b>￥1299</b></span> 
-						<a>立即抢购</a>
-					</div>
-				</div>
-			</div>-->
 		</div>
 		<script type="text/html" id="recommendTpl">
 			<% for(var i=0;i<recommendData.length;i++){%>
@@ -80,11 +49,11 @@
 					</p>
 					<div class="S_bottom">
 						<div class="S_bottom1 clearfix">
-							<span>￥999</span> 
+							<span>￥<%=recommendData[i].price%></span> 
 							<a>立即抢购</a>
 						</div>
 						<div class="S_bottom2">
-							<span>￥1299</span>
+							<span><%=recommendData[i].originalprice%></span>
 							
 						</div>
 					</div>
@@ -110,98 +79,28 @@
 	mui.plusReady(function() {
 		var oldToken = plus.storage.getItem('oldToken');
 		plus.nativeUI.showWaiting(); //显示等待框
-		//热门推荐 数据渲染  
-		var currentPage = 1,
-			numsPerPage = 10;
-		mui.ajax(serverUrl + '/api/mall/mallgooodslist', {
-			data: {
-				currentPage: currentPage,
-				numsPerPage: numsPerPage,
-				recommend: 1,
-				differentiate: 1,
-				storeId: '',
-				brand: '',
-				keyword: '',
-				order_type: 'price',
-				desc: ''
-			},
-			dataType: 'json', //服务器返回json格式数据
-			type: 'post', //HTTP请求类型 
-			timeout: 10000, //超时时间设置为10秒；	
+		//获取天天特价
+		mui.ajax(serverUrl + '/api/mall/onsale', {
+			type: 'post',
+			timeout: 10000,
 			headers: {
 				"token": oldToken
 			},
-			success: function(data) {
-				console.log('数据',data);	
+			success: function(data, type, xhr) {
 				if(data.errno == 0) {
-					var dataobj = data.data.return.data
-					var recommendObj = {}
-					recommendObj.myUrl = serverimgUrl;
-					recommendObj.recommendData = dataobj
-					document.getElementById("main").innerHTML = template("recommendTpl", recommendObj);
-					mui("#upload")[0].innerHTML = "";
-					//上滑加载
-					$(window).scroll(function() {　　
-						var scrollTop = $(this).scrollTop();　　
-						var scrollHeight = $(document).height();　　
-						var windowHeight = $(this).height();　　
-						if(scrollTop + windowHeight == scrollHeight) {
-							if(Spagenum <= data.data.return.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-								Ypagenum++; //满足加载情况,应到页数+1
-								console.log('发起请求,实到' + Spagenum + '页');
-								console.log('发起请求,应到' + Ypagenum + '页');
-								mui.ajax(serverUrl + '/api/mall/mallgooodslist', {
-									data: {
-										currentPage: Spagenum,
-										numsPerPage: numsPerPage,
-										recommend: 1,
-										differentiate: 1,
-										storeId: '',
-										brand: '',
-										keyword: '',
-										order_type: 'price',
-										desc: ''
-									},
-									dataType: 'json', //服务器返回json格式数据
-									type: 'post', //HTTP请求类型 
-									timeout: 10000, //超时时间设置为10秒；	
-									headers: {
-										"token": oldToken
-									},
-									success: function(data) {
-										console.log('数据1',data);
-										if(data.errno == 0) {
-											var dataobj = data.data.return.data
-											var recommendObj = {}
-											recommendObj.myUrl = serverimgUrl;
-											recommendObj.recommendData = dataobj
-											document.getElementById("main").innerHTML += template("recommendTpl", recommendObj);
-										}
-										mui("#upload")[0].innerHTML = " ";
-										Spagenum++; //加载成功,当前页+1
-										console.log('成功+1,实到' + Spagenum);
-										console.log('成功+1,应到' + Spagenum);
-									},
-									error: function(xhr, type, errorThrown) {
-										Ypagenum--; //失败是应到-1
-										mui.toast("当前网络不好请重试");
-										mui("#upload")[0].innerHTML = "";
-									}
-								});
-							} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-								mui("#upload")[0].innerHTML = "到底了";
-							}
-						}
-					});
-				} else {
-					mui("#upload")[0].innerHTML = "";
+					if(data.data.length){
+						var findList = {};
+							findList.myUrl = serverimgUrl;
+						    findList.recommendData = data.data;
+						document.getElementById("main").innerHTML = template("recommendTpl",findList)   
+					}else{
+						document.getElementById("nulldiv").style.display="block";
+					}
 				}
 				plus.nativeUI.closeWaiting(); //关闭等待框
 			},
 			error: function(xhr, type, errorThrown) {
 				plus.nativeUI.closeWaiting(); //关闭等待框
-				mui("#upload")[0].innerHTML = "";
 			}
 		});
 		//跳转详情
