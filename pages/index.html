@@ -96,22 +96,22 @@
 //					checkUpdate(true);
 				}
 				//处理父子页面的mask遮罩联动
-			    var mask,oldclose;
-				mask=mui.createMask();
-				//原mask.close方法
-				oldclose=mask.close;
-				//重写mask.close方法
-				mask.close=function(){
-					 if (true) {//写成v == null也行
-					      //alert('-- in father != nopass --');				
-					      //因为点击遮罩时只会执行"mask.close()"，所以v==null，进入这里if模块，调用子页面关闭方法。				
-					      //调用子页面重写close()时，加上参数不让子页面的close()继续传递。				
-					      plus.webview.currentWebview().children()[0].evalJS('mask.close()');
-							}
-							  //关闭本页面遮罩
-		
-		    				oldclose();
-		    		} 
+//			    var mask,oldclose;
+//				mask=mui.createMask();
+//				//原mask.close方法
+//				oldclose=mask.close;
+//				//重写mask.close方法
+//				mask.close=function(){
+//					 if (true) {//写成v == null也行
+//					      //alert('-- in father != nopass --');				
+//					      //因为点击遮罩时只会执行"mask.close()"，所以v==null，进入这里if模块，调用子页面关闭方法。				
+//					      //调用子页面重写close()时，加上参数不让子页面的close()继续传递。				
+//					      plus.webview.currentWebview().children()[0].evalJS('mask.close()');
+//							}
+//							  //关闭本页面遮罩
+//		
+//		    				oldclose();
+//		    		} 
 				
 				
 				Sign();
@@ -264,34 +264,34 @@
 			});
 			
 			
-			//父页面遮罩层显隐函数
-			var maskwarp = document.createElement("div");
-			var style = document.createElement("style");
-			function maskshow(){
-				//移出主页面遮罩点击监听
-				maskwarp.removeEventListener('touchstart',hidefun);
-				maskwarp.style.display = 'block';
-				document.body.appendChild(maskwarp);
-				maskwarp.appendChild(style);
-				style.innerHTML =  '.Animation{position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.4);z-index: 1000;animation-name: Animation;animation: Animation 0.1s alternate ;} @-webkit-keyframes Animation{0%{ opacity: 0}10%{ opacity: 0.1}20%{ opacity: 0.2}30%{ opacity: 0.3}40%{ opacity: 0.4}50%{ opacity: 0.5}60%{ opacity: 0.6}70%{ opacity: 0.7}80%{ opacity: 0.8}90%{ opacity: 0.9}100%{ opacity: 1}}';
-				maskwarp.className = 'Animation';
-			}
-			function maskhide(){
-				maskwarp.style.display = 'none';
-			}
-			//点击关闭
-			function taphide(){
-				//alert('调用了点击主页面遮罩方法');
-				maskwarp.addEventListener('touchstart',hidefun);
-				
-			}
-			function hidefun(e){
-				//alert('点击主页面遮罩');
-				e.preventDefault();
-				maskwarp.style.display = 'none';
-				var mainweb = plus.webview.getWebviewById('main.html');
-				mainweb.evalJS("haha()");
-			}
+//			//父页面遮罩层显隐函数
+//			var maskwarp = document.createElement("div");
+//			var style = document.createElement("style");
+//			function maskshow(){
+//				//移出主页面遮罩点击监听
+//				maskwarp.removeEventListener('touchstart',hidefun);
+//				maskwarp.style.display = 'block';
+//				document.body.appendChild(maskwarp);
+//				maskwarp.appendChild(style);
+//				style.innerHTML =  '.Animation{position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.4);z-index: 1000;animation-name: Animation;animation: Animation 0.1s alternate ;} @-webkit-keyframes Animation{0%{ opacity: 0}10%{ opacity: 0.1}20%{ opacity: 0.2}30%{ opacity: 0.3}40%{ opacity: 0.4}50%{ opacity: 0.5}60%{ opacity: 0.6}70%{ opacity: 0.7}80%{ opacity: 0.8}90%{ opacity: 0.9}100%{ opacity: 1}}';
+//				maskwarp.className = 'Animation';
+//			}
+//			function maskhide(){
+//				maskwarp.style.display = 'none';
+//			}
+//			//点击关闭
+//			function taphide(){
+//				//alert('调用了点击主页面遮罩方法');
+//				maskwarp.addEventListener('touchstart',hidefun);
+//				
+//			}
+//			function hidefun(e){
+//				//alert('点击主页面遮罩');
+//				e.preventDefault();
+//				maskwarp.style.display = 'none';
+//				var mainweb = plus.webview.getWebviewById('main.html');
+//				mainweb.evalJS("haha()");
+//			}
 		  
 			
 		</script>
