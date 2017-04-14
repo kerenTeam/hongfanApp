@@ -195,7 +195,7 @@
 			    		<span id="follow2" style="margin-left: 10px;display:inline-block;padding: 5px 0;">被关注 10</span>
 			    	</div>
 			    </div>
-    			<button type="button" id="screeningdiv" style="top: 10px;" class="mui-btn mui-btn-danger mui-btn-outlined fr dao">签到</button>
+    			<button type="button" id="screeningdiv" style="top: 10px;display: none;" class="mui-btn mui-btn-danger mui-btn-outlined fr dao">签到</button>
     		</div>
 		    <!--这是单独加模拟状态栏的方法            弃用-->
 			<!--<div id="sBar" style="background-color: #af4444;position: fixed;width:100%;top: 0;z-index: 9999"></div>
@@ -370,40 +370,7 @@
 							});
 						}
 					});
-					//签到  
-					mui('.dao')[0].onclick=function(){
-						   
-						if(plus.storage.getItem('myToken')){  
-								//执行签到  
-								mui.ajax(serverUrl+'/api/index/cheking',{
-									data:{"userid":myuserid,"intergral_float":2050},
-									type:'post',
-									timeout:10000,
-									headers:{"token":oldtoken},	              				
-									success:function(data){ 
-										plus.nativeUI.closeWaiting();
-										console.log('签到返回'+JSON.stringify(data));
-										if(data.errno == 0){
-											mui.toast('签到成功');
-										  
-											Refresh();
-										}else{
-//											mui('.dao')[0].innerHTML = "已签到";
-											mui.toast('每天只能签到一次');
-										}
-									},
-									error:function(xhr,type,errorThrown){
-										plus.nativeUI.closeWaiting();
-										mui.toast('签到失败'); 
-									}
-								}); 
-						}else{//没登陆直接打开登录页面 
-							mui.toast('请登录');
-							openview({
-								view:'login.html'
-							});
-						}
-					};
+					
 					
 					//进个人主页
 					

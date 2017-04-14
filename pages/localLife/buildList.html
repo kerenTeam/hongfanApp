@@ -116,7 +116,14 @@
 		<div id="container">		
 			<div id="main">
 				<section class="dealcard-waimai">
-					<dl class="dealcard" id="buildlistdiv"></dl>
+					<dl class="dealcard" id="buildlistdiv">
+						<!--列表loading-->
+						<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
+							line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+							<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
+						</div>
+						<!--列表loading结束-->
+					</dl>
 					<script type="text/html" id="buildlist">
 						<% for(var i=0; i<list.length; i++){%>
 							<dd class="page-link aClick" onclick="opendetails(<%= list[i].house_id%>)">
@@ -163,6 +170,7 @@
 	<script type="text/javascript">
 	var Spagenum = 2;//实到页数
 	var Ypagenum = 1;//应到页数 
+	var flagnum = -1;
 	//添加刷新监听
 	document.addEventListener('refresh', function() {
 		Loading(1,10,'','','','','',1000,'price');//加载数据,包括上滑加载  
@@ -171,13 +179,14 @@
 	Loading(1,10,'','','','','',1000,'price');//加载数据,包括上滑加载  
 	//加载方法
 	function Loading(gin1,gin2,gin3,gin4,gin5,gin55,gin6,gin66,gin7){
+		flagnum++;
 		$('.Category-eject').removeClass('grade-w-roll');
 		$('.Sort-eject').removeClass('grade-w-roll');
 		$('.grade-eject').removeClass('grade-w-roll');
-		document.getElementById("buildlistdiv").innerHTML = '';
+		document.getElementById("buildlistdiv").innerHTML = loadstr;
 		mui('#nulldiv')[0].style.display = 'none';
 		mui.plusReady(function(){
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		var oldtoken = plus.storage.getItem('oldToken');	
 		mui.ajax(serverUrl+'/api/localservice/houselist',{ 									
 			data:{currentPage:gin1,
@@ -269,10 +278,10 @@
 					mui("#upload")[0].innerHTML = ""; 
 					mui('#nulldiv')[0].style.display = 'block';
 				}
-				plus.nativeUI.closeWaiting();//关闭等待框
+				closeLoad();//关闭等待框
 			},
 			error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting();//关闭等待框
+				closeLoad();//关闭等待框
 				mui("#upload")[0].innerHTML = ""; 
 				mui('#nulldiv')[0].style.display = 'block'; 
 			}
