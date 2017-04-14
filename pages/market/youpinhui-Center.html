@@ -395,13 +395,13 @@
 					<li class="sy_recmd_list relist">
 						<div class="box">
 							<div class="pub_img">
-								<a class="rcdPadding" onclick="goInfo('<%=list[i].open_iid%>',3)">
+								<a class="rcdPadding" onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')">
 									<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
 
 								</a>
 							</div>
 							<div class="pub_wz">
-								<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].open_iid%>',3)"><%=list[i].title%></a></h3>
+								<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')"><%=list[i].title%></a></h3>
 								<div class="nr_box mui-row">
 									<div class="mui-col-sm-5 mui-col-xs-5 ">
 										<p class="fl fontcl2"><sub>￥</sub>
@@ -480,7 +480,7 @@
 			})
 			//统计开始结束
 			//跳转详情
-			function goInfo(goodsId,differentiate) {
+			function goInfo(goodsId,differentiate,img) { 
 				openview({
 					view: "yphDetail.html",
 					id: "yphDetail",
@@ -585,8 +585,13 @@
 								}
 							}
 							for(var i in bannerArray) {
-								bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',')
-							}
+								bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+								for(var j in bannerArray[i].pic_url.pic_url){
+									if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
+										 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+									}
+								}
+							} 
 							var objdata = {};
 							objdata.list = bannerArray;
 							var html = template("recommendTpl", objdata);
@@ -619,12 +624,18 @@
 																var vae = Object.keys(d)[t];
 																bannerArray.push(d[vae]);
 															}
-														}
+														} 
 														for(var i in bannerArray) {
-															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',')
+														bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+														for(var j in bannerArray[i].pic_url.pic_url){
+															if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
+																 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+															}
 														}
+													} 
+													
 														var objdata = {};
-														objdata.list = bannerArray;
+														objdata.list = bannerArray; 
 														var html = template("recommendTpl", objdata);
 														document.getElementById("moll_recommend").innerHTML += html;
 													}
@@ -685,7 +696,11 @@
 				//进入列表
 				window.goList = function(pid) {
 					event.stopPropagation();
-					getsecid(pid);
+//					getsecid(pid);
+					openview({
+						view: "loveBuyList.html",
+						extrasobj: { pid: pid }
+					})
 				}
 			});
 		</script>

@@ -6,12 +6,12 @@ $(function() {
 	});
 });
 
-$(document).ready(function () {
-	$('.flexslider').flexslider({
-        directionNav: true,
-        pauseOnAction: false,
-   });
-}); 
+//$(document).ready(function () {
+//	$('.flexslider').flexslider({
+//      directionNav: true,
+//      pauseOnAction: false,
+// });
+//}); 
 
 $(document).ready(function() {
 	$(window).scroll(function() {

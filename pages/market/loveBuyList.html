@@ -255,7 +255,7 @@
 			<%}else{%>
 				<% for(var i=0;i<list.length;i++){ %>
 				<dd class="goodsItem">
-					<a class="react" onclick="goInfo(<%= list[i].open_iid%>,3)">
+					<a class="react" onclick="goInfo(<%= list[i].open_iid%>,3,'<%= list[i].pic_url.pic_url[0]%>')">
 						<div class="dealcard">
 							<div class="dealcard-img imgbox">
  
@@ -279,10 +279,8 @@
 			
 		</script>
 		<div class="upload text-center text-xs gray" id="upload"></div>
-		<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
-			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
-			<br />
-			没有相关信息
+		<div id="nulldiv" style="text-align:center;margin-top: 5px;font-size: 14px;color: #999;display: none;">
+			没有更多了
 		</div>
 	</body>
 	<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
@@ -414,8 +412,57 @@
 				}
 			})
 			var category = plus.webview.currentWebview().pid;
-	 		getList(category);
-			function getList(category_id){
+	 		getsecid(category);
+	 		
+			//获取二级分类
+			function getsecid(pid){
+				mui.ajax(serverUrl+'/api/mall/igocategory',{
+					data:{pid:pid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){  
+						if(data.errno == 0){
+							if(data.data.length != 0){
+								//请求三级分类 
+								for(var j=0;j<data.data.length;j++){
+									getthird(data.data[j].catid)
+								}
+							}
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();//关闭等待框 
+					}
+				})
+			}
+			
+			//三级分类
+			function getthird(catid){
+				mui.ajax(serverUrl+'/api/mall/igocategory',{
+					data:{pid:catid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldToken},	 
+					success:function(data,type,xhr){ 
+						if(data.errno == 0){ 
+							if(data.data.length != 0){
+								//渲染列表
+								for(var j=0;j<data.data.length;j++){
+									getList(data.data[j].catid,"all")
+								}
+							}
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();//关闭等待框 
+					}
+				})
+			}
+			
+			function getList(category_id,alllist){
 				//数据渲染
 				var currentPage =1, numsPerPage=10;
 				mui.ajax('http://api.igetmall.net/DRP_getProList',{
@@ -436,15 +483,24 @@
 										bannerArray.push(d[vae]);
 									} 
 								} 
-								for(var i in bannerArray){
-									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',')
-								}
+								for(var i in bannerArray) {
+									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+									for(var j in bannerArray[i].pic_url.pic_url){
+										if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
+											 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+										}
+									}
+								} 
 								var objdata = {}; 
 								objdata.list = bannerArray;
 								console.log("bannerArray"+JSON.stringify(bannerArray));
 								
 								var html=template("goodsList-detail",objdata);
-								document.getElementById("goodsList").innerHTML=html;
+								if(alllist){
+									document.getElementById("goodsList").innerHTML+=html;
+								}else{ 
+									document.getElementById("goodsList").innerHTML=html;
+								}
 								mui("#upload")[0].innerHTML = "";
 			                    //上滑加载
 			                   	$(window).scroll(function(){
@@ -470,9 +526,14 @@
 																bannerArray.push(d[vae]);
 															} 
 														}
-														for(var i in bannerArray){
-															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',')
-														}
+														for(var i in bannerArray) {
+															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+															for(var j in bannerArray[i].pic_url.pic_url){
+																if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
+																	 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+																}
+															}
+														} 
 														var objdata = {}; 
 														objdata.list = bannerArray;
 														var html=template("goodsList-detail",objdata);
@@ -481,7 +542,6 @@
 													mui("#upload")[0].innerHTML = " "; 
 												},
 												error:function(xhr,type,errorThrown){ 
-													mui.toast("当前网络不好请重试");
 													mui("#upload")[0].innerHTML = "";
 												}
 											});
@@ -512,7 +572,7 @@
 			    getList(sbj.getAttribute("data-id"));
 			}
 			//跳转详情
-			window.goInfo =  function(goodsId,differentiate){ 
+			window.goInfo =  function(goodsId,differentiate,img){  
 				 openview({
 				 	view:"yphDetail.html",
 				 	id:"yphDetail",
