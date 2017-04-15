@@ -95,6 +95,27 @@
 				list.style.height = (document.body.offsetHeight - header.offsetHeight) + 'px';
 				//create
 				window.indexedList = new mui.IndexedList(list);
+				
+				mui.plusReady(function(){
+					plus.nativeUI.showWaiting();
+					var oldtoken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/qianmi/gameslist',{
+						dataType:'json',
+						type:'post',
+						timeout:'10000',
+						headers:{"token":oldtoken},
+						success:function(data,type,xhr){
+							console.log(JSON.stringify(data));
+							plus.nativeUI.closeWaiting();
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							console.log('响应失败  !');
+						}
+					})
+				})
+				
+				
 				$("li.mui-indexed-list-item").click(function(){
 					alert($(this).attr('data-value'));
 					openview({
@@ -103,6 +124,8 @@
 						extrasobj:{gameid:$(this).attr('data-value')}
 					})
 				})
+				
+				
 			});
 		</script>
 	</body>
