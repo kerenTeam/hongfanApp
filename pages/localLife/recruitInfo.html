@@ -179,7 +179,7 @@
 						</a>
 				 	</div>
 				 	<div class="msgtxt" style="padding-left: 0;padding-right: 15px;"> 
-				 		<small id="company">成都xxxxx有限公司</small><br />
+				 		<small id="company"></small><br />
 				 		<small id="Contact" style="color: gray;">成都高新区<br /></small>
 				 		<small id="telnum" style="color: gray;">未融资 | 移动互联网，电子商务 </small>
 				 	</div> 
@@ -200,13 +200,13 @@
 			//获取数据
 			var oldtoken = plus.storage.getItem('oldToken');
 			var nowid = plus.webview.currentWebview().name;
-			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
+			mui.ajax(serverUrl0+'/api/localservice/localserviceinfo',{
 				data:{"sericeId":nowid},
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldtoken},	               				
 				success:function(data){
-//					alert('获取数据返回'+JSON.stringify(data));
+					//alert('获取数据返回'+JSON.stringify(data));
 					console.log('获取数据返回',data);
 					if(data.errno == 0){
 						if (data.data[0].content.indexOf('content')>-1) {
@@ -218,7 +218,10 @@
 						}
 						
 						mui('#addresss')[0].innerHTML = data.data[0].address;
-						mui('#company')[0].innerHTML = data.data[0].name;
+						if(data.data[0].type_name == 4){
+							mui('#company')[0].innerHTML = data.data[0].name;
+						}
+						
 						mui('#Contact')[0].innerHTML = "联系人: "+data.data[0].link_man;
 						mui('#telnum')[0].innerHTML = "电话: "+data.data[0].phone;
 						mui('#phonenum')[0].href = 'tel:'+data.data[0].phone;

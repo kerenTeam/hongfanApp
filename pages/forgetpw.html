@@ -220,8 +220,8 @@
 			if(this.className.indexOf('unable') == -1){//可点
 				if(reg_phone.test(account.value)){ 
 					//发送验证码 
-					mui.ajax(serverUrl+'/api/useraccount/smscode',{
-						data:{phone:account.value},
+					mui.ajax(serverUrl0+'/api/useraccount/seccode',{
+						data:{phoneNum:account.value}, 
 						dataType:'json',
 						type:'post',
 						timeout:10000,
@@ -260,7 +260,7 @@
 			if(reg_pass.test(password.value) && password.value == passwordagain.value && reg_phone.test(account.value) && mui('#hook')[0].checked && mui('#VeCode')[0].value){
 				mui('.denlu')[0].className = mui('.denlu')[0].className.replace(' cannotbtn','');//验证通过
 			}else if(mui('.denlu')[0].className.indexOf('cannotbtn') == -1){
-				mui('.denlu')[0].className += ' cannotbtn';
+				mui('.denlu')[0].className += ' cannotbtn'; 
 			}
 		}
 		//验证验证码
@@ -296,54 +296,59 @@
 				mui.toast('请输入正确的验证码 ');
 				mui('#VeCode')[0].focus();
 			}else{
-				plus.nativeUI.showWaiting('登录中 ...',{width:'100px',height:'80px'});
-				mui.ajax(serverUrl+'/api/useraccount/register',{//改密
-						data:{"phone":account.value,"password":password.value,smsCode:mui('#VeCode')[0].value},
+				
+				mui.ajax(serverUrl0+'/api/useraccount/savepwd',{//改密
+						data:{"phoneNum":account.value,"newPwd":password.value,'secCode':mui('#VeCode')[0].value},
 						dataType:'json',
 						type:'post',
 						timeout:10000,
 						success:function(data){
-							console.log('注册返回'+JSON.stringify(data));
+							console.log('改密返回'+JSON.stringify(data));
 							if(data.errno==0){//改密成功直接登录
-								plus.storage.setItem("$IsReg","1")
-								mui.ajax(serverUrl+'/api/useraccount/login',{
-									data:{"phone":account.value,"password":password.value},
-									dataType:'json',
-									type:'post',
-									timeout:10000,
-									success:function(data,type,xhr){
-										console.log('登录返回'+JSON.stringify(data));
-										if(data.errno==0){
-											var mytoken = xhr.getResponseHeader('token');//替换默认token存入缓存
-											mui.plusReady(function(){
-												//登录成功
-												plus.storage.setItem("myToken",mytoken);
-												plus.storage.setItem("oldToken",mytoken);
-												plus.storage.setItem("userid",JSON.stringify(data.data.return.user_id));
-												var Acc_pass = [account.value,password.value];
-												plus.storage.setItem("Acc_pass",JSON.stringify(Acc_pass));//保存账号密码,用于自动登录
-												console.log(JSON.parse(plus.storage.getItem("Acc_pass")));
-												//触发跳转页面刷新
-												mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-												plus.webview.getWebviewById('login.html').close();
-												var time2 = setTimeout(function(){
-													plus.webview.currentWebview().close();
-													var index = plus.webview.getLaunchWebview();
-													mui.fire(index,'gohome',{hrefid:'center'});
-													plus.nativeUI.closeWaiting();
-													mui.toast('登录成功 ');
-												},500)
-											})
-										}else{
+								if(type){//忘记密码
+									plus.nativeUI.showWaiting('登录中 ...',{width:'100px',height:'80px'});
+									plus.storage.setItem("$IsReg","1")
+									mui.ajax(serverUrl0+'/api/useraccount/login',{
+										data:{"phone":account.value,"password":password.value},
+										dataType:'json',
+										type:'post',
+										timeout:10000,
+										success:function(data,type,xhr){
+											console.log('登录返回'+JSON.stringify(data));
+											if(data.errno==0){
+												var mytoken = xhr.getResponseHeader('token');//替换默认token存入缓存
+												mui.plusReady(function(){
+													//登录成功
+													plus.storage.setItem("myToken",mytoken);
+													plus.storage.setItem("oldToken",mytoken);
+													plus.storage.setItem("userid",JSON.stringify(data.data.return.user_id));
+													var Acc_pass = [account.value,password.value];
+													plus.storage.setItem("Acc_pass",JSON.stringify(Acc_pass));//保存账号密码,用于自动登录
+													console.log(JSON.parse(plus.storage.getItem("Acc_pass")));
+													//触发跳转页面刷新
+													mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+													plus.webview.getWebviewById('login.html').close();
+													var time2 = setTimeout(function(){
+														plus.webview.currentWebview().close();
+														var index = plus.webview.getLaunchWebview();
+														mui.fire(index,'gohome',{hrefid:'center'});
+														plus.nativeUI.closeWaiting();
+														mui.toast('登录成功 ');
+													},500)
+												})
+											}else{
+												plus.nativeUI.closeWaiting();
+												mui.toast(data.errmsg);//登录提示
+											}
+										},
+										error:function(xhr,type,errorThrown){
 											plus.nativeUI.closeWaiting();
-											mui.toast(data.errmsg);//登录提示
+											console.log('登录响应失败');
 										}
-									},
-									error:function(xhr,type,errorThrown){
-										plus.nativeUI.closeWaiting();
-										console.log('登录响应失败');
-									}
-								});
+									});
+								}else{//修改密码
+									mui.toast('密码已修改'); 
+								}
 							}else{
 								plus.nativeUI.closeWaiting();
 								switch(data.errmsg){//注册提示

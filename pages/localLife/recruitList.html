@@ -126,7 +126,9 @@
 					<div class="message msgcmt aClick" onclick="opendetails(<%= list[i].id%>)">
 					 	<div class="msgtxt" style="width: 100%;">
 					 		<h5><%= list[i].title%><span><small></small></span></h5>
-					 		<small><%= list[i].name%></small><br />
+					 		<% if(list[i].type_name != 5){%>
+					 			<small><%= list[i].name%></small><br />
+					 		<% }%>
 					 		<small style="color: gray;"><%= list[i].address%> <span><%= list[i].create_time.split('T')[0]%></span></small><br />
 					 		<small style="color: gray;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><%= list[i].content%> </small>
 					 	</div> 
@@ -152,16 +154,16 @@
 	var Ypagenum = 1;//应到页数 
 	mui.plusReady(function(){
 		//点击切换
-		mui('.titleS')[0].addEventListener('tap',function(){//招聘
+		mui('.titleS')[0].onclick = function(){//招聘
 			mui('.titleS')[0].className = 'titleS activeS aClick';
 			mui('.titleS')[1].className = 'titleS aClick';
-			reload();
-		})
-		mui('.titleS')[1].addEventListener('tap',function(){//招聘
+			reload(4);
+		}
+		mui('.titleS')[1].onclick = function(){//求职
 			mui('.titleS')[1].className = 'titleS activeS aClick';
 			mui('.titleS')[0].className = 'titleS aClick';
-			reload();
-		})
+			reload(5);
+		}
 		
 		//获取上个页面传值
 		var nowwebname = 'Openclock';//当前webview对象name属性
@@ -169,12 +171,17 @@
 		var oldtoken = plus.storage.getItem('oldToken');
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		//添加刷新监听
-		document.addEventListener('refresh', function() {
-			reload();//加载数据,包括上滑加载
+		document.addEventListener('refresh', function(obj) {
+			console.log(obj.detail.Btype)
+			if (obj.detail.Btype) {//加载数据,包括上滑加载
+				mui('.titleS')[1].onclick();
+			} else{
+				mui('.titleS')[0].onclick();
+			}
 			console.log('刷新数据');
 		})
-		reload();
-		function reload(){
+		reload(4);
+		function reload(typename){
 			switch(nowwebname){
 				case 'Repair'://维修数据 
 				headtitle.innerHTML = '维修列表'; 
@@ -190,17 +197,17 @@
 				break;
 				case 'Openclock'://开锁数据
 //				headtitle.innerHTML = '开锁列表';
-				Loading(4,1,10);//加载数据,包括上滑加载
+				Loading(4,1,10,typename);//加载数据,包括上滑加载
 				break;
 			}
 		}
 		
 		//加载方法
-		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
+		function Loading(Ctype_name,CcurrentPage,CnumsPerPage,typename){
 			document.getElementById("infolistdiv").innerHTML = loadstr;
 			mui('#nulldiv')[0].style.display = 'none';
-			mui.ajax(serverUrl+'/api/localservice/selectjobs',{ 									
-				data:{type_name:4}, 
+			mui.ajax(serverUrl0+'/api/localservice/selectjobs',{  									
+				data:{type_name:typename}, 
 				dataType:'json',//服务器返回json格式数据
 				type:'post',//HTTP请求类型 
 				timeout:10000,//超时时间设置为10秒；	

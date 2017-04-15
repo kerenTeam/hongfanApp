@@ -465,9 +465,13 @@ function disclaimer(){
 		var Bnowid = plus.webview.currentWebview().Bname;
 		var Btype = plus.webview.currentWebview().Btype;
 		var typestr = plus.webview.currentWebview().type;
-		if(typestr){
+		var type_name2 = plus.webview.currentWebview().type_name;
+		var type_name = 4;
+		if(typestr || type_name2==5){
 			mui('#titlestr')[0].innerHTML = '求职发布';
+			mui('#Bcallgong')[0].value = '无公司';
 			mui('#company')[0].style.display = 'none';
+			type_name = 5;
 		}
 		//上传部分
 		var oldtoken = plus.storage.getItem('oldToken');
@@ -491,6 +495,7 @@ function disclaimer(){
 							var formD = new FormData();
 							
 							formD.append('userid',myuserid);
+							formD.append('id',Bnowid); 
 							formD.append('title',mui('#Bname')[0].value);
 							formD.append('pic',' ');
 							formD.append('content',mui('#Binfo')[0].value);
@@ -498,15 +503,15 @@ function disclaimer(){
 							formD.append('address',mui('#Baddress')[0].value);
 							formD.append('link_man',mui('#Bcall')[0].value);
 							formD.append('phone',mui('#Bphone')[0].value);
-							
+							formD.append('type_name',type_name2);
 							var xhr = new XMLHttpRequest(); 	
-		        			xhr.open('POST','http://192.168.199.191:7200'+'/api/localservice/savejob');
+		        			xhr.open('POST',serverUrl+'/api/localservice/savejob');
 		        			xhr.onreadystatechange = function(){ 
 		        				if (xhr.readyState===4) {
 		        					if (xhr.status===200) {
 		        						plus.nativeUI.closeWaiting();//关闭等待框
 		        						var dataobj = JSON.parse(xhr.responseText);
-		        						console.log(dataobj);
+		        						console.log('修改返回',dataobj);
 		        						if(dataobj.errno == 0){ 
 		        							mui.toast('修改成功');	
 		        							//触发跳转页面刷新
@@ -547,9 +552,10 @@ function disclaimer(){
 								formD.append('address',mui('#Baddress')[0].value);
 								formD.append('link_man',mui('#Bcall')[0].value);
 								formD.append('phone',mui('#Bphone')[0].value);
+								formD.append('type_name',type_name);
 								
 								var xhr = new XMLHttpRequest(); 	
-			        			xhr.open('POST','http://192.168.199.191:7200'+'/api/localservice/pushjods');
+			        			xhr.open('POST',serverUrl0+'/api/localservice/pushjods');
 			        			xhr.onreadystatechange = function(){ 
 			        				if (xhr.readyState===4) {
 			        					if (xhr.status===200) {
@@ -561,7 +567,7 @@ function disclaimer(){
 				        							mui.toast('发布成功');	
 				        							//触发跳转页面刷新
 				        							plus.nativeUI.showWaiting('跳转中 ...',{width:'100px',height:'80px'});//显示等待框
-													mui.fire(plus.webview.getWebviewById('recruitList.html'),'refresh');
+													mui.fire(plus.webview.getWebviewById('recruitList.html'),'refresh',{Btype:typestr});
 													var time2 = setTimeout(function(){
 														plus.webview.currentWebview().close();
 														plus.nativeUI.closeWaiting();
