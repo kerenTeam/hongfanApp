@@ -418,6 +418,7 @@
 				timeout:10000,
 				headers:{"token":oldtoken},	 
 				success:function(data,type,xhr){
+					plus.nativeUI.closeWaiting();
 					if(data.errno == 0) { 
 						var dataobj = data.data.data; 
 						console.log(JSON.stringify(data))
@@ -437,6 +438,7 @@
 							recommendObj.myUrl = serverimgUrl;
 							recommendObj.recommendData = dataobj; 
 							document.getElementById("typeNews").innerHTML = template("typeNewTpl", recommendObj);
+							plus.nativeUI.closeWaiting();
 							var cmlist = document.getElementsByClassName("newsinfo");
 								for(var t=0;t<cmlist.length;t++){
 									var fuserid = cmlist[t].getAttribute("data-newsId");  
@@ -508,6 +510,7 @@
 						}); 
 					} else {
 						mui("#upload")[0].innerHTML = "";
+						
 					} 
 					//发布者主页
 					$(".findUser").click(function(){
