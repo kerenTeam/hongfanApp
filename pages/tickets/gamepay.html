@@ -71,7 +71,7 @@
 				<div class="mui-indexed-list-alert"></div>
 				<div class="mui-indexed-list-inner">
 					<div class="mui-indexed-list-empty-alert">没有数据</div>
-					<ul class="mui-table-view">
+					<ul class="mui-table-view" id="gameList">
 						<li data-group="A" class="mui-table-view-divider mui-indexed-list-group">A</li>
 						<li data-value="啊" data-tags="aa" class="mui-table-view-cell mui-indexed-list-item">奥比岛</li>
 						<li data-group="B" class="mui-table-view-divider mui-indexed-list-group">B</li>
@@ -81,11 +81,17 @@
 						<li data-group="D" class="mui-table-view-divider mui-indexed-list-group">D</li>
 						<li data-value="都" data-tags="dd" class="mui-table-view-cell mui-indexed-list-item">大话西游2</li>
 					</ul>
+					<script type="text/javascript" id="gameListTpl">
+						<%for(var i=0;i<gameList.length;i++){%>
+							<li data-id="<%=gameList[i].gameId%>" data-mid="<%=gameList[i].manufacturerId%>" data-name="<%=gameList[i].gameName%>" data-mname="<%=gameList[i].manufacturerName%>" data-py="<%=gameList[i].pinyin%>" data-jpy="<%=gameList[i].simplePinyin%>" class="mui-table-view-cell mui-indexed-list-item"><%=gameList[i].gameName%></li>
+							<%}%>
+					</script>
 				</div>
 			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.indexedlist.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			mui.ready(function() {
@@ -106,6 +112,21 @@
 						headers:{"token":oldtoken},
 						success:function(data,type,xhr){
 							console.log(JSON.stringify(data));
+							if(data.errno ==0 ){
+								var gameobj = JSON.parse(data.data.body);
+								var gameList = gameobj.game_list_response.games.game;
+								if(gameList.length){
+									document.getElementById("gameList").innerHTML = template("gameListTpl",{gameList:gameList});
+									$("li.mui-indexed-list-item").click(function(){
+										alert($(this).attr('data-id'))
+										openview({
+											view:"gameRecharge.html",
+											id:"gameRecharge",
+											extrasobj:{gameid:$(this).attr('data-id')}
+										})
+									})
+								}
+							}
 							plus.nativeUI.closeWaiting();
 						},
 						error:function(xhr,type,errorThrown){
@@ -115,16 +136,7 @@
 					})
 				})
 				
-				
-				$("li.mui-indexed-list-item").click(function(){
-					alert($(this).attr('data-value'));
-					openview({
-						view:"gameRecharge.html",
-						id:"gameRecharge",
-						extrasobj:{gameid:$(this).attr('data-value')}
-					})
-				})
-				
+				 
 				
 			});
 		</script>

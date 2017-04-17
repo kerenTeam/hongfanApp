@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>职位列表</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css"> 
+
+		<style type="text/css">
+			 #main{
+			 	background: white;
+			 }
+			.message{
+				position: relative;
+				display: flex;
+				padding: 10px 0;
+				padding-left: 0.15rem;
+				align-items: center;
+				background-color: #fff;
+			}
+			.message:after{
+				position: absolute;
+				content: '';
+				height: 1px;
+				background: #CCCCCC;
+				left: 0.15rem;
+				bottom: 0;
+				right: 0;
+				-webkit-transform: scaleY(0.3);
+			}
+			.message:last-of-type:after{
+				position: absolute;
+				content: '';
+				height: 0px;
+				background: #CCCCCC;
+				left: 0.8rem;
+				bottom: 0;
+				right: 0;
+				-webkit-transform: scaleY(0.3);
+			} 
+			.message .msgIcon{
+				flex-basis:0.8rem;
+				text-align: center;
+			}
+			.message img{ 
+				width: 0.5rem;
+			}
+			.message .mui-icon{
+			 	padding-right: 10px;
+			 	color: tomato;
+			 	 
+			 }
+			 .msgtxt{
+			 	 /*padding-left: 5px;*/
+			 	line-height: 1.35;
+			 	 flex-grow : 1
+			 }
+			 .msgtxt>*{
+			 	width: 100%;
+			 	display: inline-block;
+			 }
+			 .msgtxt h5{
+			 	font-size: 0.17rem;
+			 	color: black;
+			 	line-height: 1.5;
+			 } 
+			 .msgtxt h5 span{
+			 	color: orangered;
+			 }
+			 .msgtxt span{
+			 	position: absolute;
+			 	right: 15px;
+			 }
+			 .mui-bar-tab a{
+			 	color: darkgray;
+				display: table-cell;
+				vertical-align: bottom;
+				text-align: center;
+			}
+			.msgtxt small{
+				font-size: 0.13rem;
+			}
+			
+			</style>
+		</head>
+	
+		<body>
+			<header class="mui-bar mui-bar-nav" id="header"> 
+			    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			    <h1 class="mui-title findUser"><span class="titleS activeS aClick">商品</span><span class="titleS aClick">店铺</span> </h1>
+			</header>
+			<script src="../../js/statusBar.js"></script>
+			<!--状态栏-->
+			<!--<div id="container">-->
+			
+			<div id="main">
+				
+				<div id="infolistdiv">
+					<!--列表loading-->
+					<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
+						line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+						<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
+					</div> 
+				</div>
+				<script type="text/html" id="infolist">
+					<% for(var i=0; i<list.length; i++){%>
+					<div class="message msgcmt aClick" onclick="opendetails(<%= list[i].id%>)">
+					 	<div class="msgtxt" style="width: 100%;">
+					 		<h5><%= list[i].title%><span><small></small></span></h5>
+					 		<% if(list[i].type_name != 5){%>
+					 			<small><%= list[i].name%></small><br />
+					 		<% }%>
+					 		<small style="color: gray;"><%= list[i].address%> <span><%= list[i].create_time.split('T')[0]%></span></small><br />
+					 		<small style="color: gray;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><%= list[i].content%> </small>
+					 	</div> 
+				 	</div>
+				 	<% }%>
+				</script>
+			<!--底部导航-->
+		</div>
+		<div class="upload text-center text-xs gray" id="upload"></div>
+		<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+			<br />
+			没有相关信息
+		</div>
+			
+	</body>
+<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/app.js"></script>	
+<script src="../../js/jquery.min.js"></script>	
+<script type="text/javascript">
+	var Spagenum = 2;//实到页数
+	var Ypagenum = 1;//应到页数 
+	mui.plusReady(function(){
+		//点击切换
+		mui('.titleS')[0].onclick = function(){//招聘
+			mui('.titleS')[0].className = 'titleS activeS aClick';
+			mui('.titleS')[1].className = 'titleS aClick';
+			reload(4);
+		}
+		mui('.titleS')[1].onclick = function(){//求职
+			mui('.titleS')[1].className = 'titleS activeS aClick';
+			mui('.titleS')[0].className = 'titleS aClick';
+			reload(5);
+		}
+		
+		//获取上个页面传值
+		var nowwebname = 'Openclock';//当前webview对象name属性
+		var headtitle = document.getElementById('headtitle');
+		var oldtoken = plus.storage.getItem('oldToken');
+		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+		//添加刷新监听
+		document.addEventListener('refresh', function(obj) {
+			console.log(obj.detail.Btype)
+			if (obj.detail.Btype) {//加载数据,包括上滑加载
+				mui('.titleS')[1].onclick();
+			} else{
+				mui('.titleS')[0].onclick();
+			}
+			console.log('刷新数据');
+		})
+		reload(4);
+		function reload(typename){
+			switch(nowwebname){
+				case 'Repair'://维修数据 
+				headtitle.innerHTML = '维修列表'; 
+				Loading(1,1,10);//加载数据,包括上滑加载
+				break;
+				case 'Clean'://保洁数据
+				headtitle.innerHTML = '保洁列表';
+				Loading(2,1,10);//加载数据,包括上滑加载
+				break;
+				case 'Babysister'://保姆数据
+				headtitle.innerHTML = '保姆列表';
+				Loading(3,1,10);//加载数据,包括上滑加载
+				break;
+				case 'Openclock'://开锁数据
+//				headtitle.innerHTML = '开锁列表';
+				Loading(4,1,10,typename);//加载数据,包括上滑加载
+				break;
+			}
+		}
+		
+		//加载方法
+		function Loading(Ctype_name,CcurrentPage,CnumsPerPage,typename){
+			document.getElementById("infolistdiv").innerHTML = loadstr;
+			mui('#nulldiv')[0].style.display = 'none';
+			mui.ajax(serverUrl0+'/api/localservice/selectjobs',{  									
+				data:{type_name:typename}, 
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型 
+				timeout:10000,//超时时间设置为10秒；	
+				headers:{"token":oldtoken}, 
+				success:function(data){
+					console.log('列表返回',data);
+					if(data.errno == 0){ 
+						if(data.data.length){
+							var dataobj = {};
+//							mui.each(data.data.data,function (index,ele) {
+//								data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+//							})
+							mui.each(data.data,function (index,element) {
+								element.title = JSON.parse(element.content).title;
+								element.content = JSON.parse(element.content).content;
+							})	
+							dataobj.list = data.data; 
+							
+							//获取并渲染用户信息
+							var html=template("infolist",dataobj);
+							document.getElementById("infolistdiv").innerHTML += html;
+							mui("#upload")[0].innerHTML = "";
+						}else{
+							mui("#upload")[0].innerHTML = ""; 
+							mui('#nulldiv')[0].style.display = 'block';
+						}
+						
+						//滚动到底部加载
+//						$(window).scroll(function(){
+//						　　var scrollTop = $(this).scrollTop();
+//						　　var scrollHeight = $(document).height();
+//						　　var windowHeight = $(this).height();
+//						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
+//								if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+//									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+//									Ypagenum++;//满足加载情况,应到页数+1
+//									console.log('发起请求,实到'+Spagenum+'页');									
+//									console.log('发起请求,应到'+Ypagenum+'页');
+//									mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
+//										data:{type_name:Ctype_name,currentPage:Spagenum,numsPerPage:CnumsPerPage}, 
+//										dataType:'json',//服务器返回json格式数据
+//										type:'post',//HTTP请求类型 
+//										timeout:10000,//超时时间设置为10秒；	
+//										headers:{"token":oldtoken}, 
+//										success:function(data){
+//											if(data.errno == 0){
+//												var dataobj = {};
+//												mui.each(data.data.data,function (index,ele) {
+//													console.log('地址'+ eval("("+ele.logo+")")[0].picImg);
+//													data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
+//												})
+//												dataobj.list = data.data.data; 
+//												//获取并渲染用户信息
+//												var html=template("infolist",dataobj);
+//												document.getElementById("infolistdiv").innerHTML += html;
+//											}
+//											mui("#upload")[0].innerHTML = " ";
+//											Spagenum++;//加载成功,当前页+1
+//											console.log('成功+1,实到'+Spagenum);
+//											console.log('成功+1,应到'+Spagenum);
+//										},
+//										error:function(xhr,type,errorThrown){
+//											Ypagenum--;//失败是应到-1
+//											mui.toast("当前网络不好请重试");
+//											mui("#upload")[0].innerHTML = "";
+//										}
+//									});
+//								}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+//									mui("#upload")[0].innerHTML = "到底了";
+//								}
+//						　　  }
+//						});//加载下一部分结束
+					}else{
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+					closeLoad();//关闭列表loading
+				},
+				error:function(xhr,type,errorThrown){
+					closeLoad();//关闭列表loading
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			});
+		}
+		//发布按钮
+		mui('.baocun')[0].onclick = function(){
+			if(plus.storage.getItem('myToken')){
+				var typestr = 0;
+				if(mui('.titleS')[1].className.indexOf('activeS')>-1){
+					typestr = 1;	
+				}
+				openview({
+					view:'new_job.html',
+					id:'new_job',
+					extrasobj:{type:typestr}
+				})
+			}else{//没登陆直接打开登录页面
+				mui.toast('请登录');
+				openview({
+					view:'../login.html'
+				});
+			}
+		} 
+	
+	});//plusReady
+
+//跳转详情
+function opendetails(id){
+	openview({
+		view:'recruitInfo.html',
+		extrasobj:{name:id}
+	})
+}
+</script>
+
+</html> 
