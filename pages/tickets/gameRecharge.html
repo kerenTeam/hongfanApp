@@ -277,10 +277,47 @@
 	</body>
 	<script src="../../js/mui.picker.min.js"></script>
 	<script src="../../js/mui.poppicker.js"></script>
+	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
 		(function($, doc) {
 			$.init();
 			$.ready(function() {
+				
+				var gameId = plus.webview.currentWebview().gameid;
+				alert(gameId)
+				var oldtoken = plus.storage.getItem('oldToken');
+				$.plusReady(function(){
+					mui.ajax(serverUrl+'/api/qianmi/directrechargegame',{
+						data:{pageNo:0,pageSize:10,itemId:160010,itemName:'魔兽'},
+						dataType:'json',
+						type:'post',
+						timeout:'10000',
+						headers:{"token":oldtoken},
+						success:function(data,type,xhr){
+							console.log(JSON.stringify(data));
+							if(data.errno ==0 ){
+//								var gameobj = JSON.parse(data.data.body);
+//								var gameList = gameobj.game_list_response.games.game;
+//								if(gameList.length){
+//									document.getElementById("gameList").innerHTML = template("gameListTpl",{gameList:gameList});
+//									$("li.mui-indexed-list-item").click(function(){
+//										openview({
+//											view:"gameRecharge.html",
+//											id:"gameRecharge",
+//											extrasobj:{gameid:$(this).attr('data-id')}
+//										})
+//									})
+//								}
+							}
+							plus.nativeUI.closeWaiting();
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							console.log('响应失败  !');
+						}
+					})
+				})
+				
 				//普通示例
 				var onePicker = new $.PopPicker();
 				onePicker.setData([{
@@ -320,6 +357,7 @@
 						//return false;
 					});
 				}, false); 
+				
 			});
 		})(mui, document);
 	</script>

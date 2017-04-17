@@ -445,13 +445,13 @@
 				width: 0.13rem;
 				margin-right: 3px;
 			}
-			.someRule ul:last-child{ 
+			.someRule ul.yh{ 
 				padding: 10px 25px 0;
 				background: url(../../img/market/charge.svg) no-repeat;
 				background-clip: padding-box;
 				background-size: 30px;
 			}
-			.someRule ul:last-child li{
+			.someRule ul.yh li{
 				font-size: 0.13rem;
 				color: dimgray;
 				line-height: 1.5;
@@ -601,15 +601,15 @@
 						<ul>
 							<li>自提地址：<%=brief.since_address%></li>
 						</ul>
-						<ul>
-							<%if(brief.reduction_rule){%>
+						<%if(brief.reduction_rule && brief.reduction_rule.length){%>
+							<ul class="yh">
 								<%for(var i= 0;i<brief.reduction_rule.length;i++){%>
 									<li>满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
-									<%}%>
 								<%}%>
+							</ul>
+						<%}%>
 							
 							<!--<li>店铺满300减50</li>-->
-						</ul>
 						
 					</div>
 					<div class="farmtc clearfloat mt10">
@@ -818,7 +818,7 @@
 					"token": token
 				},
 				success: function(data) { 
-
+					console.log(JSON.stringify(data))
 					if(data.errno == 0) {
 						plus.nativeUI.closeWaiting();
 
