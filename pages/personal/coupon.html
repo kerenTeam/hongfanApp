@@ -410,15 +410,15 @@
 				}
 				var userId = plus.storage.getItem("userid");
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-//				console.log(oldToken);
-				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
+				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{ 
 					data:{userid : userId},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						if(data.data=[]){
+						console.log('data',data);
+						if(!data.data.length){ 
 								mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 							}else{
 								for(var m=0; m < data.data.length; m++){  
