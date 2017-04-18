@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>充值中心</title>
+		<title>流量充值</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -235,15 +235,15 @@
 							if(reg_phone.test(mobileNo)){
 								plus.nativeUI.showWaiting();
 								var rechargeAmount = parseFloat($(this).find("p").html());
-									//充话费接口
-									mui.ajax(serverUrl+'/api/qianmi/createmobilebill',{
-										data:{mobileNo:mobileNo,rechargeAmount:rechargeAmount,userid:myuserid},
+									//充流量接口
+									mui.ajax('http://192.168.199.191:7200'+'/api/qianmi/mobileflow',{
+										data:{mobileNo:'13541797915',flow:'1G',userid:4,useScope:'p'},
 										dataType:'json',
 										type:'post',
 										timeout:1000,
 										headers:{"token":oldToken},
 										success:function(data,type,xhr){
-											console.log('充值',data);
+											console.log('流量',data);
 											if(data.errno==0){
 												var orderCost = data.data.body.data.orderCost; //总价
 												var saleAmount = data.data.body.data.saleAmount;//实际价格
