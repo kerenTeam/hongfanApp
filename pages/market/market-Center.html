@@ -219,7 +219,7 @@
 			.adbox{line-height: 30px;width: 18% !important;}
 			.adbox p{padding: 10px 0;text-align: left !important;font-size: 12px !important;}
 			/*.adbox img{width: 30% !important;}*/
-			.overyou{width: auto !important;overflow-x: scroll !important;padding: 0 10px 10px 10px;}
+			.overyou{width: auto !important;overflow-x: scroll !important;}
 			.swiper-slide{
 				width: 50%;
 				border-radius: 3px !important;
@@ -245,6 +245,38 @@
 				position: absolute;
 				top: 0;
 			 	left: 0;
+			}
+			.hotlist{
+				overflow: scroll;
+				white-space: nowrap;
+				padding: 10px 10px;
+			}
+			::-webkit-scrollbar {display:none}
+			 
+			.hotlist .liste{
+				font-size: 0.13rem;
+				vertical-align: middle;
+				display: inline-block;
+				width:1rem;
+				margin: 0 10px;
+			}
+			.liste img{
+				width:1rem;
+				height: 1rem; 
+			}
+			.gdname{
+				margin-top: 5px;
+				white-space: normal;
+				line-height: 1.25;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+			}
+			.gdprice{
+				color: #F53C42;
+				text-align: center;
+				line-height: 1.5;
 			}
 		</style>
 	</head>
@@ -324,22 +356,44 @@
 			</div>-->
 
 			<!--HOT广告-->
-			<div class="sy_limit_buy mb10 sy_recmd" style="margin: 10px 0;">
-				<div class="sy_title mb10">
+			<div class="sy_limit_buy mb10 sy_recmd">
+				<div class="sy_title">
 					<span class="left">HOT</span>
 				</div>
-				<div class="overyou locatLabel_switch swiper-container5 swiper-container-horizontal swiper-container-free-mode swiper-container-android">
-					<div class="swiper-wrapper" id="Adv"></div>
-					<script type="text/html" id="Adv-detail">
-						<% for(var i=0; i<list.length; i++){%>
-							<div class="box swiper-slide" onclick="goAdv(<%= list[i].id %>)">
-								<p class="overflow_clear">
-									<img src="<%= myUrl %><%= list[i].pic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
-									<span style="display: block;padding: 5px;"><%= list[i].title%></span>
-								</p>
+				<div class="overyou"> 
+					<div class="hotlist" onclick="goAdv()">
+						<div class="liste">
+							<img src="http://haitao.nos.netease.com/j1hid80q18_800_800.jpg?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								Papatonk 啪啪通 印尼木薯脆片红咖喱味 50克
 							</div>
-						<% }%>
-					</script>
+							<div class="gdprice">￥58</div>
+						</div>
+						<div class="liste">
+							<img src="http://pop.nosdn.127.net/63a376c4-adb6-4bc4-899f-be40c9930f88?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								Papatonk 啪啪通 印尼木薯脆片红咖喱味 50克
+							</div>
+							<div class="gdprice">￥58</div>
+						</div>
+						<div class="liste">
+							<img src="http://pop.nosdn.127.net/35864974-a423-4111-8229-ba0e599a1823?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								Papatonk 啪啪通 印尼木薯脆片红咖喱味 50克
+							</div>
+							<div class="gdprice">￥58</div>
+						</div>
+						<div class="liste">
+							<img src="http://haitao.nos.netease.com/j1hid80q18_800_800.jpg?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								Papatonk 啪啪通 印尼木薯脆片红咖喱味 50克
+							</div>
+							<div class="gdprice">￥58</div>
+						</div>
+						<div class="liste" style="border: 1px solid #eee;line-height: 1rem;text-align: center;">
+							 更多
+						</div>
+					</div> 
 				</div>
 			</div>
 
@@ -511,23 +565,23 @@
 			
 			 
 			//HOT广告 数据渲染
-			mui.ajax(serverUrl +'/api/index/ads',{
-				data:{ad_type:2},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":token},	 
-				success:function(data,type,xhr){
-					var adObj = {};
-					adObj.list = data.data;
-					adObj.myUrl = serverimgUrl;
-					var html = template('Adv-detail',adObj);
-					document.getElementById('Adv').innerHTML = html;
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('响应失败  !');
-				}
-			});
+//			mui.ajax(serverUrl +'/api/index/ads',{
+//				data:{ad_type:2},
+//				dataType:'json',
+//				type:'post',
+//				timeout:10000,
+//				headers:{"token":token},	 
+//				success:function(data,type,xhr){
+//					var adObj = {};
+//					adObj.list = data.data;
+//					adObj.myUrl = serverimgUrl;
+//					var html = template('Adv-detail',adObj);
+//					document.getElementById('Adv').innerHTML = html;
+//				},
+//				error:function(xhr,type,errorThrown){
+//					console.log('响应失败  !');
+//				}
+//			});
 			
 			var currentPage =1, numsPerPage=4;
 			//热门推荐 数据渲染

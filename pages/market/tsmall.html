@@ -247,6 +247,38 @@
 			 	right: 0;
 			 }	*/
 			.width_5{width: 25% !important;}
+			.hotlist{
+				overflow: scroll;
+				white-space: nowrap;
+				padding: 10px 10px;
+			}
+			::-webkit-scrollbar {display:none}
+			 
+			.hotlist .liste{
+				font-size: 0.13rem;
+				vertical-align: middle;
+				display: inline-block;
+				width:1rem;
+				margin: 0 10px;
+			}
+			.liste img{
+				width:1rem;
+				height: 1rem; 
+			}
+			.gdname{
+				white-space: normal;
+				line-height: 1.25;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+				margin-top: 5px;
+			}
+			.gdprice{
+				color: #F53C42;
+				text-align: center;
+				line-height: 1.5;
+			}
 		</style>
 	</head>
 	<body>
@@ -313,21 +345,43 @@
 			
 			<!--HOT广告-->
 			<div class="sy_limit_buy mb10 sy_recmd" style="margin: 10px 0;">
-				<div class="sy_title mb10">
+				<div class="sy_title">
 					<span class="left">HOT</span>
 				</div>
-				<div class="overyou locatLabel_switch swiper-container5 swiper-container-horizontal swiper-container-free-mode swiper-container-android">
-					<div class="swiper-wrapper" id="Adv"></div>
-					<script type="text/html" id="Adv-detail">
-						<% for(var i=0; i<list.length; i++){%>
-							<div class="box swiper-slide" onclick="goAdv(<%= list[i].id %>)">
-								<p class="overflow_clear">
-									<img src="<%= myUrl %><%= list[i].pic %>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
-									<span style="display: block;padding: 5px;"><%= list[i].title%></span>
-								</p>
+				<div class="overyou"> 
+					<div class="hotlist" onclick="goAdv()">
+						<div class="liste">
+							<img src="http://pop.nosdn.127.net/21881d92-3e96-46e0-b0b9-2679f39bd9ec?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								【本来生活】进口干尧榴莲 3颗箱装（7.5-8.5千克）
 							</div>
-						<% }%>
-					</script>
+							<div class="gdprice">￥218</div>
+						</div>
+						<div class="liste">
+							<img src="http://pop.nosdn.127.net/56919535-ec47-4923-bc7f-325e4d051dac?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								Zespri 佳沛新西兰金奇异果巨无霸原装箱 18粒 单果重175-204克 18#
+							</div>
+							<div class="gdprice">￥258</div>
+						</div>
+						<div class="liste">
+							<img src="http://haitao.nos.netease.com/j1g7815i46_800_800.png?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								雾露山 糯米香云南普洱小沱熟茶 特级古树原料 6枚入
+							</div>
+							<div class="gdprice">￥58</div>
+						</div>
+						<div class="liste">
+							<img src="http://haitao.nos.netease.com/j1g7815i46_800_800.png?imageView&thumbnail=220x220" alt="" />
+							<div class="gdname">
+								雾露山 糯米香云南普洱小沱熟茶 特级古树原料 6枚入
+							</div>
+							<div class="gdprice">￥58</div>
+						</div>
+						<div class="liste" style="border: 1px solid #eee;line-height: 1rem;text-align: center;">
+							 更多
+						</div>
+					</div> 
 				</div>
 			</div>
 
@@ -540,23 +594,23 @@
 			});
 			
 			//HOT广告 数据渲染
-			mui.ajax(serverUrl +'/api/index/ads',{
-				data:{ad_type:4},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":token},	 
-				success:function(data,type,xhr){
-					var adObj = {};
-					adObj.list = data.data;
-					adObj.myUrl = serverimgUrl;
-					var html = template('Adv-detail',adObj);
-					document.getElementById('Adv').innerHTML = html;
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('响应失败  !');
-				}
-			});
+//			mui.ajax(serverUrl +'/api/index/ads',{
+//				data:{ad_type:4},
+//				dataType:'json',
+//				type:'post',
+//				timeout:10000,
+//				headers:{"token":token},	 
+//				success:function(data,type,xhr){
+//					var adObj = {};
+//					adObj.list = data.data;
+//					adObj.myUrl = serverimgUrl;
+//					var html = template('Adv-detail',adObj);
+//					document.getElementById('Adv').innerHTML = html;
+//				},
+//				error:function(xhr,type,errorThrown){
+//					console.log('响应失败  !');
+//				}
+//			});
 			
 			//推荐数据渲染
 			var currentPage =1, numsPerPage=4;

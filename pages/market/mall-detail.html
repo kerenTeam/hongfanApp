@@ -163,7 +163,6 @@
 				height: 50px;
 				width: 50px;
 			}
-			
 			.mui-preview-image img.mui-transitioning {
 				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
 				transition: transform 0.5s ease, opacity 0.5s ease;
@@ -434,7 +433,7 @@
 				bottom: 0;
 				left: 0;
 			}
-			.someRule ul:not(:last-child) li{
+			.someRule ul.GDTAP li,.someRule ul.ZT li{
 				display: inline-block;
 				font-size: 0.13rem;
 				color: gray;
@@ -445,13 +444,13 @@
 				width: 0.13rem;
 				margin-right: 3px;
 			}
-			.someRule ul.yh{ 
+			.someRule ul.YH{ 
 				padding: 10px 25px 0;
 				background: url(../../img/market/charge.svg) no-repeat;
 				background-clip: padding-box;
 				background-size: 30px;
 			}
-			.someRule ul.yh li{
+			.someRule ul.YH li{
 				font-size: 0.13rem;
 				color: dimgray;
 				line-height: 1.5;
@@ -592,26 +591,31 @@
 							</div>
 
 					</div>
-					<div class="someRule">
-						<ul>
-							<li><img src="../../img/market/goodrule.svg"/>卖家承诺48小时内发货</li>
-							<li><img src="../../img/market/goodrule.svg"/>7天无理由退货</li>
-							<li><img src="../../img/market/goodrule.svg"/>可自提</li>
-						</ul>
-						<ul>
-							<li>自提地址：<%=brief.since_address%></li>
-						</ul>
-						<%if(brief.reduction_rule && brief.reduction_rule.length){%>
-							<ul class="yh">
-								<%for(var i= 0;i<brief.reduction_rule.length;i++){%>
-									<li>满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
-								<%}%>
-							</ul>
-						<%}%>
+					<%if(brief.good_tags || brief.since_address || brief.reduction_rule){%>
+						<div class="someRule">
+							<%if(brief.good_tags && brief.good_tags.length){%>
+								<ul class="GDTAP">
+									<%for(var i= 0;i<brief.good_tags.length;i++){%>
+										<li><img src="../../img/market/goodrule.svg"/><%=brief.good_tags[i]%></li>
+									<%}%>
+								</ul>
+							<%}%>
+							<%if(brief.since_address){%>
+								<ul class="ZT">
+									<li>自提地址：<%=brief.since_address%></li>
+								</ul>
+							<%}%>
+							<%if(brief.reduction_rule && brief.reduction_rule.length){%>
+								<ul class="YH">
+									<%for(var i= 0;i<brief.reduction_rule.length;i++){%>
+										<li>满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
+									<%}%> 
+								</ul>
+							<%}%>
 							
-							<!--<li>店铺满300减50</li>-->
-						
-					</div>
+						</div>
+					<%}%>
+					
 					<div class="farmtc clearfloat mt10">
 						<p class="bt box-s">商品详情</p>
 					</div>
@@ -817,22 +821,23 @@
 				headers: {
 					"token": token
 				},
-				success: function(data) { 
-					console.log(JSON.stringify(data))
+				success: function(data) {
 					if(data.errno == 0) {
 						plus.nativeUI.closeWaiting();
-
+//						alert(JSON.stringify(data.data.goodsInfo))
 						if(!data.data.goodsInfo.good_pic) {
 							data.data.goodsInfo.good_pic = null;
 						}
 						if(data.data.goodsInfo.reduction_rule) {
 							data.data.goodsInfo.reduction_rule = JSON.parse(data.data.goodsInfo.reduction_rule);
 						}
+						if(data.data.goodsInfo.good_tags){
+							data.data.goodsInfo.good_tags = data.data.goodsInfo.good_tags.split(",");
+						}
 						var dataobj = eval("(" + data.data.goodsInfo.good_pic + ")");
-
 						var commentobj = data.data.comments;
 						    qq = data.data.goodsInfo.qq;
-						//var content = data.data.comments
+//						var content = data.data.comments
 						//banner
 						var infoObj = {}
 						infoObj.myUrl = serverimgUrl;
@@ -892,7 +897,7 @@
 							},
 							type: 'post',
 							timeout: 10000,
-							success: function(data, type, xhr) { 
+							success: function(data, type, xhr) {
 								parameteNameo = JSON.parse(data)[0];
 								var parmeter = {};
 								parameteValueo = JSON.parse(data)[1];
@@ -965,9 +970,15 @@
 													 	  	 mui(".mui-numbox").numbox();
 													 	 $(".mui-input-numbox").val(1);
 													 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
-
-													   $("#priceChange").html("￥"+data.data.price);
-													    priceChange = parseFloat(data.data.price)
+														var pprice = 0;
+														for(var i = 0; i < parameteValueo.parentlist.length; i++){
+															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
+																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)
+															}
+															  
+														} 
+													   $("#priceChange").html("￥"+pprice);
+												   		priceChange = pprice; 
 													    $(".db").attr("onclick","cartStorageF(this)")
 														$(".db").css("background","#F53C42")
 													 }
@@ -1037,9 +1048,17 @@
 													 	 $(".mui-input-numbox").val(1);
 													 	 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
 													 	  mui(".mui-numbox").numbox();
-													    $("#priceChange").html("￥"+data.data.price);
-													    
-													    priceChange = parseFloat(data.data.price)
+													  
+var pprice = 0;
+														for(var i = 0; i < parameteValueo.parentlist.length; i++){
+															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
+																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)
+															}
+															  
+														}  
+														$("#priceChange").html("￥"+pprice);
+												   		priceChange = pprice; 
+													   
 													    $(".db").attr("onclick","cartStorageF(this)")
 														$(".db").css("background","#F53C42")
 													 }
@@ -1051,9 +1070,8 @@
 												mui.toast('响应失败  !');
 											}
 										});
-			}
+			} 
 						var priceChange = parseInt($(".jifen samp").html());
-//							alert(priceChange)
 						//评论
 						var cemmentObj = {} 
 						for(var i = 0; i < commentobj.length; i++) {
@@ -1089,8 +1107,7 @@
 										prop.parameter_name = $(this).find("p").html();
 										prop.child_parameter_name = $(this).find(".cur").html();
 										goodProp.push(prop)
-									}) 
-//									alert(JSON.stringify(goodProp)+" "+JSON.stringify(allprop))
+									})  
 									var j=0; 
 									for(var i = 0; i < allprop.parentlist.length; i++){ 
 										for(var m=0;m < goodProp.length ; m++){ 
@@ -1227,8 +1244,7 @@
 					
 					var goodId = plus.webview.currentWebview().goodsId;
 					var myuserid = plus.storage.getItem('userid'); 
-					var oldToken = plus.storage.getItem('oldToken');
-					alert(myuserid+" "+goodId)
+					var oldToken = plus.storage.getItem('oldToken'); 
 					mui.ajax(serverUrl + '/api/mall/collectformall', {
 						data: {
 							userid: myuserid,
