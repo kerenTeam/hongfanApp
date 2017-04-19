@@ -247,16 +247,16 @@
 			<div class="mui-slider-group mui-slider-loop">
 				<!--支持循环，需要重复图片节点-->
 				<div class="mui-slider-item mui-slider-item-duplicate">
-					<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					<img src="<%= bannerList[bannerList.length-1].pic%>" data-qtid='<%= bannerList[bannerList.length-1].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
 				<% for(var i=0;i<bannerList.length;i++){ %>
 				<div class="mui-slider-item">
-					<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					<img src="<%=bannerList[i].pic %>" data-qtid='<%= bannerList[i].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
 				<% } %>
 				<!--支持循环，需要重复图片节点-->
 				<div class="mui-slider-item mui-slider-item-duplicate">
-					<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					<img src="<%= bannerList[0].pic %>" data-qtid='<%= bannerList[0].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
 			</div>
 			<div class="mui-slider-indicator">
@@ -287,7 +287,7 @@
 		<div id="newsType"></div>
 		<script type="text/html" id="newsTypeTpl">
 			<ul class="findType">
-				<li class="active aClick" data-ctid="0">所有</li>
+				<li class="active aClick" data-ctid="">所有</li>
 				<%for(var i = 0;i<tpdata.length;i++){%>
 				<li class="aClick" data-ctid="<%=tpdata[i].cate_id%>">
 					<%= tpdata[i].cate_name%>
@@ -439,36 +439,54 @@
 			var myuserid = plus.storage.getItem('userid');
 
 			//banner
-			mui.ajax(serverUrl + '/api/index/banner', {
-				data: { banner_type: 10 },
-				dataType: 'json',
-				type: 'post',
-				timeout: 10000,
-				headers: { "token": oldtoken },
-				success: function(data, type, xhr) {
-					bannerObj = {};
-					bannerObj.bannerList = eval("(" + data.data.banner + ")");
-					bannerObj.url = serverimgUrl;
-					var html = template('banner-detail', bannerObj);
-					document.getElementById('banner').innerHTML = html;
-					$("#banner img").click(function(){
-						openview({
-							view:"find/findActivity.html",
-							id:"find/findActivity"
-						})
-					})
-					plus.nativeUI.closeWaiting(); //关闭等待框
-					//轮播图,获得slider插件对象
-					var gallery = mui('.mui-slider');
-					gallery.slider({
-						interval: 5000 //自动轮播周期，若为0则不自动播放，默认为0；
-					});
-				},
-				error: function(xhr, type, errorThrown) {
-					console.log('响应失败  !');
-				}
-			});
-
+			//请求 专题 数据 
+	    		mui.ajax(serverUrl+"/api/news/activitylist",{
+	    			data:{act_id:1},
+	        		dataType:'json',
+	        		type:'post',
+	        		timeout:10000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){  
+						if(data.errno == 0){
+							if(data.data.length != 0){  
+								for(var i = 0;i<data.data.length;i++){
+									
+									if(data.data[i].pic.indexOf('http')<=-1){
+										data.data[i].pic = serverimgUrl + data.data[i].pic;
+									}
+								}
+								
+	        					var theameObj = {};
+	        					theameObj.url = serverimgUrl;
+	        					theameObj.bannerList = data.data;
+	        					var html = template('banner-detail', theameObj);
+								document.getElementById('banner').innerHTML = html;
+								$("#banner img").click(function(){
+									openview({
+										view: "find/themalist.html",
+										extrasobj: {
+											qid:$(this).attr("data-qtid")
+										}
+									})
+								})
+								plus.nativeUI.closeWaiting(); //关闭等待框
+								//轮播图,获得slider插件对象
+								var gallery = mui('.mui-slider');
+								gallery.slider({
+									interval: 5000 //自动轮播周期，若为0则不自动播放，默认为0；
+								});
+							}else{
+								plus.nativeUI.closeWaiting(); 
+							}
+						}
+						
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting()
+						console.log('响应失败  !');
+					}
+	        }) 
+		 
 			//获取海报信息
 //			mui.ajax(serverUrl + "/api/news/activity", {
 //				dataType: 'json',
@@ -559,7 +577,7 @@
 				var currentPage = 1,
 					numsPerPage = 10;
 				mui.ajax(serverUrl + "/api/news/newslist", {
-					data: { currentPage: currentPage, numsPerPage: numsPerPage, userid: myuserid, categoryid: ctid, isMyFriendPage: "false" },
+					data: { currentPage: currentPage, numsPerPage: numsPerPage, userid: myuserid, categoryid: ctid, isMyFriendPage: "" },
 					dataType: 'json',
 					type: 'post',
 					timeout: 10000,

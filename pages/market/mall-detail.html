@@ -716,8 +716,8 @@
 				<script type="text/html" id="boxTpl">
 					<div class="am-share-footer">
 						<span class="share_btn">
-				<img src="../../img/chahao.png"/>
-			</span>
+							<img src="../../img/chahao.png"/>
+						</span>
 					</div>
 					<div class="am-share-sns box-s">
 						<div class="sdetail clearfloat">
@@ -824,7 +824,6 @@
 				success: function(data) {
 					if(data.errno == 0) {
 						plus.nativeUI.closeWaiting();
-//						alert(JSON.stringify(data.data.goodsInfo))
 						if(!data.data.goodsInfo.good_pic) {
 							data.data.goodsInfo.good_pic = null;
 						}
@@ -1049,7 +1048,7 @@
 													 	 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
 													 	  mui(".mui-numbox").numbox();
 													  
-var pprice = 0;
+														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
 															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
 																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)
@@ -1205,10 +1204,31 @@ var pprice = 0;
 				}
 			});
 			
-			
-		
-			
-			
+			var myuserid = plus.storage.getItem('userid');
+			//请求商品收藏列表
+			mui.ajax(serverUrl+'/api/useraccount/mymallcollect',{  									
+				data:{type_name:2,userid:myuserid}, 
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型 
+				timeout:10000,//超时时间设置为10秒；	
+				headers:{"token":token}, 
+				success:function(data){
+					if(data.errno == 0){ 
+						if(data.data.goodsCollect.length){
+							for(var i=0;i<data.data.goodsCollect.length;i++){
+								if(data.data.goodsCollect[i].goods_id == goodId){
+									$("#collect").attr("src", "../../img/market/collects.svg");
+								}
+							}
+						}
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					 
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			});
 			//跳转商家详情
 			window.goShop = function() {
 				console.log(shopId);
@@ -1238,18 +1258,18 @@ var pprice = 0;
 		})
 		//收藏
 		function collectfun(){
-			if($("#collect").attr("src") == "../../img/market/collect.svg"){
-				$("#collect").attr("src", "../../img/market/collects.svg");
-				mui.plusReady(function(){
-					
-					var goodId = plus.webview.currentWebview().goodsId;
-					var myuserid = plus.storage.getItem('userid'); 
-					var oldToken = plus.storage.getItem('oldToken'); 
+			mui.plusReady(function(){
+				var goodId = plus.webview.currentWebview().goodsId;
+				var myuserid = plus.storage.getItem('userid'); 
+				var oldToken = plus.storage.getItem('oldToken');  
+				if($("#collect").attr("src") == "../../img/market/collect.svg"){
+					 
 					mui.ajax(serverUrl + '/api/mall/collectformall', {
 						data: {
 							userid: myuserid,
 							type_name:2,
-							collect_id:goodId
+							collect_id:goodId,
+							isDelete :0
 						},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型
@@ -1257,8 +1277,9 @@ var pprice = 0;
 						headers: {
 							"token": oldToken
 						},
-						success: function(data) { 
-							alert(JSON.stringify(data))
+						success: function(data) {  
+							$("#collect").attr("src", "../../img/market/collects.svg");
+							mui.toast("收藏成功")
 							},
 						error: function(xhr, type, errorThrown) {
 							//异常处理；
@@ -1266,12 +1287,32 @@ var pprice = 0;
 							mui.toast("当前网络不好请重试");
 						}
 					});
-				})
-				mui.toast("收藏成功")
-			}else{
-				$("#collect").attr("src", "../../img/market/collect.svg");
-				mui.toast("取消收藏")
-			}
+				}else{
+					mui.ajax(serverUrl + '/api/mall/collectformall', {
+						data: {
+							userid: myuserid,
+							type_name:2,
+							collect_id:goodId,
+							isDelete :1
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							"token": oldToken
+						},
+						success: function(data) {  
+							$("#collect").attr("src", "../../img/market/collect.svg");
+							mui.toast("取消收藏")
+							},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							plus.nativeUI.closeWaiting();
+							mui.toast("当前网络不好请重试");
+						}
+					}); 
+				}
+			})
 		}
 	</script>
 
