@@ -178,7 +178,7 @@
 				    		<div class="czhi box-s">
 				    			<p>缴费单位</p>
 				    			<div id="Cchoose" onclick="unit()">
-				    				<input type="text" id="cgunit" value="重庆渝川燃气有限责任公司" disabled="disabled"/>
+				    				<input type="text" id="cgunit" value="" placeholder="选择缴费单位" disabled="disabled"/>
 				    				<span class="mui-icon mui-icon-arrowright"></span>
 				    			</div>
 				    		</div>
@@ -195,9 +195,9 @@
 					<div class="btw">
 						<p>户号为10位数字。支持重庆主城区。</p>
 					</div>
-					<div class="btw agree">
-						<p>同意<span class="textRed"> 《支付宝自助缴费服务协议》</span></p>
-					</div>
+					<!--<div class="btw agree">
+						<p>同意<span class="textRed"> 《自助缴费服务协议》</span></p>
+					</div>-->
 					<button type="button" class="mui-btn mui-btn-block" onclick="next()">下一步</button>
 				</div>
 			</div>
@@ -228,7 +228,7 @@
 				})
 			}
 			
-				var itemid="64396301";
+				var itemid="";
 			mui.plusReady(function(){
 				window.addEventListener('refresh', function(event){ 
 						var itemId = event.detail.itemId;
@@ -241,10 +241,14 @@
 				
 				var selectobj = document.getElementById("select"); //定位id 
 				var index = selectobj.selectedIndex; // 选中索引 
+				var cgunit = document.getElementById("cgunit")//缴费单位
 				var selecttext = selectobj.options[index].text; // 选中文本 
 				var zz = /^\d{10}$/;
 				var hh = parseFloat(mui("#huhao")[0].value);
-				if(!zz.test(hh)){
+				if(!cgunit.value){
+					mui.toast("还未选择缴费单位哦");
+					mui("#cgunit")[0].focus();
+				}else if(!zz.test(hh)){
 					mui.toast("户号为10位数字哦");
 					mui("#huhao")[0].focus();
 				}else{
@@ -260,6 +264,7 @@
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting()
 									if(data.errno==0){
+										alert(itemid)
 										if(itemid == 64396301){
 											var projectId = data.data.item_props_list_response.cid;
 											var unitId = data.data.item_props_list_response.itemProps.itemProp[5].vid
@@ -281,12 +286,13 @@
 										}
 										
 										mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
-											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId,supUserId:4},
+											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId},
 											dataType:'json',
 											type:'post',
 											timeout:10000,
 											headers:{"token":oldToken},	 
 											success:function(data,type,xhr){
+												alert(JSON.stringify(data))
 												plus.nativeUI.closeWaiting()
 												if(data.errno==0){
 													  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill){

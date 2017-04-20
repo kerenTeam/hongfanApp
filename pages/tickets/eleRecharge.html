@@ -192,9 +192,9 @@
 					<div class="btw">
 						<p>户号为10位数字。支持重庆主城区。</p>
 					</div>
-					<div class="btw agree">
+					<!--<div class="btw agree">
 						<p>同意<span class="textRed"> 《支付宝自助缴费服务协议》</span></p>
-					</div>
+					</div>-->
 					<button type="button" class="mui-btn mui-btn-block" onclick="next()">下一步</button>
 				</div>
 			</div>
@@ -273,9 +273,9 @@
 												var modeType = 2;
 												var modeId = data.data.item_props_list_response.itemProps.itemProp[2].vid
 											}
-											
+											var supUserId = itemid;
 											mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
-												data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId,supUserId:4},
+												data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:modeType,modeId:modeId,supUserId:supUserId},
 												dataType:'json',
 												type:'post',
 												timeout:10000,
@@ -283,6 +283,7 @@
 												success:function(data,type,xhr){
 													plus.nativeUI.closeWaiting()
 													if(data.errno==0){
+														alert(JSON.stringify(data))
 														  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill){
 														  	mui.toast("该户号尚未出账，请等出账后在查询")
 														  openview({
