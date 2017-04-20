@@ -51,53 +51,32 @@
 		<div id="container">		
 			<div id="main">
 				 
-				<ul class="boxs self-paytop"> 
-					<li class="show_arrive_date gg">
-						<a id="64396301" class="date">
-							<strong>重庆渝川燃气有限责任公司</strong>	
-						</a>
-					</li> 
-					<li class="show_arrive_date ww">
-						<a id="6434200" class="date">
-							<strong>重庆长寿区渝长自来水公司</strong>	
-						</a>
-					</li> 
-					<li class="show_arrive_date ww">
-						<a id="6455900" class="date">
-							<strong>重庆合川区自来水有限责任公司</strong>	
-						</a>
-					</li>
-					<li class="show_arrive_date gg">
-						<a id="6490400" class="date">
-							<strong>重庆佳渝天燃气有限公司</strong>	
-						</a>
-					</li>
-					<li class="show_arrive_date ll">
-						<a id="6417300" class="date">
-							<strong>重庆市电力公司</strong>	
-						</a>
-					</li>
-					<li class="show_arrive_date ww">
-						<a id="6494500" class="date">
-							<strong>重庆市永川区侨立水务有限公司</strong>	
-						</a>
-					</li>
-					<li class="show_arrive_date ww">
-						<a id="6434100" class="date">
-							<strong>重庆市自来水厂</strong>	
-						</a>
-					</li>
-					<li class="show_arrive_date ww">
-						<a id="6415200" class="date">
-							<strong>重庆中法水务公司</strong>	
-						</a>
-					</li>
-					<li class="show_arrive_date ll">
-						<a id="64404001" class="date">
-							<strong>三峡电力</strong>	
-						</a>
-					</li>
-				</ul>
+				<ul class="boxs self-paytop" id="listdata"></ul>
+				<script type="text/html" id="listTpl">
+					<%for(var i = 0 ;i<List.length;i++){%>
+						<%if(List[i].itemtype=='electric'){%>
+							<li class="show_arrive_date ll">
+								<a id="<%=List[i].itemId%>" class="date">
+									<strong><%=List[i].itemName%></strong>	
+								</a>
+							</li>
+						<%}%>
+						<%if(List[i].itemtype=='gas'){%>
+							<li class="show_arrive_date gg">
+								<a id="<%=List[i].itemId%>" class="date">
+									<strong><%=List[i].itemName%></strong>	
+								</a>
+							</li>
+						<%}%>
+						<%if(List[i].itemtype=='water'){%>
+							<li class="show_arrive_date ww">
+								<a id="<%=List[i].itemId%>" class="date">
+									<strong><%=List[i].itemName%></strong>	
+								</a>
+							</li>
+						<%}%>
+					<%}%>
+				</script>
 			</div>
 		</div>
 	</body>
@@ -108,49 +87,84 @@
 			var myuserid = plus.storage.getItem('userid'); 
 			var oldtoken = plus.storage.getItem('oldToken');
 			var typeCharge = plus.webview.currentWebview().typeCharge;
-			if(typeCharge==1){ 
-				 $(".ww").css("display","block");
-				 mui("#main").on('tap','.show_arrive_date',function(){ 
-				  	var itemId = $(this).find("a").attr("id");
-				  	var itemName = $(this).find("strong").html();
-	            	 
-	            	var list = plus.webview.getWebviewById('waterRecharge');
-	            	mui.fire(list, 'refresh', {
-							itemId: itemId,
-							itemName:itemName
-						});
-					mui.back();
-	            })
-			}
-			if(typeCharge==2){
-				$(".ll").css("display","block");
-				 mui("#main").on('tap','.show_arrive_date',function(){ 
-				  	var itemId = $(this).find("a").attr("id");
-				  	var itemName = $(this).find("strong").html();
-	            	 
-	            	var list = plus.webview.getWebviewById('eleRecharge');
-	            	mui.fire(list, 'refresh', {
-							itemId: itemId,
-							itemName:itemName
-						});
-					mui.back();
-	            })
-			}
-			if(typeCharge==3){
-				$(".gg").css("display","block");
-				 mui("#main").on('tap','.show_arrive_date',function(){ 
-				  	var itemId = $(this).find("a").attr("id");
-				  	var itemName = $(this).find("strong").html();
-	            	 
-	            	var list = plus.webview.getWebviewById('gasRecharge');
-	            	mui.fire(list, 'refresh', {
-							itemId: itemId,
-							itemName:itemName
-						});
-					mui.back();
-	            })
-			}
-			
+			plus.nativeUI.showWaiting();
+			mui.ajax(serverUrl+'/api/qianmi/getwatercoalitemlist',{
+				dataType:'json',
+				type:'post',
+				timeout:'10000',
+				headers:{"token":oldtoken},
+				success:function(data,type,xhr){ 
+					if(data.errno ==0 ){
+						var List = data.data.admin_item_response.items.item;
+						var dataList = {};
+						
+						if(List && List.length){
+							for(var i= 0;i<List.length;i++){
+								if(List[i].itemName.indexOf('水')>-1){
+									List[i].itemtype = 'water';
+								}
+								if(List[i].itemName.indexOf('电')>-1){
+									List[i].itemtype = 'electric';
+								}
+								if(List[i].itemName.indexOf('气')>-1){
+									List[i].itemtype = 'gas';
+								}
+							}
+							dataList.List = List;
+							document.getElementById("listdata").innerHTML = template("listTpl",dataList);
+							if(typeCharge==1){ 
+								 $(".ww").css("display","block");
+								 mui("#main").on('tap','.show_arrive_date',function(){ 
+								  	var itemId = $(this).find("a").attr("id");
+								  	var itemName = $(this).find("strong").html();
+					            	 
+					            	var list = plus.webview.getWebviewById('waterRecharge');
+					            	mui.fire(list, 'refresh', {
+											itemId: itemId,
+											itemName:itemName
+										});
+									mui.back();
+					            })
+							}
+							if(typeCharge==2){
+								$(".ll").css("display","block");
+								 mui("#main").on('tap','.show_arrive_date',function(){ 
+								  	var itemId = $(this).find("a").attr("id");
+								  	var itemName = $(this).find("strong").html();
+					            	 
+					            	var list = plus.webview.getWebviewById('eleRecharge');
+					            	mui.fire(list, 'refresh', {
+											itemId: itemId,
+											itemName:itemName
+										});
+									mui.back();
+					            })
+							}
+							if(typeCharge==3){
+								$(".gg").css("display","block");
+								 mui("#main").on('tap','.show_arrive_date',function(){ 
+								  	var itemId = $(this).find("a").attr("id");
+								  	var itemName = $(this).find("strong").html();
+					            	 
+					            	var list = plus.webview.getWebviewById('gasRecharge');
+					            	mui.fire(list, 'refresh', {
+											itemId: itemId,
+											itemName:itemName
+										});
+									mui.back();
+					            })
+							}
+							plus.nativeUI.closeWaiting();
+						} 
+					}
+					plus.nativeUI.closeWaiting();
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					console.log('响应失败  !');
+				}
+			})
+			 
 		})
 	</script>
 </html>

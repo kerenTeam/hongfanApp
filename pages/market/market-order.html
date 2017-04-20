@@ -554,8 +554,8 @@
 									</p>
 									<p class="price"><sub>￥</sub>
 										<%=goodsList[j].goodsPrice%> <span class="num">×<%=goodsList[j].goodsnum%></span></p>
-									<%if(goodsList[j].shopName != '跨境优品'){%>
-									<small style="color: coral;font-size: 0.12rem;" class="goodrd">待定 商品优惠<sub>-￥</sub><%=goodsList[j].goodsreducemoney%></small>
+									<%if(goodsList[j].shopName != '跨境优品' && goodsList[j].goodsreducemoney != 0){%>
+									<small style="color: coral;font-size: 0.12rem;" class="goodrd">商品优惠<sub>-￥</sub><%=goodsList[j].goodsreducemoney%></small>
 									<%}%>
 									<%if(shopID[i]==0){%>
 									<samll style="font-size:0.1rem;color: gray;">含税
@@ -566,45 +566,36 @@
 							<%}%>
 							<%}%>
 							<%if(shopID[i]!=0){%>
-							<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
-								<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">商品优惠总计</h6>
-
-								<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
-									<span class="fr" style="line-height: 40px;color: coral;">-￥<%=goodsreduce[i]%></span>
-								</div>
-							</dd>
-							<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
-								<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">店铺优惠</h6>
-
-								<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
-									<span class="fr storereduce" style="line-height: 40px;color: coral;" id="<%=shopID[i]%>">-￥55</span>
-								</div>
-							</dd>
+								<%if(goodsreduce[i] != 0){%>
+									<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
+										<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">商品优惠总计</h6>
+		
+										<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
+											<span class="fr" style="line-height: 40px;color: coral;">-￥<%=goodsreduce[i]%></span>
+										</div>
+									</dd>
+								<%}%>
+							
+								<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
+									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">店铺优惠</h6>
+	
+									<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
+										<span class="fr storereduce" style="line-height: 40px;color: coral;" id="<%=shopID[i]%>"></span>
+									</div>
+								</dd>
 							<%}%>
 							<%if((shopID[i]==0 && shopMoney[i].money>=88) || (storeWeight[i] == 0 && shopID[i]!=0)){%>
 							<dd class="dd-padding kv-line-r postfeeWrap ddwl">
 								<h6>配送方式</h6>
 								<p class="jifen">包邮</p>
 								<%}else{%>
-								<%if(shopID[i]!=0){%>
 								<dd class="dd-padding kv-line-r postfeeWrap ddwl" style="padding: 0.1rem 0.15rem;">
 									<li class="mui-table-view-cell mui-collapse choosewl">
-										<a class="mui-navigate-right getwl" data-id='0' data-storeid="<%=shopID[i]%>" href="#">
+										<a class="mui-navigate-right getwl" data-id='0' data-weight='<%=storeWeight[i]%>' data-storeid="<%=shopID[i]%>" href="#">
 											<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">选择物流</span></a>
 										<div class="mui-collapse-content dlc">
 										</div>
 									</li>
-									<%}else{%>
-									<dd class="dd-padding kv-line-r postfeeWrap ddwl" style="padding: 0.1rem 0.15rem;">
-										<li class="mui-table-view-cell mui-collapse choosewl">
-											<a class="mui-navigate-right getwl" data-id='0' data-storeid="<%=shopID[i]%>" href="#">
-												<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">选择物流</span></a>
-											<div class="mui-collapse-content dlc">
-												<div data-charge="6" data-epid='EMS'>EMS<span class="charge fr">￥6</span></div>
-											</div>
-										</li>
-										<%}%>
-
 										<%}%>
 									</dd>
 									<%if(shopID[i]==0){%>
@@ -876,7 +867,7 @@
 				for(var j = 0; j < orderStorage.length; j++) {
 					if(orderStorage[j].shopName == data.cates[i]) {
 						var totolmoney = parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum);
-						if(!orderStorage[j].goodsreduce || orderStorage[j].goodsreduce == ' ') {
+						if(!orderStorage[j].goodsreduce || orderStorage[j].goodsreduce.length == 0 || orderStorage[j].goodsreduce == ' ') {
 							orderStorage[j].goodsreducemoney = 0
 							reduce += parseFloat(0)
 						} else {
@@ -964,14 +955,15 @@
 //						alert("index"+index)
 //						alert('店铺满减规则 '+JSON.stringify(data.data.reduction_rule)); 
 //						alert("店铺原总价"+parseFloat(item.money));
-						if(!data.data.reduction_rule || data.data.reduction_rule == ' '){
+						data.data.reduction_rule = JSON.parse(data.data.reduction_rule);
+						if(!data.data.reduction_rule || data.data.reduction_rule.length == 0 || data.data.reduction_rule == ' '){
 							storereduce[index]=0;
 //							alert("storereduce"+index+" "+storereduce[index])
 						}else{
 							//排序 选择最优店铺满减优惠
 //							data.data.reduction_rule = [{"reachPrice":"11600","reducePrice":"20"},{"reachPrice":"81100","reducePrice":"10"},{"reachPrice":"41100","reducePrice":"15"}]
 //							alert("data.data.reduction_rule "+data.data.reduction_rule)
-							data.data.reduction_rule = JSON.parse(data.data.reduction_rule);
+							
 							data.data.reduction_rule.sort(getSortFun('desc', 'reachPrice'));
 							function getSortFun(order, sortBy) {
 								var ordAlpah = (order == 'asc') ? '>' : '<';
@@ -994,11 +986,16 @@
 						$('.storereduce').each(function(){
 							if($(this).attr('id')!=0){
 								if($(this).attr('id')== item.id){
-									$(this).html('-￥'+storereduce[index]);
-									var newtotal =parseFloat($(this).parentsUntil('#orderTpl').find('.groupMoney').html())-parseFloat(storereduce[index]);
-//							alert(newtotal+" newtotal")
-							$(this).parentsUntil('#orderTpl').find('.groupMoney').html(newtotal);
-							countTotalPay();
+									if(storereduce[index] != 0){
+										$(this).html('-￥'+storereduce[index]);
+										var newtotal =parseFloat($(this).parentsUntil('#orderTpl').find('.groupMoney').html())-parseFloat(storereduce[index]);
+			//							alert(newtotal+" newtotal")
+										$(this).parentsUntil('#orderTpl').find('.groupMoney').html(newtotal);
+										countTotalPay();
+									}else{
+										$(this).parent().parent().remove();
+									}
+									
 								}
 							
 							}
@@ -1022,6 +1019,7 @@
 			//物流选择
 			$('.getwl').on('tap', function() {
 				var businid = $(this).attr('data-storeid');
+				var storeWeight = $(this).attr('data-weight');
 				if($(this).attr('data-id') == 0) {
 					var wlct = $(this).next();
 					if($(this).attr('data-storeid') != 0) {
@@ -1038,7 +1036,14 @@
 							success: function(data, type, xhr) {
 								var wlhtml = '';
 								for(var i = 0; i < data.data.length; i++) {
-									wlhtml += '<div data-charge="' + data.data[i].basicsPrice + '" data-epid="' + data.data[i].express_id + '">' + data.data[i].expressName + '<span class="charge fr">￥' + data.data[i].basicsPrice + '</span></div>'
+									var countpostfee = parseInt(data.data[i].basicsPrice);
+//									alert("storeWeight "+parseFloat(storeWeight))
+									var overWeight = Math.ceil((parseFloat(storeWeight)- parseFloat(data.data[i].basicsKg))/parseInt(data.data[i].beyondKg));
+									if(overWeight>0){
+										countpostfee = parseInt(data.data[i].basicsPrice)+ overWeight*parseInt(data.data[i].beyondPrice)
+									}
+									 
+									wlhtml += '<div data-charge="' + countpostfee + '" data-epid="' + data.data[i].express_id + '">' + data.data[i].expressName + '<span class="charge fr">￥' + countpostfee + '</span></div>'
 								}
 								wlct.html(wlhtml);
 								$(".dlc div").click(function() {
@@ -1074,6 +1079,14 @@
 							}
 						})
 					} else {
+							var countpostfee = 6;
+//							alert("storeWeight "+parseFloat(storeWeight))
+							var overWeight = Math.ceil(parseFloat(storeWeight)- 1);
+							if(overWeight>0){
+								countpostfee = 6+ overWeight*2.5
+							}
+							wlhtml = '<div data-charge="' + countpostfee + '" data-epid="1">爱购-EMS<span class="charge fr">￥' + countpostfee + '</span></div>'
+							wlct.html(wlhtml);
 						$(".dlc div").click(function() {
 							if($(this).parent().prev().find(".wlway").html() == "自提") {
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
@@ -1083,7 +1096,7 @@
 
 							for(var i = 0; i < orderSubmitData.length; i++) {
 								if(orderSubmitData[i].storeid == 0) {
-									alert(businid)
+//									alert(businid)
 									orderSubmitData[i].express_id = $(this).attr('data-epid');
 
 								}
@@ -1111,11 +1124,11 @@
 			for(var j = 0; j < orderSubmitData.length; j++) {
 				if(orderSubmitData[j].storeid == 0) {
 					if(shopMoney[j].money >= 88) {
-						orderSubmitData[j].express_id = '包邮';
+						orderSubmitData[j].express_id = '-1';
 					}
 				} else {
 					if(storeWeight[j] == 0) {
-						orderSubmitData[j].express_id = '包邮';
+						orderSubmitData[j].express_id = '-1';
 					}
 				}
 			}
