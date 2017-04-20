@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<!--<meta name="MobileOptimized" content="320"/>-->
+		<title>Hello H5+</title> 
+		<link rel="stylesheet" href="../css/commonpay.css" type="text/css" charset="utf-8" />
+		<style type="text/css">
+			#total {
+				-webkit-user-select: text;
+				text-align: right;
+				padding: 0 1em;
+				border: 0px;
+				border-bottom: 1px solid #ECB100;
+				border-radius: 0;
+				font-size: 16px;
+				width: 30%;
+				outline: none;
+			}
+			
+			#output {
+				min-height: 300px;
+			}
+		</style>
+		<script type="text/javascript" src="../js/commonpay.js"></script>
+		<script type="text/javascript" src="../js/muipay.js"></script>
+		<script type="text/javascript">
+			var pays = {};
+
+			function plusReady() { 
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					var content = document.getElementById('dcontent');
+					var info = document.getElementById('info');
+					var txt = '支付通道信息：';
+					for(var i in channels) {
+						var channel = channels[i];
+						if(channel.id == 'qhpay' || channel.id == 'qihoo') { // 过滤掉不支持的支付通道：暂不支持360相关支付
+							continue;
+						}
+						pays[channel.id] = channel;
+						txt += 'id:' + channel.id + ', ';
+						txt += 'description:' + channel.description + ', ';
+						txt += 'serviceReady:' + channel.serviceReady + '； ';
+						checkServices(channel);
+					}
+					info.innerText = txt;
+				}, function(e) {
+					outLine('获取支付通道失败：' + e.message);
+				});
+			}
+
+			document.addEventListener('plusready', plusReady, false);
+			// 检测是否安装支付服务
+			function checkServices(pc) {
+				if(!pc.serviceReady) {
+					var txt = null;
+					switch(pc.id) {
+						case 'alipay':
+							txt = '检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？';
+							break;
+						default:
+							txt = '系统未安装“' + pc.description + '”服务，无法完成支付，是否立即安装？';
+							break;
+					}
+					plus.nativeUI.confirm(txt, function(e) {
+						if(e.index == 0) {
+							pc.installService();
+						}
+					}, pc.description);
+				}
+			}
+
+			// 支付
+			function pay(id) {
+				var PaymentUrl = 'http://192.168.199.191:7200/api/mall/neworder'; 
+				var payment_type = {}
+				if (id == 'wxpay') {
+					payment_Data = {	'userid':4,'coupon_id':2,'isIntergal':1,'address_id':1,'payType':'wxpay','storeData':'[{}]'};
+				} else{
+					payment_Data = {	'userid':4,'coupon_id':2,'isIntergal':1,'address_id':1,'payType':'alipay','storeData':'[{}]'};
+				}
+				
+				mui.ajax(PaymentUrl,{
+				data:payment_Data,
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型  
+				timeout:10000,//超时时间设置为10秒；  
+				headers:{'Content-Type':'application/json',token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6e30sImlhdCI6MTQ5MjU4MTczNiwiZXhwIjoxNDkyNTg4OTM2fQ.i1HEnqBpO3cCEPs7yKRMQ5Pt34CEmTeCOo8yyFAA6uI'}, 
+				success:function(LocalData){
+						outLine('本地服务器:' + typeof(LocalData.data) + '----' + JSON.stringify(LocalData.data))
+						//支付订单
+						plus.payment.request(pays[id], LocalData.data, function(result) {
+							outLine('----- 支付成功 -----');
+							outLine(JSON.stringify(result));
+						}, function(e) {
+							outLine('----- 支付失败 -----');
+							outLine(JSON.stringify(e));
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						console.log(type);
+					}
+				});
+				
+				
+		
+		}
+		</script>
+
+	</head>
+
+	<body>
+		<header id="header">
+			<div class="nvbt iback" onclick="back()"></div>
+			<div class="nvtt">Payment</div>
+			<div class="nvbt idoc" onclick="openDoc('Payment Document','/doc/payment.html')"></div>
+		</header>
+		<div id="dcontent" class="dcontent">
+			<br/>
+			<p id="info" style="padding: 0 1em;text-align:left;">支付通道信息：
+			</p>
+			<div style="padding: 0.5em 1em;">
+				<hr color="#EEE" />
+			</div>
+			<div class="button" id="wxpay" onclick="pay(this.id)">wechatPay</div>
+			<div class="button" id="alipay" onclick="pay(this.id)">aliPay</div>
+		</div>
+		<div id="output">
+			Payment模块管理支付功能，可通过js调用第三方支付服务。通过plus.payment可获取支付管理对象。
+			<br />
+		</div>
+	</body>
+
+</html>

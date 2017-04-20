@@ -265,10 +265,10 @@
 			var userPicker1 = new mui.PopPicker();
 			userPicker1.setData([{
 				text: '世纪隆超市',
-				value:'419'
+				value:'世纪隆超市'
 			}, {
 				text: '新世纪超市',
-				value:'415'
+				value:'新世纪超市'
 			}]);
 			var showUserPickerButton1 = document.getElementById('showUserPicker1');
 			var userResult1 = document.getElementById('userResult1');
@@ -295,6 +295,7 @@
 			//查询菜价
 			getPrice("世纪隆超市");
 			function getPrice(marketName){
+				console.log(marketName);
 				mui.ajax(serverUrl+'/api/localservice/parity',{
 					data:{marketName:marketName},
 					dataType:'json',
@@ -302,7 +303,7 @@
 					timeout:1000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-//						console.log('详情',data);
+						console.log('详情',data);
 						if(!data.data || data.data.length==0){
 							mui('#caiList')[0].innerHTML = '<div class="noOne"><p>没有最新比价！换一个超市试试。</p></div>';
 						}else{

@@ -76,10 +76,10 @@
 				border: 1px solid #868580;
 				color: #868580;
 			}
-			h3{
-				line-height: 60px;
-				font-size: 25px !important;
-				padding-top: 30px;
+			h3.h3div{
+			    line-height: 30px;
+			    font-size: 17px !important;
+			    padding-top: 0px;
 			}
 			
 			/*图片预览*/
@@ -235,7 +235,7 @@
 				max-width: 100%;
 				height: auto;
 			}
-			
+			#svgdiv{width: 180px;margin:  0 auto;}
 		</style>
 	</head>
 	<body>
@@ -281,7 +281,7 @@
 						<% }else{ %>
 							<p class="bage gray">已失效</p>
 						<% } %>
-						<h3>
+						<h3 class="h3div">
 							<% if(couponList.typeid == 2){ %>
 								<%= couponList.discount*10 %>折折扣券
 							<% }else if(couponList.typeid == 1){ %>
@@ -305,8 +305,9 @@
 					</div>
 					<div class="top clearfloat box-s">
 						<div class="zuo clearfloat fl">
-							<div class="qrcode mui-content-padded">
-								<img src="<%= couponList.qrcode %>" data-preview-src="" data-preview-group="1" onerror="javascript:this.src='../../img/market/nodata.svg';" />
+							<div class="qrcode mui-content-padded" id="svgdiv">
+								<img src="" data-preview-src="" data-preview-group="1"  />
+								
 							</div>
 						</div>
 					</div>
@@ -331,25 +332,28 @@
 			var couponId = plus.webview.currentWebview().couponId;
 			var userId = plus.storage.getItem("userid");
 			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
-				data:{userid : userId},
+				data:{userid : userId,user_coupon_id:couponId}, 
 				dataType:'json',
 				type:'post',
-				timeout:1000,
+				timeout:5000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+					console.log('详情',data);
 					//循环出当前优惠券Id
-					for(var m=0; m < data.data.length; m++){ 
-						if(data.data[m].user_coupon_id == couponId){
-							if(data.data[m].salerule==null || data.data[m].salerule==''){
-							 	data.data[m].salerule=null;
+					for(var m=0; m < data.data.user_coupon.length; m++){ 
+						if(data.data.user_coupon[m].user_coupon_id == couponId){
+							if(data.data.user_coupon[m].salerule==null || data.data.user_coupon[m].salerule==''){
+							 	data.data.user_coupon[m].salerule=null;
 							}else{	
-								data.data[m].salerule1= eval("("+ data.data[m].salerule +")").overflowValue;
-								data.data[m].salerule2= eval("("+data.data[m].salerule+")").cutValue;
+								data.data.user_coupon[m].salerule1= eval("("+ data.data.user_coupon[m].salerule +")").overflowValue;
+								data.data.user_coupon[m].salerule2= eval("("+data.data.user_coupon[m].salerule+")").cutValue;
 							}
 							var coupon = {};
-							coupon.couponList = data.data[m];
+							coupon.couponList = data.data.user_coupon[m]; 
 							var html = template('main-detail',coupon);
 							document.getElementById('main').innerHTML = html;
+							mui('#svgdiv')[0].innerHTML = data.data.QrSvg;
+
 						}
 					}   
 
