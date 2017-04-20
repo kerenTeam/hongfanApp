@@ -752,7 +752,7 @@
 							</div>
 						</div>
 					</div>
-					<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-gdPostfee="<%=choose.postage%>" data-gdreduce="<%=choose.reduction_rule%>" data-weight="<%=choose.weight%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+					<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-weight="<%=choose.weight%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
 				</script>
 
 			</div>
@@ -831,6 +831,8 @@
 						if(data.data.goodsInfo.reduction_rule) {
 							data.data.goodsInfo.reduction_rule = JSON.parse(data.data.goodsInfo.reduction_rule);
 						}
+//						alert(JSON.stringify(data.data.goodsInfo.reduction_rule));
+						var gdreducerule = data.data.goodsInfo.reduction_rule;
 						if(data.data.goodsInfo.good_tags){
 							data.data.goodsInfo.good_tags = data.data.goodsInfo.good_tags.split(",");
 						}
@@ -884,6 +886,7 @@
 						//选择弹框
 						var chooseO = {}
 						chooseO.choose = data.data.goodsInfo;
+//						alert(chooseO.choose.reduction_rule)
 						chooseO.myUrl = serverimgUrl;
 						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
 						mui(".mui-numbox").numbox();
@@ -973,7 +976,7 @@
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
 															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
-																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)
+																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)+priceChange
 															}
 															  
 														} 
@@ -1052,7 +1055,7 @@
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
 															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
-																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)
+																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)+priceChange;
 															}
 															  
 														}  
@@ -1095,10 +1098,11 @@
 									var storeid = obj.getAttribute("data-shopId"); 
 									var goodsName = obj.getAttribute("data-gdName");
 									var goodsImg = obj.getAttribute("data-gdImg");
-									var goodreduce = obj.getAttribute("data-gdreduce");
+									var goodreduce = gdreducerule;
+//									alert("goodreduce "+goodreduce)
 									var goodsPrice = priceChange;
 									var goodsweight = obj.getAttribute("data-weight");
-									alert(goodsweight+"goodsweight")
+//									alert(goodsweight+"goodsweight")
 									var goodsPostfee = 0;
 									var goodsDelivery = 0;
 									var goodsnum = parseFloat(mui('#test')[0].value);
@@ -1152,13 +1156,13 @@
 									cartObj.goodsPrice = goodsPrice;
 									cartObj.goodsPostfee = goodsPostfee;
 									cartObj.goodsreduce = goodreduce;
+									cartObj.goodweight = goodsweight;
 									cartObj.goodsDelivery = goodsDelivery;
 									cartObj.goodsnum = goodsnum;
 									cartObj.goods_property = goodsproperty;
 									cartObj.goodText = goodText;
 									cartObj.goodProp = goodProp;
-									cartObj.goodweight = goodsweight;
-									alert("cartObj "+JSON.stringify(cartObj))
+//									alert("cartObj "+JSON.stringify(cartObj))
 									if(goNum == 1) {
 										if(cartStorage.length != 0) {
 											var flag = false;
