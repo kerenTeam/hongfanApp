@@ -57,34 +57,68 @@
 			    	type = "其它"+type;
 			    	break;
 			    }
-			    result = result.replace(/\n/g, ''); 
-			    //上传数据
-			    mui.plusReady(function(){
-			    	var myuserid = plus.storage.getItem('userid');
-					var oldtoken = plus.storage.getItem('oldToken');
-					plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
-				    mui.ajax(serverUrl+'/api/mall/couponverify',{
-						data:{"userid":myuserid,"couponid":result},
-						type:'post',
-						timeout:10000,
-						headers:{"token":oldtoken},
-						success:function(data,type,xhr){
-							plus.nativeUI.closeWaiting();
-							console.log('上传核销返回'+JSON.stringify(data));
-							if(data.errno == 0){
-								mui.toast('核销成功');
-							}else{
+			    //result = result.replace(/\n/g, ''); 
+			    if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
+			    	var dataobj = JSON.parse(result);
+			    	if(dataobj.begin_date && dataobj.end_date){
+			    		var nowdate = new Date;
+				    	var beginDate = new Date(dataobj.begin_date); 
+				    	var endDate = new Date(dataobj.end_date);
+				    	console.log('核销数据',dataobj);
+				    	if(dataobj.user_coupon_state == 0){//判断是否已经使用
+				    		alert('该核销卷已经使用');
+				    		mui.back();
+				    	}else if(nowdate < beginDate){//判断时间开始
+				    		alert('对不起，使用时间没到！');
+				    		mui.back();
+				    	}else if(nowdate > endDate){//判断时间结束
+				    		alert('对不起，该卷已经过期!');
+				    		mui.back();
+				    	}else{
+							alert(dataobj.id);	
+							alert(result);	
+				    		updatafun(dataobj.id,result);
+				    	}
+			    	}else{
+			    		console.error('没有typeid，核销失败！');
+			    		alert('核销失败，请重试！');
+			    	}
+			    }else{
+			    	console.error('没有typeid，核销失败！');
+			    	alert('核销失败，请重试！');
+			    }
+			    
+			   
+			    function updatafun(codeid,result){ //上传数据
+				    mui.plusReady(function(){
+				    	var myuserid = plus.storage.getItem('userid');
+						var oldtoken = plus.storage.getItem('oldToken');
+						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
+					    mui.ajax(serverUrl+'/api/mall/couponverify',{
+							data:{"userid":myuserid,"couponid":codeid,'qrcode':result},
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldtoken},
+							success:function(data,type,xhr){
+								plus.nativeUI.closeWaiting();
+								alert('上传核销返回'+JSON.stringify(data));
+								console.log('上传核销返回'+JSON.stringify(data));
+								console.log('上传核销返回'+data);
+								if(data.errno == 0){
+									mui.toast('核销成功');
+								}else{
+									mui.toast('核销失败'); 
+								}
+								mui.back();							
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
 								mui.toast('核销失败'); 
+								mui.back();	
 							}
-							back();							
-						},
-						error:function(xhr,type,errorThrown){
-							plus.nativeUI.closeWaiting();
-							mui.toast('核销失败'); 
-							back();	
-						}
-					});
-				})  
+						});
+					})  
+				}	
 			}
 		</script>
 		

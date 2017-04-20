@@ -211,6 +211,8 @@
 			.notice .tab-bd{
 				padding-top: 0;
 			}
+			.notice .tab-hd li{width: 50%;}
+			.coupons .list{border-radius: 2px;}
 		</style>
 	</head>
 	<body>
@@ -227,8 +229,8 @@
 				<div class="tab-hd">
 					<ul class="tab-nav">
 					  <li>全部</li>
-					  <li>未使用</li>
-					  <li>已使用</li>
+					  <li>可用</li>
+					  <!--<li>已使用</li>-->
 					</ul>
 				</div>
 				<div class="tab-bd">
@@ -294,9 +296,9 @@
 										有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
 									</p>
 								</div>
-								<div class="qrcode mui-content-padded">
+								<!--<div class="qrcode mui-content-padded">
 									<img src="<%= allLi[i].qrcode %>"  onerror="javascript:this.src='../../img/market/nodata.svg';" data-preview-src="" data-preview-group="1" />
-								</div>
+								</div>-->
 							</div>
 						<% } %>
 					</script>
@@ -333,9 +335,9 @@
 											有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
 										</p>
 									</div>
-									<div class="qrcode mui-content-padded">
+									<!--<div class="qrcode mui-content-padded">
 										<img src="<%= allLi[i].qrcode %>" data-preview-src="" onerror="javascript:this.src='../../img/market/nodata.svg';" data-preview-group="1" />
-									</div>
+									</div>-->
 								</div>
 							<% } %>
 						<% } %>
@@ -374,9 +376,9 @@
 												有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
 											</p>
 										</div>
-										<div class="qrcode mui-content-padded">
+										<!--<div class="qrcode mui-content-padded">
 											<img src="<%= allLi[i].qrcode %>" data-preview-src="" onerror="javascript:this.src='../../img/market/nodata.svg';" data-preview-group="1" />
-										</div>
+										</div>-->
 									</div>
 								<% } %>
 							<% } %>
@@ -418,21 +420,21 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						console.log('data',data);
-						if(!data.data.length){ 
+						if(!data.data.user_coupon.length){ 
 								mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 							}else{
-								for(var m=0; m < data.data.length; m++){  
-								if(data.data[m].salerule==null || data.data[m].salerule==''){
-								 	data.data[m].salerule=null;
+								for(var m=0; m < data.data.user_coupon.length; m++){  
+								if(data.data.user_coupon[m].salerule==null || data.data.user_coupon[m].salerule==''){
+								 	data.data.user_coupon[m].salerule=null;
 								}else{	
-									data.data[m].salerule1= eval("("+ data.data[m].salerule +")").overflowValue;
+									data.data.user_coupon[m].salerule1= eval("("+ data.data.user_coupon[m].salerule +")").overflowValue;
 									
-									data.data[m].salerule2= eval("("+data.data[m].salerule+")").cutValue;
+									data.data.user_coupon[m].salerule2= eval("("+data.data.user_coupon[m].salerule+")").cutValue;
 								}
 								 
 							}   
 							var allC = {};
-							allC.allLi = data.data;
+							allC.allLi = data.data.user_coupon;
 							if(allC.allLi.length > 0){
 								var html = template('allC-detail',allC);
 								document.getElementById('allC').innerHTML = html;

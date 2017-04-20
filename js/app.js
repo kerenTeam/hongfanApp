@@ -1,13 +1,13 @@
 //var serverUrl='http://192.168.199.191:7200';
-//var serverUrl='http://192.168.0.128:7200';
-var serverUrl='http://hiji.hifete.com';
+//var serverUrl='http://192.168.0.130:7200';
+var serverUrl='http://hiji.hifete.com'; 
  
 //var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://hiji.hifete.com:6789';
-
+var partner_key='syet234876fxcvdj58yjdbn475serop8';  
 var serverUrl0='http://192.168.199.191:7200'; 
 
-var partner_key='syet234876fxcvdj58yjdbn475serop8'; 
+var partner_key='syet234876fxcvdj58yjdbn475serop8';  
 
 //var serverimgUrl='http://192.168.0.128:6789'; 
 var serverimgUrl='http://hiji.hifete.com:6789'; 
@@ -16,7 +16,7 @@ var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
 //关注和取消关注
-function followBack(thisobj,friendid){ 
+function followBack(thisobj,friendid){  
 	event.stopPropagation();
 	function Success(){
 		event.stopPropagation();

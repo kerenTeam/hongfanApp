@@ -124,7 +124,7 @@
 		    <h1 class="mui-title">本地生活</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="Mask" style="position: absolute;width: 100%;height: 100%;background-color: #fff;z-index: 100;"></div>
+		<div id="Mask" style="position: fixed; width: 100%;height: 100%;background-color: #fff;z-index: 100;"></div>
 		<div id="main">
 			<div id="scroller">
 				<!--轮播图-->
@@ -188,7 +188,7 @@
 										<span class="icon-circle bluegray">
 											<img src="<%= list[i].iconpic%>" >
 										</span>
-										<span class="icon-desc">超市特价</span> 
+										<span class="icon-desc"><%= list[i].name%></span>
 									</a>
 								</li>
 							<% }%>	
@@ -235,7 +235,7 @@
 			 	margin-left: -50vw; 
 			 	margin-right: -50vw;
 			 	padding-right: 5px;
-			 	
+			 	min-height: 100px;
 			}
 			.nplist {
 			    width: 1.3rem;
@@ -272,219 +272,84 @@
 			    width: 100%;
 			    height: 100%;
 			}
-			
 		</style>
 		
 		<div class="wrapdiv">
-			<div class="headdivdiv aClick">
-				维修服务  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
+			<div class="headdivdiv aClick servicemore">
+				维修服务推荐  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
 			</div>
-			<div class="npbk" id="">
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
+			<div class="npbk" id="recodiv1"></div>
+			<script type="text/html" id="reco1">
+				<% if(list.length > 10){%>
+					<% list.length = 10%>
+				<% }%>	
+				<% for(var i=0; i<list.length; i++){%>
+					<div class="nplist" onclick="opendetails2(<%= list[i].id%>)">
+						<div class="npimg">
+							<img src="<%= url%><%= list[i].logo%>"/>
+						</div>
+						<h4><%= list[i].name%></h4>
 					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-			</div>
+				<% }%>
+			</script>
 		</div>
 		<div class="wrapdiv">
-			<div class="headdivdiv aClick">
-				家政服务  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
+			<div class="headdivdiv aClick Housekeepingmore">
+				家政服务推荐  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
 			</div>
-			<div class="npbk" id="">
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
+			<div class="npbk" id="recodiv2"></div>
+			<script type="text/html" id="reco2">
+				<% if(list.length > 10){%>
+					<% list.length = 10%>
+				<% }%>	
+				<% for(var i=0; i<list.length; i++){%>
+					<div class="nplist" onclick="opendetails2(<%= list[i].id%>)">
+						<div class="npimg">
+							<img src="<%= url%><%= list[i].logo%>"/>
+						</div>
+						<h4><%= list[i].name%></h4>
 					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-			</div>
+				<% }%>
+			</script>
 		</div>
 		<div class="wrapdiv">
-			<div class="headdivdiv aClick">
-				房产  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
+			<div class="headdivdiv aClick Propertymore">
+				房产资讯推荐 <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
 			</div>
-			<div class="npbk" id="">
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
+			<div class="npbk" id="recodiv3"></div>
+			<script type="text/html" id="reco3">
+				<% if(list.length > 10){%>
+					<% list.length = 10%>
+				<% }%>	
+				<% for(var i=0; i<list.length; i++){%>
+					<div class="nplist" onclick="opendetails3(<%= list[i].id%>)">
+						<div class="npimg">
+							<img src="<%= url%><%= list[i].logo%>"/>
+						</div>
+						<h4><%= list[i].name%></h4>  
 					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-			</div>
+				<% }%>
+			</script>
 		</div>
 		<div class="wrapdiv">
-			<div class="headdivdiv aClick" >
-				跳蚤市场  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
+			<div class="headdivdiv aClick secondhandmore" >
+				跳蚤市场推荐 <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
 			</div>
-			<div class="npbk" id="">
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
+			<div class="npbk" id="recodiv4"></div>
+			<script type="text/html" id="reco4">
+				<% if(list.length > 10){%>
+					<% list.length = 10%>
+				<% }%>	
+				<% for(var i=0; i<list.length; i++){%>
+					<div class="nplist" onclick="opendetails4(<%= list[i].id%>)">
+						<div class="npimg">
+							<img src="<%= url%><%= list[i].logo%>"/>
+						</div>
+						<h4><%= list[i].title%></h4>
+						<!--<div class="nprice">￥338</div>-->
 					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-				<div class="nplist" onclick="goConncilGood(244)">
-					<div class="npimg">
-						<img src="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" name="http://hiji.hifete.com:6789/Upload/goods/2017-01-15_103232.jpg" alt="" onerror="javascript:this.src='../../img/market/banner.png';">
-					</div>
-					<h4>老中医-LAOZHONGYI无暇膏    清热祛湿 凉血解毒 润肠通便</h4>
-					<div class="nprice">￥338</div>
-				</div>
-			</div>
-		</div>
-			
-		<!--广告-->
-		<!--<div class="mui-row" style="background-color: white;margin: 10px 0;" id="ad"></div>--> 
-		<!--广告 数据渲染-->
-		<!--<script type="text/html" id="ad-detail">
-			<div class="mui-col-xs-6 rowpad">
-				 <img src="<%= myUrl %><%= adLi[0].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[0].id %>)" onerror="javascript:this.src='../../img/market/banner.png';"/>
-			</div>
-			<div class="mui-col-xs-6 rowpad">
-				<div class="rpad clearfloat"> 
-					<img src="<%= myUrl %><%= adLi[1].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[1].id %>)" onerror="javascript:this.src='../../img/market/banner.png';"/> 
-				</div>
-				<div class="rpad clearfloat"> 
-					<img src="<%= myUrl %><%= adLi[2].pic %>" class="allimga" alt="" onclick="goAdv(<%= adLi[2].id %>)" onerror="javascript:this.src='../../img/market/banner.png';"/> 
-				</div>
-			</div> 
-		</script>-->
-	
-	
-		<div id="index" class="page-center-box">
-			<!--猜你喜欢-->
-			<div class="sy_limit_buy mb10 caini" style="display: none;"> 
-				<div class="sy_title">
-				<span class="left">猜你喜欢&nbsp;&nbsp;&nbsp;&nbsp;</span>
-			</div>
-				<div class="overyou locatLabel_switch swiper-container5 swiper-container-horizontal swiper-container-free-mode swiper-container-android">
-					<!--广告数据-->
-					<div class="swiper-wrapper" id="Advdiv"></div> 
-					<script type="text/html" id="Adv">
-						<% for(var i=0; i<list.length; i++){%>
-							<div class="box swiper-slide" style="border: 1px solid #EFEFF4;">
-								<a href="javascript:;" onclick="opendetails(<%= list[i].id%>)">
-									<img src="<%= list[i].logo%>" onerror="javascript:this.src='../../img/market/banner.png';">
-									<p class="txt_center overflow_clear" style="text-indent: 5px;"><%= list[i].name%></p>
-								</a>
-							</div>
-						<% }%>	
-					</script>
-				</div>
-			</div>
-			<!--首页限时抢购结束-->
-			
-			<!--热门推荐 -->	
-			<div class="jinengxueyuan" style="display: none;">
-				<div class="sy_limit_buy mb10" style="margin-bottom: 0;">
-					<div class="sy_title">
-					<span class="left">热门推荐&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				</div>
-				<ul class="mui-table-view" id="recommendsdiv">
-					<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;padding-top:10%;font-size: 14px;color: #999;display: none;">
-					<img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>
-					暂无推荐
-				</div>
-				</ul>
-				<script type="text/html" id="recommends">
-					<% if(list.length >= 3){%>
-						<% for(var i=0; i<3; i++){%>
-							<li class="mui-table-view-cell mui-media" onclick="opendetails(<%= list[i].id%>)">
-								<a href="javascript:;">
-									<img class="mui-media-object mui-pull-left" src="<%=myUrl %><%= list[i].logo%>" onerror="javascript:this.src='../../img/market/banner.png';">
-									<div class="mui-media-body">
-										<%= list[i].name%>
-										<p class='mui-wrap r_p'><%= list[i].content%></p>
-									</div>
-								</a>
-							</li>
-						<% }%>
-					<% }else{%>
-						<% for(var i=0; i<list.length; i++){%>
-							<li class="mui-table-view-cell mui-media" onclick="opendetails(<%= list[i].id%>)">
-								<a href="javascript:;">
-									<img class="mui-media-object mui-pull-left" src="<%=myUrl %><%= list[i].logo%>" onerror="javascript:this.src='../../img/market/banner.png';">
-									<div class="mui-media-body">
-										<%= list[i].name%>
-										<p class='mui-wrap r_p'><%= list[i].content%></p>
-									</div>
-								</a>
-							</li>
-						<% }%>
-					<% }%>	
-				</script>
-				<script type="text/html" id="recommends2">
-					<% for(var i=0; i<list.length; i++){%>
-						<li class="mui-table-view-cell mui-media" onclick="opendetails(<%= list[i].id%>)">
-							<a href="javascript:;">
-								<img class="mui-media-object mui-pull-left" src="<%=myUrl %><%= list[i].logo%>" onerror="javascript:this.src='../../img/market/banner.png';">
-								<div class="mui-media-body">
-									<%= list[i].name%>
-									<p class='mui-wrap r_p'><%= list[i].content%></p>
-								</div>
-							</a>
-						</li>
-					<% }%>
-				</script>
-				<div id="more" style="padding-top: 10px;">
-					更多推荐 
-				</div>
-			</div>
+				<% }%>
+			</script>
 		</div>
 		<div class="pagebottom" style="padding-bottom: 10px;">到底了</div>
 					
@@ -510,6 +375,11 @@
 		});
 		
 		mui.plusReady(function(){
+			//李洁要求
+			mainActivity = plus.android.runtimeMainActivity();
+			MobclickAgent = plus.android.importClass("com.umeng.analytics.MobclickAgent");
+			MobclickAgent.onPageStart("localLifeIndex");
+			//李洁要求结束
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui('#kuimg')[0].style.display = 'inline-block';
 		var oldtoken = plus.storage.getItem('oldToken');
@@ -519,7 +389,7 @@
 				timeout:10000,
 				headers:{"token":oldtoken},
 				success:function(data){
-					console.log('获取栏目返回'+JSON.stringify(data));
+//					console.log('获取栏目返回'+JSON.stringify(data));
 					console.log('获取栏目返回',data);
 					if(data.errno == 0){ 
 						var objdata = {};
@@ -582,137 +452,100 @@
 					console.log('响应失败  !');
 				}
 			}); 
-			//广告 数据渲染
-//			mui.ajax(serverUrl +'/api/index/ads',{
-//				data:{ad_type:3},
-//				dataType:'json',
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldtoken},	 
-//				success:function(data,type,xhr){
-//					var adObj = {};
-//					adObj.myUrl = serverimgUrl;
-//					adObj.adLi = data.data;
-//					var html = template('ad-detail',adObj);
-//					document.getElementById('ad').innerHTML = html;
-//				},
-//				error:function(xhr,type,errorThrown){
-//					console.log('响应失败  !');
-//				}
-//			});
-			//猜你喜欢
-//			mui.ajax(serverUrl+'/api/localservice/localserviceads',{
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldtoken},	              				
-//				success:function(data){
-//					console.log('猜你喜欢返回'+JSON.stringify(data));
-//					if(data.errno == 0){ 
-//						var objdata = {};
-//						mui.each(data.data,function (index,ele) {
-//							data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
-//						})
-//						objdata.myUrl = serverimgUrl;
-//						objdata.list = data.data;
-//						var html = template("Adv",objdata);
-//						document.getElementById("Advdiv").innerHTML=html;
-//						plus.nativeUI.closeWaiting();
-//						mui('#Mask')[0].style.display = 'none';
-//					}else{
-//						mui.toast('获取用户信息失败');
-//						plus.nativeUI.closeWaiting();
-//						console.log(data.errmsg);
-//					}
-//				},
-//				error:function(xhr,type,errorThrown){
-//					plus.nativeUI.closeWaiting();
-//					mui.toast('响应失败  !');
-//				}
-//			});
-			//热门推荐
-//			mui.ajax(serverUrl+'/api/localservice/localservicecommend',{
-//				type:'post',
-//				timeout:10000,
-//				headers:{"token":oldtoken},	              				
-//				success:function(data){
-//					console.log('热门推荐返回'+JSON.stringify(data));
-//					if(data.errno == 0){ 
-//						if(data.data.length){
-//							mui('#Mask')[0].style.display = 'none';
-//							var objdata = {};
-//							mui.each(data.data,function (index,ele) {
-//								data.data[index].logo = eval("("+ele.logo+")")[0].picImg;
-//							})
-//							objdata.list = data.data;
-//							objdata.myUrl = serverimgUrl;
-//							var html = template("recommends",objdata);
-//							document.getElementById("recommendsdiv").innerHTML = html;
-//							if(data.data.length>=3){//大于三条点击更多继续加载;
-//								mui('#more')[0].onclick = function(){
-//									mui('#more')[0].innerHTML = '<img style="width: 13%;margin-top: -10px;" src="../../img/balls.svg"/>';
-//									var Tjiazai = setTimeout(function(){
-//										document.getElementById("recommendsdiv").innerHTML = html;
-//										mui('#more')[0].style.display = 'none';
-//										document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;"><img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>暂无推荐'
-//										
-//									},500)
-//									var html = template("recommends2",objdata);
-//
-//								}
-//							}else{
-//								mui('#more')[0].style.display = 'none';
-//								document.getElementById("recommendsdiv").innerHTML += '<div id="tuijiannull" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;"><img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>暂无推荐'
-//							}
-//							
-//							
-//						}else{
-//							mui('#tuijiannull')[0].style.display = 'block';
-//							mui('#more')[0].style.display = 'none';
-//						}
-//						plus.nativeUI.closeWaiting();
-//					}else{
-//						mui('#tuijiannull')[0].style.display = 'block';
-//						mui('#more')[0].style.display = 'none';
-//						mui.toast('获取用户信息失败');
-//						plus.nativeUI.closeWaiting();
-//						console.log(data.errmsg);
-//					}
-//				},
-//				error:function(xhr,type,errorThrown){
-//					mui('#tuijiannull')[0].style.display = 'block';
-//					mui('#more')[0].style.display = 'none';
-//					plus.nativeUI.closeWaiting();
-//					mui.toast('当前网络不好,请重试');
-//				}
-//			});
+				
+			recommendfun(1,1,1);//维修推荐
+			recommendfun(2,2,2);//维修推荐
+			recommendfun(3,3,3);//房产推荐
+			recommendfun(4,4,4);//跳蚤推荐
+			function recommendfun(type,script,div){//推荐方法
+				var dataobj = {};
+				if(type == 1 || type == 2){
+					dataobj = {type_name:type,service_name:'local_service'}
+				}else if(type == 3){
+					dataobj = {service_name:'local_house'}
+				}else{
+					dataobj = {service_name:'local_used_market'}
+				}
+				var nullstr = '<div id="nomore" style="text-align: center;line-height: 100px;font-size: 14px;color: #888;"><img style="width: 50px;" src="../../img/unllfabu.svg"/> &nbsp; 暂时没有推荐</div>';
+				mui.ajax(serverUrl+'/api/localservice/localservicecommend',{
+					data:dataobj, 
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	              				
+					success:function(data){
+						console.log('热门'+type,data);
+						if(data.errno == 0){ 
+							if(data.data.length){
+								var objdata = {};
+								mui.each(data.data,function (index,element) {
+									if (element.logo) {
+										element.logo = JSON.parse(element.logo)[0].picImg; 
+									} else{ 
+										element.logo = JSON.parse(element.list_pic)[0].picImg;
+									}
+									
+								})
+								objdata.list = data.data;
+								objdata.url = serverimgUrl;
+								var html = template("reco"+script,objdata); 
+								document.getElementById("recodiv"+div).innerHTML = html;
+							}else{
+								document.getElementById("recodiv"+div).innerHTML = nullstr;
+							}
+							plus.nativeUI.closeWaiting();
+						}else{
+							document.getElementById("recodiv"+div).innerHTML = nullstr;
+							plus.nativeUI.closeWaiting();
+							console.log(data.errmsg);
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						document.getElementById("recodiv"+div).innerHTML = nullstr;
+						plus.nativeUI.closeWaiting();
+						mui.toast('当前网络不好,请重试');
+					}
+				});
+			}
+			
 			
 		})//plusready
 		Monitor();
 		function Monitor(){
-			//打开维修页面
+			//打开维修
+			mui('.servicemore')[0].onclick = function(){
+				MobclickAgent.onPageEnd("localLifeIndex");
+				openview({ 
+					view:'theList.html',
+					extrasobj:{name:'Repair'}
+				})
+			}
 			mui('.repair')[0].addEventListener('tap',function(){
 				openview({ 
 					view:'theList.html',
 					extrasobj:{name:'Repair'}
 				})
 			});
-			//打开保洁页面
+			//打开家政
+			mui('.Housekeepingmore')[0].onclick = function(){
+				openview({ 
+					view:'theList.html',
+					extrasobj:{name:'Clean'}
+				})
+			}
 			mui('.cleaning')[0].addEventListener('tap',function(){
 				openview({ 
 					view:'theList.html',
 					extrasobj:{name:'Clean'}
 				})
 			});
-			//打开保姆月嫂页面
+			//打开家乡话
 			mui('.babysister')[0].addEventListener('tap',function(){
 				openview({ 
-//					view:'theList.html',
-//					extrasobj:{name:'Babysister'}
 					view:'../Hreport/h_report.html',
 					extrasobj:{name:'h_report'}
 				})
 			});
-			//打开开锁页面
+			//打开开锁页面（弃用）
 			mui('.openclock')[0].addEventListener('tap',function(){
 				openview({ 
 					view:'recruitList.html',
@@ -720,13 +553,23 @@
 				})
 			});
 			
-			//打开房产资讯页面
+			//打开房产
+			mui('.Propertymore')[0].onclick = function(){
+				openview({ 
+					view:'buildList.html',
+				})
+			}
 			mui('.house')[0].addEventListener('tap',function(){
 				openview({ 
 					view:'buildList.html',
 				})
 			});
 			//打开跳蚤市场页面
+			mui('.secondhandmore')[0].onclick = function(){
+				openview({ 
+					view:'2edMarket.html',
+				})
+			}
 			mui('.tiaozao')[0].addEventListener('tap',function(){
 				openview({ 
 					view:'2edMarket.html',
@@ -745,24 +588,32 @@
 				})
 			});
 		}
-		//打开律师咨询页面
+		//打开律师咨询页面 
 		mui('.laywer')[0].addEventListener('tap',function(){
 			openview({ 
 				view:'lawyerList.html',
 			})
 		});
-		//打开更多的页面
-		mui('.morepart')[0].addEventListener('tap',function(){
-			openview({ 
-				view:'../jindaikaifa.html',
-			})
-		});
 		
-		//猜你喜欢,热门推荐 的 跳转详情
-		function opendetails(id){
+		//维修详情 //家政详情 
+		function opendetails2(id){
 			openview({
 				view:'theDetail.html',
 				extrasobj:{name:id}
+			})
+		}
+		//房产
+		function opendetails3(id){
+			openview({
+				view:'build-detail.html', 
+				extrasobj:{name:id}
+			})
+		}
+		//跳蚤
+		function opendetails4(id){
+			openview({
+				view:'Fleadetails.html',
+				extrasobj:{name:id} 
 			})
 		}
 	</script>

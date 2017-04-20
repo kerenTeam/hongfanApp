@@ -1144,14 +1144,15 @@
 								  
 								function gopay(id){ 
 //									alert(myuserid+id+addressid+goodsdata+coupon_id+isIntergal)
-									mui.ajax(serverUrl+'/api/mall/neworder',{
+									console.log(myuserid, id, addressid, goodsdata, coupon_id, isIntergal);
+									mui.ajax(serverUrl0+'/api/mall/neworder',{ 
 //										data:{userid:myuserid,payType:id,address_id:addressid,storeData:goodsdata,coupon_id:coupon_id,isIntergal:isIntergal},
 										data:{userid:myuserid,payType:id,address_id:addressid,storeData:goodsdata,coupon_id:coupon_id,isIntergal:isIntergal},
 										type:'post',//HTTP请求类型
 										headers:{"token":oldtoken},	
 										timeout:10000,//超时时间设置为10秒；
 										success:function(data){
-											console.log('支付',data);
+											console.log('支付data',data.data.app);
 											plus.nativeUI.closeWaiting() 
 //											alert(JSON.stringify(data))
 //											var dataapp = data.data.app;
@@ -1174,10 +1175,14 @@
 											var varpay;  
 											if(id == 'wxpay'){   
 												varpay = {};
-												var aaa = '{"appid":"wx0411fa6a39d61297","noncestr":"jw6ApjMbqmK4fY1k","package":"Sign=WXPay","partnerid":"1230636401","prepayid":"wx20170417102035eebc3f72000163055934","timestamp":1492395635,"sign":"3F67B15E69DCB925966195C23528110B"}';
-												var bbb = '{"appid":"wxedb9473980fbecfe","noncestr":"7e8ae3c3d788420bbc712b69f8d537ba","package":"Sign=WXPay","partnerid":"1396923802","prepayid":"wx201704171013021f912958140692311769","sign":"5C0888BB829D7148AA8ACF08C12FAED1","timestamp":"1492395181"}'
-												//微信
-												plus.payment.request(pays[id],'bbb',function(result){
+												var aaa = '{"appid":"wx0411fa6a39d61297","noncestr":"pFcwpha70ytZMseF","package":"Sign=WXPay","partnerid":"1230636401","prepayid":"wx201704171342598f9ab7d0bd0525871212","timestamp":1492407779,"sign":"C6F7ED29E8DED4A7055B73BA199AB063"}';
+												var ccc = '{"appid":"wx779a1427b1aaeb10","noncestr":"GfN0IwTji4LHzNBu","package":"Sign=WXPay","partnerid":"1438641502","prepayid":"wx20170417133323640ea176290645343280","timestamp":1492407202,"sign":"9A87D0A1183DAEED0A9B368ECFF78E8A"}';
+												console.error(JSON.stringify(data.data.app));
+												var ccend = JSON.stringify(data.data.app);
+												//微信 
+												var sss = 'GuQdahaG9MLTCAiA';  
+												console.log(sss.toLowerCase()); 
+												plus.payment.request(pays[id],'{"appid":"wx779a1427b1aaeb10","partnerid":"1438641502","noncestr":"guqdahag9mltcaia","package":"Sign=WXPay","prepayid":"wx201704171525352b3127b2c20344973964","timestamp":1492413935,"sign":"79066C43ABD3CBA2CF90BFD778F502AF"}',function(result){ 
 													console.log("----- 支付成功 -----");
 													 
 												},function(e){
