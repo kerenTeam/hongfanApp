@@ -453,16 +453,65 @@
 		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			function collectfun() { //收藏方法
-				if(mui('#collectbtn')[0].innerHTML == '+收藏') {
-					mui('#collectbtn')[0].innerHTML = '已收藏';
-					mui('#collectbtn')[0].style.backgroundColor = '#e4c6c6';
-					mui.toast('收藏成功');
-				} else {
-					mui('#collectbtn')[0].innerHTML = '+收藏';
-					mui('#collectbtn')[0].style.backgroundColor = '#fff';
-					mui.toast('已取消收藏');
-
-				}
+				
+				mui.plusReady(function(){
+					var storeId = plus.webview.currentWebview().storeId;;
+					var myuserid = plus.storage.getItem('userid'); 
+					var oldToken = plus.storage.getItem('oldToken'); 
+					if(mui('#collectbtn')[0].innerHTML == '+收藏') { 
+						mui.ajax(serverUrl + '/api/mall/collectformall', {
+							data: {
+								userid: myuserid,
+								type_name:1,
+								collect_id:storeId,
+								isDelete :0
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							headers: {
+								"token": oldToken
+							},
+							success: function(data) {  
+								mui('#collectbtn')[0].innerHTML = '已收藏';
+								mui('#collectbtn')[0].style.backgroundColor = '#e4c6c6';
+								mui.toast('收藏成功');
+								},
+							error: function(xhr, type, errorThrown) {
+								//异常处理；
+								plus.nativeUI.closeWaiting();
+								mui.toast("当前网络不好请重试");
+							}
+						});
+					
+					} else {
+						
+						mui.ajax(serverUrl + '/api/mall/collectformall', {
+							data: {
+								userid: myuserid,
+								type_name:1,
+								collect_id:storeId,
+								isDelete :1
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							headers: {
+								"token": oldToken
+							},
+							success: function(data) { 
+								mui('#collectbtn')[0].innerHTML = '+收藏';
+								mui('#collectbtn')[0].style.backgroundColor = '#fff';
+								mui.toast('已取消收藏');
+								},
+							error: function(xhr, type, errorThrown) {
+								//异常处理；
+								plus.nativeUI.closeWaiting();
+								mui.toast("当前网络不好请重试");
+							}
+						});
+					}
+				})
 			}
 			mui.plusReady(function() {
 				var tablist = mui('#shangjia_tab')[0].getElementsByTagName('a');
@@ -516,6 +565,31 @@
 				//数据部分
 				var oldToken = plus.storage.getItem("oldToken");
 				var storeId = plus.webview.currentWebview().storeId;
+				var myuserid = plus.storage.getItem('userid'); 
+				//请求商品收藏列表
+				mui.ajax(serverUrl+'/api/useraccount/mymallcollect',{  									
+					data:{type_name:1,userid:myuserid}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":oldToken}, 
+					success:function(data){
+						if(data.errno == 0){ 
+							if(data.data.storeCollect.length){ 
+								for(var i=0;i<data.data.storeCollect.length;i++){
+									if(data.data.storeCollect[i].store_id == storeId){
+										mui('#collectbtn')[0].innerHTML = '已收藏';
+									}
+								}
+							}
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						 
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+				}); 
 				var Spagenum = 2,
 					Spagenum2 = 2; //实到页数
 				var Ypagenum = 1,
@@ -797,7 +871,7 @@
 							timeout: 10000,
 							headers: { "token": oldToken },
 							success: function(data, type, xhr) {
-								console.log('详情', JSON.stringify(data));
+//								alert('详情'+JSON.stringify(data));
 								shoptype = data.data.shop_type;
 								$('#storeName').html(data.data.store_name);
 								$('#title2').html(data.data.secondary_name);
@@ -811,7 +885,7 @@
 								$('#openStaus').html(data.data.op_status);
 								$('#description').html(data.data.description);
 								$('#description2').html(data.data.description);
-								$('#addressS').html(data.data.block_name);
+								$('#addressS').html(data.data.floor_name + "-"+data.data.door_no);
 								mui('#storeLogo')[0].style.display = 'block';
 								if(data.data.logo == '' || data.data.logo == null) {
 									$('#storeLogo').attr('src', "../../img/theList/storeLogo.png");
@@ -828,6 +902,9 @@
 									$('#storeImg').error(function() {
 										$('#storeImg').attr('src', "../../img/theList/storeNo.jpg");
 									})
+								}
+								if(data.data.store_distinction == 1){ 
+									$('#shangjia_tab li:not(:first-child)').css("display","none")
 								}
 								plus.nativeUI.closeWaiting(); //关闭等待框
 							},

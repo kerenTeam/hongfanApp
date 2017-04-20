@@ -223,7 +223,7 @@
 							<div class="listt">
 								<div class="follow"> 
 									<div class="fchidl">
-				                       		<img src="<%=myUrl%><%=recommendData[i].avatar[0].picImg%>" class="userAvator" alt="" onclick="gootpage('<%=recommendData[i].user_id%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" />
+				                       		<img src="<%=recommendData[i].avatar%>" class="userAvator" alt="" onclick="gootpage('<%=recommendData[i].user_id%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" />
 				                        <%}else{%>
 				                        	<div class="listt">
 												<div class="follow"> 
@@ -234,7 +234,7 @@
 								</div>
 								
 							</div>
-							<img src="<%=recommendData[i].pic%>" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=myUrl%><%=recommendData[i].avatar[0].picImg%>','<%=recommendData[i].nickname%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" class="fllmg" alt="" />
+							<img src="<%=recommendData[i].pic%>" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" class="fllmg" alt="" />
 							
 							<!--详细信息-->
 							<div class="newsinfo" data-newsId="<%=recommendData[i].news_id%>"></div>
@@ -425,7 +425,9 @@
 						if(dataobj.length != 0){
 							for(var i=0;i<dataobj.length;i++){ 
 								if(dataobj[i].avatar){
-									dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+									dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
+								}else{
+									dataobj[i].avatar = "../img/10.png"
 								}
 								var dt = new Date(dataobj[i].create_time);
 								var date = [
@@ -471,7 +473,9 @@
 												if(dataobj.length != 0){
 													for(var i=0;i<dataobj.length;i++){
 														if(dataobj[i].avatar){
-															dataobj[i].avatar = JSON.parse(dataobj[i].avatar)
+															dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
+														}else{
+															dataobj[i].avatar = "../img/10.png"
 														}
 //														dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
 												 		var dt = new Date(dataobj[i].create_time);

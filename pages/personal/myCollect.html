@@ -26,6 +26,9 @@
 				align-items: center;
 				background-color: #fff;
 			}
+			.messageR{
+				align-items: stretch;
+			}
 			.message:after{
 				position: absolute;
 				content: '';
@@ -42,6 +45,7 @@
 				height: 0px;
 				background: #CCCCCC;
 				left: 0.8rem;
+				right: 0.8rem;
 				bottom: 0;
 				right: 0;
 				-webkit-transform: scaleY(0.3);
@@ -50,27 +54,46 @@
 				flex-basis:0.8rem;
 				text-align: center;
 			}
-			.message img{ 
-				width: 0.5rem;
-			}
+			
 			.message .mui-icon{
 			 	padding-right: 10px;
 			 	color: tomato;
 			 	 
 			 }
-			 .msgtxt{
-			 	 /*padding-left: 5px;*/
-			 	line-height: 1.35;
-			 	 flex-grow : 1
+			 .msgtxt{  
+			 	padding-left: 5px;
+			 	line-height: 1; 
+			 	flex-grow : 1
 			 }
-			 .msgtxt>*{
-			 	width: 100%;
-			 	display: inline-block;
+			 .msgtxtR{ 
+			 	position: relative;
+			 	height: inherit; 
+			 	top: 0;
+			 	bottom: 0; 
+			 	
 			 }
+			 
 			 .msgtxt h5{
-			 	font-size: 0.17rem;
+			 	font-size: 0.15rem;
 			 	color: black;
-			 	line-height: 1.5;
+			 	line-height: 1.2;
+			 	/*超出两行省略*/
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+			 }
+			 .msgtxtR h5{
+			 	position: absolute;
+			 	top: 5px;
+			 	left: 5px;
+			 	right: 5px;
+			 } 
+			  .msgtxtR small{
+			 	position: absolute;
+			 	bottom: 5px;
+			 	left: 5px;
+			 	right: 5px;
 			 } 
 			 .msgtxt h5 span{
 			 	color: orangered;
@@ -86,9 +109,9 @@
 				text-align: center;
 			}
 			.msgtxt small{
-				font-size: 0.13rem;
+				font-size: 0.14rem;
 			}
-			
+			 
 			</style>
 		</head>
 	
@@ -111,18 +134,54 @@
 					</div> 
 				</div>
 				<script type="text/html" id="infolist">
-					<% for(var i=0; i<list.length; i++){%>
-					<div class="message msgcmt aClick" onclick="opendetails(<%= list[i].id%>)">
-					 	<div class="msgtxt" style="width: 100%;">
-					 		<h5><%= list[i].title%><span><small></small></span></h5>
-					 		<% if(list[i].type_name != 5){%>
-					 			<small><%= list[i].name%></small><br />
-					 		<% }%>
-					 		<small style="color: gray;"><%= list[i].address%> <span><%= list[i].create_time.split('T')[0]%></span></small><br />
-					 		<small style="color: gray;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><%= list[i].content%> </small>
-					 	</div> 
-				 	</div>
-				 	<% }%>
+					<%if(typename == 1){%>
+						<%if(list.length!=0){%>
+							<% for(var i=0; i<list.length; i++){%>
+								<div class="message msgcmt aClick" onclick="opendetails(<%= list[i].store_id%>,1,<%= list[i].store_id%>)">
+									<%if(list[i].logo){%>
+										<img src="<%=list[i].logo%>" style="width: 0.6rem;"/>
+									<%}else{%>
+										<img src="../../img/404.svg" style="width: 0.6rem;"/>
+										<%}%>
+									
+								 	<div class="msgtxt" style="width: 100%;">
+								 		<h5><%= list[i].store_name%><span><small></small></span></h5>
+								 	</div> 
+							 	</div>
+						 	<% }%>
+						<%}else{%>
+							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;background-color: #f2f1ee;">
+								<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+								<br />
+								没有相关信息
+							</div>
+						<%}%>
+						
+					<%}else{%>
+						<%if(list.length!=0){%>
+						<% for(var i=0; i<list.length; i++){%>
+							<div class="message messageR msgcmt aClick" onclick="opendetails(<%= list[i].goods_id%>,2,<%= list[i].storeid%>)">
+								<%if(list[i].thumb){%>
+									<img src="<%=list[i].thumb%>" style="width: 1rem;"/>
+								<%}else{%>
+									<img src="../../img/404.svg" style="width: 1rem;"/>
+									<%}%>
+							 	<div class="msgtxt msgtxtR">
+							 		<h5><%=list[i].title%><span><small></small></span></h5>
+							 		<small style="color: coral;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">￥<%= list[i].price%> </small>
+							 	</div> 
+						 	</div>
+						 	
+					 	<% }%>
+					 	<%}else{%>
+							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;background-color: #f2f1ee;">
+								<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+								<br />
+								没有相关信息
+							</div>
+						<%}%>
+					<%}%>
+					
 				</script>
 			<!--底部导航-->
 		</div>
@@ -143,21 +202,18 @@
 	var Ypagenum = 1;//应到页数 
 	mui.plusReady(function(){
 		//点击切换
-		mui('.titleS')[0].onclick = function(){//招聘
+		mui('.titleS')[0].onclick = function(){//商品
 			mui('.titleS')[0].className = 'titleS activeS aClick';
 			mui('.titleS')[1].className = 'titleS aClick';
-			reload(4);
+			Loading(2);
 		}
-		mui('.titleS')[1].onclick = function(){//求职
+		mui('.titleS')[1].onclick = function(){//店铺
 			mui('.titleS')[1].className = 'titleS activeS aClick';
 			mui('.titleS')[0].className = 'titleS aClick';
-			reload(5);
+			Loading(1);
 		}
+		Loading(2); 
 		
-		//获取上个页面传值
-		var nowwebname = 'Openclock';//当前webview对象name属性
-		var headtitle = document.getElementById('headtitle');
-		var oldtoken = plus.storage.getItem('oldToken');
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		//添加刷新监听
 		document.addEventListener('refresh', function(obj) {
@@ -169,106 +225,50 @@
 			}
 			console.log('刷新数据');
 		})
-		reload(4);
-		function reload(typename){
-			switch(nowwebname){
-				case 'Repair'://维修数据 
-				headtitle.innerHTML = '维修列表'; 
-				Loading(1,1,10);//加载数据,包括上滑加载
-				break;
-				case 'Clean'://保洁数据
-				headtitle.innerHTML = '保洁列表';
-				Loading(2,1,10);//加载数据,包括上滑加载
-				break;
-				case 'Babysister'://保姆数据
-				headtitle.innerHTML = '保姆列表';
-				Loading(3,1,10);//加载数据,包括上滑加载
-				break;
-				case 'Openclock'://开锁数据
-//				headtitle.innerHTML = '开锁列表';
-				Loading(4,1,10,typename);//加载数据,包括上滑加载
-				break;
-			}
-		}
+		 
 		
 		//加载方法
-		function Loading(Ctype_name,CcurrentPage,CnumsPerPage,typename){
+		function Loading(typename){
+			var oldToken = plus.storage.getItem("oldToken");
+			var myuserid = plus.storage.getItem('userid');
 			document.getElementById("infolistdiv").innerHTML = loadstr;
 			mui('#nulldiv')[0].style.display = 'none';
-			mui.ajax(serverUrl+'/api/localservice/selectjobs',{  									
-				data:{type_name:typename}, 
+			mui.ajax(serverUrl+'/api/useraccount/mymallcollect',{  									
+				data:{type_name:typename,userid:myuserid}, 
 				dataType:'json',//服务器返回json格式数据
 				type:'post',//HTTP请求类型 
 				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":oldtoken}, 
+				headers:{"token":oldToken}, 
 				success:function(data){
-					console.log('列表返回',data);
 					if(data.errno == 0){ 
-						if(data.data.length){
+						if(data.data){
 							var dataobj = {};
-//							mui.each(data.data.data,function (index,ele) {
-//								data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
-//							})
-							mui.each(data.data,function (index,element) {
-								element.title = JSON.parse(element.content).title;
-								element.content = JSON.parse(element.content).content;
-							})	
-							dataobj.list = data.data; 
+							if(typename == 1){
+								dataobj.typename = 1;
+								dataobj.list = data.data.storeCollect;
+							}else{
+								dataobj.typename = 2;
+								dataobj.list = data.data.goodsCollect;
+							}
 							
+							mui.each(dataobj.list,function (index,ele) {
+								if(ele.thumb){
+									dataobj.list[index].thumb = serverimgUrl + ele.thumb;
+								}
+								if(ele.logo){
+									dataobj.list[index].logo = serverimgUrl + ele.logo;
+								}
+								
+							})  
 							//获取并渲染用户信息
 							var html=template("infolist",dataobj);
-							document.getElementById("infolistdiv").innerHTML += html;
+							document.getElementById("infolistdiv").innerHTML = html;
 							mui("#upload")[0].innerHTML = "";
 						}else{
 							mui("#upload")[0].innerHTML = ""; 
 							mui('#nulldiv')[0].style.display = 'block';
 						}
 						
-						//滚动到底部加载
-//						$(window).scroll(function(){
-//						　　var scrollTop = $(this).scrollTop();
-//						　　var scrollHeight = $(document).height();
-//						　　var windowHeight = $(this).height();
-//						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
-//								if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
-//									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-//									Ypagenum++;//满足加载情况,应到页数+1
-//									console.log('发起请求,实到'+Spagenum+'页');									
-//									console.log('发起请求,应到'+Ypagenum+'页');
-//									mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-//										data:{type_name:Ctype_name,currentPage:Spagenum,numsPerPage:CnumsPerPage}, 
-//										dataType:'json',//服务器返回json格式数据
-//										type:'post',//HTTP请求类型 
-//										timeout:10000,//超时时间设置为10秒；	
-//										headers:{"token":oldtoken}, 
-//										success:function(data){
-//											if(data.errno == 0){
-//												var dataobj = {};
-//												mui.each(data.data.data,function (index,ele) {
-//													console.log('地址'+ eval("("+ele.logo+")")[0].picImg);
-//													data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
-//												})
-//												dataobj.list = data.data.data; 
-//												//获取并渲染用户信息
-//												var html=template("infolist",dataobj);
-//												document.getElementById("infolistdiv").innerHTML += html;
-//											}
-//											mui("#upload")[0].innerHTML = " ";
-//											Spagenum++;//加载成功,当前页+1
-//											console.log('成功+1,实到'+Spagenum);
-//											console.log('成功+1,应到'+Spagenum);
-//										},
-//										error:function(xhr,type,errorThrown){
-//											Ypagenum--;//失败是应到-1
-//											mui.toast("当前网络不好请重试");
-//											mui("#upload")[0].innerHTML = "";
-//										}
-//									});
-//								}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
-//									mui("#upload")[0].innerHTML = "到底了";
-//								}
-//						　　  }
-//						});//加载下一部分结束
 					}else{
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
@@ -282,34 +282,39 @@
 				}
 			});
 		}
-		//发布按钮
-		mui('.baocun')[0].onclick = function(){
-			if(plus.storage.getItem('myToken')){
-				var typestr = 0;
-				if(mui('.titleS')[1].className.indexOf('activeS')>-1){
-					typestr = 1;	
-				}
-				openview({
-					view:'new_job.html',
-					id:'new_job',
-					extrasobj:{type:typestr}
-				})
-			}else{//没登陆直接打开登录页面
-				mui.toast('请登录');
-				openview({
-					view:'../login.html'
-				});
-			}
-		} 
+	 
 	
 	});//plusReady
 
 //跳转详情
-function opendetails(id){
-	openview({
-		view:'recruitInfo.html',
-		extrasobj:{name:id}
-	})
+function opendetails(id,type,storeId){
+	if(type == 2){
+		if(storeId == 0) {
+			openview({
+				view: "../market/yphDetail.html",
+				extrasobj:{
+					goodsId: id
+				}
+			})
+		} else {
+			openview({
+				view: "../market/mall-detail.html",
+				extrasobj:{
+					goodsId: id
+				}
+			})
+		}
+			
+	}else{
+		 
+			openview({
+				view: "../market/shophome.html",
+				extrasobj:{
+					storeId: storeId
+				}
+			}) 
+	}
+	
 }
 </script>
 
