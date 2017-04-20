@@ -11,30 +11,17 @@
 		<link rel="stylesheet" type="text/css" href="../css/reset.css"/>
 	</head> 
 	<style type="text/css">
-		.me{
-			padding: 10px;
-			display: flex;
-			align-items: center;
-			justify-content: space-around;
-			line-height: 1.5;
-		}
-		.me .left{
-			font-size: 0.16rem; 
-		}
-		.me .between{
-			text-align: center;
-		}
-		.rule{
-			background: gray;
-			border-radius: 2px;
-			padding: 3px 5px;
-			color: white;
-			display: inline-block;
-			margin-bottom: 5px;
-		}
-		big{
-			color: coral;
-		}
+		body{height: 50%;background: url(../img/receiveHI.png) 0 0 no-repeat;background-size: 100% 100%;overflow: hidden;}
+		.mui-bar-nav.mui-bar .mui-icon{padding: 0px;} 
+		#Clickon{height: 40%;width: 100%;position: absolute;left: 0;bottom: 25%;}
+		.divdiv{height: 100px;padding: 12% 8% 0;}
+		.divdiv img{width: 70px;height: 70px;border-radius: 50%;float: left;margin-left: -80px;border: 1px solid #f5eeee;}
+		.indiv{padding-left: 90px;}
+		.indiv h3{font-size: 17px;color: #666;padding-top: 10px;}
+		.indiv p{font-size: 10px;padding-top: 16px;}
+		.in2div{float: right;margin-top: -52px;text-align: center;padding-right: 6%;}
+		.in2div p{padding-top: 10px;}
+		.in2div h2{font-size: 30px;font-weight: bold;color: #f9676e;}
 	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -44,64 +31,84 @@
 		</header>
 		<script src="../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
-			<div class="me">
-				<div class="left"><big>10</big>金币<br />已连续签到<span>0</span>天</div>
-				<div class="between">
-					<img src="../img/huiyuan.svg" style="width:0.8rem;margin: auto;padding:15px;display: block;" alt="" />
-					<div type="button" class="" style="width: 100%;margin: auto;">领HI豆</div>
-				</div>
-				<div class="right">
-					<span class="rule">规则</span>
-					<div>签到+10</div>
-					<div>购物 +0</div>
-					<div>奖励+0</div>
+			<div class="divdiv">
+				<div class="indiv clearfix">
+					<img src="../img/10.png"/ id="mypic">
+					<h3 class="denluzhuce"> - - - </h3>
+					<p>会员等级 <br /> 暂未开放</p>
+					<div class="in2div">
+						<h2 id="numjifen">- - - </h2>
+						<p>当前HI豆</p>
+					</div>
 				</div>
 			</div>
-			
-			
-				
 		</div>
-	
-	
-	
+		<div id="Clickon"></div>
 	<script src="../js/mui.min.js"></script>
 	<script src="../js/app.js"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
 			var myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
-			document.onclick=function(){
-				if(plus.storage.getItem('myToken')){  
-						//执行领取  
-						mui.ajax(serverUrl+'/api/index/cheking',{
-							data:{"userid":myuserid,"intergral_float":2050},
-							type:'post',
-							timeout:10000, 
-							headers:{"token":oldtoken},	              				
-							success:function(data){ 
-								plus.nativeUI.closeWaiting();
-								console.log('领取返回'+JSON.stringify(data));
-								if(data.errno == 0){
-									mui.toast('领取成功');
-								  
-									Refresh();
-								}else{
-	//											mui('.dao')[0].innerHTML = "已领取";
-									mui.toast('每天只能领取一次');
-								}
-							},
-							error:function(xhr,type,errorThrown){
-								plus.nativeUI.closeWaiting();
-								mui.toast('领取失败'); 
-							}
-						}); 
-				}else{//没登陆直接打开登录页面 
-					mui.toast('请登录');
-					openview({
-						view:'login.html'
-					});
-				}
+			mui('#Clickon')[0].onclick=function(){
+				//执行领取  
+				mui.ajax(serverUrl+'/api/index/cheking',{
+					data:{"userid":myuserid,"intergral_float":2050},
+					type:'post',
+					timeout:10000, 
+					headers:{"token":oldtoken},	              				
+					success:function(data){ 
+						plus.nativeUI.closeWaiting();
+						console.log('领取返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							mui.toast('领取成功');
+							Refresh();
+						}else{
+							mui.toast('每天只能领取一次');
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast('领取失败'); 
+					}
+				}); 
 			};
+			//显示信息
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data,type,xhr){
+					console.log('获取用户数据返回'+JSON.stringify(data));
+					if(data.errno == 0){
+						if(data.data[0].avatar){//显示头像
+							mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+						}
+						if(data.data[0].nickname != ' '){//显示昵称
+							if(data.data[0].nickname.indexOf('null') == -1){
+								mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
+							}else{
+								mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+							}
+						}else{
+							mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+						}
+						if(!data.data[0].intergral || data.data[0].intergral==undefined){//显示HI豆
+							mui('#numjifen')[0].innerHTML = 0;
+						}else{
+							mui('#numjifen')[0].innerHTML = data.data[0].intergral;
+						}
+					}else{
+						mui.toast('获取用户信息失败'); 
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取用户数据,响应失败');
+				}
+			});
+			
 		})
 		
 	</script>
