@@ -57,7 +57,7 @@
 			 .follow:before{
 			 	position: absolute;
 			 	content: '';
-			 	height: 1px;
+			 	height: 0px;
 			 	left: 10px;
 			 	right: 10px;
 				-webkit-transform: scaleY(.3);
@@ -182,7 +182,7 @@
 				justify-content: flex-end;
 			}
 			.mui-bar-tab a{
-				color: darkgray;
+				color: #666;
 				display: table-cell;
 				vertical-align: bottom;
 				text-align: center;
@@ -208,6 +208,11 @@
 			    position: relative;
 			    top: -14px;
 			}
+			.nameB{font-size: 14px;color: #666;}
+			.wenzhangP{color: #666;	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;line-height: 1.3;}
 	</style>
 
 	<body>
@@ -228,18 +233,18 @@
 							<div class="listt">
 								<div class="follow"> 
 									<div class="fchidl">
-				                       		<img src="<%=recommendData[i].avatar%>" class="userAvator" alt="" onclick="gootpage('<%=recommendData[i].user_id%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" />
+				                       		<img src="<%=recommendData[i].avatar%>" dataurl='<%=recommendData[i].avatar%>' class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" />
 				                        <%}else{%>
 				                        	<div class="listt">
 												<div class="follow"> 
 													<div class="fchidl">
 														<img src="../img/10.png" alt="" class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 										<%}%>
-									<div><%=recommendData[i].nickname%><br><br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
+									<div> <b class="nameB"><%=recommendData[i].nickname%></b> <br><br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
 								</div>
 								
 							</div>
-							<img src="<%=recommendData[i].pic%>" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" class="fllmg" alt="" />
+							<img src="<%=recommendData[i].pic%>" dataurl='<%=recommendData[i].pic%>' onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')" onerror="javascript:this.src='../img/zhaoxiangji.svg';" class="fllmg" alt="" />
 							
 							<!--详细信息-->
 							<div class="newsinfo" data-newsId="<%=recommendData[i].news_id%>"></div>
@@ -252,7 +257,7 @@
 			<script type="text/html" id="newsInfoTpl">
 				<%if(recommendData){%> 
 					<div class="tieCt">
-					 	<p>
+					 	<p class="wenzhangP">
 					 		<%if(recommendData.tags.length){%>
 						 		<%for(var j=recommendData.tags.length-1;j>=0;j--){%>
 						 			<span>#<%=recommendData.tags[j].tagName%>#</span>
@@ -273,9 +278,9 @@
 								<div class="likeCount" style="visibility: hidden;" id="likeCount<%=recommendData.newsinfodata[0].news_id%>">5</div>
 							</div>
 							<span class="mui-pull-right orp" data-friend_news_id="<%=recommendData.newsinfodata[0].news_id%>" data-to_user_id="<%=recommendData.newsinfodata[0].user_id%>"><img src="../img/market/repeat.svg" style="width: 20px;margin:0 15px 0 10px;"/></span>
-							<div class="sharef">
+							<!--<div class="sharef" style="display: none;">分享弃用
 								<img src="../img/market/sharef.png" style="width: 20px;" onclick="shareHref()"/>
-							</div>
+							</div>-->
 					 	</div>
 					</div> 
 				<%}%>
@@ -430,14 +435,17 @@
 					plus.nativeUI.closeWaiting();
 					if(data.errno == 0) { 
 						var dataobj = data.data.data; 
-						console.log(JSON.stringify(data))
+						console.log('列表',data);
 						if(dataobj.length != 0){
 							for(var i=0;i<dataobj.length;i++){ 
-								if(dataobj[i].avatar){
+								if(dataobj[i].avatar){ //处理头像，处理pic
 									dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 								}else{
 									dataobj[i].avatar = "../img/10.png"
 								}
+								if(dataobj[i].pic && dataobj[i].pic.indexOf('picImg')>-1){
+										dataobj[i].pic = serverimgUrl + JSON.parse(dataobj[i].pic)[0].picImg; 
+									}
 								var dt = new Date(dataobj[i].create_time);
 								var date = [
 								  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
@@ -642,118 +650,118 @@
 				}
 			})
         }
-        //分享
-	    updateSerivces();
-		if (plus.os.name == "Android") {
-			Intent = plus.android.importClass("android.content.Intent");
-			File = plus.android.importClass("java.io.File");
-			Uri = plus.android.importClass("android.net.Uri");
-			main = plus.android.runtimeMainActivity();
-		} 
+        
+        
+        
+        //分享===============弃用================
+//	    updateSerivces();
+//		if (plus.os.name == "Android") {
+//			Intent = plus.android.importClass("android.content.Intent");
+//			File = plus.android.importClass("java.io.File");
+//			Uri = plus.android.importClass("android.net.Uri");
+//			main = plus.android.runtimeMainActivity();
+//		} 
     })
      /**
-	 * 更新分享服务
+	 * 更新分享服务       ===============弃用================
 	 */
-	function updateSerivces() {
-		plus.share.getServices(function(s) {
-			shares = {};
-			for (var i in s) {
-				var t = s[i];
-				shares[t.id] = t;
-			}
-		 	outSet("获取分享服务列表成功");
-		}, function(e) {
-			outSet("获取分享服务列表失败：" + e.message);
-		});
-	}
-	/**
-	 * 分享操作
-	 */
-	function shareAction(id, ex) {
-		console.log('id = ' + id);
-		console.log('ex = ' + ex);
-		console.log('shares[id]' + shares[id]);
-		var s = null;
-		if (!id || !(s = shares[id])) {
-			outLine("无效的分享服务！");
-			return;
-		}
-		if (s.authenticated) {
-			outSet("---已授权---");
-			shareMessage(s, ex);
-		} else {
-			outSet("---未授权---");
-			s.authorize(function() {
-				shareMessage(s, ex);
-			}, function(e) {
-				outLine("认证授权失败");
-			});
-		}
-	}
-	/**
-	 * 发送分享消息
-	 */
-	function shareMessage(s, ex) {
-		var msg = {
-			content: '分享-详情',
-//					href: 'http://blog.csdn.net/zhuming3834',
-			title: 'HGDQ-分享测试-title',
-			content: 'HGDQ-分享测试-content',
-			thumbs: ['http://img3.3lian.com/2013/v10/4/87.jpg'],
-			pictures: ['http://img3.3lian.com/2013/v10/4/87.jpg'],
-			extra: {
-				scene: ex
-			}
-		};
-		s.send(msg, function() {
-			outLine("分享成功!");
-		}, function(e) {
-			outLine("分享失败!");
-		});
-	}
-	/**
-	 * 分享按钮点击事件
-	 * 注意这里的这些id值
-	 */
-	function shareHref() {
-		 
-		var ids = [{
-				id: "weixin", 
-				ex: "WXSceneSession"  /*微信好友*/
-			}, {
-				id: "weixin",
-				ex: "WXSceneTimeline" /*微信朋友圈*/
-			}, {
-				id: "qq"   /*QQ好友*/
-			},{
-				id: "tencentweibo"   /*腾讯微博*/
-			},{
-				id: "sinaweibo"  /*新浪微博*/
-			}],
-			bts = [{
-				title: "发送给微信好友"
-			}, {
-				title: "分享到微信朋友圈"
-			}, {
-				title: "分享到QQ"
-			}, {
-				title: "分享到腾讯微博"
-			}, {
-				title: "分享到新浪微博"
-			}];
-		plus.nativeUI.actionSheet({
-				cancel: "取消",
-				buttons: bts
-			},
-			function(e) {
-				var i = e.index;
-				console.log('i = ' + i);
-				if (i > 0) {
-					shareAction(ids[i - 1].id, ids[i - 1].ex);
-				}
-			}
-		);
-	}		
+//	function updateSerivces() {
+//		plus.share.getServices(function(s) {
+//			shares = {};
+//			for (var i in s) {
+//				var t = s[i];
+//				shares[t.id] = t;
+//			}
+//		 	outSet("获取分享服务列表成功");
+//		}, function(e) {
+//			outSet("获取分享服务列表失败：" + e.message);
+//		});
+//	}
+//	function shareAction(id, ex) {
+//		console.log('id = ' + id);
+//		console.log('ex = ' + ex);
+//		console.log('shares[id]' + shares[id]);
+//		var s = null;
+//		if (!id || !(s = shares[id])) {
+//			outLine("无效的分享服务！");
+//			return;
+//		}
+//		if (s.authenticated) {
+//			outSet("---已授权---");
+//			shareMessage(s, ex);
+//		} else {
+//			outSet("---未授权---");
+//			s.authorize(function() {
+//				shareMessage(s, ex);
+//			}, function(e) {
+//				outLine("认证授权失败");
+//			});
+//		}
+//	}
+//	/**
+//	 * 发送分享消息
+//	 */
+//	function shareMessage(s, ex) {
+//		var msg = {
+//			content: '分享-详情',
+////					href: 'http://blog.csdn.net/zhuming3834',
+//			title: 'HGDQ-分享测试-title',
+//			content: 'HGDQ-分享测试-content',
+//			thumbs: ['http://img3.3lian.com/2013/v10/4/87.jpg'],
+//			pictures: ['http://img3.3lian.com/2013/v10/4/87.jpg'],
+//			extra: {
+//				scene: ex
+//			}
+//		};
+//		s.send(msg, function() {
+//			outLine("分享成功!");
+//		}, function(e) {
+//			outLine("分享失败!");
+//		});
+//	}
+//	/**
+//	 * 分享按钮点击事件
+//	 * 注意这里的这些id值
+//	 */
+//	function shareHref() {
+//		 
+//		var ids = [{
+//				id: "weixin", 
+//				ex: "WXSceneSession"  /*微信好友*/
+//			}, {
+//				id: "weixin",
+//				ex: "WXSceneTimeline" /*微信朋友圈*/
+//			}, {
+//				id: "qq"   /*QQ好友*/
+//			},{
+//				id: "tencentweibo"   /*腾讯微博*/
+//			},{
+//				id: "sinaweibo"  /*新浪微博*/
+//			}],
+//			bts = [{
+//				title: "发送给微信好友"
+//			}, {
+//				title: "分享到微信朋友圈"
+//			}, {
+//				title: "分享到QQ"
+//			}, {
+//				title: "分享到腾讯微博"
+//			}, {
+//				title: "分享到新浪微博"
+//			}];
+//		plus.nativeUI.actionSheet({
+//				cancel: "取消",
+//				buttons: bts
+//			},
+//			function(e) {
+//				var i = e.index;
+//				console.log('i = ' + i);
+//				if (i > 0) {
+//					shareAction(ids[i - 1].id, ids[i - 1].ex);
+//				}
+//			}
+//		);
+//	}		
 	// 控制台输出日志
 	function outSet(msg) {
 		console.log(msg);

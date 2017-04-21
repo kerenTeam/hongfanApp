@@ -200,7 +200,7 @@
 			}
 			
 			.mui-bar-tab a {
-				color: darkgray;
+				color: #666;
 				display: table-cell;
 				vertical-align: bottom;
 				text-align: center;
@@ -253,16 +253,16 @@
 			<div class="mui-slider-group mui-slider-loop">
 				<!--支持循环，需要重复图片节点-->
 				<div class="mui-slider-item mui-slider-item-duplicate">
-					<img src="<%= bannerList[bannerList.length-1].pic%>" data-qtid='<%= bannerList[bannerList.length-1].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
+					<img src="<%= bannerList[bannerList.length-1].pic%>" dataurl='<%= bannerList[bannerList.length-1].pic%>' data-qtid='<%= bannerList[bannerList.length-1].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
 				<% for(var i=0;i<bannerList.length;i++){ %>
 				<div class="mui-slider-item">
-					<img src="<%=bannerList[i].pic %>" data-qtid='<%= bannerList[i].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
+					<img src="<%=bannerList[i].pic %>" dataurl="<%=bannerList[i].pic %>" data-qtid='<%= bannerList[i].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
 				<% } %>
 				<!--支持循环，需要重复图片节点-->
 				<div class="mui-slider-item mui-slider-item-duplicate">
-					<img src="<%= bannerList[0].pic %>" data-qtid='<%= bannerList[0].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
+					<img src="<%= bannerList[0].pic %>" dataurl="<%= bannerList[0].pic %>" data-qtid='<%= bannerList[0].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
 			</div>
 			<div class="mui-slider-indicator">
@@ -312,7 +312,7 @@
 				<div class="boxf" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')">
 					<div class="pic">
 						<%if(recommendData[i].pic){%>
-						<img src="<%=recommendData[i].pic%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';">
+						<img src="<%=recommendData[i].pic%>" alt="<%=recommendData[i].pic%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';">
 						<%}%>
 						<p class="fTxt">
 							<%if(recommendData[i].content){%>
@@ -321,7 +321,7 @@
 						</p>
 						<div class="findUser" data-userId="<%=recommendData[i].userid%>">
 							<%if(recommendData[i].avatar){%>
-							<img src="<%=recommendData[i].avatar%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';" alt="" /><span><%=recommendData[i].nickname%></span>
+							<img src="<%=recommendData[i].avatar%>" alt="<%=recommendData[i].avatar%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';" alt="" /><span><%=recommendData[i].nickname%></span>
 							<%}else{%>
 							<li><img src="../img/10.png" alt="" /><span><%=recommendData[i].nickname%></span></li>
 							<%}%>
@@ -592,17 +592,18 @@
 					timeout: 10000,
 					headers: { "token": oldtoken },
 					success: function(data, type, xhr) {
+						console.log('栏目数据',data);
 						if(data.errno == 0) {
 							var dataobj = data.data.data;
 							if(dataobj.length != 0) {
-								for(var i = 0; i < dataobj.length; i++) {
-									if(dataobj[i].avatar.indexOf("[") != -1) {
-										dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
+								mui.each(dataobj,function (index,element) {
+									if(element.avatar && element.avatar.indexOf('picImg')>-1){
+										element.avatar = serverimgUrl + JSON.parse(element.avatar)[0].picImg;
+									} 
+									if(element.pic && element.pic.indexOf('picImg')>-1){
+										element.pic = serverimgUrl + JSON.parse(element.pic)[0].picImg;
 									}
-									if(dataobj[i].pic.indexOf("http") == -1) {
-										dataobj[i].pic = serverimgUrl + JSON.parse(dataobj[i].pic)[0].picImg;
-									}
-								}
+								}) 
 							}
 							var recommendObj = {};
 							recommendObj.myUrl = serverimgUrl;
@@ -630,12 +631,14 @@
 												if(data.errno == 0) {
 													var dataobj = data.data.data
 													if(dataobj.length != 0) {
-														if(dataobj[i].avatar.indexOf("[") != -1) {
-															dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
-														}
-														if(dataobj[i].pic.indexOf("http") == -1) {
-															dataobj[i].pic = serverimgUrl + JSON.parse(dataobj[i].pic)[0].picImg;
-														}
+														mui.each(dataobj,function (index,element) {
+															if(element.avatar && element.avatar.indexOf('picImg')>-1){
+																element.avatar = serverimgUrl + JSON.parse(element.avatar)[0].picImg;
+															} 
+															if(element.pic && element.pic.indexOf('picImg')>-1){
+																element.pic = serverimgUrl + JSON.parse(element.pic)[0].picImg;
+															}
+														}) 
 													}
 													var recommendObj = {}
 													recommendObj.myUrl = serverimgUrl;
