@@ -137,14 +137,14 @@
 					<div class="boxf" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>','<%=list[i].avatar%>','<%=list[i].nickname%>')">
 						<div class="pic"> 
 							<% if(list[i].pic.indexOf('http')>-1){%>
-								<img src="<%= list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'">
+								<img src="<%= list[i].pic%>" data="<%= list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'">
 							<% }else{%>
-								<img src="<%= url+list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'"><!--<img src="../../img/market/m1.jpg">-->
+								<img src="<%= url+list[i].pic%>" data="<%= url+list[i].pic%>" onerror="this.src = '../../img/zhaoxiangji.svg'"><!--<img src="../../img/market/m1.jpg">-->
 							<% }%>	
 							
 							<p class="fTxt"><%= list[i].content%></p>
 							<div class="findUser">
-								<img src="<%= list[i].avatar%>" onerror="this.src = '../../img/zhaoxiangji.svg'" /><span><%= list[i].nickname%></span> 
+								<img src="<%= list[i].avatar%>" data="<%= list[i].avatar%>" onerror="this.src = '../../img/zhaoxiangji.svg'" /><span><%= list[i].nickname%></span> 
 							</div>
 						</div>
 					</div>
@@ -180,6 +180,7 @@
 			timeout:10000,
 			headers:{"token":oldtoken},
 			success:function(data,type,xhr){ 
+				console.log('列表',data);
 				if(data.errno==0){
 					var dataobj = {};
 					if(data.data.length){
