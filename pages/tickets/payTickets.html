@@ -171,15 +171,16 @@ function payfun(id){
 		var bodystr = plus.webview.currentWebview().body;
 		var tradeNostr = plus.webview.currentWebview().Orderidnum;
 		var Orderidfanhui1 = plus.webview.currentWebview().Orderidfanhui;//订单id
+		alert(Orderidfanhui1)
 		var feiji = plus.webview.currentWebview().typestr;
 		var myuserid = plus.storage.getItem('userid');
 		var oldtoken = plus.storage.getItem('oldToken');
-		
+		console.log("body:"+bodystr+",subject':'飞机,火车支付',total_fee:"+orderCost+',out_trade_no:'+Orderidfanhui1);
 		mui.ajax(serverUrl+'/api/alipay/payment',{ 
 			data:{body:bodystr,subject:'飞机,火车支付',total_fee:orderCost,out_trade_no:Orderidfanhui1}, 
 			type:'post',//HTTP请求类型 
 			headers:{"token":oldtoken},	
-			timeout:10000,//超时时间设置为10秒；
+			timeout:10000,//超时时间设置为10秒
 			success:function(data){
 				plus.nativeUI.closeWaiting(); 
 				console.log('后台支付数据',data);
