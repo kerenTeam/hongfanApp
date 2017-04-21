@@ -188,7 +188,7 @@
 				    	<div class="recharge">
 				    		<div class="czhi box-s">
 				    			<p>户号</p>
-				    			<input type="text" id="huhao" value="" placeholder="查看纸质账单" />
+				    			<input type="text" id="huhao" value="7109910181" placeholder="查看纸质账单" />
 				    		</div>
 				    	</div>	
 				    </div>
@@ -262,31 +262,37 @@
 								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){
+									alert(itemid+" "+JSON.stringify(data))
 									plus.nativeUI.closeWaiting()
 									if(data.errno==0){
 										alert(itemid)
-										if(itemid == 64396301){
-											var projectId = data.data.item_props_list_response.cid;
-											var unitId = data.data.item_props_list_response.itemProps.itemProp[5].vid
-											var province = data.data.item_props_list_response.itemProps.itemProp[2].vname
-											var city = data.data.item_props_list_response.itemProps.itemProp[4].vname
-											var unitName = data.data.item_props_list_response.itemProps.itemProp[5].vname
-											var cityId = data.data.item_props_list_response.itemProps.itemProp[4].vid
-											var modeType = 2;
-											var modeId = data.data.item_props_list_response.itemProps.itemProp[3].vid
-										}else{
-											var projectId = data.data.item_props_list_response.cid;
-											var unitId = data.data.item_props_list_response.itemProps.itemProp[4].vid
-											var province = data.data.item_props_list_response.itemProps.itemProp[2].vname
-											var city = data.data.item_props_list_response.itemProps.itemProp[3].vname
-											var unitName = data.data.item_props_list_response.itemProps.itemProp[4].vname
-											var cityId = data.data.item_props_list_response.itemProps.itemProp[3].vid
-											var modeType = 2;
-											var modeId = data.data.item_props_list_response.itemProps.itemProp[1].vid
+										var projectId = data.data.item_props_list_response.cid;
+										for(var i = 0;i<data.data.item_props_list_response.itemProps.itemProp.length;i++){
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'PRVCIN'){
+												var province = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'CITYIN'){
+												var city = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitName = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'CITYIN'){
+												var cityId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'SPECIAL'){
+												var modeId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
 										}
-										
+										alert(itemid+"户号 "+mui("#huhao")[0].value+"projectId "+projectId+"unitId "+unitId+"province "+province+"city "+city+"unitName "+unitName+"cityId "+cityId+"modeId "+modeId+"modeType "+2)
 										mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
-											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId},
+											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeId:modeId,modeType:2},
 											dataType:'json',
 											type:'post',
 											timeout:10000,
