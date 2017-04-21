@@ -292,30 +292,8 @@
 			}, 200)
 		});
 		
-		 //初始化地图对象，加载地图
-		    var map = new AMap.Map("container", {resizeEnable: true});
-		    var lnglats = [
-		        [104.065335, 30.534753],
-		        [104.068335, 30.534753],
-		        [104.058375, 30.534873],
-		        [104.068335, 30.534753]
-		    ];
-		    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
-		    for (var i = 0, marker; i < lnglats.length; i++) {
-		        var marker = new AMap.Marker({
-		            position: lnglats[i],
-		            map: map
-		        });
-		//      marker.content = '我是第' + (i + 1) + '个Marker';
-				marker.content = '<img src="../../img/10.png" style="width:40px"/>'
-		        marker.on('click', markerClick);
-		        marker.emit('click', {target: marker});
-		    }
-		    function markerClick(e) {
-		        infoWindow.setContent(e.target.content);
-		        infoWindow.open(map, e.target.getPosition());
-		    }
-		    map.setFitView();
+		    
+		  
 		
 		</script>
 		<script type="text/javascript" charset="utf-8">
@@ -331,7 +309,55 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					console.log(data);
+					//加载地图开始
+	    			var map = new AMap.Map("container", {resizeEnable: true});
+					console.log('列表',data);
+					var data1 = [],data2 = [];
+					mui.each(data.data,function (index,element) {
+						if(element.x_y){
+							console.log(element);
+							data1 = [];
+							data1.push(parseFloat(element.x_y.split(',')[1]));
+							data1.push(parseFloat(element.x_y.split(',')[0]));
+							data2.push(data1);
+						}
+					})
+					console.log('位置',data2);
+//				 	var lnglats = [
+//				        [104.065335, 30.534753],
+//				        [104.068335, 30.534753],
+//				        [104.058375, 30.534873],
+//				        [104.068335, 30.534753]
+//				    ];
+				    var lnglats = data2;
+			    	console.log('位置1',lnglats);
+				    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+				    for (var i = 0, marker; i < lnglats.length; i++) {
+				        var marker = new AMap.Marker({
+				            position: lnglats[i],
+				            map: map
+				        });
+				        //marker.content = '我是第' + (i + 1) + '个Marker';
+				        var aaa = data.data[i].helper_id;
+				        var bbb = "'"+data.data[i].area+"'";
+				        var ccc = "'"+data.data[i].address+"'";
+//				        var ccc = "'嘻嘻'";
+				        if(data.data[i].headPic){
+				        	marker.content = '<img src="'+serverimgUrl+data.data[i].headPic+'" onclick="forHelp('+aaa+','+"'"+data.data[i].area+"'"+','+ccc+')" style="width:40px;height:40px;border-radius:50%" />';
+				        }else{
+							marker.content = '<img src="../../img/end.png" onclick="forHelp('+aaa+','+bbb+','+ccc+')" style="width:40px;height:40px;border-radius:50%" />';
+
+				        }
+				        marker.on('click', markerClick);
+				        marker.emit('click', {target: marker});
+				    }
+				    function markerClick(e) {
+				        infoWindow.setContent(e.target.content);
+				        infoWindow.open(map, e.target.getPosition());
+				    }
+				    map.setFitView();
+					//加载地图结束
+					
 					for(var i = 0;i < data.data.length;i++ ){
 						data.data[i].competency = eval("("+data.data[i].competency+")");
 					}

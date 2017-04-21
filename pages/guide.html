@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Hello MUI</title>
+		<title>引导图</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -61,6 +61,7 @@
 				font-size: 16px;
 				text-align: right;
 			}
+			.mui-slider .mui-slider-group .mui-slider-item img{height: 100%;}
 			.animate li:nth-child(3) {
 				text-align: left;
 				float: right;
@@ -176,51 +177,98 @@
 
 	<body>
 		<div id="slider" class="mui-slider mui-fullscreen" style="background-color: black;">
-			<div class="mui-slider-group">
-				<!-- 第一张 -->
+			<div class="mui-slider-group" id="bannerdiv">
+				<!-- 第一张 --> 
 				<div class="mui-slider-item">
 					<div class="item-logo" style="background-color: #D74B28">
-					 
+					 <img id="guide1" src=""/>
 					</div>
 				</div>
 				<!-- 第二张 -->
 				<div class="mui-slider-item">
 					<div class="item-logo" style="background-color: #02C1ED;">
-						
+						<img src="" id="guide2"/>
 					</div>
 				</div>
 				
-				<!-- 第四张 -->
+				<!-- 第三张 -->
 				<div class="mui-slider-item">
 					<div class="item-logo" style="background-color: #FCD208;">
-					 
+					 <img src="" id="guide3"/>
 						<div class="animate">
-							<button id='close' class="mui-btn mui-btn-warning mui-btn-outlined">进入</button>
+							
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="mui-slider-indicator">
+			<!--<div class="mui-slider-indicator">
 				<div class="mui-indicator mui-active"></div>
 				<div class="mui-indicator"></div>
 				<div class="mui-indicator"></div>
-			</div>
+			</div>-->
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
 		<script>
 			mui.back = function() {};
 			mui.plusReady(function() {
+				var oldToken = plus.storage.getItem('oldToken');
+				//获取数据
+				mui.ajax(serverUrl + '/api/index/banner', {
+						data: {
+							banner_type: 12
+						},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers: {
+						"token": oldToken
+					},
+					success:function(data){
+						console.log(data);
+						var dataobj = JSON.parse(data.data.banner);
+						console.log(dataobj);
+						var allstr = '';
+						mui.each(dataobj,function (index,element) {
+							if(index == dataobj.length-1){
+								allstr += '<div class="mui-slider-item">'+
+					'<div class="item-logo" style="background-color: #D74B28">'+
+					 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
+					 '<button id="close" class="mui-btn mui-btn-warning mui-btn-outlined">进入</button>'+
+					'</div>'+
+				'</div>';
+							return false;
+							}else{
+								allstr += '<div class="mui-slider-item">'+
+					'<div class="item-logo" style="background-color: #D74B28">'+
+					 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
+					'</div>'+ 
+				'</div>';
+							}
+							
+						})
+						console.log(allstr);
+						mui('#bannerdiv')[0].innerHTML = allstr;
+						
+						//立即体验按钮点击事件
+						document.getElementById("close").addEventListener('tap', function(event) {
+				 
+						plus.navigator.setFullscreen(false);
+						plus.webview.currentWebview().close();
+			}, false);
+					},
+					error:function(xhr,type,errorThrown){
+						
+					}
+				});
+				
+				
 				if(mui.os.ios){
 					plus.navigator.setFullscreen(true);
 				}
 				plus.navigator.closeSplashscreen();
 			});
-			//立即体验按钮点击事件
-			document.getElementById("close").addEventListener('tap', function(event) {
-				 
-				plus.navigator.setFullscreen(false);
-				plus.webview.currentWebview().close();
-			}, false);
+			
 			 
 			
 		</script>
