@@ -924,7 +924,7 @@
 			<script type="text/html" id="tabc1Tpl">
 			
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo()">
+					<figure onclick="findInfo(<%= list[i].news_id%>)">
 						<%if(list[i].banner_pic){%>
 							<img src="<%=myUrl+list[i].banner_pic%>" onerror="javascript:this.src='../img/market/feg2.png';" style="width: 100%;" />
 							<%}else{%>
@@ -936,7 +936,7 @@
 			<div class="tabcontent" id="tabc2"></div>
 			<script type="text/html" id="tabc2Tpl">
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo()">
+					<figure onclick="findInfo(<%= list[i].news_id%>)">
 						<%if(list[i].banner_pic){%>
 							<img src="<%=myUrl+list[i].banner_pic%>" style="width: 100%;" onerror="javascript:this.src='../img/market/feg4.png';"/>
 							<%}else{%>
@@ -1021,7 +1021,7 @@
   			<div class="sy_title mb10 aClick" id="shihui1" style="margin-top: 5px;">
 				<img src="../img/market/mainact.png" /><span style="vertical-align: middle;">HI实惠</span><span style="float: right;font-size: 12px;vertical-align: middle;">更多<span style="font-size: 14px;" class="mui-icon mui-icon-arrowright"></span></span>
 			</div>
- 		<img src="../img/tttj.jpg" style="" alt="" id="shihui"/>
+ 		<img src="../img/tttj.jpg" style="" alt="" class="shouye1" id="shihui"/>
  		<!--单品推荐--> 
 		<div class="sy_recmd_list_box">
 				<div id="ttc"></div>
@@ -1045,7 +1045,7 @@
 				</script>			
 			</div>
 			<!--帮帮团-->  
-				<img src="../img/tj.jpg" style="margin: 5px 0;box-shadow: 0px 0px 2px whitesmoke;"/>
+				<img src="../img/tj.jpg" id="shouye2" style="margin: 5px 0;box-shadow: 0px 0px 2px whitesmoke;"/>
 		 
 		<!--推荐列表-->
 		<div class="sy_recmd">
@@ -1290,18 +1290,18 @@
 					 })
 				}else{
 					openview({
-						view: page+'.html'
+						view: page+'.html' 
 					})
 				}
 				
 				
 			}
 			 
-			function findInfo(){ 
+			function findInfo(argu){ 
 				openview({
 					view: 'find/findInfo.html',
 					id:'findInfo',
-					extras:{newsId:'2'}
+					extrasobj:{newsId:argu} 
 				})
 			}
 			
@@ -1533,6 +1533,26 @@
 							}
 						})
 					}
+					//类banner两张图
+					mui.ajax(serverUrl + '/api/index/banner', {
+						data: {
+							banner_type: 13
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						headers: {
+							"token": oldToken
+						},
+						success:function(data){
+							console.log('类banner',data);
+							mui('.shouye1')[0].src = serverimgUrl + JSON.parse(data.data.banner)[0].pic; 
+							mui('#shouye2')[0].src = serverimgUrl + JSON.parse(data.data.banner)[1].pic; 
+						},
+						error:function(xhr,type,errorThrown){
+							
+						}
+					});
 					
 					//获取每日精选 热门推荐 发现推荐
 					mui.ajax(serverUrl + '/api/news/commendnews', {
