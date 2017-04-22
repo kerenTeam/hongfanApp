@@ -16,6 +16,15 @@ var serverimgUrl='http://hiji.hifete.com:6789';
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment'; 
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
+
+//执行alert方法
+
+function startAlert(content){
+	alert(content)
+}
+
+
+
 //关注和取消关注
 function followBack(thisobj,friendid){  
 	event.stopPropagation();

@@ -154,6 +154,9 @@
 								}else if(element.avatar){
 									element.avatar = element.avatar;
 								}
+								if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
+									element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
+								}
 								
 							})
 							console.log(data.data.mynewsliker.likerInfo);
@@ -176,11 +179,12 @@
 											if(data.data[0].nickname.indexOf('null') == -1){
 												nickname = data.data[0].nickname;
 											}else{
-												nickname = data.data[0].phone;
+												nickname = data.data[0].nickname.substring(0,3)+"****"+data.data[0].nickname.substring(7,11);
 											}
 										}else{
-											nickname = data.data[0].phone;
+											nickname = data.data[0].nickname.substring(0,3)+"****"+data.data[0].nickname.substring(7,11);
 										}
+										 
 										dataobj.myavater = myavater;
 										dataobj.nickname = nickname;
 										var html=template("infolist",dataobj);

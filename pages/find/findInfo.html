@@ -29,7 +29,7 @@
 				width: 60px;
 				cursor: pointer;
 				position: absolute;
-				left: -14px;
+				left: 4px;
 				top: -10px;
 				background-size: 2900%;
 			}
@@ -381,7 +381,7 @@
 				z-index: 1;
 			}
 			
-			.cmtinput>div {
+			.cmtinput>div { 
 				display: table-cell;
 			}
 			
@@ -530,7 +530,9 @@
 			<div class="findhd">
 				<div style="vertical-align: middle;"><img src="../../img/10.png" class="findUser" alt="" /></div>
 				<div>
-					<span class="fname"></span>
+					<span class="fname"></span><br />
+					<small id="pbtime">
+					</small>
 				</div>
 			</div>
 			<a href="javascript:;" style="line-height: 50px;color:white;font-size: 25px;" class="fr baocun yngz">+</a>
@@ -543,7 +545,7 @@
 			<script type="text/html" id="newsInfoTpl">
 				<%if(recommendData.newsinfodata){%>
 					<!--<img src="<%=myUrl%><%=recommendData.newsinfodata.pic%>" alt="" data-preview-src="" data-preview-group="1" />-->
-					<img src="<%=recommendData.newsinfodata[0].pic%>" alt="" data-preview-src="" data-preview-group="1"  onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
+					<img src="<%=recommendData.newsinfodata[0].pic%>" alt="" data-preview-src="" data-preview-group="1" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 					<p class="txtinfo">
 						<%if(recommendData.tags && recommendData.tags.length){%>
 							<%for(var i=0;i<recommendData.tags.length;i++){%>
@@ -820,7 +822,6 @@
 				timeout:10000,
 				headers:{"token":oldtoken},	 
 				success:function(data,type,xhr){
-					console.log('详情',data);
 					if(data.errno == 0) { 
 						if(data.data){ 
 							var dataobj = data.data; 
@@ -829,7 +830,9 @@
 									dataobj.newsinfodata[0].avatar = serverimgUrl + JSON.parse(dataobj.newsinfodata[0].avatar)[0].picImg;
 								}
 							}
-							
+							if(dataobj.newsinfodata[0].pic){
+								dataobj.newsinfodata[0].pic = serverimgUrl + JSON.parse(dataobj.newsinfodata[0].pic)[0].picImg;
+							}
 							if(!avtar){ 
 								$(".findUser").attr("src",dataobj.newsinfodata[0].avatar)
 							}
@@ -986,7 +989,7 @@
 				 
         	})
 			
-			function getCmt(){
+			function getCmt(){ 
 				//取得评论信息 用于news详细 和评论详细
 				mui.ajax(serverUrl+"/api/news/newscommit",{
 	    			data:{newsid:newsId,userid:myuserid},
@@ -994,7 +997,8 @@
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldtoken},	 
-					success:function(data,type,xhr){ 
+					success:function(data,type,xhr){
+						console.log("获取评论 "+JSON.stringify(data))
 						if(data.errno == 0) { 
 							if(data.data){ 
 								var dataobj = data.data;
@@ -1035,7 +1039,7 @@
 								commentObj.myUrl = serverimgUrl;
 								commentObj.cmtData = dataobj;
 								document.getElementById("cmtAll").innerHTML = template("cmtTpl", commentObj);  
-								
+								$("#pbtime").html(date)
 								var cmlist = document.getElementsByClassName("cmlist");
 								for(var t=0;t<cmlist.length;t++){
 									var fuserid = cmlist[t].getAttribute("data-fromUserId"); 

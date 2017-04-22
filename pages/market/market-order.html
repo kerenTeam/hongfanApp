@@ -1175,6 +1175,7 @@
 								//$(this).parentsUntil("#orderTpl").find(".ddwl").html('<h6>配送方式</h6><p class="jifen">自提</p>')
 
 								countTotalPay();
+								$(this).parentsUntil("#orderTpl").find('.dlc div').attr("data-id",0);
 								$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0)
 							} else {
 								var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html()); 
@@ -1275,38 +1276,20 @@
 							}
 							if(data.data.user_coupon[i].begin_date != null) {
 								data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
-							}
-							 
-							alert("allGroup "+allGroup)
-//							tpldata.push(data.data.user_coupon[i])
-//							if(data.data.user_coupon[i].salerule) {
-//								if(data.data.user_coupon[i].salerule != ' ') {
-//
-//									data.data.user_coupon[i].salerule = eval("(" + data.data.user_coupon[i].salerule + ")");
-//									if(parseFloat(data.data.user_coupon[i].salerule.overflowValue) <= allGroup) {
-										if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
-											if(data.data.user_coupon[i].typeid == 2){
-												alert(data.data.user_coupon[i].coupon_amount.split(",")[0])
-												if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=allGroup){
-													data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
-													tpldata.push(data.data.user_coupon[i]).typeid
-												}
-											}else{
-												tpldata.push(data.data.user_coupon[i]).typeid
-											}
-											
-										}
-//									}
-//								} else {
-//									if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
-//										tpldata.push(data.data.user_coupon[i])
-//									}
-//								}
-//							}
-
+							} 
+							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
+								if(data.data.user_coupon[i].typeid == 2){ 
+									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=allGroup){
+										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
+										tpldata.push(data.data.user_coupon[i]).typeid
+									}
+								}else{
+									tpldata.push(data.data.user_coupon[i]).typeid
+								}
+								
+							} 
 						}
 					}
-//											alert(JSON.stringify(tpldata))
 					allC.allLi = tpldata;
 					var html = template('quanTpl', allC);
 					document.getElementById('quanData').innerHTML = html;
@@ -1469,7 +1452,6 @@
 							$("#payChoose").addClass("mui-active");
 							$("#totalPayCash").html("￥" + totalPay)
 						}
-//												alert(JSON.stringify(orderSubmitData))
 					}
 					// 支付方法 
 					window.payfun = function(id) {
@@ -1508,10 +1490,9 @@
 								},
 								timeout: 10000, //超时时间设置为10秒；
 								success: function(data) {
-									alert('支付'+JSON.stringify(data));
 									plus.nativeUI.closeWaiting() 
 
-									console.log("----- 请求订单成功 -----", JSON.stringify(data));
+									alert("----- 请求订单成功 -----"+JSON.stringify(data));
 									if(data.errno == 0) {
 										//购物车 缓存 
 										var cartStorage = JSON.parse(plus.storage.getItem('$cartStorage') || '[]');
@@ -1531,17 +1512,31 @@
 									var varpay;
 									if(id == 'wxpay') {
 										varpay = {
-											"appid":data.data.appid,
-											"noncestr":data.data.noncestr,
+											"appid":data.data.payData.appid,
+											"noncestr":data.data.payData.noncestr,
 											"package":"Sign=WXPay",
-											"partnerid":data.data.partnerid,
-											"prepayid":data.data.prepayid,
-											"timestamp":parseInt(data.data.timestamp),
-											"sign":data.data.sign
+											"partnerid":data.data.payData.partnerid,
+											"prepayid":data.data.payData.prepayid,
+											"timestamp":parseInt(data.data.payData.timestamp),
+											"sign":data.data.payData.sign
 										};
 										//微信
 										plus.payment.request(pays[id], varpay, function(result) {
 											console.log("----- 支付成功 -----");
+											//修改订单状态
+											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
+												data: {id:data.data.AccessToken,appPayValue:varpay},
+												type: 'post', //HTTP请求类型
+												headers: {
+													"token": oldtoken
+												},
+												timeout: 10000, //超时时间设置为10秒；
+												success: function(data) {
+													console.log("修改状态成功")
+												},
+												error: function(xhr, type, errorThrown) {
+												}
+											});
 
 										}, function(e) {
 											console.log("----- 支付失败 -----");
@@ -1551,47 +1546,38 @@
 										});
 									} else {
 										//支付宝
-										varpay = data.data;
-										//										alert("varpay "+varpay)
-										console.log('支付宝', varpay);
+										varpay = data.data.payData;
 										plus.payment.request(pays[id], varpay, function(result) {
 											console.log("----- 支付成功 -----", JSON.stringify(result));
-
 											plus.nativeUI.closeWaiting();
 											plus.nativeUI.alert("支付成功");
-
+											var oldtoken = plus.storage.getItem('oldToken');
+											//修改订单状态
+											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
+												data: {id:data.data.AccessToken,appPayValue:varpay},
+												type: 'post', //HTTP请求类型
+												headers: {
+													"token": oldtoken
+												},
+												timeout: 10000, //超时时间设置为10秒；
+												success: function(data) {
+													alert(JSON.stringify(data))
+													console.log("修改状态成功")
+												},
+												error: function(xhr, type, errorThrown) {
+													console.log("修改状态失败")
+												}
+											});
 											//关闭 订单页  
 											if(plus.webview.getWebviewById("market-order")) {
+												openview({
+													view:"../personal/sc-order.html",
+													id:"sc-order"
+												})
 												plus.webview.getWebviewById("market-order").close();
+												
 											}
-
-											var oldtoken = plus.storage.getItem('oldToken');
-											var orderId = plus.webview.currentWebview().uuid;
-											var odrer_id = plus.webview.currentWebview().orderId;
-											//修改状态
-											//								mui.ajax(serverUrl+'/api/mall/paybill',{ 
-											//									data:{"order_UUID":orderId,"paymenResult":JSON.stringify(result)},
-											//									dataType:'json',//服务器返回json格式数据
-											//									type:'post',//HTTP请求类型
-											//									headers:{"token":oldtoken},	
-											//									timeout:10000,//超时时间设置为10秒；
-											//									success:function(data){
-											//										 plus.nativeUI.closeWaiting()
-											//										 
-											//										 setTimeout(function(){
-											//										 	openview({
-											//												view:"../personal/sc-order.html",
-											//												id:"sc-order",
-											//											}) 
-											//										 },1000)
-											//										 
-											//									},
-											//									error:function(xhr,type,errorThrown){
-											//										//异常处理；
-											//										console.log(type);
-											//									}
-											//								});
-											//							
+  
 										}, function(e) {
 											console.log("----- 支付失败 -----");
 											console.log("[" + e.code + "]：" + e.message);
@@ -1599,7 +1585,6 @@
 											plus.nativeUI.closeWaiting();
 											plus.nativeUI.alert("支付失败");
 										});
-										//			 
 									}
 								},
 								error: function(xhr, type, errorThrown) {

@@ -199,6 +199,9 @@
 											var followFlag = false;//我没关注他
 											mui.each(data.data.followMe,function (index,element) {
 												if (element.avatar && element.avatar != " ") {
+													if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
+														element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
+													}
 													if (element.avatar.indexOf("picImg")>-1) {
 														element.avatar = JSON.parse(element.avatar)[0].picImg;
 													}	
@@ -288,6 +291,9 @@
 										myfollow.push(element.user_id);
 									})
 									mui.each(data.data.followMe,function (index,element) {
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
+											element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
+										}
 										if (element.avatar && element.avatar != " ") {
 											if (element.avatar.indexOf("picImg")>-1) {
 												element.avatar = JSON.parse(element.avatar)[0].picImg;

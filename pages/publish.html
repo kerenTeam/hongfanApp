@@ -123,9 +123,6 @@
 			</style>
 			<div id="" class="biaoqian">
 				<span id="" onclick="spanclick(this)">
-					#标签#
-				</span>
-				<span id="" onclick="spanclick(this)">
 					#热血#
 				</span>
 				<span id="" onclick="spanclick(this)">
@@ -303,14 +300,16 @@
 		
 	//发送 发布
 	mui('.baocun')[0].addEventListener('tap',function(){
-		var tagstr = '';
+		var tagstr = ' ';
 		mui.each(mui('.biaoqian')[0].getElementsByClassName('active'),function (index,element) {
 			tagstr += element.innerText;
 		})
 		console.log('图片',Apic);
 		console.log('标签',tagstr);
-		var content = mui('#textCon')[0].value,mapAddress = '未知';
-		if(mui('#mapAddress')[0].innerHTML != '我的位置'){mapAddress = mui('#mapAddress')[0].innerHTML};
+		var content = mui('#textCon')[0].value,mapAddress = $('#mapAddress').html();
+		if(mapAddress=="我的位置"){
+			mapAddress = "未知"
+		}
 		if(!content){
 			mui.toast('请输入内容');
 		}else if(!Apic.length){

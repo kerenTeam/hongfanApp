@@ -682,6 +682,7 @@
 			.Headlines{display:block;font-size:13px;line-height:20px;height: 20px;color: #666;letter-spacing: .5px;}
 			strong{color: #555;font-weight: 100;}
 			.tcImg12{width: 100px;height: 100px;}
+			#div1 a{display: inline-block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 		</style>
 	</head>
 
@@ -762,19 +763,7 @@
 			</div>
 			
 		<div id="main">
-		<!--滚动条 温馨提示-->
-		<!--<div class="adNews" style="background-color: #fff;border-bottom: 1px solid #f8f8f8;padding: 0 15px;">
-			<div class="mui-row">
-				<div class="mui-col-sm-2 mui-col-xs-2" style="color: #ec523e !important;line-height: 26px;font-weight: bold;" > 
-					温馨提示:
-				</div>
-				<div class="mui-col-sm-10 mui-col-xs-10">
-					<marquee style="line-height: 26px;color: #666;" id="warmthPrompt">
-						亲！Hi集试运行阶段，如有不便及建议请及时反馈小HI（点击首页右下角小蜜蜂）谢谢理解并支持！我们将努力做得更好！
-					</marquee>
-				</div>
-			</div>
-		</div>-->
+		 
 		<div class="onetable">
 			<table>
 				<tbody>
@@ -823,18 +812,7 @@
 			</div>
 			<div class="mui-col-sm-9 mui-col-xs-9" style="height: 40px;">
 				<!--<marquee style="line-height: 40px;"></marquee>-->
-				<div id="div1" style="height:40px;overflow:hidden;">
-			        <a class="Headlines">“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines">“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines">“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines">“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines">“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines">“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines" >“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines" >“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines" >“五下乡”活动完美收官,活动完美收官</a>
-			        <a class="Headlines" >“五下乡”活动完美收官,活动完美收官</a>
-			    </div> 
+				<div id="div1" style="height:40px;overflow:hidden;"></div> 
 			    <script type="text/javascript">
 			    	var box=document.getElementById("div1"),can=true;
 					box.innerHTML+=box.innerHTML; 
@@ -924,7 +902,7 @@
 			<script type="text/html" id="tabc1Tpl">
 			
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo(<%= list[i].news_id%>)">
+					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].user_id%>)">
 						<%if(list[i].banner_pic){%>
 							<img src="<%=myUrl+list[i].banner_pic%>" onerror="javascript:this.src='../img/market/feg2.png';" style="width: 100%;" />
 							<%}else{%>
@@ -936,7 +914,7 @@
 			<div class="tabcontent" id="tabc2"></div>
 			<script type="text/html" id="tabc2Tpl">
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo(<%= list[i].news_id%>)">
+					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].user_id%>)">
 						<%if(list[i].banner_pic){%>
 							<img src="<%=myUrl+list[i].banner_pic%>" style="width: 100%;" onerror="javascript:this.src='../img/market/feg4.png';"/>
 							<%}else{%>
@@ -1118,39 +1096,7 @@
  		</script>
 
 		<script type="text/javascript"> 
-			//点击邻水
-			mui('.cityBtn')[0].onclick = function(){
-				openview({
-//					view: "nativetitle.html" 
-					view: "index0.html"
-				})
-			}
-			
-			//滚动监听
-//				$(window).scroll(function() { 
-//					
-//		           var navBarHeight = 50;  
-//		            //Window Math
-//		            var scrollTo = $(window).scrollTop();  
-//		            if (scrollTo > navBarHeight) {
-//		            	alert(scrollTo > navBarHeight)
-//		                $("#header").css({
-//		                    "backgroundColor": "rgba(255,255,255,1)!important"
-//		                });
-//		            } 
-//		            if (scrollTo < navBarHeight) {
-//		                $("#header").css({
-//		                    "backgroundColor": "transparent!important"
-//		                });
-//		            } 
-//		        }).trigger('scroll');
-			
-			
-//			function haha(){
-////			alert('主页面调用子页面关闭');
-//				mui('.Mask')[0].style.display = 'none';
-//			}
-//		 
+			  
 			//跳转详情
 			function goInfo(goodsId, storeId) {
 				if(storeId == 0) {
@@ -1297,11 +1243,11 @@
 				
 			}
 			 
-			function findInfo(argu){ 
+			function findInfo(argu,userid){ 
 				openview({
 					view: 'find/findInfo.html',
 					id:'findInfo',
-					extrasobj:{newsId:argu} 
+					extrasobj:{newsId:argu,userId:userid} 
 				})
 			}
 			
@@ -1425,7 +1371,7 @@
 					teseguan.addEventListener('tap', function(){
 						openview({
 							view:'market/tsmall.html',
-							id:''
+							id:'tsmall'
 						});
 					});
 					onsale.addEventListener('tap', function(){//HI实惠
@@ -1438,7 +1384,8 @@
 						openview({
 							view: 'market/movieTpl.html',
 							extrasobj: {
-								bannerUrl: "http://v.juhe.cn/wepiao/go?key=f901c91fb2708725321276417d44dbf6"
+//								bannerUrl: "http://v.juhe.cn/wepiao/go?key=f901c91fb2708725321276417d44dbf6"
+								bannerUrl:"http://m.maoyan.com/?from=singlemessage" 
 							}
 						});
 					});
@@ -1523,16 +1470,16 @@
 						}
 					});
 					//banner跳转
-					window.bannerGo = function(url, name) {
-						openview({
-							view: "bannerTpl.html",
-							id: "bannerTpl",
-							extrasobj: {
-								bannerUrl: url,
-								bannerName: name
-							}
-						})
-					}
+//					window.bannerGo = function(url, name) {
+//						openview({
+//							view: "bannerTpl.html",
+//							id: "bannerTpl",
+//							extrasobj: {
+//								bannerUrl: url,
+//								bannerName: name
+//							}
+//						})
+//					}
 					//类banner两张图
 					mui.ajax(serverUrl + '/api/index/banner', {
 						data: {
@@ -1611,52 +1558,34 @@
 							$(".tabcontent").eq(i).addClass("taactive");
 						}
 					})
-					
-					//温馨提示 数据
-//					mui.ajax(serverUrl + '/api/index/prompt', {
-//						type: 'post', //HTTP请求类型
-//						timeout: 10000, //超时时间设置为10秒；
-//						headers: {
-//							"token": oldToken
-//						},
-//						success: function(data, type, xhr) {
-//							if (data.errno == 0) {
-//								mui('#warmthPrompt')[0].innerHTML = data.data[0].title;
-//							} else{
-//								
-//							}
-//						},
-//						error: function(xhr, type, errorThrown) {
-//							console.error(type);
-//						}
-//					});
-
-					//家乡头条
-					mui.ajax(serverUrl + '/api/localreport/localreport', {
-						data: {
-							currentPage: 1,
-							numsPerPage: 10
-						},
-						//					dataType:'json',//服务器返回json格式数据
+					 
+					//hiji头条
+					mui.ajax(serverUrl + '/api/localreport/getheadline', {
+						dataType:'json',//服务器返回json格式数据
 						type: 'post', //HTTP请求类型
 						timeout: 10000, //超时时间设置为10秒；
 						headers: {
 							"token": oldToken
 						},
 						success: function(data, type, xhr) {
-							if(data.data.data.length == 0) {
+							console.log("头条 "+JSON.stringify(data))
+							if(data.data.length == 0) {
 								$('#adNews').find('marquee').html('暂无家乡头条!');
 							} else {
-								$('#adNews').find('marquee').html(data.data.data[0].title);
-								var newsId = data.data.data[0].id;
-								mui('#adNews')[0].addEventListener('tap', function() {
-									openview({
-										view: 'Hreport/listinfo.html',
-										extrasobj: {
-											newsId: newsId
-										}
-									});
+								var hotnews = '';
+								mui.each(data.data,function(index,ele){
+									hotnews+='<a class="Headlines" data-id="'+ele.id+'">'+ele.title+'</a>'
 								})
+								$('#adNews').find('#div1').html(hotnews);
+								$("#div1 a").click(function(){ 
+										openview({
+											view: 'Hreport/listinfo.html',
+											extrasobj: {
+												newsId: $(this).attr("data-id")
+											}
+										});
+								}) 
+								
 							}
 						},
 						error: function(xhr, type, errorThrown) {
