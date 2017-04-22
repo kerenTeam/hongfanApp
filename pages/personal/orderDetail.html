@@ -66,51 +66,48 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">		
 			<div id="main">
-				
+				<div class="list">
+					<div class="guess-like guess-liketwo">
+						<div class="sjname mui-row box-s">
+							<div class="mui-col-xs-1">
+								<img src="../../img/market/map.png" style="width: 0.2rem;" alt="" />
+							</div>
+							<div class="mui-col-xs-11">
+								<span class="fl">收 货 人：<span id="person"></span> </span><span id="phone"></span>
+								<div class="clear"></div>
+								<div class="fl">收货地址：<span id="address"></span></div>
+							</div>
+						</div>
+										
+					</div>			 
+				</div>	
 				<div id="orderInfo"></div>
 				<script type="text/html" id="orderTpl">
 					<div class="deal" data-orderId="<%=data.order_id%>">
-						<div class="list">
-							<div class="guess-like guess-liketwo">
-								<div class="sjname mui-row box-s">
-									<div class="mui-col-xs-1">
-										<img src="../../img/market/map.png" style="width: 0.2rem;" alt="" />
-									</div>
-									<div class="mui-col-xs-11">
-										<span class="fl">收货人：<%=data.goods_data.sendAddress.people%></span><span class="fr"><%=data.goods_data.sendAddress.phoneNow%></span>
-										<div class="clear"></div>
-										<div class="fl">收货地址：<%=data.goods_data.sendAddress.addressNow%></div>
-									</div>
-								</div>
-												
-							</div>						
-						</div>	
-						
-						<div class="sjname box-s" onclick="goStore('<%=data.goods_data.storeid')">
-									<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data.goodsData[0].shopName%></span>
+						<div class="sjname box-s" onclick="goStore('<%=data.goods_data.Params.goodsData[0].store_id%>')">
+									<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data.Params.goodsData[0].stores.store_name%></span>
 									 <span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
 								</div>
 								<dl class="list listtwo">
-									 <%for(var i = 0;i<data.goods_data.goodsData.length;i++){%>
-									 	<dd onclick="goGoods('<%=data.goods_data.goodsData[i].goodsId%>')">
+									 <%for(var i = 0;i<data.goods_data.Params.goodsData[0].goods_Data.length;i++){%>
+									 	<dd onclick="goGoods('<%=data.goods_data.Params.goodsData[0].goods_Data[i].g_id%>')">
 											<div class="react">												
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
 														<span></span>
-															<%if(data.goods_data.storeid == 0){%>
-															<img src="<%=data.goods_data.goodsData[i].goodsImg%>"/>
+															<%if(data.goods_data.Params.goodsData[0].goods_Data[i].storeid == 0){%>
+															<img src="<%=data.goods_data.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
 															<%}else{%>
-																<img src="<%=myUrl%><%=data.goods_data.goodsData[i].goodsImg%>"/>
+																<img src="<%=myUrl%><%=data.goods_data.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
 															<%}%>
 														
 													</div>
 													<div class="dealcard-block-right">
-														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.goods_data.goodsData[i].goodsName%></span> <span class="fr">￥<b><%=data.goods_data.goodsData[i].goodsPrice%></b></span></div>
+														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.goods_data.Params.goodsData[0].goods_Data[i].title%></span> <span class="fr">￥<b><%=data.goods_data.Params.goodsData[0].goods_Data[i].price%></b></span></div>
 														<div class="title text-block fl">
-															<%=data.goods_data.goodsData[i].goodText%>													
 														</div>
 														<div class="title text-block fr">
-															x <%=data.goods_data.goodsData[i].goodsnum%>															
+															x <%=data.goods_data.Params.goodsData[0].goods_Data[i].nums%>															
 														</div>
 														<div class="clear"></div>
 														<%if(data.order_status==2 || data.order_status==3){%>
@@ -134,45 +131,34 @@
 						<dl id="deal-terms" class="list">
 							<dd class="dd-padding dd-paddingfour">
 								<ul>
-									<%if(data.order_status==1){%>
-										<%if(data.fee_name){%>
-										<li class="gray">
-											<div class="tip-title"><%=data.fee_name%><span class="fr"><%=data.fee%></span></div>
-										</li> 
-										<%}else{%>
-										<li class="gray">
-											<div class="tip-title">订单调整<span class="fr"><%=data.fee%></span></div>
-										</li> 
-											<%}%>
-											<%}%>
-									<%if(data.goods_data.fee==0){%>
+									<%if(data.goods_data.Params.goodsData[0].goods_Data[0].Floating_price){%>
+									<li class="gray">
+										<div class="tip-title">商品属性加价<span class="fr">￥ <%=data.goods_data.Params.goodsData[0].goods_Data[0].Floating_price%></span></div>
+									<li class="gray">
+									<%}%>
+									<%if(data.goods_data.fee){%>
 									<li class="gray">
 										<div class="tip-title">运费<span class="fr">￥ <%=data.goods_data.fee%></span></div>
 									</li>
 									<%}else{%>
 										<li class="gray">
-											<div class="tip-title">运费<span class="fr">￥ 0.00</span></div>
+											<div class="tip-title">运费<span class="fr">包邮</span></div>
 										</li>
 										<%}%>
-										<%if(data.is_intergal!=0){%>
+										<%if(data.is_intergal){%>
 											<li class="gray">
 												<div class="tip-title">积分抵扣<span class="fr">-￥ <%=data.is_intergal%></span></div>
 											</li>
 										<%}%>
-										<%if(!data.coupon_id){%>
+										<%if(data.goods_data.Params.couponData && data.goods_data.Params.couponData.coupon_amount){%>
 										<li class="gray">
-											<div class="tip-title">优惠券抵扣<span class="fr">等待后台返回</span></div>
+											<div class="tip-title">优惠券抵扣<span class="fr">-￥<%=data.goods_data.Params.couponData.coupon_amount%></span></div>
 										</li>
 										<%}%>
-										<%if(total_fee){%>
-											<li>
-												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=total_fee%></span></div>
-											</li>
-										<%}else{%>
-											<li>
-												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=data.goods_data.totalMoney%></span><small class="fr">等待后台返回</small></div>
-											</li>
-											<%}%> 
+										 
+										<li>
+											<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥ <%=data.goods_data.PriceCalculValue%></span></div>
+										</li> 
 								</ul>
 							</dd>
 						</dl>
@@ -182,18 +168,16 @@
 									<li>
 										<div class="tip-title">订单编号：<%=data.order_UUID%></div>
 									</li>
-									<%if(data.order_status!=1){%> 
-									<%if(data.pay_no){%>
+									<%if(data.order_status!=0){%> 
 									<li>
-										<div class="tip-title">支付方式：<%=data.pay_no.channel.description%></div>
+										<div class="tip-title">支付方式：<%=data.goods_data.Params.postData.payType%></div>
 									</li>
-									<li>
+									<!--<li>
 										<div class="tip-title">交易号：<%=out_trade_no%></div>
-									</li>
-									<%}%> 
-									<li>
+									</li>-->
+									<!--<li>
 										<div class="tip-title">付款时间：2016-01-01&nbsp;16:25</div>
-									</li>
+									</li>-->
 									<%}%> 
 									<li>
 										<div class="tip-title">创建时间：<%=data.create_time%></div>
@@ -213,33 +197,33 @@
 		<div id="button"></div>
 		<script id="buttonTpl" type="text/html">
 			<div class="renting-footer clearfloat" id="footer"> 
-				<%if(data.order_status==1){%>
+				<%if(data.order_status==0){%>
 					<button class="fr BC" onclick="goOrder('<%=data.order_UUID%>','<%=data.goods_data.totalMoney%>')">付款</button>
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','取消')">取消订单</button> 
 				<%}%>
 				
-				<%if(data.order_status==2){%>
+				<%if(data.order_status==1){%>
 					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data.totalMoney%>')">申请退款</button> 
 				<%}%>
 				
-				<%if(data.order_status==3){%>
+				<%if(data.order_status==2){%>
 					<button class="fr BC" onclick="orderConfirm('<%=data.order_id%>')">确认收货</button>
 					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data.totalMoney%>')">申请退款</button>
 				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
 				<%}%>
 				
-				<%if(data.order_status==4){%>
+				<%if(data.order_status==3){%>
 					<button class="fr BC" onclick="goComment('<%=data.order_id%>')">评价</button>
 					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data.totalMoney%>')">申请退款</button>
 				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
 				<%}%>
 				
-				<%if(data.order_status==5){%> 
+				<%if(data.order_status==4){%> 
 				 	<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data.totalMoney%>')">申请退款</button>
 				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
 				<%}%>
-				<%if(data.order_status==6 || data.order_status==7 || data.order_status==8){%>
+				<%if(data.order_status==5 || data.order_status==6 || data.order_status==7 || data.order_status==8){%>
 					<span class="fr" style="margin-right: 15px;">交易金额:<%=total_fee%>  退款金额：￥<%=total_fee%></span>
 				<%}%> 
 				<%if(data.order_status==9){%> 
@@ -272,7 +256,7 @@
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){ 
 						plus.nativeUI.closeWaiting();
-						console.log(JSON.stringify(data.data)) ;
+//						alert(JSON.stringify(data.data)) ;
 				       if(data.errno===0){
 					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
 					       	 if(data.data[0].fee){
@@ -286,25 +270,31 @@
 									}
 									 
 								}
+					       	 var dt = new Date(data.data[0].create_time);
+									var date = [
+									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+									  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+									data.data[0].create_time = date
 					       	 var orderInfo = {};
-					       	 if(data.data[0].pay_no){
-					       	 	data.data[0].pay_no = eval("("+data.data[0].pay_no+")");
-					       	 	var aa = JSON.parse(data.data[0].pay_no.rawdata);
-								var out_trade_no = queryStr(aa.result).out_trade_no;
-								out_trade_no = out_trade_no.replace(/\"/g, "");
-								var total_fee =queryStr(aa.result).total_fee; 
-								total_fee = total_fee.replace(/\"/g, "");
-								orderInfo.out_trade_no = out_trade_no;
-					        	orderInfo.total_fee =parseFloat(total_fee);
-					       	 }
-					       
+//					       	 if(data.data[0].pay_no){
+//					       	 	data.data[0].pay_no = eval("("+data.data[0].pay_no+")");
+//					       	 	var aa = JSON.parse(data.data[0].pay_no.rawdata);
+//								var out_trade_no = queryStr(aa.result).out_trade_no;
+//								out_trade_no = out_trade_no.replace(/\"/g, "");
+//								var total_fee =queryStr(aa.result).total_fee; 
+//								total_fee = total_fee.replace(/\"/g, "");
+//								orderInfo.out_trade_no = out_trade_no;
+//					        	orderInfo.total_fee =parseFloat(total_fee);
+//					       	 }
+//					       
 					        orderInfo.myUrl = serverimgUrl;
 					        orderInfo.data= data.data[0];
-					      
-					        
 					        console.log("orderInfo.data "+JSON.stringify(data.data[0]))
 					        document.getElementById("orderInfo").innerHTML = template("orderTpl",orderInfo);
-					        document.getElementById("button").innerHTML = template("buttonTpl",orderInfo)
+					        document.getElementById("button").innerHTML = template("buttonTpl",orderInfo);
+					        getadd(data.data[0].goods_data.Params.postData.address_id)
+					        
 				       }
 					},
 					error:function(xhr,type,errorThrown){
@@ -313,6 +303,32 @@
 					}
 				});
 			}
+			
+			function getadd(adid){
+				//请求地址
+		        mui.ajax(serverUrl+'/api/useraccount/addresslist',{
+					data:{userid : myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:1000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){
+						var thisAddArray = data.data;
+						for (var k = 0; k < thisAddArray.length; k++) {
+							if(thisAddArray[k].id == adid){
+								$('#person').html(thisAddArray[k].person);
+								$('#phone').html(thisAddArray[k].phone);
+								$('#address').html(thisAddArray[k].province+thisAddArray[k].city+thisAddArray[k].area+thisAddArray[k].address);
+								 
+							}
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('响应失败  !');
+					}
+				});
+			}
+			
 			window.delOrder=function(obj,id,txt){ 
 				mui.confirm('确认'+txt+'订单？', '提示', ['取消', '确定'], function(e) {
 					 
