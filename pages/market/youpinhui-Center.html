@@ -564,113 +564,177 @@
 					})
 				}
 
-				//推荐数据渲染
-				var currentPage = 1,
-					numsPerPage = 10;
-				//热门推荐 数据渲染 
-				mui.ajax('http://api.igetmall.net/DRP_getProList', {
-					data: { appkey: '6458153266', appsecret: '2a1cc0c25a60e8c394e5a822936df862', category_id: 2546, page_no: currentPage, page_size: numsPerPage },
+				
+				mui.ajax(serverUrl+'/api/mall/recommendforigo', {
 					dataType: 'json', //服务器返回json格式数据
 					type: 'post', //HTTP请求类型 
 					timeout: 10000, //超时时间设置为10秒；	
 					headers: { "token": oldToken },
 					success: function(data) {
-						console.log('推荐',data);
-						if(data.status == "success") {
-							
-							var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
-							var bannerArray = [];
-							if(d) {
-								for(var t = 0; t < Object.keys(d).length; t++) {
-									var vae = Object.keys(d)[t];
-									bannerArray.push(d[vae]);
+						console.log("catid "+JSON.stringify(data));
+						//一级分类
+						var catid = data.data.catid;
+						//获取二级分类
+						mui.ajax(serverUrl+'/api/mall/igocategory',{
+						data:{pid:catid},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){  
+							if(data.errno == 0){
+								if(data.data.length != 0){
+									//请求三级分类 
+									for(var j=0;j<data.data.length;j++){
+										getthird(data.data[j].catid)
+									}
 								}
 							}
-							for(var i in bannerArray) {
-								bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-								for(var j in bannerArray[i].pic_url.pic_url){
-									if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
-										 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();//关闭等待框 
+						}
+					}) 
+					},
+					error: function(xhr, type, errorThrown) { 
+						
+					}
+				})
+				
+				//三级分类
+				function getthird(catid){
+					mui.ajax(serverUrl+'/api/mall/igocategory',{
+						data:{pid:catid},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},	 
+						success:function(data,type,xhr){ 
+							if(data.errno == 0){ 
+								if(data.data.length != 0){
+									//渲染列表
+									for(var j=0;j<data.data.length;j++){
+										getrecommendList(data.data[j].catid)
 									}
 								}
-							} 
-							var objdata = {};
-							objdata.list = bannerArray;
-							var html = template("recommendTpl", objdata);
-							document.getElementById("moll_recommend").innerHTML = html;
-							plus.nativeUI.closeWaiting(); //关闭等待框
-							mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
-
-							$(window).scroll(function() { 
-								var scrollTop = $(this).scrollTop();　　
-								var scrollHeight = $(document).height();　　
-								var windowHeight = $(this).height();　　
-								if(scrollTop + windowHeight == scrollHeight) {
-
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();//关闭等待框 
+						}
+					})
+				}
+				
+				function getrecommendList(catid){
+					//推荐数据渲染
+					var currentPage = 1,
+						numsPerPage = 10;
+					//热门推荐 数据渲染 
+					mui.ajax('http://api.igetmall.net/DRP_getProList', {
+						data: { appkey: '6458153266', appsecret: '2a1cc0c25a60e8c394e5a822936df862', category_id: catid, page_no: currentPage, page_size: numsPerPage },
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型 
+						timeout: 10000, //超时时间设置为10秒；	
+						headers: { "token": oldToken },
+						success: function(data) {
+							console.log('推荐',data);
+							if(data.status == "success") {
+								
+								var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
+								var bannerArray = [];
+								if(d) {
+									for(var t = 0; t < Object.keys(d).length; t++) {
+										var vae = Object.keys(d)[t];
+										bannerArray.push(d[vae]);
+									}
+								}
+								for(var i in bannerArray) {
+									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+									for(var j in bannerArray[i].pic_url.pic_url){
+										if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
+											 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+										}
+									}
+								} 
+								var objdata = {};
+								objdata.list = bannerArray;
+								var html = template("recommendTpl", objdata);
+								document.getElementById("moll_recommend").innerHTML += html;
+								plus.nativeUI.closeWaiting(); //关闭等待框
+								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
+	
+								$(window).scroll(function() { 
+									var scrollTop = $(this).scrollTop();　　
+									var scrollHeight = $(document).height();　　
+									var windowHeight = $(this).height();　　
 									if(scrollTop + windowHeight == scrollHeight) {
-										mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-										currentPage++; 
-										var requestfun = function() {
-											mui.ajax('http://api.igetmall.net/DRP_getProList', {
-												data: { appkey: '6458153266', appsecret: '2a1cc0c25a60e8c394e5a822936df862', category_id: 2546, page_no: currentPage, page_size: numsPerPage },
-												dataType: 'json', //服务器返回json格式数据
-												type: 'post', //HTTP请求类型 
-												timeout: 5000, //超时时间设置为10秒；	
-												headers: { "token": oldToken },
-												success: function(data) {
-													if(data.status == "success") {
-														var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
-														var bannerArray = [];
-														if(d) {
-															for(var t = 0; t < Object.keys(d).length; t++) {
-																var vae = Object.keys(d)[t];
-																bannerArray.push(d[vae]);
+	
+										if(scrollTop + windowHeight == scrollHeight) {
+											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+											currentPage++; 
+											var requestfun = function() {
+												mui.ajax('http://api.igetmall.net/DRP_getProList', {
+													data: { appkey: '6458153266', appsecret: '2a1cc0c25a60e8c394e5a822936df862', category_id: 2546, page_no: currentPage, page_size: numsPerPage },
+													dataType: 'json', //服务器返回json格式数据
+													type: 'post', //HTTP请求类型 
+													timeout: 5000, //超时时间设置为10秒；	
+													headers: { "token": oldToken },
+													success: function(data) {
+														if(data.status == "success") {
+															var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
+															var bannerArray = [];
+															if(d) {
+																for(var t = 0; t < Object.keys(d).length; t++) {
+																	var vae = Object.keys(d)[t];
+																	bannerArray.push(d[vae]);
+																}
+															} 
+															for(var i in bannerArray) {
+															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+															for(var j in bannerArray[i].pic_url.pic_url){
+																if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
+																	 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+																}
 															}
 														} 
-														for(var i in bannerArray) {
-														bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-														for(var j in bannerArray[i].pic_url.pic_url){
-															if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
-																 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
-															}
+														
+															var objdata = {};
+															objdata.list = bannerArray; 
+															var html = template("recommendTpl", objdata);
+															document.getElementById("moll_recommend").innerHTML += html;
 														}
-													} 
-													
-														var objdata = {};
-														objdata.list = bannerArray; 
-														var html = template("recommendTpl", objdata);
-														document.getElementById("moll_recommend").innerHTML += html;
+														mui("#upload")[0].innerHTML = " ";  
+													},
+													error: function(xhr, type, errorThrown) {
+														//Ypagenum;//失败是应到-1
+														console.log("当前网络不好请重试");
+														requestfun(); //失败继续加载
+														mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 													}
-													mui("#upload")[0].innerHTML = " ";  
-												},
-												error: function(xhr, type, errorThrown) {
-													//Ypagenum;//失败是应到-1
-													console.log("当前网络不好请重试");
-													requestfun(); //失败继续加载
-													mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-												}
-											});
+												});
+											}
+											requestfun();
+	
+										} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "到底了";
 										}
-										requestfun();
-
-									} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-										mui("#upload")[0].innerHTML = "到底了";
 									}
-								}
-							});
-
-						} else {
+								});
+	
+							} else {
+								mui("#upload")[0].innerHTML = "";
+								mui('#nulldiv')[0].style.display = 'block';
+							}
+	
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting(); //关闭等待框
 							mui("#upload")[0].innerHTML = "";
 							mui('#nulldiv')[0].style.display = 'block';
 						}
-
-					},
-					error: function(xhr, type, errorThrown) {
-						plus.nativeUI.closeWaiting(); //关闭等待框
-						mui("#upload")[0].innerHTML = "";
-						mui('#nulldiv')[0].style.display = 'block';
-					}
-				});
+					});
+					
+				}
 				//banner
 				mui.ajax(serverUrl + '/api/index/banner', {
 					data: { banner_type: 6 },
