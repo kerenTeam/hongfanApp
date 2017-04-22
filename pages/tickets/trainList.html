@@ -281,6 +281,9 @@
 			.hasManyCitytwo .header-tit{
 				left: 39% !important;
 			}
+			.mui-bar-nav.mui-bar .mui-icon, .mui-title, #theSearch{
+				margin: 0;
+			}
 		</style>
 	</head>
 	<body>
@@ -473,18 +476,20 @@
 					date.setDate(date.getDate() + 1);
 				}
 				var endmonth,endday,timestr = date.toLocaleDateString();
+				console.log(timestr);
+				if(timestr.split('/')[0].length == 1){
+					endmonth = '0' + timestr.split('/')[0];
+				}else{
+					endmonth = timestr.split('/')[0];
+				}
 				if(timestr.split('/')[1].length == 1){
-					endmonth = '0' + timestr.split('/')[1];
+					endday = '0' + timestr.split('/')[1];
 				}else{
-					endmonth = timestr.split('/')[1];
+					endday = timestr.split('/')[1];
 				}
-				if(timestr.split('/')[2].length == 1){
-					endday = '0' + timestr.split('/')[2];
-				}else{
-					endday = timestr.split('/')[2];
-				}
-				var time2 = timestr.split('/')[0] +'-'+ endmonth +'-'+ endday;
+				var time2 = timestr.split('/')[2] +'-'+ endmonth +'-'+ endday;
 				mui('.calendars2')[0].value = time2;
+				console.log(time2);
 				loadfun(time2);
 			}
 			function loadfun(time1){
@@ -498,7 +503,6 @@
 					headers:{"token":oldToken},	              				
 					success:function(data,type,xhr){
 						console.log('火车列表返回',data);
-						console.log('火车列表返回'+JSON.stringify(data));
 						if(data.errno == 0){
 							var Tlist;
 							if(data.data.trainlines_list_response.trainlines && data.data.trainlines_list_response.trainlines != undefined){
@@ -513,7 +517,7 @@
 										//优先 硬座(5),其次 硬卧(7), 软卧(8) , 高级软卧,  二等座(0) , 一等座(1), 无座(4) , 商务座(3),
 										var ridetype = Tlist[i].trainSeats.trainSeat;
 										if(ridetype != null){
-											console.log('测试',Tlist[i])
+											//console.log('测试',Tlist[i])
 											for(var j=0;j<ridetype.length;j++){
 												var funchange = function(){//更改数据代码块
 													Tlist[i].Yprice = ridetype[j].seatPrice;

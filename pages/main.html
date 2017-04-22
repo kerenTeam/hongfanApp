@@ -816,8 +816,8 @@
 			    <script type="text/javascript">
 			    	var box=document.getElementById("div1"),can=true;
 					box.innerHTML+=box.innerHTML; 
-					box.onmouseover=function(){can=false};
-					box.onmouseout=function(){can=true};
+					//box.onmouseover=function(){can=false};
+					//box.onmouseout=function(){can=true};
 					new function (){
 					    var stop=box.scrollTop%40==0&&!can;
 					    if(!stop)box.scrollTop==parseInt(box.scrollHeight/2)?box.scrollTop=0:box.scrollTop++;
@@ -902,7 +902,7 @@
 			<script type="text/html" id="tabc1Tpl">
 			
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].user_id%>)">
+					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].userid%>)">
 						<%if(list[i].banner_pic){%>
 							<img src="<%=myUrl+list[i].banner_pic%>" onerror="javascript:this.src='../img/market/feg2.png';" style="width: 100%;" />
 							<%}else{%>
@@ -914,7 +914,7 @@
 			<div class="tabcontent" id="tabc2"></div>
 			<script type="text/html" id="tabc2Tpl">
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].user_id%>)">
+					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].userid%>)">
 						<%if(list[i].banner_pic){%>
 							<img src="<%=myUrl+list[i].banner_pic%>" style="width: 100%;" onerror="javascript:this.src='../img/market/feg4.png';"/>
 							<%}else{%>
@@ -1534,6 +1534,7 @@
 							"token": oldToken
 						},
 						success: function(data, type, xhr) {
+							console.error(data);
 							if(data.errno == 0) {
 								if(data.data.length){
 									var findList = {};

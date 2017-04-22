@@ -190,17 +190,18 @@
 						<div id="rechargeList"></div>
 						<script type="text/html" id="rechargeTpl">
 							<%for(var t=0;t<list.length;t++){%>
-								<%if(list[t].payment_data.state ==1){%>
+								<%if(list[t].payment_data.status ==1){%>
 									
-									<div class="recharge clearfloat" onclick="recordDe('<%=list[t].uuid%>')">
+									<!--<div class="recharge clearfloat" onclick="recordDe('<%=list[t].uuid%>')">--> 
+									<div class="recharge clearfloat"> 
 							    		<div class="czhi box-s">
-							    			<p style="font-size: 0.12rem;"><%=list[t].orderTime%></p> 
+							    			<p style="font-size: 0.12rem;"><%=list[t].payment_data.data.orderTime%></p> 
 												<div class="icon-water icon">
 													<img src="../../img/tickets/phone.png"/>
 												</div>
 												<div class="recordDetail">
-													<p class="recordBig">-<%=list[t].itemCost%></p>
-													<p class="recordTiny">充值<%=list[t].saleAmount%>元-<%=list[t].rechargeAccount%></p>
+													<p class="recordBig">-<%=list[t].payment_data.data.itemCost%></p>
+													<p class="recordTiny">充值<%=list[t].payment_data.data.saleAmount%>元-<%=list[t].payment_data.data.rechargeAccount%></p>
 												</div> 
 							    		</div>
 							    	</div>	
@@ -234,24 +235,28 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+					console.log(data);
 					plus.nativeUI.closeWaiting()
 					if(data.errno==0){
 						 if(data.data.length!=0){ 
 						 	var rcObj = {};
-						 	
 						 	for(var t=0;t<data.data.length;t++){
 						 		if(data.data[t].payment_data){
 						 			data.data[t].payment_data = eval("("+data.data[t].payment_data+")");
-						 			data.data[t].payment_data.data.itemCost = parseFloat(data.data[t].payment_data.data.itemCost).toFixed(2);
-						 			data.data[t].payment_data.data.orderCost = parseFloat(data.data[t].payment_data.data.orderCost).toFixed(2);
-							 	 	data.data[t].payment_data.data.saleAmount = parseFloat(data.data[t].payment_data.data.saleAmount).toFixed(2);
-							 	 	data.data[t].payment_data.data.orderTime = data.data[t].payment_data.data.orderTime.substring(0,10);
+						 			console.log(data.data[t].payment_data);
+						 			if(!data.data[t].payment_data.errorToken){
+						 				data.data[t].payment_data.data.itemCost = parseFloat(data.data[t].payment_data.data.itemCost).toFixed(2);
+							 			data.data[t].payment_data.data.orderCost = parseFloat(data.data[t].payment_data.data.orderCost).toFixed(2);
+								 	 	data.data[t].payment_data.data.saleAmount = parseFloat(data.data[t].payment_data.data.saleAmount).toFixed(2);
+								 	 	data.data[t].payment_data.data.orderTime = data.data[t].payment_data.data.orderTime.substring(0,10);
+						 			}
 						 		}  
 						 		}
 						 	 	  
 //							 	 	  alert(data.data[t].payment_data.data.orderCost)
 //							 	 	  
-						 	rcObj.list = data.data; 
+						 	rcObj.list = data.data;
+						 	console.log(rcObj.list);
 						 	mui("#rechargeList")[0].innerHTML = template("rechargeTpl",rcObj);
 						 }else{
 						 	mui("#rechargeList")[0].innerHTML = '<img src="../../img/tickets/noorder.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">没有记录</span>';
