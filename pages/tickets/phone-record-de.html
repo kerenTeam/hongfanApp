@@ -233,9 +233,6 @@
 		 
 			mui.plusReady(function(){
 				 
-				if(plus.webview.getWebviewById('paysecond')){
-					 plus.webview.getWebviewById('paysecond').close();
-				}
 				if(plus.webview.getWebviewById('elePay')){
 					plus.webview.getWebviewById('elePay').close()
 				}
@@ -260,7 +257,7 @@
 						
 						if(data.errno==0){
 							mui(".deal")[0].style.display="block"
-							var infoData = eval("("+data.data.data+")").data;
+							var infoData = JSON.parse(data.data.payment_data).data;
 							mui("#amount")[0].innerHTML = "<sub>￥"+parseFloat(infoData.orderCost).toFixed(2)+"</sub>";
 							mui("#itemName")[0].innerHTML = infoData.itemName;
 							mui("#phoneCharge")[0].innerHTML = infoData.rechargeAccount;

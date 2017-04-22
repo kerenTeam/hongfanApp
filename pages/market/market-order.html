@@ -728,11 +728,6 @@
 							<a href="#" id="wxpay" data-pay="wxpay"><img src="../../img/weixin2-2.png" />微信 </a>
 						</li>
 					</ul>
-					<!--<ul class="mui-table-view">
-						<li class="mui-table-view-cell suborder">
-							<a id="paycheck"><b>确定</b></a>
-						</li>
-					</ul>-->
 				</div>
 			</div>
 		</div>
@@ -1456,8 +1451,6 @@
 					// 支付方法 
 					window.payfun = function(id) {
 						var varpay;
-						var dataJson;
-
 						if(id == 'alipay' || id == 'wxpay') {
 							//调用支付功能
 							plus.nativeUI.showWaiting();
@@ -1492,7 +1485,7 @@
 								success: function(data) {
 									plus.nativeUI.closeWaiting() 
 
-									alert("----- 请求订单成功 -----"+JSON.stringify(data));
+//									alert("----- 请求订单成功 -----"+JSON.stringify(data));
 									if(data.errno == 0) {
 										//购物车 缓存 
 										var cartStorage = JSON.parse(plus.storage.getItem('$cartStorage') || '[]');
@@ -1523,16 +1516,27 @@
 										//微信
 										plus.payment.request(pays[id], varpay, function(result) {
 											console.log("----- 支付成功 -----");
+											plus.nativeUI.closeWaiting();
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:varpay},
+												data: {id:data.data.AccessToken,appPayValue:varpay,userid:myuserid,addressId:addressid},
 												type: 'post', //HTTP请求类型
 												headers: {
 													"token": oldtoken
 												},
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
-													console.log("修改状态成功")
+													console.log("修改状态成功");
+		//											关闭 订单页  
+													openview({
+														view:"../personal/sc-order.html",
+														id:"sc-order"
+													})
+													if(plus.webview.getWebviewById("market-order")) {
+													
+														plus.webview.getWebviewById("market-order").close();
+														
+													}
 												},
 												error: function(xhr, type, errorThrown) {
 												}
@@ -1550,33 +1554,35 @@
 										plus.payment.request(pays[id], varpay, function(result) {
 											console.log("----- 支付成功 -----", JSON.stringify(result));
 											plus.nativeUI.closeWaiting();
-											plus.nativeUI.alert("支付成功");
+//											plus.nativeUI.alert("支付成功");
+//											alert("id "+data.data.AccessToken+"varpay "+JSON.stringify(varpay)+myuserid+" "+addressid)
 											var oldtoken = plus.storage.getItem('oldToken');
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:varpay},
+												data: {id:data.data.AccessToken,appPayValue:varpay,userid:myuserid,addressId:addressid},
+												dataType:'json',
 												type: 'post', //HTTP请求类型
 												headers: {
 													"token": oldtoken
 												},
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
-													alert(JSON.stringify(data))
-													console.log("修改状态成功")
+													console.log("修改状态成功");
+		//											关闭 订单页  
+													openview({
+														view:"../personal/sc-order.html",
+														id:"sc-order"
+													})
+													if(plus.webview.getWebviewById("market-order")) {
+													
+														plus.webview.getWebviewById("market-order").close();
+														
+													}
 												},
 												error: function(xhr, type, errorThrown) {
 													console.log("修改状态失败")
 												}
 											});
-											//关闭 订单页  
-											if(plus.webview.getWebviewById("market-order")) {
-												openview({
-													view:"../personal/sc-order.html",
-													id:"sc-order"
-												})
-												plus.webview.getWebviewById("market-order").close();
-												
-											}
   
 										}, function(e) {
 											console.log("----- 支付失败 -----");
