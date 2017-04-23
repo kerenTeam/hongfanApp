@@ -185,7 +185,10 @@
 										console.log('我是请求成功');
 										var dataobj = data.data.newsinfodata[0]; 
 										console.log('数据',dataobj);
-										if(dataobj.pic.indexOf('picImg')>-1) {
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj.nickname)){
+											dataobj.nickname = dataobj.nickname.substring(0,3)+"****"+dataobj.nickname.substring(7,11)
+										}
+										if(dataobj.pic && dataobj.pic!="undefined" && dataobj.pic.indexOf('picImg')>-1) {
 											dataobj.pic = JSON.parse(dataobj.pic)[0].picImg;
 										} 
 										dataobj.Purl = serverimgUrl;

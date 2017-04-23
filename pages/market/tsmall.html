@@ -442,10 +442,9 @@
 										<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].goods_id%>','<%=list[i].storeid%>')"><%=list[i].title%></a></h3>
 										<div class="nr_box mui-row">
 											<div class="mui-col-sm-5 mui-col-xs-5 ">
-									        	<p class="fl fontcl2"><sub>￥</sub><%=list[i].price%></p>
+									        	<p class="fl fontcl2">￥<%=list[i].price%></p>
 									       </div>
 									        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
-												<p class="fl fontcl2"><sub class="saled black9">已售<%=list[i].sales%></sub></p>
 									      	</div> 
 									     </div>
 									</div>
@@ -554,19 +553,19 @@
 		}
 
 		mui.plusReady(function(){
-//			mainActivity = plus.android.runtimeMainActivity();
-//			MobclickAgent = plus.android.importClass("com.umeng.analytics.MobclickAgent");
-//			MobclickAgent.onPageStart("tsmall");
-			
-			
-			
-			
+			if(!mui.os.ios){
+				mainActivity = plus.android.runtimeMainActivity();
+				MobclickAgent = plus.android.importClass("com.umeng.analytics.MobclickAgent");
+				MobclickAgent.onPageStart("tsmall");
+			}
+			 
 			//去购物车
 			document.getElementsByClassName("gocart")[0].addEventListener('tap',function () {
-				MobclickAgent.onPageEnd("tsmall");
-				
-			     //当前页 
-	 		     plus.webview.getWebviewById('market').close();
+				if(!mui.os.ios){
+					MobclickAgent.onPageEnd("tsmall");
+				}
+			    //当前页 
+	 		    plus.webview.getWebviewById('tsmall').close();
  
 			    //获得主页面的webview
 			    var main = plus.webview.getLaunchWebview();

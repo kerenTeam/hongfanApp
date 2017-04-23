@@ -282,18 +282,19 @@
 		(function($, doc) {
 			$.init();
 			$.ready(function() {
-				var oldtoken = plus.storage.getItem('oldToken');
-				var gameId = plus.webview.currentWebview().gameid;
-				alert(gameId)
-				$.plusReady(function(){
-					mui.ajax(serverUrl+'/api/qianmi/gameitems',{
+			
+				$.plusReady(function(){	
+					var oldtoken = plus.storage.getItem('oldToken');
+					var gameId = plus.webview.currentWebview().gameid;
+					alert(gameId)
+					$.ajax(serverUrl+'/api/qianmi/gameitems',{
 						data:{classId:852933},
 						dataType:'json',
 						type:'post',
 						timeout:'10000',
 						headers:{"token":oldtoken},
 						success:function(data,type,xhr){
-							console.log(JSON.stringify(data));
+							alert(JSON.stringify(data));
 							if(data.errno ==0 ){
 //								var gameobj = JSON.parse(data.data.body);
 //								var gameList = gameobj.game_list_response.games.game;

@@ -176,8 +176,11 @@
 							var dataobj = data.data;
 							//显示头像
 							if(!dataobj[0].nickname){
-										dataobj[0].nickname = "匿名"
-									}
+								dataobj[0].nickname = "匿名"
+							}
+							if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj[0].nickname)){
+								dataobj[0].nickname = dataobj[0].nickname.substring(0,3)+"****"+dataobj[0].nickname.substring(7,11)
+							}
 							if(dataobj[0].avatar){
 								if(dataobj[0].avatar.indexOf("[")!=-1){
 									dataobj[0].avatar =serverimgUrl + JSON.parse(dataobj[0].avatar)[0].picImg;

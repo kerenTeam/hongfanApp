@@ -253,13 +253,13 @@
 		</ul>
 		 
 			<script type="text/html" id="infolist">
-				<% for(var i=0; i<list.length; i++){%>
+				<% for(var i=list.length-1;i>=0;i--){%>
 				<li class="" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
 					<div id="spandiv">
 						<span id="" class="spanL">发了贴</span>
 						<span id="" class="spanR">
 							<% if(list[i].create_time){%>
-					    		<%= list[i].create_time.split('T')[0]%>
+					    		<%= list[i].create_time%>
 					    	<% }%>
 						</span>
 					</div>
@@ -407,6 +407,11 @@
 				success:function(data,type,xhr){
 					console.log('获取用户数据返回', data);
 					if(data.errno == 0){
+						
+						if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[0].nickname)){
+							data.data[0].nickname = data.data[0].nickname.substring(0,3)+"****"+data.data[0].nickname.substring(7,11)
+						}
+						
 						//显示头像
 						if(data.data[0].avatar){
 							mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
@@ -499,6 +504,12 @@
 								if(ele.pic.indexOf('picImg')>-1){
 									ele.pic = JSON.parse(ele.pic)[0].picImg;
 								}
+								var dt = new Date(ele.create_time);
+									var date = [
+									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+									  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+									ele.create_time = date
 							})
 							dataobj.list = data.data.data;
 							dataobj.url = serverimgUrl;
@@ -536,6 +547,12 @@
 													if(ele.pic.indexOf('picImg')>-1){
 														ele.pic = JSON.parse(ele.pic)[0].picImg;
 													}
+													var dt = new Date(ele.create_time);
+													var date = [
+													  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+													  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+													].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+													ele.create_time = date
 												})
 												dataobj.list = data.data.data; 
 												dataobj.url = serverimgUrl;

@@ -181,7 +181,7 @@
 			</div>
 			<article>
 				<div class="trangle"></div>
-				<p><%=recommentLi[0].main.content%></p>
+				<p id='content'></p>
 			</article>
 				<div>
 			<% for(var i=0;i<recommentLi[0].minor.length;i++){ %>
@@ -226,7 +226,7 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					console.log('HOT',data);
+					console.log('HOT'+JSON.stringify(data));
 					data.data[0].main.picImg = eval("("+data.data[0].main.picImg+")")
 					plus.nativeUI.closeWaiting();  
 					data.data[0].main.create_time=data.data[0].main.create_time.substring(0,10); 
@@ -237,7 +237,20 @@
 					recommentObj.recommentLi = data.data;
 					var html2 = template('storeItem-detail',recommentObj);
 					document.getElementById('storeItem').innerHTML= html2;
-//					 
+					var detailsdom = parseDom(data.data[0].main.content);
+					console.log('转化节点',detailsdom);
+					var detailsimg = detailsdom.getElementsByTagName('img');
+					mui.each(detailsimg, function(index, element) {
+						if(element.src.indexOf('pages/market')>-1){
+							console.log(element.src.split('pages/market')[1]);
+							element.style.width='80%';
+							element.src = serverimgUrl + element.src.split('pages/market')[1];
+							element.onerror = function() {
+								element.src = '../../img/market/nodata.svg';
+							}
+						}
+					})
+					document.getElementById('content').appendChild(detailsdom);
 					//点击进入详情
 					window.openStore = function(store_id){
 						openview({
@@ -251,7 +264,11 @@
 					mui.toast("网络不好请重试")
 				}
 			});
-			
+			function parseDom(arg) { //节点转换方法
+				var objE = document.createElement("div");　　
+				objE.innerHTML = arg;　　
+				return objE;
+			};
 			
 			
 		})();

@@ -193,7 +193,20 @@
 					recommentObj.recommentLi = data.data;
 					var html2 = template('storeItem-detail',recommentObj);
 					document.getElementById('storeItem').innerHTML= html2;
-					mui('#yqContent')[0].innerHTML=data.data[0].main.content;
+					var detailsdom = parseDom(data.data[0].main.content);
+					console.log('转化节点',detailsdom);
+					var detailsimg = detailsdom.getElementsByTagName('img');
+					mui.each(detailsimg, function(index, element) {
+						if(element.src.indexOf('pages/market')>-1){
+							console.log(element.src.split('pages/market')[1]);
+							element.style.width='80%';
+							element.src = serverimgUrl + element.src.split('pages/market')[1];
+							element.onerror = function() {
+								element.src = '../../img/market/nodata.svg';
+							}
+						}
+					}) 
+					mui('#yqContent')[0].appendChild(detailsdom);
 					plus.nativeUI.closeWaiting();  
 					//点击进入详情
 					window.openStore = function(store_id){
@@ -208,6 +221,11 @@
 					mui.toast("网络不好请重试")
 				}
 			});
+			function parseDom(arg) { //节点转换方法
+				var objE = document.createElement("div");　　
+				objE.innerHTML = arg;　　
+				return objE;
+			};
 		})();
 	</script>
 </html>

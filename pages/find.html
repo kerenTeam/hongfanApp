@@ -255,7 +255,7 @@
 				<div class="mui-slider-item mui-slider-item-duplicate">
 					<img src="<%= bannerList[bannerList.length-1].pic%>" dataurl='<%= bannerList[bannerList.length-1].pic%>' data-qtid='<%= bannerList[bannerList.length-1].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
-				<% for(var i=0;i<bannerList.length;i++){ %>
+				<% for(var i=0;i<bannerList.length-1;i++){ %>
 				<div class="mui-slider-item">
 					<img src="<%=bannerList[i].pic %>" dataurl="<%=bannerList[i].pic %>" data-qtid='<%= bannerList[i].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
@@ -455,19 +455,23 @@
 	        		type:'post',
 	        		timeout:10000,
 					headers:{"token":oldtoken},	 
-					success:function(data,type,xhr){  
+					success:function(data,type,xhr){ 
 						if(data.errno == 0){
+							var dataobj = [];
 							if(data.data.length != 0){  
 								for(var i = 0;i<data.data.length;i++){
 									
 									if(data.data[i].pic.indexOf('http')<=-1){
 										data.data[i].pic = serverimgUrl + data.data[i].pic;
 									}
+									if(data.data[i].banner_state == 1){
+										dataobj.push(data.data[i]);
+									}
 								}
 								
 	        					var theameObj = {};
 	        					theameObj.url = serverimgUrl;
-	        					theameObj.bannerList = data.data;
+	        					theameObj.bannerList = dataobj;
 	        					var html = template('banner-detail', theameObj);
 								document.getElementById('banner').innerHTML = html;
 								$("#banner img").click(function(){
@@ -597,6 +601,9 @@
 							var dataobj = data.data.data;
 							if(dataobj.length != 0) {
 								mui.each(dataobj,function (index,element) {
+									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
+										element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
+									}
 									if(element.avatar && element.avatar.indexOf('picImg')>-1){
 										element.avatar = serverimgUrl + JSON.parse(element.avatar)[0].picImg;
 									} 
