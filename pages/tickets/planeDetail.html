@@ -230,6 +230,7 @@
 			.hasManyCitytwo .fanhui{
 				color: #333;
 			}*/
+			.mui-bar-nav.mui-bar .mui-icon, .mui-title, #theSearch{margin: 0;}
 		</style>
 	</head>
 	<body>
@@ -277,7 +278,7 @@
 									<div class="mui-col-sm-3 mui-col-xs-3">
 										<p><span class="price"><sub>￥</sub><%=airSeatsLi[i].settlePrice %></span></p>
 										<!--<p class="discount"><%=airSeatsLi[i].seatMsg %></p>-->
-										<p class="discount"><%=airSeatsLi[i].discount %>折</p>
+										<p class="discount" style="display: none;"><%=airSeatsLi[i].discount %>折</p>
 							      </div>
 							        <div class="mui-col-sm-9 mui-col-xs-9 airTip">
 							        	<button onclick="planeOrder('<%=airSeatsLi[i].seatCode %>','<%=airSeatsLi[i].seatMsg %>','<%=airSeatsLi[i].settlePrice %>','<%=airSeatsLi[i].changeStipulate %>','<%=airSeatsLi[i].refundStipulate %>')" class="price order">订</button>
@@ -288,7 +289,6 @@
 					</script>
 				</div>
 			</div>
-		</div>
 	</body>
 	<!--数据渲染-->
 	<script type="text/javascript">
@@ -309,6 +309,7 @@
 				timeout:30000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+					
 					//航线基本信息
 					var objData = data.data.airlines_list_response.airlines.airline;
 					for(var i = 0;i<objData.length;i++){
@@ -316,6 +317,7 @@
 						if(objData[i].flightNo == flightNo){
 							var adObj = {};
 							adObj.adLi = objData[i];
+							console.log('详情',objData[i]);
 							adObj.fromTime = fromTime;
 							var html = template('airBase-detail',adObj);
 							document.getElementById('airBase').innerHTML = html;

@@ -843,6 +843,7 @@
 			.wlway {
 				padding-right: 15px;
 			}
+			.mui-bar-nav.mui-bar .mui-icon, .mui-title, #theSearch{margin: 0;}
 		</style>
 	</head>
 
@@ -922,7 +923,7 @@
 							<p class="black">订票人 </p>
 						</div>
 						<div class="mui-col-sm-9 mui-col-xs-9">
-							<input style="font-size: 14px;" type="" name="" id="Orderpeople" placeholder="请输入订票人" value="游向前" class="phone" />
+							<input style="font-size: 14px;" type="" name="" id="Orderpeople" placeholder="请输入订票人" value="" class="phone" />
 						</div>
 					</a>
 				</dd>
@@ -932,7 +933,7 @@
 							<p class="black">联系手机 </p>
 						</div>
 						<div class="mui-col-sm-9 mui-col-xs-9">
-							<input style="font-size: 14px;" type="" name="" id="Orderphone" placeholder="请输入手机号" value="17781694509" class="phone" />
+							<input style="font-size: 14px;" type="" name="" id="Orderphone" placeholder="请输入手机号" value="" class="phone" />
 						</div>
 					</a>
 				</dd>
@@ -961,7 +962,8 @@
 						<div class="">
 							<h5 style="margin: 10px;margin-left: -2px;color: #000;">购票须知</h5>
 							<p id="changeStipulate" style="line-height: 20px;font-size: 12px;margin: 10px 0;">
-								1.火车票相关业务处理时间为8:00-22:00。 <br /> 2.发车前4小时以内退款不做处理，请自行去火车站退票。 <br /> 3.不受理改签业务，需用户自行在发车前去车站办理 。<br /> 4.火车票新版上线，支持购买卧铺票、硬座，不支持指定无座。 <br /> 5.禁止代理商向用户收取票面价格以外的手续费。 <br /> 6.提交订单时如提示身份证待核验，乘车人需带二代身份证到火车站通过身份认证才能网上购票。 <br />
+								<span style="color: red;">1,实际支付金额还包括5元保险费，和第三方服务费！</span> <br />
+								2.火车票相关业务处理时间为8:00-22:00。 <br /> 3.发车前4小时以内退款不做处理，请自行去火车站退票。 <br /> 4.不受理改签业务，需用户自行在发车前去车站办理 。<br /> 5.火车票新版上线，支持购买卧铺票、硬座，不支持指定无座。 <br /> 6.禁止代理商向用户收取票面价格以外的手续费。 <br /> 7.提交订单时如提示身份证待核验，乘车人需带二代身份证到火车站通过身份认证才能网上购票。 <br />
 							</p>
 						</div>
 					</a>
@@ -983,13 +985,13 @@
 		<div id="payChoose" class="mui-popover mui-popover-action mui-popover-bottom closePay">
 			<div class="paycontent">
 				<p><span>请选择支付方式</span><img src="../../img/close.svg" class="closePay"></p>
-				<div class="paytip">请尽快完成支付 金额<span id="totalPayCash">￥78.00</span></div>
+				<div class="paytip" style="display: none;">请尽快完成支付 金额<span id="totalPayCash">￥78.00</span></div>
 				<ul class="mui-table-view waypay">
 					<li class="mui-table-view-cell">
-						<a href="#" id="alipay" data-pay="alipay" onclick="payfun(&quot;alipay&quot;)"><img src="../../img/alipay2-2.png">支付宝</a>
+						<a href="#" id="alipay" data-pay="alipay"><img src="../../img/alipay2-2.png">支付宝</a>
 					</li>
 					<li class="mui-table-view-cell">
-						<a href="#" id="wxpay" data-pay="wxpay" onclick="payfun(&quot;wxpay&quot;)"><img src="../../img/weixin2-2.png">微信 </a>
+						<a href="#" id="wxpay" data-pay="wxpay"><img src="../../img/weixin2-2.png">微信 </a>
 					</li>
 				</ul>
 				<!--<ul class="mui-table-view">
@@ -1011,14 +1013,11 @@
 			event.stopPropagation();
 			$("#payChoose").removeClass("mui-active");
 		})
-
+		//调系统支付前置方法
 		var pays = {};
-
 		function plusReady() {
-			// 获取支付通道
 			plus.payment.getChannels(function(channels) {
 				var content = document.getElementById('dcontent');
-				var info = document.getElementById('info');
 				var txt = '支付通道信息：';
 				for(var i in channels) {
 					var channel = channels[i];
@@ -1031,14 +1030,11 @@
 					txt += 'serviceReady:' + channel.serviceReady + '； ';
 					checkServices(channel);
 				}
-				info.innerText = txt;
 			}, function(e) {
-				outLine('获取支付通道失败：' + e.message);
+				mui.alert('获取支付通道失败：' + e.message);
 			});
 		}
-
 		document.addEventListener('plusready', plusReady, false);
-		// 检测是否安装支付服务
 		function checkServices(pc) {
 			if(!pc.serviceReady) {
 				var txt = null;
@@ -1057,6 +1053,7 @@
 				}, pc.description);
 			}
 		}
+		//调系统支付前置方法结束
 
 		mui.plusReady(function() {
 			var settlePrice; //票价
@@ -1078,7 +1075,6 @@
 			mui('#Sdate')[0].innerHTML = details1.Sdate + details1.Sweek;
 			mui('#Edate')[0].innerHTML = details1.Edate + details1.Eweek;
 
-			//			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			mui.ajax(serverUrl + '/api/qianmi/traininsurslist', { //获取保险信息
 				type: 'post',
 				timeout: 10000,
@@ -1163,7 +1159,7 @@
 					mui.toast('请输入正确的手机号');
 					mui('#Orderphone')[0].focus();
 				} else { //开始支付
-					//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+					plus.nativeUI.showWaiting();
 					mui.ajax(serverUrl + '/api/qianmi/trainitemslist', { //获取标号 
 						type: 'post',
 						timeout: 10000,
@@ -1175,7 +1171,8 @@
 							console.log('获取标号' + JSON.stringify(data));
 							if(data.data.train_items_list_response.items.item[0].itemId) {
 								var gradenum = data.data.train_items_list_response.items.item[0].itemId; //标号
-
+								
+								plus.nativeUI.closeWaiting();
 								$("#payChoose").addClass("mui-active"); //执行弹窗
 								mui('#alipay')[0].onclick = function() {
 									payfunfun('alipay');
@@ -1185,10 +1182,7 @@
 								}
 
 								function payfunfun(payid) {
-									plus.nativeUI.showWaiting('加载中 ...', {
-										width: '100px',
-										height: '80px'
-									});
+									plus.nativeUI.showWaiting();
 									var dataobj = {
 										userid: userid,
 										from: details1.from,
@@ -1203,64 +1197,102 @@
 										startTime: details1.Stime,
 										payType: payid
 									};
-//									console.log('dataobj', dataobj);
-									mui.ajax(serverUrl + '/api/qianmi/trainordercreate', { //开始预定
-										data: dataobj,
+									console.log('开始预定发送的数据 ',dataobj);
+									mui.ajax(serverUrl + '/api/qianmi/trainordercreate', { //开始预定 
+										data: dataobj, 
 										type: 'post',
 										timeout: 10000,
-										headers: {
-											"token": oldToken
-										},
+										headers: {"token": oldToken},
 										success: function(data, type, xhr) {
 											console.error('预定', data);
 											if(data.errno == 0) {
-												//支付订单 
-												plus.payment.request(pays[payid], data.data, function(result) {
-													plus.nativeUI.closeWaiting()
-													alert('1');
-												}, function(e) {
-													plus.nativeUI.closeWaiting()
-													alert('0');
-
-												});
-
-												if(data.data.body.subErrors) {
-													plus.nativeUI.closeWaiting();
-													mui.toast(data.data.body.subErrors[0].message);
-												} else {
-													//												var TorderD = data.data.body.train_order_create_response.ticketTrade; 
-													var Tordernum11 = data.data.body.train_order_create_response.ticketTrade.tradeNo;
-													var Orderidfanhui2 = data.data.new_qianmi_order_id;
-													openview({
-														view: 'trainRecord.html',
-														id: 'trainRecord',
-														extrasobj: {
-															Tordernum: Tordernum11,
-															Orderidfanhui: Orderidfanhui2
-														}
-													})
+												if(!data.subErrors){
+													//调用系统支付 
+													plus.payment.request(pays[payid], data.data.PaymentData, function(result) {
+														plus.nativeUI.closeWaiting();
+														//继续千米支付 
+														var result = JSON.stringify(result);
+														mui.ajax(serverUrl+'/api/qianmi/trainorderpay',{
+															data:{userid:userid,tradeNo:tradeNostr,orderid:Orderidfanhui1,payresult:result},	
+															dataType:'json',//服务器返回json格式数据
+															type:'post',//HTTP请求类型 
+															timeout:10000,//超时时间设置为10秒；
+															headers:{"token":oldtoken},	
+															success:function(data){
+																console.log('千米网火车支付',data);
+																if(!data.data.qianmiPay.subErrors){
+																	plus.nativeUI.alert("支付成功");
+																	mui.fire(plus.webview.getWebviewById('trainRecord'),'refresh');
+																	var timequxiao = setTimeout(function(){
+							//											plus.webview.currentWebview().close();
+																	},500)
+																}else{
+																	plus.nativeUI.closeWaiting();
+																	plus.nativeUI.alert("预定失败,请联系客服");
+																}
+															},
+															error:function(xhr,type,errorThrown){
+																//异常处理；
+							//									zhifuqinmiwang();
+																plus.nativeUI.closeWaiting();
+																plus.nativeUI.alert("预定失败,请联系客服");
+															}
+														});
+														
+													}, function(e) { 
+														plus.nativeUI.closeWaiting();
+														mui.alert('购买失败，请重试');
+	
+													});
+													
+													
+													
+													if(data.data.body.subErrors) {
+														plus.nativeUI.closeWaiting();
+														mui.toast(data.data.body.subErrors[0].message);
+													} else {
+														//												var TorderD = data.data.body.train_order_create_response.ticketTrade; 
+														var Tordernum11 = data.data.body.train_order_create_response.ticketTrade.tradeNo;
+														var Orderidfanhui2 = data.data.new_qianmi_order_id;
+														openview({
+															view: 'trainRecord.html',
+															id: 'trainRecord',
+															extrasobj: {
+																Tordernum: Tordernum11,
+																Orderidfanhui: Orderidfanhui2
+															}
+														})
+													}
+												}else{
+													mui.alert('第三方服务出错，请稍后再试！');
 												}
-
 											} else {
 												plus.nativeUI.closeWaiting();
-												mui.toast('预定失败,请重试');
-
+												if(!data.subErrors){
+													mui.toast('购买失败,请重试');
+												}else{
+													mui.alert('第三方服务出错，请稍后再试！');
+												}
 											}
 											plus.nativeUI.closeWaiting();
 
 										},
 										error: function(xhr, type, errorThrown) {
+											
 											plus.nativeUI.closeWaiting();
-											mui.toast('预定失败,请重试');
+											mui.toast('购买失败,请重试');
 										}
 									});
 								}
 
+							}else{
+								mui.toast('购买失败');
+								plus.nativeUI.closeWaiting();
 							}
 						},
 						error: function(xhr, type, errorThrown) {
 							plus.nativeUI.closeWaiting();
-							mui.toast('预定失败,请重试');
+							mui.toast('购买失败,请重试');
 						}
 					});
 				}

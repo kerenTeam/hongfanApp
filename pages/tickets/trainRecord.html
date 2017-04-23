@@ -508,7 +508,7 @@
 			}
 			window.zhifufun = function(){//点击支付
 				if(mui('#zhuangtai')[0].innerText == '预定中'){
-					mui.toast('还在预定中,请稍候尝试!');
+					mui.toast('还在预定中,请稍候尝试!'); 
 					loadfun();//加载方法
 				}else{
 					openview({
@@ -527,10 +527,11 @@
 					timeout:10000,
 					headers:{"token":oldToken},	              				
 					success:function(data){
+						console.log('取消',data);
 						if(data.errno == 0){ 
-							if(data.data.train_order_cancel_response.result == 1){
+							if(data.data.train_order_cancel_response && data.data.train_order_cancel_response.result == 1){
 								mui.fire(plus.webview.getWebviewById('TPRecord'),'refresh',{type:'train'});
-								var timequxiao = setTimeout(function(){
+								var timequxiao = setTimeout(function(){ 
 									plus.webview.currentWebview().close();
 								},500)
 								mui.toast('取消成功');

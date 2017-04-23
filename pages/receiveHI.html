@@ -13,7 +13,7 @@
 	<style type="text/css">
 		body{height: 50%;background: url(../img/receiveHI.png) 0 0 no-repeat;background-size: 100% 100%;overflow: hidden;}
 		.mui-bar-nav.mui-bar .mui-icon{padding: 0px;} 
-		#Clickon{height: 40%;width: 100%;position: absolute;left: 0;bottom: 25%;}
+		#Clickon{height: 20%;width: 100%;position: absolute;left: 0;bottom: 32%;}
 		.divdiv{height: 100px;padding: 12% 8% 0;}
 		.divdiv img{width: 70px;height: 70px;border-radius: 50%;float: left;margin-left: -80px;border: 1px solid #f5eeee;}
 		.indiv{padding-left: 90px;}
@@ -61,10 +61,10 @@
 						plus.nativeUI.closeWaiting();
 						console.log('领取返回'+JSON.stringify(data));
 						if(data.errno == 0){
-							mui.toast('领取成功');
-							Refresh();
+							mui.toast('领取成功,HI豆加3个');
+							Refresh();  
 						}else{
-							mui.toast('每天只能领取一次');
+							mui.toast('距离上次签到还不到一天哦!'); 
 						}
 					},
 					error:function(xhr,type,errorThrown){
@@ -74,40 +74,43 @@
 				}); 
 			};
 			//显示信息
-			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
-				data:{"userid":myuserid},
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},	              				
-				success:function(data,type,xhr){
-					console.log('获取用户数据返回'+JSON.stringify(data));
-					if(data.errno == 0){
-						if(data.data[0].avatar){//显示头像
-							mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
-						}
-						if(data.data[0].nickname != ' '){//显示昵称
-							if(data.data[0].nickname.indexOf('null') == -1){
-								mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
+			Refresh();
+			function Refresh(){
+				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+					data:{"userid":myuserid},
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	              				
+					success:function(data,type,xhr){
+						console.log('获取用户数据返回'+JSON.stringify(data));
+						if(data.errno == 0){
+							if(data.data[0].avatar){//显示头像
+								mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+							}
+							if(data.data[0].nickname != ' '){//显示昵称
+								if(data.data[0].nickname.indexOf('null') == -1){
+									mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
+								}else{
+									mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+								}
 							}else{
 								mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
 							}
+							if(!data.data[0].intergral || data.data[0].intergral==undefined){//显示HI豆
+								mui('#numjifen')[0].innerHTML = 0;
+							}else{
+								mui('#numjifen')[0].innerHTML = data.data[0].intergral;
+							}
 						}else{
-							mui('.denluzhuce')[0].innerHTML = data.data[0].phone;
+							mui.toast('获取用户信息失败'); 
+							console.log(data.errmsg);
 						}
-						if(!data.data[0].intergral || data.data[0].intergral==undefined){//显示HI豆
-							mui('#numjifen')[0].innerHTML = 0;
-						}else{
-							mui('#numjifen')[0].innerHTML = data.data[0].intergral;
-						}
-					}else{
-						mui.toast('获取用户信息失败'); 
-						console.log(data.errmsg);
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取用户数据,响应失败');
 					}
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('获取用户数据,响应失败');
-				}
-			});
+				});
+			}
 			
 		})
 		

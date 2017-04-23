@@ -247,10 +247,8 @@
 					var dataobj=data.data;
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
-							
 							var tradeNo = JSON.parse(dataobj[i].payment_data);
-							console.log(tradeNo);
-							if(!tradeNo.errorToken){
+							if(!tradeNo.errorToken){//只显示 已完成
 								var orderItem = tradeNo.train_order_create_response.ticketTrade.tradeNo;
 								idarray.push({
 									order:orderItem,
@@ -258,7 +256,7 @@
 								});
 							}
 						}
-						var numload = 0; 
+						var numload = 0,numload1 = 0; 
 						mui.each(idarray,function (index,element) {//遍历请求详情
 							console.log('我是遍历'+element.idnum);
 							mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
@@ -269,36 +267,48 @@
 									headers:{"token":oldToken},	 
 									success:function(data,type,xhr){
 										numload++;
-										console.log('我是请求成功');
-										var dataobj = data.data.train_order_detail_response.ticketTrade;
-										mui.each(dataobj.ticketOrders.ticketOrder,function (index,element) {//如有退款
-											if(index == 0){
-												if(element.stateName == '已退款'){
-													dataobj.stateName = '已退款';
-												}
-											}
-										})
-										dataobj.id = element.idnum;
-										console.log('数据',dataobj);
-										var html=template("infolist",dataobj);
-										document.getElementById("infolistdiv").innerHTML += html;
-										console.log(numload)
+										if(!data.data.errorToken){ 
+											if(data.data.train_order_detail_response.ticketTrade.stateName == '已退款' || data.data.train_order_detail_response.ticketTrade.stateName == '已完成'){ 
+												console.error('我是请求成功');
+												numload1++;
+												var dataobj = data.data.train_order_detail_response.ticketTrade;
+												mui.each(dataobj.ticketOrders.ticketOrder,function (index,element) {//如有退款
+													if(index == 0){
+														if(element.stateName == '已退款'){
+															dataobj.stateName = '已退款';
+														}
+													}
+												})
+												dataobj.id = element.idnum;
+												console.log('数据',dataobj);
+												var html=template("infolist",dataobj);
+												document.getElementById("infolistdiv").innerHTML += html;
+											}  
+										}
+										console.log(numload+"。。。"+idarray.length)
 										if(numload == idarray.length){//铺完后关闭loading
 											console.log('我是最后一次');
 											mui('#infolistdiv')[0].style.display = 'block';
+											if(numload1 == 0){
+												mui('#noOrder')[0].style.display = 'block';
+											}
 											var time1 = setTimeout(function(){
 												plus.nativeUI.closeWaiting();
-											},500)
-										} 
-									},
+											},200)
+										}
+									}, 
 									error:function(xhr,type,errorThrown){
 										numload++;
+										console.log(numload+"。。。"+idarray.length)
 										if(numload == idarray.length){//铺完后关闭loading
 											console.log('我是最后一次')
 											mui('#infolistdiv')[0].style.display = 'block';
+											if(numload1 == 0){
+												mui('#noOrder')[0].style.display = 'block';
+											}
 											var time1 = setTimeout(function(){
 												plus.nativeUI.closeWaiting();
-											},500)
+											},200)
 										} 
 
 										mui.toast('一条加载失败,请重试');
@@ -335,21 +345,22 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){ 
 					var dataobj=data.data;
-					console.log('飞机',dataobj);
+					
 					if(dataobj.length>0){
 						for(var i=0;i<dataobj.length;i++){//遍历出订单号数据,并请求详情
 							
-							var tradeNo = JSON.parse(dataobj[i].data);
+							var tradeNo = JSON.parse(dataobj[i].payment_data);
+							;
 							if(!tradeNo.errorToken){
+								console.log('飞机',tradeNo)
 								var orderItem = tradeNo.air_order_create_response.ticketTrade.tradeNo;
 								idarray.push({
 									order:orderItem,
 									idnum:dataobj[i].id
 								});
-								
 							}
 						}
-						var numload = 0;
+						var numload = 0,numload1 = 0;
 						mui.each(idarray,function (index,element) {//遍历请求详情
 							console.log('我是遍历');
 							mui.ajax(serverUrl+'/api/qianmi/trainorderdetail',{
@@ -359,19 +370,29 @@
 									timeout:10000,
 									headers:{"token":oldToken},	 
 									success:function(data,type,xhr){
+										console.error(data);									
 										numload++;
-										console.log('我是请求成功');
-										var dataobj = data.data.train_order_detail_response.ticketTrade;
-										dataobj.id = element.idnum;
-										var html=template("infolist2",dataobj);
-										document.getElementById("infolistdiv").innerHTML += html;
-										console.log(numload)
+										if(!data.data.errorToken){
+											numload1++;
+											console.log('我是请求成功');
+											var dataobj = data.data.train_order_detail_response.ticketTrade;
+											dataobj.id = element.idnum;
+											var html=template("infolist2",dataobj);
+											document.getElementById("infolistdiv").innerHTML += html;
+											console.log(numload)
+										}
+										
+										
+										
 										if(numload == idarray.length){//铺完后关闭loading
 											console.log('我是最后一次');
 											mui('#infolistdiv')[0].style.display = 'block';
+											if(numload1 ==  0){
+												mui('#noOrder')[0].style.display = 'block';
+											}
 											var time1 = setTimeout(function(){
 												plus.nativeUI.closeWaiting();
-											},500)
+											},200)
 										} 
 									},
 									error:function(xhr,type,errorThrown){
@@ -379,9 +400,12 @@
 										if(numload == idarray.length){//铺完后关闭loading
 											console.log('我是最后一次')
 											mui('#infolistdiv')[0].style.display = 'block';
+											if(numload1 ==  0){
+												mui('#noOrder')[0].style.display = 'block';
+											}
 											var time1 = setTimeout(function(){
 												plus.nativeUI.closeWaiting();
-											},500)
+											},200)
 										} 
 
 										mui.toast('一条加载失败,请重试');
