@@ -193,8 +193,8 @@
 											<div class="orderbh clearfloat box-s">
 												<span onclick="goShop('<%=orderData[i].goods_data.Params.goodsData[0].store_id%>')">
 													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
-													<% if(orderData[i].goods_data.Params.goodsData[0].shopName){ %>
-														<%=orderData[i].goods_data.Params.goodsData[0].shopName%>
+													<% if(orderData[i].goods_data.Params.goodsData[0].stores.store_name){ %>
+														<%=orderData[i].goods_data.Params.goodsData[0].stores.store_name%>
 													<%}%>
 												</span>
 												<span class="fr state"><%=state[orderData[i].order_status]%></span>
@@ -203,10 +203,10 @@
 											<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
 												<div class="dealcard dealcardtwo clearfloat">
 													<div class="dealcard-img imgbox">
-														<% if(orderData[i].goods_data.Params.goodsData[0].storeid == 0){ %>
-															<img src="<%=orderData[i].goods_data.Params.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% if(orderData[i].goods_data.Params.goodsData[0].store_id == 0){ %>
+															<img src="<%=orderData[i].goods_data.Params.goodsData[0].goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% }else{ %>
-															<img src="<%=myUrl%><%=orderData[i].goods_data.Params.goodsData[j].goodsImg%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+															<img src="<%=myUrl%><%=orderData[i].goods_data.Params.goodsData[0].goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% } %>
 													</div>
 													<div class="dealcard-block-right dealcard-block-righttwo">
@@ -221,19 +221,9 @@
 												</div>
 											</a>
 											<%}%> 
-											<%if(orderData[i].order_status==6 || orderData[i].order_status==7 || orderData[i].order_status==8){%>
-												<div class="order-bottom clearfloat box-s tip" style="border-bottom: 0;">
-													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;合计:￥</sub><%=orderData[i].goods_data.PriceCalculValue%><sub>
-														<%if(orderData[i].goods_data.Params.postData.orderStoreData[0].express_id == -1){%>
-															(不含运费)
-															<%}else{%>
-																(含运费<%=orderData[i].fee%>)
-																<%}%>
-														</sub></p>
-												</div>
-											<%}else{%>
+										 
 												<div class="order-bottom clearfloat box-s tip">
-													<p><sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;
+													<p><!--<sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;-->
 													 
 														合计:￥</sub><%=orderData[i].goods_data.PriceCalculValue%><sub>
 														<%if(orderData[i].goods_data.Params.postData.orderStoreData[0].express_id == -1 || orderData[i].goods_data.Params.postData.orderStoreData[0].express_id == "自提"){%>
@@ -242,9 +232,7 @@
 																(含运费<%=orderData[i].fee%>)
 																<%}%>
 														</sub></p>
-												</div>
-												<%}%>
-												
+												</div> 
 											<%if(orderData[i].goods_data.Params.postData.orderStoreData[0].express_id != "自提"){%>	
 												
 											<%if(orderData[i].order_status==0){%>
@@ -253,40 +241,37 @@
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==1){%>
+											<%if(orderData[i].order_status==1 || orderData[i].order_status==2){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==2){%>
+											<%if(orderData[i].order_status==3){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
 													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==3){%>
+											<%if(orderData[i].order_status==4){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
 													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==4){%>
+											<%if(orderData[i].order_status==5 || orderData[i].order_status==6){%>
 												<div class="order-bottom clearfloat box-s">  
-													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
-													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
+													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退货</a>
 												</div>
-											<%}%>
-											<%if(orderData[i].order_status==5 || orderData[i].order_status==6 || orderData[i].order_status==7){%>
-												 
+											<%}%> 
+											<%if(orderData[i].order_status==7){%>
+												 	<a class="fr confirm">退货中</a>
 											<%}%> 
 											<%if(orderData[i].order_status==8){%>
 												<div class="order-bottom clearfloat box-s"> 
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
 												</div>
 											<%}%> 
-											
 											<%}else{%>
-												
 												<%if(orderData[i].order_status==0){%>
 												<div class="order-bottom clearfloat box-s">
 													
@@ -378,13 +363,11 @@
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
 						if(data.data.length!=0){ 
-							console.log(JSON.stringify(data.data))
+							console.log("对对对 "+JSON.stringify(data.data))
 							for(var i=0;i<data.data.length;i++){
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
 								}
-								
-								 
 									data.data[i].goods_data.totalMoney = data.data[i].goods_data.PriceCalculValue;
 									
 									if(data.data[i].fee>0){
@@ -395,7 +378,7 @@
 									 
 							 
 							}
-							console.log(JSON.stringify(data.data[0].goods_data))
+							console.log("goods_data "+JSON.stringify(data.data[0].goods_data))
 							var obj={}; 
 							 obj.orderData=data.data;
 							 obj.myUrl=serverimgUrl; 
@@ -413,7 +396,7 @@
 								$('#noOrder').css('display','none');
 								$('dd').each(function(){
 								var status = $(this).attr("data-id");
-								if(status==1){
+								if(status==0){
 									i++;
 									$(this).css("display","block"); 
 								}else{
@@ -633,10 +616,10 @@
 				})   
 			}
 			window.goOrder=function(id,payment){
-				openview({
-					view:"../market/pay.html",
-					extrasobj:{payMent:payment,uuid:id}
-				})
+//				openview({
+//					view:"../market/pay.html",
+//					extrasobj:{payMent:payment,uuid:id}
+//				})
 			}
 			window.goComment=function(orderId){
 				openview({
