@@ -177,17 +177,16 @@
 					<div class="tab-hd tab-hdtwo">
 						<ul class="tab-nav">
 						  <li class="active" data-statusId="-1">全部</li>
-						  <li data-statusId="0">待付款</li>
-						  <li data-statusId="1">待发货</li>
-						  <li data-statusId="2">待收货</li>
-						  <li data-statusId="3">待评价</li>
-						  <li data-statusId="4">退款</li>
+						  <li data-statusId="1">待付款</li>
+						  <li data-statusId="2">待发货</li>
+						  <li data-statusId="3">待收货</li>
+						  <li data-statusId="4">待评价</li>
+						  <li data-statusId="7">退款</li>
 						</ul>
 					</div>
 					<div class="tab-bd">
 						<div class="tab-pal">
 							<dl class="list listtwo list-in">
-								 
 								<%for(var i =0;i<orderData.length;i++){%>
 										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 											<div class="orderbh clearfloat box-s">
@@ -235,13 +234,13 @@
 												</div> 
 											<%if(orderData[i].goods_data.Params.postData.orderStoreData[0].express_id != "自提"){%>	
 												
-											<%if(orderData[i].order_status==0){%>
+											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
-													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
+													<!--<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>-->
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==1 || orderData[i].order_status==2){%>
+											<%if(orderData[i].order_status==2){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
 												</div>
@@ -258,57 +257,74 @@
 													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==5 || orderData[i].order_status==6){%>
+											<%if(orderData[i].order_status==5){%>
 												<div class="order-bottom clearfloat box-s">  
-													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退货</a>
+													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==7){%>
+												<div class="order-bottom clearfloat box-s">  
+													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
+													<a onclick="cmtwl(this,'<%=orderData[i].order_id%>')" class="fr confirm">填写退货物流</a>
 												</div>
 											<%}%> 
-											<%if(orderData[i].order_status==7){%>
-												 	<a class="fr confirm">退货中</a>
-											<%}%> 
+											 
 											<%if(orderData[i].order_status==8){%>
 												<div class="order-bottom clearfloat box-s"> 
+													<a class="fr confirm">退款成功</a>
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
 												</div>
 											<%}%> 
+											<%if(orderData[i].order_status==6){%>
+												<div class="order-bottom clearfloat box-s">  
+													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
+													<a class="fr">等待卖家同意退货</a>
+												</div>
+											<%}%>
+											<%if(orderData[i].order_status==10){%>
+												<div class="order-bottom clearfloat box-s"> 
+													<a class="fr">等待退款</a> 
+												</div>
+											<%}%>
 											<%}else{%>
-												<%if(orderData[i].order_status==0){%>
+												<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
 													
 													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==1){%>
+											<%if(orderData[i].order_status==2){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==2){%>
+											<%if(orderData[i].order_status==3){%>
 												<div class="order-bottom clearfloat box-s">
 													<span class="fl" style="color: palevioletred;">| 已选自提</span>
 													<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a> 
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==3){%>
+											<%if(orderData[i].order_status==4){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
 													<!--<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>-->
 												</div>
 											<%}%>
-											<%if(orderData[i].order_status==4){%>
+											<%if(orderData[i].order_status==5){%>
 												<div class="order-bottom clearfloat box-s">  
 													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
 												</div>
 											<%}%>
-											 
+											
 											<%if(orderData[i].order_status==8){%>
 												<div class="order-bottom clearfloat box-s"> 
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
 												</div>
 											<%}%> 
-												
+											 	
 												<%}%>
 										</dd>
 									<%}%>
@@ -382,10 +398,12 @@
 							var obj={}; 
 							 obj.orderData=data.data;
 							 obj.myUrl=serverimgUrl; 
-							 obj.state = ['等待买家付款','买家已付款','卖家已发货','交易成功','交易完成','申请退款中','退货中','退款中','退款成功'];
+							 obj.state = ['','等待买家付款','买家已付款','卖家已发货','','已评价','等待卖家同意退货','退款中','退款成功','','等待卖家同意退款'];
 							document.getElementById("orderData").innerHTML=template("orderTpl",obj);
 							 
 							if(toOrder_status == -1){
+								$(".tab-nav li").removeClass("active");
+								$(".tab-nav li:nth-of-type(1)").addClass("active");
 								$('#noOrder').css('display','none');
 								$("dd").css("display","block")
 							}
@@ -396,7 +414,7 @@
 								$('#noOrder').css('display','none');
 								$('dd').each(function(){
 								var status = $(this).attr("data-id");
-								if(status==0){
+								if(status==1){
 									i++;
 									$(this).css("display","block"); 
 								}else{
@@ -453,34 +471,17 @@
 									$('#noOrder').css('display','none');
 									$("dd").css("display","block")
 								}
-								if(statusId==0){
-									var i=0;
-									$('#noOrder').css('display','none');
-									$('dd').each(function(){
-									var status = $(this).attr("data-id");
-									if(status==0){
-										i++;
-										$(this).css("display","block"); 
-									}else{
-										$(this).css("display","none");
-									} 
-									}) 
-									
-									if(i==0){
-										$('#noOrder').css('display','block');
-									}
-								}
-								if(statusId==1){
+								if(statusId==1 ){
 									var i=0;
 									$('#noOrder').css('display','none');
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
 									if(status==1){
 										i++;
-										$(this).css("display","block");
-									}else{ 
+										$(this).css("display","block"); 
+									}else{
 										$(this).css("display","none");
-									}
+									} 
 									}) 
 									
 									if(i==0){
@@ -494,37 +495,92 @@
 									var status = $(this).attr("data-id");
 									if(status==2){
 										i++;
-										$(this).css("display","block"); 
-									}else{
+										$(this).css("display","block");
+									}else{ 
 										$(this).css("display","none");
 									}
-									})
+									}) 
+									
 									if(i==0){
 										$('#noOrder').css('display','block');
 									}
 								}
-								if(statusId==3){
+//								if(statusId==2){
+//									var i=0;
+//									$('#noOrder').css('display','none');
+//									$('dd').each(function(){
+//									var status = $(this).attr("data-id");
+//									if(status==2){
+//										i++;
+//										$(this).css("display","block"); 
+//									}else{
+//										$(this).css("display","none");
+//									}
+//									})
+//									if(i==0){
+//										$('#noOrder').css('display','block');
+//									}
+//								}
+//								if(statusId==3){
+//									var i=0;
+//									$('#noOrder').css('display','none');
+//									$('dd').each(function(){
+//									var status = $(this).attr("data-id");
+//									if(status==2){
+//										i++;
+//										$(this).css("display","block"); 
+//									}else{
+//										$(this).css("display","none");
+//									}
+//									}) 
+//									if(i==0){
+//										$('#noOrder').css('display','block');
+//									}
+//								}
+								if(statusId==4){ 
+									var i=0;
+									$('#noOrder').css('display','none');
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==4){
+										i++;
+										 $(this).css("display","block");
+									} 
+									else{
+										$(this).css("display","none"); 
+									}
+									
+									}) 
+									
+									if(i==0){
+										$('#noOrder').css('display','block');
+									}
+								}
+								if(statusId==7){ 
+									var i=0;
+									$('#noOrder').css('display','none');
+									$('dd').each(function(){
+									var status = $(this).attr("data-id");
+									if(status==6 || status==8){
+										i++;
+										 $(this).css("display","block");
+									} 
+									else{
+										$(this).css("display","none"); 
+									}
+									
+									}) 
+									
+									if(i==0){
+										$('#noOrder').css('display','block');
+									}
+								}
+								if(statusId==3){ 
 									var i=0;
 									$('#noOrder').css('display','none');
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
 									if(status==3){
-										i++;
-										$(this).css("display","block"); 
-									}else{
-										$(this).css("display","none");
-									}
-									}) 
-									if(i==0){
-										$('#noOrder').css('display','block');
-									}
-								}
-								if(statusId==4){  
-									var i=0;
-									$('#noOrder').css('display','none');
-									$('dd').each(function(){
-									var status = $(this).attr("data-id");
-									if(status==4 || status==5 || status==6 || status==7){
 										i++;
 										 $(this).css("display","block");
 									} 
@@ -668,6 +724,13 @@
 					extrasobj:{orderId:id,price:price} 
 				})
 			}
+			window.cmtwl = function(id){
+				openview({
+					view:'../localLife/searchD.html', 
+					extrasobj:{orderId:id,page:"sc-order"} 
+				})
+			}
+			
 		})
 	</script>
 </html>

@@ -175,11 +175,24 @@
 						var comPic = eval("("+data.data[0].goods_data+")").goodsData[0].goodsImg;
 						$('#comPic').attr('src',comPic);
 											
-						//点击发送
-						window.sendCom = function(){
-							var goodsid = eval("("+data.data[0].goods_data+")").goodsData[0].goodsId;
-//							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
-							var seller_comment = $('#comment').val();
+						
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('响应失败  !');
+					}
+				});
+				
+			})
+			
+			//点击发送
+						function sendCom(){
+							mui.plusReady(function(){
+								var myuserid = plus.storage.getItem('userid');
+								var orderId = plus.webview.currentWebview().orderId;
+								var oldToken = plus.storage.getItem('oldToken');
+								var pageid = plus.webview.currentWebview().pageid;
+								
+								var seller_comment = $('#comment').val();
 							var grade_star = $('.mui-icon-star-filled').length;
 							//提交评价
 							
@@ -201,7 +214,7 @@
 								formD.append('pic',Apic[j]);
 							} 
 							formD.append('orderid',orderId);
-							formD.append('goodsid',goodsid);
+							formD.append('goodsid','');
 							formD.append('stroeid',storeid);
 							formD.append('userid',myuserid);
 							formD.append('seller_comment',seller_comment);
@@ -216,14 +229,16 @@
 		        						console.log(dataobj);
 		        						if(dataobj.errno == 0){
 		        							mui.toast('发布成功');	
+												plus.nativeUI.closeWaiting();
 		        							
 											mui.fire(plus.webview.getWebviewById('personal/sc-order.html'),'refreshAd');//打开指定页面
+											
 											var time1 = setTimeout(function(){
 												
 												
 												mui.fire(plus.webview.getWebviewById(pageid),'refresh')
 												plus.webview.currentWebview().close();//关闭当前页面
-												plus.nativeUI.closeWaiting();
+
 											},1000)
 
 		        						}else{
@@ -235,15 +250,12 @@
 		        			xhr.setRequestHeader("token",oldToken);
 		        			xhr.send(formD);
 							}
+							})
+//							var goodsid = eval("("+data.data[0].goods_data+")").goodsData[0].goodsId;
+//							var storeid = JSON.stringify(eval("("+data.data[0].goods_data+")")[0].goodsData[0].storeid);
+							
 							
 						}
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('响应失败  !');
-					}
-				});
-				
-			})
 		</script>
 	</body>
 </html>

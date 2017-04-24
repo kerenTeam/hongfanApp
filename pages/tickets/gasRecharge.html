@@ -243,14 +243,11 @@
 				var index = selectobj.selectedIndex; // 选中索引 
 				var cgunit = document.getElementById("cgunit")//缴费单位
 				var selecttext = selectobj.options[index].text; // 选中文本 
-				var zz = /^\d{10}$/;
+//				var zz = /^\d{10}$/;
 				var hh = parseFloat(mui("#huhao")[0].value);
 				if(!cgunit.value){
 					mui.toast("还未选择缴费单位哦");
 					mui("#cgunit")[0].focus();
-				}else if(!zz.test(hh)){
-					mui.toast("户号为10位数字哦");
-					mui("#huhao")[0].focus();
 				}else{
 					plus.nativeUI.showWaiting('正在查询机构',{width:'110px',height:'80px'});
 					var oldToken = plus.storage.getItem('oldToken');
@@ -296,6 +293,7 @@
 											timeout:10000,
 											headers:{"token":oldToken},	 
 											success:function(data,type,xhr){
+												console.log(JSON.stringify(data))
 												plus.nativeUI.closeWaiting()
 												if(data.errno==0){
 													  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill){

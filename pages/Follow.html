@@ -228,7 +228,7 @@
 			<div id="typeNews"></div>
 			<script type="text/html" id="typeNewTpl">
 				<%if(recommendData.length){%>
-					<%for(var i=recommendData.length-1;i>=0;i--){%> 
+					<%for(var i=0;i<=recommendData.length-1;i++){%> 
 						<%if(recommendData[i].avatar){%>
 							<div class="listt">
 								<div class="follow"> 
@@ -401,12 +401,26 @@
 	//关注者 主页
     function gootpage(userId){
     	event.stopPropagation()
-		openview({
-			view: "othersPage.html",
-			extrasobj: {
-				idnum: userId
-			}
-		})
+    	mui.plusReady(function(){
+    		var myuserid = plus.storage.getItem('userid');
+    		if(userId == myuserid){
+	    		openview({
+					view: "centerPage.html",
+					extrasobj: {
+						idnum: userId
+					}
+				})
+	    	}else{
+	    		openview({
+					view: "othersPage.html",
+					extrasobj: {
+						idnum: userId
+					}
+				})
+	    	}
+    	})
+    	
+		
 	}
     
     
@@ -426,7 +440,7 @@
     	function getNews(){
     		var currentPage = 1,numsPerPage = 10;
     		mui.ajax(serverUrl+"/api/news/newslist",{
-    			data:{currentPage:currentPage,numsPerPage:numsPerPage,userid:myuserid,categoryid:'',isMyFriendPage:""},
+    			data:{currentPage:currentPage,numsPerPage:numsPerPage,userid:myuserid,categoryid:'',isMyFriendPage:true},
         		dataType:'json',
 				type:'post',
 				timeout:10000,

@@ -421,7 +421,7 @@
 			.someRule ul:not(:last-child){
 				position: relative;
 			}
-			.someRule ul:after{
+			.someRule ul:not(:last-child):after{
 				content: '';
 				display: block;
 				height: 1px;
@@ -454,6 +454,10 @@
 				font-size: 0.13rem;
 				color: dimgray;
 				line-height: 1.5;
+			}
+			#textInfo table{
+				width: 100%!important;
+				overflow: hidden;
 			}
 		</style>
 	</head>
@@ -591,7 +595,7 @@
 							</div>
 
 					</div>
-					<%if(brief.good_tags || brief.since_address || brief.reduction_rule){%>
+					<%if(brief.good_tags || brief.since_address || brief.reduction_rule || brief.store_reduction){%>
 						<div class="someRule">
 							<%if(brief.good_tags && brief.good_tags.length){%>
 								<ul class="GDTAP">
@@ -605,11 +609,14 @@
 									<li>自提地址：<%=brief.since_address%></li>
 								</ul>
 							<%}%>
-							<%if(brief.reduction_rule && brief.reduction_rule.length){%>
+							<%if((brief.reduction_rule && brief.reduction_rule.length) || (brief.store_reduction && brief.store_reduction.length)){%>
 								<ul class="YH">
 									<%for(var i= 0;i<brief.reduction_rule.length;i++){%>
-										<li>满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
-									<%}%> 
+										<li>商品满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
+									<%}%>
+									<%for(var i= 0;i<brief.store_reduction.length;i++){%>
+										<li>店铺满<%=brief.store_reduction[i].reachPrice%>减<%=brief.store_reduction[i].reducePrice%></li>
+									<%}%>
 								</ul>
 							<%}%>
 							
@@ -822,7 +829,7 @@
 				},
 				success: function(data) {
 					if(data.errno == 0) {
-//						alert(JSON.stringify(data.data))
+						console.log(JSON.stringify(data.data))
 						plus.nativeUI.closeWaiting();
 						if(!data.data.goodsInfo.good_pic) {
 							data.data.goodsInfo.good_pic = null;
@@ -830,8 +837,10 @@
 						if(data.data.goodsInfo.reduction_rule) {
 							data.data.goodsInfo.reduction_rule = JSON.parse(data.data.goodsInfo.reduction_rule);
 						}
+							data.data.goodsInfo.store_reduction = JSON.parse(data.data.goodsInfo.store_reduction);
 //						alert(JSON.stringify(data.data.goodsInfo.reduction_rule));
 						var gdreducerule = data.data.goodsInfo.reduction_rule;
+						var storereduce = data.data.goodsInfo.store_reduction;
 						if(data.data.goodsInfo.good_tags){
 							data.data.goodsInfo.good_tags = data.data.goodsInfo.good_tags.split(",");
 						}
@@ -976,7 +985,7 @@
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
 															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
 //																alert(parameteValueo.parentlist[i].Floating_price)
-																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())
+																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
 															  
 														} 
@@ -1055,7 +1064,7 @@
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
 															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
-																pprice = parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html());
+																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
 															  
 														}  

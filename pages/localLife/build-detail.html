@@ -379,9 +379,8 @@
 										<div class="address single-line">地址: <%= list.address%></div>
 									</a>
 								</div>
-								<div class="biz-call">
-									<a class="react phone" href="tel:<%= list.phone%>"> 
-										<i class="text-icon">✆</i>
+								<div class="biz-call"> 
+									<a class="react phone" style="background: url(../../img/wlphone.png) no-repeat; background-size: 40px;background-position: center;" href="tel:<%=list.phone%>"> 
 									</a>
 								</div>
 							</div>
@@ -411,6 +410,7 @@
 		
 		mui.plusReady(function(){
 			mui.previewImage();
+//			alert(nowid)
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//获取数据
 			var oldtoken = plus.storage.getItem('oldToken');
@@ -425,8 +425,11 @@
 					if(data.errno == 0){
 						var objdata = {};
 						objdata.picurl = serverimgUrl;
-						console.log(data.data); 
-						data.data.create_time = data.data.create_time.split('T')[0]
+						console.log(data.data);
+						var dt = new Date(data.data.create_time);
+						var date = [
+						  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+						data.data.create_time = date
 						objdata.list = data.data; 
 						
 						objdata.pic = JSON.parse(objdata.list.pic);//轮播图

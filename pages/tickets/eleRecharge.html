@@ -251,54 +251,64 @@
 									timeout:10000,
 									headers:{"token":oldToken},	 
 									success:function(data,type,xhr){
+													console.log(data)
+										
 										plus.nativeUI.closeWaiting() 
 										if(data.errno==0){
-											if(itemid == 6417300){
-												var projectId = data.data.item_props_list_response.cid;
-												var unitId = data.data.item_props_list_response.itemProps.itemProp[2].vid
-												var province = data.data.item_props_list_response.itemProps.itemProp[0].vname
-												var city = data.data.item_props_list_response.itemProps.itemProp[1].vname
-												var unitName = data.data.item_props_list_response.itemProps.itemProp[2].vname
-												var cityId = data.data.item_props_list_response.itemProps.itemProp[1].vid
-												var modeType = 2;
-												var modeId = data.data.item_props_list_response.itemProps.itemProp[3].vid
-											}else{
-												var projectId = data.data.item_props_list_response.cid;
-												var unitId = data.data.item_props_list_response.itemProps.itemProp[4].vid
-												var province = data.data.item_props_list_response.itemProps.itemProp[1].vname
-												var city = data.data.item_props_list_response.itemProps.itemProp[3].vname
-												var unitName = data.data.item_props_list_response.itemProps.itemProp[4].vname
-												var cityId = data.data.item_props_list_response.itemProps.itemProp[3].vid
-												var modeType = 2;
-												var modeId = data.data.item_props_list_response.itemProps.itemProp[2].vid
+											var projectId = data.data.item_props_list_response.cid;
+											for(var i = 0;i<data.data.item_props_list_response.itemProps.itemProp.length;i++){
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitId = data.data.item_props_list_response.itemProps.itemProp[i].vid
 											}
-											var supUserId = itemid;
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'PRVCIN'){
+												var province = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'CITYIN'){
+												var city = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitName = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'CITYIN'){
+												var cityId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'SPECIAL'){
+												var modeId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+										} 
+											 
 											mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
-												data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:modeType,modeId:modeId,supUserId:supUserId},
+												data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId},
 												dataType:'json',
 												type:'post',
 												timeout:10000,
 												headers:{"token":oldToken},	 
 												success:function(data,type,xhr){
+													console.log(JSON.stringify(data))
 													plus.nativeUI.closeWaiting()
 													if(data.errno==0){
-														  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill){
-														  	mui.toast("该户号尚未出账，请等出账后在查询")
-//														  openview({
-//																	view:'elePay.html',
-//																	id:'elePay',
-//																	extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:20,arrearage:0.00,accountName:"xxx",address:"xxx街xxxx号xxxx"}
-//																})
-														  }else{
+														if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill){
+															mui.toast("查询失败")
+//														  
+														}else{
+														  	var payAmount = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].payAmount;//
+														  	var customerName = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].customerName;//用户名
+														  	var customerAddress = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].customerAddress;//地址信息
+														  	var balance = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].balance;//余额
+														  	var penalty = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].penalty;//处罚
 //														  	openview({
 //																	view:'elePay.html',
 //																	id:'elePay',
-//																	extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:20,arrearage:0.00,accountName:"xxx",address:"xxx街xxxx号xxxx"}
+//																	extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:balance,arrearage:penalty,accountName:customerName,address:customerAddress}
 //																})
-														  }
+														}
 													}
 												},
 												error:function(xhr,type,errorThrown){
+													console.log(xhr)
 													plus.nativeUI.closeWaiting()
 												}
 											});   

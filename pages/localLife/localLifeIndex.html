@@ -324,7 +324,7 @@
 					<% list.length = 10%>
 				<% }%>	
 				<% for(var i=0; i<list.length; i++){%>
-					<div class="nplist" onclick="opendetails3(<%= list[i].id%>)">
+					<div class="nplist" onclick="opendetails3(<%= list[i].house_id%>)">
 						<div class="npimg">
 							<img src="<%= url%><%= list[i].logo%>"/>
 						</div>
@@ -378,9 +378,11 @@
 		
 		mui.plusReady(function(){
 			//李洁要求
-			mainActivity = plus.android.runtimeMainActivity();
-			MobclickAgent = plus.android.importClass("com.umeng.analytics.MobclickAgent");
-			MobclickAgent.onPageStart("localLifeIndex");
+			if(!mui.os.ios){
+				mainActivity = plus.android.runtimeMainActivity();
+				MobclickAgent = plus.android.importClass("com.umeng.analytics.MobclickAgent");
+				MobclickAgent.onPageStart("localLifeIndex");
+			}
 			//李洁要求结束
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui('#kuimg')[0].style.display = 'inline-block';
@@ -515,7 +517,9 @@
 		function Monitor(){
 			//打开维修
 			mui('.servicemore')[0].onclick = function(){
-				MobclickAgent.onPageEnd("localLifeIndex");
+				if(!mui.os.ios){
+				 MobclickAgent.onPageEnd("localLifeIndex");
+				}
 				openview({ 
 					view:'theList.html',
 					extrasobj:{name:'Repair'}

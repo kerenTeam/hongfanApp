@@ -188,14 +188,15 @@
 					<div class="merchant">
 						<div class="biz-detail">
 							<p class="time">
-								<img src="../../img/time.png"/>活动时间：<%= objData.system_activity.begin_time.split('T')[0] %>&nbsp;~&nbsp;<%= objData.system_activity.end_time.split('T')[0] %>
+								<img src="../../img/time.png"/>活动时间：<%= objData.system_activity.begin_time%>&nbsp;~&nbsp;<%= objData.system_activity.end_time%>
 							</p>
-							<p class="time greencss">
-								<img src="../../img/add.png"/>活动地点：<%= objData.system_activity.floor_name %>楼<%= objData.system_activity.door_no %>号
-							</p>
-							<p class="time ">
-								<img src="../../img/liulan.svg"/>浏览次数：<%= objData.system_activity.read%>  次
-							</p>
+							<%if(objData.system_activity.floor_name || objData.system_activity.door_no ){%>
+								<p class="time greencss">
+									<img src="../../img/add.png"/>活动地点：<%= objData.system_activity.floor_name%>楼<%= objData.system_activity.door_no%>号
+								</p>
+								<%}%>
+							
+							 
 						</div>
 						<div class="biz-call" style="display: none;" onclick="goStore(<%= objData.system_activity.storeid %>)">
 							<img src="../../img/store.png"/>
@@ -275,6 +276,15 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
 					console.log('详情',data);
+					var dt = new Date(data.data.system_activity.begin_time);
+		       		var dt2 = new Date(data.data.system_activity.end_time);
+					var date = [
+					  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+					var date2 = [
+					  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+					
+					data.data.system_activity.begin_time = date;
+					data.data.system_activity.end_time = date2;
 					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
 					var dateObj={};
 			       	//处理获取的数据
