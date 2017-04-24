@@ -179,7 +179,7 @@
 				    		<div class="czhi box-s">
 				    			<p>缴费单位</p>
 				    			<div id="Cchoose" onclick="unit()">
-				    				<input type="text" id="cgunit" value="重庆合川区自来水有限责任公司" disabled="disabled"/>
+				    				<input type="text" id="cgunit" value="" placeholder="选择缴费单位" disabled="disabled"/>
 				    				<span class="mui-icon mui-icon-arrowright"></span>
 				    			</div>
 				    		</div>
@@ -258,23 +258,42 @@
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting()
 									if(data.errno==0){
-										
 										var projectId = data.data.item_props_list_response.cid;
-										var unitId = data.data.item_props_list_response.itemProps.itemProp[4].vid
-										var province = data.data.item_props_list_response.itemProps.itemProp[2].vname
-										var city = data.data.item_props_list_response.itemProps.itemProp[3].vname
-										var unitName = data.data.item_props_list_response.itemProps.itemProp[4].vname
-										var cityId = data.data.item_props_list_response.itemProps.itemProp[3].vid
-										var modeType = 2;
-										var modeId = data.data.item_props_list_response.itemProps.itemProp[1].vid
+										for(var i = 0;i<data.data.item_props_list_response.itemProps.itemProp.length;i++){
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'PRVCIN'){
+												var province = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'CITYIN'){
+												var city = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitName = data.data.item_props_list_response.itemProps.itemProp[i].vname
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'CITYIN'){
+												var cityId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'BRAND'){
+												var unitId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+											if(data.data.item_props_list_response.itemProps.itemProp[i].type == 'SPECIAL'){
+												var modeId = data.data.item_props_list_response.itemProps.itemProp[i].vid
+											}
+										} 
+										alert(itemid+"户号 "+mui("#huhao")[0].value+"projectId "+projectId+"unitId "+unitId+"province "+province+"city "+city+"unitName "+unitName+"cityId "+cityId+"modeId "+modeId+"modeType "+2)
+										
 										mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
-											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId,supUserId:4},
+											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId},
 											dataType:'json',
 											type:'post',
 											timeout:10000,
 											headers:{"token":oldToken},	 
 											success:function(data,type,xhr){
 												plus.nativeUI.closeWaiting()
+												alert(JSON.stringify(data))
+												
 												if(data.errno==0){
 													  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill || !data.data.water_coal_ubqs_response){
 													  	mui.toast("该户号尚未出账，请等出账后在查询")

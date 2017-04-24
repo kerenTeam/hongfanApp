@@ -593,7 +593,7 @@
 									<li class="mui-table-view-cell mui-collapse choosewl">
 										<a class="mui-navigate-right getwl" data-id='0' data-weight='<%=storeWeight[i].weight%>' data-storeid="<%=shopID[i]%>" href="#">
 											<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">选择物流</span></a>
-										<div class="mui-collapse-content dlc">
+										<div class="mui-collapse-content dlc" data-shopmoney = "<%=shopMoney[i].money%>">
 										</div>
 									</li>
 									<%}%>
@@ -692,7 +692,7 @@
 						<script type="text/html" id="couponTpl">
 							<%if(intergral!=0){%>
 							<dd class="dd-padding kv-line-r">
-								<h6>可用<%=intergral%>积分抵<span id="itMinus" style="color: #ff5f32;"><span>￥</span><%=intergral%></span></h6>
+								<h6>可用<%=intergral%>积分抵<span id="itMinus" style="color: #ff5f32;"><span>￥</span><%=intergralreduce%></span></h6>
 								<div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
 							</dd>
 							<%}else{%>
@@ -932,7 +932,6 @@
 						store_id: item.id
 					},
 					dataType: 'json',
-					async: 'false',
 					type: 'post',
 					timeout: 10000,
 					headers: {
@@ -940,14 +939,14 @@
 					},
 					success: function(data, type, xhr) {
 						//						alert("index"+index)
-						//						alert('店铺满减规则 '+JSON.stringify(data.data.reduction_rule)); 
-						//						alert("店铺原总价"+parseFloat(item.money));
-						if(data.data.reduction_rule != undefined) {
+//												alert('店铺满减规则 '+JSON.stringify(data.data.store_reduction)); 
+						//						alert("店铺原总价"+parseFloat(item.mone));
+						if(data.data.store_reduction != undefined) {
 							//	alert(data.data.reduction_rule)
-							data.data.reduction_rule = JSON.parse(data.data.reduction_rule);
+							data.data.store_reduction = JSON.parse(data.data.store_reduction);
 						}
 
-						if(!data.data.reduction_rule || data.data.reduction_rule.length == 0 || data.data.reduction_rule == ' ') {
+						if(!data.data.store_reduction || data.data.store_reduction.length == 0 || data.data.store_reduction == ' ') {
 							storereduce[index] = 0;
 							//							alert("storereduce"+index+" "+storereduce[index])
 						} else {
@@ -955,17 +954,17 @@
 							//							data.data.reduction_rule = [{"reachPrice":"11600","reducePrice":"20"},{"reachPrice":"81100","reducePrice":"10"},{"reachPrice":"41100","reducePrice":"15"}]
 							//							alert("data.data.reduction_rule "+data.data.reduction_rule)
 
-							data.data.reduction_rule.sort(getSortFun('desc', 'reachPrice'));
+							data.data.store_reduction.sort(getSortFun('desc', 'reachPrice'));
 
 							function getSortFun(order, sortBy) {
 								var ordAlpah = (order == 'asc') ? '>' : '<';
 								var sortFun = new Function('a', 'b', 'return a.' + sortBy + ordAlpah + 'b.' + sortBy + '?1:-1');
 								return sortFun;
 							}
-							for(var m = 0; m < data.data.reduction_rule.length; m++) {
-								if(parseFloat(item.money) >= parseFloat(data.data.reduction_rule[m].reachPrice)) {
+							for(var m = 0; m < data.data.store_reduction.length; m++) {
+								if(parseFloat(item.money) >= parseFloat(data.data.store_reduction[m].reachPrice)) {
 									//									alert(data.data.reduction_rule[m].reducePrice)
-									storereduce[index] = data.data.reduction_rule[m].reducePrice;
+									storereduce[index] = data.data.store_reduction[m].reducePrice;
 									break;
 								} else {
 									storereduce[index] = 0;
@@ -981,7 +980,6 @@
 									if(storereduce[index] != 0) {
 										$(this).html('-￥' + storereduce[index]);
 										var newtotal = parseFloat($(this).parentsUntil('#orderTpl').find('.groupMoney').html()) - parseFloat(storereduce[index]);
-										//alert(newtotal+" newtotal")
 										$(this).parentsUntil('#orderTpl').find('.groupMoney').html(newtotal);
 										countTotalPay();
 									} else {
@@ -1010,6 +1008,7 @@
 			$('.getwl').on('tap', function() {
 				var businid = $(this).attr('data-storeid');
 				var storeWeight = $(this).attr('data-weight');
+				var shopmoney =  $(this).parentsUntil("#orderTpl").find('.groupMoney').html();
 				if($(this).attr('data-id') == 0) {
 					var wlct = $(this).next();
 					if($(this).attr('data-storeid') != 0) {
@@ -1025,11 +1024,13 @@
 							timeout: 10000,
 							success: function(data, type, xhr) {
 								var wlhtml = '';
+								console.log("youhuo "+JSON.stringify(data.data))
 								for(var i = 0; i < data.data.length; i++) {
 									var countpostfee = parseInt(data.data[i].basicsPrice);
-									//									alert("youhuo "+JSON.stringify(data.data))
-									var overWeight = Math.ceil((parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg));
+									var overWeight =(parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg);
+									
 									if(overWeight > 0) {
+										overWeight = Math.ceil(overWeight)
 										countpostfee = parseInt(data.data[i].basicsPrice) + overWeight * parseInt(data.data[i].beyondPrice)
 									}
 
@@ -1038,6 +1039,7 @@
 								wlct.html(wlhtml);
 								$(".dlc div").click(function() {
 //									alert($(this).attr("data-id"))
+
 									if($(this).attr("data-id") == 0) {
 										if($(this).parent().prev().find(".wlway").html() == "自提") {
 											$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
@@ -1057,12 +1059,13 @@
 										$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").val(parseFloat($(this).attr('data-charge')));
 										$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
 										//当前商店总价减邮费
-										var newgroup = parseFloat($(this).parentsUntil("#orderTpl").find('.groupMoney').html()) + parseFloat($(this).attr('data-charge'))
+										var newgroup =parseFloat(shopmoney) + parseFloat($(this).attr('data-charge'))
 										//									alert(newgroup)
 										$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2))
 										//重新计算 总金额
 										countTotalPay();
 									}
+									$(this).siblings().attr("data-id", 0);
 									$(this).attr("data-id", 1);
 									$(".choosewl").removeClass("mui-active")
 								})
@@ -1079,7 +1082,7 @@
 						if(overWeight > 0) {
 							countpostfee = 6 + overWeight * 2.5
 						}
-						wlhtml = '<div data-charge="' + countpostfee + '" data-epid="0" data-id="0">爱购-EMS<span class="charge fr">￥' + countpostfee + '</span></div>'
+						wlhtml = '<div data-charge="' + countpostfee + '" data-epid="0" data-id="0">EMS<span class="charge fr">￥' + countpostfee + '</span></div>'
 						wlct.html(wlhtml);
 						$(".dlc div").click(function() {
 //							alert($(this).attr("data-id"))
@@ -1102,8 +1105,7 @@
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").val(parseFloat($(this).attr('data-charge')));
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
 								//当前商店总价减邮费
-								var newgroup = parseFloat($(this).parentsUntil("#orderTpl").find('.groupMoney').html()) + parseFloat($(this).attr('data-charge'))
-								//							alert(newgroup)
+								var newgroup =parseFloat(shopmoney)+ parseFloat($(this).attr('data-charge'))								//							alert(newgroup)
 								$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2))
 								//重新计算 总金额
 								countTotalPay();
@@ -1115,7 +1117,7 @@
 					}
 
 				}
-				$(this).attr('data-id', 1)
+				$(this).attr('data-id', 1);
 			})
 
 			//商品重量为0 包邮  爱购88包邮
@@ -1225,7 +1227,8 @@
 								intergral = 0;
 							}
 							document.getElementById("coupon").innerHTML = template('couponTpl', {
-								intergral: intergral
+								intergral: intergral,
+								intergralreduce:parseFloat(intergral/100).toFixed(2)
 							});
 						} else {
 							mui.toast('获取用户信息失败');
@@ -1234,7 +1237,7 @@
 						$("#coupon .mui-checkbox").click(function() {
 
 							if($(this).find("input").prop('checked') == true) {
-								jf = parseFloat(intergral);
+								jf = parseFloat(intergral/100);
 							} else {
 								jf = 0;
 							}
@@ -1544,7 +1547,6 @@
 
 										}, function(e) {
 											console.log("----- 支付失败 -----");
-											alert(JSON.stringify("[" + e.code + "]：" + e.message));
 											console.log("[" + e.code + "]：" + e.message);
 											plus.nativeUI.alert("支付失败");
 										});

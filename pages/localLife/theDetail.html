@@ -327,7 +327,7 @@
 						<div class="top rentingtop clearfloat box-s">
 							<p style="font-size: 0.14rem;"><%= list[0].name%></p>
 							<p class="time">
-								发布时间：<span class="cspan" style="font-size: 0.12rem;"><%= list[0].create_time.split('T')[0]%></span>
+								发布时间：<span class="cspan" style="font-size: 0.12rem;"><%= list[0].create_time%></span>
 								<small class="fr">评分：
 								<%if(list[0].star){%>
 									<%if(list[0].star>5){%>
@@ -368,8 +368,7 @@
 									</a>
 								</div>
 								<div class="biz-call">
-									<a class="react phone" href="tel:<%= list[0].phone%>"> 
-										<i class="text-icon">✆</i>
+									<a class="react phone" style="background: url(../../img/wlphone.png) no-repeat; background-size: 40px;background-position: center;" href="tel:<%=list[0].phone%>"> 
 									</a>
 								</div>
 							</div>
@@ -419,6 +418,10 @@
 						}else{
 							var grayStar =5
 						}
+						var dt = new Date(data.data[0].create_time);
+						var date = [
+						  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+						data.data[0].create_time = date
 						objdata.list = data.data;
 						objdata.grayStar = grayStar;
 						objdata.picurl = serverimgUrl;

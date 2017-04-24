@@ -124,7 +124,7 @@
 					<div class="merchant">
 						<div class="biz-detail">
 							<p class="time">
-								<img src="../../img/time.png"/>活动时间：<%= list.begin_time.split('T')[0]%>~<%= list.end_time.split('T')[0]%>
+								<img src="../../img/time.png"/>活动时间：<%= list.begin_time%>~<%= list.end_time%>
 							</p>
 							<p class="time greencss">
 								<img src="../../img/add.png"/>活动地点：<%= list.site%>
@@ -169,6 +169,15 @@
 				//alert(mytoken);
 				console.log('活动详情返回',data); 
 				if(data.errno == 0){
+					var dt = new Date(data.data.system_activity.begin_time);
+		       		var dt2 = new Date(data.data.system_activity.end_time);
+					var date = [
+					  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+					var date2 = [
+					  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+					
+					data.data.system_activity.begin_time = date;
+					data.data.system_activity.end_time = date2;
 					var objdata = {};
 					objdata.list = data.data.system_activity; 
 					objdata.myUrl = serverimgUrl; 
@@ -184,6 +193,7 @@
 								element.onerror = function() {
 									element.src = '../../img/market/nodata.svg';
 								}
+							
 							}
 						})
 						document.getElementById("content").appendChild(detailsdom);

@@ -254,28 +254,31 @@
 		 
 			<script type="text/html" id="infolist">
 				<% for(var i=list.length-1;i>=0;i--){%>
-				<li class="" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
-					<div id="spandiv">
-						<span id="" class="spanL">发了贴</span>
-						<span id="" class="spanR">
-							<% if(list[i].create_time){%>
-					    		<%= list[i].create_time%>
-					    	<% }%>
-						</span>
-					</div>
-					<div id="Dcon" class="aClick2">
-						<div class="imgdiv">
-							<% if(list[i].pic){%>
-								<% if(list[i].pic.indexOf('http')>-1){%>
-									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
-								<% }else{%>
-									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
-								<% }%>	
-							<% }%>		
-						</div>
-						<p><%= list[i].content%></p>
-					</div>
-				</li>
+					<%if(myuserid == list[i].user_id){%>
+						<li class="" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
+							<div id="spandiv">
+								<span id="" class="spanL">发了贴</span>
+								<span id="" class="spanR">
+									<% if(list[i].create_time){%>
+							    		<%= list[i].create_time%>
+							    	<% }%>
+								</span>
+							</div>
+							<div id="Dcon" class="aClick2">
+								<div class="imgdiv">
+									<% if(list[i].pic){%>
+										<% if(list[i].pic.indexOf('http')>-1){%>
+											<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
+										<% }else{%>
+											<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
+										<% }%>	
+									<% }%>		
+								</div>
+								<p><%= list[i].content%></p>
+							</div>
+						</li>
+					<%}%>
+				
 				<% }%>	
 			</script> 
 			<div id="upload" style="padding-bottom: 60px;min-height: 100px; padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
@@ -511,6 +514,7 @@
 									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
 									ele.create_time = date
 							})
+							dataobj.myuserid = myuserid;
 							dataobj.list = data.data.data;
 							dataobj.url = serverimgUrl;
 							

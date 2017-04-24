@@ -88,7 +88,7 @@
 							 </div>
 							 <div class="fl acright"> 
 							 	<div class=""><b><%= objData[i].title %></b></div>
-							 	<div><small>时间：<%= objData[i].begin_time.split('T')[0] %>到<%= objData[i].end_time.split('T')[0] %></small></div>
+							 	<div><small>时间:<%= objData[i].begin_time%>到<%= objData[i].end_time%></small></div>
 							 	<!--<div><small>店铺名称： <%= objData[i].site %></small></div>-->
 							 </div>
 						</div>
@@ -117,6 +117,17 @@
 					if(data.errno == 0){
 						if(data.data.length){
 							var dateObj={};
+							for(var i = 0;i < data.data.length;i++){
+								var dt = new Date(data.data[i].begin_time);
+					       		var dt2 = new Date(data.data[i].end_time);
+								var date = [
+								  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+								var date2 = [
+								  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+								
+								data.data[i].begin_time = date;
+								data.data[i].end_time = date2;
+							}
 							dateObj.objData=data.data;
 							dateObj.url = serverimgUrl;
 							mui('#Alist')[0].innerHTML = template('Alist-detail',dateObj);
