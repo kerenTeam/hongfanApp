@@ -171,6 +171,10 @@
 					transform: none;
 				}
 			}
+			.mui-btn-danger, .mui-btn-negative, .mui-btn-red{
+				border: 1px solid rgba(234, 195, 193, 0.61);
+				background-color: rgba(215, 45, 34, 0.61);
+			}
 		</style>
 	</head>
 
@@ -186,65 +190,99 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/app.js"></script>
 		<script>
-			mui.back = function() {};
+			
+		    
 			mui.plusReady(function() {
-				var oldToken = plus.storage.getItem('oldToken');
-				//获取数据
-				mui.ajax(serverUrl + '/api/index/banner', {
-						data: {
-							banner_type: 12
-						},
-					dataType:'json',//服务器返回json格式数据
-					type:'post',//HTTP请求类型
-					timeout:10000,//超时时间设置为10秒；
-					headers: {
-						"token": oldToken
-					},
-					success:function(data){
-						console.log(data);
-						var dataobj = JSON.parse(data.data.banner);
-						console.log(dataobj);
-						var allstr = '',slidercircle='';
-						mui.each(dataobj,function (index,element) {
-							if(index == 0){
-								slidercircle +='<div class="mui-indicator mui-active"></div>'
-							}else{
-								slidercircle +='<div class="mui-indicator"></div>'
-							}
-							if(index == dataobj.length-1){
-								allstr += '<div class="mui-slider-item">'+
-					'<div class="item-logo" style="background-color: white">'+
-					 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
-					 '<button id="close" class="mui-btn mui-btn-danger">进入</button>'+
-					'</div>'+
-				'</div>';
-							return false;
-							}else{
-								allstr += '<div class="mui-slider-item">'+
-					'<div class="item-logo" style="background-color: white">'+
-					 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
-					'</div>'+ 
-				'</div>';
-							}
-							
-							
-						})
-						console.log(allstr);
-						mui('#bannerdiv')[0].innerHTML = allstr;
-						mui('#sliderlength')[0].innerHTML = slidercircle;
-						//立即体验按钮点击事件
-						document.getElementById("close").addEventListener('tap', function(event) {
-				 
-						plus.navigator.setFullscreen(false);
-						plus.webview.currentWebview().close();
-			}, false);
-					},
-					error:function(xhr,type,errorThrown){
-						
+				//关闭事件
+				//安卓返回键
+				mui.init({ 
+			        beforeback: function(){ 
+			            plus.webview.currentWebview().close();
+			            return false; 
+			        }
+			    });
+			    
+			    var timeclose = setTimeout(function(){
+			    	plus.webview.currentWebview().close();
+			    },5000)
+				plus.nativeUI.showWaiting();
+				
+				var Timetoken = null;
+				var oldToken = null;
+				if(plus.storage.getItem('oldToken')){
+					oldToken = plus.storage.getItem('oldToken');
+					console.log('循环加载数据11');
+					againfun(); 
+				}else{
+					clearInterval(Timetoken);
+					Timetoken = setInterval(function() { //等待oldToken加载方法
+					if(plus.storage.getItem('oldToken')) {
+						clearInterval(Timetoken);
+						oldToken = plus.storage.getItem('oldToken');
+						console.log('循环加载数据22');
+						againfun(); 
 					}
-				});
+				}, 200)
+				}
 				
+				function againfun(){
+					//获取数据
+					mui.ajax(serverUrl + '/api/index/banner', {
+							data: {
+								banner_type: 12
+							},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						headers: {
+							"token": oldToken
+						},
+						success:function(data){
+							console.log(data);
+							var dataobj = JSON.parse(data.data.banner);
+							console.log(dataobj);
+							var allstr = '',slidercircle='';
+							mui.each(dataobj,function (index,element) {
+								if(index == 0){
+									slidercircle +='<div class="mui-indicator mui-active"></div>'
+								}else{
+									slidercircle +='<div class="mui-indicator"></div>'
+								}
+								if(index == dataobj.length-1){
+									allstr += '<div class="mui-slider-item">'+
+						'<div class="item-logo" style="background-color: white">'+
+						 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
+						 '<button id="close" class="mui-btn mui-btn-danger">进入</button>'+
+						'</div>'+
+					'</div>';
+								return false;
+								}else{
+									allstr += '<div class="mui-slider-item">'+
+						'<div class="item-logo" style="background-color: white">'+
+						 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
+						'</div>'+ 
+					'</div>';
+								}
+								
+								
+							})
+							console.log(allstr);
+							mui('#bannerdiv')[0].innerHTML = allstr;
+							mui('#sliderlength')[0].innerHTML = slidercircle;
+							//立即体验按钮点击事件
+							document.getElementById("close").addEventListener('tap', function(event) {
+					 
+							plus.navigator.setFullscreen(false);
+							plus.webview.currentWebview().close();
+				}, false);
+						plus.nativeUI.closeWaiting();
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+						}
+					});
 				
+				}//重载
 				if(mui.os.ios){
 					plus.navigator.setFullscreen(true);
 				}

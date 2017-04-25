@@ -184,7 +184,6 @@
 					}]
 				},
 				function(e) {
-					console.log(JSON.stringify(e));
 					if (e.index == 1) { //点击从相册选择
 						galleryImgsSelected();
 					} else if (e.index == 2) {
@@ -199,11 +198,25 @@
 				plus.io.resolveLocalFileSystemURL(path,function(entry){ 
 					//把拍摄图片的路径转化成 本地文件url
 					path = plus.io.convertLocalFileSystemURL(path);
-					showImg(path);
+					plus.zip.compressImage({//压缩方法
+						src:path,
+						dst:"file:///storage/emulated/0/androidesk/portrait/Cutpic1.jpg",
+						overwrite:true,
+						quality:30
+					},
+					function() {
+						showImg('file:///storage/emulated/0/androidesk/portrait/Cutpic1.jpg');
+						Apic = [];
+						Apic.push('file:///storage/emulated/0/androidesk/portrait/Cutpic1.jpg');
+					},function(error) {
+						mui.toast('图片获取错误，请重试');
+					}); 
+					//无压缩
+					//showImg(path);
+					//Apic = [];
+					//Apic.push(path);
+					//plus.gallery.save( path ); 
 				});
-				Apic = [];
-				Apic.push(path);
-				plus.gallery.save( path );
 			}, function ( e ) {
 			}, {filename:"_doc/gallery/",index:1} );
 		}
@@ -212,12 +225,27 @@
 		    plus.gallery.pick( function(e){
 		    	lfs=e.files;
 		    	for(var i in e.files){
-			    	showImg(e.files[i]);
-			    	Apic = [];
-					Apic.push(e.files[i]);
+		    		console.log(e.files[i]);
+		    		plus.zip.compressImage({//压缩方法
+						src:e.files[i],
+						dst:"file:///storage/emulated/0/androidesk/portrait/Cutpic0.jpg",
+						overwrite:true,
+						quality:30
+					},
+					function() {
+						showImg('file:///storage/emulated/0/androidesk/portrait/Cutpic0.jpg');
+						Apic = [];
+						Apic.push('file:///storage/emulated/0/androidesk/portrait/Cutpic0.jpg');
+					},function(error) {
+						mui.toast('图片获取错误，请重试');
+					});
+					//无压缩
+			    	//showImg(e.files[i]);
+			    	//Apic = [];
+					//Apic.push(e.files[i]);
 		    	}
 		    }, function ( e ) {
-//		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){
+//		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
 		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
 				plus.nativeUI.alert('只能选择1张图片'); 
 		    }});
@@ -281,7 +309,7 @@
 		// 通过定位模块获取位置信息
 		function getGeocode() {
 			plus.geolocation.getCurrentPosition(geoInf, function(e) {
-				outSet("获取定位位置信息失败：" + e.message);
+				mui.toast("获取定位位置信息失败：" + e.message);
 			}, {
 				geocode: true,
 				provider: 'amap'
@@ -299,7 +327,7 @@
 	})//plusready
 		
 	//发送 发布
-	mui('.baocun')[0].addEventListener('tap',function(){
+	mui('.baocun')[0].addEventListener('tap',function(){ 
 		var tagstr = ' ';
 		mui.each(mui('.biaoqian')[0].getElementsByClassName('active'),function (index,element) {
 			tagstr += element.innerText;

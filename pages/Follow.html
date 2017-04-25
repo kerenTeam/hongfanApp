@@ -99,14 +99,14 @@
 		 	
 		 }
 		 .tieCt{
-		 	padding: 10px 15px;
+		 	padding: 8px 15px 10px;
 		 }
 		 .tieCt p span{
 		 	color: coral;
 		 	margin-right: 5px;
 		 }
 		 .tieCt img{
-		 	width: 0.13rem; 
+		 	width: 0.15rem;  
 		 }
 		 .tieCt small{
 		 	vertical-align: middle;
@@ -170,7 +170,9 @@
 				margin-bottom: : 20px;
 				position: relative;
 			}
-			
+			.youpic1{
+				position: absolute;left: 0;top: 2px;
+			}
 			.likeCount {
 				font-size: 12px;
 				display: inline-block;
@@ -180,6 +182,7 @@
 			.ffbot{
 				display: flex;
 				justify-content: flex-end;
+				position: relative;margin-bottom: 6px;
 			}
 			.mui-bar-tab a{
 				color: #666;
@@ -208,11 +211,13 @@
 			    position: relative;
 			    top: -14px;
 			}
-			.nameB{font-size: 14px;color: #666;}
+			.nameB{font-size: 14px;color: #666; display: inline-block; margin-bottom: 2px; font-weight: 600;}
 			.wenzhangP{color: #666;	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;
 	overflow: hidden;line-height: 1.3;}
+	.youpic2{    position: absolute;left: 20px;top: 3px;font-size: 12px;color: #666;}
+	.listt{transition: all 0.2s;}
 	</style>
 
 	<body>
@@ -240,7 +245,7 @@
 													<div class="fchidl">
 														<img src="../img/10.png" alt="" class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 										<%}%>
-									<div> <b class="nameB"><%=recommendData[i].nickname%></b> <br><br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
+									<div> <b class="nameB"><%=recommendData[i].nickname%></b> <br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
 								</div>
 								
 							</div>
@@ -257,17 +262,8 @@
 			<script type="text/html" id="newsInfoTpl">
 				<%if(recommendData){%> 
 					<div class="tieCt">
-					 	<p class="wenzhangP">
-					 		<%if(recommendData.tags.length){%>
-						 		<%for(var j=recommendData.tags.length-1;j>=0;j--){%>
-						 			<span>#<%=recommendData.tags[j].tagName%>#</span>
-						 		<%}%>
-						 	<%}%>
-						 	<%=recommendData.newsinfodata[0].content%>
-					 	<br/><br/>
-						<img src="../img/grayheart.svg" alt="" /> <small><%=recommendData.liker.length%></small><!--<img src="../img/graytalking.svg" alt="" /> <small>5</small>--> 
-					 	</p>
-					 	<div class="ffbot">
+						<div class="ffbot">
+							<img class="youpic1" src="../img/grayheart.svg" alt="" /> <small class="youpic2"><%=recommendData.liker.length%></small><!--<img src="../img/graytalking.svg" alt="" /> <small>5</small>--> 
 					 		<div class="feed" id="feed<%=recommendData.newsinfodata[0].id%>">
 					 			<%if(recommendData.isLike == 1){%>
 									<!--红心状态-->
@@ -282,6 +278,17 @@
 								<img src="../img/market/sharef.png" style="width: 20px;" onclick="shareHref()"/>
 							</div>-->
 					 	</div>
+					 	<p class="wenzhangP">
+					 		<%if(recommendData.tags.length){%>
+						 		<%for(var j=recommendData.tags.length-1;j>=0;j--){%>
+						 			<span>#<%=recommendData.tags[j].tagName%>#</span>
+						 		<%}%>
+						 	<%}%>
+						 	<%=recommendData.newsinfodata[0].content%>
+					 	<br/><br/>
+						
+					 	</p>
+					 	
 					</div> 
 				<%}%>
 			</script>
@@ -429,16 +436,17 @@
     	var oldtoken = plus.storage.getItem('oldToken');
         var myuserid = plus.storage.getItem('userid');
     	
-		var Spagenum = 2; //实到页数
-		var Ypagenum = 1; //应到页数 
+		
 		  	
 		//下拉刷新
 	    downRe(getNews);
     	//获取好友动态列表
     	getNews();
     	
-    	function getNews(){
-    		var currentPage = 1,numsPerPage = 10;
+    	function getNews(){ 
+    		var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数 
+    		var currentPage = 1,numsPerPage = 5; 
     		mui.ajax(serverUrl+"/api/news/newslist",{
     			data:{currentPage:currentPage,numsPerPage:numsPerPage,userid:myuserid,categoryid:'',isMyFriendPage:true},
         		dataType:'json',
@@ -493,7 +501,7 @@
 									console.log('发起请求,实到' + Spagenum + '页');
 									console.log('发起请求,应到' + Ypagenum + '页');
 									mui.ajax(serverUrl + '/api/news/newslist', {
-										data:{currentPage:Spagenum,numsPerPage:numsPerPage,userid:myuserid,categoryid:ctid,isMyFriendPage:""},
+										data:{currentPage:Spagenum,numsPerPage:numsPerPage,userid:myuserid,categoryid:'',isMyFriendPage:""},
 						        		dataType:'json',
 										type:'post',
 										timeout:10000,
@@ -507,6 +515,9 @@
 															dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 														}else{
 															dataobj[i].avatar = "../img/10.png"
+														}
+														if(dataobj[i].pic && dataobj[i].pic.indexOf('picImg')>-1){
+															dataobj[i].pic = serverimgUrl + JSON.parse(dataobj[i].pic)[0].picImg; 
 														}
 //														dataobj[i].create_time = formatDate(dataobj[i].create_time, "yyyy.MM.dd hh:mm:ss");
 												 		var dt = new Date(dataobj[i].create_time);
