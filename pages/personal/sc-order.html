@@ -263,10 +263,16 @@
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
 												</div>
 											<%}%>
+											<%if(orderData[i].order_status==6){%>
+												<div class="order-bottom clearfloat box-s">  
+													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
+													<a class="fr">等待退货</a>
+												</div>
+											<%}%>
 											<%if(orderData[i].order_status==7){%>
 												<div class="order-bottom clearfloat box-s">  
 													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
-													<a onclick="cmtwl(this,'<%=orderData[i].order_id%>')" class="fr confirm">填写退货物流</a>
+													<a onclick="cmtwl(this,'<%=orderData[i].order_id%>','<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.Params.postData.userid%>')" class="fr confirm">填写退货物流</a>
 												</div>
 											<%}%> 
 											 
@@ -276,12 +282,6 @@
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
 												</div>
 											<%}%> 
-											<%if(orderData[i].order_status==6){%>
-												<div class="order-bottom clearfloat box-s">  
-													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
-													<a class="fr">等待卖家同意退货</a>
-												</div>
-											<%}%>
 											<%if(orderData[i].order_status==10){%>
 												<div class="order-bottom clearfloat box-s"> 
 													<a class="fr">等待退款</a> 
@@ -561,7 +561,7 @@
 									$('#noOrder').css('display','none');
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==6 || status==8){
+									if(status==6 || status==7 || status==8){
 										i++;
 										 $(this).css("display","block");
 									} 
@@ -652,7 +652,7 @@
 								data:{userId:myuserid,orderId:id},
 								dataType:'json',
 								type:'post',
-								timeout:1000,
+								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){ 
 									plus.nativeUI.closeWaiting();
@@ -698,7 +698,7 @@
 								data:{userId:myuserid,orderId:id},
 								dataType:'json',
 								type:'post',
-								timeout:1000,
+								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){ 
 									plus.nativeUI.closeWaiting();
@@ -724,10 +724,10 @@
 					extrasobj:{orderId:id,price:price} 
 				})
 			}
-			window.cmtwl = function(id){
+			window.cmtwl = function(id,order_UUID,buyer){
 				openview({
-					view:'../localLife/searchD.html', 
-					extrasobj:{orderId:id,page:"sc-order"} 
+					view:'comitdelivery.html', 
+					extrasobj:{orderId:id,uuid:order_UUID,buyerId:buyer,page:"sc-order"} 
 				})
 			}
 			
