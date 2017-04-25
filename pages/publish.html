@@ -121,27 +121,16 @@
 				}
 				.biaoqian span.active{background-color: #ea4242;color: #fff;}  
 			</style>
-			<div id="" class="biaoqian">
-				<span id="" onclick="spanclick(this)">
-					#热血#
-				</span>
-				<span id="" onclick="spanclick(this)">
-					#豪爽#
-				</span>
-				<span id="" onclick="spanclick(this)">
-					#标签#
-				</span>
-				<span id="" onclick="spanclick(this)">
-					#表情#
-				</span>
-				<span id="" onclick="spanclick(this)">
-					#表情#
-				</span>
-				<span id="" onclick="spanclick(this)">
-					#表情#
-				</span>
+			<div id="mainpic" class="biaoqian">
+			 
 			</div>
-			
+			<script type="text/html" id="infolist">
+				<%for(var i=0;i<list.length;i++){%>
+					<span id="" onclick="spanclick(this)">
+					#<%=list[i].tagName%>#
+				</span>
+				<%}%>
+			</script>
 			<div class="uppics clearfix" id="uppics2"> 
 		        <div class="onepic">
 		            <!--<input type="file" id="file_input"/>--> 
@@ -192,6 +181,35 @@
 				}
 			);
 		})
+		var oldtoken = plus.storage.getItem('oldToken');
+		
+		mui.ajax(serverUrl+'/api/news/tags',{//请求id列表
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},
+			success:function(data,type,xhr){ 
+				console.log('列表',data);
+				if(data.errno==0){
+					var dataobj = {};
+					if(data.data.length){
+						 
+						dataobj.list = data.data;
+						mui('#mainpic')[0].innerHTML = template('infolist',dataobj);
+						console.log(template('infolist',dataobj))
+					} 
+				}else{
+					mui.toast('当前网络不好，请重试！');	
+				}
+				plus.nativeUI.closeWaiting();
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting(); 
+				mui.toast('当前网络不好，请重试！');
+				console.log('登录响应失败');
+			}
+		});
+		
 		function getImage(){//拍照并保存
 			var cmr = plus.camera.getCamera();
 			cmr.captureImage( function ( path ) {
@@ -260,6 +278,7 @@
 	//选择图片结束
 	
 	function spanclick(obj){
+		console.log(obj)
 		if(obj.className == 'active'){
 			obj.className = '';
 		}else{
