@@ -13,6 +13,156 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
+			<style type="text/css">
+			
+			.mui-bar{height: 50px;
+			}
+			.mui-title,.mui-icon{line-height: 50px;
+			}
+			.mui-bar .mui-icon{padding: 0;
+			}
+			.mui-bar-nav.mui-bar .mui-icon,.mui-title,.mui-icon{color: #fff;
+			}
+			.mui-bar-nav{box-shadow: none;
+			}
+			.mui-icon{line-height: 50px;
+			}	
+			.mui-icon .iconfont{font-size: 18px;
+			}
+			.dealcard, .cinemacard{margin-top: 50px;
+			}
+			.dealcard .dealcard-img img{height: 60px;
+				overflow: hidden;
+			}
+		 	.shoucang .iconfont{font-size: 18px;
+			}
+			
+			#main{margin-top: 50px;
+			}
+			.dealcard, .cinemacard{margin-top: 45px;
+			}
+			.dealcard, .cinemacard{margin-top: 45px;
+			}
+			/*banner图片固定高度比例*/
+			.goodsImg{
+				position: relative;
+				display: inline-block;
+				width: 100%;
+				overflow: hidden;
+			}
+			.list,.bottom{
+				border-bottom: 1px solid #EFEFF4 !important;
+				border-top: 1px solid #EFEFF4 !important;
+			}
+			.top,.farm{
+				border-bottom: none !important;
+			}
+			.farmtc .bt{
+				border-top: 1px solid #EFEFF4 !important;
+			} 
+			.merchant .biz-call .phone{margin-top: -7px;}
+			.rentingtopbot {padding-bottom: 40px !important;}
+			
+			.red1{
+				color: #f53c42 !important;
+				margin-bottom: 10px;
+				font-size: 18px !important;
+				display: inline-block;
+			}
+			.time img{
+				width: 15px;
+				margin-right: 5px;
+			}
+			.mui-btn-block {
+				font-size: 16px;
+				display: block;
+				width: 90%;
+				margin: 10px 5%;
+				padding: 10px 0;
+			}
+			.farm{
+				position: relative;
+			}
+			.biz-call img{
+				width: 60%;
+			}
+			.biz-call p{
+				line-height: 30px;
+				float: right;
+				font-size: 11px !important;
+				width: 100%;
+				text-align: center;
+				color: #999 !important;
+			}
+			.merchant .biz-call{
+				width: 20%;
+				height: auto !important;
+				line-height: inherit;
+			}
+			.biz-detail{
+				margin-top: 10px;
+			}
+			.greencss{
+				color: #32B16C !important;
+			}
+			.picWrap{
+				padding: 10px 10px 0 10px;
+				position: relative;
+			}
+			.cc{
+				width: 100%;
+			}
+			.ccW{
+				position: absolute;
+				top: -10px;
+				left: -15px;
+				width: 0%;
+			}
+			.cLeft{
+				position: absolute;
+				top: 25px;
+				left: 25px;
+				/*z-index: 99;*/
+			}
+			.cLeft p{
+				line-height: 22px;
+			}
+			.cRight{
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				height: 100%;
+				width: 21%;
+				/*padding: 28px 22px;*/
+			}
+			.cRight p{
+				line-height: 20px;
+				font-size: 16px;
+				color: #fff;
+			}
+			.got{
+				position: absolute;
+				right: 0px;
+				top: 3px;
+				width: 95px;
+			}
+			.yellowT{
+				/*margin-bottom: 10px;*/
+				font-size: 18px !important;
+				color: #f2af2d!important;
+			}
+			.waitGet{
+				display: block;
+				margin: 0 auto;
+				left: 50%;
+				position: absolute;
+				margin-left: -16px;
+				top: 50%;
+				margin-top: -20px;
+			}
+			#activityContent img{max-width: 100%;}
+			
+		</style>
 		<style type="text/css">
 			.mui-bar{height: 50px;}
 			.mui-title,.mui-icon{line-height: 50px;}
@@ -137,9 +287,39 @@
 							<img src="../../img/store.png"/>
 							<p>查看商户</p>
 						</div>
+						
 					</div>
 				</div>
 			</div>
+			<!--优惠卷-->
+			<% if(shop_coupon && shop_coupon.length){%>
+				<% for(var i = 0;i< shop_coupon.length;i++ ){ %>
+					<div class="picWrap">
+						<img src="../../img/cc.png" class="cc"/>
+						<div class="cLeft">
+							<b class="red1"><%= shop_coupon[i].name %></b>
+							<p>使用时间：
+								<%= shop_coupon[i].begin_date %> ~ <%= shop_coupon[i].begin_date %>
+							</p>
+							<p>使用条件：
+								<% if(!shop_coupon[i].salerule || shop_coupon[i].salerule == ""){ %>
+									无限制
+								<% }else{ %>
+									满<%= shop_coupon[i].salerule1 %>减<%= shop_coupon[i].salerule2 %>
+								<% } %>
+							</p>
+							<img src="../../img/ccW.png"/ class="ccW">
+						</div>
+						<div class="cRight" onclick="getCoupon(this,<%= shop_coupon[i].id %>)">
+							<div class="waitGet">
+								<p>立即</p>
+								<p>领取</p>
+							</div> 
+							<img src="../../img/got.png" class="got" style="display: none;"/>
+						</div>
+					</div>
+				<% } %>
+			<% }%>	
 			<div class="farmtc clearfloat mt10">
 				<p class="bt box-s">活动详情</p>
 			</div>
@@ -159,6 +339,8 @@
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		//获取数据
 		var oldtoken = plus.storage.getItem('oldToken');
+		
+		var myuserid = plus.storage.getItem('userid');
 		var activityId = plus.webview.currentWebview().activityId;
 		mui.ajax(serverUrl+'/api/index/couponoractivityinfo',{
 			data:{"id":activityId},
@@ -178,16 +360,22 @@
 					
 					data.data.system_activity.begin_time = date;
 					data.data.system_activity.end_time = date2;
+					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
 					var objdata = {};
-					objdata.list = data.data.system_activity; 
+					objdata.list = data.data.system_activity;
+					//优惠卷
+					if(data.data.shop_coupon){
+						objdata.shop_coupon = data.data.shop_coupon;
+					}
 					objdata.myUrl = serverimgUrl; 
 					var html=template("details",objdata);
 					document.getElementById("main").innerHTML=html;
 					//详情
 					if(objdata.list.content) {
 						var detailsdom = parseDom(objdata.list.content);
+						
 						var detailsimg = detailsdom.getElementsByTagName('img');
-						mui.each(detailsimg, function(index, element) {
+						mui.each(detailsimg, function(index, element) {  
 							if(element.src.indexOf('pages/activity')>-1){
 								element.src = serverimgUrl + element.src.split('pages/activity')[1];
 								element.onerror = function() {
@@ -195,7 +383,9 @@
 								}
 							
 							}
-						})
+						}) 
+						console.error(document.getElementById("content"));
+						
 						document.getElementById("content").appendChild(detailsdom);
 					}else{
 						document.getElementById("content").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
@@ -206,6 +396,60 @@
 					mui.toast('获取用户信息失败');
 				}
 				plus.nativeUI.closeWaiting();
+				plus.nativeUI.closeWaiting();
+				var oldToken = plus.storage.getItem('oldToken');
+					//已领取的缓存，修改样式，点击禁用
+					if(data.data.shop_coupon.length){
+						for(var k = 0;k<gotCouponId.length;k++){ 
+							for(var n = 0;n < data.data.shop_coupon.length;n++){
+								if(gotCouponId[k]==data.data.shop_coupon[n].id){
+									mui('.waitGet')[n].style.display = 'none';
+									mui('.got')[n].style.display = 'block';
+									mui('.cRight')[n].onclick = function(){}
+								}else{
+								}
+							}
+						}
+					}
+					
+					//点击领取优惠券
+					window.getCoupon = function(e,getCouponId){
+						plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
+						if(plus.storage.getItem('myToken')){
+							var userId = plus.storage.getItem("userid");
+							mui.ajax(serverUrl+'/api/index/getcoupon',{
+								data:{id:getCouponId,userid:myuserid},
+								dataType:'json',
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldToken},	 
+								success:function(data,type,xhr){
+									if(data.errno == 0){
+										mui.toast("领取成功！");
+										e.getElementsByClassName('waitGet')[0].style.display = 'none';
+										e.getElementsByClassName('got')[0].style.display = 'block';
+										e.onclick = function(){}
+										//已领取的存缓存
+										gotCouponId.push(getCouponId);
+										plus.storage.setItem('$gotCoupon', JSON.stringify(gotCouponId)); 
+										plus.nativeUI.closeWaiting();
+									}else{
+										mui.toast("领取失败，请重试！");
+										plus.nativeUI.closeWaiting();
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									console.log('响应失败  !');
+								}
+							});
+						}else{
+							mui.toast('请登录！');
+							openview({
+								view:'../login.html'
+							})
+						}
+					}
+				
 			},
 			error:function(xhr,type,errorThrown){
 				plus.nativeUI.closeWaiting();

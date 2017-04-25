@@ -283,6 +283,7 @@
 				})
 				Refresh(); 
 				function Refresh(){//刷新
+					mui('#writeOff1')[0].style.display = 'none';
 					//获取缓存 
 					var myuserid = plus.storage.getItem('userid');
 					var oldtoken = plus.storage.getItem('oldToken');
@@ -294,14 +295,14 @@
 							timeout:10000,
 							headers:{"token":oldtoken},	              				
 							success:function(data,type,xhr){
-								console.log('获取用户数据返回'+JSON.stringify(data));
+								console.log('获取用户数据返回',data);
 								if(data.errno == 0){
 									//显示头像
 									if(data.data[0].avatar){
 										mui('#mypic1')[0].src = mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
 									}
 									//显示昵称
-									if(data.data[0].nickname != ' '){ 
+									if(data.data[0].nickname){ 
 										if(data.data[0].nickname.indexOf('null') == -1){
 											mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
 										}else{

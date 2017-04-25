@@ -58,6 +58,7 @@
 			    	break;
 			    }
 			    //result = result.replace(/\n/g, ''); 
+			    alert(result);
 			    if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
 			    	var dataobj = JSON.parse(result);
 			    	if(dataobj.begin_date && dataobj.end_date){
@@ -73,9 +74,9 @@
 				    		mui.back();
 				    	}else if(nowdate > endDate){//判断时间结束
 				    		alert('该卷已经过期!');
-				    		mui.back();
+				    		mui.back(); 
 				    	}else{
-				    		updatafun(dataobj.user_coupon_id,result); 
+				    		updatafun(dataobj.user_coupon_id,result,dataobj.uesrid);   
 				    	}
 			    	}else{
 			    		console.error('没有typeid，核销失败！');
@@ -87,23 +88,23 @@
 			    }
 			    
 			   
-			    function updatafun(codeid,result){ //上传数据
+			    function updatafun(codeid,result,uesrid){ //上传数据
 				    mui.plusReady(function(){
 				    	var myuserid = plus.storage.getItem('userid');
 						var oldtoken = plus.storage.getItem('oldToken');
 						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
 					    mui.ajax(serverUrl + '/api/mall/couponverify',{
-							data:{"userid":myuserid,"couponid":codeid,'qrcode':result},
+							data:{"userid":myuserid,"couponid":codeid,'qrcode':result,'uesrid':uesrid},
 							type:'post',
 							timeout:10000,
 							headers:{"token":oldtoken},
 							success:function(data,type,xhr){
 								plus.nativeUI.closeWaiting();
-								alert('上传核销返回'+JSON.stringify(data));
+//								alert('上传核销返回'+JSON.stringify(data));
 								console.log('上传核销返回'+JSON.stringify(data));
 								console.log('上传核销返回'+data);
 								if(data.errno == 0){
-									mui.toast('核销成功');
+									mui.toast('核销成功'); 
 								}else{
 									mui.toast('核销失败'); 
 								}
