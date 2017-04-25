@@ -302,7 +302,7 @@
 							<%=recommendData[i].content%>
 							<%}%>
 						</p>
-						<div class="findUser" data-userId="<%=recommendData[i].userid%>">
+						<div class="findUser" data-userId="<%=recommendData[i].user_id%>">
 							<%if(recommendData[i].avatar){%>
 							<img src="<%=recommendData[i].avatar%>" alt="<%=recommendData[i].avatar%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';" alt="" /><span><%=recommendData[i].nickname%></span>
 							<%}else{%>
@@ -659,12 +659,22 @@
 						//发布者主页
 						$(".findUser").click(function() {
 							event.stopPropagation()
-							openview({
-								view: "centerPage.html",
-								extrasobj: {
-									userId: $(this).attr("data-userId")
-								}
-							})
+							if($(this).attr("data-userId") == myuserid){
+								openview({
+									view: "centerPage.html",
+									extrasobj:{
+										idnum:$(this).attr("data-userId")
+									}
+								})
+							}else{
+								openview({
+									view: "othersPage.html",
+									extrasobj:{
+										idnum:$(this).attr("data-userId")
+									}
+								})
+							}
+							
 						})
 					},
 					error: function(xhr, type, errorThrown) {

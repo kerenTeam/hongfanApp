@@ -98,6 +98,7 @@
     
   	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
+		var myuserid = plus.storage.getItem('userid');
 		var newsId = plus.webview.currentWebview().newsId;
 			mui.ajax(serverUrl+"/api/news/newsinfo",{
     			data:{newsid:newsId},
@@ -129,10 +130,17 @@
 							recommendObj.recommendData = dataobj; 
 							document.getElementById("likerList").innerHTML = template("likerListTpl", recommendObj);
 							$(".follow").on("click",function(){ 
-							  	openview({
-									view:'../othersPage.html',
-									extrasobj:{userId:$(this).attr("data-id")}
-								});
+								if($(this).attr("data-id") == myuserid){
+									openview({
+										view:'../centerPage.html',
+										extrasobj:{idnum:$(this).attr("data-id")}
+									});
+								}else{
+									openview({
+										view:'../othersPage.html',
+										extrasobj:{idnum:$(this).attr("data-id")}
+									});
+								}
 							})
 						}
 		 
