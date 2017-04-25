@@ -242,8 +242,13 @@
 				var selecttext = selectobj.options[index].text; // 选中文本 
 				var zz = /^\d{8,10}$/;
 				var hh = parseFloat(mui("#huhao")[0].value);
-				if(!zz.test(hh)){
-					mui.toast("户号为8-10位数字哦");
+				alert(hh)
+				var cgunit = document.getElementById("cgunit")//缴费单位
+				if(!cgunit.value){
+					mui.toast("还未选择缴费单位哦");
+					mui("#cgunit")[0].focus();
+				}else if(hh.length==0 || hh=' '){
+					mui.toast("还未填写户号哦！");
 					mui("#huhao")[0].focus();
 				}else{
 					plus.nativeUI.showWaiting('正在查询机构',{width:'120px',height:'80px'});
@@ -256,7 +261,6 @@
 								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){
-									plus.nativeUI.closeWaiting()
 									if(data.errno==0){
 										var projectId = data.data.item_props_list_response.cid;
 										for(var i = 0;i<data.data.item_props_list_response.itemProps.itemProp.length;i++){
@@ -282,34 +286,49 @@
 												var modeId = data.data.item_props_list_response.itemProps.itemProp[i].vid
 											}
 										} 
-										alert(itemid+"户号 "+mui("#huhao")[0].value+"projectId "+projectId+"unitId "+unitId+"province "+province+"city "+city+"unitName "+unitName+"cityId "+cityId+"modeId "+modeId+"modeType "+2)
+//										alert(itemid+"户号 "+mui("#huhao")[0].value+"projectId "+projectId+"unitId "+unitId+"province "+province+"city "+city+"unitName "+unitName+"cityId "+cityId+"modeId "+modeId+"modeType "+2)
 										
 										mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
-											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeType:2,modeId:modeId},
+											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeId:modeId,modeType:2},
 											dataType:'json',
 											type:'post',
 											timeout:10000,
 											headers:{"token":oldToken},	 
 											success:function(data,type,xhr){
 												plus.nativeUI.closeWaiting()
-												alert(JSON.stringify(data))
-												
-												if(data.errno==0){
-													  if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill || !data.data.water_coal_ubqs_response){
-													  	mui.toast("该户号尚未出账，请等出账后在查询")
-//													 	 openview({
-//																view:'waterPay.html',
-//																id:'waterPay',
-//																extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:20,arrearage:0.00,accountName:"xxx",address:"xxx街xxxx号xxxx"}
-//															})
-													  }else{
-//													  	openview({
-//																view:'waterPay.html',
-//																id:'waterPay',
-//																extrasobj:{huhao:mui("#huhao")[0].value,itemId:itemid,unitName:unitName,balance:20,arrearage:0.00,accountName:"xxx",address:"xxx街xxxx号xxxx"}
-//															})
-													  }
+												if(data.errno == 0) {
+													if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill) {
+														mui.toast("查询失败")
+														//														  
+													} else {
+														var payAmount = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].payAmount; //应缴费金额
+														var customerName = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].customerName; //用户名
+														var customerAddress = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].customerAddress; //地址信息
+														var balance = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].balance; //余额
+														var penalty = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].penalty; //滞纳金
+														var contractNo = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].contractNo; //合同号
+														var billCycle = data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill[0].billCycle;
+	//													alert(payAmount + " " + customerName + " " + customerAddress + " " + balance + " " + penalty + " " + contractNo + " " + billCycle)
+														openview({
+															view: 'elePay.html',
+															id: 'elePay',
+															extrasobj: {
+																huhao: mui("#huhao")[0].value,
+																itemId: itemid,
+																unitName: unitName,
+																payAmount:payAmount,
+																balance: balance,
+																arrearage: penalty,
+																accountName: customerName,
+																address: customerAddress,
+																contractNo: contractNo,
+																billCycle: billCycle,
+																pageid:"water"
+															}
+														})
+													}
 												}
+												 
 											},
 											error:function(xhr,type,errorThrown){
 												plus.nativeUI.closeWaiting()

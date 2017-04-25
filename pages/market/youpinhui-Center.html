@@ -523,49 +523,7 @@
 						mui('#nulldiv')[0].style.display = 'block';
 					}
 				});
-
-				//获取二级分类
-				function getsecid(pid) {
-					mui.ajax(serverUrl + '/api/mall/igocategory', {
-						data: { pid: pid },
-						dataType: 'json',
-						type: 'post',
-						timeout: 10000,
-						headers: { "token": oldToken },
-						success: function(data, type, xhr) {
-							if(data.errno == 0) {
-								if(data.data.length != 0) {
-									getthird(data.data[0].catid)
-								}
-							}
-						},
-						error: function(xhr, type, errorThrown) {}
-					})
-				}
-
-				//三级分类
-				function getthird(catid) {
-					mui.ajax(serverUrl + '/api/mall/igocategory', {
-						data: { pid: catid },
-						dataType: 'json',
-						type: 'post',
-						timeout: 10000,
-						headers: { "token": oldToken },
-						success: function(data, type, xhr) {
-							if(data.errno == 0) {
-								if(data.data.length != 0) {
-									openview({
-										view: "loveBuyList.html",
-										extrasobj: { pid: data.data[0].catid }
-									})
-								}
-							}
-						},
-						error: function(xhr, type, errorThrown) {}
-					})
-				}
-
-				
+				//获取推荐类别
 				mui.ajax(serverUrl+'/api/mall/recommendforigo', {
 					dataType: 'json', //服务器返回json格式数据
 					type: 'post', //HTTP请求类型 
@@ -762,6 +720,7 @@
 				});
 				//进入列表
 				window.goList = function(pid) {
+//					alert(pid)
 					event.stopPropagation();
 //					getsecid(pid);
 					openview({

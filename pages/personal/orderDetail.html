@@ -200,7 +200,7 @@
 		</div> 
 		<div id="button"></div>
 		<script id="buttonTpl" type="text/html">
-			<!--<div class="renting-footer clearfloat" id="footer"> 
+			<div class="renting-footer clearfloat" id="footer"> 
 				<%if(data.order_status==1){%>
 					<button class="fr BC" onclick="goOrder('<%=data.order_UUID%>','<%=data.goods_data.totalMoney%>')">付款</button>
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','取消')">取消订单</button> 
@@ -216,24 +216,31 @@
 				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
 				<%}%>
 				
-				<%if(data.order_status==3){%>
+				<%if(data.order_status==4){%>
 					<button class="fr BC" onclick="goComment('<%=data.order_id%>')">评价</button>
 					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data.totalMoney%>')">申请退款</button>
-				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
+				 	<!--<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>--> 
 				<%}%>
 				
-				<%if(data.order_status==4){%> 
+				<%if(data.order_status==5){%> 
 				 	<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.goods_data.totalMoney%>')">申请退款</button>
-				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>
+				 	<!--<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>-->
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
 				<%}%>
-				<%if(data.order_status==5 || data.order_status==6 || data.order_status==7 || data.order_status==8){%>
-					<span class="fr" style="margin-right: 15px;">交易金额:<%=total_fee%>  退款金额：￥<%=total_fee%></span>
+				<%if(data.order_status==6){%>
+					<span class="fr" style="margin-right: 15px;">交易金额:<%=total_fee%>  退款金额：￥<%=data.goods_data.PriceCalculValue%></span>
 				<%}%> 
-				<%if(data.order_status==9){%> 
-				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button> 
+				<%if(data.order_status==7){%>
+					<button class="fr BC" onclick="cmtwl(this,'<%=data.order_id%>')">填写退货物流</button>
+					 
+				<%}%> 
+				<%if(data.order_status==8){%>
+					<button class="fr BC">退款成功</button>
+				<%}%> 
+				<%if(data.order_status==10){%>
+					<button class="fr BC">等待退款</button>
 				<%}%>
-			</div>-->
+			</div>
 		</script>
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -431,6 +438,13 @@
 				openview({
 					view:'../market/ruturnList.html', 
 					extrasobj:{orderId:id,price:price} 
+				})
+			}
+			//填写退货物流
+			window.cmtwl = function(id){
+				openview({
+					view:'comitdelivery.html', 
+					extrasobj:{orderId:id,page:"orderDetail"} 
 				})
 			}
 		})

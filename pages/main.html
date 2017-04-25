@@ -1469,16 +1469,19 @@
 						}
 					});
 					//banner跳转
-//					window.bannerGo = function(url, name) {
-//						openview({
-//							view: "bannerTpl.html",
-//							id: "bannerTpl",
-//							extrasobj: {
-//								bannerUrl: url,
-//								bannerName: name
-//							}
-//						})
-//					}
+					window.bannerGo = function(url, name) {
+						if(url != '#'){
+							openview({
+								view: "bannerTpl.html",
+								id: "bannerTpl",
+								extrasobj: {
+									bannerUrl: url,
+									bannerName: name
+								}
+							})
+						}
+						
+					}
 					//类banner两张图
 					mui.ajax(serverUrl + '/api/index/banner', {
 						data: {
@@ -1491,7 +1494,7 @@
 							"token": oldToken
 						},
 						success:function(data){
-							console.log('类banner',data);
+							console.log('类banner'+JSON.stringify(data));
 							mui('.shouye1')[0].src = serverimgUrl + JSON.parse(data.data.banner)[0].pic; 
 							mui('#shouye2')[0].src = serverimgUrl + JSON.parse(data.data.banner)[1].pic; 
 						},
