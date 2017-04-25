@@ -181,6 +181,15 @@
 			</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container" style="margin-top: 50px;"></div>
+		<script type="text/javascript">
+			// 获取状态栏的高度
+			var immersed = 0;
+			var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+			    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+			} 
+			document.getElementById('container').style.marginTop = parseInt(document.getElementById('container').style.marginTop)+immersed+'px';
+		</script>
 	    <div id="main" class="mui-clearfix add-address">
 	    	<div id="thisAddLi"></div>
 	    	<!--<div class="plist clearfloat data">
@@ -297,20 +306,15 @@
 			var oldToken = plus.storage.getItem('oldToken');
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取自己的位置 
-			var positionstr1 = [];
+			var positionstr1 = []; 
 			plus.geolocation.getCurrentPosition( function ( p ) {
 				if(p.coords.longitude && p.coords.latitude){
 					positionstr1 = [p.coords.longitude,p.coords.latitude];
-//					plus.storage.setItem("positionstr1",JSON.stringify(positionstr1)); 
 				}
 				console.log(positionstr1); 
 			}, function ( e ) { 
 				mui.toast( "定位错误！"); 
 			} ,{geocode:true,provider:'amap'}); 
-			
-			
-			
-
 		
 			//获取自己的位置结束
 			//推荐帮帮团
@@ -333,12 +337,11 @@
 							data2.push(data1);
 						}
 					})
-//					var weizhi = JSON.parse(plus.storage.getItem('positionstr1'));
-					mui('#funfun111')[0].onclick = function(){
-						map.setZoomAndCenter(8, positionstr1);
+					mui('#funfun111')[0].onclick = function(){//中心点
+						map.setZoomAndCenter(12, positionstr1); 
 						// 在新中心点添加 marker 
 				        var marker = new AMap.Marker({
-				        	icon : 'http://webapi.amap.com/theme/v1.3/markers/n/loc.png',//24px*24px
+				        	icon : '../../img/dingwei.svg',//24px*24px 
 				            map: map,
 				            position: positionstr1
 				        });
@@ -347,14 +350,7 @@
 					var time1 = setTimeout(function(){
 						mui('#funfun111')[0].onclick();
 					},1000) 
-					
-					
-					
 					console.log('位置',data2);
-					
-					var weizhi2 = []; 
-//					weizhi2.push(weizhi);
-//					alert(weizhi);  
 //				 	var lnglats = [//标准位置格式
 //				        [104.065335, 30.534753],
 //				        [104.068335, 30.534753],
@@ -362,10 +358,10 @@
 //				        [104.068335, 30.534753] 
 //				    ];
 				    var lnglats = data2; 
-//				    var lnglats = weizhi2;
-				    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(-12,-10),center: [106.551166,29.609594]});
+				    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(-6.5,-10)});
 				    for (var i = 0, marker; i < lnglats.length; i++) {
 				        var marker = new AMap.Marker({
+				        	icon : '../../img/banban.svg',
 				            position: lnglats[i], 
 				            map: map
 				        });
@@ -375,9 +371,10 @@
 				        var ccc = "'"+data.data[i].address+"'";
 				        //var ccc = "'嘻嘻'";
 				        if(data.data[i].headPic){
-				        	marker.content = '<img src="'+serverimgUrl+data.data[i].headPic+'" onclick="forHelp('+aaa+','+"'"+data.data[i].area+"'"+','+ccc+')" style="width:25px;height:25px;border-radius:50%" />';
+//				        	marker.content = '<img src="'+serverimgUrl+data.data[i].headPic+'" onclick="forHelp('+aaa+','+"'"+data.data[i].area+"'"+','+ccc+')" style="width:25px;height:25px;border-radius:50%" />';
+				        	marker.content = '<img src="../../img/dianjian.svg" onclick="forHelp('+aaa+','+"'"+data.data[i].area+"'"+','+ccc+')" style="width:20px;height:20px;border-radius:50%" />';
 				        }else{
-							marker.content = '<img src="../../img/end.png" onclick="forHelp('+aaa+','+bbb+','+ccc+')" style="width:40px;height:40px;border-radius:50%" />';
+							marker.content = '<img src="../../img/dianjian.svg" onclick="forHelp('+aaa+','+bbb+','+ccc+')" style="width:20px;height:20px;border-radius:50%" />';
 				        }
 				        marker.on('click', markerClick);
 				        //marker.emit('click', {target: marker});//模拟点击显示第一个头像
@@ -415,7 +412,7 @@
 					}
 				},
 				error:function(xhr,type,errorThrown){
-					mui.toast('当前网络不好,请重试');
+					mui.toast('当前网络不好,请重试'); 
 				}
 			}); 
 		})();
