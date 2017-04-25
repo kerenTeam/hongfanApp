@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>XX详情</title>
+		<title>缴费记录</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -192,7 +192,7 @@
 						<div id="rechargeList"></div>
 						<script type="text/html" id="rechargeTpl">
 								<%for(var t=0;t<list.length;t++){%> 
-									<%if(list[t].state == 1){%>
+									<%if(data.data[t].payment_data.status == 1){%>
 										<div class="recharge clearfloat" onclick="recordDe('<%=list[t].id%>')">
 								    		<div class="czhi box-s">
 								    			<p style="font-size: 0.12rem;"><%=list[t].data.data.orderTime%></p> 
@@ -278,16 +278,25 @@
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
+						console.log("dd ",data)
 						if(data.errno==0){
 							 if(data.data.length!=0){ 
 							 	var rcObj = {};
 							 	for(var t=0;t<data.data.length;t++){ 
-							 		if(data.data[t].state == 1){
-								 	 	  data.data[t].data = eval("("+data.data[t].data+")");
-								 	 	  data.data[t].data.data.orderCost = parseFloat(data.data[t].data.data.orderCost).toFixed(2);
-								 	 	  data.data[t].data.data.saleAmount = parseFloat(data.data[t].data.data.saleAmount).toFixed(2);
-								 	 	  data.data[t].data.data.orderTime = data.data[t].data.data.orderTime.substring(0,10);
-							 		}
+//							 		if(data.data[t].state == 0){
+							 			var dt = new Date(data.data[t].create_time);
+										var date = [
+										  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+										data.data[t].create_time = date;
+								 	 	  data.data[t].payment_data = eval("("+data.data[t].payment_data+")");
+								 	 	  console.log(data.data[t].status == 1)
+								 	 	  if(data.data[t].payment_data.errorToken){
+								 	 	  	  data.data[t].payment_data.data.orderCost = parseFloat(data.data[t].payment_data.data.orderCost).toFixed(2);
+									 	 	  data.data[t].payment_data.data.saleAmount = parseFloat(data.data[t].payment_data.data.saleAmount).toFixed(2);
+
+								 	 	  }
+								 	 	 
+//							 		}
 							 	
 							 	}  
 							 	rcObj.list = data.data; 
