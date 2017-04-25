@@ -88,7 +88,7 @@
 				background-color: #EB8706;
 			}
 			.icon-water{
-				background-color: #00A0E9;
+				/*background-color: #00A0E9;*/
 			}
 			.icon-ele{
 				background-color: #f77565;
@@ -192,16 +192,16 @@
 						<div id="rechargeList"></div>
 						<script type="text/html" id="rechargeTpl">
 								<%for(var t=0;t<list.length;t++){%> 
-									<%if(data.data[t].payment_data.status == 1){%>
-										<div class="recharge clearfloat" onclick="recordDe('<%=list[t].id%>')">
+									<%if(list[t].payment_data.status == 1){%>
+										<div class="recharge clearfloat" onclick="recordDe('<%=list[t].uuid%>')">
 								    		<div class="czhi box-s">
-								    			<p style="font-size: 0.12rem;"><%=list[t].data.data.orderTime%></p> 
+								    			<p style="font-size: 0.12rem;"><%=list[t].create_time%></p> 
 													<div class="icon-water icon">
 														<img src="../../img/theList/pay.png"/>
 													</div>
 													<div class="recordDetail">
-														<p class="recordBig">-<%=list[t].data.data.orderCost%></p>
-														<p class="recordTiny">缴费-户号 <%=list[t].data.data.rechargeAccount%></p>
+														<p class="recordBig">-<%=list[t].payment_data.data.orderCost%></p>
+														<p class="recordTiny">缴费-户号 <%=list[t].payment_data.data.rechargeAccount%></p>
 													</div> 
 								    		</div>
 								    	</div>
@@ -283,14 +283,14 @@
 							 if(data.data.length!=0){ 
 							 	var rcObj = {};
 							 	for(var t=0;t<data.data.length;t++){ 
-//							 		if(data.data[t].state == 0){
+//							 		if(data.data[t].state == 1){
 							 			var dt = new Date(data.data[t].create_time);
 										var date = [
 										  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
 										data.data[t].create_time = date;
 								 	 	  data.data[t].payment_data = eval("("+data.data[t].payment_data+")");
 								 	 	  console.log(data.data[t].status == 1)
-								 	 	  if(data.data[t].payment_data.errorToken){
+								 	 	  if(data.data[t].payment_data.status == 1){
 								 	 	  	  data.data[t].payment_data.data.orderCost = parseFloat(data.data[t].payment_data.data.orderCost).toFixed(2);
 									 	 	  data.data[t].payment_data.data.saleAmount = parseFloat(data.data[t].payment_data.data.saleAmount).toFixed(2);
 
