@@ -302,10 +302,10 @@
 								<%= shop_coupon[i].begin_date %> ~ <%= shop_coupon[i].begin_date %>
 							</p>
 							<p>使用条件：
-								<% if(!shop_coupon[i].salerule || shop_coupon[i].salerule == ""){ %>
-									无限制
+								<% if(shop_coupon[i].typeid == 2){ %><!--满减折扣券-->
+									满<%= shop_coupon[i].discountnum %>元，打<%= shop_coupon[i].discountstr %>折 
 								<% }else{ %>
-									满<%= shop_coupon[i].salerule1 %>减<%= shop_coupon[i].salerule2 %>
+									无限制
 								<% } %>
 							</p>
 							<img src="../../img/ccW.png"/ class="ccW">
@@ -363,13 +363,20 @@
 					var gotCouponId =JSON.parse(plus.storage.getItem("$gotCoupon") || '[]');//获取已经领取的缓存
 					var objdata = {};
 					objdata.list = data.data.system_activity;
-					//优惠卷
-					if(data.data.shop_coupon){
+					
+					
+					//优惠卷部分
+					if(data.data.shop_coupon && data.data.shop_coupon.length){
 						objdata.shop_coupon = data.data.shop_coupon;
+						mui.each(data.data.shop_coupon,function (index,element) {//遍历出 满减折扣券 使用规则
+							element.coupon_amount && (element.discountstr = element.coupon_amount.split(',')[1]*10);//折
+							element.coupon_amount && (element.discountnum = element.coupon_amount.split(',')[0]);//满
+						})
 					}
 					objdata.myUrl = serverimgUrl; 
 					var html=template("details",objdata);
 					document.getElementById("main").innerHTML=html;
+					
 					//详情
 					if(objdata.list.content) {
 						var detailsdom = parseDom(objdata.list.content);
@@ -384,8 +391,6 @@
 							
 							}
 						}) 
-						console.error(document.getElementById("content"));
-						
 						document.getElementById("content").appendChild(detailsdom);
 					}else{
 						document.getElementById("content").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
@@ -399,13 +404,13 @@
 				plus.nativeUI.closeWaiting();
 				var oldToken = plus.storage.getItem('oldToken');
 					//已领取的缓存，修改样式，点击禁用
-					if(data.data.shop_coupon.length){
+					if(data.data.shop_coupon && data.data.shop_coupon.length){
 						for(var k = 0;k<gotCouponId.length;k++){ 
 							for(var n = 0;n < data.data.shop_coupon.length;n++){
 								if(gotCouponId[k]==data.data.shop_coupon[n].id){
 									mui('.waitGet')[n].style.display = 'none';
 									mui('.got')[n].style.display = 'block';
-									mui('.cRight')[n].onclick = function(){}
+									mui('.cRight')[n].onclick = function(){} 
 								}else{
 								}
 							}
@@ -413,7 +418,7 @@
 					}
 					
 					//点击领取优惠券
-					window.getCoupon = function(e,getCouponId){
+					window.getCoupon = function(e,getCouponId,getType){
 						plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 						if(plus.storage.getItem('myToken')){
 							var userId = plus.storage.getItem("userid");
@@ -424,12 +429,12 @@
 								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){
-									if(data.errno == 0){
+									if(data.errno == 0){ 
 										mui.toast("领取成功！");
 										e.getElementsByClassName('waitGet')[0].style.display = 'none';
 										e.getElementsByClassName('got')[0].style.display = 'block';
 										e.onclick = function(){}
-										//已领取的存缓存
+										//把不能重复领取的优惠卷 存入缓存
 										gotCouponId.push(getCouponId);
 										plus.storage.setItem('$gotCoupon', JSON.stringify(gotCouponId)); 
 										plus.nativeUI.closeWaiting();
