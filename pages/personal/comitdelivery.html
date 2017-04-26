@@ -107,7 +107,7 @@
 			</dl>
 			<div class="add">
 				<a href="javascript:;" class="address-add fl" id="addNewAd" onclick="searchD()">
-		     		查询
+		     		确定
 		     	</a>
 			</div>
 	</div>
@@ -187,6 +187,7 @@
 						var uuid = plus.webview.currentWebview().uuid;
 						var buyerId = plus.webview.currentWebview().buyerId;
 						var page = plus.webview.currentWebview().page;
+						console.log(orderId+" "+buyerId+" "+uuid+" "+shipper+','+deliveryNo)
 						mui.ajax(serverUrl+'/api/mall/postnum',{
 							data:{order_id:orderId,buyer:buyerId,order_UUID:uuid,saleReturn_num:shipper+','+deliveryNo},
 							dataType:'json',
@@ -194,10 +195,16 @@
 							timeout:10000,
 							headers:{"token":oldtoken},	 
 							success:function(data,type,xhr){
-//								alert("dfsdfad  "+JSON.stringify(data))
 								plus.nativeUI.closeWaiting()
 								if(data.errno==0){
-									mui.back(); 
+									if(page=="sc-order"){
+										mui.fire(plus.webview.getWebviewById('sc-order'),'refresh');//打开指定页面
+										
+									}
+									if(page == 'orderdetail'){
+										mui.fire(plus.webview.getWebviewById('orderDetail'),'refresh');//打开指定页面
+									}
+ 									mui.back()
 								}
 							},
 							error:function(xhr,type,errorThrown){

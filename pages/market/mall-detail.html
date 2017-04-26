@@ -611,12 +611,17 @@
 							<%}%>
 							<%if((brief.reduction_rule && brief.reduction_rule.length) || (brief.store_reduction && brief.store_reduction.length)){%>
 								<ul class="YH">
-									<%for(var i= 0;i<brief.reduction_rule.length;i++){%>
-										<li>商品满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
+									<%if(brief.reduction_rule && brief.reduction_rule.length){%>
+										<%for(var i= 0;i<brief.reduction_rule.length;i++){%>
+											<li>商品满<%=brief.reduction_rule[i].reachPrice%>减<%=brief.reduction_rule[i].reducePrice%></li>
+										<%}%>
 									<%}%>
-									<%for(var i= 0;i<brief.store_reduction.length;i++){%>
-										<li>店铺满<%=brief.store_reduction[i].reachPrice%>减<%=brief.store_reduction[i].reducePrice%></li>
+									<%if(brief.store_reduction && brief.store_reduction.length){%>
+										<%for(var i= 0;i<brief.store_reduction.length;i++){%>
+											<li>店铺满<%=brief.store_reduction[i].reachPrice%>减<%=brief.store_reduction[i].reducePrice%></li>
+										<%}%>
 									<%}%>
+									
 								</ul>
 							<%}%>
 							
@@ -829,7 +834,7 @@
 				},
 				success: function(data) {
 					if(data.errno == 0) {
-						console.log(JSON.stringify(data.data))
+						console.log(data.data)
 						plus.nativeUI.closeWaiting();
 						if(!data.data.goodsInfo.good_pic) {
 							data.data.goodsInfo.good_pic = null;
