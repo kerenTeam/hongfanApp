@@ -10,7 +10,7 @@ function plusReady(){
 if(window.plus){
     plusReady();
 }else{
-    document.addEventListener('plusready',plusReady,false);
+    document.addEventListener('plusready',plusReady,false); 
 }
 // 检测更新
 function checkUpdate(hide){
@@ -21,21 +21,23 @@ function checkUpdate(hide){
 		type:'post',
 		timeout:3000,
 		headers:{"token":oldtoken},
-		success:function(data,type,xhr){
+		success:function(data,type,xhr){ 
 			console.log('检测更新',data);
+			console.log('检测更新'+JSON.stringify(data));
 			wgtUrl= serverUrl + data.data.android_path_url;
-			var newVer=data.data.versionNum;
-			if(wgtVer&&newVer&&(wgtVer!=newVer)){//升级
+			var newVer=data.data.versionNum;//远程版本号
+			if(newVer > wgtVer){//升级  
+				console.error('开始下载');
                 downWgt(hide,data.data.android_path_url);  // 下载升级包
             }else{
-            	plus.nativeUI.closeWaiting(); 
-                !hide && plus.nativeUI.alert("当前版本为最新版本！");  
-                console.log('当前版本为最新版本');
+            	plus.nativeUI.closeWaiting();  
+                !hide && plus.nativeUI.alert("当前版本为最新版本！"); 
+                console.log('当前版本为最新版本');  
             }
             
 		},
 		error:function(xhr,type,errorThrown){
-			mui.toast('当前网络不好，请重试');
+			mui.toast('当前网络不好，请重试'); 
 			console.error('操作响应失败');
 		}
 	});
@@ -44,15 +46,16 @@ function checkUpdate(hide){
 
 function downWgt(hide,downurl){ 
 	!hide && plus.nativeUI.showWaiting('正在下载...',{width:'130px',height:'110px'});
-    console.log(wgtUrl); 
-    plus.downloader.createDownload(serverUrl+downurl, {filename:"_doc/update/"}, function(d,status){
+    console.log(serverimgUrl+"/"+downurl); 
+    plus.downloader.createDownload(serverimgUrl+"/"+downurl, {filename:"_doc/update/"}, function(d,status){
+    	console.log('下载状态',status);
         if ( status == 200 ) { 
-            console.log("下载wgt成功："+d.filename);
+            console.log("下载wgt成功："+d.filename); 
             if(!hide){
             	plus.nativeUI.confirm("下载完成，是否马上升级！",function(e){
             		var sure = (e.index == 0) ? "确定" : "取消";
             		if (sure == '确定') { 
-            			installWgt(d.filename,hide); // 安装wgt包
+            			installWgt(d.filename,hide); // 安装wgt包 
             		}
             	})
             }else{
@@ -80,7 +83,7 @@ function installWgt(path,hide){
         
     },function(e){
         plus.nativeUI.closeWaiting();
-        console.log("安装wgt文件失败["+e.code+"]："+e.message);
+        console.log("安装wgt文件失败["+e.code+"]："+e.message); 
         !hide && plus.nativeUI.alert("安装失败["+e.code+"]："+e.message);
     });
 }

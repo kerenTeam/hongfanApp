@@ -15,7 +15,6 @@
 		<script type="text/javascript">
 			var ws=null,wo=null;
 			var scan=null,domready=false;
-			// H5 plus事件处理
 			function plusReady(){
 				if(ws||!window.plus||!domready){
 					return;
@@ -28,7 +27,7 @@
 					scan=new plus.barcode.Barcode('bcid');
 				    scan.onmarked=onmarked;
 				    scan.start({conserve:true,filename:"_doc/barcode/"});
-//				    scan.innerHTML = "<div class="goBack" onclick="back();"><a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a></div>"
+				    //scan.innerHTML = "<div class="goBack" onclick="back();"><a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a></div>"
 				});
 			}
 			if(window.plus){
@@ -58,7 +57,8 @@
 			    	break;
 			    }
 			    //result = result.replace(/\n/g, ''); 
-			    alert(result);
+			   	//alert(result);
+			    console.log(JSON.parse(result));
 			    if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
 			    	var dataobj = JSON.parse(result);
 			    	if(dataobj.begin_date && dataobj.end_date){
@@ -76,7 +76,7 @@
 				    		alert('该卷已经过期!');
 				    		mui.back(); 
 				    	}else{
-				    		updatafun(dataobj.user_coupon_id,result,dataobj.uesrid);   
+				    		updatafun(dataobj.user_coupon_id,result,dataobj.userid);   
 				    	}
 			    	}else{
 			    		console.error('没有typeid，核销失败！');
@@ -87,25 +87,25 @@
 			    	alert('核销失败，请重试！'); 
 			    }
 			    
-			   
 			    function updatafun(codeid,result,uesrid){ //上传数据
 				    mui.plusReady(function(){
 				    	var myuserid = plus.storage.getItem('userid');
 						var oldtoken = plus.storage.getItem('oldToken');
 						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
 					    mui.ajax(serverUrl + '/api/mall/couponverify',{
-							data:{"userid":myuserid,"couponid":codeid,'qrcode':result,'uesrid':uesrid},
+							data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'storeid':myuserid},//qruserid:qr拥有者  
 							type:'post',
 							timeout:10000,
 							headers:{"token":oldtoken},
 							success:function(data,type,xhr){
 								plus.nativeUI.closeWaiting();
-//								alert('上传核销返回'+JSON.stringify(data));
-								console.log('上传核销返回'+JSON.stringify(data));
-								console.log('上传核销返回'+data);
+								//alert('上传核销返回'+JSON.stringify(data));
+								console.log('上传核销返回',data);
 								if(data.errno == 0){
+									mui.alert('核销成功');
 									mui.toast('核销成功'); 
 								}else{
+									mui.alert('核销失败');
 									mui.toast('核销失败'); 
 								}
 								mui.back();							
