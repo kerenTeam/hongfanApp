@@ -187,7 +187,7 @@
 					<div class="tab-bd">
 						<div class="tab-pal">
 							<dl class="list listtwo list-in">
-								<%for(var i =0;i<orderData.length;i++){%>
+								<%for(var i =orderData.length-1;i>=0;i--){%>
 										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 											<div class="orderbh clearfloat box-s">
 												<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
@@ -223,16 +223,18 @@
 										 
 												<div class="order-bottom clearfloat box-s tip">
 													<p><!--<sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;-->
-													 
-														合计:￥</sub><%=orderData[i].goods_data.PriceCalculValue%><sub>
-														<%if(orderData[i].goods_data.postData.orderStoreData[0].express_id == -1 || orderData[i].goods_data.postData.orderStoreData[0].express_id == "自提"){%>
+													 <%if(orderData[i].userPostData){%>
+														合计:￥</sub><%=orderData[i].amount%><sub>
+														<%if(orderData[i].userPostData.express_id == -1){%>
 															(不含运费)
-															<%}else{%>
-																(含运费<%=orderData[i].fee%>)
+															<%}else if(orderData[i].userPostData.express_id == -2){%>
+															(自提)	
+																<%}else{%>
+																(含运费)
+																<%}%>
 																<%}%>
 														</sub></p>
 												</div> 
-											<%if(orderData[i].goods_data.postData.orderStoreData[0].express_id != "自提"){%>	
 												
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
@@ -259,7 +261,7 @@
 											<%}%>
 											<%if(orderData[i].order_status==5){%>
 												<div class="order-bottom clearfloat box-s">  
-													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
+													<a class="fr confirm">已评价</a>
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
 												</div>
 											<%}%>
@@ -272,7 +274,7 @@
 											<%if(orderData[i].order_status==7){%>
 												<div class="order-bottom clearfloat box-s">  
 													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
-													<a onclick="cmtwl(this,'<%=orderData[i].order_id%>','<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.postData.userid%>')" class="fr confirm">填写退货物流</a>
+													<a onclick="cmtwl('<%=orderData[i].order_id%>','<%=orderData[i].order_UUID%>','<%=orderData[i].buyer%>')" class="fr confirm">填写退货物流</a>
 												</div>
 											<%}%> 
 											 
@@ -282,50 +284,17 @@
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
 												</div>
 											<%}%> 
+											<%if(orderData[i].order_status==9){%>
+												<div class="order-bottom clearfloat box-s"> 
+													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
+												</div>
+											<%}%> 
 											<%if(orderData[i].order_status==10){%>
 												<div class="order-bottom clearfloat box-s"> 
 													<a class="fr">等待退款</a> 
 												</div>
 											<%}%>
-											<%}else{%>
-												<%if(orderData[i].order_status==1){%>
-												<div class="order-bottom clearfloat box-s">
-													
-													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>
-													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
-												</div>
-											<%}%>
-											<%if(orderData[i].order_status==2){%>
-												<div class="order-bottom clearfloat box-s">
-													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
-												</div>
-											<%}%>
-											<%if(orderData[i].order_status==3){%>
-												<div class="order-bottom clearfloat box-s">
-													<span class="fl" style="color: palevioletred;">| 已选自提</span>
-													<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a> 
-												</div>
-											<%}%>
-											<%if(orderData[i].order_status==4){%>
-												<div class="order-bottom clearfloat box-s">
-													<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
-													<!--<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>-->
-												</div>
-											<%}%>
-											<%if(orderData[i].order_status==5){%>
-												<div class="order-bottom clearfloat box-s">  
-													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
-													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a>
-												</div>
-											<%}%>
-											
-											<%if(orderData[i].order_status==8){%>
-												<div class="order-bottom clearfloat box-s"> 
-													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','删除')" class="fr">删除订单</a> 
-												</div>
-											<%}%> 
-											 	
-												<%}%>
+											 
 										</dd>
 									<%}%>
 									
@@ -379,11 +348,18 @@
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
 						if(data.data.length!=0){ 
-							console.log("对对对 ",data.data)
+							console.log("对对对 ",data)
 							for(var i=0;i<data.data.length;i++){
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
 								}
+								for(var j = 0;j<data.data[i].goods_data.goods_Data.length;j++){
+									data.data[i].goods_data.goods_Data[j].price = parseFloat(data.data[i].goods_data.goods_Data[j].price).toFixed(2); 
+								}
+								if(data.data[i].userPostData){
+									data.data[i].userPostData=eval("("+data.data[i].userPostData+")");
+								}
+								console.log("post  ",data.data[i].userPostData)
 									data.data[i].goods_data.totalMoney = data.data[i].goods_data.PriceCalculValue;
 									
 									if(data.data[i].fee>0){
@@ -561,7 +537,7 @@
 									$('#noOrder').css('display','none');
 									$('dd').each(function(){
 									var status = $(this).attr("data-id");
-									if(status==6 || status==7 || status==8){
+									if(status==6 || status==7 || status==8 || status==10){
 										i++;
 										 $(this).css("display","block");
 									} 
@@ -636,7 +612,6 @@
 				})
 			}
 			window.orderInfo=function(orderId){
-				
 				openview({
 					view:'orderDetail.html',
 					id:'orderDetail',
@@ -654,10 +629,13 @@
 								type:'post',
 								timeout:10000,
 								headers:{"token":oldToken},	 
-								success:function(data,type,xhr){ 
+								success:function(data,type,xhr){
+									console.log("删除订单 ",data)
 									plus.nativeUI.closeWaiting();
 							       if(data.data==1){  
 							       	load();
+							       }else{
+							       	mui.toast("删除订单失败，请重试")
 							       }
 							 },  
 								error:function(xhr,type,errorThrown){

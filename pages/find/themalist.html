@@ -198,7 +198,17 @@
 					var dataobj = {};
 					 if(data.data.pic){
 					 	$("#toppic").attr('src',serverimgUrl+data.data.pic);
-						$('.contentinfo').append(data.data.described)
+					 	var detailsdom = parseDom(data.data.described);
+					 	var detailsimg = detailsdom.getElementsByTagName('img');
+							mui.each(detailsimg, function(index, element) {
+								console.log(element.src.split('pages/find')[1]);
+								element.src = serverimgUrl + element.src.split('pages/find')[1];
+								console.log(element.src);
+								element.onerror = function() {
+									element.src = '../img/market/nodata.svg';
+								}
+							})
+						$('.contentinfo').append(detailsdom)
 					 	
 					 }
 				}else{
@@ -269,6 +279,11 @@
 			}
 		})
 	}
- 
+ 	function parseDom(arg) { //节点转换方法
+				　　
+		var objE = document.createElement("div");　　
+		objE.innerHTML = arg;　　
+		return objE;
+	};s
 </script>
 </html> 

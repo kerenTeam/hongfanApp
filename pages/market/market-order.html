@@ -895,11 +895,7 @@
 			}
 			console.log("shopMoney " + JSON.stringify(shopMoney))
 			console.log("storereduce " + storereduce)
-			//分组商品总价
-			for(var i = 0; i < arrMoney.length; i++) {
-				allGroup += parseFloat(arrMoney[i])
-
-			}
+			 
 			//分商店  订单数据 小计
 			for(var i = 0; i < shopID.length; i++) {
 				var orderList = {};
@@ -1264,9 +1260,9 @@
 					"token": oldtoken
 				},
 				success: function(data, type, xhr) {
-					console.log("抵用券 " + JSON.stringify(data))
+					console.log("抵用券 ",data)
 					var allC = {};
-					var tpldata = [];
+					var tpldata = []; 
 					for(var i = 0; i < data.data.user_coupon.length; i++) {
 
 						if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2)) {
@@ -1279,7 +1275,7 @@
 							} 
 							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
 								if(data.data.user_coupon[i].typeid == 2){ 
-									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=allGroup){
+									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#submit_order').html())){
 										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
 										tpldata.push(data.data.user_coupon[i]).typeid
 									}
@@ -1298,6 +1294,11 @@
 					
 					//优惠券计算
 					$(".checkQuan").click(function() {
+					 
+						var allGroup = 0;
+						for(var i = 0 ; i <$('.groupMoney').length;i++){
+							  allGroup += parseFloat($('.groupMoney').eq(i).html()).toFixed(2);
+						}
 						var qid = $(this).attr("data-id");
 						var qminus = $(this).attr("data-minus");
 						$(this).siblings().find(".quanc").css("display", "none");
