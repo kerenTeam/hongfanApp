@@ -173,6 +173,34 @@
 		var myuserid = plus.storage.getItem('userid');
 		var q_id = plus.webview.currentWebview().qid;
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		
+		//请求专题详情api/news/activityinfo
+		mui.ajax(serverUrl+'/api/news/activityinfo',{//请求id列表
+			data:{"q_id":q_id},
+			dataType:'json',
+			type:'post',
+			timeout:10000,
+			headers:{"token":oldtoken},
+			success:function(data,type,xhr){ 
+				console.log('内容 ',data);
+				if(data.errno==0){
+					var dataobj = {};
+					 
+				}else{
+					mui.toast('当前网络不好，请重试！');	
+				}
+				plus.nativeUI.closeWaiting();
+			},
+			error:function(xhr,type,errorThrown){
+				plus.nativeUI.closeWaiting();
+				mui('#nulldiv')[0].style.display = 'block';
+				mui.toast('当前网络不好，请重试！');
+				console.log('登录响应失败');
+			}
+		});
+		
+		
+		
 		mui.ajax(serverUrl+'/api/news/actnewslist',{//请求id列表
 			data:{"q_id":q_id},
 			dataType:'json',
