@@ -1,19 +1,19 @@
 //var serverUrl='http://192.168.199.191:7200';
 //var serverUrl='http://192.168.0.130:7200';
-var serverUrl='http://hiji.hifete.com';   
-  
-//var propUrl = 'http://192.168.0.128:6789'; 
+var serverUrl='http://hiji.hifete.com';
+
+//var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://hiji.hifete.com:6789';
 var partner_key='syet234876fxcvdj58yjdbn475serop8';
-var serverUrl0='http://192.168.199.191:7200'; 
-var serverUrl1='http://192.168.0.130:7200';  
+var serverUrl0='http://192.168.199.191:7200';
+var serverUrl1='http://192.168.0.130:7200';
 
-var partner_key='syet234876fxcvdj58yjdbn475serop8';    
+var partner_key='syet234876fxcvdj58yjdbn475serop8';
 
-//var serverimgUrl='http://192.168.0.128:6789'; 
-var serverimgUrl='http://hiji.hifete.com:6789'; 
+//var serverimgUrl='http://192.168.0.128:6789';
+var serverimgUrl='http://hiji.hifete.com:6789';
 
-var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment'; 
+var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
 
@@ -26,7 +26,7 @@ function startAlert(content){
 
 
 //关注和取消关注
-function followBack(thisobj,friendid){  
+function followBack(thisobj,friendid){
 	event.stopPropagation();
 	function Success(){
 		event.stopPropagation();
@@ -39,7 +39,7 @@ function followBack(thisobj,friendid){
 		 	}
 		 }else{
 	 		$(thisobj).html("+关注")
-		 }	
+		 }
 	}
 	Success();
  	mui.plusReady(function(){
@@ -62,30 +62,30 @@ function followBack(thisobj,friendid){
 			},
 			error:function(xhr,type,errorThrown){
 				mui.toast('当前网络不好，请重试');
-				console.error('关注操作响应失败'); 
+				console.error('关注操作响应失败');
 				Success();
 			}
 		});
 	})
-} 
+}
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 
 
 //点赞 帖子
-function likeThis(newsId,likedUserid,myuserid,oldtoken){ 
+function likeThis(newsId,likedUserid,myuserid,oldtoken){
 	mui.ajax(serverUrl+"/api/news/likethenews",{
 		data:{newsid:newsId,userid:likedUserid,like_user_id:myuserid},
 		dataType:'json',
 		type:'post',
 		timeout:10000,
-		headers:{"token":oldtoken},	 
+		headers:{"token":oldtoken},
 		success:function(data,type,xhr){
 		},
 		error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting(); 
+				plus.nativeUI.closeWaiting();
 				console.log('响应失败  !');
 			}
-		 
+
 	})
 }
 //点赞 评论
@@ -95,47 +95,47 @@ function likeCmt(commitid,commit_like_user_id,oldtoken){
 		dataType:'json',
 		type:'post',
 		timeout:10000,
-		headers:{"token":oldtoken},	 
+		headers:{"token":oldtoken},
 		success:function(data,type,xhr){
 		},
 		error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting(); 
+				plus.nativeUI.closeWaiting();
 				console.log('响应失败  !');
 			}
-		 
+
 	})
 }
 
 //js控制显示字数
-(function($){  
-    $.fn.wordLimit = function(num){   
-        this.each(function(){     
-            if(!num){  
-                var copyThis = $(this.cloneNode(true)).hide().css({  
-                    'position': 'absolute',  
-                    'width': 'auto',  
-                    'overflow': 'visible'  
-                });   
-                $(this).after(copyThis);  
-                if(copyThis.width()>$(this).width()){  
-                    $(this).text($(this).text().substring(0,$(this).text().length-4));  
-                    $(this).html($(this).html()+'...');  
-                    copyThis.remove();  
-                    $(this).wordLimit();  
-                }else{  
-                    copyThis.remove(); //清除复制  
-                    return;  
-                }     
-            }else{  
-                var maxwidth=num;  
-                if($(this).text().length>maxwidth){  
-                    $(this).text($(this).text().substring(0,maxwidth));  
-                    $(this).html($(this).html()+'...');  
-                }  
-            }                      
-        });  
-    }           
-})(jQuery);  
+(function($){
+    $.fn.wordLimit = function(num){
+        this.each(function(){
+            if(!num){
+                var copyThis = $(this.cloneNode(true)).hide().css({
+                    'position': 'absolute',
+                    'width': 'auto',
+                    'overflow': 'visible'
+                });
+                $(this).after(copyThis);
+                if(copyThis.width()>$(this).width()){
+                    $(this).text($(this).text().substring(0,$(this).text().length-4));
+                    $(this).html($(this).html()+'...');
+                    copyThis.remove();
+                    $(this).wordLimit();
+                }else{
+                    copyThis.remove(); //清除复制
+                    return;
+                }
+            }else{
+                var maxwidth=num;
+                if($(this).text().length>maxwidth){
+                    $(this).text($(this).text().substring(0,maxwidth));
+                    $(this).html($(this).html()+'...');
+                }
+            }
+        });
+    }
+})(jQuery);
 //格式化时间戳
 function formatDate(v, format) {
     if (!v) return "";
@@ -164,4 +164,4 @@ function formatDate(v, format) {
         }
     }
     return format;
-}; 
+};
