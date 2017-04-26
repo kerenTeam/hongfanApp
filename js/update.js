@@ -26,7 +26,7 @@ function checkUpdate(hide){
 			wgtUrl= serverUrl + data.data.android_path_url;
 			var newVer=data.data.versionNum;
 			if(wgtVer&&newVer&&(wgtVer!=newVer)){//升级
-                downWgt(hide);  // 下载升级包
+                downWgt(hide,data.data.android_path_url);  // 下载升级包
             }else{
             	plus.nativeUI.closeWaiting(); 
                 !hide && plus.nativeUI.alert("当前版本为最新版本！");  
@@ -42,10 +42,10 @@ function checkUpdate(hide){
 }
 // 下载wgt文件
 
-function downWgt(hide){ 
+function downWgt(hide,downurl){ 
 	!hide && plus.nativeUI.showWaiting('正在下载...',{width:'130px',height:'110px'});
     console.log(wgtUrl); 
-    plus.downloader.createDownload('http://192.168.0.128:6789/Upload/xls/H55E3990F.wgt', {filename:"_doc/update/"}, function(d,status){
+    plus.downloader.createDownload(serverUrl+downurl, {filename:"_doc/update/"}, function(d,status){
         if ( status == 200 ) { 
             console.log("下载wgt成功："+d.filename);
             if(!hide){

@@ -183,12 +183,12 @@
 			<div class="mui-slider-group" id="bannerdiv">
 				 
 			</div>
-			<div class="mui-slider-indicator" id="sliderlength">
+			<div class="mui-slider-indicator" id="sliderlength"> 
 				
 			</div>
 		</div>
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/app.js"></script>
+		<script src="../js/mui.min.js"></script> 
+		<script src="../js/app.js"></script> 
 		<script>
 			
 		    
@@ -201,10 +201,11 @@
 			            return false; 
 			        }
 			    });
-			    
+			    //自动关闭
 			    var timeclose = setTimeout(function(){
 			    	plus.webview.currentWebview().close();
 			    },5000)
+			    
 				plus.nativeUI.showWaiting();
 				
 				var Timetoken = null;
@@ -269,9 +270,13 @@
 							console.log(allstr);
 							mui('#bannerdiv')[0].innerHTML = allstr;
 							mui('#sliderlength')[0].innerHTML = slidercircle;
+							//轮播图,获得slider插件对象
+							var gallery = mui('.mui-slider');
+							gallery.slider({
+								interval: 50000 //自动轮播周期，若为0则不自动播放，默认为0；
+							}); 
 							//立即体验按钮点击事件
 							document.getElementById("close").addEventListener('tap', function(event) {
-					 
 							plus.navigator.setFullscreen(false);
 							plus.webview.currentWebview().close();
 				}, false);
