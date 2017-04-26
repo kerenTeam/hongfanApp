@@ -559,7 +559,7 @@
 									<%}%>
 									<%if(shopID[i]==0){%>
 									<samll style="font-size:0.1rem;color: gray;">税费
-										<%=goodsList[j].goodsDelivery%> </samll>
+										<%=deliveryarr[j]%> </samll>
 									<%}%>
 								</div>
 							</dd>
@@ -771,7 +771,8 @@
 			shopMoney = [],
 			storeWeight = [],
 			goodsreduce = [],
-			storereduce = [];
+			storereduce = [],
+			deliveryarr = [];
 		var pays = {};
 		mui.plusReady(function() {
 			window.addEventListener('readdstorage', function(event) {
@@ -872,7 +873,7 @@
 						}
 						console.log("goodsreduce " + orderStorage[j].goodsreducemoney);
 						groupNum += parseFloat(orderStorage[j].goodsnum);
-						deliveryFee += parseFloat(orderStorage[j].goodsDelivery);
+						deliveryFee += parseFloat(orderStorage[j].goodsDelivery)*parseFloat(orderStorage[j].goodsnum);
 						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum);
 						groupMoney += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum) - parseFloat(orderStorage[j].goodsreducemoney);
 						if(!orderStorage[j].goodweight || orderStorage[j].goodweight == ' ') {
@@ -881,7 +882,7 @@
 						groupWeight += parseFloat(orderStorage[j].goodweight) * parseFloat(orderStorage[j].goodsnum);
 					}
 				}
-
+				deliveryarr.push(parseFloat(deliveryFee).toFixed(2))
 				storeWeight.push({shopid:shopID[i],weight:parseFloat(groupWeight).toFixed(2)})
 				arrNum.push(groupNum);
 				shopMoney.push({
@@ -919,6 +920,7 @@
 			}
 			
 //			alert(JSON.stringify(storeWeight))
+			data.deliveryarr = deliveryarr;
 			data.storeWeight = storeWeight;
 			data.arrNum = arrNum;
 			data.shopMoney = shopMoney
@@ -1484,7 +1486,7 @@
 								headers: {
 									"token": oldtoken
 								},
-								timeout: 10000, //超时时间设置为10秒； 
+								timeout: 300000, //超时时间设置为10秒；
 								success: function(data) {
 									console.error('支付返回',data);
 									plus.nativeUI.closeWaiting() 
@@ -1507,7 +1509,7 @@
 									}
 
 									var varpay;
-									if(id == 'wxpay') {  
+									if(id == 'wxpay') {
 										varpay = {
 											"appid":data.data.payData.appid,
 											"noncestr":data.data.payData.noncestr,
@@ -1546,7 +1548,7 @@
 												}
 											});
 
-										}, function(e) { 
+										}, function(e) {
 											console.log("----- 支付失败 -----");
 											console.log("[" + e.code + "]：" + e.message);
 											plus.nativeUI.alert("支付失败");

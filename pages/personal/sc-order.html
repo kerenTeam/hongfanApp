@@ -190,30 +190,30 @@
 								<%for(var i =0;i<orderData.length;i++){%>
 										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 											<div class="orderbh clearfloat box-s">
-												<span onclick="goShop('<%=orderData[i].goods_data.Params.goodsData[0].store_id%>')">
+												<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
 													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
-													<%if(orderData[i].goods_data.Params.goodsData[0].stores || orderData[i].goods_data.Params.goodsData[0].stores.store_name){ %>
-														<%=orderData[i].goods_data.Params.goodsData[0].stores.store_name%>
+													<%if(orderData[i].goods_data.stores){ %>
+														<%=orderData[i].goods_data.stores.store_name%>
 													<%}%>
 												</span>
 												<span class="fr state"><%=state[orderData[i].order_status]%></span>
 											</div>
-											<%for(var j =0;j<orderData[i].goods_data.Params.goodsData[0].goods_Data.length;j++){%>
+											<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
 											<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>')">
 												<div class="dealcard dealcardtwo clearfloat">
 													<div class="dealcard-img imgbox">
-														<% if(orderData[i].goods_data.Params.goodsData[0].store_id == 0){ %>
-															<img src="<%=orderData[i].goods_data.Params.goodsData[0].goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% if(orderData[i].goods_data.store_id == 0){ %>
+															<img src="<%=orderData[i].goods_data.goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% }else{ %>
-															<img src="<%=myUrl%><%=orderData[i].goods_data.Params.goodsData[0].goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+															<img src="<%=myUrl%><%=orderData[i].goods_data.goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% } %>
 													</div>
 													<div class="dealcard-block-right dealcard-block-righttwo">
 														<div class="dealcard-brand dealcard-brandtwo single-line">
-															<span class="poi-name icon-count-3"><%=orderData[i].goods_data.Params.goodsData[0].goods_Data[j].title%></span>
+															<span class="poi-name icon-count-3"><%=orderData[i].goods_data.goods_Data[j].title%></span>
 															<div class="price pricetwo">
-																<p>¥<%=orderData[i].goods_data.Params.goodsData[0].goods_Data[j].price%></p>
-																<p class="num">x<%=orderData[i].goods_data.Params.postData.orderStoreData[0].goodsData[j].nums%></p>	
+																<p>¥<%=orderData[i].goods_data.goods_Data[j].price%></p>
+																<p class="num">x<%=orderData[i].goods_data.goods_Data[j].nums%></p>	
 															</div>	
 														</div>									
 													</div>
@@ -225,14 +225,14 @@
 													<p><!--<sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;-->
 													 
 														合计:￥</sub><%=orderData[i].goods_data.PriceCalculValue%><sub>
-														<%if(orderData[i].goods_data.Params.postData.orderStoreData[0].express_id == -1 || orderData[i].goods_data.Params.postData.orderStoreData[0].express_id == "自提"){%>
+														<%if(orderData[i].goods_data.postData.orderStoreData[0].express_id == -1 || orderData[i].goods_data.postData.orderStoreData[0].express_id == "自提"){%>
 															(不含运费)
 															<%}else{%>
 																(含运费<%=orderData[i].fee%>)
 																<%}%>
 														</sub></p>
 												</div> 
-											<%if(orderData[i].goods_data.Params.postData.orderStoreData[0].express_id != "自提"){%>	
+											<%if(orderData[i].goods_data.postData.orderStoreData[0].express_id != "自提"){%>	
 												
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
@@ -272,7 +272,7 @@
 											<%if(orderData[i].order_status==7){%>
 												<div class="order-bottom clearfloat box-s">  
 													<!--<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>-->
-													<a onclick="cmtwl(this,'<%=orderData[i].order_id%>','<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.Params.postData.userid%>')" class="fr confirm">填写退货物流</a>
+													<a onclick="cmtwl(this,'<%=orderData[i].order_id%>','<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.postData.userid%>')" class="fr confirm">填写退货物流</a>
 												</div>
 											<%}%> 
 											 

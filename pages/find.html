@@ -119,6 +119,7 @@
 				-webkit-column-gap: 10px;
 				column-gap: 10px;
 				padding: 10px;
+
 			}
 			
 			.boxf {
@@ -136,6 +137,7 @@
 			}
 			
 			.center {
+				display: block;
 				text-align: center;
 				margin: 0.8rem 0;
 				color: gray;
@@ -219,6 +221,7 @@
 		}
 		/*加载*/
 		#upload {
+
 			text-align: center;
 			font-size: 15px;
 			line-height: 30px;
@@ -236,7 +239,7 @@
 		</style>
 	</head>
 
-	<body>
+	<body style="padding-bottom: 50px;">
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">发现</h1>
@@ -284,13 +287,14 @@
 				<%}%>
 			</ul>
 		</script>
-		<div id="typeNews"></div>
+		<div id="mainpic">
+		</div>
 		<script type="text/html" id="typeNewTpl">
 
-			<%if(recommendData.length==0){%>
+			<%if(!recommendData){%>
 			<div class="center">看看其他类别呢</div>
 			<%}else{%>
-			<div id="mainpic">
+			
 				<%for(var i=0;i<recommendData.length;i++){%>
 				<div class="boxf" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')">
 					<div class="pic">
@@ -314,7 +318,6 @@
 				</div>
 
 				<%}%>
-			</div>
 			<%}%>
 
 		</script>
@@ -429,7 +432,11 @@
 		mui.plusReady(function() {
 			var oldtoken = plus.storage.getItem('oldToken');
 			var myuserid = plus.storage.getItem('userid');
-
+			
+			window.addEventListener('refreshNews',function(event){
+				getNews('')
+			})
+			
 			//banner
 			//请求 专题 数据 
 	    		mui.ajax(serverUrl+"/api/news/activitylist",{
@@ -483,50 +490,6 @@
 					}
 	        }) 
 		 
-			//获取海报信息
-//			mui.ajax(serverUrl + "/api/news/activity", {
-//				dataType: 'json',
-//				type: 'post',
-//				timeout: 10000,
-//				headers: { "token": oldtoken },
-//				success: function(data, type, xhr) {
-//					if(data.errno == 0) {
-//						console.log("海报信息 ", JSON.stringify(data));
-//						if(data.data.length != 0) {
-//							for(var i = 0; i < data.data.length; i++) {
-//								if(data.data[i].act_pic.indexOf('http') == -1) {
-//									data.data[i].act_pic = serverimgUrl + data.data[i].act_pic;
-//									console.log("fsd" + data.data[i].act_pic);
-//								}
-//							}
-//
-//							var theameObj = {};
-//							theameObj.myurl = serverimgUrl;
-//							theameObj.theameData = data.data;
-//							document.getElementById("theame").innerHTML = template("theameTpl", theameObj);
-//
-//							//专题 活动切换
-//							$("figure").click(function() {
-//								var type = $(this).attr("id");
-//								var acid = $(this).attr("data-actid")
-//								openview({
-//									view: "find/thematicActivities.html",
-//									extrasobj: {
-//										type: type,
-//										acid: acid
-//									}
-//								})
-//							})
-//						}
-//					}
-//
-//				},
-//				error: function(xhr, type, errorThrown) {
-//					plus.nativeUI.closeWaiting()
-//					console.log('响应失败  !');
-//				}
-//			})
-
 			// 发现动态的分类  
 			mui.ajax(serverUrl + "/api/news/category", {
 				dataType: 'json',
@@ -598,8 +561,9 @@
 							var recommendObj = {};
 							recommendObj.myUrl = serverimgUrl;
 							recommendObj.recommendData = dataobj;
-							document.getElementById("typeNews").innerHTML = template("typeNewTpl", recommendObj);
+							document.getElementById("mainpic").innerHTML = template("typeNewTpl", recommendObj);
 							mui("#upload")[0].innerHTML = "";
+							plus.nativeUI.closeWaiting(); //关闭等待框 
 							//上滑加载
 							$(window).scroll(function() {　　
 								var scrollTop = $(this).scrollTop();　　
@@ -633,7 +597,7 @@
 													var recommendObj = {}
 													recommendObj.myUrl = serverimgUrl;
 													recommendObj.recommendData = dataobj
-													document.getElementById("typeNews").innerHTML += template("typeNewTpl", recommendObj);
+													document.getElementById("mainpic").innerHTML += template("typeNewTpl", recommendObj);
 												}
 												mui("#upload")[0].innerHTML = "";
 												Spagenum++; //加载成功,当前页+1
@@ -655,7 +619,7 @@
 							plus.nativeUI.closeWaiting();
 							mui("#upload")[0].innerHTML = "";
 						}
-						plus.nativeUI.closeWaiting(); //关闭等待框 
+						
 						//发布者主页
 						$(".findUser").click(function() {
 							event.stopPropagation()

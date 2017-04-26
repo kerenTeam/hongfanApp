@@ -245,7 +245,7 @@
 													<div class="fchidl">
 														<img src="../img/10.png" alt="" class="userAvator" onclick="gootpage('<%=recommendData[i].user_id%>')"/>
 										<%}%>
-									<div> <b class="nameB"><%=recommendData[i].nickname%></b> <br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_time%></small></div>
+									<div> <b class="nameB"><%=recommendData[i].nickname%></b> <br><img src="../img/time.png" class="timef" alt="" /> <small><%=recommendData[i].create_news_time%></small></div>
 								</div>
 								
 							</div>
@@ -436,7 +436,9 @@
     	var oldtoken = plus.storage.getItem('oldToken');
         var myuserid = plus.storage.getItem('userid');
     	
-		
+		window.addEventListener('refreshNews',function(event){
+				getNews()
+		})
 		  	
 		//下拉刷新
 	    downRe(getNews);
@@ -468,12 +470,12 @@
 								if(dataobj[i].pic && dataobj[i].pic.indexOf('picImg')>-1){
 										dataobj[i].pic = serverimgUrl + JSON.parse(dataobj[i].pic)[0].picImg; 
 									}
-								var dt = new Date(dataobj[i].create_time);
+								var dt = new Date(dataobj[i].create_news_time);
 								var date = [
 								  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
 								  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
 								].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-								dataobj[i].create_time = date
+								dataobj[i].create_news_time = date
 							}  
 							var recommendObj = {};
 							recommendObj.myUrl = serverimgUrl;
@@ -501,7 +503,7 @@
 									console.log('发起请求,实到' + Spagenum + '页');
 									console.log('发起请求,应到' + Ypagenum + '页');
 									mui.ajax(serverUrl + '/api/news/newslist', {
-										data:{currentPage:Spagenum,numsPerPage:numsPerPage,userid:myuserid,categoryid:'',isMyFriendPage:""},
+										data:{currentPage:Spagenum,numsPerPage:numsPerPage,userid:myuserid,isMyFriendPage:true},
 						        		dataType:'json',
 										type:'post',
 										timeout:10000,

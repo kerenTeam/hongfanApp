@@ -230,30 +230,37 @@
 			</li>-->
 		</ul>
 			<script type="text/html" id="infolist">
-				<% for(var i=list.length-1; i>=0; i--){%>
-				<li class="" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
-					<div id="spandiv">
-						<span id="" class="spanL">发了贴</span>
-						<span id="" class="spanR">
-							<% if(list[i].create_time){%>
-					    		<%= list[i].create_time%>
-					    	<% }%>
-						</span>
-					</div>
-					<div id="Dcon" class="aClick2">
-						<div class="imgdiv">
-							<% if(list[i].pic){%>
-								<% if(list[i].pic.indexOf('http')>-1){%>
-									<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
-								<% }else{%>
-									<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
-								<% }%>	
-							<% }%>		
-						</div>
-						<p><%= list[i].content%></p>
-					</div>
-				</li>
-				<% }%>	
+				<%if(list.length!=0){%>
+					<% for(var i=0;i<list.length;i++){%>
+						<%if(list[i].user_id == otherid){%>
+							<li class="" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
+								<div id="spandiv">
+									<span id="" class="spanL">发了贴</span>
+									<span id="" class="spanR">
+										<% if(list[i].create_news_time){%>
+								    		<%= list[i].create_news_time%>
+								    	<% }%>
+									</span>
+								</div>
+								<div id="Dcon" class="aClick2">
+									<div class="imgdiv">
+										<% if(list[i].pic){%>
+											<% if(list[i].pic.indexOf('http')>-1){%>
+												<img src="<%= list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
+											<% }else{%>
+												<img src="<%= url + list[i].pic%>" alt="" onerror="this.src ='../img/zhaoxiangji.svg',this.style.height = '100%'"/>
+											<% }%>	
+										<% }%>		
+									</div>
+									<p><%= list[i].content%></p>
+								</div>
+							</li>
+						<%}%>
+					<%}%>		
+				<%}else{%>
+					暂无动态
+				<%}%>
+				
 			</script>
 			<div id="upload" style="padding-bottom: 20px;min-height: 50px;padding-top:10px;background-color: #fff;color: #999;text-align: center;"> 
 			</div>
@@ -452,7 +459,7 @@
 		});
 		//4.他的动态
 		mui.ajax(serverUrl+'/api/news/newslist',{ 									
-			data:{currentPage:1,numsPerPage:10,userid:otherid,categoryid:'',isMyFriendPage:true}, 
+			data:{currentPage:1,numsPerPage:10,userid:otherid,isMyFriendPage:true}, 
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	
@@ -467,13 +474,14 @@
 							if(ele.pic.indexOf('picImg')>-1){
 								ele.pic = JSON.parse(ele.pic)[0].picImg;
 							}
-							var dt = new Date(ele.create_time);
+							var dt = new Date(ele.create_news_time);
 								var date = [
 								  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
 								  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
 								].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-								ele.create_time = date
+								ele.create_news_time = date
 						})
+						dataobj.otherid = otherid;
 						dataobj.list = data.data.data;
 						dataobj.url = serverimgUrl;
 						
@@ -497,7 +505,7 @@
 								console.log('发起请求,实到'+Spagenum+'页');									
 								console.log('发起请求,应到'+Ypagenum+'页');
 								mui.ajax(serverUrl+'//api/news/newslist',{ 	
-									data:{currentPage:Spagenum,numsPerPage:10,userid:otherid,categoryid:'',isMyFriendPage:true}, 
+									data:{currentPage:Spagenum,numsPerPage:10,userid:otherid,isMyFriendPage:true}, 
 									dataType:'json',//服务器返回json格式数据 
 									type:'post',//HTTP请求类型 
 									timeout:10000,//超时时间设置为10秒；	
@@ -510,13 +518,14 @@
 												if(ele.pic.indexOf('picImg')>-1){
 													ele.pic = JSON.parse(ele.pic)[0].picImg;
 												}
-												var dt = new Date(ele.create_time);
+												var dt = new Date(ele.create_news_time);
 												var date = [
 												  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
 												  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
 												].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-												ele.create_time = date
+												ele.create_news_time = date
 											})
+											dataobj.otherid = otherid;
 											dataobj.list = data.data.data; 
 											dataobj.url = serverimgUrl;
 											//获取并渲染用户信息
