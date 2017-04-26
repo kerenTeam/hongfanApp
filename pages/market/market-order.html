@@ -1025,10 +1025,12 @@
 								console.log("youhuo "+JSON.stringify(data.data))
 								for(var i = 0; i < data.data.length; i++) {
 									var countpostfee = parseInt(data.data[i].basicsPrice);
+									if(data.data[i].beyondKg == 0){
+										data.data[i].beyondKg =1;
+									}
 									var overWeight =(parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg);
-									
 									if(overWeight > 0) {
-										overWeight = Math.ceil(overWeight)
+										overWeight = Math.ceil(overWeight);
 										countpostfee = parseInt(data.data[i].basicsPrice) + overWeight * parseInt(data.data[i].beyondPrice)
 									}
 
