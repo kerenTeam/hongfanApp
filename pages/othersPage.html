@@ -298,14 +298,13 @@
 			}
 		})
 	}
-//数据处理
-	var otherid;
+//数据处理 
 	var Spagenum = 2;//实到页数
 	var Ypagenum = 1;//应到页数
 	mui.plusReady(function(){ 
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
-		otherid = plus.webview.currentWebview().idnum;
+		var otherid = plus.webview.currentWebview().idnum;
 		plus.nativeUI.showWaiting();
 		var loadnum = 0;
 		//1.头像名字
@@ -459,7 +458,7 @@
 		});
 		//4.他的动态
 		mui.ajax(serverUrl+'/api/news/newslist',{ 									
-			data:{currentPage:1,numsPerPage:10,userid:otherid,isMyFriendPage:true}, 
+			data:{currentPage:1,numsPerPage:50,userid:otherid,isMyFriendPage:true}, 
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	
@@ -505,9 +504,8 @@
 								console.log('发起请求,实到'+Spagenum+'页');									
 								console.log('发起请求,应到'+Ypagenum+'页');
 								mui.ajax(serverUrl+'//api/news/newslist',{ 	
-									data:{currentPage:Spagenum,numsPerPage:10,userid:otherid,isMyFriendPage:true}, 
+									data:{currentPage:Spagenum,numsPerPage:20,userid:otherid,isMyFriendPage:true}, 
 									dataType:'json',//服务器返回json格式数据 
-									type:'post',//HTTP请求类型 
 									timeout:10000,//超时时间设置为10秒；	
 									headers:{"token":oldtoken}, 
 									success:function(data){
