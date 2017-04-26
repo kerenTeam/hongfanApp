@@ -126,7 +126,7 @@
 			</div>
 			<script type="text/html" id="infolist">
 				<%for(var i=0;i<list.length;i++){%>
-					<span id="" onclick="spanclick(this)">
+					<span id="<%=list[i].tag_id%>" onclick="spanclick(this)">
 					#<%=list[i].tagName%>#
 				</span>
 				<%}%>
@@ -162,7 +162,9 @@
 <script type="text/javascript">
 	//选择图片
 	var Apic = [];//图片存放数组 
+	var qid;
 	mui.plusReady(function() {
+		qid=plus.webview.currentWebview().qqid;
 		mui('#nowpic')[0].addEventListener('tap',function(){
 			plus.nativeUI.actionSheet({
 					cancel: "取消",
@@ -209,7 +211,7 @@
 				console.log('登录响应失败');
 			}
 		});
-		
+		 
 		function getImage(){//拍照并保存
 			var cmr = plus.camera.getCamera();
 			cmr.captureImage( function ( path ) {
@@ -346,12 +348,19 @@
 		})
 
 	})//plusready
-		
+	
+	 
+	
 	//发送 发布
 	mui('.baocun')[0].addEventListener('tap',function(){ 
 		var tagstr = ' ';
 		mui.each(mui('.biaoqian')[0].getElementsByClassName('active'),function (index,element) {
-			tagstr += element.innerText;
+			if(index == mui('.biaoqian')[0].getElementsByClassName('active').length-1){
+				tagstr += element.id;
+			}else{
+				tagstr += element.id+',';
+			}
+			
 		})
 		console.log('图片',Apic);
 		console.log('标签',tagstr);
@@ -364,54 +373,93 @@
 		}else if(!Apic.length){
 			mui.toast('请选择一张照片');
 		}else{
-			plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});
-			mui.plusReady(function(){ 
-				var myuserid = plus.storage.getItem('userid');
-				var oldtoken = plus.storage.getItem('oldToken');
-				//发送数据
-				var task = plus.uploader.createUpload(serverUrl+'/api/news/addnews', 
-					{ method:"POST"},
-					function(back,status){
-						if(status == 200){ 
-							console.log(back.responseText);
-							var dataobj = JSON.parse(back.responseText);
-							if(dataobj.errno == 0){
-								if(plus.webview.getWebviewById('Follow')){//触发关注分享刷新，并打开关注分享
-									mui.fire(plus.webview.getWebviewById('Follow'),'refresh');
+			var myuserid = plus.storage.getItem('userid');
+			var oldtoken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/useraccount/userinfo',{//请求昵称
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data,type,xhr){
+					console.log('获取用户数据返回'+JSON.stringify(data));
+					if(data.errno == 0){ 
+//						data.data[0].nickname = 0
+						if(!data.data[0].nickname || data.data[0].nickname=='null'){
+							mui.confirm('需要设置你的昵称哦？', '提示', ['取消', '确定'], function(e) {
+								if(e.index == 1) {
+									openview({
+										view: "personal/setup.html",
+										extrasobj: {
+											pageid: "setup"
+										}
+									})
 								}
-								var time2 = setTimeout(function(){//关闭当前
-									if(!plus.webview.getWebviewById('Follow')){
-										openview({
-											view:'Follow'+'.html',
-											id:'Follow'
-										});
-									}
-									plus.nativeUI.closeWaiting();//关闭等待框
-									mui.toast('发布成功');
-									plus.webview.show('Follow',"fade-in",300);
-									plus.webview.currentWebview().hide();
-									plus.webview.currentWebview().close();
-								},1000);
-    						}else{
-    							plus.nativeUI.closeWaiting();//关闭等待框
-    							mui.toast('发布失败，请重试！');	
-    						}
-						}else{
-							plus.nativeUI.closeWaiting();//关闭等待框
-							mui.toast('当前网络不好，请重试！');	
-						}
-						
-					}
-				);
-				task.setRequestHeader('token',oldtoken);
-				task.addData("userid",myuserid); 
-				task.addData("content",content);
-				task.addData("fix",mapAddress);
-				task.addData("tags",tagstr);
-				task.addFile(Apic[0], {key:"pic"} );
-				task.start();
 
-			})
+							})
+						}else{
+							plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});
+							mui.plusReady(function(){ 
+							
+								//发送数据
+								var task = plus.uploader.createUpload(serverUrl+'/api/news/addnews', 
+									{ method:"POST"},
+									function(back,status){
+										if(status == 200){ 
+											console.log(back.responseText);
+											var dataobj = JSON.parse(back.responseText);
+											if(dataobj.errno == 0){
+												if(plus.webview.getWebviewById('Follow')){//触发关注分享刷新，并打开关注分享
+													mui.fire(plus.webview.getWebviewById('Follow'),'refresh');
+												}
+												var time2 = setTimeout(function(){//关闭当前
+													if(!plus.webview.getWebviewById('Follow')){
+														openview({
+															view:'Follow'+'.html',
+															id:'Follow'
+														});
+													}
+													plus.nativeUI.closeWaiting();//关闭等待框
+													mui.toast('发布成功');
+													mui.fire(plus.webview.getWebviewById('find'),"refreshNews");
+													mui.fire(plus.webview.getWebviewById('Follow'),"refreshNews");
+													mui.fire(plus.webview.getWebviewById('centerPage'),"refreshNews")
+													plus.webview.show('Follow',"fade-in",300);
+													plus.webview.currentWebview().hide();
+													plus.webview.currentWebview().close();
+												},1000);
+				    						}else{
+				    							plus.nativeUI.closeWaiting();//关闭等待框
+				    							mui.toast('发布失败，请重试！');	
+				    						}
+										}else{
+											plus.nativeUI.closeWaiting();//关闭等待框
+											mui.toast('当前网络不好，请重试！');	
+										}
+										
+									}
+								);
+								console.log("qid "+qid)
+								task.setRequestHeader('token',oldtoken);
+								task.addData("userid",myuserid); 
+								task.addData("q_id",qid)
+								task.addData("content",content);
+								task.addData("fix",mapAddress);
+								task.addData("tags",tagstr);
+								task.addFile(Apic[0], {key:"pic"} );
+								task.start();
+				
+							})
+						}
+					}else{
+						mui.toast('网络不好，请重试'); 
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取用户数据,响应失败');
+				}
+			});	
+			 
 		}
 	})
 </script>

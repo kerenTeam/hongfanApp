@@ -557,7 +557,7 @@
 		
 					</p>
 					 
-					<div class="view"><img src="../../img/serveForPeople/acmap.png" alt="" /> <small style="vertical-align: middle;margin-right: 10px;"><%=recommendData.newsinfodata[0].fix%></small> <img src="../../img/eye.svg" alt="" /> <small style="vertical-align: middle;"><%=recommendData.liker.length%></small></div>
+					<div class="view"><img src="../../img/serveForPeople/acmap.png" alt="" /> <small style="vertical-align: middle;margin-right: 10px;"><%=recommendData.newsinfodata[0].fix%></small> <img src="../../img/eye.svg" alt="" /> <small style="vertical-align: middle;"><%=recommendData.newsinfodata[0].read%></small></div>
 					<!--查看列表-->
 					<%if(recommendData.liker && recommendData.liker.length){%>
 						<ul class="looker">
@@ -847,7 +847,14 @@
 									}
 									 
 								}
-							}   
+							} 
+							var dt = new Date(dataobj.newsinfodata[0].create_news_time);
+							var date = [
+							  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+							  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+							].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+							dataobj.newsinfodata[0].create_news_time = date
+							$("#pbtime").html(date)
 							var recommendObj = {};
 							recommendObj.myUrl = serverimgUrl;
 							recommendObj.recommendData = dataobj;
@@ -1040,7 +1047,7 @@
 								commentObj.myUrl = serverimgUrl;
 								commentObj.cmtData = dataobj;
 								document.getElementById("cmtAll").innerHTML = template("cmtTpl", commentObj);  
-								$("#pbtime").html(date)
+							
 								var cmlist = document.getElementsByClassName("cmlist");
 								for(var t=0;t<cmlist.length;t++){
 									var fuserid = cmlist[t].getAttribute("data-fromUserId"); 
