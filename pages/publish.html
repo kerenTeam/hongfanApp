@@ -134,7 +134,7 @@
 		        <div class="onepic">
 		            <!--<input type="file" id="file_input"/>--> 
 		            <img id="nowpic" src="../img/publisf.svg">
-		        </div>
+		        </div> 
 		    </div> 
 		    
 			<!--地理定位-->
@@ -217,19 +217,25 @@
 				plus.io.resolveLocalFileSystemURL(path,function(entry){ 
 					//把拍摄图片的路径转化成 本地文件url
 					path = plus.io.convertLocalFileSystemURL(path);
-					var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+					if(0!=path.indexOf("file://")){
+						path="file://"+path;
+					} 
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+		    		var endpic = path.split('.')[0]+"/"+nowpic;
+		    		console.error(path);
+		    		console.error(endpic);
 					plus.zip.compressImage({//压缩方法
 						src:path,
-						dst:"file:///storage/emulated/0/androidesk/portrait/"+nowpic,
+						dst:endpic,
 						overwrite:true,
 						quality:30
 					},
-					function() {
-						showImg('file:///storage/emulated/0/androidesk/portrait/'+nowpic);
+					function() { 
+						showImg(endpic);
 						Apic = [];
-						Apic.push('file:///storage/emulated/0/androidesk/portrait/'+nowpic);
+						Apic.push(endpic); 
 					},function(error) {
-						mui.toast('图片获取错误，请重试');
+						mui.toast('图片获取错误，请重试'); 
 					}); 
 					//无压缩
 					//showImg(path);
@@ -245,44 +251,49 @@
 		    plus.gallery.pick( function(e){
 		    	lfs=e.files;
 		    	for(var i in e.files){
-		    		console.log(e.files[i]);
+		    		if(0!=e.files[i].indexOf("file://")){
+						e.files[i]="file://"+e.files[i];
+					} 
 		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+		    		var endpic = e.files[i].split('.')[0]+"/"+nowpic;
+		    		console.error(e.files[i]);
+		    		console.error(endpic);
 		    		plus.zip.compressImage({//压缩方法
 						src:e.files[i],
-						dst:"file:///storage/emulated/0/androidesk/portrait/"+nowpic,
+						dst:endpic,
 						overwrite:true,
 						quality:30
 					},
 					function() {
-						showImg('file:///storage/emulated/0/androidesk/portrait/'+nowpic);
+						showImg(endpic);
 						Apic = []; 
-						Apic.push('file:///storage/emulated/0/androidesk/portrait/'+nowpic);
+						Apic.push(endpic);
 					},function(error) {
-						mui.toast('图片获取错误，请重试'); 
+						mui.toast('图片获取错误，请重试');  
 					});
-					//无压缩
+					//无压缩 
 			    	//showImg(e.files[i]);
-			    	//Apic = [];
+			    	//Apic = []; 
 					//Apic.push(e.files[i]);
 		    	}
-		    }, function ( e ) {
+		    }, function ( e ) {  
 //		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
-		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
+		    },{filter:"image",multiple:true,maximum:2,system:false,onmaxed:function(){
 				plus.nativeUI.alert('只能选择1张图片');  
 		    }});
 		}
 		function showImg(url){//显示图片
-			if(0!=url.indexOf("file://")){
-				url="file://"+url;
+			if(0!=url.indexOf("file://")){        
+				url="file://"+url;  
 			}
-			mui('#nowpic')[0].src = url;
-		}
-	});
+			mui('#nowpic')[0].src = url;    
+		} 
+}); 
 	//选择图片结束
 	
-	function spanclick(obj){
+	function spanclick(obj){ 
 		console.log(obj)
-		if(obj.className == 'active'){
+		if(obj.className == 'active'){ 
 			obj.className = '';
 		}else{
 			obj.className = 'active';
@@ -339,10 +350,10 @@
 		}
 		//是否显示位置
 		$('.mui-switch').click(function() {
-			if($(this).hasClass("mui-active")) {
+			if($(this).hasClass("mui-active")) { 
 				getGeocode();
 			} else {
-				$('#mapAddress').html("我的位置")
+				$('#mapAddress').html("我的位置") 
 			}
 		})
 	})//plusready
@@ -383,7 +394,7 @@
 					if(data.errno == 0){ 
 //						data.data[0].nickname = 0
 						if(!data.data[0].nickname || data.data[0].nickname=='null'){
-							mui.confirm('需要设置你的昵称哦？', '提示', ['取消', '确定'], function(e) {
+				mui.confirm('需要设置你的昵称哦？', '提示', ['取消', '确定'], function(e) {
 								if(e.index == 1) {
 									openview({
 										view: "personal/setup.html",
@@ -391,7 +402,7 @@
 											pageid: "setup"
 										}
 									})
-								}
+								} 
 							})
 						}else{
 							plus.nativeUI.showWaiting('发送中 ...',{width:'100px',height:'80px'});

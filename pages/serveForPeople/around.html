@@ -346,11 +346,18 @@
 				            position: positionstr1
 				        });
 					}
-					positionstr1.length == 2 &&(mui.toast('定位成功'));
-					var time1 = setTimeout(function(){
-						mui('#funfun111')[0].onclick();
-					},1000) 
-					console.log('位置',data2);
+					
+					var time1 = null;
+					clearInterval(time1);
+					time1 = setInterval(function(){
+						console.log('循环加载位置',data2); 
+						if(positionstr1.length == 2){
+							mui.toast('定位成功')
+							clearInterval(time1); 
+						}
+						mui('#funfun111')[0].onclick(); 
+					},100)  
+					
 //				 	var lnglats = [//标准位置格式
 //				        [104.065335, 30.534753],
 //				        [104.068335, 30.534753],
