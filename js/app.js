@@ -8,22 +8,22 @@ var partner_key='syet234876fxcvdj58yjdbn475serop8';
 var serverUrl0='http://192.168.199.191:7200';
 var serverUrl1='http://192.168.0.130:7200';
 
-var partner_key='syet234876fxcvdj58yjdbn475serop8';
+var partner_key='syet234876fxcvdj58yjdbn475serop8'; 
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
 
-var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
+var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment'; 
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
-//var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
+//var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified'; 
 
 //执行alert方法
-
-function startAlert(content){ 
+function alertF(content){ //非姐的方法 
 	alert(content)
 }
-
-
+function alertY(content){ //向前的方法 
+	alert(content) 
+}
 
 //关注和取消关注
 function followBack(thisobj,friendid){
