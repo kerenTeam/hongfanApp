@@ -549,16 +549,16 @@
     		getCmt();
     		function getCmt(){ 
 				mui.ajax(serverUrl+"/api/news/newscommit",{
-	    			data:{newsid:newsId,userid:myuserid},
+	    			data:{newsid:newsId,userid:''},
 	        		dataType:'json',
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){ 
+								console.log(data)
 						if(data.errno == 0) { 
 							if(data.data){ 
 								var dataobj = data.data;
-								console.log(JSON.stringify(dataobj))
 								var newdata = [],innerData=[];
 								for(var i=0;i<dataobj.commit.length;i++){
 									dataobj.commit[i].news_userid = news_userId; 

@@ -19,12 +19,19 @@
 	<body>
 		
 	<style type="text/css" id="heightcss">
+	*{
+		overflow-x: hidden!important;
+	}
+	#iframe{
+		width: 100% !important;
+		overflow: hidden;
+	}
 	</style>
 
 		<!--<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">看电影</h1>
-		</header>--> 
+		</header> -->
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<script type="text/javascript">
 			(function(){
@@ -38,17 +45,20 @@
 				document.getElementById('heightcss').innerHTML = '#iframe{position: absolute;width: 100%;height: '+(bodyH-immersed)+'px;}';
 			})()
 		</script> 
-		<iframe id="iframe" src=""></iframe> 
+		<iframe id="iframe" frameborder="0" scrolling="no" src="http://m.maoyan.com/?from=singlemessage" style="width: 100% !important;" ></iframe> 
 		<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript">
 			statisticsfun('看电影主页');//统计代码
 			mui.init();
 		
+		
+		
+		
 			mui.plusReady(function(){
 				plus.nativeUI.showWaiting()
-				var iframeSrc = plus.webview.currentWebview().bannerUrl; 
-					mui("#iframe")[0].src =iframeSrc; 
+//				var iframeSrc = plus.webview.currentWebview().bannerUrl; 
+//					mui("#iframe")[0].src =iframeSrc; 
 					plus.nativeUI.closeWaiting();  
 				$(parent.window).scroll(function(){
 			 
@@ -56,6 +66,13 @@
 				    top : $(parent.window).scrollTop()
 				  });
 				});
+				
+				var meta = document.getElementById("iframe").getElementsByName('viewport');
+				alert(meta.length)
+				for(var i=0;i<meta.length;i++){
+					meta[i].setAttribute('content',"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no");
+				}
+				
 				
 			})
 		</script>

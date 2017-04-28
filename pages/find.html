@@ -502,12 +502,11 @@
 							var newType = {};
 							newType.tpdata = data.data;
 							document.getElementById("newsType").innerHTML = template("newsTypeTpl", newType);
-
-							//默认加载第一类的动态列表 
-							getNews($(".findType li:first-child").attr("data-ctid"))
+							//默认加载第一类的动态列表
+							getNews('')
 
 							//点击分类 切换动态
-							$(".findType li").on("tap", function() {
+							$(".findType li").on("click", function() {
 
 								if(!$(this).hasClass("active")) {
 									getNews($(this).attr("data-ctid"))
@@ -531,15 +530,15 @@
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数 
 			//获取动态列表
-			function getNews(ctid) {
+			function getNews(ctid) { 
 				plus.nativeUI.showWaiting()
 				var currentPage = 1,
 					numsPerPage = 10;
 				mui.ajax(serverUrl + "/api/news/newslist", {
-					data: { currentPage: currentPage, numsPerPage: numsPerPage, userid: myuserid, categoryid: ctid, isMyFriendPage: "" },
+					data: { currentPage: currentPage, numsPerPage: numsPerPage, categoryid: ctid, isMyFriendPage: "" },
 					dataType: 'json',
 					type: 'post',
-					timeout: 10000,
+					timeout: 100000,
 					headers: { "token": oldtoken },
 					success: function(data, type, xhr) {
 						console.log('栏目数据',data);
@@ -576,10 +575,10 @@
 										console.log('发起请求,实到' + Spagenum + '页');
 										console.log('发起请求,应到' + Ypagenum + '页');
 										mui.ajax(serverUrl + '/api/news/newslist', {
-											data: { currentPage: Spagenum, numsPerPage: numsPerPage, userid: myuserid, categoryid: ctid, isMyFriendPage: "" },
+											data: { currentPage: Spagenum, numsPerPage: numsPerPage, categoryid: ctid, isMyFriendPage: "" },
 											dataType: 'json',
 											type: 'post',
-											timeout: 10000,
+											timeout: 100000,
 											headers: { "token": oldtoken },
 											success: function(data, type, xhr) {
 												if(data.errno == 0) {
