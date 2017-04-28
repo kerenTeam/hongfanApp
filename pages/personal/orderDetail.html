@@ -139,16 +139,22 @@
 						<dl id="deal-terms" class="list">
 							<dd class="dd-padding dd-paddingfour">
 								<ul>
-									
-									<%if(data.PriceCalculation.Params.goodsData[0].postAge){%>
-									<li class="gray">
-										<div class="tip-title">邮费<span class="fr">￥ <%=data.PriceCalculation.Params.goodsData[0].postAge%></span></div>
-									</li>
-									<%}else{%>
+									<%if(data.userPostData.express_id){%>
 										<li class="gray">
-											<div class="tip-title">邮费<span class="fr">包邮</span></div>
-										</li>
-										<%}%>
+														<div class="tip-title">邮费无<span class="fr">自提</span></div>
+													</li>
+										<%}else{%>
+											<%if(data.PriceCalculation.Params.goodsData[0].postAge){%>
+												<li class="gray">
+													<div class="tip-title">邮费<span class="fr">￥ <%=data.PriceCalculation.Params.goodsData[0].postAge%></span></div>
+												</li>
+												<%}else{%>
+													<li class="gray">
+														<div class="tip-title">邮费<span class="fr">包邮</span></div>
+													</li>
+													<%}%>
+											<%}%>
+									
 										<%if(data.is_intergal){%>
 											<li class="gray">
 												<div class="tip-title">积分抵扣<span class="fr">-￥ <%=data.is_intergal%></span></div>
@@ -274,6 +280,7 @@
 //						alert(JSON.stringify(data.data)) ;
 				       if(data.errno===0){
 				       			data.data[0].PriceCalculation = eval("("+data.data[0].PriceCalculation+")");
+				       			data.data[0].userPostData = JSON.parse(data.data[0].userPostData)
 					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
 					       	 if(data.data[0].fee){
 									
