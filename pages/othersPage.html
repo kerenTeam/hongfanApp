@@ -301,8 +301,14 @@
 //数据处理 
 	var Spagenum = 2;//实到页数
 	var Ypagenum = 1;//应到页数
-	mui.plusReady(function(){ 
-		var oldtoken = plus.storage.getItem('oldToken');
+	mui.plusReady(function(){
+		reload();
+		document.addEventListener('refresh2', function() {
+				reload();
+			})
+		
+		function reload(){
+			var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
 		var otherid = plus.webview.currentWebview().idnum;
 		plus.nativeUI.showWaiting();
@@ -567,6 +573,7 @@
 		  		clearInterval(time1);
 			}
 		},100)
+		}
 	})
     // 粉丝 
     $("#followed").on("tap",function(){
