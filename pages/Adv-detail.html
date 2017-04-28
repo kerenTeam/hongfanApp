@@ -77,14 +77,14 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">HOT</h1>
+		    <h1 class="mui-title"></h1>
 			<!--<a href="setup.html" class="fr shoucang sousuo mui-icon"><i class="iconfont icon-fenxiang"></i></a>-->
 		</header>
 		<script src="../js/statusBar.js"></script><!--状态栏-->
 		<div class="infocon ymt ymb" id="ad"></div>
 			
 		<script type="text/html" id="ad-detail">
-			<h4><%= adLi.title %></h4>
+			<!--<h4><%= adLi.title %></h4>-->
 			<div class="infomidd">
 				<img src="<%= myUrl %><%= adLi.pic %>"/>
 				<div id="AdContent"></div>
@@ -111,6 +111,8 @@
 			mui.plusReady(function(){ 
 				var oldToken = plus.storage.getItem('oldToken');
 				var AdvId = plus.webview.currentWebview().AdvId;
+				var title = plus.webview.currentWebview().title;
+				mui('.mui-title')[0].innerHTML=title;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl +'/api/index/adsinfo',{
 					data:{id:AdvId},

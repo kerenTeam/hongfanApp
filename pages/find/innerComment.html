@@ -382,7 +382,7 @@
 							<ul class="mui-table-view-striped mui-table-view-condensed" style="padding: 20px 0;">
 							 
 								<%for(var i =cmtData.length-1;i>=0;i--){%>
-									<%if(cmtData[i].to_user_id == 0){%>
+									<%if(cmtData[i].to_commit_id == 0){%>
 										<li class="mui-table-view-cell cmlist" data-fromUserId="<%=cmtData[i].from_user_id%>" data-commitId="<%=cmtData[i].id%>">
 											<div class="mui-slider-cell">
 												<div class="oa-contact-cell mui-table">
@@ -465,7 +465,12 @@
 													<div class="oa-contact-position mui-h6 ctime"><%=innercmtData[i].create_time_as%></div>
 													<%if(innercmtData[i].p_commit_id){%>
 														<p class="oa-contact-email mui-h6">
-															回复<span class="toinner">@<%=innercmtData[i].to_user_id%></span>:<%=innercmtData[i].content%>
+															<%if(innercmtData[i].to_user_name){%>
+																回复<span class="toinner">@<%=innercmtData[i].to_user_name%></span>:<%=innercmtData[i].content%>
+															<%}else{%>
+																回复<span class="toinner">@<%=innercmtData[i].to_user_id%></span>:<%=innercmtData[i].content%>
+															<%}%>
+
 														</p> 
 														<%}else{%>
 															<p class="oa-contact-email mui-h6">
@@ -555,12 +560,15 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){ 
+								console.log(data)
 						if(data.errno == 0) { 
 							if(data.data){ 
 								var dataobj = data.data;
-								console.log(JSON.stringify(dataobj))
 								var newdata = [],innerData=[];
 								for(var i=0;i<dataobj.commit.length;i++){
+									
+									
+									
 									dataobj.commit[i].news_userid = news_userId; 
 									if(!dataobj.commit[i].nickname){
 										dataobj.commit[i].nickname = "匿名"

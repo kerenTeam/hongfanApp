@@ -410,7 +410,7 @@
 					width: 0.32rem;
 					height: 0.32rem;
 				}
-				.looker li:last-child {
+				.moreLiked {
 					line-height: 0.32rem;
 				}
 			}
@@ -420,9 +420,9 @@
 					width: 0.42rem;
 					height: 0.42rem;
 				}
-				.looker li:last-child {
+				.moreLiked {
 					line-height: 0.42rem;
-				}
+				} 
 			}
 			
 			.heart:hover,
@@ -620,7 +620,7 @@
 					
 						<ul class="mui-table-view-striped mui-table-view-condensed">
 							<%for(var i =cmtData.commit.length-1;i>=0;i--){%>
-								<%if(cmtData.commit[i].to_user_id == 0){%>
+								<%if(!cmtData.commit[i].to_commit_id){%>
 									<li class="mui-table-view-cell cmlist" data-fromUserId="<%=cmtData.commit[i].from_user_id%>" data-commitId="<%=cmtData.commit[i].id%>">
 										<div class="mui-slider-cell">
 											<div class="oa-contact-cell mui-table">
@@ -956,8 +956,8 @@
 							//回复跳转
 							$(".orp").click(function(){ 
 								//被评人id
-								var to_user_id = 0; 
-								var to_commit_id = ''
+								var to_user_id = $(this).attr("data-to_user_id"); 
+								var to_commit_id = ''; 
 								//帖子id
 								var friend_news_id = $(this).attr("data-friend_news_id") ;
 								if(plus.storage.getItem('myToken')){
@@ -999,7 +999,7 @@
 			function getCmt(){ 
 				//取得评论信息 用于news详细 和评论详细
 				mui.ajax(serverUrl+"/api/news/newscommit",{
-	    			data:{newsid:newsId,userid:''},
+	    			data:{newsid:newsId,userid:myuserid},
 	        		dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -1122,7 +1122,7 @@
 			function getCmtcmt(t,fuserid,cucommitid){
 				var newDataObj = [];
 				mui.ajax(serverUrl+"/api/news/newscommit",{
-	    			data:{newsid:newsId,userid:''},
+	    			data:{newsid:newsId,userid:myuserid},
 	        		dataType:'json',
 					type:'post',
 					timeout:10000,
