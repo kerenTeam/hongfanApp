@@ -84,7 +84,16 @@ function installWgt(path,hide){
     },function(e){
         plus.nativeUI.closeWaiting();
         console.log("安装wgt文件失败["+e.code+"]："+e.message); 
-        !hide && plus.nativeUI.alert("安装失败["+e.code+"]："+e.message);
+        if(!hide){
+        	if (e.message.indexOf('不匹配')>-1) {  
+        		plus.nativeUI.alert("更新完成， 重启完成升级！",function(){ 
+		            plus.runtime.restart();
+		        });
+        	} else{
+        		plus.nativeUI.alert("安装失败["+e.code+"]："+e.message);
+        	} 
+        }
+        //!hide && plus.nativeUI.alert("安装失败["+e.code+"]："+e.message);
     });
 }
 /*

@@ -309,6 +309,9 @@ function openAgreement(){
 					success:function(data){
 						console.log('注册返回'+JSON.stringify(data));
 						if(data.errno==0){//注册成功直接登录
+							//统计
+							plus.statistic.eventDuration( "signUp", 1);
+							
 							plus.storage.setItem("$IsReg","1")
 							mui.ajax(serverUrl+'/api/useraccount/login',{
 								data:{"phone":account.value,"password":password.value},

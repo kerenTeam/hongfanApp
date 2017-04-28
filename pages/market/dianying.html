@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>看电影</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-touch-fullscreen" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="format-detection" content="address=no">
+        <link rel="stylesheet" type="text/css" href="../../css/common.css">
+        <link rel="stylesheet" type="text/css" href="../../css/index.css">
+        <link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
+        <link rel="stylesheet" href="../../css/reset.css"> 
+    </head>
+
+    <body>
+    <style type="text/css">
+        /*body{width: 100px !important;overflow: hidden;}*/  
+        /*iframe{display: block;width: 200px !important;overflow: hidden;}*/ 
+    </style>
+    <style type="text/css" id="heightcss"> 
+    </style>
+        <div id="" style="font-size: 50px;color: red; display: none;">
+            哈哈
+        </div>
+        <!--<header class="mui-bar mui-bar-nav">
+            <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+            <h1 class="mui-title">看电影</h1>
+        </header>-->
+        <script src="../../js/statusBar.js"></script><!--状态栏--> 
+        <!--<script type="text/javascript">
+            (function(){
+                // 获取状态栏的高度
+                var immersed = 0;
+                var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+                if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+                    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+                }
+                var bodyH = window.screen.height;    
+                document.getElementById('heightcss').innerHTML = '#iframe{position: absolute;width:100%;height: '+(bodyH-immersed)+'px;}';
+            })()
+        </script>  -->
+        <!--<iframe id="iframe" width="100%" src=""></iframe>-->    
+        <script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../js/mui.min.js"></script>
+        <script type="text/javascript"> 
+            var bitmap1=null;
+            
+            mui.plusReady(function(){ 
+                mui.init({
+                    swipeBack: true //启用右滑关闭功能
+                });
+                // 获取状态栏的高度
+                var immersed = 0;
+                var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+                if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+                    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+                }  
+                var w = plus.webview.create( "http://m.maoyan.com",'dianying',{top:immersed+'px'} );
+                w.show(); // 显示窗口 
+                
+                
+                bitmap1 = new plus.nativeObj.Bitmap('bmp1');
+                bitmap1.load('../../img/fanhui1.png',function(){
+                    console.log('../../img/fanhui1.png load success!');
+                },function(e){
+                    console.log('../../img/fanhui1.png load failed! '+JSON.stringify(e));
+                });
+                var view = new plus.nativeObj.View('test',{bottom:'20px',left:'20px',height:'44px',width:'44px'});
+                // 绘制图片  
+                var indexi = 0; 
+                var time11 = setInterval(function(){
+                	indexi ++; 
+                	if(indexi == 10){
+                		clearInterval(time11);
+                	}
+                	view.drawBitmap( bitmap1, {bottom:'0px',left:'0px',width:'100%',height:'100%'}, {bottom:'0px',left:'0px',width:'100%',height:'100%'} );
+               		view.show();
+                },200)  
+                
+                var oldback = mui.back;
+                mui.back = function(){
+                    view.clear();
+                    oldback();
+                } 
+                view.addEventListener('click',function(){ 
+                    mui.back();  
+                })
+                
+            })
+            
+        </script>
+
+        <!--<script type="text/javascript"> 
+            statisticsfun('看电影主页');//统计代码
+            mui.init();
+        
+            mui.plusReady(function(){
+                plus.nativeUI.showWaiting()
+                var iframeSrc = plus.webview.currentWebview().bannerUrl; 
+                    mui("#iframe")[0].src =iframeSrc; 
+                    plus.nativeUI.closeWaiting();  
+                $(parent.window).scroll(function(){
+             
+                  $('.box-middle').css({
+                    top : $(parent.window).scrollTop() 
+                  });
+                });
+                
+            })
+        </script>-->
+        
+        <script type="text/javascript">
+				//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
+				//充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 特色馆 specialBar
+				mui.plusReady(function () {
+					var startTime, endTime, stayTime, flagback = 0;
+					startTime = new Date().getTime();
+					var old_back = mui.back;
+					//改写返回键返回的函数，返回时传页面停留时间 
+					mui.back = function(){
+						endTime = new Date().getTime();//返回时间
+						stayTime = (endTime - startTime) / 60000;  
+						console.log('电影'+stayTime); 
+						plus.statistic.eventDuration( "movie", stayTime);
+						//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+						old_back(); 
+					}
+					plus.webview.currentWebview().addEventListener( "popGesture", function(){
+						flagback++;
+						if(flagback == 1){
+							endTime = new Date().getTime();
+							stayTime = (endTime - startTime) / 60000;  
+							plus.statistic.eventDuration( "movie", stayTime);
+							//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+						}
+					}, false );
+				});
+			</script> 
+    </body>
+</html>
