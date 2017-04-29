@@ -225,12 +225,12 @@
 				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
 				<%}%>
 				<%if(data.order_status==4){%>
-					<button class="fr BC" onclick="goComment('<%=data.order_id%>')">评价</button>
-					<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>
+					<button class="fr BC" onclick="goComment('<%=data.order_id%>',<%=data.userPostData.goodsData.length%>,<%=data.userPostData.goodsData[0].goodsid%>,<%=data.userPostData.storeid%>)">评价</button>
+					<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
 				 	<!--<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>--> 
 				<%}%>
 				<%if(data.order_status==5){%> 
-				 	<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>
+				 	<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
 				 	<!--<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>-->
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
 				<%}%>
@@ -403,11 +403,19 @@
 					extrasobj:{payMent:payment,uuid:id}
 				})
 			} 
-			window.goComment=function(orderId){
-				openview({
-					view:'comment.html',
-					extrasobj:{orderId:orderId,pageid:'orderDetail'}
-				})
+			window.goComment=function(orderId,goodlength,goodId,stroid){
+				if(goodlength==1){
+					openview({
+						view:'comment.html',
+						extrasobj:{orderId:orderId,goodid:goodId,pageid:'sc-order',stroId:stroid}
+					})
+				}else{
+					openview({
+						view:'commentGoods.html',
+						extrasobj:{orderId:orderId,pageid:'sc-order',stroId:stroid}
+					})
+				}
+				
 			}
 			window.viewLogistics=function(id,deliveryNo,shipper){
 				openview({ 

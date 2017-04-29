@@ -1094,6 +1094,13 @@
 						var cemmentObj = {} 
 						for(var i = 0; i < commentobj.length; i++) {
 							commentobj[i].seller_ctime = commentobj[i].seller_ctime.substring(0, 10) + ' ' + commentobj[i].seller_ctime.substring(11, 16);
+							
+							var dt = new Date(commentobj[i].seller_ctime);
+									var date = [
+									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+									  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+									commentobj[i].seller_ctime = date
 							commentobj[i].comment_pic = eval("(" + commentobj[i].comment_pic + ")");
 							commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
 						}
