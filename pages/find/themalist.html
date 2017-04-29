@@ -178,11 +178,18 @@
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		document.getElementsByClassName("jointheame")[0].onclick = function(){
 			console.log(q_id)
-			openview({
-				view:"../publish.html",
-				id:"publish",
-				extrasobj:{qqid:q_id}
-			})
+			if(plus.storage.getItem('myToken')){ 
+				openview({
+					view:"../publish.html",
+					id:"publish",
+					extrasobj:{qqid:q_id}
+				})
+			}else{//没登陆直接打开登录页面
+				mui.toast('请登录');
+				openview({
+					view:'../login.html'
+				});
+			}
 		}
 		//请求专题详情api/news/activityinfo
 		mui.ajax(serverUrl+'/api/news/activityinfo',{//请求id列表
@@ -242,10 +249,9 @@
 									if(element.pic.indexOf('picImg') > -1)
 									element.pic = JSON.parse(element.pic)[0].picImg;
 									console.log(element.pic);  
-
 								}
 							} 
-							if(element.avatar.indexOf("[")!=-1){
+							if(element.avatar && element.avatar.indexOf("[") > -1){
 								element.avatar =serverimgUrl + JSON.parse(element.avatar)[0].picImg;
 							}
 						})
@@ -284,6 +290,6 @@
 		var objE = document.createElement("div");　　
 		objE.innerHTML = arg;　　
 		return objE;
-	};s
+	};
 </script>
 </html> 

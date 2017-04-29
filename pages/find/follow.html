@@ -71,7 +71,7 @@
 		<div id="nulldiv" style="padding-top: 50%;text-align:center;font-size: 14px;color: #999;display: none;">
 			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 			<br />
-			还没有评论
+			没有相关信息
 		</div>
 		<div id="main">
 			<!--<div class="follow">
@@ -99,20 +99,27 @@
 						<%= list[i].nickname%>
 					</div>
 					<% if(list[i].status != 'own1'){%>
-						<% for(var j=0; j<followme.length; j++){%>
-							<% if(followme[j] == list[i].user_id){%>
-								<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
-									互相关注
-								</button>
-								<% break;%>
-							<% }%>
-							<% if(j == followme.length-1){%>
-								<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined">
-									已关注
-								</button> 
-							<% }%>	
-						<% }%>
-					<% }%>	
+						<% if(!followme.length){%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined">
+								已关注
+							</button> 
+						<% }else{%>
+							<% for(var j=0; j<followme.length; j++){%> 
+								<% if(followme[j] == list[i].user_id){%>
+									<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
+										互相关注
+									</button>
+									<% break;%>
+								<% }%>
+								<% if(j == followme.length-1){%>
+									<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  mui-btn-outlined">
+										已关注
+									</button> 
+								<% }%>	
+							<% }%> 
+						<% }%>	
+					<% }%>
+					
 				</div>
 			<% }%>	
 		</script>
@@ -244,6 +251,7 @@
 												plus.nativeUI.closeWaiting();
 											}else{
 												plus.nativeUI.closeWaiting();
+												alert(1);
 												mui('#nulldiv')[0].style.display = 'block';
 												mui.toast('当前网络不好，请重试！');	
 											}
@@ -260,6 +268,7 @@
 								
 							} else{//没有数据
 								mui('#nulldiv')[0].style.display = 'block';
+								plus.nativeUI.closeWaiting();
 							}
 						}else{
 							plus.nativeUI.closeWaiting();
@@ -274,7 +283,7 @@
 						console.log('登录响应失败');
 					}
 				});
-			}else{
+			}else{ 
 				mui.ajax(serverUrl+'/api/news/myfollow',{
 					data:{"userid":myuserid},
 					dataType:'json',
@@ -290,6 +299,7 @@
 									mui.each(data.data.followMe,function (index,element) {
 										followme.push(element.user_id);
 									})
+									console.log('个人主页，我的粉丝',followme);
 									mui.each(data.data.myFollow,function (index,element) {
 										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
 											element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
@@ -303,7 +313,7 @@
 										if(element.user_id == useridnow){
 											element.status = 'own1';
 										}
-									})
+									}) 
 								}
 								var dataobj = {};
 								dataobj.url = serverimgUrl;

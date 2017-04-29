@@ -555,56 +555,7 @@
 		</div>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		//statisticsfun('宏帆广场主页');//统计代码
-		//统计开始
-			mui.plusReady(function(){
-				//时间转化	
-				function formatSeconds(value) {
-		            var theTime = parseInt(value);// 秒
-		            var theTime1 = 0;// 分
-		            var theTime2 = 0;// 小时
-		            if(theTime > 60) {
-		                theTime1 = parseInt(theTime/60);
-		                theTime = parseInt(theTime%60);
-		                if(theTime1 > 60) {
-		                    theTime2 = parseInt(theTime1/60);
-		                    theTime1 = parseInt(theTime1%60);
-		                }
-		            }
-			        var result = ""+parseInt(theTime)+"秒";
-		            if(theTime1 > 0) {
-		                result = ""+parseInt(theTime1)+"分"+result;
-		            }
-		            if(theTime2 > 0) {
-		                result = ""+parseInt(theTime2)+"时"+result;
-		            }
-		            return result;
-		        }
-				
-				var starttime = new Date().getTime();
-				var old_back = mui.back;
-				var flagback = 0;
-				mui.back = function(){//结束计时逻辑代码
-					var endtime = new Date().getTime();
-					var intervaltime = (endtime - starttime)/1000;
-					var timeall = formatSeconds(intervaltime);
-					console.log('宏帆广场主页'  +  timeall + intervaltime);
-					plus.statistic.eventDuration( "leave", 1000, {'宏帆广场主页': timeall} );//统计
-					old_back();
-				}
-				plus.webview.currentWebview().addEventListener( "popGesture", function(){
-					flagback++;
-					if(flagback == 1){//结束计时逻辑代码
-						var endtime = new Date().getTime();
-						var intervaltime = (endtime - starttime)/1000;
-						var timeall = formatSeconds(intervaltime);
-						console.log('宏帆广场主页'  +  timeall + intervaltime);
-						plus.statistic.eventDuration( "leave", 1000, {'宏帆广场主页': timeall} );//统计
-					}
-				}, false );
-				
-			})
-			//统计开始结束
+		
 		 (function(){
 			//跳转页面
 			var bcenter = document.getElementsByClassName('bcenter')[0];
@@ -793,7 +744,7 @@
 			//改写返回键返回的函数，返回时传页面停留时间 
 			mui.back = function(){
 				endTime = new Date().getTime();//返回时间
-				stayTime = (endTime - startTime) / 60000;  
+				stayTime = Math.ceil((endTime - startTime) / 1000);   
 				console.log('购物中心'+stayTime); 
 				plus.statistic.eventDuration( "shopCenter", stayTime);
 				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
@@ -803,7 +754,7 @@
 				flagback++;
 				if(flagback == 1){
 					endTime = new Date().getTime();
-					stayTime = (endTime - startTime) / 60000;  
+					stayTime = Math.ceil((endTime - startTime) / 1000);  
 					plus.statistic.eventDuration( "shopCenter", stayTime);
 					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 				}

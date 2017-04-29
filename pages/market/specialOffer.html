@@ -124,7 +124,7 @@
 		//改写返回键返回的函数，返回时传页面停留时间 
 		mui.back = function(){
 			endTime = new Date().getTime();//返回时间
-			stayTime = (endTime - startTime) / 60000;  
+			stayTime = Math.ceil((endTime - startTime) / 1000);   
 			console.log('天天特价'+stayTime); 
 			plus.statistic.eventDuration( "discountGoods", stayTime);
 			//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
@@ -134,7 +134,7 @@
 			flagback++;
 			if(flagback == 1){
 				endTime = new Date().getTime();
-				stayTime = (endTime - startTime) / 60000;
+				stayTime = Math.ceil((endTime - startTime) / 1000); 
 				plus.statistic.eventDuration( "discountGoods", stayTime);
 				//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 			}
