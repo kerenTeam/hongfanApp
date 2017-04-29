@@ -190,7 +190,7 @@
 						<div id="rechargeList"></div>
 						<script type="text/html" id="rechargeTpl">
 							<%for(var t=0;t<list.length;t++){%>
-								<%if(list[t].state ==1 && !list[t].payment_data.errorToken){%>
+								<%if(list[t].payment_data.status ==1 && !list[t].payment_data.errorToken){%>
 									
 									<div class="recharge clearfloat"> <!-- onclick="recordDe('<%=list[t].uuid%>')"-->
 									<div class="recharge clearfloat"> 
@@ -200,7 +200,7 @@
 													<img src="../../img/tickets/phone.png"/>
 												</div>
 												<div class="recordDetail">
-													<p class="recordBig">-<%=list[t].payment_data.data.itemCost%></p>
+													<p class="recordBig">-<%=list[t].payment_data.data.saleAmount%></p>
 													<p class="recordTiny">充值<%=list[t].payment_data.data.saleAmount%>元-<%=list[t].payment_data.data.rechargeAccount%></p>
 												</div> 
 							    		</div>
@@ -236,12 +236,13 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
+					console.log(data)
 					plus.nativeUI.closeWaiting()
 					if(data.errno==0){
 						 if(data.data.length!=0){ 
 						 	var rcObj = {};
 						 	for(var t=0;t<data.data.length;t++){ 
-						 		if(data.data[t].state == 1){
+//						 		if(data.data[t].state == 1){
 						 			console.log(data.data[t])
 						 			var dt = new Date(data.data[t].create_time);
 									var date = [
@@ -254,7 +255,7 @@
 								 	 	data.data[t].payment_data.data.saleAmount = parseFloat(data.data[t].payment_data.data.saleAmount).toFixed(2);
 						 			}
 						 		}  
-						 		}
+//						 		}
 						 	rcObj.list = data.data;
 						 	mui("#rechargeList")[0].innerHTML = template("rechargeTpl",rcObj);
 						 }else{

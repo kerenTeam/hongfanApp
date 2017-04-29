@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>晒单评价</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
+		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
+	</head>
+	<style type="text/css">
+	.gray{
+		color: gray;
+		font-size: 12px!important;
+	}
+	.sjname{
+		border: 0;
+		background-color: white!important;	
+	}
+	dl.list {
+		border: 0!important;
+		border-bottom: 0!important;
+	}
+		dl.listtwo dd{ 
+			background: #eeeeee!important;
+			border-bottom: 0;
+			border-top: 2px solid white;
+			padding-bottom: 0.19rem;
+		}
+		dl.listtwo dd:first-child{
+			border-top: 0;
+		}
+		dl.listtwo dd:last-child{
+			padding-bottom: 0.1rem;
+		}
+		.renting-footer { 
+			background-color: white; 
+			border-top: 1px solid #ddd;
+		}
+		.renting-footer button{
+			margin-top: 0.1rem;
+    		margin-right: 0.15rem;
+		}
+		.BC{
+			background-color: #ec4d1c;
+			color: white;
+			border: 1px solid #ec4d1c;
+		}
+		dl.listtwo dd>.react {
+		    padding: .15rem .12rem 0rem .15rem;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title">晒单评价</h1>  
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="container">		
+			<div id="main"> 
+				<div id="orderInfo"></div>
+				<script type="text/html" id="orderTpl">
+					<div class="deal" data-orderId="<%=data.order_id%>">
+						<div class="sjname box-s" onclick="goStore('<%=data.PriceCalculation.Params.goodsData[0].store_id%>')">
+									<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.PriceCalculation.Params.goodsData[0].stores.store_name%></span>
+									 <span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
+								</div>
+								<dl class="list listtwo">
+									 <%for(var i = 0;i<data.PriceCalculation.Params.goodsData[0].goods_Data.length;i++){%>
+									 	<dd onclick="gogood('<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].g_id%>')">
+											<div class="react">												
+												<div class="dealcard">
+													<div class="dealcard-img imgbox">
+														<span></span>
+															<%if(data.PriceCalculation.Params.goodsData[0].goods_Data[i].storeid == 0){%>
+															<img src="<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+															<%}else{%>
+																<img src="<%=myUrl%><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+															<%}%>
+														
+													</div>
+													<div class="dealcard-block-right">
+														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].title%></span> <span class="fr">￥<b><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].price%></b></span></div>
+														<div class="title text-block fl">
+														</div>
+														<button class="fr" style="margin-top: 0.2rem;" onclick="goComment('<%=data.PriceCalculation.Params.goodsData[0].store_id%>','<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].g_id%>')">去评价</button>
+												</div>
+											</div>
+										</dd> 
+									 	<%}%> 
+								</dl>
+					</div>
+				</script> 
+			</div>
+		</div> 
+		<div id="button"></div>
+		 
+	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			
+			window.addEventListener('refresh',function(event){  
+				load();
+			})
+			
+			var myuserid = plus.storage.getItem('userid');
+			var orderId = plus.webview.currentWebview().orderId;
+			var oldtoken = plus.storage.getItem('oldToken');
+			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
+			
+			load();
+			function load(){
+				mui.ajax(serverUrl+'/api/mall/orderinfo',{
+					data:{order_id:orderId},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},	 
+					success:function(data,type,xhr){ 
+						plus.nativeUI.closeWaiting();
+//						alert(JSON.stringify(data.data)) ;
+				       if(data.errno===0){
+				       			data.data[0].PriceCalculation = eval("("+data.data[0].PriceCalculation+")");
+				       			data.data[0].userPostData = JSON.parse(data.data[0].userPostData)
+					       	 data.data[0].goods_data=eval("("+data.data[0].goods_data+")");
+					       	 if(data.data[0].fee){
+									
+									data.data[0].goods_data.totalMoney = parseFloat(data.data[0].goods_data.totalMoney+data.data[0].fee).toFixed(2)
+									
+									if(data.data[0].fee>0){
+										data.data[0].fee = "+￥"+data.data[0].fee;
+									}else{
+										data.data[0].fee = "-￥"+data.data[0].fee;
+									}
+									 
+								}
+					       	 var dt = new Date(data.data[0].create_time);
+									var date = [
+									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+									  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+									data.data[0].create_time = date
+					       	 var orderInfo = {}; 
+					        orderInfo.myUrl = serverimgUrl;
+					        orderInfo.data= data.data[0];
+					        console.log("orderInfo.data ",data)
+					        document.getElementById("orderInfo").innerHTML = template("orderTpl",orderInfo);
+					       
+				       }
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting()
+						console.log('响应失败  !');
+					}
+				});
+			}
+			 window.goComment=function(orderId,goodId,storeid){ 
+			 	event.stopPropagation()
+				openview({
+					view:'comment.html',
+					extrasobj:{orderId:orderId,goodid:goodId,pageid:'sc-order',storeId:storeid}
+				})
+			}
+			window.goStore=function(storeId){
+				openview({
+							view:'../market/shophome.html',
+							extrasobj:{storeId:storeId}
+						})
+			}
+			window.gogood=function(goodsId){
+				event.stopPropagation()
+				 openview({
+				 	view:"../market/mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
+		 
+	 })
+		function queryStr(str) {
+		    var r = str.slice(1).split("&"),
+		        e = {};
+		    return r.forEach(function(r) {
+		        var t;
+		        r && (t = r.split("="), 2 === t.length && (e[t[0]] = t[1]))
+		    }), e
+		}
+	</script>
+	
+</html>

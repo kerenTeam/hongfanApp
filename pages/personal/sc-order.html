@@ -255,7 +255,7 @@
 											<%}%>
 											<%if(orderData[i].order_status==4){%>
 												<div class="order-bottom clearfloat box-s">
-													<a onclick="goComment('<%=orderData[i].order_id%>')" class="fr confirm">评价</a>
+													<a onclick="goComment('<%=orderData[i].order_id%>',<%=orderData[i].userPostData.goodsData.length%>,<%=orderData[i].userPostData.goodsData[0].goodsid%>,<%=orderData[i].userPostData.storeid%>)" class="fr confirm">评价</a>
 													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
 												</div>
 											<%}%>
@@ -655,11 +655,19 @@
 //					extrasobj:{payMent:payment,uuid:id}
 //				})
 			}
-			window.goComment=function(orderId){
-				openview({
-					view:'comment.html',
-					extrasobj:{orderId:orderId,pageid:'sc-order'}
-				})
+			window.goComment=function(orderId,goodlength,goodId,stroid){
+				if(goodlength==1){
+					openview({
+						view:'comment.html',
+						extrasobj:{orderId:orderId,goodid:goodId,pageid:'sc-order',stroId:stroid}
+					})
+				}else{
+					openview({
+						view:'commentGoods.html',
+						extrasobj:{orderId:orderId,pageid:'sc-order',stroId:stroid}
+					})
+				}
+				
 			}
 			window.viewLogistics=function(id,deliveryNo,shipper){
 				openview({ 

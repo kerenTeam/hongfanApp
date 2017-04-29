@@ -61,7 +61,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<button id="submit" class="mui-btn mui-btn-link mui-pull-right" style="line-height: 50px" onclick="sendCom()">发送</button>
+			<button id="submit" class="mui-btn mui-btn-link mui-pull-right" style="line-height: 50px;color: coral;" onclick="sendCom()">发送</button>
 			<h1 class="mui-title" style="color: #666;line-height: 50px;">评价晒单</h1>
 		</header>
 		</header>
@@ -154,35 +154,7 @@
 		       }
 		    }
 			//选择图片结束
-			//上传部分
-			var storeid;
-			mui.plusReady(function(){
-				var myuserid = plus.storage.getItem('userid');
-				var orderId = plus.webview.currentWebview().orderId;
-				var pageid = plus.webview.currentWebview().pageid;
-				var oldToken = plus.storage.getItem('oldToken');
-				console.log(oldToken);
-				//获取当前评价商品
-				mui.ajax(serverUrl+'/api/mall/orderinfo',{
-					data:{order_id:orderId},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldToken},	 
-					success:function(data,type,xhr){
-//						alert(JSON.stringify(data))
-						storeid = eval("("+data.data[0].goods_data+")").storeid; 
-						var comPic = eval("("+data.data[0].goods_data+")").goodsData[0].goodsImg;
-						$('#comPic').attr('src',comPic);
-											
-						
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('响应失败  !');
-					}
-				});
-				
-			})
+	 
 			
 			//点击发送
 						function sendCom(){
@@ -191,7 +163,8 @@
 								var orderId = plus.webview.currentWebview().orderId;
 								var oldToken = plus.storage.getItem('oldToken');
 								var pageid = plus.webview.currentWebview().pageid;
-								var goodsid = plus.webview.currentWebview().goodsid;
+								var goodsid = plus.webview.currentWebview().goodid;
+								var storeid = plus.webview.currentWebview().storeId
 								var seller_comment = $('#comment').val();
 								var grade_star = $('.mui-icon-star-filled').length;
 							//提交评价
@@ -214,7 +187,7 @@
 								formD.append('pic',Apic[j]);
 							} 
 							formD.append('orderid',orderId);
-							formD.append('goodsid','');
+							formD.append('goodsid',goodsid);
 							formD.append('stroeid',storeid);
 							formD.append('userid',myuserid);
 							formD.append('seller_comment',seller_comment);
