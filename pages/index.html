@@ -188,7 +188,13 @@
 			var activeTab = subpages[0];
 			 //选项卡点击事件
 			mui('.mui-bar-tab').on('tap', 'a', function(e) {
-				var targetTab = this.getAttribute('href'); 
+				var targetTab = this.getAttribute('href');
+				if(targetTab != "qq.html"){
+					var qqmin = plus.webview.getWebviewById('qqmin');
+					if(qqmin){
+						qqmin.close();
+					} 
+				}
 				if(targetTab=="find.html"){ 
 					 mui.openWindow({
 					 	url:"find.html",
@@ -204,9 +210,9 @@
 					 })
 					//偷偷返回方法 
 					var activeTabid = activeTab.split('.')[0];
-					if(activeTab == 'main.html'){
+					if(activeTab == 'main.html' || activeTab == 'qq.html'){
 						activeTabid = 'defaultTab'; 
-					}
+					} 
 					var appIndex = plus.webview.getLaunchWebview();
 					var mainweb = plus.webview.getWebviewById(activeTab);
 					var timemain = setTimeout(function(){

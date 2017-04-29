@@ -299,16 +299,16 @@
 				<script type="text/html" id="banner-detail">
 					<div class="mui-slider-group mui-slider-loop">
 					    <!--支持循环，需要重复图片节点-->
-					    <div class="mui-slider-item mui-slider-item-duplicate"  onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>')">
+					    <div class="mui-slider-item mui-slider-item-duplicate"  onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>',2)">
 					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 					    </div>
 						<% for(var i=0;i<bannerList.length;i++){ %> 
-					    	<div class="mui-slider-item"  onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>')">
+					    	<div class="mui-slider-item"  onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>',<%= i%>)">
 					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 					    	</div>
 					     <% } %>
 					    <!--支持循环，需要重复图片节点-->
-					    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
+					    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>',0)">
 					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 					    </div>
 					</div>
@@ -606,7 +606,31 @@
 				}
 			}); 
 			//banner跳转
-			 window.bannerGo = function(url, name) {
+			 window.bannerGo = function(url, name, nameid) {
+			 	//alert(nameid);
+			 	if(nameid == 0){
+					openview({
+						view: "shophome.html",
+						extrasobj: {
+							storeId: 203
+						}
+					})
+				}else if(nameid == 1){
+					openview({
+						view: "shophome.html",
+						extrasobj: {
+							storeId: 236
+						}
+					})
+				}else{
+					openview({
+						view: "shophome.html",
+						extrasobj: {
+							storeId: 230
+						}
+					})
+				}
+			 	
 				if(url != '#'){
 					openview({
 						view: "../bannerTpl.html",

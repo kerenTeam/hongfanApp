@@ -725,7 +725,7 @@
 							<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
 							<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>')">
+							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>',2)">
 								<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>
 							<% } %>
@@ -735,7 +735,7 @@
 							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
 							<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>')">
+							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>',<%= i%>)">
 								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>
 							<% } %>
@@ -746,7 +746,7 @@
 							<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
 							<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
+							<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>',0)"> 
 								<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>
 							<% } %>
@@ -1470,7 +1470,18 @@
 						}
 					});
 					//banner跳转
-					window.bannerGo = function(url, name) {
+					window.bannerGo = function(url, name, nameid) {
+						if(nameid == 0){
+							openview({ 
+	                            view:'market/specialOffer.html',
+	                            id:''
+	                        });
+						}else if(nameid == 1){
+							 openview({ 
+	                            view: 'market/youpinhui-Center.html',
+	                            id: "youpinhui-Center"  
+	                        });
+						}
 						if(url != '#'){
 							openview({
 								view: "bannerTpl.html",

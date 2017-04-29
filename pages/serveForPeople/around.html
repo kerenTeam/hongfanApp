@@ -327,7 +327,7 @@
 					//加载地图开始
 	    			var map = new AMap.Map("container", {resizeEnable: true, zoom:10});//初始化大地图 
 					console.log('列表',data);
-					var data1 = [],data2 = [];
+					var data1 = [],data2 = [],data3 = [];
 					mui.each(data.data,function (index,element) {//遍历加载位置
 						if(element.x_y){
 							console.log(element);
@@ -335,6 +335,8 @@
 							data1.push(parseFloat(element.x_y.split(',')[1]));
 							data1.push(parseFloat(element.x_y.split(',')[0]));
 							data2.push(data1);
+							data3.push(element);
+							
 						}
 					})
 					mui('#funfun111')[0].onclick = function(){//中心点
@@ -356,7 +358,7 @@
 							clearInterval(time1); 
 						}
 						mui('#funfun111')[0].onclick(); 
-					},100)  
+					},100)   
 					
 //				 	var lnglats = [//标准位置格式
 //				        [104.065335, 30.534753],
@@ -368,18 +370,18 @@
 				    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(-6.5,-10)});
 				    for (var i = 0, marker; i < lnglats.length; i++) {
 				        var marker = new AMap.Marker({
-				        	icon : '../../img/banban.svg',
+				        	icon : '../../img/banban.svg', 
 				            position: lnglats[i], 
 				            map: map
 				        });
 				        //marker.content = '我是第' + (i + 1) + '个Marker';
-				        var aaa = data.data[i].helper_id;
-				        var bbb = "'"+data.data[i].area+"'";
-				        var ccc = "'"+data.data[i].address+"'";
+				        var aaa = data3[i].helper_id;
+				        var bbb = "'"+data3[i].area+"'";
+				        var ccc = "'"+data3[i].address+"'";
 				        //var ccc = "'嘻嘻'";
-				        if(data.data[i].headPic){
+				        if(data3[i].headPic){ 
 //				        	marker.content = '<img src="'+serverimgUrl+data.data[i].headPic+'" onclick="forHelp('+aaa+','+"'"+data.data[i].area+"'"+','+ccc+')" style="width:25px;height:25px;border-radius:50%" />';
-				        	marker.content = '<img src="../../img/dianjian.svg" onclick="forHelp('+aaa+','+"'"+data.data[i].area+"'"+','+ccc+')" style="width:20px;height:20px;border-radius:50%" />';
+				        	marker.content = '<img src="../../img/dianjian.svg" onclick="forHelp('+aaa+','+"'"+data3[i].area+"'"+','+ccc+')" style="width:20px;height:20px;border-radius:50%" />';
 				        }else{
 							marker.content = '<img src="../../img/dianjian.svg" onclick="forHelp('+aaa+','+bbb+','+ccc+')" style="width:20px;height:20px;border-radius:50%" />';
 				        }

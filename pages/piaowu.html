@@ -17,7 +17,7 @@
 		<script type="text/javascript" src="../js/jquery.flexslider-min.js"></script>
 		<style type="text/css">
 			.boxs li {
-			    padding: 0 !important;border: none; 
+			    padding: 0 !important;border: none;
 			}
 			.boxs li a{
 			    padding: 15px 16px !important;
@@ -95,15 +95,15 @@
 							<strong>游戏充值</strong>
 							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div>
 						</a>
-					</li>
-					<li>
+					</li>-->
+					<!--<li>
 						<a href="javascript:;" onclick="plane()">
 							<img src="../img/tickets/airplane.png"/>
 							<strong>飞机票</strong>
 							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div>
 						</a>
-					</li>
-					<li>
+					</li>-->
+					<!--<li>  
 						<a href="javascript:;" onclick="train()">
 							<img src="../img/tickets/train.png"/>
 							<strong>火车票</strong>
@@ -127,18 +127,32 @@
 		mui.init();
 		
 		function gamepay(){
-			//游戏充值
-			openview({
-				view:"tickets/gamepay.html",
-				id:"gamepay"
-			})
+			if(plus.storage.getItem('myToken')){ 
+				//游戏充值
+				openview({
+					view:"tickets/gamepay.html",
+					id:"gamepay"
+				})
+			}else{
+				mui.toast('请登录');
+				openview({
+					view:'login.html' 
+				}); 
+			}
 		}
 		function dataflow(){
-			//流量充值
-			openview({
-				view:"tickets/dataflowRecharge.html",
-				id:"dataflowRecharge"
-			})
+			if(plus.storage.getItem('myToken')){ 
+				//流量充值
+				openview({
+					view:"tickets/dataflowRecharge.html",
+					id:"dataflowRecharge"
+				})
+			}else{
+				mui.toast('请登录');
+				openview({
+					view:'login.html'
+				});
+			}
 		}
 		
 		(function(){
