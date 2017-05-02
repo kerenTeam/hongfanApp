@@ -550,7 +550,9 @@
 						<%if(recommendData.tags && recommendData.tags.length){%>
 							<%for(var i=0;i<recommendData.tags.length;i++){%>
 								<%if(recommendData.tags[i].tagName){%>
+									<%if(recommendData.tags[i].tagName){%>
 									<span class="mark">#<%=recommendData.tags[i].tagName%>#</span>
+									<%}%>
 								<%}%>
 							<%}%>
 						<%}%> <%=recommendData.newsinfodata[0].content%>
@@ -716,7 +718,10 @@
 				$(".findUser").attr("src",avtar)
 			}
 			if(nickName){
-				$(".fname").html(nickName)
+				if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nickName)){
+					nickName = nickName.substring(0,3)+"****"+nickName.substring(7,11)
+				}
+				$(".fname").html(nickName);
 			}
 			//发布者主页
 			$(".findUser").click(function(){
