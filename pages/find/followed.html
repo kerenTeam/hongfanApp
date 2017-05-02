@@ -71,7 +71,7 @@
 		<div id="nulldiv" style="padding-top: 50%;text-align:center;font-size: 14px;color: #999;display: none;">
 			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 			<br />
-			没有可用信息
+			没有相关信息
 		</div>
 		<div id="main">
 			<!--<div class="follow">
@@ -99,56 +99,72 @@
 						<%= list[i].nickname%>
 					</div>
 					<% if(list[i].status != 'own1'){%>
-						<% for(var j=0; j<myfollow.length; j++){%>
-							<% if(myfollow[j] == list[i].user_id){%>
-								<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
-									互相关注
-								</button>
-								<% break;%>
+						<% if(myfollow.length){%>
+							<% for(var j=0; j<myfollow.length; j++){%>
+								<% if(myfollow[j] == list[i].user_id){%>
+									<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF">
+										互相关注
+									</button>
+									<% break;%>
+								<% }%>
+								<% if(j == myfollow.length-1){%>
+									<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  eachF">
+										关注
+									</button> 
+								<% }%>	
 							<% }%>
-							<% if(j == myfollow.length-1){%>
-								<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  eachF">
-									关注
-								</button> 
-							<% }%>	
+						<% }else{%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF  eachF">
+								关注
+							</button> 
 						<% }%>	
 					<% }%>	
 				</div>
 			<% }%>	
 		</script>
+		<!--这里的注释删不得-->
+		<!--//mui-btn-outlined 已关注--> 
+		<!--//mui-btn-outlined eachF 互相关注-->
+		<!--//eachF (是粉丝的)关注-->
 		<script type="text/html" id="infolist2"> 
-			<% for(var i=0; i<list.length; i++){%>
-				<div class="follow">
-					<div class="fchidl" onclick="maninfo(<%= list[i].user_id%>,'<%= list[i].status%>')">
-						<%if(!list[i].avatar){ %>
-							<img src="../../img/10.png" class="userAvator" /> 
-						<%}else{ %>
-							<img src="<%= url+list[i].avatar%>" class="userAvator" />
-						<%} %>	
-						<%= list[i].nickname%>
+			<% if(list.length){%>
+				<% for(var i=0; i<list.length; i++){%>
+					<div class="follow">
+						<div class="fchidl" onclick="maninfo(<%= list[i].user_id%>,'<%= list[i].status%>')">
+							<%if(!list[i].avatar){ %>
+								<img src="../../img/10.png" class="userAvator" /> 
+							<%}else{ %>
+								<img src="<%= url+list[i].avatar%>" class="userAvator" />
+							<%} %>	
+							<%= list[i].nickname%>
+						</div>
+						<% if(list[i].status == 'own1'){%>
+							<button type="button" style="display: none;" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   ">
+								+关注
+							</button>
+						<% }else if(list[i].status == 'own2'){%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined">
+								已关注
+							</button>
+						<% }else if(list[i].status == 'own3'){%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   ">
+								+关注
+							</button>
+						<% }else if(list[i].status == 'own4'){%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF ">
+								互相关注
+							</button>
+						<% }else{%>
+							<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   eachF">
+								+关注
+							</button>
+						<% }%>	
 					</div>
-					<% if(list[i].status == 'own1'){%>
-						<button type="button" style="display: none;" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   ">
-							+关注
-						</button>
-					<% }else if(list[i].status == 'own2'){%>
-						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined">
-							已关注
-						</button>
-					<% }else if(list[i].status == 'own3'){%>
-						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   ">
-							+关注
-						</button>
-					<% }else if(list[i].status == 'own4'){%>
-						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   mui-btn-outlined eachF ">
-							互相关注
-						</button>
-					<% }else{%>
-						<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   eachF">
-							+关注
-						</button>
-					<% }%>	
-				</div>
+				<% }%>	
+			<% }else{%>
+				<button type="button" onclick="followBack(this,<%= list[i].user_id%>)" class="mui-btn mui-btn-success hadF   eachF">
+					+关注 
+				</button>
 			<% }%>	
 		</script>
 		
@@ -193,7 +209,7 @@
 									timeout:10000,
 									headers:{"token":oldtoken},
 									success:function(data1,type,xhr){ 
-										console.log('关注返回1',data1);
+										console.log('关注返回，他人主页',data1);
 										if(data1.errno==0){
 											//遍历给出自己和他人关注列表的关系
 											var followFlag = false;//我没关注他
@@ -260,6 +276,7 @@
 							
 						} else{//没有数据
 							mui('#nulldiv')[0].style.display = 'block';
+							plus.nativeUI.closeWaiting();
 						}
 					}else{
 						plus.nativeUI.closeWaiting();
@@ -282,7 +299,7 @@
 					timeout:10000,
 					headers:{"token":oldtoken},
 					success:function(data,type,xhr){
-						console.log('关注返回',data); 
+						console.log('关注返回，自己的 主页',data); 
 						if(data.errno==0){
 							if (data.data.followMe.length) {//铺数据
 								var myfollow = [];
