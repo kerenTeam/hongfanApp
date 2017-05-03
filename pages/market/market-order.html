@@ -1524,17 +1524,19 @@
 										};
 										//微信
 										plus.payment.request(pays[id], varpay, function(result) {
+											var resultStr = JSON.stringify(result);
 											console.log("----- 支付成功 -----");
 											plus.nativeUI.closeWaiting();
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:varpay,userid:myuserid,addressId:addressid},
+												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid,addressId:addressid},
 												type: 'post', //HTTP请求类型
 												headers: {
 													"token": oldtoken
 												},
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
+													mui.toast('支付成功');
 													console.log("修改状态成功");
 		//											关闭 订单页  
 													openview({
@@ -1548,6 +1550,7 @@
 													}
 												},
 												error: function(xhr, type, errorThrown) {
+													mui.toast('支付失败');
 												}
 											});
 
@@ -1560,6 +1563,7 @@
 										//支付宝
 										varpay = data.data.payData;
 										plus.payment.request(pays[id], varpay, function(result) {
+											var resultStr = JSON.stringify(result);
 											console.log("----- 支付成功 -----", JSON.stringify(result));
 											plus.nativeUI.closeWaiting();
 //											plus.nativeUI.alert("支付成功");
@@ -1567,7 +1571,7 @@
 											var oldtoken = plus.storage.getItem('oldToken');
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:varpay,userid:myuserid,addressId:addressid},
+												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid,addressId:addressid},
 												dataType:'json',
 												type: 'post', //HTTP请求类型
 												headers: {
@@ -1575,6 +1579,7 @@
 												},
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
+													mui.toast('支付成功');
 													console.log("修改状态成功");
 		//											关闭 订单页  
 													openview({
@@ -1589,6 +1594,7 @@
 												},
 												error: function(xhr, type, errorThrown) {
 													console.log("修改状态失败")
+													mui.toast('支付失败');
 												}
 											});
   
