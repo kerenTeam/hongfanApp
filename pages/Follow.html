@@ -464,6 +464,9 @@
 						console.log('列表',data);
 						if(dataobj.length != 0){
 							for(var i=0;i<dataobj.length;i++){ 
+								if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj[i].nickname)){
+									dataobj[i].nickname = dataobj[i].nickname.substring(0,3)+"****"+dataobj[i].nickname.substring(7,11)
+								}
 								if(dataobj[i].avatar){ //处理头像，处理pic
 									dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 								}else{
@@ -515,6 +518,9 @@
 												var dataobj = data.data.data
 												if(dataobj.length != 0){
 													for(var i=0;i<dataobj.length;i++){
+														if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj[i].nickname)){
+															dataobj[i].nickname = dataobj[i].nickname.substring(0,3)+"****"+dataobj[i].nickname.substring(7,11)
+														}
 														if(dataobj[i].avatar){
 															dataobj[i].avatar = serverimgUrl + JSON.parse(dataobj[i].avatar)[0].picImg;
 														}else{

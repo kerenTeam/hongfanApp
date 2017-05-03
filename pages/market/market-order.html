@@ -977,7 +977,7 @@
 								if($(this).attr('id') == item.id) {
 									if(storereduce[index] != 0) {
 										$(this).html('-￥' + storereduce[index]);
-										var newtotal = parseFloat($(this).parentsUntil('#orderTpl').find('.groupMoney').html()) - parseFloat(storereduce[index]);
+										var newtotal = parseFloat(parseFloat($(this).parentsUntil('#orderTpl').find('.groupMoney').html()) - parseFloat(storereduce[index])).toFixed(2);
 										$(this).parentsUntil('#orderTpl').find('.groupMoney').html(newtotal);
 										countTotalPay();
 									} else {
@@ -1507,7 +1507,7 @@
 											}
 										}
 										plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage))
-										var list = plus.webview.getWebviewById('cart.html');
+										var list = plus.webview.getWebviewById('cart');
 										mui.fire(list, 'refresh');
 									}
 
