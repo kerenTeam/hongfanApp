@@ -549,9 +549,11 @@
 									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
 										element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
 									}
-									if(element.avatar && element.avatar.indexOf('picImg')>-1){
+									if(element.avatar && element.avatar.indexOf('[{')>-1){
 										element.avatar = serverimgUrl + JSON.parse(element.avatar)[0].picImg;
-									} 
+									}else if(element.avatar && element.avatar.indexOf('{')>-1){
+										element.avatar = serverimgUrl + JSON.parse(element.avatar).picImg;
+									}
 									if(element.pic && element.pic.indexOf('picImg')>-1){
 										element.pic = serverimgUrl + JSON.parse(element.pic)[0].picImg;
 									}
