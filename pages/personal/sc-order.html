@@ -272,13 +272,16 @@
 								<%for(var i =orderData.length-1;i>=0;i--){%>
 										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 											<div class="orderbh clearfloat box-s">
-												<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
+												<%if(orderData[i].goods_data.store_id == 0){ %>
+												<span>
 													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
-													<%if(orderData[i].goods_data.store_id == 0){ %>
-														跨境优品
-													<%}else{%>
-														<%=orderData[i].goods_data.stores.store_name%>
-														<%}%>
+													跨境优品
+												<%}else{%>
+													<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
+													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+													<%=orderData[i].goods_data.stores.store_name%>
+													<%}%>
+													<span style="font-size: 0.10rem;"><%=orderData[i].create_time%></span>
 												</span>
 												<span class="fr state"><%=state[orderData[i].order_status]%></span>
 											</div>
@@ -287,7 +290,11 @@
 												<div class="dealcard dealcardtwo clearfloat">
 													<div class="dealcard-img imgbox">
 														<% if(orderData[i].goods_data.store_id == 0){ %>
-															<img src="<%=orderData[i].goods_data.goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+															<% if(orderData[i].goods_data.goods_Data[j].youpin){ %>
+																<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+															<%}else{%>
+																<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
+															<%}%>
 														<% }else{ %>
 															<img src="<%=myUrl%><%=orderData[i].goods_data.goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<% } %>
@@ -319,7 +326,9 @@
 																<%}%>
 														</sub></p>
 												</div> 
-												
+											<%if(orderData[i].refuse_refund){%>
+												<div style="line-height: .3rem;padding-left: 15px;">商家拒绝退款：<%=orderData[i].refuse_refund%></div>
+											<%}%>	
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].rePayID%>','<%=orderData[i].seller%>','<%=orderData[i].buyer%>','<%=orderData[i].order_id%>')" class="fr confirm">付款</a>
@@ -452,15 +461,30 @@
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){  
-					console.log("对对对 ",data)
+				success:function(data,type,xhr){   
+					
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
 						if(data.data.length!=0){
 							for(var i=0;i<data.data.length;i++){
+								data.data[i].PriceCalculation = eval("("+data.data[i].PriceCalculation+")");
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
 								}
+								if(data.data[i].goods_data.store_id == 0){
+									for(var j = 0;j<data.data[i].goods_data.goods_Data.length;j++){
+										if(data.data[i].goods_data.goods_Data[j].youpin){
+											data.data[i].goods_data.goods_Data[j].youpin = eval("("+data.data[i].goods_data.goods_Data[j].youpin+")");
+										}
+									}
+									
+								}
+								var dt = new Date(data.data[i].create_time);
+								var date = [
+									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+									  [dt.getHours(), dt.getMinutes()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+								data.data[i].create_time = date;
 								for(var j = 0;j<data.data[i].goods_data.goods_Data.length;j++){
 									data.data[i].goods_data.goods_Data[j].price = parseFloat(data.data[i].goods_data.goods_Data[j].price).toFixed(2); 
 								}
@@ -478,6 +502,7 @@
 									 
 							 
 							}
+							console.log("对对对 ",data)
 							console.log("goods_data "+JSON.stringify(data.data[0].goods_data))
 							var obj={}; 
 							 obj.orderData=data.data;

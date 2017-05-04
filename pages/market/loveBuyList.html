@@ -255,26 +255,32 @@
 				<!--<div style="font-size:14px;color:gray;padding: 10px;text-align: center;">暂无数据,看看别的吧</div>-->
 			<%}else{%>
 				<% for(var i=0;i<list.length;i++){ %>
-				<dd class="goodsItem">
-					<a class="react" onclick="goInfo(<%= list[i].open_iid%>,3,'<%= list[i].pic_url.pic_url[0]%>')">
-						<div class="dealcard">
-							<div class="dealcard-img imgbox" >
- 
-								<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
-
-							</div>
-							<div class="dealcard-block-right">
-								<div class="dealcard-brand single-line"><%= list[i].title %></div>
-								 
-								<div class="price mui-row">
-									<div class="mui-col-sm-4 mui-col-xs-4">
-										<span class="strong-color">￥</span><span class="strong"><%= list[i].price %></span>
+					
+					<%if(list[i].num>30){%>
+						<dd class="goodsItem">
+							<a class="react" onclick="goInfo(<%= list[i].open_iid%>,3,'<%= list[i].pic_url.pic_url[0]%>')">
+								<div class="dealcard">
+									<div class="dealcard-img imgbox" >
+		 
+										<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
+		
+									</div>
+									<div class="dealcard-block-right">
+										<div class="dealcard-brand single-line"><%= list[i].title %></div>
+										 
+										<div class="price mui-row">
+											<div class="mui-col-sm-4 mui-col-xs-4">
+												<span class="strong-color">￥</span><span class="strong"><%= list[i].price %></span>
+												<span style="margin-left: 15px;">库存:<%=list[i].num%></span>
+												
+											</div>
+											
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-					</a>
-				</dd>
+							</a>
+						</dd>
+					<%}%>
 			<% } %>
 			<%}%>
 			
@@ -462,12 +468,13 @@
 					}
 				})
 			}
-			
+			var curid;
 			function getList(category_id,alllist){
+				curid = category_id
 				//数据渲染
 				var currentPage =1, numsPerPage=10;
 				mui.ajax('http://api.igetmall.net/DRP_getProList',{
-					data:{appkey:'6458153266',appsecret:'2a1cc0c25a60e8c394e5a822936df862',category_id:category_id,page_no:currentPage,page_size:numsPerPage},
+					data:{appkey:'2184365138',appsecret:'47accd33cafb73548e135bb3bec6c290',category_id:curid,page_no:currentPage,page_size:numsPerPage},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -504,7 +511,7 @@
 								}
 								mui("#upload")[0].innerHTML = "";
 			                    //上滑加载
-			                   	$(window).scroll(function(){
+			                   	$(window).scroll(function(){ 
 									　　var scrollTop = $(this).scrollTop();
 									　　var scrollHeight = $(document).height();
 									　　var windowHeight = $(this).height();
@@ -512,7 +519,7 @@
 											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";  
 											currentPage++;
 											mui.ajax('http://api.igetmall.net/DRP_getProList',{ 									
-												data:{appkey:'6458153266',appsecret:'2a1cc0c25a60e8c394e5a822936df862',category_id:category_id,page_no:currentPage,page_size:numsPerPage},
+												data:{appkey:'2184365138',appsecret:'47accd33cafb73548e135bb3bec6c290',category_id:curid,page_no:currentPage,page_size:numsPerPage},
 												dataType:'json',//服务器返回json格式数据
 												type:'post',//HTTP请求类型 
 												timeout:10000,//超时时间设置为10秒；	
