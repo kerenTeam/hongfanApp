@@ -80,18 +80,17 @@
 				border-bottom: 1px solid red;
 			}
 			
-			.fTxt {
-				font-size: 0.11rem;
-				padding: 5px;
-				color: #666;
-				/*height: 0.32rem;*/
-				letter-spacing: 1px;
-				line-height: 1.2;
-				/*超出两行省略*/
-				display: -webkit-box;
-				-webkit-box-orient: vertical;
-				-webkit-line-clamp: 2;
-				overflow: hidden;
+			.fTxt { 
+				font-size: 12px;
+			    padding: 0px 5px;
+			    color: #666;
+			    /* height: 0.32rem; */
+			    letter-spacing: 0px;
+			    line-height: 1.5;
+			    display: -webkit-box;
+			    -webkit-box-orient: vertical;
+			    -webkit-line-clamp: 2;
+			    overflow: hidden;
 			}
 			
 			.findUser {
@@ -245,6 +244,7 @@
 		.sticky {
 			position: -webkit-sticky; position:sticky; top: 74px;  
 		}
+		
 		</style>
 	</head>
 
@@ -267,7 +267,7 @@
 				<div class="mui-slider-item mui-slider-item-duplicate">
 					<img src="<%= bannerList[bannerList.length-1].pic%>" dataurl='<%= bannerList[bannerList.length-1].pic%>' data-qtid='<%= bannerList[bannerList.length-1].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
-				<% for(var i=0;i<bannerList.length;i++){ %>
+				<% for(var i=0;i<bannerList.length;i++){ %> 
 				<div class="mui-slider-item">
 					<img src="<%=bannerList[i].pic %>" dataurl="<%=bannerList[i].pic %>" data-qtid='<%= bannerList[i].q_id%>' onerror="javascript:this.src='../img/market/nodata.svg';" />
 				</div>
@@ -306,10 +306,12 @@
 			
 				<%for(var i=0;i<recommendData.length;i++){%>
 				<div class="boxf" onclick="findInfo('<%=recommendData[i].user_id%>','<%=recommendData[i].news_id%>','<%=recommendData[i].avatar%>','<%=recommendData[i].nickname%>')">
-					<div class="pic">
-						<%if(recommendData[i].pic){%>
-						<img src="<%=recommendData[i].pic%>" alt="<%=recommendData[i].pic%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';">
-						<%}%>
+					<div class="pic wrappic">
+						<div class="paddingpic">
+							<%if(recommendData[i].pic){%>
+							<img src="<%=recommendData[i].pic%>" alt="<%=recommendData[i].pic%>" onerror="javascript:this.src='../img/zhaoxiangji.svg';">
+							<%}%>
+						</div>
 						<p class="fTxt">
 							<%if(recommendData[i].content){%>
 							<%=recommendData[i].content%>
@@ -599,7 +601,7 @@
 					headers: { "token": oldtoken },
 					success: function(data, type, xhr) { 
 						console.log('初始数据',data);
-						console.error('总页数前' + data.data.totalPages); 
+						//console.log('总页数前' + data.data.totalPages); 
 						allpage = data.data.totalPages;
 						if(data.errno == 0) {
 							var dataobj = data.data.data;
@@ -607,16 +609,18 @@
 								mui.each(dataobj,function (index,element) {
 									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
 										element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
-									}
+									} 
 									if(element.avatar && element.avatar.indexOf('[{')>-1){
 										element.avatar = serverimgUrl + JSON.parse(element.avatar)[0].picImg;
 									}else if(element.avatar && element.avatar.indexOf('{')>-1){
 										element.avatar = serverimgUrl + JSON.parse(element.avatar).picImg;
-									}
+									} 
 									if(element.pic && element.pic.indexOf('picImg')>-1){
 										element.pic = serverimgUrl + JSON.parse(element.pic)[0].picImg;
-									}
+									} 
 								}) 
+								console.log('获取图片尺寸',dataobj);
+								
 							}
 							var recommendObj = {};
 							recommendObj.myUrl = serverimgUrl;
@@ -634,7 +638,7 @@
 									if(Spagenum <= allpage && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
 										mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
 										Ypagenum++; //满足加载情况,应到页数+1
-										console.error('总页数' + allpage);
+										//console.error('总页数' + allpage);
 										console.log('发起请求,实到' + Spagenum + '页');
 										console.log('发起请求,应到' + Ypagenum + '页'); 
 										ajax2 = mui.ajax(serverUrl + "/api/news/newslist", { 
