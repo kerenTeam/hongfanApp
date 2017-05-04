@@ -186,8 +186,12 @@
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
 														<span></span>
-															<%if(data.PriceCalculation.Params.goodsData[0].goods_Data[i].storeid == 0){%>
-															<img src="<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
+															<%if(data.PriceCalculation.Params.goodsData[0].store_id == 0){%>
+																<% if(data.PriceCalculation.Params.goodsData[0].goods_Data[i].youpin){ %>
+																	<img src="<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+																<%}else{%>
+																	<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
+																<%}%>
 															<%}else{%>
 																<img src="<%=myUrl%><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';"/>
 															<%}%>
@@ -309,7 +313,11 @@
 		</div> 
 		<div id="button"></div>
 		<script id="buttonTpl" type="text/html">
+			
 			<div class="renting-footer clearfloat" id="footer"> 
+				<%if(data.refuse_refund){%>
+					<div style="line-height: .5rem;padding-left: 15px;" class="fl">商家拒绝退款：<%=data.refuse_refund%></div>
+				<%}%>
 				<%if(data.order_status==1){%>
 					<button class="fr BC" onclick="goOrder('<%=data.order_UUID%>','<%=data.rePayID%>','<%=data.seller%>','<%=data.buyer%>','<%=data.order_id%>')">付款</button>
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','取消')">取消订单</button> 
@@ -378,16 +386,13 @@
 		})
 		var pays={};
 		mui.plusReady(function(){
-			
 			window.addEventListener('refresh',function(event){  
 				load();
 			})
-			
 			var myuserid = plus.storage.getItem('userid');
 			var orderId = plus.webview.currentWebview().orderId;
 			var oldtoken = plus.storage.getItem('oldToken');
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			
 			load();
 			function load(){
 				mui.ajax(serverUrl+'/api/mall/orderinfo',{
@@ -407,6 +412,10 @@
 					       				data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax =parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price - data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price /(parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate)/100 + 1)).toFixed(2);
 					       			}
 				       				data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price).toFixed(2)
+				       				if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin){
+				       					data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("("+data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin+")")
+				       				}
+				       			
 				       			}
 				       			
 				       			data.data[0].userPostData = JSON.parse(data.data[0].userPostData)

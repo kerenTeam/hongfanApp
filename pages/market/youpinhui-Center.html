@@ -236,8 +236,15 @@
 				height: 0.4rem;
 				width: 0.4rem;
 			}
-			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-icon img{width: 60%;}
-			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body{color: #555;}
+			
+			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-icon img {
+				width: 60%;
+			}
+			
+			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body {
+				color: #555;
+			}
+			
 			.sy_recmd_list .pub_wz h3 a {
 				color: #666;
 				line-height: 0.2rem;
@@ -313,9 +320,20 @@
 				font-size: 0.2rem;
 				font-weight: 400;
 			}
-			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body{margin-top: 0;}
-			.mui-grid-6:after{height: 0 !important; background-color: #fff !important;margin-bottom: 5px;} 
-			#classify{margin-bottom: 5px !important;}
+			
+			.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body {
+				margin-top: 0;
+			}
+			
+			.mui-grid-6:after {
+				height: 0 !important;
+				background-color: #fff !important;
+				margin-bottom: 5px;
+			}
+			
+			#classify {
+				margin-bottom: 5px !important;
+			}
 		</style>
 	</head>
 
@@ -394,29 +412,31 @@
 					<%if(list.length==0){%>
 					<%}else{%>
 					<%for(var i=0;i<list.length;i++){%>
-					<li class="sy_recmd_list relist">
-						<div class="box">
-							<div class="pub_img">
-								<a class="rcdPadding" onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')">
-									<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
-
-								</a>
-							</div>
-							<div class="pub_wz">
-								<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')"><%=list[i].title%></a></h3>
-								<div class="nr_box mui-row">
-									<div class="mui-col-sm-5 mui-col-xs-5 ">
-										<p class="fl fontcl2"><sub>￥</sub>
-											<%=list[i].price%>
-										</p>
+						<%if(list[i].num>30){%>
+							<li class="sy_recmd_list relist">
+								<div class="box">
+									<div class="pub_img">
+										<a class="rcdPadding" onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')">
+											<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
+		
+										</a>
 									</div>
-									<div class="mui-col-sm-7 mui-col-xs-7 saled">
-										</p>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')"><%=list[i].title%></a></h3>
+										<div class="nr_box mui-row">
+											<div class="mui-col-sm-5 mui-col-xs-5 ">
+												<p class="fl fontcl2"><sub>￥</sub>
+													<%=list[i].price%>
+												</p>
+											</div>
+											<div class="mui-col-sm-7 mui-col-xs-7 saled">
+												</p>
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-					</li>
+							</li>
+						<%}%>
 					<%}%>
 					<%}%>
 				</script>
@@ -430,13 +450,16 @@
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<script src="../../js/app.js"></script>
-		<script type="text/javascript"> 
+		<script type="text/javascript">
 			//跳转详情
-			function goInfo(goodsId,differentiate,img) { 
+			function goInfo(goodsId, differentiate, img) {
 				openview({
 					view: "yphDetail.html",
 					id: "yphDetail",
-					extrasobj: { goodsId: goodsId, differentiate: differentiate }
+					extrasobj: {
+						goodsId: goodsId,
+						differentiate: differentiate
+					}
 				})
 			}
 			//获得slider插件对象
@@ -450,13 +473,17 @@
 
 				//获取 一级分类
 				mui.ajax(serverUrl + '/api/mall/igocategory', {
-					data: { pid: 0 },
+					data: {
+						pid: 0
+					},
 					dataType: 'json',
 					type: 'post',
 					timeout: 10000,
-					headers: { "token": oldToken },
+					headers: {
+						"token": oldToken
+					},
 					success: function(data, type, xhr) {
-						console.log("一级分类",data);
+						console.log("一级分类", data);
 						if(data.errno == 0) {
 							if(data.data.length != 0) {
 								var tyepdata = {};
@@ -473,81 +500,102 @@
 					}
 				});
 				//获取推荐类别
-				mui.ajax(serverUrl+'/api/mall/recommendforigo', {
+				mui.ajax(serverUrl + '/api/mall/recommendforigo', {
 					dataType: 'json', //服务器返回json格式数据
 					type: 'post', //HTTP请求类型 
 					timeout: 10000, //超时时间设置为10秒；	
-					headers: { "token": oldToken },
+					headers: {
+						"token": oldToken
+					},
 					success: function(data) {
-						console.log("catid "+JSON.stringify(data));
+						console.log("catid " + JSON.stringify(data));
 						//一级分类
 						var catid = data.data.catid;
 						//获取二级分类
-						mui.ajax(serverUrl+'/api/mall/igocategory',{
-						data:{pid:catid},
-						dataType:'json',
-						type:'post',
-						timeout:10000,
-						headers:{"token":oldToken},	 
-						success:function(data,type,xhr){  
-							if(data.errno == 0){
-								if(data.data.length != 0){
-									//请求三级分类 
-									for(var j=0;j<data.data.length;j++){
-										getthird(data.data[j].catid)
+						mui.ajax(serverUrl + '/api/mall/igocategory', {
+							data: {
+								pid: catid
+							},
+							dataType: 'json',
+							type: 'post',
+							timeout: 10000,
+							headers: {
+								"token": oldToken
+							},
+							success: function(data, type, xhr) {
+								console.log(data)
+								if(data.errno == 0) {
+									if(data.data.length != 0) {
+										//请求三级分类 
+										for(var j = 0; j < data.data.length; j++) {
+											getthird(data.data[j].catid)
+										}
 									}
 								}
+							},
+							error: function(xhr, type, errorThrown) {
+								plus.nativeUI.closeWaiting(); //关闭等待框 
 							}
-						},
-						error:function(xhr,type,errorThrown){
-							plus.nativeUI.closeWaiting();//关闭等待框 
-						}
-					}) 
+						})
 					},
-					error: function(xhr, type, errorThrown) { 
-						
+					error: function(xhr, type, errorThrown) {
+
 					}
 				})
-				
+
 				//三级分类
-				function getthird(catid){
-					mui.ajax(serverUrl+'/api/mall/igocategory',{
-						data:{pid:catid},
-						dataType:'json',
-						type:'post',
-						timeout:10000,
-						headers:{"token":oldToken},	 
-						success:function(data,type,xhr){ 
-							if(data.errno == 0){ 
-								if(data.data.length != 0){
+				function getthird(catid) {
+					mui.ajax(serverUrl + '/api/mall/igocategory', {
+						data: {
+							pid: catid
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						headers: {
+							"token": oldToken
+						},
+						success: function(data, type, xhr) {
+							if(data.errno == 0) {
+								if(data.data.length != 0) {
 									//渲染列表
-									for(var j=0;j<data.data.length;j++){
+									for(var j = 0; j < data.data.length; j++) {
 										getrecommendList(data.data[j].catid)
 									}
 								}
 							}
 						},
-						error:function(xhr,type,errorThrown){
-							plus.nativeUI.closeWaiting();//关闭等待框 
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting(); //关闭等待框 
 						}
 					})
 				}
-				
-				function getrecommendList(catid){
+				var catgid;
+				function getrecommendList(catid) {
+					plus.nativeUI.showWaiting();
+					catgid = catid;
 					//推荐数据渲染
 					var currentPage = 1,
 						numsPerPage = 10;
 					//热门推荐 数据渲染 
 					mui.ajax('http://api.igetmall.net/DRP_getProList', {
-						data: { appkey: '6458153266', appsecret: '2a1cc0c25a60e8c394e5a822936df862', category_id: catid, page_no: currentPage, page_size: numsPerPage },
+						data: {
+							appkey: '2184365138',
+							appsecret: '47accd33cafb73548e135bb3bec6c290',
+							category_id: catgid,
+							page_no: currentPage,
+							page_size: numsPerPage
+						},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型 
 						timeout: 10000, //超时时间设置为10秒；	
-						headers: { "token": oldToken },
+						headers: {
+							"token": oldToken
+						},
 						success: function(data) {
-							console.log('推荐',data);
+							console.log('推荐', data);
 							if(data.status == "success") {
-								
+
 								var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
 								var bannerArray = [];
 								if(d) {
@@ -558,35 +606,43 @@
 								}
 								for(var i in bannerArray) {
 									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-									for(var j in bannerArray[i].pic_url.pic_url){
-										if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
-											 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+									for(var j in bannerArray[i].pic_url.pic_url) {
+										if(bannerArray[i].pic_url.pic_url[j].indexOf('net.') > -1) {
+											bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g, 'net')
 										}
 									}
-								} 
+								}
 								var objdata = {};
 								objdata.list = bannerArray;
 								var html = template("recommendTpl", objdata);
 								document.getElementById("moll_recommend").innerHTML += html;
 								plus.nativeUI.closeWaiting(); //关闭等待框
 								mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
-	
-								$(window).scroll(function() { 
+
+								$(window).scroll(function() {
 									var scrollTop = $(this).scrollTop();　　
 									var scrollHeight = $(document).height();　　
 									var windowHeight = $(this).height();　　
 									if(scrollTop + windowHeight == scrollHeight) {
-	
+
 										if(scrollTop + windowHeight == scrollHeight) {
 											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-											currentPage++; 
+											currentPage++;
 											var requestfun = function() {
 												mui.ajax('http://api.igetmall.net/DRP_getProList', {
-													data: { appkey: '6458153266', appsecret: '2a1cc0c25a60e8c394e5a822936df862', category_id: 2546, page_no: currentPage, page_size: numsPerPage },
+													data: {
+														appkey: '2184365138',
+														appsecret: '47accd33cafb73548e135bb3bec6c290',
+														category_id: catgid,
+														page_no: currentPage,
+														page_size: numsPerPage
+													},
 													dataType: 'json', //服务器返回json格式数据
 													type: 'post', //HTTP请求类型 
 													timeout: 5000, //超时时间设置为10秒；	
-													headers: { "token": oldToken },
+													headers: {
+														"token": oldToken
+													},
 													success: function(data) {
 														if(data.status == "success") {
 															var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
@@ -596,22 +652,22 @@
 																	var vae = Object.keys(d)[t];
 																	bannerArray.push(d[vae]);
 																}
-															} 
+															}
 															for(var i in bannerArray) {
-															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-															for(var j in bannerArray[i].pic_url.pic_url){
-																if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
-																	 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
+																bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
+																for(var j in bannerArray[i].pic_url.pic_url) {
+																	if(bannerArray[i].pic_url.pic_url[j].indexOf('net.') > -1) {
+																		bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g, 'net')
+																	}
 																}
 															}
-														} 
-														
+
 															var objdata = {};
-															objdata.list = bannerArray; 
+															objdata.list = bannerArray;
 															var html = template("recommendTpl", objdata);
 															document.getElementById("moll_recommend").innerHTML += html;
 														}
-														mui("#upload")[0].innerHTML = " ";  
+														mui("#upload")[0].innerHTML = " ";
 													},
 													error: function(xhr, type, errorThrown) {
 														//Ypagenum;//失败是应到-1
@@ -622,34 +678,38 @@
 												});
 											}
 											requestfun();
-	
+
 										} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
 											mui("#upload")[0].innerHTML = "到底了";
 										}
 									}
 								});
-	
+
 							} else {
-								mui("#upload")[0].innerHTML = "";
-								mui('#nulldiv')[0].style.display = 'block';
+								mui("#upload")[0].innerHTML = "到底了";
+//								mui('#nulldiv')[0].style.display = 'block';
 							}
-	
+
 						},
 						error: function(xhr, type, errorThrown) {
 							plus.nativeUI.closeWaiting(); //关闭等待框
 							mui("#upload")[0].innerHTML = "";
-							mui('#nulldiv')[0].style.display = 'block';
+//							mui('#nulldiv')[0].style.display = 'block';
 						}
 					});
-					
+
 				}
 				//banner
 				mui.ajax(serverUrl + '/api/index/banner', {
-					data: { banner_type: 6 },
+					data: {
+						banner_type: 6
+					},
 					dataType: 'json',
 					type: 'post',
 					timeout: 10000,
-					headers: { "token": oldToken },
+					headers: {
+						"token": oldToken
+					},
 					success: function(data, type, xhr) {
 						bannerObj = {};
 						bannerObj.bannerList = eval("(" + data.data.banner + ")");
@@ -668,8 +728,8 @@
 					}
 				});
 				//banner跳转
-				 window.bannerGo = function(url, name) {
-					if(url != '#'){
+				window.bannerGo = function(url, name) {
+					if(url != '#') {
 						openview({
 							view: "../bannerTpl.html",
 							id: "bannerTpl",
@@ -683,41 +743,43 @@
 				//进入列表
 				window.goList = function(pid) {
 					event.stopPropagation();
-//					getsecid(pid);
+					//					getsecid(pid);
 					openview({
 						view: "loveBuyList.html",
-						extrasobj: { pid: pid }
+						extrasobj: {
+							pid: pid
+						}
 					})
 				}
 			});
 		</script>
-<script type="text/javascript">
-				//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
-				//充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 特色馆 specialBar
-				mui.plusReady(function () {
-					var startTime, endTime, stayTime, flagback = 0;
-					startTime = new Date().getTime();
-					var old_back = mui.back;
-					//改写返回键返回的函数，返回时传页面停留时间 
-					mui.back = function(){
-						endTime = new Date().getTime();//返回时间
-						stayTime = Math.ceil((endTime - startTime) / 1000); 
-						console.log('跨境优品'+stayTime); 
-						plus.statistic.eventDuration( "loveToGogoods", stayTime);
-						//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-						old_back(); 
+		<script type="text/javascript">
+			//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
+			//充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 特色馆 specialBar
+			mui.plusReady(function() {
+				var startTime, endTime, stayTime, flagback = 0;
+				startTime = new Date().getTime();
+				var old_back = mui.back;
+				//改写返回键返回的函数，返回时传页面停留时间 
+				mui.back = function() {
+					endTime = new Date().getTime(); //返回时间
+					stayTime = Math.ceil((endTime - startTime) / 1000);
+					console.log('跨境优品' + stayTime);
+					plus.statistic.eventDuration("loveToGogoods", stayTime);
+					//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+					old_back();
+				}
+				plus.webview.currentWebview().addEventListener("popGesture", function() {
+					flagback++;
+					if(flagback == 1) {
+						endTime = new Date().getTime();
+						stayTime = Math.ceil((endTime - startTime) / 1000);
+						plus.statistic.eventDuration("loveToGogoods", stayTime);
+						//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 					}
-					plus.webview.currentWebview().addEventListener( "popGesture", function(){
-						flagback++;
-						if(flagback == 1){
-							endTime = new Date().getTime();
-							stayTime = Math.ceil((endTime - startTime) / 1000); 
-							plus.statistic.eventDuration( "loveToGogoods", stayTime);
-							//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-						}
-					}, false );
-				});
-			</script> 
+				}, false);
+			});
+		</script>
 	</body>
 
 </html>

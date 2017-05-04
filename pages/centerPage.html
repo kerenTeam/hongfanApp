@@ -153,6 +153,7 @@
 		}
 		.fft b, .follow b{color: #555;}
 		.follow>div{height: 100%;padding-top: 8px;}
+		.deletefind{text-align: right;color: gray;font-size: 0.1rem;padding: 10px;}
 	</style>
 
 	<body style="display: none;">
@@ -255,7 +256,7 @@
 			<script type="text/html" id="infolist">
 				<% for(var i=0;i<list.length;i++){%>
 					<%if(myuserid == list[i].user_id){%>
-						<li class="" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
+						<li class="" >
 							<div id="spandiv">
 								<span id="" class="spanL">发了贴</span>
 								<span id="" class="spanR">
@@ -264,7 +265,7 @@
 							    	<% }%>
 								</span>
 							</div>
-							<div id="Dcon" class="aClick2">
+							<div id="Dcon" class="aClick2" onclick="findInfo('<%=list[i].user_id%>','<%=list[i].news_id%>')">
 								<div class="imgdiv">
 									<% if(list[i].pic){%>
 										<% if(list[i].pic.indexOf('http')>-1){%>
@@ -276,6 +277,7 @@
 								</div>
 								<p><%= list[i].content%></p>
 							</div>
+							<div onclick="godel('<%=list[i].news_id%>')" class="deletefind">删除</div>
 						</li>
 					<%}%>
 				
@@ -497,109 +499,121 @@
 			});
 			//我的动态
 //			document.getElementById("noinfodiv").innerHTML = '';
-			mui.ajax(serverUrl+'/api/news/newslist',{ 									
-				data:{currentPage:1,numsPerPage:50,userid:myuserid}, 
-				dataType:'json',//服务器返回json格式数据
-				type:'post',//HTTP请求类型 
-				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":oldtoken}, 
-				success:function(data){
-					if(data.errno == 0){ 
-						console.log('动态列表返回',data); 
-						
-						if(data.data.totalPages){
-							var dataobj = {};
-							mui.each(data.data.data,function (index,ele) {
-								if(ele.pic.indexOf('picImg')>-1){
-									ele.pic = JSON.parse(ele.pic)[0].picImg;
-								}
-								var dt = new Date(ele.create_news_time);
-									var date = [
-									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
-									  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
-									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-									ele.create_news_time = date
-							})
-							dataobj.myuserid = myuserid;
-							dataobj.list = data.data.data;
-							dataobj.url = serverimgUrl;
+			getMyF();
+			function getMyF(){
+				mui.ajax(serverUrl+'/api/news/newslist',{ 									
+					data:{currentPage:1,numsPerPage:50,userid:myuserid}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":oldtoken}, 
+					success:function(data){
+						if(data.errno == 0){ 
+							console.log('动态列表返回',data); 
 							
-							//获取并渲染用户信息
-							var html=template("infolist",dataobj);
-							document.getElementById("dynamic").innerHTML += html;
-						}else{
-							mui("#upload")[0].innerHTML = "没有动态";
-							mui("#upload")[0].style.paddingTop = mui("#upload")[0].style.paddingBottom = "30px";
-						}
-						
-						//滚动到底部加载
-						$(window).scroll(function(){
-						　　var scrollTop = $(this).scrollTop();
-						　　var scrollHeight = $(document).height();
-						　　var windowHeight = $(this).height();
-						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
-								if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
-									mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
-									Ypagenum++;//满足加载情况,应到页数+1
-									console.log('发起请求,实到'+Spagenum+'页');									
-									console.log('发起请求,应到'+Ypagenum+'页');
-									mui.ajax(serverUrl+'//api/news/newslist',{ 	
-										data:{currentPage:Spagenum,numsPerPage:50,userid:myuserid}, 
-										dataType:'json',//服务器返回json格式数据 
-										type:'post',//HTTP请求类型 
-										timeout:10000,//超时时间设置为10秒；	
-										headers:{"token":oldtoken}, 
-										success:function(data){
-											console.log('下拉数据',data);
-											if(data.errno == 0){
-												var dataobj = {};
-												mui.each(data.data.data,function (index,ele) {
-													if(ele.pic.indexOf('picImg')>-1){
-														ele.pic = JSON.parse(ele.pic)[0].picImg;
-													}
-													var dt = new Date(ele.create_news_time);
-													var date = [
-													  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
-													  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
-													].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-													ele.create_news_time = date
-												})
-												dataobj.myuserid = myuserid;
-												dataobj.list = data.data.data; 
-												dataobj.url = serverimgUrl;
-												//获取并渲染用户信息
-												var html=template("infolist",dataobj);
-												document.getElementById("dynamic").innerHTML += html;
+							if(data.data.totalPages){
+								var dataobj = {};
+								mui.each(data.data.data,function (index,ele) {
+									if(ele.pic.indexOf('picImg')>-1){
+										ele.pic = JSON.parse(ele.pic)[0].picImg;
+									}
+									var dt = new Date(ele.create_news_time);
+										var date = [
+										  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+										  [dt.getHours(), dt.getMinutes()].join(':')
+										].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+										ele.create_news_time = date
+								})
+								dataobj.myuserid = myuserid;
+								dataobj.list = data.data.data;
+								dataobj.url = serverimgUrl;
+								
+								//获取并渲染用户信息
+								var html=template("infolist",dataobj);
+								document.getElementById("dynamic").innerHTML += html;
+							}else{
+								mui("#upload")[0].innerHTML = "没有动态";
+								mui("#upload")[0].style.paddingTop = mui("#upload")[0].style.paddingBottom = "30px";
+							}
+							
+							//滚动到底部加载
+							$(window).scroll(function(){
+							　　var scrollTop = $(this).scrollTop();
+							　　var scrollHeight = $(document).height();
+							　　var windowHeight = $(this).height();
+							　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
+									if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+										mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+										Ypagenum++;//满足加载情况,应到页数+1
+										console.log('发起请求,实到'+Spagenum+'页');									
+										console.log('发起请求,应到'+Ypagenum+'页');
+										mui.ajax(serverUrl+'//api/news/newslist',{ 	
+											data:{currentPage:Spagenum,numsPerPage:50,userid:myuserid}, 
+											dataType:'json',//服务器返回json格式数据 
+											type:'post',//HTTP请求类型 
+											timeout:10000,//超时时间设置为10秒；	
+											headers:{"token":oldtoken}, 
+											success:function(data){
+												console.log('下拉数据',data);
+												if(data.errno == 0){
+													var dataobj = {};
+													mui.each(data.data.data,function (index,ele) {
+														if(ele.pic.indexOf('picImg')>-1){
+															ele.pic = JSON.parse(ele.pic)[0].picImg;
+														}
+														var dt = new Date(ele.create_news_time);
+														var date = [
+														  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+														  [dt.getHours(), dt.getMinutes()].join(':')
+														].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+														ele.create_news_time = date
+													})
+													dataobj.myuserid = myuserid;
+													dataobj.list = data.data.data; 
+													dataobj.url = serverimgUrl;
+													//获取并渲染用户信息
+													var html=template("infolist",dataobj);
+													document.getElementById("dynamic").innerHTML += html;
+												}
+												mui("#upload")[0].innerHTML = ""; 
+												Spagenum++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum);
+												console.log('成功+1,应到'+Spagenum);
+											},
+											error:function(xhr,type,errorThrown){
+												Ypagenum--;//失败是应到-1
+												mui.toast("当前网络不好请重试");
+												mui("#upload")[0].innerHTML = ""; 
 											}
-											mui("#upload")[0].innerHTML = ""; 
-											Spagenum++;//加载成功,当前页+1
-											console.log('成功+1,实到'+Spagenum);
-											console.log('成功+1,应到'+Spagenum);
-										},
-										error:function(xhr,type,errorThrown){
-											Ypagenum--;//失败是应到-1
-											mui.toast("当前网络不好请重试");
-											mui("#upload")[0].innerHTML = ""; 
-										}
-									});
-								}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
-									mui("#upload")[0].style.paddingBottom='80px';
-									mui("#upload")[0].innerHTML = "没有更多了"; 
-									
-								}
-						　　  }
-						});//加载下一部分结束
-					}else{
+										});
+									}else if(Spagenum == data.data.totalPages+1){//当前页不小于等于总页数时请求下一页
+										mui("#upload")[0].style.paddingBottom='80px';
+										mui("#upload")[0].innerHTML = "没有更多了"; 
+										
+									}
+							　　  }
+							});//加载下一部分结束
+						}else{
+							mui("#upload")[0].innerHTML = ""; 
+						}
+						loadnum++;
+					},
+					error:function(xhr,type,errorThrown){
+						loadnum++;
 						mui("#upload")[0].innerHTML = ""; 
 					}
-					loadnum++;
-				},
-				error:function(xhr,type,errorThrown){
-					loadnum++;
-					mui("#upload")[0].innerHTML = ""; 
-				}
-			});
-		
+				});
+			}
+			
+			window.godel=function(id){
+		    	mui.confirm('确定要删除该条吗？', '提示',['否', '是'], function(e) {
+					if(e.index == 1) {
+						mui.toast('删除成功');
+						getMyF();
+					} else {}
+				})
+		    }
+			
 			//关遮罩
 			var time1 = setInterval(function(){ 
 				console.log(loadnum);
