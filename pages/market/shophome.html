@@ -523,9 +523,21 @@
 						this.className = 'on';
 					})
 				}
-				//滚动条
+				
+				
+				// 获取状态栏的高度
+				var immersed = 0;
+				var ms = (/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+				if(ms && ms.length >= 3) { // 当前环境为沉浸式状态栏模式
+					immersed = parseFloat(ms[2]); // 获取状态栏的高度
+				}
+				var dldetail = mui('.dldetail');
+				for(i = 0; i < dldetail.length; i++) {
+					dldetail[i].style.top = 210 + immersed + 'px';
+				}
+				
+				//滚动 动态显示 tap
 				var fangxiang;
-
 				function scroll(fn) {
 					var beforeScrollTop = document.body.scrollTop,
 						fn = fn || function() {};
@@ -540,16 +552,6 @@
 				scroll(function(direction) {
 					fangxiang = direction;
 				});
-				// 获取状态栏的高度
-				var immersed = 0;
-				var ms = (/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
-				if(ms && ms.length >= 3) { // 当前环境为沉浸式状态栏模式
-					immersed = parseFloat(ms[2]); // 获取状态栏的高度
-				}
-				var dldetail = mui('.dldetail');
-				for(i = 0; i < dldetail.length; i++) {
-					dldetail[i].style.top = 210 + immersed + 'px';
-				}
 				window.onscroll = function() {
 					var Stop = document.documentElement.scrollTop || document.body.scrollTop;
 					if(Stop >= 120) {

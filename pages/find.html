@@ -75,15 +75,16 @@
 				color: gray;
 			}
 			
-			.findType .active {
-				color: black;
+			.findType .active { 
+				color: red; 
+				border-bottom: 1px solid red;
 			}
 			
 			.fTxt {
 				font-size: 0.11rem;
 				padding: 5px;
-				color: rgba(0, 0, 0, 0.8);
-				height: 0.32rem;
+				color: #666;
+				/*height: 0.32rem;*/
 				letter-spacing: 1px;
 				line-height: 1.2;
 				/*超出两行省略*/
@@ -98,24 +99,24 @@
 			}
 			
 			.findUser img {
-				width: 0.3rem!important;
-				height: 0.3rem;
+				width: 0.25rem!important;
+				height: 0.25rem;
 				border-radius: 50%!important;
 				margin-right: 5px;
 				/*vertical-align: middle!important;*/
 			}
 			
 			.findUser span {
-				color: rgba(0, 0, 0, 0.6);
+				color:#777;
 				line-height: 0.3rem;
 			}
 			
 			#mainpic {
-				background-color: rgba(255, 255, 255, 0.7);
+				background-color: rgba(236, 236, 236, 0.16);  
 				-webkit-column-count: 2;
 				-moz-column-count: 2;
 				column-count: 2;
-				-moz-column-gap: 10px;
+				-moz-column-gap: 10px; 
 				-webkit-column-gap: 10px;
 				column-gap: 10px;
 				padding: 10px;
@@ -127,13 +128,15 @@
 				column-break-inside: avoid;
 				border: none;
 				margin-bottom: 10px;
-				cursor: pointer;
+				background-color: #fff;	
+				border-radius: 2px;	 		
 			}
 			
 			.boxf img {
 				width: 100%;
 				vertical-align: top;
-				border-radius: 2px;
+				border-top-left-radius: 2px;
+				border-top-bottom-radius: 2px;
 			}
 			
 			.center {
@@ -236,6 +239,12 @@
 		    position: relative;
 		    top: -14px;
 		}
+		#header{
+			box-shadow: 0 0 0px rgba(175, 166, 166, 0.85) !important;
+		}
+		.sticky {
+			position: -webkit-sticky; position:sticky; top: 74px;  
+		}
 		</style>
 	</head>
 
@@ -276,7 +285,7 @@
 			</div>
 		</script>
 		<!--分类栏目-->
-		<div id="newsType"></div>
+		<div id="newsType" class="sticky"></div>
 		<script type="text/html" id="newsTypeTpl">
 			<ul class="findType">
 				<li class="active aClick" data-ctid="">所有</li>
@@ -432,9 +441,9 @@
 		mui.plusReady(function() {
 			var oldtoken = plus.storage.getItem('oldToken');
 			var myuserid = plus.storage.getItem('userid');
-			
+			var ctidAlls= '';
 			window.addEventListener('refreshNews',function(event){
-				getNews('')
+				getNews(ctidAlls);
 			})
 			
 			//banner
@@ -503,12 +512,14 @@
 							newType.tpdata = data.data;
 							document.getElementById("newsType").innerHTML = template("newsTypeTpl", newType);
 							//默认加载第一类的动态列表
-							getNews('')
-
+							getNews(ctidAlls);
+							
 							//点击分类 切换动态
 							$(".findType li").on("click", function() {
-
+								var bannerH = mui('#banner')[0].offsetHeight || 100;
 								if(!$(this).hasClass("active")) {
+									document.body.scrollTop = bannerH; 
+									mui('#newsType')[0].style.boxShadow = '0 0 2px rgba(175, 166, 166, 0.85)';
 									getNews($(this).attr("data-ctid"))
 								}
 
@@ -526,22 +537,70 @@
 				}
 
 			})
+			
+			// 获取状态栏的高度
+			var immersed = 0;
+			var ms = (/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms && ms.length >= 3) { // 当前环境为沉浸式状态栏模式
+				immersed = parseFloat(ms[2]); // 获取状态栏的高度
+			}
+			//滚动 动态显示 tap
+			var fangxiang;
+			function scroll(fn) {
+				var beforeScrollTop = document.body.scrollTop,
+					fn = fn || function() {}; 
+				window.addEventListener("scroll", function() {
+					var afterScrollTop = document.body.scrollTop,
+						delta = afterScrollTop - beforeScrollTop;
+					if(delta === 0) return false;
+					fn(delta > 0 ? "down" : "up");
+					beforeScrollTop = afterScrollTop;
+				}, false);
+			}
+			scroll(function(direction) {
+				fangxiang = direction;
+			});
+			window.onscroll = function() {
+				var bannerH = mui('#banner')[0].offsetHeight || 100;
+				var Stop = document.body.scrollTop;
+				if(Stop >= bannerH) { 
+					mui('#newsType')[0].style.top = 50 + immersed + 'px';
+					mui('#newsType')[0].style.left = 0 + 'px'; 
+					mui('#newsType')[0].style.boxShadow = '0 0 2px rgba(175, 166, 166, 0.85)';
+					
+				}
+				if(fangxiang == 'up' && Stop <= bannerH) { 
+					mui('#newsType')[0].style.boxShadow = '0 0 0px rgba(175, 166, 166, 0.85)';
+				}
+			}
+			
 
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数 
+			var allpage = 0;//总页数
+			var ajax = null,ajax2 = null; 
 			//获取动态列表
-			function getNews(ctid) { 
+			function getNews(ctid) {
+				
+				ajax && ajax.abort();
+				ajax2 && ajax2.abort();
+				allpage = 0;
+				Spagenum = 2; //实到页数
+				Ypagenum = 1; //应到页数 
+				ctidAlls = ctid;
 				plus.nativeUI.showWaiting()
 				var currentPage = 1,
-					numsPerPage = 10;
-				mui.ajax(serverUrl + "/api/news/newslist", {
-					data: { currentPage: currentPage, numsPerPage: numsPerPage, categoryid: ctid, isMyFriendPage: "" },
+					numsPerPage = 8;
+				ajax1 = mui.ajax(serverUrl + "/api/news/newslist", {
+					data: { currentPage: currentPage, numsPerPage: numsPerPage, categoryid: ctidAlls, isMyFriendPage: "" },
 					dataType: 'json',
 					type: 'post',
-					timeout: 100000,
+					timeout: 10000,
 					headers: { "token": oldtoken },
-					success: function(data, type, xhr) {
-						console.log('栏目数据',data);
+					success: function(data, type, xhr) { 
+						console.log('初始数据',data);
+						console.error('总页数前' + data.data.totalPages); 
+						allpage = data.data.totalPages;
 						if(data.errno == 0) {
 							var dataobj = data.data.data;
 							if(dataobj.length != 0) {
@@ -567,20 +626,23 @@
 							$(window).scroll(function() {　　
 								var scrollTop = $(this).scrollTop();　　
 								var scrollHeight = $(document).height();　　
-								var windowHeight = $(this).height();　　
-								if(scrollTop + windowHeight == scrollHeight) {
-									if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+								var windowHeight = $(this).height();　
+								
+								if(scrollTop + windowHeight >= scrollHeight-200) {  
+									if(Spagenum <= allpage && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
 										mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
 										Ypagenum++; //满足加载情况,应到页数+1
+										console.error('总页数' + allpage);
 										console.log('发起请求,实到' + Spagenum + '页');
-										console.log('发起请求,应到' + Ypagenum + '页');
-										mui.ajax(serverUrl + '/api/news/newslist', {
-											data: { currentPage: Spagenum, numsPerPage: numsPerPage, categoryid: ctid, isMyFriendPage: "" },
+										console.log('发起请求,应到' + Ypagenum + '页'); 
+										ajax2 = mui.ajax(serverUrl + "/api/news/newslist", { 
+											data: { currentPage: Spagenum, numsPerPage: numsPerPage, categoryid: ctidAlls, isMyFriendPage: "" },
 											dataType: 'json',
 											type: 'post',
-											timeout: 100000,
+											timeout: 10000,
 											headers: { "token": oldtoken },
 											success: function(data, type, xhr) {
+												console.log('下拉加载',data);
 												if(data.errno == 0) {
 													var dataobj = data.data.data
 													if(dataobj.length != 0) {
