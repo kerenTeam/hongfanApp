@@ -274,9 +274,11 @@
 											<div class="orderbh clearfloat box-s">
 												<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
 													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
-													<%if(orderData[i].goods_data.stores){ %>
+													<%if(orderData[i].goods_data.store_id == 0){ %>
+														跨境优品
+													<%}else{%>
 														<%=orderData[i].goods_data.stores.store_name%>
-													<%}%>
+														<%}%>
 												</span>
 												<span class="fr state"><%=state[orderData[i].order_status]%></span>
 											</div>
@@ -320,7 +322,7 @@
 												
 											<%if(orderData[i].order_status==1){%>
 												<div class="order-bottom clearfloat box-s">
-													<!--<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">付款</a>-->
+													<a onclick="goOrder('<%=orderData[i].order_UUID%>','<%=orderData[i].rePayID%>','<%=orderData[i].seller%>','<%=orderData[i].buyer%>','<%=orderData[i].order_id%>')" class="fr confirm">付款</a>
 													<a onclick="delOrder(this,'<%=orderData[i].order_id%>','取消')" class="fr">取消订单</a>
 												</div>
 											<%}%>
@@ -332,6 +334,7 @@
 											<%if(orderData[i].order_status==3){%>
 												<div class="order-bottom clearfloat box-s">
 													<a onclick="orderConfirm('<%=orderData[i].order_id%>')" class="fr confirm">确认收货</a>
+													<a onclick="tuiOrder('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.totalMoney%>')" class="fr confirm">申请退款</a>
 													<a onclick="viewLogistics('<%=orderData[i].order_id%>','<%=orderData[i].logistic_code%>','<%=orderData[i].shipper_code%>')" class="fr">查看物流</a>
 												</div>
 											<%}%>
@@ -758,7 +761,7 @@
 		
 
 			
-			window.goOrder=function(orderid,payment){
+			window.goOrder=function(uuid,repayid,seller,buyer,orderid){
 				$("#payChoose").addClass("mui-active");
 					
 			//系统检测获取支付通道
@@ -806,7 +809,6 @@
 			//系统检测获取支付通道结束
 			// 支付方法 
 					window.payfun = function(id) {
-						alert("orderid "+orderid)
 						var varpay;
 						if(id == 'alipay' || id == 'wxpay') {
 							//调用支付功能
@@ -822,27 +824,32 @@
 							plus.nativeUI.alert("当前环境不支持此支付通道！", null, "提示");
 							return;
 						}
+//* @param {String} UUID 
+// * @param {number} order_id 
+// * @param {number} userId 
+// * @param {number} seller   
+// * @param {string} rePayID  预支付订单的ID
+// * @param {string} payType  alipay | wechatpay
+// */
 
 						function gopay(id) {
-							console.log(myuserid + id + addressid + goodsdata + coupon_id + isIntergal)
-							mui.ajax(serverUrl + '/api/mall/neworder', {
-								data: {
-									userid: myuserid,
-									payType: id,
-									address_id: addressid, 
-									storeData: goodsdata,
-									coupon_id: coupon_id,
-									isIntergal: isIntergal
+							var oldToken = plus.storage.getItem('oldToken');
+							mui.ajax(serverUrl+'/api/mall/repayment', {
+								data: { 
+									order_UUID:uuid,
+									order_id:orderid,
+									userId:parseInt(buyer),
+									seller:parseInt(seller),
+									rePayID:parseInt(repayid),
+									payType:id
 								},
 								type: 'post', //HTTP请求类型
 								headers: {
-									"token": oldtoken
+									"token": oldToken
 								},
 								timeout: 300000, //超时时间设置为10秒；
 								success: function(data) {
-									console.error('支付返回',data);
 									plus.nativeUI.closeWaiting() 
- 
 									var varpay;
 									if(id == 'wxpay') {
 										varpay = {
@@ -856,28 +863,21 @@
 										};
 										//微信
 										plus.payment.request(pays[id], varpay, function(result) {
+											var resultStr = JSON.stringify(result);
 											console.log("----- 支付成功 -----");
 											plus.nativeUI.closeWaiting();
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:varpay,userid:myuserid,addressId:addressid},
+												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid,addressId:addressid},
 												type: 'post', //HTTP请求类型
 												headers: {
-													"token": oldtoken
+													"token": oldToken
 												},
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
 													console.log("修改状态成功");
 		//											关闭 订单页  
-													openview({
-														view:"../personal/sc-order.html",
-														id:"sc-order"
-													})
-													if(plus.webview.getWebviewById("market-order")) {
-													
-														plus.webview.getWebviewById("market-order").close();
-														
-													}
+													load(); 
 												},
 												error: function(xhr, type, errorThrown) {
 												}
@@ -892,32 +892,24 @@
 										//支付宝
 										varpay = data.data.payData;
 										plus.payment.request(pays[id], varpay, function(result) {
+											var resultStr = JSON.stringify(result);
 											console.log("----- 支付成功 -----", JSON.stringify(result));
 											plus.nativeUI.closeWaiting();
 //											plus.nativeUI.alert("支付成功");
 //											alert("id "+data.data.AccessToken+"varpay "+JSON.stringify(varpay)+myuserid+" "+addressid)
-											var oldtoken = plus.storage.getItem('oldToken');
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:varpay,userid:myuserid,addressId:addressid},
+												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid,addressId:addressid},
 												dataType:'json',
 												type: 'post', //HTTP请求类型
 												headers: {
-													"token": oldtoken
+													"token": oldToken
 												},
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
 													console.log("修改状态成功");
-		//											关闭 订单页  
-													openview({
-														view:"../personal/sc-order.html",
-														id:"sc-order"
-													})
-													if(plus.webview.getWebviewById("market-order")) {
-													
-														plus.webview.getWebviewById("market-order").close();
-														
-													}
+		//											关闭 订单页   
+													load(); 
 												},
 												error: function(xhr, type, errorThrown) {
 													console.log("修改状态失败")
