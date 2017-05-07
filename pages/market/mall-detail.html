@@ -649,7 +649,7 @@
 							<%if(cemmentData.length==0){%>
 							<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无评论</div>
 							<%}else{%>
-							<%for(var i=0;i<cemmentData.length;i++){%>
+							<%for(var i=cemmentData.length-1;i>=0;i--){%>
 							<li class="mui-row Cli">
 								<div class="mui-col-sm-2 mui-col-xs-2 user-head">
 									<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
@@ -1125,9 +1125,11 @@
 //									alert(goodsweight+"goodsweight")
 									var goodsPostfee = 0;
 									var goodsDelivery = 0;
+									var goodsrate = 0;
 									var goodsnum = parseFloat(mui('#test')[0].value);
 									var goodText = '';
 									var goodProp = [];
+									var goodsproperty;
 									$('.textType').each(function() {
 										goodText += $(this).find("p").html() + ":" + $(this).find(".cur").html() + ";";
 										var prop = {};
@@ -1136,20 +1138,22 @@
 										goodProp.push(prop)
 									})  
 									var j=0; 
+									console.log("allprop.parentlist ",allprop.parentlist)
 									for(var i = 0; i < allprop.parentlist.length; i++){ 
 										for(var m=0;m < goodProp.length ; m++){ 
 											var vaule = 'value'+(m+1); 
-											if(goodProp[m].child_parameter_name.trim() == allprop.parentlist[i][vaule]){
+											if(goodProp[m].child_parameter_name.trim() == allprop.parentlist[i][vaule].trim()){
 												j++;
 												if(j == goodProp.length){
-													var goodsproperty = allprop.parentlist[i].id; 
+													goodsproperty = allprop.parentlist[i].id; 
 												}
+												alertF(goodsproperty)
 											}
 										}
 										
 										
 									} 
-									 
+									alertF(goodsproperty) 
 										//当前商品对象
 									var cartObj = {};
 									cartObj.goodsId = goodsId;
@@ -1162,11 +1166,12 @@
 									cartObj.goodsreduce = goodreduce;
 									cartObj.goodweight = goodsweight;
 									cartObj.goodsDelivery = goodsDelivery;
+									cartObj.goodsRate = goodsrate;
 									cartObj.goodsnum = goodsnum;
 									cartObj.goods_property = goodsproperty;
 									cartObj.goodText = goodText;
 									cartObj.goodProp = goodProp;
-//									alert("cartObj "+JSON.stringify(cartObj))
+									alertF("cartObj "+JSON.stringify(cartObj))
 									if(goNum == 1) {
 										if(cartStorage.length != 0) {
 											var flag = false;
