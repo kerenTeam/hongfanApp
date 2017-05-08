@@ -989,7 +989,7 @@
 													 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
-															if(value1 == $.trim(parameteValueo.parentlist[i].value1).replace(/&nbsp;/,'') && value2 == $.trim(parameteValueo.parentlist[i].value2).replace(/&nbsp;/,'') && value3 == $.trim(parameteValueo.parentlist[i].value3).replace(/&nbsp;/,'') && value4 == $.trim(parameteValueo.parentlist[i].value4).replace(/&nbsp;/,'')){
+															if(value1 == $.trim(parameteValueo.parentlist[i].value1) && value2 == $.trim(parameteValueo.parentlist[i].value2) && value3 == $.trim(parameteValueo.parentlist[i].value3) && value4 == $.trim(parameteValueo.parentlist[i].value4)){
 																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
 															  
@@ -1028,6 +1028,7 @@
 										if(!value2){
 											value2='';
 										}
+
 										var value3=$.trim($(".cur").eq(2).html());
 										if(!value3){
 											value3='';
@@ -1037,12 +1038,14 @@
 											value4='';
 										} 
 					     				//查询库存  
+					     				alertF(goodId+","+value1+","+$.trim(value2).replace(/&nbsp;/,'')+","+value3+","+value4)
 										mui.ajax(serverUrl+'/api/mall/goodstock',{
-											data:{"goodsId":goodId,value1:value1,value2:value2,value3:value3,value4:value4}, 
+											data:{"goodsId":goodId,value1:value1,value2:$.trim(value2),value3:value3,value4:value4}, 
 											type:'post',
 											timeout:10000,
 											headers:{"token":token},	              				
 											success:function(data,type,xhr){ 
+												console.log("库存",data)
 												if(data.errno==0){
 													if(data.data.stockNms==0){  
 														$("#kc").html("库存:0")
@@ -1068,7 +1071,7 @@
 													  
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
-															if(value1 == $.trim(parameteValueo.parentlist[i].value1).replace(/&nbsp;/,'') && value2 == $.trim(parameteValueo.parentlist[i].value2).replace(/&nbsp;/,'') && value3 == $.trim(parameteValueo.parentlist[i].value3).replace(/&nbsp;/,'') && value4 == $.trim(parameteValueo.parentlist[i].value4).replace(/&nbsp;/,'')){
+															if(value1 == $.trim(parameteValueo.parentlist[i].value1) && value2 == $.trim(parameteValueo.parentlist[i].value2) && value3 == $.trim(parameteValueo.parentlist[i].value3) && value4 == $.trim(parameteValueo.parentlist[i].value4)){
 																alertF(parameteValueo.parentlist[i].Floating_price)
 																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
@@ -1132,10 +1135,10 @@
 									var goodProp = [];
 									var goodsproperty;
 									$('.textType').each(function() {
-										goodText += $(this).find("p").html() + ":" + $(this).find(".cur").html() + ";";
+										goodText += $(this).find("p").text() + ":" + $(this).find(".cur").text() + ";";
 										var prop = {};
-										prop.parameter_name = $(this).find("p").html();
-										prop.child_parameter_name = $(this).find(".cur").html();
+										prop.parameter_name = $(this).find("p").text();
+										prop.child_parameter_name = $(this).find(".cur").text();
 										goodProp.push(prop)
 									})  
 									var j=0; 
@@ -1151,9 +1154,7 @@
 												}
 												alertF(goodsproperty)
 											}
-										}
-										
-										
+										} 
 									} 
 									alertF(goodsproperty) 
 										//当前商品对象
@@ -1280,10 +1281,14 @@
 			window.gocart = function() {
 				openview({
 					view: "../cart.html",
+					id:'cart',
 					extrasobj: {
 						pageId: "detail"
 					}
 				})
+				var list = plus.webview.getWebviewById('cart');
+				//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+				mui.fire(list, 'refresh');
 			}
 			
 			mui.previewImage();

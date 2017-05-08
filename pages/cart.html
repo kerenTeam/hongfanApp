@@ -104,7 +104,8 @@
 	
 	
 	
-	mui.plusReady(function(){ 
+	mui.plusReady(function(){  
+//		plus.storage.removeItem('$cartStorage')
 		window.addEventListener('refresh',function(event){  
 			cartload(); 
 		});
@@ -189,6 +190,7 @@
 				$(".numberWidget").hide();
 				$(".priceArea").show();
 			});
+			
 			//删除 单个
 			$(".delBtn").click(function() {
 				var delThis=$(this);
@@ -200,9 +202,10 @@
 							//删除这一条缓存
 							alertF(plus.storage.getItem('$cartStorage'))
 						    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-						    alertF(deltext+" "+cartStorage[i].goodText.replace(/&nbsp;/,''))
 							for(var i=0;i<cartStorage.length;i++){
-								if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText.replace(/&nbsp;/,'')){
+						    alertF(delID+","+cartStorage[i].goodsId+deltext.replace(/[\r\n]/g,"").replace(/^[\s　]+|[\s　]+$/g, "").replace(/(^\s*)|(\s*$)/g, "").replace(/(^\s*)/g, "")+" "+cartStorage[i].goodText.replace(/&nbsp;/,'').replace(/[\r\n]/g,"").replace(/^[\s　]+|[\s　]+$/g, "").replace(/(^\s*)|(\s*$)/g, "").replace(/(^\s*)/g, ""))
+								
+								if(delID==cartStorage[i].goodsId && $.trim(deltext)==$.trim(cartStorage[i].goodText.replace(/&nbsp;/,''))){
 									alertF(i)
 									cartStorage.splice(i, 1);
 								}
