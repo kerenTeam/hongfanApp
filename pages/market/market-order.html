@@ -553,13 +553,13 @@
 										<%=goodsList[j].goodText%>
 									</p>
 									<p class="price"><sub>￥</sub>
-										<%=goodsList[j].goodsPrice%> <span class="num">×<%=goodsList[j].goodsnum%></span></p>
+										<span class="pricemoney"><%=goodsList[j].goodsPrice%></span> <span class="num">x<span class="numint"><%=goodsList[j].goodsnum%></span></span></p>
 									<%if(goodsList[j].shopName != '跨境优品' && goodsList[j].goodsreducemoney != 0){%>
 									<small style="color: coral;font-size: 0.12rem;" class="goodrd">商品优惠<sub>-￥</sub><%=goodsList[j].goodsreducemoney%></small>
 									<%}%>
 									<%if(shopID[i]==0){%>
 									<samll style="font-size:0.1rem;color: gray;">税费
-										<%=deliveryarr[j]%> </samll>
+										<span class='taxmoney' data-rate="<%=goodsList[j].goodsRate%>"><%=goodsList[j].goodsDelivery%></span> </samll>
 									<%}%>
 								</div>
 							</dd>
@@ -826,6 +826,7 @@
 			data.goodsList = orderStorage;
 
 			for(var i = 0; i < orderStorage.length; i++) {
+				orderStorage[i].goodsDelivery = orderStorage[i].goodsDelivery*orderStorage[i].goodsnum;
 				arr.push(orderStorage[i].shopName);
 			}
 			data.cates = arr.unique1();
@@ -841,10 +842,11 @@
 				var groupNum = 0,
 					groupMoney = 0,
 					groupWeight = 0,
-					reduce = 0,
-					deliveryFee = 0,
+					reduce = 0, 
+					alltax = 0,
 					groupMoneynoreduce = 0;
 				for(var j = 0; j < orderStorage.length; j++) {
+					var deliveryFee = 0;
 					if(orderStorage[j].shopName == data.cates[i]) {
 						var totolmoney = parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum);
 						if(!orderStorage[j].goodsreduce || orderStorage[j].goodsreduce.length == 0 || orderStorage[j].goodsreduce == ' ') {
@@ -873,23 +875,27 @@
 						}
 						console.log("goodsreduce " + orderStorage[j].goodsreducemoney);
 						groupNum += parseFloat(orderStorage[j].goodsnum);
-						deliveryFee += parseFloat(orderStorage[j].goodsDelivery)*parseFloat(orderStorage[j].goodsnum);
-						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum);
+						deliveryFee = parseFloat(orderStorage[j].goodsDelivery);
+						alltax += parseFloat(orderStorage[j].goodsDelivery);
+						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum)+deliveryFee;
 						groupMoney += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum) - parseFloat(orderStorage[j].goodsreducemoney);
 						if(!orderStorage[j].goodweight || orderStorage[j].goodweight == ' ') {
 							orderStorage[j].goodweight = 0;
 						}
 						groupWeight += parseFloat(orderStorage[j].goodweight) * parseFloat(orderStorage[j].goodsnum);
 					}
+//					if(deliveryFee){
+//						deliveryarr.push(parseFloat(deliveryFee).toFixed(2));
+//					} 
 				}
-				deliveryarr.push(parseFloat(deliveryFee).toFixed(2))
+//				console.log("deliveryarr ",deliveryarr)
 				storeWeight.push({shopid:shopID[i],weight:parseFloat(groupWeight).toFixed(2)})
 				arrNum.push(groupNum);
 				shopMoney.push({
 					id: shopID[i],
 					money: parseFloat(groupMoneynoreduce).toFixed(2)
 				})
-				arrMoney.push(parseFloat(groupMoney + parseFloat(deliveryFee)).toFixed(2));
+				arrMoney.push(parseFloat(groupMoney + parseFloat(alltax)).toFixed(2));
 				goodsreduce.push(parseFloat(reduce).toFixed(2))
 
 			}
@@ -1083,7 +1089,7 @@
 							countpostfee = 6 + overWeight * 2.5
 						}
 						wlhtml = '<div data-charge="' + countpostfee + '" data-epid="0" data-id="0">EMS<span class="charge fr">￥' + countpostfee + '</span></div>'
-						wlct.html(wlhtml);
+						wlct.html(wlhtml); 
 						$(".dlc div").click(function() {
 //							alert($(this).attr("data-id"))
 							if($(this).attr("data-id") == 0) {
@@ -1104,15 +1110,27 @@
 								//自提 处 存邮费 和 运费id
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").val(parseFloat($(this).attr('data-charge')));
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
-								//当前商店总价减邮费
-								var newgroup =parseFloat(shopmoney)+ parseFloat($(this).attr('data-charge'))								//							alert(newgroup)
-								$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2))
+								 
+								//重新计算税费
+								var newgroup = 0
+								$(this).parentsUntil("#orderTpl").find(".goodsWrap").each(function(){
+//										var newtax = parseFloat((parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html()+countpostfee)*$(this).find('.taxmoney').attr('data-rate')).toFixed(2);
+										var newtax = parseFloat((parseFloat($(this).find('.pricemoney').html())+countpostfee)*$(this).find('.numint').html()*0.17).toFixed(2);
+										$(this).find('.taxmoney').html(newtax);
+										newgroup += parseFloat(parseFloat(newtax) + parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html());
+								})
+								//当前商店总价加邮费
+								 newgroup =newgroup+ parseFloat($(this).attr('data-charge'))								//							alert(newgroup)
+								$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2));
+								
 								//重新计算 总金额
 								countTotalPay();
+								
 
 							}
 							$(this).attr("data-id", 1);
-							$(".choosewl").removeClass("mui-active")
+							$(".choosewl").removeClass("mui-active");
+							
 						})
 					}
 
