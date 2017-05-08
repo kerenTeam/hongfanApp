@@ -205,7 +205,7 @@
 			<a class="fr mui-icon" id="screenbtn" style="font-size: 15px;padding-right: 14px;padding-top: 2px;">筛选</a>
 		</header>
 		<div id="Maskdiv" style="display: none;"></div>
-		<div class="screenfoot" id="screenfoot" style="top:406px;transform: -webkit-translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;"><span id="determine">确定</span></div>
+		<div class="screenfoot" id="screenfoot" style="display: none; top:406px;transform: -webkit-translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;"><span id="determine">确定</span></div>
 		<div id="screendiv" style="top:50px;transform: -webkit-translate3d(0px, -401px, 0px);transition: -webkit-transform 0.3s ease-out;">
 			<div class="screenin" id="screenin1">
 				<h4>品牌</h4>
@@ -213,7 +213,7 @@
 					<div class="screenla">
 						<label for="sss"></label>
 						<input type="radio" checked="" name="state" id="sss" />
-						<span id="">不限</span>
+						<span id="span1">不限</span>
 					</div>
 				</div>
 				<script type="text/html" id="pingpai">
@@ -240,7 +240,7 @@
 			})(); 
 		</script>
 		 
-		 <div class="screening" id="screeningdiv" style="top: 50px;">
+	 	<div class="screening" id="screeningdiv" style="top: 50px;">
 		    <ul>
 		        <li class="Brand">综合</li>
 		        <li class="Regional" id="Salesvolume">销量</li>
@@ -261,6 +261,8 @@
 		    </ul>
 		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		
+		
 		<div id="main">
 			<div class="guess-like">
 				<dl class="list" id="goodsList" >
@@ -355,6 +357,9 @@
 						objdata.list = data.data;
 						var html=template("pingpai",objdata);
 						document.getElementById("pingpaidiv").innerHTML += html; 
+						
+						
+						
 					}
 				}
 			});
@@ -516,27 +521,42 @@
 					mui('#Maskdiv')[0].style.display = 'block';
 					mui('#screendiv')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
 					mui('#screenfoot')[0].style.webkitTransform = 'translate3d(0, 0, 0)';
-					
 				}
 			})
 			//筛选确定
 			var nowstr = '';
-			mui('#determine')[0].onclick = function(){
-				upclose();
-				for(var i=0; i<screenin1s.length; i++){
-					var nowinput = screenin1s[i].getElementsByTagName('input')[0];
-					if(nowinput.checked == true){
-						nowstr = screenin1s[i].getElementsByTagName('span')[0].innerHTML;
-						break;
+//			mui('#determine')[0].onclick = function(){
+//				upclose();
+//				for(var i=0; i<screenin1s.length; i++){
+//					var nowinput = screenin1s[i].getElementsByTagName('input')[0];
+//					if(nowinput.checked == true){
+//						nowstr = screenin1s[i].getElementsByTagName('span')[0].innerHTML;
+//						break;
+//					}
+//				}
+//				if(nowstr != '不限'){
+//					order(can1,can2,nowstr);//初始化
+//				}else{
+//					nowstr = '';
+//					order(can1,can2,nowstr);//初始化
+//				}
+//			}
+			//点击即搜索 
+	 		var ulNode=document.getElementById("pingpaidiv");
+	 		ulNode.addEventListener('click',function(e){
+		 		if(e.target&&e.target.nodeName.toUpperCase()=="INPUT"){
+		 			nowstr = e.target.parentNode.childNodes[5].innerHTML;
+		 			if(nowstr != '不限'){ 
+						order(can1,can2,nowstr);//初始化
+					}else{
+						nowstr = '';
+						order(can1,can2,nowstr);//初始化
 					}
-				}
-				if(nowstr != '不限'){
-					order(can1,can2,nowstr);//初始化
-				}else{
-					nowstr = '';
-					order(can1,can2,nowstr);//初始化
-				}
-			}
+					upclose();
+		 		} 
+	 		},false); 
+			
+			
 			//其他筛选方法
 			mui('#Salesvolume')[0].onclick = function(){//销量 
 				order('sales','asc',nowstr);
