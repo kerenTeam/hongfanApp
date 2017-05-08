@@ -914,7 +914,7 @@
 							type: 'post',
 							timeout: 100000,
 							success: function(data, type, xhr) {
-								console.log(data)
+								console.log("属性",JSON.parse(data))
 								parameteNameo = JSON.parse(data)[0];
 								var parmeter = {};
 								parameteValueo = JSON.parse(data)[1];
@@ -989,8 +989,7 @@
 													 	document.getElementsByClassName("mui-numbox")[0].setAttribute("data-numbox-max",parseFloat(data.data.stockNms)); 
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
-															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
-//																alert(parameteValueo.parentlist[i].Floating_price)
+															if(value1 == $.trim(parameteValueo.parentlist[i].value1).replace(/&nbsp;/,'') && value2 == $.trim(parameteValueo.parentlist[i].value2).replace(/&nbsp;/,'') && value3 == $.trim(parameteValueo.parentlist[i].value3).replace(/&nbsp;/,'') && value4 == $.trim(parameteValueo.parentlist[i].value4).replace(/&nbsp;/,'')){
 																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
 															  
@@ -1069,11 +1068,13 @@
 													  
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
-															if(value1 == parameteValueo.parentlist[i].value1 && value2 == parameteValueo.parentlist[i].value2 && value3 == parameteValueo.parentlist[i].value3 && value4 == parameteValueo.parentlist[i].value4){
+															if(value1 == $.trim(parameteValueo.parentlist[i].value1).replace(/&nbsp;/,'') && value2 == $.trim(parameteValueo.parentlist[i].value2).replace(/&nbsp;/,'') && value3 == $.trim(parameteValueo.parentlist[i].value3).replace(/&nbsp;/,'') && value4 == $.trim(parameteValueo.parentlist[i].value4).replace(/&nbsp;/,'')){
+																alertF(parameteValueo.parentlist[i].Floating_price)
 																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
 															  
 														}  
+														alertF(pprice)
 														$("#priceChange").html("￥"+pprice);
 												   		priceChange = pprice; 
 													   
@@ -1142,7 +1143,8 @@
 									for(var i = 0; i < allprop.parentlist.length; i++){ 
 										for(var m=0;m < goodProp.length ; m++){ 
 											var vaule = 'value'+(m+1); 
-											if(goodProp[m].child_parameter_name.trim() == allprop.parentlist[i][vaule].trim()){
+											alertF($.trim(goodProp[m].child_parameter_name).replace(/&nbsp;/,'') +" "+$.trim(allprop.parentlist[i][vaule]))
+											if($.trim(goodProp[m].child_parameter_name).replace(/&nbsp;/,'') == $.trim(allprop.parentlist[i][vaule])){
 												j++;
 												if(j == goodProp.length){
 													goodsproperty = allprop.parentlist[i].id; 
