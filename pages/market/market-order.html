@@ -688,7 +688,7 @@
 
 						</script>
 
-						<div id="coupon"></div>
+						<div id="coupon" style="display: none;"></div>
 						<script type="text/html" id="couponTpl">
 							<%if(intergral!=0){%>
 							<dd class="dd-padding kv-line-r">
@@ -826,7 +826,7 @@
 			data.goodsList = orderStorage;
 
 			for(var i = 0; i < orderStorage.length; i++) {
-				orderStorage[i].goodsDelivery = orderStorage[i].goodsDelivery*orderStorage[i].goodsnum;
+				orderStorage[i].goodsDelivery = parseFloat(orderStorage[i].goodsDelivery*orderStorage[i].goodsnum).toFixed(2);
 				arr.push(orderStorage[i].shopName);
 			}
 			data.cates = arr.unique1();
@@ -1238,7 +1238,8 @@
 						var intergral = 0;
 						//					console.log('获取用户数据返回'+JSON.stringify(data));
 						if(data.errno == 0) {
-							intergral = data.data[0].intergral;
+//							intergral = data.data[0].intergral; 暂时关闭积分抵扣
+							intergral = 0;
 							id_card = data.data[0].id_card;
 
 							if(intergral == null) {
