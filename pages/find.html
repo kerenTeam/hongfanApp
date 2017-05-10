@@ -223,7 +223,7 @@
 				margin-top: 5px;
 				margin-right: 5px;
 			}
-		}
+		
 		/*加载*/
 		#upload {
 
@@ -313,6 +313,7 @@
 						<div class="paddingpic">
 							<%if(recommendData[i].pic){%>
 							<!--<img class="img_contain" src="../img/loading.jpg" data-src="<%=recommendData[i].pic%>" onload="load(this)"/>-->
+							<img src="<%=recommendData[i].pic%>" />
 							<%}%>
 						</div>
 						<p class="fTxt" style="padding: 10px 5px;">
@@ -454,12 +455,13 @@
 			//banner
 			//请求 专题 数据 
 	    		mui.ajax(serverUrl+"/api/news/activitylist",{
-	    			data:{act_id:1},
+	    			data:{act_id:1,isindex:0},
 	        		dataType:'json',
 	        		type:'post',
 	        		timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){ 
+						console.log("专题 ",data)
 						if(data.errno == 0){
 							var dataobj = [];
 							if(data.data.length != 0){  

@@ -246,7 +246,7 @@
 			 	left: 0;
 			 	right: 0;
 			 }	*/
-			.width_5{width: 25% !important;}
+			.width_5{width: 20% !important;}
 			.hotlist{
 				overflow: scroll;
 				white-space: nowrap;
@@ -281,13 +281,19 @@
 			}
 			.HOT_pic{min-height: 1rem !important; text-align: center;}
 			.HOT_pic img{width: 30px !important;}
+			.baocun img {
+				width: 0.2rem;
+				vertical-align: middle;
+				margin-top: 5px;
+				margin-right: 5px;
+			}
 		</style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">特色馆</h1>
-			<!--<a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun"><img src="../../img/sousuo.svg" style="width: 0.25rem;float: right;margin-right: 10px;" alt="" /></a>-->
+			<a href="javascript:;" style="line-height: 50px;" class="fr baocun" onclick="gosearch()"><img src="../../img/sousuo.svg" alt="" /></a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div>
@@ -332,13 +338,13 @@
 				<div class="onetable" style="margin-bottom: 0;">
 					<div class="table mui-row" style="">
 						<%for(var i=0;i<typeData.length;i++){%> 
-							<div class="mui-col-xs-4 width_5" onclick="goList('<%=typeData[i].catid%>')">
+							<div class="mui-col-xs-5 width_5" onclick="goList('<%=typeData[i].catid%>')">
 								<div class="market-icon"  id="<%=typeData[i].catid%>">
 									<img src="<%=myUrl %><%=typeData[i].icon%>" />
 								</div><br/>
 								<p style="color: #666;"><%=typeData[i].catname%></p>
 							</div>
-						<%}%>
+						<%}%> 
 					</div>
 				</div>
 			</script> 
@@ -487,6 +493,14 @@
 	
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 
+		
+		//跳转搜索
+		function gosearch(){
+			openview({
+				view: '../localLife/theSearch.html',
+				extrasobj:{searchcnt:"tsmall"}
+			});
+		}
 		//分类跳转详情
 		function goList(catId){
 			 openview({

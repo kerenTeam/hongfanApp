@@ -676,7 +676,11 @@
 				font-size: 0.16rem;
 			}
 			.teams img{
-				border-radius: 5px;
+				border-radius: 3px;
+			}
+			.teams:not(:last-child) img{
+				border-radius: 3px;
+				margin-bottom: 5px;
 			}
 			.Headlines{display:block;font-size:13px;line-height:20px;height: 20px;color: #666;letter-spacing: .5px;}
 			strong{color: #555;font-weight: 100;}
@@ -882,13 +886,13 @@
  
 	 	<!--服务团队-->
 	 	<div class="mui-row">
-		 	<figure class="teams mui-col-sm-4 mui-col-xs-4" onclick="helpYou()"> 
+		 	<figure class="teams mui-col-sm-12 mui-col-xs-12" onclick="helpYou()"> 
 				<img src="../img/serveForPeople/linshuibang.jpg" style="width: 100%;" />
 			</figure>
-			<figure class="teams mui-col-sm-4 mui-col-xs-4" onclick="golys()"> 
+			<figure class="teams mui-col-sm-12 mui-col-xs-12" onclick="golys()"> 
 				<img src="../img/serveForPeople/lawyer.jpg" style="width: 100%;" />
 			</figure>
-			<figure class="teams mui-col-sm-4 mui-col-xs-4" onclick="goyg()"> 
+			<figure class="teams mui-col-sm-12 mui-col-xs-12" onclick="goyg()"> 
 				<img src="../img/serveForPeople/yigongteam.jpg" style="width: 100%;" />
 			</figure>
 		</div>
@@ -898,16 +902,16 @@
 				<img src="../img/market/find.png" /><span style="vertical-align: middle;">HI 生活</span><span  style="float: right;font-size: 12px;vertical-align: middle;">更多<span style="font-size: 14px;" class="mui-icon mui-icon-arrowright"></span></span>
 			</div>
 			<div class="tab">
-				<span class="tabActive">每日精选</span>   
-				<span>热门推荐</span> 
+				<span class="tabActive">专题活动</span>   
+				<span>热帖推荐</span> 
 			</div>
 			<div class="tabcontent taactive" id="tabc1"></div>
 			<script type="text/html" id="tabc1Tpl">
 			
 				<%for(var i =0;i<list.length;i++){%>
-					<figure onclick="findInfo(<%= list[i].news_id%>,<%= list[i].userid%>)">
-						<%if(list[i].banner_pic){%>
-							<img src="<%=myUrl+list[i].banner_pic%>" onerror="javascript:this.src='../img/market/feg2.png';" style="width: 100%;" />
+					<figure onclick="ztInfo(<%= list[i].q_id%>)">
+						<%if(list[i].pic){%>
+							<img src="<%=myUrl+list[i].pic%>" onerror="javascript:this.src='../img/market/feg2.png';" style="width: 100%;" />
 							<%}else{%>
 								<img src="../img/market/feg.png" style="width: 100%;" />
 							<%}%>
@@ -1233,6 +1237,15 @@
 				})
 			}
 			
+			function ztInfo(q_id){
+				openview({
+					view: "find/themalist.html",
+					extrasobj: {
+						qid:q_id
+					}
+				})
+			}
+			
 			//点击进入商品详情
 			$(".adGo").each(function() {
 				$(this).click(function() {
@@ -1521,14 +1534,35 @@
 						}
 					});
 					
-					//获取每日精选 热门推荐 发现推荐
-					mui.ajax(serverUrl + '/api/news/commendnews', {
-						data: {type_name: 2},
+					//获取专题活动 热帖推荐
+//					mui.ajax(serverUrl + '/api/news/commendnews', {
+//						data: {type_name: 2},
+//						type: 'post',
+//						timeout: 10000,
+//						headers: {"token": oldToken},
+//						success: function(data, type, xhr) {
+//							console.log('发现推荐',data);
+//							if(data.errno == 0) {
+//								if(data.data.length){
+//									var findList = {}; 
+//									findList.myUrl = serverimgUrl;
+//								    findList.list = data.data;
+//									document.getElementById("tabc1").innerHTML = template("tabc1Tpl",findList)   
+//								}
+//							}
+//							plus.nativeUI.closeWaiting(); //关闭等待框
+//						},
+//						error: function(xhr, type, errorThrown) {
+//							plus.nativeUI.closeWaiting(); //关闭等待框
+//						}
+//					});
+					mui.ajax(serverUrl + '/api/news/activitylist ', {
+						data: {act_id: 1,isindex :1},
 						type: 'post',
 						timeout: 10000,
 						headers: {"token": oldToken},
 						success: function(data, type, xhr) {
-							console.log('发现推荐',data);
+							console.log('专题活动',data);
 							if(data.errno == 0) {
 								if(data.data.length){
 									var findList = {}; 
@@ -1543,7 +1577,7 @@
 							plus.nativeUI.closeWaiting(); //关闭等待框
 						}
 					});
-					//获取每日精选 热门推荐 发现推荐 
+					//获取专题活动 热帖推荐 发现推荐 
 					mui.ajax(serverUrl + '/api/news/commendnews', {
 						data: {
 							type_name: 1

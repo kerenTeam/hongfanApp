@@ -1511,9 +1511,8 @@
 								timeout: 300000, //超时时间设置为10秒；
 								success: function(data) {
 									console.error('支付返回',data);
-									plus.nativeUI.closeWaiting() 
-
-//									alert("----- 请求订单成功 -----"+JSON.stringify(data));
+									plus.nativeUI.closeWaiting()  
+									 
 									if(data.errno == 0) {
 										//购物车 缓存 
 										var cartStorage = JSON.parse(plus.storage.getItem('$cartStorage') || '[]');
@@ -1526,8 +1525,9 @@
 											}
 										}
 										plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage))
-										var list = plus.webview.getWebviewById('cart');
+										var list = plus.webview.getWebviewById('cart.html');
 										mui.fire(list, 'refresh');
+										mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 									}
 
 									var varpay;

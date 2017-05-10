@@ -201,6 +201,7 @@
 				padding: 15px 15px;
 				line-height: 1.4;
 				letter-spacing: 1px;
+				word-break: break-all;
 			}
 			
 			.mark {
@@ -555,7 +556,7 @@
 									<%}%>
 								<%}%>
 							<%}%>
-						<%}%> <%=recommendData.newsinfodata[0].content%>
+						<%}%> <span class="newscontent"></span> <!--onclick='openurl("<%=recommendData.newsinfodata[0].linkurl%>")'-->
 		
 					</p>
 					 
@@ -836,12 +837,21 @@
 						if(data.data){ 
 							var dataobj = data.data;  
 							if(dataobj.newsinfodata[0].avatar){
-								if(dataobj.newsinfodata[0].avatar.indexOf("[") != -1) {
+								if(dataobj.newsinfodata[0].avatar.indexOf("[") > -1) {
 									dataobj.newsinfodata[0].avatar = serverimgUrl + JSON.parse(dataobj.newsinfodata[0].avatar)[0].picImg;
 								}
 							}
 							if(dataobj.newsinfodata[0].pic){
 								dataobj.newsinfodata[0].pic = serverimgUrl + JSON.parse(dataobj.newsinfodata[0].pic)[0].picImg;
+							}
+							if(dataobj.newsinfodata[0].content.indexOf('http')>-1){ 
+								var reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
+								  
+								var linkurl = dataobj.newsinfodata[0].content.replace(reg,"<a href='$1$2' onclick='openurl(this)'>$1$2</a>"); //这里的reg就是上面的正则表达式
+								 
+								alertF("linkurl "+linkurl);	 
+								dataobj.newsinfodata[0].content = linkurl;
+//								dataobj.newsinfodata[0].linkurl = linkurl;
 							}
 							if(!avtar){ 
 								$(".findUser").attr("src",dataobj.newsinfodata[0].avatar)
@@ -860,7 +870,7 @@
 							var dt = new Date(dataobj.newsinfodata[0].create_news_time);
 							var date = [
 							  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
-							  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+							  [dt.getHours(), dt.getMinutes()].join(':')
 							].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
 							dataobj.newsinfodata[0].create_news_time = date
 							$("#pbtime").html(date)
@@ -868,6 +878,12 @@
 							recommendObj.myUrl = serverimgUrl;
 							recommendObj.recommendData = dataobj;
 							document.getElementById("newsInfo").innerHTML = template("newsInfoTpl",recommendObj);
+							$('.newscontent').html(dataobj.newsinfodata[0].content)
+							//打开外部链接
+							window.openurl = function(obj){
+								alertF(obj.href)
+								plus.runtime.openURL(obj.href)
+							}
 							$("body").css("display","block");
 							if(dataobj.liker){
 								for(var i=0;i<dataobj.liker.length;i++){
@@ -1015,7 +1031,7 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	 
 					success:function(data,type,xhr){
-						console.log("获取评论 "+JSON.stringify(data))
+						console.log("获取评论 ",data)
 						if(data.errno == 0) { 
 							if(data.data){ 
 								var dataobj = data.data;
