@@ -1,5 +1,5 @@
 //var serverUrl='http://192.168.199.191:7200';
-var serverUrl='http://hiji.hifete.com';
+var serverUrl='http://hiji.hifete.com'; 
 //var serverUrl='http://s-365426.gotocdn.com';
 //var serverUrl='http://192.168.31.153:7200';
 
@@ -25,6 +25,36 @@ function alertF(content){ //非姐的方法
 }
 function alertY(content){ //向前的方法 
 	alert(content) 
+}
+
+//banner跳转
+window.bannerGo = function(url, name, nameid) {
+	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
+		openview({
+			view: "bannerTpl.html",
+			id: "bannerTpl",
+			extrasobj: {
+				bannerUrl: url,
+				bannerName: name
+			}
+		})
+	}else if(url.indexOf('&')>-1 ){//本地 
+		var localId = url.split('&')[1],localUrl = url.split('&')[0],localUId = url.split('&')[2] || -1;
+		openview({
+			view: localUrl,
+			create: true,
+			extrasobj: {
+				storeId:localId,//商铺主页
+				goodcatId:localId,//特色馆分类
+				goodsId:localId,//商品主页
+				activityId:localId,//活动主页
+				storeCouponId:localId,//优惠主页
+				newsId:localId,//帖子详情： 帖子id
+				userId:localUId,//帖子详情： 帖子userId 
+			}
+		})
+	}
+	
 }
 
 //关注和取消关注

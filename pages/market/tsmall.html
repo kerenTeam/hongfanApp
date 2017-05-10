@@ -589,12 +589,13 @@
 				timeout:10000,
 				headers:{"token":token},	 
 				success:function(data,type,xhr){
+					console.log('banner',data);
 					bannerObj={};
 					bannerObj.bannerList = eval("("+data.data.banner+")");
 					bannerObj.url = serverimgUrl;
 					var html = template('banner-detail',bannerObj);
 					document.getElementById('banner').innerHTML = html;
-					plus.nativeUI.closeWaiting();//关闭等待框
+					plus.nativeUI.closeWaiting();//关闭等待框 
 					//轮播图,获得slider插件对象
 					var gallery = mui('.mui-slider');
 					gallery.slider({
@@ -604,44 +605,7 @@
 				error:function(xhr,type,errorThrown){
 					console.log('响应失败  !');
 				}
-			}); 
-			//banner跳转
-			 window.bannerGo = function(url, name, nameid) {
-			 	if(nameid == 0){
-					openview({
-						view: "shophome.html",
-						extrasobj: {
-							storeId: 203
-						}
-					})
-				}else if(nameid == 1){
-					openview({
-						view: "shophome.html",
-						extrasobj: {
-							storeId: 236
-						}
-					})
-				}else{
-					openview({
-						view: "shophome.html",
-						extrasobj: {
-							storeId: 230
-						}
-					})
-				}
-			 	
-				if(url != '#'){
-					openview({
-						view: "../bannerTpl.html",
-						id: "bannerTpl",
-						extrasobj: {
-							bannerUrl: url,
-							bannerName: name
-						}
-					})
-				}
-				
-			}
+			});  
 			//特色馆分类 数据渲染
 			mui.ajax(serverUrl+'/api/mall/goodscategory',{
 				data:{parentid:0,type:2},

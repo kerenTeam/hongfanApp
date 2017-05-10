@@ -799,9 +799,8 @@
 														payfunfun('wxpay');
 												}
 												function payfunfun(argu){
-													alertY(argu);
 													plus.nativeUI.showWaiting();
-													mui.ajax(serverUrl0+'/api/qianmi/mobileflowbill',{//生成本地系统支付订单    
+													mui.ajax(serverUrl+'/api/qianmi/mobileflowbill',{//生成本地系统支付订单    
 														data:{
 															itemId:itemIdstr,
 															mobileNo:mobileNo,
@@ -820,9 +819,8 @@
 																//var result = JSON.stringify(result); 
 																console.log('本地支付成功返回数据',result);
 																var resultStr = JSON.stringify(result);
-																console.error(resultStr);
-																alertY(resultStr);
-																mui.ajax(serverUrl0+'/api/qianmi/paymentverify',{ 
+																console.error(resultStr); 
+																mui.ajax(serverUrl+'/api/qianmi/paymentverify',{ 
 																	data:{
 																		PaymentData:resultStr
 																	},
@@ -831,12 +829,12 @@
 																	timeout:10000,//超时时间设置为10秒；
 																	headers:{"token":oldToken},
 																	success:function(data){ 
-																		alertY('发送成功'+JSON.stringify(data));
+																		//alertY('发送成功'+JSON.stringify(data));
 																		console.log('发送成功',data);
 																		plus.nativeUI.closeWaiting();
 																	},
 																	error:function(xhr,type,errorThrown){
-																		alertY('发送失败');
+																		//alertY('发送失败');
 																		plus.nativeUI.closeWaiting();
 																	}
 																});
@@ -895,7 +893,7 @@
 							
 						})
 					}else{
-						$(".rechargeItem").removeClass("rechargeItemActive");
+						$(".rechargeItem").removeClass("rechargeItemActive"); 
 					}
 				}
 		})

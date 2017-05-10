@@ -104,8 +104,9 @@
 				line-height: 40px;
 			} 
 			.outP{
-				line-height: 40px;
-				text-indent: 15px;
+				line-height: 26px;
+			    text-indent: 10px;
+			    font-size: 12px; 
 			}
 		</style>
 	</head>
@@ -144,8 +145,8 @@
 									    </div>
 									</div>-->
 									<div class="dealcard-brand dealcard-brandtwo single-line">
-										<p class="poi-name">标题： <%=data.title%></p>
-										<p class="poi-name">内容：
+										<p class="poi-name" style="font-size: 15px;"><%=data.title%></p>
+										<p class="poi-name" style="font-size: 14px;">
 											<span><%=data.content%>
 											<%if(data.pics!=null){%>
 												<div class="mui-row">
@@ -160,13 +161,9 @@
 												<%}%>
 										</span></p>
 										 <div class="mui-row state_bottom">
-									        <div class="mui-col-sm-6 mui-col-xs-6">
-								             	<!--<%if(data.state==0){%>
-										    		<span class="mui-badge" style="color: white">暂无回复</span>
-										    	<%}else{%> 
-										    		<span class="mui-badge mui-badge-danger" style="color: white">查看回复</span>
-										    	<%}%>                       -->
-									        </div>
+									       	<div class="mui-col-sm-6 mui-col-xs-6" style="font-size: 13px;color: #777;">
+								           		对象：<%=data.name%>
+									        </div> 
 									        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
 									                                     发布于<%=data.create_time%>
 									        </div>
@@ -191,7 +188,7 @@
 								    	<%if(answerdata.headPic==null){%>
 									    		<img src="../../img/10.png" class="imgbox">
 									    		<%}else{%>
-									    			<img src="<%=answerdata.headPic%>" class="imgbox">
+									    			<img src="<%= myUrl%><%=answerdata.headPic%>" class="imgbox">
 									    			<%}%>
 								    </div>
 								    <div class="mui-col-sm-10 mui-col-xs-10 name">
@@ -203,10 +200,10 @@
 									<!--<p class="state">显示中</p>-->
 									<div class="mui-row state_bottom">
 								        <div class="mui-col-sm-6 mui-col-xs-6">
-								                                    
+						              		                      
 								        </div>
 								        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-								                                     回答于<%=answerdata.reply_time%>
+		                                     回答于<%=answerdata.reply_time%>
 								        </div>
 								    </div>
 								</div>		
@@ -245,6 +242,7 @@
 				       if(data.errno===0){
 				       	if(data.data.length!=0){
 				       		var helpListb = {},answerobj={};
+				       		answerobj.myUrl =serverimgUrl;
 				       			helpListb.myUrl =serverimgUrl;
 				       		for(var t=0;t<data.data.length;t++){ 
 				       			if(data.data[t].create_time !=null){
@@ -277,7 +275,8 @@
 					        
 				       	}
 					    if(typeidnum){//律师
-					    	mui('#helpAnswer')[0].style.display = 'none';
+					    	//mui('#helpAnswer')[0].style.display = 'none';
+					    	mui('.outP')[0].innerHTML = '律师团的回复';
 					    }
 				       }
 					},
