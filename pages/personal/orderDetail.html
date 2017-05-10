@@ -341,7 +341,12 @@
 				<%if(data.order_status==4 && data.PriceCalculation.Params.goodsData[0].store_id != 0){%>
 					<button class="fr BC" onclick="goComment('<%=data.order_id%>',<%=data.userPostData.goodsData.length%>,<%=data.userPostData.goodsData[0].goodsid%>,<%=data.userPostData.storeid%>)">评价</button>
 					<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
-				 	<!--<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>--> 
+				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
+				<%}%>
+				<%if(data.order_status==4 && data.PriceCalculation.Params.goodsData[0].store_id == 0){%>
+					<!--<button class="fr BC" onclick="goComment('<%=data.order_id%>',<%=data.userPostData.goodsData.length%>,<%=data.userPostData.goodsData[0].goodsid%>,<%=data.userPostData.storeid%>)">评价</button>-->
+					<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
+				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
 				<%}%>
 				<%if(data.order_status==5){%> 
 				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
@@ -393,7 +398,7 @@
 			$("#payChoose").removeClass("mui-active");
 		})
 		var pays={};
-		mui.plusReady(function(){
+		mui.plusReady(function(){ 
 			window.addEventListener('refresh',function(event){  
 				load();
 			})
@@ -518,6 +523,7 @@
 							       	var listpage = plus.webview.getWebviewById("personal/sc-order.html"); 
 							       	mui.fire(listpage,'refresh');
 							       	mui.toast("订单已取消");
+							       	mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 							       	setTimeout(function(){mui.back();},1000)
 							       	
 							       }
@@ -633,7 +639,8 @@
 								},
 								timeout: 300000, //超时时间设置为10秒；
 								success: function(data) {
-									plus.nativeUI.closeWaiting() 
+									plus.nativeUI.closeWaiting();
+									mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 									var varpay;
 									if(id == 'wxpay') {
 										varpay = {
@@ -762,6 +769,7 @@
 							       	 	var listpage = plus.webview.getWebviewById("personal/sc-order.html"); 
 								       	mui.fire(listpage,'refresh');
 								       	mui.toast("已确认收货");
+								       	mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 								       	setTimeout(function(){mui.back();},1000)
 							       }
 							 },  

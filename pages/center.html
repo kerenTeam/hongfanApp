@@ -173,7 +173,8 @@
     		.dindan{width: 18px; margin-top: -4px;margin-left: 2px;}
     		#wodedin table{width: 100%;text-align: center;color: #555;table-layout:fixed;}
     		#wodedin table img{display: block;margin: 0 auto;width: 23px;margin-bottom: 5px;}
-    		#wodedin table td{padding: 10px 0;}
+    		#wodedin table td{padding: 10px 0;position: relative;}
+    		#wodedin table td span{position: absolute;bottom: 30px;right: 35px;background: white;border:1px solid #f0ad4e!important;color: #f0ad4e;font-size: 10px;padding: 2px 4px;}
     		#column table{width: 100%;text-align: center;background-color: #fff;margin-top: 10px;table-layout:fixed;}
     		#column table img{width: 28px;display: block;margin: 0 auto;margin-bottom: 8px;}
     		#column table td{padding: 20px 0;}
@@ -225,9 +226,9 @@
     		</div>
     		<table border="" cellspacing="" cellpadding="">
     			<tr> 
-    				<td class="aClick" onclick="typeOrder(0)"><img  src="../img/fukuan.svg"/>待付款</td> 
-    				<td class="aClick" onclick="typeOrder(2)"><img  src="../img/shouhuo.svg"/>待收货</td> 
-    				<td class="aClick" onclick="typeOrder(3)"><img  src="../img/pingjia.svg"/>待评价</td>
+    				<td class="aClick" onclick="typeOrder(0)"><img  src="../img/fukuan.svg"/>待付款<span class="mui-badge mui-badge-warning ordera" style="display: none;"></span></td> 
+    				<td class="aClick" onclick="typeOrder(2)"><img  src="../img/shouhuo.svg"/>待收货<span class="mui-badge mui-badge-warning orderb" style="display: none;"></span></td> 
+    				<td class="aClick" onclick="typeOrder(3)"><img  src="../img/pingjia.svg"/>待评价<span class="mui-badge mui-badge-warning orderc" style="display: none;"></span></td>
     			</tr>
     		</table>
     	</div>
@@ -342,6 +343,57 @@
 								console.log('获取用户数据,响应失败');
 							}
 						});
+						
+						//获取各类订单的条数
+						mui.ajax(serverUrl+'/api/mall/orderlist',{
+							data:{userid:myuserid},
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldtoken},	 
+							success:function(data,type,xhr){   
+								console.log("订单",data)
+								plus.nativeUI.closeWaiting(); 
+								if(data.errno==0){
+									if(data.data.length!=0){ 
+										var a=0,b=0,c=0;
+										for(var i=0;i<data.data.length;i++){
+											if(data.data[i].goods_data){
+												data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
+											}
+											 if(data.data[i].order_status == 1){
+											 	a++;
+											 	if(a){
+											 		mui('.ordera')[0].style.display = 'block';
+											 		mui('.ordera')[0].innerHTML = a;
+											 	}
+											 }
+											if(data.data[i].order_status == 3){
+											 	b++;
+											 	if(b){
+											 		mui('.orderb')[0].style.display = 'block';
+											 		mui('.orderb')[0].innerHTML = b;
+											 	}
+											 }
+											if(data.data[i].order_status == 4 && data.data[i].goods_data.store_id != 0){
+											 	c++;
+											 	if(c){
+											 		mui('.orderc')[0].style.display = 'block';
+											 		mui('.orderc')[0].innerHTML = c;
+											 	} 
+											 }
+										 
+										}
+										} 
+									} 
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting()
+								console.log('响应失败  !');
+							}
+						});
+						
+						
 					}else{//退出登录还原
 						mui('.denluzhuce')[0].innerHTML = '登录\注册';
 						mui('#numjifen')[0].innerHTML = '';
