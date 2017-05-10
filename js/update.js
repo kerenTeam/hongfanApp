@@ -12,6 +12,37 @@ if(window.plus){
 }else{
     document.addEventListener('plusready',plusReady,false); 
 }
+//ios提示更新
+function checkUpdateIos(){
+	var oldtoken = plus.storage.getItem('oldToken'); 
+	mui.ajax(serverUrl+'/api/index/version',{
+		dataType:'json', 
+		type:'post',
+		timeout:5000,
+		headers:{"token":oldtoken},
+		success:function(data,type,xhr){ 
+			console.log('检测更新',data);
+			console.log('检测更新'+JSON.stringify(data));
+			wgtUrl= serverUrl + data.data.android_path_url;
+			var newVer = data.data.ios_versionNum;//远程版本号
+			var newUrl = data.data.ios_path_url;//远程地址
+			if(newVer > wgtVer){//升级   
+				mui.confirm('检测到有新版本，是否升级？', '提示',['是','否'], function(e) {
+					if(e.index == 0) { 
+						plus.runtime.openURL(newUrl);
+					}
+				})
+            }
+            
+		},
+		error:function(xhr,type,errorThrown){
+			mui.toast('当前网络不好，请重试'); 
+			console.error('操作响应失败');
+		}
+	});
+}
+
+
 // 检测更新
 function checkUpdate(hide){
 	!hide && plus.nativeUI.showWaiting('正在检查更新...',{width:'130px',height:'110px'});
@@ -19,7 +50,7 @@ function checkUpdate(hide){
 	mui.ajax(serverUrl+'/api/index/version',{
 		dataType:'json', 
 		type:'post',
-		timeout:3000,
+		timeout:5000,
 		headers:{"token":oldtoken},
 		success:function(data,type,xhr){ 
 			console.log('检测更新',data);

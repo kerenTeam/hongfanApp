@@ -723,7 +723,9 @@
 						<!--支持循环，需要重复图片节点-->
 						<div class="mui-slider-item mui-slider-item-duplicate">
 							<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
-							<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>',2)">
+								<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+							</a>	
 							<% }else{ %>
 							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>',2)">
 								<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
@@ -733,7 +735,9 @@
 						<% for(var i=0;i<bannerList.length;i++){ %>
 						<div class="mui-slider-item">
 							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
-							<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>',<%= i%>)">
+								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+							</a>	
 							<% }else{ %>
 							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>',<%= i%>)">
 								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
@@ -1447,18 +1451,44 @@
 					});
 					//banner跳转
 					window.bannerGo = function(url, name, nameid) {
+//						if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
+//							openview({
+//								view: "bannerTpl.html",
+//								id: "bannerTpl",
+//								extrasobj: {
+//									bannerUrl: url,
+//									bannerName: name
+//								}
+//							})
+//						}else{//本地
+//							var localId = url.split('&')[1],localUrl = url.split('&')[0],localUId = url.split('&')[2] || -1;
+//							alertY(localUId);
+//							openview({
+//								view: localUrl,
+//								extrasobj: {
+//									storeId:localId,//商铺主页
+//									goodcatId:localId,//特色馆分类
+//									goodsId:localId,//商品主页
+//									activityId:localId,//活动主页
+//									storeCouponId:localId,//优惠主页
+//									newsId:localId,//帖子详情： 帖子id
+//									userId:localUId,//帖子详情： 帖子userId 
+//								}
+//							})
+//						}
+						
 						if(nameid == 0){
-							openview({ 
-	                            view:'market/specialOffer.html',
-	                            id:''
-	                        });
-						}else if(nameid == 1){
-							 openview({ 
+							openview({  
 	                            view: 'market/youpinhui-Center.html',
-	                            id: "youpinhui-Center"  
+	                            id: "youpinhui-Center"
 	                        });
-						}
-						if(url != '#'){
+						}else if(nameid == 2){
+							openview({
+								view: "market/mall-detail.html",
+								create: true,
+								extrasobj: { goodsId: 8687, shoptype: null }
+							})
+						}else{
 							openview({
 								view: "bannerTpl.html",
 								id: "bannerTpl",
@@ -1559,7 +1589,7 @@
 							"token": oldToken
 						},
 						success: function(data, type, xhr) {
-							console.log("头条 "+JSON.stringify(data))
+							//console.log("头条 "+JSON.stringify(data))
 							if(data.data.length == 0) {
 								$('#adNews').find('marquee').html('暂无家乡头条!');
 							} else {

@@ -597,7 +597,7 @@
 						<!--<div class="sharef" style="position: relative;" onclick="shareHref()"> 分享弃用
 							<img src="../../img/market/sharef.png" style="width: 20px;position: absolute;top: 10px;right: 10px;" />
 						</div>-->
-						<div class="sharef" style="position: relative;" onclick="goreport()">
+						<div class="sharef" style="position: relative;" onclick="goreport('<%=recommendData.newsinfodata[0].news_id%>')">
 							<span style="font-size: 12px;position: absolute;top: 14px;right: 10px;white-space:nowrap;" >
 								举报
 							</span>
@@ -1361,12 +1361,35 @@
 		// 控制台输出日志
 		
 		//举报
-		function goreport(){
-			mui.confirm('确定举报吗？', '提示', ['取消', '确定'], function(e) {
-			if(e.index == 1) {
-				mui.toast("举报成功")
-			} 
-		})
+		function goreport(id){
+			mui.plusReady(function(){  
+				var oldtoken = plus.storage.getItem('oldToken');
+				mui.confirm('确定举报吗？', '提示', ['取消', '确定'], function(e) {
+					if(e.index == 1) { 
+						mui.ajax(serverUrl+'/api/news/reportnews',{
+							data:{
+								news_id:id
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							headers:{"token":oldtoken}, 
+							success:function(data){
+								console.log('举报',data);
+								if(data.errno == 0){
+									mui.toast("举报成功");
+								}else{
+									mui.toast("举报失败，请重试");
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								mui.toast("举报失败，请重试");
+							}
+						});
+						
+					} 
+				})
+			})	
 		}
 		
 		function outSet(msg) {

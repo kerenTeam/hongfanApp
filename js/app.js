@@ -14,6 +14,7 @@ var partner_key='syet234876fxcvdj58yjdbn475serop8';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
+//var serverimgUrl='http://211.149.183.181:6789'; 
 
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment'; 
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';

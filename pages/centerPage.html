@@ -153,7 +153,8 @@
 		}
 		.fft b, .follow b{color: #555;}
 		.follow>div{height: 100%;padding-top: 8px;}
-		.deletefind{text-align: right;color: gray;font-size: 0.1rem;padding: 10px;}
+		.deletefind{text-align: right;color: gray;font-size: 11px;padding: 10px 10px 0;}
+		.deletefind:active{color: red;}
 	</style>
 
 	<body style="display: none;">
@@ -230,7 +231,7 @@
 			#spandiv span{line-height: 40px;}
 			#dynamic .spanL{float: left;color: #888;}
 			#dynamic .spanR{float: right;color: #C0C0C0;}
-			#dynamic li{margin-left: 25px;padding-right: 20px;position: relative;padding-bottom: 20px;}
+			#dynamic li{margin-left: 25px;padding-right: 20px;position: relative;padding-bottom: 12px;}
 			#dynamic li:after{left: 0;}
 			#Dcon{padding: 8px;padding-left: 30%;background-color: rgba(242, 241, 238, 0.62);} 
 			#Dcon:after{display: block;content: ' ';clear: both;}
@@ -277,7 +278,7 @@
 								</div>
 								<p><%= list[i].content%></p>
 							</div>
-							<div style="display: none;" onclick="godel('<%=list[i].news_id%>')" class="deletefind">删除</div>
+							<div onclick="godel('<%=list[i].news_id%>',this)" class="deletefind">删除</div>
 						</li>
 					<%}%>
 				
@@ -501,6 +502,7 @@
 //			document.getElementById("noinfodiv").innerHTML = '';
 			getMyF();
 			function getMyF(){
+				
 				mui.ajax(serverUrl+'/api/news/newslist',{ 									
 					data:{currentPage:1,numsPerPage:50,userid:myuserid}, 
 					dataType:'json',//服务器返回json格式数据
@@ -547,7 +549,7 @@
 										Ypagenum++;//满足加载情况,应到页数+1
 										console.log('发起请求,实到'+Spagenum+'页');									
 										console.log('发起请求,应到'+Ypagenum+'页');
-										mui.ajax(serverUrl+'//api/news/newslist',{ 	
+										mui.ajax(serverUrl+'/api/news/newslist',{ 	
 											data:{currentPage:Spagenum,numsPerPage:50,userid:myuserid}, 
 											dataType:'json',//服务器返回json格式数据 
 											type:'post',//HTTP请求类型 
@@ -605,11 +607,31 @@
 				});
 			}
 			
-			window.godel=function(id){
+			window.godel=function(id,obj){
 		    	mui.confirm('确定要删除该条吗？', '提示',['否', '是'], function(e) {
 					if(e.index == 1) {
-						mui.toast('删除成功');
-						getMyF();
+						mui.ajax(serverUrl+'/api/news/delectmynews',{
+							data:{
+								news_id:id,
+								userid:myuserid
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							headers:{"token":oldtoken},
+							success:function(data){
+								console.log('删贴',data);
+								if(data.errno == 0){
+									mui.toast('删除成功'); 
+									obj.parentNode.style.display = 'none';
+								}else{
+									mui.toast('删除失败，请重试');
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								mui.toast('删除失败，请重试');
+							}
+						});
 					} else {}
 				})
 		    }

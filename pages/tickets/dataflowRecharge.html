@@ -771,7 +771,7 @@
 							if(reg_phone.test(mobileNo)){
 								plus.nativeUI.showWaiting(); 
 								var rechargeAmount = $(this).find("p").html();
-									//充流量接口
+									//充流量接口   查询商品详情
 									mui.ajax(serverUrl+'/api/qianmi/mobileflow',{
 										data:{mobileNo:mobileNo,flow:rechargeAmount,useScope:'c'},  
 										dataType:'json',
@@ -799,8 +799,9 @@
 														payfunfun('wxpay');
 												}
 												function payfunfun(argu){
+													alertY(argu);
 													plus.nativeUI.showWaiting();
-													mui.ajax(serverUrl+'/api/qianmi/mobileflowbill',{    
+													mui.ajax(serverUrl0+'/api/qianmi/mobileflowbill',{//生成本地系统支付订单    
 														data:{
 															itemId:itemIdstr,
 															mobileNo:mobileNo,
@@ -812,20 +813,60 @@
 														timeout:10000,//超时时间设置为10秒；
 														headers:{"token":oldToken}, 
 														success:function(data){
-															console.log('2',data); 
+															console.log('本地支付数据',data);
+															console.log(itemIdstr+'&&&'+mobileNo+'&&&'+randomstr);
 															//调用系统支付  
 															plus.payment.request(pays[argu], data.data.PaymentData, function(result) {
-																plus.nativeUI.closeWaiting();
-																//继续千米支付   
-																var result = JSON.stringify(result); 
+																//var result = JSON.stringify(result); 
+																console.log('本地支付成功返回数据',result);
+																var resultStr = JSON.stringify(result);
+																console.error(resultStr);
+																alertY(resultStr);
+																mui.ajax(serverUrl0+'/api/qianmi/paymentverify',{ 
+																	data:{
+																		PaymentData:resultStr
+																	},
+																	dataType:'json',//服务器返回json格式数据
+																	type:'post',//HTTP请求类型
+																	timeout:10000,//超时时间设置为10秒；
+																	headers:{"token":oldToken},
+																	success:function(data){ 
+																		alertY('发送成功'+JSON.stringify(data));
+																		console.log('发送成功',data);
+																		plus.nativeUI.closeWaiting();
+																	},
+																	error:function(xhr,type,errorThrown){
+																		alertY('发送失败');
+																		plus.nativeUI.closeWaiting();
+																	}
+																});
+//																mui.ajax(serverUrl+'/api/qianmi/mobileflowpaybill',{//继续千米支付  
+//																	data:{
+//																		itemId:itemIdstr,
+//																		mobileNo:mobileNo,
+//																		outerTid:randomstr
+//																	},
+//																	dataType:'json',//服务器返回json格式数据
+//																	type:'post',//HTTP请求类型
+//																	timeout:10000,//超时时间设置为10秒；
+//																	success:function(data){
+//																		if(data.errno==0 && !data.data.errorToken){
+//																			mui.toast('支付成功');
+//																		}else{
+//																			
+//																		}
+//																		plus.nativeUI.closeWaiting();
+//																	},
+//																	error:function(xhr,type,errorThrown){
+//																		
+//																		plus.nativeUI.closeWaiting();
+//																	}
+//																});
 																
 															}, function(e) { 
 																plus.nativeUI.closeWaiting(); 
 																mui.alert('购买失败，请重试');
-			
 															});
-															
-															 
 														},
 														error:function(xhr,type,errorThrown){
 															
@@ -838,6 +879,8 @@
 //													id:"paysecond",
 //													extrasobj:{aliPayURL:aliPayURL,new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount,pageid:"phoneRecharge",body:data.data.body,subject:subject}
 //												})
+											}else{
+												mui.toast('暂时没有该面值');
 											}
 											plus.nativeUI.closeWaiting();
 										},
