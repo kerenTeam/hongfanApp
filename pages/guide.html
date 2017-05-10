@@ -17,13 +17,28 @@
 				margin-left: -80px;
 				bottom: 15%;
 				padding: 10px;
-				color: #fff; 
+				color: #fff;
 			}
+			
+			#jump {
+				border: 1px solid #fff;
+				width: 70px;
+				text-align: center;
+				padding: 5px 0;
+				border-radius: 15px;
+				position: absolute;
+				right: 5%;
+				top: 50px;
+				font-size: 16px;
+				color: black;
+			}
+			
 			.item-logo {
 				width: 100%;
 				height: 100%;
 				position: relative;
 			}
+			
 			.item-logo a {
 				width: 200px;
 				height: 200px;
@@ -40,6 +55,7 @@
 				left: 50%;
 				margin-left: -100px;
 			}
+			
 			.animate {
 				position: absolute;
 				left: 0;
@@ -48,10 +64,12 @@
 				color: #fff;
 				display: -moz-box;
 			}
+			
 			.animate h2 {
 				text-align: center;
 				margin-bottom: 20px;
 			}
+			
 			.animate li {
 				width: 50%;
 				height: 30px;
@@ -60,35 +78,48 @@
 				font-size: 16px;
 				text-align: right;
 			}
-			.mui-slider .mui-slider-group .mui-slider-item img{height: 100%;}
+			
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				height: 100%;
+			}
+			
 			.animate li:nth-child(3) {
 				text-align: left;
 				float: right;
 			}
+			
 			.animated {
 				-webkit-animation-duration: 1s;
 				-webkit-animation-play-state: paused;
 				-webkit-animation-fill-mode: both;
 			}
+			
 			.guide-show .bounceInDown {
 				-webkit-animation-name: bounceInDown;
 				-webkit-animation-play-state: running;
 				-webkit-animation-delay: 1s;
 				display: block;
 			}
+			
 			.guide-show .bounceInLeft {
 				-webkit-animation-name: bounceInLeft;
 				display: block;
 				-webkit-animation-play-state: running;
 			}
+			
 			.guide-show .bounceInRight {
 				-webkit-animation-name: bounceInRight;
 				display: block;
 				-webkit-animation-play-state: running;
 				-webkit-animation-delay: 0.5s;
 			}
+			
 			@-webkit-keyframes bounceInDown {
-				0%, 60%, 75%, 90%, 100% {
+				0%,
+				60%,
+				75%,
+				90%,
+				100% {
 					-webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 					animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 				}
@@ -115,8 +146,13 @@
 					transform: none;
 				}
 			}
+			
 			@-webkit-keyframes bounceInLeft {
-				0%, 60%, 75%, 90%, 100% {
+				0%,
+				60%,
+				75%,
+				90%,
+				100% {
 					-webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 					animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 				}
@@ -143,8 +179,13 @@
 					transform: none;
 				}
 			}
+			
 			@-webkit-keyframes bounceInRight {
-				0%, 60%, 75%, 90%, 100% {
+				0%,
+				60%,
+				75%,
+				90%,
+				100% {
 					-webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 					animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 				}
@@ -171,7 +212,10 @@
 					transform: none;
 				}
 			}
-			.mui-btn-danger, .mui-btn-negative, .mui-btn-red{
+			
+			.mui-btn-danger,
+			.mui-btn-negative,
+			.mui-btn-red {
 				border: 1px solid rgba(234, 195, 193, 0.61);
 				background-color: rgba(215, 45, 34, 0.61);
 			}
@@ -181,121 +225,127 @@
 	<body>
 		<div id="slider" class="mui-slider mui-fullscreen">
 			<div class="mui-slider-group" id="bannerdiv">
-				 
+
 			</div>
-			<div class="mui-slider-indicator" id="sliderlength"> 
-				
+			<div class="mui-slider-indicator" id="sliderlength">
+
 			</div>
 		</div>
-		<script src="../js/mui.min.js"></script> 
-		<script src="../js/app.js"></script> 
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
 		<script>
-			
-		    
-			mui.plusReady(function() { 
+			mui.plusReady(function() {
 				//关闭事件
 				//安卓返回键
-				mui.init({ 
-			        beforeback: function(){  
-			            //plus.webview.currentWebview().close();
-			            return false; 
-			        }
-			    });
-			    //自动关闭
+				mui.init({
+					beforeback: function() {
+						//plus.webview.currentWebview().close();
+						return false;
+					}
+				});
+				//自动关闭
 			    var timeclose = setTimeout(function(){
 			    	plus.webview.currentWebview().close();
 			    },12000)
-			    
+
 				plus.nativeUI.showWaiting();
-				
+
 				var Timetoken = null;
 				var oldToken = null;
-				if(plus.storage.getItem('oldToken')){
+				if(plus.storage.getItem('oldToken')) {
 					oldToken = plus.storage.getItem('oldToken');
 					console.log('循环加载数据11');
-					againfun(); 
-				}else{
+					againfun();
+				} else {
 					clearInterval(Timetoken);
 					Timetoken = setInterval(function() { //等待oldToken加载方法
-					if(plus.storage.getItem('oldToken')) {
-						clearInterval(Timetoken);
-						oldToken = plus.storage.getItem('oldToken');
-						console.log('循环加载数据22');
-						againfun(); 
-					}
-				}, 200)
+						if(plus.storage.getItem('oldToken')) {
+							clearInterval(Timetoken);
+							oldToken = plus.storage.getItem('oldToken');
+							console.log('循环加载数据22');
+							againfun();
+						}
+					}, 200)
 				}
-				
-				function againfun(){
+
+				function againfun() {
 					//获取数据
 					mui.ajax(serverUrl + '/api/index/banner', {
-							data: {
-								banner_type: 12
-							},
-						dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						timeout:10000,//超时时间设置为10秒；
+						data: {
+							banner_type: 12
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
 						headers: {
 							"token": oldToken
 						},
-						success:function(data){
+						success: function(data) {
 							console.log(data);
 							var dataobj = JSON.parse(data.data.banner);
 							console.log(dataobj);
-							var allstr = '',slidercircle='';
-							mui.each(dataobj,function (index,element) {
-								if(index == 0){
-									slidercircle +='<div class="mui-indicator mui-active"></div>'
-								}else{
-									slidercircle +='<div class="mui-indicator"></div>'
+							var allstr = '',
+								slidercircle = '';
+							mui.each(dataobj, function(index, element) {
+								if(index == 0) {
+									slidercircle += '<div class="mui-indicator mui-active"></div>'
+								} else {
+									slidercircle += '<div class="mui-indicator"></div>'
 								}
-								if(index == dataobj.length-1){
-									allstr += '<div class="mui-slider-item">'+
-						'<div class="item-logo" style="background-color: white">'+
-						 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
-						 '<button id="close" class="mui-btn mui-btn-danger">进入</button>'+
-						'</div>'+
-					'</div>';
-								return false;
-								}else{
-									allstr += '<div class="mui-slider-item">'+
-						'<div class="item-logo" style="background-color: white">'+
-						 '<img id="guide1" src="'+serverimgUrl+element.pic+'"/>'+
-						'</div>'+ 
-					'</div>';
+								if(index == dataobj.length - 1) {
+									allstr += '<div class="mui-slider-item">' +
+										'<div class="item-logo" style="background-color: white">' +
+										'<img id="guide1" src="' + serverimgUrl + element.pic + '"/>' +
+//										'<button id="close" class="mui-btn mui-btn-danger">进入</button>' +
+										'<span id="jump">跳过<small>12s</small></span></div>' +
+										'</div>';
+									return false;
+								} else {
+									allstr += '<div class="mui-slider-item">' +
+										'<div class="item-logo" style="background-color: white">' +
+										'<img id="guide1" src="' + serverimgUrl + element.pic + '"/>' +
+										'</div>' +
+										'</div>';
 								}
-								
-								
+
 							})
 							console.log(allstr);
 							mui('#bannerdiv')[0].innerHTML = allstr;
 							mui('#sliderlength')[0].innerHTML = slidercircle;
+							
+							//倒计时 
+							var time = 12;
+						    var timereduce = setInterval(function(){ 
+						    	time--;
+						    	document.getElementsByTagName("small")[0].innerHTML = time+"s";
+						    	if(time == -1){
+									plus.webview.currentWebview().close();
+						    	};
+						    },1000)
+							
 							//轮播图,获得slider插件对象
 							var gallery = mui('.mui-slider');
 							gallery.slider({
 								interval: 50000 //自动轮播周期，若为0则不自动播放，默认为0；
-							}); 
+							});
 							//立即体验按钮点击事件
-							document.getElementById("close").addEventListener('tap', function(event) {
-							plus.navigator.setFullscreen(false);
-							plus.webview.currentWebview().close();
-				}, false);
-						plus.nativeUI.closeWaiting();
+							document.getElementById("jump").addEventListener('tap', function(event) {
+								plus.navigator.setFullscreen(false);
+								plus.webview.currentWebview().close();
+							}, false);
+							plus.nativeUI.closeWaiting();
 						},
-						error:function(xhr,type,errorThrown){
+						error: function(xhr, type, errorThrown) {
 							plus.nativeUI.closeWaiting();
 						}
 					});
-				
-				}//重载
-				if(mui.os.ios){
+
+				} //重载
+				if(mui.os.ios) {
 					plus.navigator.setFullscreen(true);
 				}
 				plus.navigator.closeSplashscreen();
 			});
-			
-			 
-			
 		</script>
 	</body>
 

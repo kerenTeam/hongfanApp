@@ -344,7 +344,7 @@
 				 	<!--<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>--> 
 				<%}%>
 				<%if(data.order_status==5){%> 
-				 	<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
+				 	<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button> 
 				 	<button class="fr">已评价</button>
 				 	<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','删除')">删除订单</button>
 				<%}%>
@@ -416,9 +416,11 @@
 				       			data.data[0].PriceCalculation = eval("("+data.data[0].PriceCalculation+")");
 				       			data.data[0].PriceCalculation.PriceCalculValue = parseFloat(data.data[0].PriceCalculation.PriceCalculValue).toFixed(2)
 				       			for(var i= 0;i<data.data[0].PriceCalculation.Params.goodsData[0].goods_Data.length;i++){
-				       				if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate){
-					       				data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax =parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price - data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price /(parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate)/100 + 1)).toFixed(2);
-					       			}
+//				       				计算税费
+//				       				if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate){
+//					       				data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax =parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price - data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price /(parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate)/100 + 1)).toFixed(2);
+//					       			}
+									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = parseFloat((parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge) + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price)*0.17*data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums).toFixed(2);
 				       				data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price).toFixed(2)
 				       				if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin){
 				       					data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("("+data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin+")")

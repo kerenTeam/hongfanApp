@@ -1,18 +1,17 @@
 //var serverUrl='http://192.168.199.191:7200';
-//var serverUrl='http://hiji.hifete.com';
-var serverUrl='http://s-365426.gotocdn.com';
+var serverUrl='http://hiji.hifete.com';
+//var serverUrl='http://s-365426.gotocdn.com';
 //var serverUrl='http://192.168.31.153:7200';
 
 //var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://hiji.hifete.com:6789';
-//var propUrl = 'http://211.149.183.181:6789';
-var partner_key='syet234876fxcvdj58yjdbn475serop8';
+//var propUrl = 'http://211.149.183.181:6789'; 
 var serverUrl0='http://192.168.199.191:7200';
 var serverUrl1='http://192.168.0.130:7200'; 
-
-var partner_key='syet234876fxcvdj58yjdbn475serop8';
+ 
 
 //var serverimgUrl='http://192.168.0.128:6789';
+//var serverimgUrl='http://211.149.183.181:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
 //var serverimgUrl='http://211.149.183.181:6789'; 
 
@@ -22,7 +21,7 @@ var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 
 //执行alert方法
 function alertF(content){ //非姐的方法 
-	alert(content)
+//	alert(content)
 }
 function alertY(content){ //向前的方法 
 	alert(content) 

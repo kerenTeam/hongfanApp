@@ -18,7 +18,7 @@
 		 
 		 
 		<header class="mui-bar mui-bar-nav">
-		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize" style="margin-left: 0;"></a>
+		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize" id="fanhui" style="margin-left: 0;display: none;"></a>
 		    <h1 class="mui-title">购物车<span class="cartNum">(<span>0</span>)</span></h1> 
 		    <a class="fr editAll" id="bianji" style="line-height: 50px;color: #555;">编辑</a>
 		</header>
@@ -104,7 +104,8 @@
 	
 	
 	
-	mui.plusReady(function(){ 
+	mui.plusReady(function(){  
+//		plus.storage.removeItem('$cartStorage')
 		window.addEventListener('refresh',function(event){  
 			cartload(); 
 		});
@@ -112,10 +113,10 @@
 	cartload();
     function cartload(){
     	var page = plus.webview.currentWebview().pageId; 
-		if(page = "detail"){
-			$(".fanhui").css("display","block")
+		if(page == "detail"){ 
+			document.getElementById('fanhui').style.display = "block";
 		}else{
-			$(".fanhui").css("display","none")
+			document.getElementById('fanhui').style.display = "none"
 		}
     	//购物车 缓存 
         var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');  
@@ -189,6 +190,7 @@
 				$(".numberWidget").hide();
 				$(".priceArea").show();
 			});
+			
 			//删除 单个
 			$(".delBtn").click(function() {
 				var delThis=$(this);
@@ -200,9 +202,10 @@
 							//删除这一条缓存
 							alertF(plus.storage.getItem('$cartStorage'))
 						    cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');
-						    alertF(delID)
 							for(var i=0;i<cartStorage.length;i++){
-								if(delID==cartStorage[i].goodsId && deltext==cartStorage[i].goodText ){
+						    alertF(delID+","+cartStorage[i].goodsId+deltext.replace(/[\r\n]/g,"").replace(/^[\s　]+|[\s　]+$/g, "").replace(/(^\s*)|(\s*$)/g, "").replace(/(^\s*)/g, "")+" "+cartStorage[i].goodText.replace(/&nbsp;/,'').replace(/[\r\n]/g,"").replace(/^[\s　]+|[\s　]+$/g, "").replace(/(^\s*)|(\s*$)/g, "").replace(/(^\s*)/g, ""))
+								
+								if(delID==cartStorage[i].goodsId && $.trim(deltext)==$.trim(cartStorage[i].goodText.replace(/&nbsp;/,''))){
 									alertF(i)
 									cartStorage.splice(i, 1);
 								}

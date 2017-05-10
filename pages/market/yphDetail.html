@@ -491,16 +491,15 @@
 								<div class="xia clearfloat">
 									<p class="jifen fl box-s"><sub>￥</sub><samp><%=brief.price%></samp> <small style="font-size: 0.12rem;color: gray;"><del>原价￥<%=brief.original_price%></del></small></p>
 								</div>
-								<div class="xia">
-									<div class="mui-row">
+								<div class="xia" style="background-color: white!important;">
+								 	<div class="mui-row">
 										<div class="mui-col-sm-4 mui-col-xs-4 Mleft">
 											<%if(brief.tax_rate==0 || brief.tax_rate=='' ||brief.tax_rate==null){%>
 											<p class="box-s">税费：免税</p>
 											<%}else{%>
 											<p class="box-s">税费：
 												<%=brief.ratemoney%>元</p>
-											<%}%>
-											(如果产生运费需要重新计算税费)
+											<%}%> 
 										</div>
 										<div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
 											<p class="box-s">库存：
@@ -512,10 +511,9 @@
 											<p class="box-s">快递：包邮</p>
 											<%}%>
 										</div> 
-									</div>
-									
+									</div> 
 								</div>
-
+								<div style="background-color: white;font-size: 0.12rem;margin: 10px;">(*如果产生运费需要重新计算税费)</div>
 							</div>
 							<div class="farmtc clearfloat mt10">
 								<p class="bt box-s">商品详情</p>
@@ -675,8 +673,10 @@
 						});
 
 						//简介
-						var rate = parseFloat(data.data.tax_rate.replace(/%/, "")) / 100;
+//						var rate = parseFloat(data.data.tax_rate.replace(/%/, "")) / 100;
+						var rate = 0.17;
 						data.data.rate = rate;
+						alertF(rate)
 						data.data.ratemoney = parseFloat(parseFloat(data.data.price) * rate).toFixed(2);
 						document.getElementById("gdBrief").innerHTML = template("briefTpl", {
 							brief: data.data
@@ -847,6 +847,9 @@
 						pageId: "detail"
 					}
 				})
+				var list = plus.webview.getWebviewById('cart');
+				//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+				mui.fire(list, 'refresh');
 			}
 
 			window.goLoveBuy = function() {
