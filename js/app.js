@@ -1,5 +1,5 @@
-//var serverUrl='http://192.168.199.191:7200';
-var serverUrl='http://hiji.hifete.com'; 
+var serverUrl='http://192.168.199.191:7200';
+//var serverUrl='http://hiji.hifete.com'; 
 //var serverUrl='http://s-365426.gotocdn.com';
 //var serverUrl='http://192.168.31.153:7200';
 

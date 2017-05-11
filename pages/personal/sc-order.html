@@ -315,7 +315,7 @@
 												<div class="order-bottom clearfloat box-s tip">
 													<p><!--<sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;-->
 													 <%if(orderData[i].userPostData){%>
-														合计:￥</sub><%=orderData[i].amount%><sub>
+														合计:￥</sub><%=orderData[i].PriceCalculation.PriceCalculValue%><sub>
 														<%if(orderData[i].userPostData.express_id == -1){%>
 															(不含运费)
 															<%}else if(orderData[i].userPostData.express_id == -2){%>
@@ -469,12 +469,12 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){   
-					
 					plus.nativeUI.closeWaiting(); 
 					if(data.errno==0){
 						if(data.data.length!=0){
 							for(var i=0;i<data.data.length;i++){
 								data.data[i].PriceCalculation = eval("("+data.data[i].PriceCalculation+")");
+								data.data[i].PriceCalculation.PriceCalculValue = parseFloat(data.data[i].PriceCalculation.PriceCalculValue).toFixed(2)
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
 								}
@@ -910,6 +910,8 @@
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
 													console.log("修改状态成功");
+													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
+													
 		//											关闭 订单页  
 													load(); 
 												},
@@ -942,6 +944,8 @@
 												timeout: 10000, //超时时间设置为10秒；
 												success: function(data) {
 													console.log("修改状态成功");
+													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
+													
 		//											关闭 订单页   
 													load(); 
 												},
