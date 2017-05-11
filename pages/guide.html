@@ -7,8 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" href="../css/mui.min.css"> 
 		<style>
 			#close {
 				position: absolute;
@@ -21,7 +20,6 @@
 			}
 			
 			#jump {
-				border: 1px solid #fff;
 				width: 70px;
 				text-align: center;
 				padding: 5px 0;
@@ -29,10 +27,13 @@
 				position: absolute;
 				right: 5%;
 				top: 50px;
-				font-size: 16px;
-				color: black;
+				font-size: 14px;
+				background-color: rgba(0,0,0,0.5);
+				color: white;
 			}
-			
+			#jump small{
+				font-size: 14px!important;
+			}
 			.item-logo {
 				width: 100%;
 				height: 100%;
@@ -232,6 +233,8 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/md5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/imgload.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js"></script>
 		<script>
 			mui.plusReady(function() {
@@ -243,10 +246,6 @@
 						return false;
 					}
 				});
-				//自动关闭
-			    var timeclose = setTimeout(function(){
-			    	plus.webview.currentWebview().close();
-			    },12000)
 
 				plus.nativeUI.showWaiting();
 
@@ -281,9 +280,12 @@
 							"token": oldToken
 						},
 						success: function(data) {
-							console.log(data);
-							var dataobj = JSON.parse(data.data.banner);
-							console.log(dataobj);
+							console.log("guide "+JSON.stringify(data));
+							var dataobj = JSON.parse(data.data.banner); 
+							var jumptime = data.data.Start_time;
+								if(!jumptime){
+									jumptime = 10;
+								}
 							var allstr = '',
 								slidercircle = '';
 							mui.each(dataobj, function(index, element) {
@@ -292,18 +294,19 @@
 								} else {
 									slidercircle += '<div class="mui-indicator"></div>'
 								}
+//								<img class="img_contain" src="../img/loading.jpg" data-src="<%=recommendData[i].pic%>" onload="load(this)"/>
 								if(index == dataobj.length - 1) {
 									allstr += '<div class="mui-slider-item">' +
 										'<div class="item-logo" style="background-color: white">' +
-										'<img id="guide1" src="' + serverimgUrl + element.pic + '"/>' +
+										'<img id="guide1" src="../img/loading.jpg" onload="load(this)" data-src="' + serverimgUrl + element.pic + '"/>' +
 //										'<button id="close" class="mui-btn mui-btn-danger">进入</button>' +
-										'<span id="jump">跳过<small>12s</small></span></div>' +
+										'<span id="jump">跳过<small></small></span></div>' +
 										'</div>';
 									return false;
 								} else {
 									allstr += '<div class="mui-slider-item">' +
 										'<div class="item-logo" style="background-color: white">' +
-										'<img id="guide1" src="' + serverimgUrl + element.pic + '"/>' +
+										'<img id="guide1" src="../img/loading.jpg" onload="load(this)" data-src="' + serverimgUrl + element.pic + '"/>' +
 										'</div>' +
 										'</div>';
 								}
@@ -312,9 +315,9 @@
 							console.log(allstr);
 							mui('#bannerdiv')[0].innerHTML = allstr;
 							mui('#sliderlength')[0].innerHTML = slidercircle;
-							
+							document.getElementsByTagName("small")[0].innerHTML = jumptime+"s";
 							//倒计时 
-							var time = 12;
+							var time = jumptime;
 						    var timereduce = setInterval(function(){ 
 						    	time--;
 						    	document.getElementsByTagName("small")[0].innerHTML = time+"s";
