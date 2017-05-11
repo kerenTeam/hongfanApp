@@ -612,6 +612,12 @@
 										<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=shopID[i]%>" data-postfee="0" class="groupCheck" type="checkbox" style="right: 5px;"></div>
 									</div>
 								</dd>
+								<%if(shopaddress[i]){%>
+									<dd class="dd-padding kv-line-r mui-row ztWrap ztaddress" style="display: none;">
+										<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">自提地址：<%=shopaddress[i]%></h6>
+									</dd>
+								<%}%>
+								 
 								<%}%>
 								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
 									<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">备注：</h6>
@@ -688,7 +694,7 @@
 
 						</script>
 
-						<div id="coupon" style="display: ;"></div>
+						<div id="coupon"></div>
 						<script type="text/html" id="couponTpl">
 							<%if(intergral!=0){%>
 							<dd class="dd-padding kv-line-r">
@@ -767,6 +773,7 @@
 			arrNum = [],
 			arrMoney = [],
 			shopID = [],
+			shopaddress = [],
 			totalPay = 0,
 			shopMoney = [],
 			storeWeight = [],
@@ -832,11 +839,13 @@
 			data.cates = arr.unique1();
 			for(var i = 0; i < orderStorage.length; i++) {
 				shopID.push(orderStorage[i].shopId);
+				shopaddress.push(orderStorage[i].goodsaddress)
 			}
 			console.log(JSON.stringify(orderStorage))
 			shopID = shopID.unique1();
+			shopaddress = shopaddress.unique1();
 			data.shopID = shopID;
-
+			data.shopaddress = shopaddress;
 			for(var i = 0; i < data.cates.length; i++) {
 				//分组 金额 和 数量  分组商品优惠小计
 				var groupNum = 0,
@@ -1179,7 +1188,8 @@
 							if($(this).prop('checked') == true) {
 								var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
 								$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost - dataPostfee).toFixed(2));
-								$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提');
+								$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提'); 
+								$(this).parentsUntil("#orderTpl").find("dd.ztaddress").css("display","")
 								for(var i = 0; i < orderSubmitData.length; i++) {
 									if(orderSubmitData[i].storeid == shopid) {
 										orderSubmitData[i].express_id = '-2';
@@ -1211,6 +1221,7 @@
 										break;
 									}
 								}
+								$(this).parentsUntil("#orderTpl").find("dd.ztaddress").css("display","none")
 //								alert(JSON.stringify(orderSubmitData))
 								countTotalPay();
 								$(this).parentsUntil("#orderTpl").find('.dlc div').attr("data-id",0);
@@ -1239,7 +1250,7 @@
 						//					console.log('获取用户数据返回'+JSON.stringify(data));
 						if(data.errno == 0) {
 							intergral = data.data[0].intergral;
-							//intergral = 0; 暂时关闭积分抵扣
+//							intergral = 0; 暂时关闭积分抵扣
 							id_card = data.data[0].id_card;
 
 							if(intergral == null) {
@@ -1548,7 +1559,7 @@
 											plus.nativeUI.closeWaiting();
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid},
+												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid,addressId:addressid},
 												type: 'post', //HTTP请求类型
 												headers: {
 													"token": oldtoken
@@ -1590,7 +1601,7 @@
 											var oldtoken = plus.storage.getItem('oldToken');
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid},
+												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid,addressId:addressid},
 												dataType:'json',
 												type: 'post', //HTTP请求类型
 												headers: {
@@ -1605,7 +1616,6 @@
 														view:"../personal/sc-order.html",
 														id:"sc-order"
 													})
-													
 													if(plus.webview.getWebviewById("market-order")) {
 													
 														plus.webview.getWebviewById("market-order").close();
