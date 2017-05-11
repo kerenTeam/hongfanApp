@@ -100,7 +100,7 @@
 			.name{
 				line-height: 40px;
 			}
-		 
+		 .mui-badge{padding: 4px 7px;font-size: 11px}
 		</style>
 	</head>
 	<body>
@@ -118,13 +118,13 @@
 		    <a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun" onclick="help()">帮我</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="main" style="padding-top: 5px !important;">
+		<div id="main" style="">
 			<div id="helpList"></div>
 			<script type="text/html" id="helpTpl">
 				<dl class="list listtwo list-in">						
 					<%for(var i=data.length-1;i>=0;i--){%>
 						<dd onclick="helpRecord('<%=data[i].id%>')" class="fineB">
-							<a class="react">
+							<a class="react aClick">
 								<div class="dealcard dealcardtwo clearfloat">
 									<!--<div class="mui-row">
 									    <div class="mui-col-sm-2 mui-col-xs-2">
@@ -143,19 +143,22 @@
 									    </div>
 									</div>-->
 									<div class="dealcard-brand dealcard-brandtwo single-line">
-										<p class="poi-name">提问：<%=data[i].title%></p>
-										<p class="poi-name">内容：<span><%=data[i].content%></span></p>
+										<p class="poi-name" style="font-size: 15px;color: #666;"><%=data[i].title%> 
+											<%if(data[i].state==0){%>
+									    		<span class="mui-badge" style="color: white;float: right;">暂无回复</span>
+									    	<%}else{%> 
+									    		<span class="mui-badge mui-badge-danger" style="color: white;float: right;">查看回复</span>
+									    	<%}%>
+											
+										</p>
+										<p class="poi-name" style="color: #777;"><span><%=data[i].content%></span></p>
 										<!--<p class="state">显示中</p>-->
 										<div class="mui-row state_bottom">
-									        <div class="mui-col-sm-6 mui-col-xs-6">
-								             	<%if(data[i].state==0){%>
-										    		<span class="mui-badge" style="color: white">暂无回复</span>
-										    	<%}else{%> 
-										    		<span class="mui-badge mui-badge-danger" style="color: white">查看回复</span>
-										    	<%}%>                       
+									        <div class="mui-col-sm-6 mui-col-xs-6" style="font-size: 13px;color: #888;">
+								           		对象：<%=data[i].name%>
 									        </div>
 									        <div class="mui-col-sm-6 mui-col-xs-6 state_right">
-									                                     发布于<%=data[i].create_time%>
+			                                     发布于<%=data[i].create_time%>
 									        </div>
 									    </div>
 									</div>		
