@@ -340,11 +340,16 @@
 				success:function(data,type,xhr){
 					console.log('详情',data);
 					//循环出当前优惠券Id
-					for(var m=0; m < data.data.user_coupon.length; m++){ 
+					for(var m=0; m < data.data.user_coupon.length; m++){
+						var nowdate = new Date;
+						var endDate = new Date(data.data.user_coupon[m].end_date);
+						if(data.data.user_coupon[m].end_date && endDate<nowdate){//判断时间过期
+							data.data.user_coupon[m].user_coupon_state = 0; 
+						}
 						if(data.data.user_coupon[m].user_coupon_id == couponId){
-							mui.each(data.data.user_coupon,function (index,element) {
+							mui.each(data.data.user_coupon,function (index,element) { 
 									element.coupon_amount && (element.discountstr = element.coupon_amount.split(',')[1]*10);
-										element.coupon_amount && (element.discountnum = element.coupon_amount.split(',')[0]);
+									element.coupon_amount && (element.discountnum = element.coupon_amount.split(',')[0]);
 							}) 
 //							if(data.data.user_coupon[m].salerule==null || data.data.user_coupon[m].salerule==''){
 //							 	data.data.user_coupon[m].salerule=null;
@@ -353,6 +358,7 @@
 //								data.data.user_coupon[m].salerule2= eval("("+data.data.user_coupon[m].salerule+")").cutValue;
 //							}
 							var coupon = {};
+							
 							coupon.couponList = data.data.user_coupon[m]; 
 							var html = template('main-detail',coupon);
 							document.getElementById('main').innerHTML = html;

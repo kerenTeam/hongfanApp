@@ -37,27 +37,31 @@
 		    <h1 class="mui-title"></h1>
 		</header>	
 		<script src="../js/statusBar.js"></script><!--状态栏-->
-		<iframe id="iframe" src=""></iframe>
+		<!--<iframe id="iframe" src=""></iframe>-->
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/jquery.min.js"></script>
 		<script type="text/javascript">
-			mui.init();
-		
 			mui.plusReady(function(){
-				plus.nativeUI.showWaiting();
 				var iframeSrc = plus.webview.currentWebview().bannerUrl;
 				var name = plus.webview.currentWebview().bannerName;
 				var iframeHeight = window.screen.availHeight;
 				var iframeWidth = window.screen.availWidth;
+//				document.getElementById('iframe').height = iframeHeight; 
+//				document.getElementById('iframe').width = iframeWidth; 
+//				$('#iframe').css('max-width','720px'); 	
+//				mui("#iframe")[0].src =iframeSrc; 
+//				plus.nativeUI.closeWaiting();
+//				console.log(iframeSrc);
 
-					document.getElementById('iframe').height = iframeHeight; 
-					document.getElementById('iframe').width = iframeWidth; 
-//					$('#iframe').css('max-width','720px'); 	
-					mui("#iframe")[0].src =iframeSrc; 
-					mui(".mui-title")[0].innerHTML =name;
-					plus.nativeUI.closeWaiting();
-					console.log(iframeSrc);
-			})
+				mui(".mui-title")[0].innerHTML = name; 
+				var immersed = 0;
+				var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+				if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+				    immersed=parseFloat(ms[2]);// 获取状态栏的高度 
+				}  
+				var w = plus.webview.create(iframeSrc,'html5page',{top:immersed+50+'px',bottom:'0px'});  
+				    w.show(); // 显示窗口  
+				})
 		</script>
 	</body>
 

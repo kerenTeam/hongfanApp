@@ -262,7 +262,7 @@
 											<span>¥</span><%= allLi[i].coupon_amount %>
 										</div> 
 									<% }else{ %>
-										<div class="left clearfloat fl activeImg">
+										<div class="left clearfloat fl activeImg you2222">
 											<img src="../../img/active.png"/>
 										</div>
 									<% } %>
@@ -276,7 +276,7 @@
 											<span>¥</span><%= allLi[i].coupon_amount %>
 										</div> 
 									<% }else{ %>
-										<div class="left leftwo clearfloat fl activeImg">
+										<div class="left leftwo clearfloat fl activeImg  you1111">
 											<img src="../../img/active.png"/>
 										</div>
 									<% } %>
@@ -336,48 +336,7 @@
 							<% } %>
 						<% } %>
 					</script>
-					<!--已使用     弃用-->
-					<script type="text/html" id="disableC-detail">
-						<% for(var i=0;i<allLi.length;i++){ %>
-							<% if(allLi[i].user_coupon_state == 0){ %>
-								<% if(allLi[i]){%>
-									<div class="list clearfloat fl" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)">
-										<% if(allLi[i].typeid == 2){ %>
-											<div class="left leftwo clearfloat fl">
-												<%= allLi[i].discountstr%><span>折</span>
-											</div>
-										<% }else if(allLi[i].typeid == 1){ %>
-											<div class="left leftwo clearfloat fl">
-												<span>¥</span><%= allLi[i].coupon_amount %>
-											</div>
-										<% }else{ %>
-											<div class="left leftwo clearfloat fl activeImg" >
-												<img src="../../img/active.png"/>
-											</div>
-										<% } %>
-										<div class="right clearfloat fl box-s">
-											<p class="tit">
-												<%= allLi[i].name %>
-											</p>
-											<p class="time">
-												<% if(allLi[i].typeid == 1){ %>
-													无限制
-												<%}else{%>
-													满<%= allLi[i].discountnum %> 元 <%= allLi[i].discountstr %>折
-												<%} %>
-											</p>
-											<p class="time">
-												有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
-											</p>
-										</div>
-										<!--<div class="qrcode mui-content-padded">
-											<img src="<%= allLi[i].qrcode %>" data-preview-src="" onerror="javascript:this.src='../../img/market/nodata.svg';" data-preview-group="1" />
-										</div>--> 
-									</div>
-								<% } %>
-							<% } %>
-						<% } %>
-					</script>
+					
 				</div>
 			</div>
 		</div>
@@ -417,27 +376,23 @@
 									var allC = {}; 
 									allC.allLi = data.data.user_coupon;
 									if(allC.allLi.length > 0){
-										var html = template('allC-detail',allC);
-										document.getElementById('allC').innerHTML = html;
 										//可用的优惠券
 										for(var i=0;i<allC.allLi.length;i++){
+											var nowdate = new Date;
+				    						var endDate = new Date(allC.allLi[i].end_date);
+											if(allC.allLi[i].end_date && endDate<nowdate){//判断时间过期
+												allC.allLi[i].user_coupon_state = 0;
+											}
+											var html = template('allC-detail',allC);
+											document.getElementById('allC').innerHTML = html;//铺全部
 											if(allC.allLi[i].user_coupon_state == 1){
 												console.log('可用',allC);
 												var html2 = template('ableC-detail',allC);
-												document.getElementById('ableC').innerHTML = html2;
+												document.getElementById('ableC').innerHTML = html2;//铺可用
 												break;
 											} 
 											if(i == allC.allLi.length-1){
 												mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
-											}
-										}
-										//已使用优惠券     弃用
-										for(var i=0;i<allC.allLi.length;i++){
-											if(allC.allLi[i].user_coupon_state == 0){ 
-												var html3 = template('disableC-detail',allC);
-												document.getElementById('disableC').innerHTML = html3;
-											}else{
-												//mui('#disableC-detail')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有已使用的优惠券哟！</p></div>';
 											}
 										}
 									}else{
