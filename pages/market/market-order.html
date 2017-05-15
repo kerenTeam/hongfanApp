@@ -21,7 +21,7 @@
 				height: 50px;
 				box-shadow: none;
 			}
-			
+			 
 			.mui-title,
 			.mui-icon {
 				line-height: 50px;
@@ -1568,16 +1568,18 @@
 												success: function(data) {
 													mui.toast('支付成功');
 													console.log("修改状态成功");
+													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
+													
 		//											关闭 订单页  
 													openview({
 														view:"../personal/sc-order.html",
 														id:"sc-order"
 													})
-													if(plus.webview.getWebviewById("market-order")) {
-													
-														plus.webview.getWebviewById("market-order").close();
-														
-													}
+													setTimeout(function(){
+														if(plus.webview.getWebviewById("market-order")) {
+															plus.webview.getWebviewById("market-order").close();
+														}
+													},2000)
 												},
 												error: function(xhr, type, errorThrown) {
 													mui.toast('支付失败');
@@ -1611,16 +1613,19 @@
 												success: function(data) {
 													mui.toast('支付成功');
 													console.log("修改状态成功");
+													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
+													
 		//											关闭 订单页  
 													openview({
 														view:"../personal/sc-order.html",
 														id:"sc-order"
 													})
-													if(plus.webview.getWebviewById("market-order")) {
+													setTimeout(function(){
+														if(plus.webview.getWebviewById("market-order")) {
+															plus.webview.getWebviewById("market-order").close();
+														}
+													},2000)
 													
-														plus.webview.getWebviewById("market-order").close();
-														
-													}
 												},
 												error: function(xhr, type, errorThrown) {
 													console.log("修改状态失败")
