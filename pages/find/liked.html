@@ -131,10 +131,14 @@
 <script src="../../js/app.js"></script>
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
+	
 	mui.plusReady(function(){
+		downRe(function(){
+			location.reload(); 
+		});
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
-		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui.ajax(serverUrl+'/api/news/newslike',{
 				data:{"userid":myuserid},
 				dataType:'json',
@@ -142,7 +146,7 @@
 				timeout:10000,
 				headers:{"token":oldtoken},
 				success:function(data,type,xhr){
-					console.log('赞返回',data);
+					console.log('赞返回',data.data.mynewsliker);
 					if(data.errno==0){
 						if (data.data.mynewsliker.mynewsliker.length) {
 							var dataobj = {};
@@ -159,7 +163,7 @@
 								}
 								
 							})
-							console.log(data.data.mynewsliker.likerInfo);
+							//console.log(data.data.mynewsliker.likerInfo);
 							dataobj.likerInfo = data.data.mynewsliker.likerInfo; 
 							mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 								data:{"userid":myuserid},
@@ -167,10 +171,8 @@
 								timeout:10000,
 								headers:{"token":oldtoken},	              				
 								success:function(data,type,xhr){
-									console.log('获取用户数据返回'+JSON.stringify(data));
 									if(data.errno == 0){
 										//头像
-										 
 										if(data.data[0].avatar && data.data[0].avatar.indexOf("[{")!=-1){
 											var myavater = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
 										}

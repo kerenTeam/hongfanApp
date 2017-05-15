@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>被评论</title>
+		<title>私信</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -121,6 +121,7 @@
 <script src="../../js/app.js"></script>
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
+	 
 	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
@@ -131,6 +132,8 @@
 		
 			getresponse();
 			function getresponse(){
+				mui('#nulldiv')[0].style.display = 'none';
+				document.getElementById("main").innerHTML = '';
 				mui.ajax(serverUrl+'/api/news/hasnewmsg',{
 					data:{"userid":myuserid},
 					dataType:'json',
@@ -138,7 +141,7 @@
 					timeout:10000,
 					headers:{"token":oldtoken},
 					success:function(data,type,xhr){
-						console.log('消息返回',JSON.stringify(data));
+						console.log('私信返回',data); 
 						if(data.errno==0){
 							if (data.data.length) {//铺数据
 								mui.each(data.data,function(index,ele){
@@ -171,7 +174,7 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	              				
 					success:function(data,type,xhr){
-						console.log('获取用户数据返回'+JSON.stringify(data));
+						//console.log('获取用户数据返回'+JSON.stringify(data));
 						if(data.errno == 0){
 							var dataobj = data.data;
 							//显示头像
