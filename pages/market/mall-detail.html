@@ -460,6 +460,11 @@
 				width: 100%!important;
 				overflow: hidden;
 			}
+			#priceChange~small{
+				color: gray;
+				font-size: 10px;
+				margin-left: 20px;
+			}
 		</style>
 	</head>
 
@@ -480,7 +485,7 @@
 									<%if(infoData && infoData.length!=0){%>
 									<div class="mui-slider-item mui-slider-item-duplicate">
 										<%if(infoData[infoData.length-1].bannerPic){%>
-										<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg" data-preview-src="" data-preview-group="1" ></a>
+										<a><img src="<%=myUrl%><%=infoData[infoData.length-1].bannerPic%>" class="goodsImg" data-preview-src="" data-preview-group="0" ></a>
 										<%}else{%>
 										<a><img src="../../img/market/none.png" class="goodsImg"></a>
 										<%} %>
@@ -489,30 +494,30 @@
 									<% for(var i=0;i<infoData.length;i++){ %>
 									<div class="mui-slider-item">
 										<a>
-											<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg" data-preview-src="" data-preview-group="1" >
+											<img src="<%=myUrl%><%=infoData[i].bannerPic%>" class="goodsImg" data-preview-src="" data-preview-group="0" >
 										</a>
 									</div>
 									<% } %>
 									<!--支持循环，需要重复图片节点-->
 									<div class="mui-slider-item mui-slider-item-duplicate">
 										<a>
-											<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg" data-preview-src="" data-preview-group="1" >
+											<img src="<%=myUrl%><%=infoData[0].bannerPic%>" class="goodsImg" data-preview-src="" data-preview-group="0" >
 										</a>
 									</div>
 									<%}else{%>
 									<div class="mui-slider-item mui-slider-item-duplicate">
 										<a>
-											<img src="../../img/market/none.png" class="goodsImg" data-preview-src="" data-preview-group="1" >
+											<img src="../../img/market/none.png" class="goodsImg" data-preview-src="" data-preview-group="0" >
 										</a>
 									</div>
 									<div class="mui-slider-item">
 										<a>
-											<img src="../../img/market/none.png" class="goodsImg" data-preview-src="" data-preview-group="1" >
+											<img src="../../img/market/none.png" class="goodsImg" data-preview-src="" data-preview-group="0" >
 										</a>
 									</div>
 									<div class="mui-slider-item mui-slider-item-duplicate">
 										<a>
-											<img src="../../img/market/none.png" class="goodsImg" data-preview-src="" data-preview-group="1" >
+											<img src="../../img/market/none.png" class="goodsImg" data-preview-src="" data-preview-group="0" >
 										</a>
 									</div>
 									<%}%>
@@ -656,7 +661,7 @@
 									<%if(cemmentData[i].avatar==null || cemmentData[i].avatar==''){%>
 									<img src="../../img/10.png" class="radius comtPic" alt="" />
 									<%}else{%>
-									<img src="<%=myUrl%><%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
+									<img src="<%=cemmentData[i].avatar%>" class="radius comtPic" alt="" />
 									<%}%>
 								</div>
 								<div class="comtContent Cright mui-col-sm-10 mui-col-xs-10">
@@ -746,7 +751,11 @@
 									<p class="tit overflow_clear ">
 										<%=choose.title%>
 									</p>
-									<span><b id="priceChange"></b> <small style="color: gray;font-size: 10px;margin-left: 20px;" id="kc"></small></span>
+									<span><b id="priceChange"></b> <small id="kc"></small>
+										<%if(choose.maxTorder){%>
+											<small data-id="<%=choose.maxTorder%>" id="xg">限购<%=choose.maxTorder%>件</small></span>
+											<%}%>
+										
 								</div>
 							</div>
 							<div class="Mscroll">
@@ -902,9 +911,8 @@
 					
 						shopId = data.data.goodsInfo.storeid;
 						//选择弹框
-						var chooseO = {}
-						chooseO.choose = data.data.goodsInfo;
-//						alert(chooseO.choose.reduction_rule)
+						var chooseO = {};
+						chooseO.choose = data.data.goodsInfo; 
 						chooseO.myUrl = serverimgUrl;
 						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
 						mui(".mui-numbox").numbox();
@@ -985,7 +993,7 @@
 													 	var Stocknum = data.data.stockNms;
 													 	mui('#upup')[0].onclick = function(){
 													 		var upnum = mui('#test')[0].value;
-													 		if(upnum>Stocknum){
+													 		if(parseFloat(upnum)>parseFloat(Stocknum)){
 													 			mui('#test')[0].value = Stocknum;
 													 		}
 													 	}
@@ -1041,9 +1049,9 @@
 										var value4=$.trim($(".cur").eq(3).html());
 										if(!value4){
 											value4='';
-										} 
+										}
 					     				//查询库存  
-					     				alertF(goodId+","+value1+","+$.trim(value2).replace(/&nbsp;/,'')+","+value3+","+value4)
+//					     				alertF(goodId+","+value1+","+$.trim(value2).replace(/&nbsp;/,'')+","+value3+","+value4)
 										mui.ajax(serverUrl+'/api/mall/goodstock',{
 											data:{"goodsId":goodId,value1:value1,value2:$.trim(value2),value3:value3,value4:value4}, 
 											type:'post',
@@ -1060,13 +1068,13 @@
 														$(".db").css("background","#DDDDDD")
 													    $(".mui-input-numbox").val(0);
 													    $(".mui-numbox").eq(0).attr("data-numbox-max",0)
-														
 													}else{ 
-													 	$("#kc").html("库存："+data.data.stockNms)
+													 	$("#kc").html("库存："+data.data.stockNms);
+													 	$("#kc").attr("data-id",data.data.stockNms);
 													 	var Stocknum = data.data.stockNms;
 													 	mui('#upup')[0].onclick = function(){
 													 		var upnum = mui('#test')[0].value;
-													 		if(upnum>Stocknum){
+													 		if(parseFloat(upnum)>parseFloat(Stocknum)){
 													 			mui('#test')[0].value = Stocknum;
 													 		}
 													 	}
@@ -1077,12 +1085,10 @@
 														var pprice = 0;
 														for(var i = 0; i < parameteValueo.parentlist.length; i++){
 															if(value1 == $.trim(parameteValueo.parentlist[i].value1) && value2 == $.trim(parameteValueo.parentlist[i].value2) && value3 == $.trim(parameteValueo.parentlist[i].value3) && value4 == $.trim(parameteValueo.parentlist[i].value4)){
-																alertF(parameteValueo.parentlist[i].Floating_price)
 																pprice = parseFloat(parseFloat(parameteValueo.parentlist[i].Floating_price)+parseFloat($(".jifen samp").html())).toFixed(2);
 															}
 															  
 														}  
-														alertF(pprice)
 														$("#priceChange").html("￥"+pprice);
 												   		priceChange = pprice; 
 													   
@@ -1101,15 +1107,32 @@
 						var priceChange = parseFloat($(".jifen samp").html());
 						//评论
 						var cemmentObj = {} ;
+						console.log("cemmentObj",commentobj)
 						for(var i = 0; i < commentobj.length; i++) {
 							var dt = new Date(commentobj[i].seller_ctime);
 									var date = [
 									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
 									  [dt.getHours(), dt.getMinutes()].join(':')
 									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-									commentobj[i].seller_ctime = date
-							commentobj[i].comment_pic = eval("(" + commentobj[i].comment_pic + ")");
-							commentobj[i].avatar = JSON.parse(commentobj[i].avatar)[0].picImg;
+									commentobj[i].seller_ctime = date;
+									console.log("ssss "+commentobj[i].comment_pic);
+									if(commentobj[i].comment_pic){
+										commentobj[i].comment_pic = eval("(" + commentobj[i].comment_pic + ")");
+										
+									}
+									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(commentobj[i].nickname)){
+										commentobj[i].nickname = commentobj[i].nickname.substring(0,3)+"****"+commentobj[i].nickname.substring(7,11)
+									}
+									if(commentobj[i].avatar && commentobj[i].avatar.indexOf('[{')>-1){
+										commentobj[i].avatar = serverimgUrl + JSON.parse(commentobj[i].avatar)[0].picImg;
+									}else if(commentobj.avatar && commentobj.avatar.indexOf('{')>-1){
+										commentobj[i].avatar = serverimgUrl + JSON.parse(commentobj[i].avatar).picImg;
+									}else if(commentobj.avatar && typeof(commentobj.avatar)== string){
+										commentobj[i].avatar = serverimgUrl +commentobj[i].avatar;
+									}else{
+										commentobj[i].avatar = commentobj[i].avatar;
+									}
+							 
 						}
 						cemmentObj.myUrl = serverimgUrl;
 						cemmentObj.cemmentData = commentobj;
@@ -1152,17 +1175,14 @@
 									for(var i = 0; i < allprop.parentlist.length; i++){ 
 										for(var m=0;m < goodProp.length ; m++){ 
 											var vaule = 'value'+(m+1); 
-											alertF($.trim(goodProp[m].child_parameter_name).replace(/&nbsp;/,'') +" "+$.trim(allprop.parentlist[i][vaule]))
 											if($.trim(goodProp[m].child_parameter_name).replace(/&nbsp;/,'') == $.trim(allprop.parentlist[i][vaule])){
 												j++;
 												if(j == goodProp.length){
 													goodsproperty = allprop.parentlist[i].id; 
 												}
-												alertF(goodsproperty)
 											}
 										} 
 									} 
-									alertF(goodsaddress) 
 										//当前商品对象
 									var cartObj = {};
 									cartObj.goodsId = goodsId;
@@ -1181,47 +1201,88 @@
 									cartObj.goods_property = goodsproperty;
 									cartObj.goodText = goodText;
 									cartObj.goodProp = goodProp;
-									alertF("cartObj "+JSON.stringify(cartObj))
 									if(goNum == 1) {
-										if(cartStorage.length != 0) {
-											var flag = false;
-											for(var i = 0; i < cartStorage.length; i++) {
-												if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
-
-													cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
-													flag = false;
-													break;
-												} else {
-													flag = true;
+										var buynum =99999;
+										var kc = parseInt($("#kc").attr("data-id"));
+										if(!kc){
+											kc = 99999;
+										}
+//										alertF("kc"+kc)
+										var xg = parseInt($("#xg").attr("data-id"));
+										if(!xg){
+											xg = 99999;
+										}
+//										alertF("xg"+xg)
+										if(kc >= xg){
+											buynum = xg;
+										}else{
+											buynum = kc;
+										}
+//											alertF(buynum)
+										
+										if(goodsnum <= buynum){
+											if(cartStorage.length != 0) {
+												var flag = false;
+												for(var i = 0; i < cartStorage.length; i++) {
+													if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
+	
+//														cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
+														cartStorage[i].goodsnum = parseInt(goodsnum);
+														flag = false;
+														break;
+													} else {
+														flag = true;
+													}
 												}
-											}
-											if(flag) {
+												if(flag) {
+													cartStorage.push(cartObj);
+												}
+											} else {
 												cartStorage.push(cartObj);
 											}
-										} else {
-											cartStorage.push(cartObj);
+											plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage)); 
+											$(".am-share").removeClass("am-modal-active");
+											$(".sharebg ").removeClass("sharebg-active");
+											mui.toast("已成功加入购物车");
+											//webview 购物车页面 刷新
+											//获得列表界面的webview
+											var list = plus.webview.getWebviewById('cart.html');
+											//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+											mui.fire(list, 'refresh');
+										}else{
+											mui.toast("商品数量超出购买条件哦")
 										}
-										plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage)); 
-										$(".am-share").removeClass("am-modal-active");
-										$(".sharebg ").removeClass("sharebg-active");
-										mui.toast("已成功加入购物车");
-										//webview 购物车页面 刷新
-										//获得列表界面的webview
-										var list = plus.webview.getWebviewById('cart.html');
-										//触发列表界面的自定义事件（refresh）,从而进行数据刷新
-										mui.fire(list, 'refresh');
 
 									} else {
 
 										if(plus.storage.getItem('myToken')) {
-											orderStorage = [];
-											orderStorage.push(cartObj);
-											plus.storage.setItem("$orderStorage", JSON.stringify(orderStorage)); 
-
-											openview({
-												view: "market-order.html",
-												id: "market-order"
-											})
+											var buynum =99999;
+											var kc = parseInt($("#kc").attr("data-id"));
+											if(!kc){
+												kc = 99999;
+											}
+											var xg = parseInt($("#xg").attr("data-id"));
+											if(!xg){
+												xg = 99999;
+											}
+											if(kc >= xg){
+												buynum = xg;
+											}else{
+												buynum = kc;
+											}
+											if(goodsnum <= buynum){
+											
+												orderStorage = [];
+												orderStorage.push(cartObj);
+												plus.storage.setItem("$orderStorage", JSON.stringify(orderStorage)); 
+	
+												openview({
+													view: "market-order.html",
+													id: "market-order"
+												})
+											}else{
+												mui.toast("商品数量超出购买条件哦")
+											}
 										} else { //没登陆直接打开登录页面
 											mui.toast('请登录');
 											openview({

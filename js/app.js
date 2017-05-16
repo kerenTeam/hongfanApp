@@ -1,5 +1,5 @@
-//var serverUrl='http://192.168.199.191:7200';
-var serverUrl='http://hiji.hifete.com';
+var serverUrl='http://192.168.199.191:7200';
+//var serverUrl='http://hiji.hifete.com';
 //var serverUrl='http://s-365426.gotocdn.com';
 
 //var serverUrl='http://192.168.31.153:7200';
@@ -22,10 +22,10 @@ var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 
 //执行alert方法
 function alertF(content){ //非姐的方法 
-	//alert(content)
+	alert(content)
 }
 function alertY(content){ //向前的方法 
-	alert(content) 
+//	alert(content) 
 }
  
 window.showRedfun = function(){

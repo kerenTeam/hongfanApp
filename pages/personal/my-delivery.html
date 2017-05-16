@@ -147,28 +147,34 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					var arr = []
-					for(var i=0;i<data.data.length;i++){
-						arr.push(data.data[i].order_status);
-						if(data.data[i].order_status==3){
-							data.data[i].goods_data=JSON.parse(data.data[i].goods_data);
-							var dt = new Date(data.data[i].create_time);
-							var date = [
-							  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
-							  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
-							].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-							data.data[i].create_time = date
-							console.log(data.data[i])
+					console.log("订单",data)
+					if(data.data.length){
+						var arr = [];
+						for(var i=0;i<data.data.length;i++){
+							arr.push(data.data[i].order_status);
+							if(data.data[i].order_status==3){
+								data.data[i].goods_data=JSON.parse(data.data[i].goods_data);
+								var dt = new Date(data.data[i].create_time);
+								var date = [
+								  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+								  [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+								].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+								data.data[i].create_time = date
+								console.log(data.data[i])
+							}
 						}
-					}
-					if(arr.indexOf(3)<-1){
+						if(arr.indexOf(3)<-1){
+							mui('#main')[0].innerHTML='<div class="nothing"><img src="../../img/theList/del.png"/><p>你没有快递消息哟！</p></div>';
+						}
+						orderObj={};
+						orderObj.url = serverimgUrl;
+						orderObj.li = data.data;
+						var html = template('goodsList-detail',orderObj);
+						document.getElementById('goodsList').innerHTML = html;
+					}else{
 						mui('#main')[0].innerHTML='<div class="nothing"><img src="../../img/theList/del.png"/><p>你没有快递消息哟！</p></div>';
 					}
-					orderObj={};
-					orderObj.url = serverimgUrl;
-					orderObj.li = data.data;
-					var html = template('goodsList-detail',orderObj);
-					document.getElementById('goodsList').innerHTML = html;
+					
 					plus.nativeUI.closeWaiting();
 				},
 				error:function(xhr,type,errorThrown){

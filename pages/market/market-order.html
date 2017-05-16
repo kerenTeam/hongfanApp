@@ -863,15 +863,25 @@
 							reduce += parseFloat(0)
 						} else {
 							//做测试 排序 选择最佳的满减规则
-							//orderStorage[j].goodsreduce = [{"reachPrice":"600","reducePrice":"20"},{"reachPrice":"800","reducePrice":"10"},{"reachPrice":"400","reducePrice":"15"}]
+//							orderStorage[j].goodsreduce = [{"reachPrice":"100","reducePrice":"20"},{"reachPrice":"20","reducePrice":"10"},{"reachPrice":"200","reducePrice":"15"}]
+  
+							var sortBy = function (filed, rev, primer) {
+							    rev = (rev) ? -1 : 1;
+							    return function (a, b) {
+							        a = a[filed];
+							        b = b[filed];
+							        if (typeof (primer) != 'undefined') {
+							            a = primer(a);
+							            b = primer(b);
+							        }
+							        if (a < b) { return rev * 1; }
+							        if (a > b) { return rev * -1; }
+							        return 1;
+							    }
+							};
+							orderStorage[j].goodsreduce.sort(sortBy('reachPrice', false, parseInt));
+							console.log("ddd ",orderStorage[j].goodsreduce);
 
-							orderStorage[j].goodsreduce.sort(getSortFun('desc', 'reachPrice'));
-
-							function getSortFun(order, sortBy) {
-								var ordAlpah = (order == 'asc') ? '>' : '<';
-								var sortFun = new Function('a', 'b', 'return a.' + sortBy + ordAlpah + 'b.' + sortBy + '?1:-1');
-								return sortFun;
-							}
 							for(var m = 0; m < orderStorage[j].goodsreduce.length; m++) {
 								if(totolmoney >= orderStorage[j].goodsreduce[m].reachPrice) {
 									orderStorage[j].goodsreducemoney = orderStorage[j].goodsreduce[m].reducePrice;
@@ -964,16 +974,27 @@
 							//							alert("storereduce"+index+" "+storereduce[index])
 						} else {
 							//排序 选择最优店铺满减优惠
-							//							data.data.reduction_rule = [{"reachPrice":"11600","reducePrice":"20"},{"reachPrice":"81100","reducePrice":"10"},{"reachPrice":"41100","reducePrice":"15"}]
+//							data.data.store_reduction = [{"reachPrice":"100","reducePrice":"20"},{"reachPrice":"200","reducePrice":"10"},{"reachPrice":"20","reducePrice":"15"}]
 							//							alert("data.data.reduction_rule "+data.data.reduction_rule)
-
-							data.data.store_reduction.sort(getSortFun('desc', 'reachPrice'));
-
-							function getSortFun(order, sortBy) {
-								var ordAlpah = (order == 'asc') ? '>' : '<';
-								var sortFun = new Function('a', 'b', 'return a.' + sortBy + ordAlpah + 'b.' + sortBy + '?1:-1');
-								return sortFun;
-							}
+ 
+							var sortBy = function (filed, rev, primer) {
+							    rev = (rev) ? -1 : 1;
+							    return function (a, b) {
+							        a = a[filed];
+							        b = b[filed];
+							        if (typeof (primer) != 'undefined') {
+							            a = primer(a);
+							            b = primer(b);
+							        }
+							        if (a < b) { return rev * 1; }
+							        if (a > b) { return rev * -1; }
+							        return 1;
+							    }
+							};
+							data.data.store_reduction.sort(sortBy('reachPrice', false, parseInt));
+							console.log("ddd ",data.data.store_reduction);
+							
+							
 							for(var m = 0; m < data.data.store_reduction.length; m++) {
 								if(parseFloat(item.money) >= parseFloat(data.data.store_reduction[m].reachPrice)) {
 									//									alert(data.data.reduction_rule[m].reducePrice)
@@ -1523,7 +1544,9 @@
 								success: function(data) {
 									console.error('支付返回',data);
 									plus.nativeUI.closeWaiting()  
-									 
+									if(data.errno == 1000) {
+										mui.toast("您已超过限购数量不能再买了啦")
+									}
 									if(data.errno == 0) {
 										//购物车 缓存 
 										var cartStorage = JSON.parse(plus.storage.getItem('$cartStorage') || '[]');
