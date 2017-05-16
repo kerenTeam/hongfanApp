@@ -138,7 +138,7 @@
 		});
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
-		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui.ajax(serverUrl+'/api/news/newslike',{
 				data:{"userid":myuserid},
 				dataType:'json',
@@ -149,6 +149,24 @@
 					console.log('赞返回',data.data.mynewsliker);
 					if(data.errno==0){
 						if (data.data.mynewsliker.mynewsliker.length) {
+							
+							//清除缓存，改变底部红点状态
+							plus.storage.removeItem('likeH');
+							if(!plus.storage.getItem('PletterH') && !plus.storage.getItem('commentH')){
+								if(plus.webview.getWebviewById('message')){
+									mui.fire(plus.webview.getWebviewById('message'),'clearRed');
+								}
+								if(plus.webview.getWebviewById('find')){ 
+									mui.fire(plus.webview.getWebviewById('find'),'clearRed');
+								}
+								if(plus.webview.getWebviewById('Follow')){ 
+									mui.fire(plus.webview.getWebviewById('Follow'),'clearRed');
+								}
+								if(plus.webview.getWebviewById('centerPage')){ 
+									mui.fire(plus.webview.getWebviewById('centerPage'),'clearRed');
+								}
+							}
+							
 							var dataobj = {};
 							dataobj.url = serverimgUrl;
 							dataobj.mynewsliker = data.data.mynewsliker.mynewsliker;

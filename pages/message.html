@@ -48,6 +48,15 @@
 			.message .msgIcon{
 				flex-basis:0.7rem;
 				text-align: center;
+				position: relative;
+			}
+			.msgIcon b{
+			    position: absolute;
+			    height: 7px;
+			    width: 7px;
+			    background-color: red;
+			    border-radius: 50%;
+			    display: none; 
 			}
 			.message img{ 
 				width: 0.22rem;
@@ -66,6 +75,7 @@
 				vertical-align: bottom;
 				text-align: center;
 			}
+			
 			</style>
 		</head> 
 	
@@ -80,22 +90,22 @@
 			<!--<div id="container">-->
 			<div id="main"> 
 				<div class="message msgcmt">
-				 	<div class="msgIcon"><img src="../img/center/comments.svg"/></div>
+				 	<div class="msgIcon"><img src="../img/center/comments.svg"/> <b class="reddian1"></b> </div>
 				 	<div class="msgtxt"><span style="vertical-align: middle;">评论</span></div>
 				 	<!--<span class="mui-badge mui-badge-danger">5</span>-->
 				 	<span class="mui-icon mui-icon-arrowright"></span>
 				</div>
 				<div class="message msglike">
-				 	<div class="msgIcon"><img src="../img/center/like.svg"/></div>
+				 	<div class="msgIcon"><img src="../img/center/like.svg"/> <b class="reddian1"></b></div>
 				 	<div class="msgtxt"><span style="vertical-align: middle;">赞的</span></div>
 				 	<!--<span class="mui-badge mui-badge-danger">1</span>-->
 				 	<span class="mui-icon mui-icon-arrowright"></span>
 				</div>
 				<div class="message msgchat">
-				 	<div class="msgIcon"><img src="../img/center/chat.svg"/></div>
+				 	<div class="msgIcon"><img src="../img/center/chat.svg"/> <b class="reddian1"></b></div>
 				 	<div class="msgtxt"><span style="vertical-align: middle;">私信</span></div>
 				 	<!--<span class="mui-badge mui-badge-danger">1</span>-->
-				 	<span class="mui-icon mui-icon-arrowright"></span>
+				 	<span id="" class="mui-icon mui-icon-arrowright"></span>
 				</div> 
 			<!--底部导航-->
 			 
@@ -115,10 +125,11 @@
 					<i class="demo-icon icon-camera"></i> 
 					<!--<span class="mui-tab-label">消息</span>-->
 				</a>
-				<a class="subActive">
+				<a class="subActive" style="position: relative;">
 					<!--<span class="mui-icon mui-icon-chat">-->
 						<i class="demo-icon icon-comment"></i>
 	                	<!--<span class="mui-badge mui-badge-danger">6</span>-->
+	                	<b id="redDot4" class="redDot" style="position: absolute;"></b>
 				</a>
 				<a onclick="gopage('centerPage')">
 					<!--<span class="mui-icon mui-icon-person"></span>-->
@@ -131,6 +142,90 @@
 	</body>
     <script type="text/javascript">
     	var falg = false; 
+    	document.addEventListener('clearRed', function() {
+			document.getElementsByClassName('redDot')[0].style.display = 'none';
+		})
+    	document.addEventListener('clearRedS', function() {
+			mui('.reddian1')[2].style.display = 'none'; 
+		})
+    	showRedfun();//显示底部小红点
+    	mui.plusReady(function(){//显示分类小红点
+    		var oldtoken = plus.storage.getItem('oldToken');
+			var myuserid = plus.storage.getItem('userid');
+    		if(plus.storage.getItem('commentH')){//显示评论小红点 
+	    		mui('.reddian1')[0].style.display = 'inline-block'; 
+	    	}else{
+	    		mui.ajax(serverUrl+'/api/news/message',{ 
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data){
+						if(data.data && data.data.length){
+							mui.each(data.data,function (index,element) {
+			 					if(element.read_state){//有评论未读
+			 						plus.storage.setItem("commentH",'yes');//私信标杆
+			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			 						mui('.reddian1')[0].style.display = 'inline-block'; 
+			 						return false;
+			 					}
+							})
+						}
+					}
+				});
+	    	}
+    		if(plus.storage.getItem('likeH')){//显示赞小红点 
+	    		mui('.reddian1')[1].style.display = 'inline-block'; 
+	    	}else{
+	    		mui.ajax(serverUrl+'/api/news/newslike',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data){ 
+						console.log(data);
+						if(data.errno == 0 && data.data.mynewsliker && data.data.mynewsliker.mynewsliker.length){
+							mui.each(data.data.mynewsliker.mynewsliker,function (index,element) {
+								console.log(1)
+			 					if(element.read_state){//有评论未读 
+			 						plus.storage.setItem("likeH",'yes');//私信标杆
+			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			 						mui('.reddian1')[1].style.display = 'inline-block'; 
+			 						return false;
+			 					}
+							})
+						}
+					}
+				});
+	    	}
+    		if(plus.storage.getItem('PletterH')){//显示私信小红点 
+	    		mui('.reddian1')[2].style.display = 'inline-block'; 
+	    	}else{
+	    		mui.ajax(serverUrl+'/api/news/hasnewmsg',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data){
+						if(data.data && data.data.length){
+							mui.each(data.data,function (index,element) {
+			 					if(element.isnew){//有私信未读
+			 						plus.storage.setItem("PletterH",'yes');//私信标杆
+			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			 						mui('.reddian1')[2].style.display = 'inline-block'; 
+			 						return false;
+			 					}
+							})
+						}
+					}
+				});
+	    	}
+    	})
+    	
+    	
     	//安卓返回键
 //	    mui.init({
 //	        beforeback: function(){
@@ -191,7 +286,8 @@
 	  	}
  
 	 
-	    $(".msgcmt").click(function(){ 
+	    $(".msgcmt").click(function(){
+	    	mui('.reddian1')[0].style.display = 'none'; 
 	    	openview({
 				view: "find/cmted.html",
 				extrasobj: {
@@ -200,6 +296,7 @@
 			})
 	    }) 
 	    $(".msglike").click(function(){ 
+	    	mui('.reddian1')[1].style.display = 'none';
 	    	openview({
 				view: "find/liked.html",
 				extrasobj: {

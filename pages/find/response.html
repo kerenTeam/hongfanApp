@@ -81,6 +81,13 @@
 		 .fchidl>div small{
 		 	color: #C0C0C0; 
 		 }
+		 .fchidl{position: relative;}
+		 .reddian{position: absolute;
+		    width: 7px;
+		    height: 7px;
+		    background-color: red;
+		    border-radius: 50%;
+		    left: 0.35rem;}
 	</style>
 
 	<body>
@@ -99,8 +106,11 @@
 		</div>
 		<script type="text/html" id="infolist"> 
 			<% for(var i=0; i<list.length; i++){%>
-				<div class="follow" onclick="opendetaile(<%= list[i].user_id%>,'<%= list[i].avatar%>')"> 
+				<div class="follow" onclick="opendetaile(<%= list[i].fromuserid%>,'<%= list[i].avatar%>',<%= list[i].isnew%>,this)"> 
 					<div class="fchidl">
+						<%if(list[i].isnew){ %>
+							<b class="reddian"></b>
+						<%} %>
 						<%if(!list[i].avatar){ %>
 							<img src="../../img/market/bsl.jpeg" class="userAvator" />
 						<%}else{ %>
@@ -125,6 +135,7 @@
 	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
+		var allArray = []; 
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		
 			//下拉刷新
@@ -144,9 +155,50 @@
 						console.log('私信返回',data); 
 						if(data.errno==0){
 							if (data.data.length) {//铺数据
+								var idArray = [];//联系人
 								mui.each(data.data,function(index,ele){
-									getInfo(ele.fromuserid)
+									//getInfo(ele.fromuserid);
+									if(idArray.length){
+										mui.each(idArray,function (index1,ele1) {
+											if(ele.fromuserid == ele1.fromuserid){
+												return false;
+											}
+											if(index1 == idArray.length-1){
+												idArray.push(ele);
+											}
+										})
+									}else{
+										idArray.push(ele);
+									}
+								}) 
+								//console.log('联系人',idArray); 
+								//处理数据
+								mui.each(idArray,function (index2,element2) {
+									if(!element2.nickname){
+										element2.nickname = "匿名"
+									}
+									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element2.nickname)){
+										element2.nickname = element2.nickname.substring(0,3)+"****"+element2.nickname.substring(7,11);
+									}
+									if(element2.avatar){
+										if(element2.avatar.indexOf("[")!=-1){
+											element2.avatar =serverimgUrl + JSON.parse(element2.avatar)[0].picImg;
+										}
+									}else{
+										element2.avatar = "../../img/10.png"
+									}
 								})
+								console.log('联系人',idArray); 
+								var dataobj1 = {};
+								dataobj1.list = idArray;
+								dataobj1.picurl = serverimgUrl; 
+								var html=template("infolist",dataobj1); 
+								document.getElementById("main").innerHTML = html;
+								
+									
+							
+							
+								
 								
 							} else{//没有数据
 								mui('#nulldiv')[0].style.display = 'block';
@@ -166,49 +218,8 @@
 					}
 				});
 			}
-			
-			function getInfo(id){
-				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
-					data:{"userid":id},
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},	              				
-					success:function(data,type,xhr){
-						//console.log('获取用户数据返回'+JSON.stringify(data));
-						if(data.errno == 0){
-							var dataobj = data.data;
-							//显示头像
-							if(!dataobj[0].nickname){
-								dataobj[0].nickname = "匿名"
-							}
-							if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(dataobj[0].nickname)){
-								dataobj[0].nickname = dataobj[0].nickname.substring(0,3)+"****"+dataobj[0].nickname.substring(7,11)
-							}
-							if(dataobj[0].avatar){
-								if(dataobj[0].avatar.indexOf("[")!=-1){
-									dataobj[0].avatar =serverimgUrl + JSON.parse(dataobj[0].avatar)[0].picImg;
-								}
-							}else{
-								dataobj[0].avatar = "../../img/10.png"
-							}
-							
-							var dataobj = {};
-							 
-							dataobj.list = data.data;
-							dataobj.picurl = serverimgUrl;
-							var html=template("infolist",dataobj);
-							document.getElementById("main").innerHTML += html;
-						}else{
-							mui.toast('获取用户信息失败'); 
-							console.log(data.errmsg);
-						}
-					},
-					error:function(xhr,type,errorThrown){
-						console.log('获取用户数据,响应失败');
-					}
-				});	
-			}
-			window.opendetaile = function(user_id,Avater){
+			window.opendetaile = function(user_id,Avater,state,thisobj){
+				thisobj.getElementsByClassName('reddian')[0] && (thisobj.getElementsByClassName('reddian')[0].style.display = 'none');
 		  		//我的请求头像  
 				mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 					data:{"userid":myuserid},
@@ -216,7 +227,7 @@
 					timeout:10000,
 					headers:{"token":oldtoken},	              				
 					success:function(data,type,xhr){
-						console.log('获取用户数据返回'+JSON.stringify(data));
+						//console.log('获取用户数据返回'+JSON.stringify(data));
 						if(data.errno == 0){
 							//显示头像
 							
@@ -224,7 +235,7 @@
 							    myAvatar =  serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
 					            openview({
 									view:'chat.html',
-									extrasobj:{'fromUserId':user_id,'fromAvater':Avater,'myavatar':myAvatar}
+									extrasobj:{'fromUserId':user_id,'fromAvater':Avater,'myavatar':myAvatar,'statestr':state}
 								});
 							} 
 							

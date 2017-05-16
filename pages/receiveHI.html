@@ -50,28 +50,36 @@
 		mui.plusReady(function(){
 			var myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
-			mui('#Clickon')[0].onclick=function(){
-				//执行领取  
-				mui.ajax(serverUrl+'/api/index/cheking',{  
-					data:{"userid":myuserid,"intergral_float":2050},
-					type:'post',
-					timeout:10000, 
-					headers:{"token":oldtoken},	              				
-					success:function(data){ 
-						plus.nativeUI.closeWaiting();
-						console.log('领取返回'+JSON.stringify(data));
-						if(data.errno == 0){
-							mui.toast('领取成功,HI豆加5个');
-							Refresh();  
-						}else{
-							mui.toast('明天再来领吧!'); 
+			var clicked = false;
+			mui('#Clickon')[0].onclick=function(){ 
+				if(!clicked){
+					//执行领取  
+					mui.ajax(serverUrl+'/api/index/cheking',{  
+						data:{"userid":myuserid,"intergral_float":2050},
+						type:'post',
+						timeout:10000,  
+						headers:{"token":oldtoken},	              				
+						success:function(data){
+							clicked = true;
+							plus.nativeUI.closeWaiting();
+							console.log('领取返回'+JSON.stringify(data));
+							if(data.errno == 0){
+								mui.toast('领取成功,HI豆加5个');
+								Refresh();  
+							}else{
+								mui.toast('明天再来领吧!'); 
+							}
+							
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast('领取失败'); 
 						}
-					},
-					error:function(xhr,type,errorThrown){
-						plus.nativeUI.closeWaiting();
-						mui.toast('领取失败'); 
-					}
-				}); 
+					});
+				}else{
+					mui.toast('明天再来领吧!'); 
+				}
+				 
 			};
 			
 			//吐槽

@@ -133,14 +133,14 @@
 		});
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
-		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
+		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		mui.ajax(serverUrl+'/api/news/message',{
 				data:{"userid":myuserid},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
 				headers:{"token":oldtoken},
-				success:function(data,type,xhr){
+				success:function(data,type,xhr){  
 					console.log('消息返回',data);
 					if(data.errno==0){
 						if (data.data.length) {//铺数据
@@ -155,6 +155,22 @@
 							dataobj.picurl = serverimgUrl;
 							var html=template("infolist",dataobj);
 							document.getElementById("main").innerHTML = html;
+							//清除缓存，改变底部红点状态
+							plus.storage.removeItem('commentH');
+							if(!plus.storage.getItem('PletterH') && !plus.storage.getItem('likeH')){
+								if(plus.webview.getWebviewById('message')){
+									mui.fire(plus.webview.getWebviewById('message'),'clearRed');
+								}
+								if(plus.webview.getWebviewById('find')){ 
+									mui.fire(plus.webview.getWebviewById('find'),'clearRed');
+								}
+								if(plus.webview.getWebviewById('Follow')){ 
+									mui.fire(plus.webview.getWebviewById('Follow'),'clearRed');
+								}
+								if(plus.webview.getWebviewById('centerPage')){ 
+									mui.fire(plus.webview.getWebviewById('centerPage'),'clearRed');
+								}
+							}
 						} else{//没有数据
 							mui('#nulldiv')[0].style.display = 'block';
 						}
@@ -179,7 +195,7 @@
 			id:"findInfo",
 			extrasobj:{
 				newsId:nowid,
-				userId:useridd
+				userId:useridd 
 			}
 		});
   	}
