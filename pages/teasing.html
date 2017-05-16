@@ -88,31 +88,27 @@
 		    	if(!content){
 		    	   mui.toast("还未填写内容呢！")
 		    	}else{
-//		    		plus.nativeUI.showWaiting();
-//		    		mui.ajax(serverUrl+"/api/news/commit",{
-//		    			data:{from_user_id:myuserid,content:content,to_user_id:to_user_id,friend_news_id:friend_news_id,to_commit_id:to_commit_id,p_commit_id:p_commit_id},
-//		        		dataType:'json',
-//						type:'post',
-//						timeout:10000,
-//						headers:{"token":oldtoken},	 
-//						success:function(data,type,xhr){ 
-//							console.log(data)
-//							plus.nativeUI.closeWaiting(); //关闭等待框
-//							if(data.errno == 0){
-//								mui.toast("评论成功！")
-//								var list = plus.webview.getWebviewById("findInfo");
-//								var list2 = plus.webview.getWebviewById("innerComment")
-//								mui.fire(list,"refreshCmt");
-//								mui.fire(list2,"refreshCmt");
-//								mui.back();
-//							}
-//						},
-//						error:function(xhr,type,errorThrown){
-//							plus.nativeUI.closeWaiting(); 
-//							console.log('响应失败  !');
-//						}
-//						 
-//		        	})
+		    		plus.nativeUI.showWaiting();
+		    		mui.ajax(serverUrl+"/api/index/giveusfeedback",{
+		    			data:{userid:myuserid,content:content,module:''},
+		        		dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldtoken},	 
+						success:function(data,type,xhr){ 
+//							alert(JSON.stringify(data))
+							plus.nativeUI.closeWaiting(); //关闭等待框
+							if(data.errno == 0){
+								mui.toast("吐槽成功！");
+								mui.back();
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting(); 
+							console.log('响应失败  !');
+						}
+						 
+		        	})
 		    	}
 		    })
 		    

@@ -20,7 +20,11 @@
 			
 			img {
 				width: 100%;
+				display: block;
+				margin: auto;
+				text-align: center;
 			}
+			
 		</style>
 	</head>
 
@@ -46,8 +50,8 @@
 							<img class="mui-col-sm-10" src="<%= url%><%=objData.picImg%>" />
 							<%}%>
 							<div>
-								<p style="text-indent: 2em;">
-									<%= objData.content%>
+								<p style="text-indent: 2em;" id="ygcnt">
+									 
 								</p>
 							</div>
 
@@ -84,10 +88,24 @@
 				success: function(data, type, xhr) {
 					var teamObj = {};
 					data.data.create_time = data.data.create_time.split('T')[0];
-					teamObj.objData = data.data;
- 
+					teamObj.objData = data.data; 
 					teamObj.url = serverimgUrl;
 					mui('#teamInfo')[0].innerHTML = template('teamTpl', teamObj);
+					if(data.data.content) {
+						console.log('详情', data.data.content);
+						var detailsdom = parseDom(data.data.content);
+						var detailsimg = detailsdom.getElementsByTagName('img');
+						mui.each(detailsimg, function(index, element) {
+							console.log(element.src.split('serveForPeople')[1]);
+							element.src = serverimgUrl + element.src.split('serveForPeople')[1];
+							console.log(element.src);
+							element.onerror = function() {
+								element.src = '../img/market/nodata.svg';
+							}
+						})
+						console.log('节点', detailsdom); 
+					document.getElementById("ygcnt").appendChild(detailsdom);
+					}  
 					plus.nativeUI.closeWaiting(); //关闭等待框
 				},
 				error: function(xhr, type, errorThrown) {
@@ -96,6 +114,12 @@
 				}
 			});
 		});
+		function parseDom(arg) { //节点转换方法
+			　　
+			var objE = document.createElement("div");　　
+			objE.innerHTML = arg;　　
+			return objE;
+		};
 	</script>
 
 </html>

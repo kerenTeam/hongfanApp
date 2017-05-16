@@ -489,6 +489,7 @@
 						timeout: 10000,
 						headers: { "token": oldtoken },
 						success: function(data, type, xhr) {
+							console.log("我发送的",data)
 							if(data.errno == 0) {
 								for(var i = 0; i < data.data.length; i++) {
 									var dt = new Date(data.data[i].create_time);
@@ -501,11 +502,9 @@
 									data.data[i].myAvatar = myavatar;
 									if(data.data[i].content.indexOf('[{"picImg') != -1) {
 										data.data[i].pic = serverimgUrl + JSON.parse(data.data[i].content)[0].picImg;
-										console.log(data.data[i].pic)
 									}
 									allDailog.push(data.data[i])
 								}
-								console.log('对话', JSON.stringify(data));
 							}
 
 							$.ajax(serverUrl + '/api/news/selectprivateletter', {
@@ -515,7 +514,7 @@
 								timeout: 10000,
 								headers: { "token": oldtoken },
 								success: function(data, type, xhr) {
-									console.log("对话2", JSON.stringify(data))
+									console.log("发送给我的",data)
 									if(data.errno == 0) {
 										for(var i = 0; i < data.data.length; i++) {
 											var dt = new Date(data.data[i].create_time);
@@ -528,13 +527,10 @@
 											data.data[i].myAvatar = myavatar;
 											if(data.data[i].content.indexOf('[{"picImg') != -1) {
 												data.data[i].pic = serverimgUrl + JSON.parse(data.data[i].content)[0].picImg;
-												console.log(data.data[i].pic)
+											 
 											}
 											allDailog.push(data.data[i])
-										}
-										console.log('对话', JSON.stringify(data));
-										console.log("所有对话", JSON.stringify(allDailog));
-
+										} 
 										//按时间升序排列  
 										var sortBy = function(filed, rev, primer) {
 											rev = (rev) ? -1 : 1;
@@ -552,7 +548,6 @@
 										};
 										allDailog.sort(sortBy('create_time', false, String));
 
-										console.log(JSON.stringify(allDailog));
 										document.getElementById("allDailog").innerHTML = template("allDailogTPL", { allDailog: allDailog })
 										imageViewer.findAllImage();
 										//											document.getElementById("allDailog").scrollIntoView(); 
@@ -771,9 +766,10 @@
 							function(back, status) {
 								plus.nativeUI.closeWaiting();
 								if(status == 200) {
+									console.log(JSON.parse(back.responseText))
 									var dataobj = JSON.parse(back.responseText);
 									if(dataobj.errno == 0) {
-
+										console.log("发送图片成功")
 									} else {
 										plus.nativeUI.closeWaiting(); //关闭等待框
 										mui.toast('发布失败，请重试！');
@@ -785,6 +781,7 @@
 
 							}
 						);
+						console.log(myuserid+" "+touserid+" "+Apic[0])
 						task.setRequestHeader('token', oldtoken);
 						task.addData("fromuserid", myuserid);
 						task.addData("touserid", touserid);
