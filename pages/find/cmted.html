@@ -146,7 +146,11 @@
 						if (data.data.length) {//铺数据
 							var dataobj = {};
 							mui.each(data.data,function (index,element) {//改头像数据
-								element.avatar = JSON.parse(element.avatar)[0].picImg;
+								if(element.avatar && element.avatar.indexOf('picImg')){
+									element.avatar = JSON.parse(element.avatar)[0].picImg;
+								}else{
+									element.avatar = '../../img/10.png';
+								}
 								if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(element.nickname)){
 									element.nickname = element.nickname.substring(0,3)+"****"+element.nickname.substring(7,11)
 								}
