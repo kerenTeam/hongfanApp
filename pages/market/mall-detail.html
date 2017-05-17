@@ -773,7 +773,13 @@
 							</div>
 						</div>
 					</div>
-					<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-weight="<%=choose.weight%>" data-address="<%=choose.since_address%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+					<%if(choose.goods_state){%>
+						<a data-gdId="<%=choose.goods_id%>" data-shopId="<%=choose.storeid%>" data-shop="<%=choose.store_name%>" data-gdName="<%=choose.title%>" data-gdImg="<%=choose.thumb%>" data-gdprice="<%=choose.price%>" data-weight="<%=choose.weight%>" data-address="<%=choose.since_address%>" onclick="cartStorageF(this)" class="shop-btn db">确定</a>
+					<%}else{%>
+						<a class="shop-btn">敬请期待</a>
+						 
+					<%}%>
+
 				</script>
 
 			</div>
@@ -908,13 +914,14 @@
 						} else {
 							document.getElementById("textInfo").innerHTML = '<div style="font-size:0.12rem;color:gray;padding:5%;text-align: center;">暂无详情</div>'
 						}
-					
+						
 						shopId = data.data.goodsInfo.storeid;
 						//选择弹框
 						var chooseO = {};
 						chooseO.choose = data.data.goodsInfo; 
 						chooseO.myUrl = serverimgUrl;
 						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
+						
 						mui(".mui-numbox").numbox();
 						//属性 
 						var allprop;
@@ -1138,7 +1145,7 @@
 						cemmentObj.cemmentData = commentobj;
 						console.log("评论 ",commentobj)
 						document.getElementById("moll_comment").innerHTML = template("commentTpl", cemmentObj);
-
+						
 						// plus.storage.removeItem('$cartStorage');
 						//购物车 缓存
 						var cartStorage = JSON.parse(plus.storage.getItem('$cartStorage') || '[]');
