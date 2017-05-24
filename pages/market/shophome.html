@@ -289,18 +289,18 @@
 		<!--店铺头部结束-->
 		<!--头部切换开始-->
 		<ul id="shangjia_tab">
-			<li>
+			<li id="shangjia_tabf" style="display: none;">
 				<a class="on">全部商品</a>
 			</li>
-			<li>
+			<li id="shangjia_tabm" style="display: none;">
 				<a>推荐商品</a>
 			</li>
-			<li>
+			<li id="shangjia_tabl" style="display: none;">
 				<a>店铺详情</a> 
 			</li>
 		</ul>
 		<!--第一部分-->
-		<div id="tab1" class="page-center-box dldetail">
+		<div id="tab1" class="page-center-box dldetail" style="display: block;">
 			<dl class="dealcard" id="moll_recommend"></dl>
 			<div class="upload text-center text-xs gray" id="upload"></div>
 			<div id="nulldiv1" style="text-align:center;margin-top: 20%;font-size: 14px;color: #999;display: none;">
@@ -457,7 +457,8 @@
 				mui.plusReady(function(){
 					var storeId = plus.webview.currentWebview().storeId;
 					var myuserid = plus.storage.getItem('userid'); 
-					var oldToken = plus.storage.getItem('oldToken'); 
+					var oldToken = plus.storage.getItem('oldToken');
+
 					if(mui('#collectbtn')[0].innerHTML == '+收藏') { 
 						mui.ajax(serverUrl + '/api/mall/collectformall', {
 							data: {
@@ -515,6 +516,20 @@
 			}
 			mui.plusReady(function() {
 				var tablist = mui('#shangjia_tab')[0].getElementsByTagName('a');
+				var storeT = plus.webview.currentWebview().storeType;
+				if(storeT == 1){ 
+					document.getElementById("shangjia_detail").style.display = 'block';
+					mui('#tab1')[0].style.display = mui('#tab2')[0].style.display = 'none';
+					mui('#shangjia_tabl')[0].style.display = 'block';
+					mui('#shangjia_tabm')[0].style.display = 'none';
+					mui('#shangjia_tabf')[0].style.display = 'none';
+				 	$('#shangjia_tabl a').addClass('on'); 
+				}else{
+					mui('#shangjia_tabl')[0].style.display = 'block';
+					mui('#shangjia_tabm')[0].style.display = 'block';
+					mui('#shangjia_tabf')[0].style.display = 'block';
+				}
+					
 				for(var i = 0; i < tablist.length; i++) {
 					tablist[i].addEventListener('tap', function() {
 						for(var j = 0; j < tablist.length; j++) {
@@ -873,6 +888,7 @@
 							timeout: 10000,
 							headers: { "token": oldToken },
 							success: function(data, type, xhr) {
+								console.log("dd ",data)
 								shoptype = data.data.shop_type;
 								$('#storeName').html(data.data.store_name);
 								$('#title2').html(data.data.secondary_name);
@@ -907,10 +923,7 @@
 										$('#storeImg').attr('src', "../../img/theList/storeNo.jpg");
 									})
 								}
-								if(data.data.store_distinction == 1){ 
-									$('#shangjia_detail').css('display','block')
-									$('#shangjia_tab li:not(:last-child)').css("display","none")
-								}
+								
 								plus.nativeUI.closeWaiting(); //关闭等待框
 							},
 							error: function(xhr, type, errorThrown) {
@@ -921,7 +934,10 @@
 					}
 				}
 				theretab.onclick(); //默认显示 
+				if(!storeT){
 				onetab.onclick(); //默认显示 
+				}
+
 				window.goInfo = function(goodsId) {
 					openview({
 						view: "mall-detail.html",

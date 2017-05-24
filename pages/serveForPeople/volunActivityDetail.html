@@ -8,10 +8,10 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="address=no"> 
+		<meta name="format-detection" content="telephone=no"> 
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" /> 
-		<link rel="stylesheet" type="text/css" href="../../css/common.css" /> 
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">  
+		<link rel="stylesheet" href="../../css/reset.css">
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
 		<style type="text/css">
 			p {
@@ -24,6 +24,9 @@
 				margin: auto;
 				text-align: center;
 			}
+			#ygcnt{
+				line-height: 1.5;
+			}
 			
 		</style>
 	</head>
@@ -35,7 +38,7 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
-		<div class="mui-content">
+		<div class="mui-content" style="background-color: none;"> 
 			<div id="teamInfo"></div>
 			<script type="text/html" id="teamTpl">
 				<div class="mui-card">
@@ -64,14 +67,42 @@
 					</div>
 				</div>
 			</script>
+			<!--<div style="margin-bottom: 60px;padding: 10px;">报名即同意<span style="color: coral;" onclick="godate()">《邻水县义务工作联合会义工参加服务规范约定》</span></div>
+			<div class="renting-footer renting-footertwo clearfloat">
+				<ul>
+					<li><a onclick="Signup()">志愿者活动报名</a></li>
+				</ul>
+			</div>	-->
 		</div>
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+		function godate(){
+			openview({
+				view:"serviceDate.html",
+				id:"serviceDate"
+			})
+		}
 		mui.plusReady(function() {
 			var oldtoken = plus.storage.getItem('oldToken');
 			var activityId = plus.webview.currentWebview().activityId; 
+			
+			window.Signup = function(){ 
+				if(plus.storage.getItem('myToken')){
+					openview({
+						view:"volunteerSign.html",
+						id:"volunteerSign",
+						extrasobj:{acid:activityId}
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
+			}
+			
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
 				height: '80px'
