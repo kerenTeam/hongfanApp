@@ -359,11 +359,7 @@
 			$("#payChoose").removeClass("mui-active");
 		})
 
-		function phoneRe() {
-			openview({
-				view: 'phone-record.html'
-			})
-		}
+		
 
 		function gamepay() {
 			//游戏充值
@@ -386,6 +382,21 @@
 					var phoneInput = document.getElementById('mobileNo');
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
+					
+					
+					window.phoneRe = function() { 
+						if(plus.storage.getItem('myToken')){
+							openview({
+								view: 'phone-record.html'
+							})
+						}else{
+							mui.toast('请登录');
+							openview({
+								view:'../login.html'
+							});
+						}
+					}
+					
 					phoneInput.oninput = function() {
 
 						//系统检测获取支付通道
