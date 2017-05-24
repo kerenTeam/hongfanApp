@@ -1576,11 +1576,14 @@
 											"sign":data.data.payData.sign
 										};
 										//微信
+										//alert(JSON.stringify(varpay));
+										//alert(JSON.stringify({id:data.data.AccessToken,userid:myuserid}));
 										plus.payment.request(pays[id], varpay, function(result) {
 											var resultStr = JSON.stringify(result);
 											console.log("----- 支付成功 -----");
 											plus.nativeUI.closeWaiting();
 											//修改订单状态
+											//alert(JSON.stringify({id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid}));
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
 												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid},
 												type: 'post', //HTTP请求类型
@@ -1588,7 +1591,8 @@
 													"token": oldtoken
 												},
 												timeout: 10000, //超时时间设置为10秒；
-												success: function(data) {
+												success: function(data) { 
+													//alert(JSON.stringify(data)); 
 													mui.toast('支付成功');
 													console.log("修改状态成功");
 													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');

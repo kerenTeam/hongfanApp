@@ -67,9 +67,24 @@
 			    font-weight: 100;
 			    float: right !important;
 			    display: inline-block;
-			    margin-top: 4px;
+			    margin-top: 4px; 
+			    
 			}
-		</style>
+			.dealcard-img>img{ background-image: url(../../img/bannerback.svg);background-position: 50% 50%;background-repeat: no-repeat; background-size: 35%;}
+			
+			@keyframes fadeIn {
+				from{opacity: 0;} 
+			  	to  {opacity: 1;} 
+			}
+			.fade-in {
+	  			animation: fadeIn .8s; 
+			}
+			.is-paused { 
+				-webkit-animation-play-state: paused;
+		  		animation-play-state: paused;
+			}
+			
+		</style> 
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav" id="header">
@@ -95,7 +110,7 @@
 						<% for(var i=list.length - 1; i>=0; i--){%>
 							<dd class="page-link aClick" onclick="opendetails(<%= list[i].id%>)">
 							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img src="<%= list[i].logo%>" alt=""> </div>
+								<div class="dealcard-img imgbox"> <img class="loadPics" src="" data-src="<%= list[i].logo%>" alt=""> </div> 
 								<div class="dealcard-block-right">
 									<div class="brand"><%= list[i].name%></div>
 									<div class="title ">
@@ -149,19 +164,19 @@
 			switch(nowwebname){
 				case 'Repair'://维修数据 
 				headtitle.innerHTML = '维修列表'; 
-				Loading(1,1,10);//加载数据,包括上滑加载
+				Loading(1,1,40);//加载数据,包括上滑加载
 				break;
 				case 'Clean'://保洁数据
 				headtitle.innerHTML = '家政服务';
-				Loading(2,1,10);//加载数据,包括上滑加载
+				Loading(2,1,20);//加载数据,包括上滑加载
 				break;
 				case 'Babysister'://保姆数据
 				headtitle.innerHTML = '保姆列表';
-				Loading(3,1,10);//加载数据,包括上滑加载
+				Loading(3,1,20);//加载数据,包括上滑加载
 				break;
 				case 'Openclock'://开锁数据
 				headtitle.innerHTML = '开锁列表';
-				Loading(4,1,10);//加载数据,包括上滑加载
+				Loading(4,1,20);//加载数据,包括上滑加载
 				break;
 			}
 		}
@@ -178,7 +193,7 @@
 				headers:{"token":oldtoken}, 
 				success:function(data){
 					if(data.errno == 0){ 
-						console.log('列表返回'+JSON.stringify(data));
+						//console.log('列表返回'+JSON.stringify(data));
 						console.log('列表返回',data);
 						if(data.data.totalPages){
 							var dataobj = {};
@@ -191,6 +206,92 @@
 							var html=template("infolist",dataobj);
 							document.getElementById("infolistdiv").innerHTML += html;
 							mui("#upload")[0].innerHTML = "";
+							
+							//懒加载开始
+//							var loadPics = mui('.loadPics'),
+//							H = window.innerHeight;//可视窗口高度
+//							window.onscroll = function(){   
+//							    if(loadPics.length){
+//							    	var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
+//								    [].forEach.call(loadPics,function(img,k){
+//								         if(!img.getAttribute('data-src')){return}
+//								         if(H + S > getTop(img)){
+//								         	console.log('加载'); 
+//								             //img.src=img.getAttribute("data-src");
+//							             	var oCanvas = document.createElement('canvas'),
+//										        oCtx = oCanvas.getContext("2d"),
+//										        oImg = new Image();
+//										    oImg.src = img.getAttribute("data-src");
+////										    oImg.src = 'http://hiji.hifete.com:6789/Upload/service/ordinary/2017-01-17_2004551.jpg';
+//										    oImg.onload = function() {
+//										        oCanvas.width  = oImg.width;
+//										        oCanvas.height = oImg.height;
+//										        oCtx.drawImage(oImg, 0, 0); 
+//										        if(oImg.width>2000 || oImg.height>2000){
+//										        	console.error('load');
+//										        	img.src = oCanvas.toDataURL("image/jpeg",0.1);
+//										        }else if(oImg.width>300 || oImg.height>300){
+//										        	console.error('load');
+//										        	img.src = oCanvas.toDataURL("image/jpeg",0.2); 
+//										        }else{
+//										        	console.error('load');
+//										        	img.src = oCanvas.toDataURL("image/jpeg");
+//										        }
+//										    };
+//											img.removeAttribute("data-src");
+//											 img.style.backgroundImage = 'url()';
+//								             img.classList.add('fade-in');//开始动画
+//								             if(img.classList.contains('loadPics')){ 
+//								             	img.classList.remove('loadPics');
+//								             }
+//								             
+//								             
+//								         }  
+//							        })
+//								}    
+//							}
+//							window.onscroll();//先默认显示
+//							function getTop(e){//获取元素距离顶部高度方法。  
+//							    var T = e.offsetTop;
+//							    while(e = e.offsetParent ){
+//							        T += e.offsetTop
+//								}
+//							    return T
+//							}
+							//懒加载开始结束
+							
+							//懒加载开始  
+							var loadPics = mui('.loadPics'),
+							H = window.innerHeight;//可视窗口高度
+							window.onscroll = function(){ 
+								if(loadPics.length){
+								    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
+								    [].forEach.call(loadPics,function(img){
+								         if(!img.getAttribute('data-src')){return}
+								         if(H + S > getTop(img)){
+								             img.src=img.getAttribute("data-src");
+								             img.removeAttribute("data-src");
+								             img.style.backgroundImage = 'url()';
+								             img.classList.add('fade-in');//开始动画
+								             if(img.classList.contains('loadPics')){ 
+								             	img.classList.remove('loadPics');
+								             }
+								         }
+							        })
+								}    
+							}
+							window.onscroll();//先默认显示
+							function getTop(e){//获取元素距离顶部高度方法。  
+							    var T = e.offsetTop;
+							    while(e = e.offsetParent ){
+							        T += e.offsetTop
+								}
+							    return T
+							} 
+							//懒加载开始结束
+							
+							
+							
 						}else{
 							mui("#upload")[0].innerHTML = ""; 
 							mui('#nulldiv')[0].style.display = 'block';
@@ -203,6 +304,13 @@
 						　　var windowHeight = $(this).height();
 						　　if(scrollTop + windowHeight == scrollHeight){//滚动条到达可以加载
 								if(Spagenum<=data.data.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+									//避免闪动开始
+									var fadediv = mui('.fade-in');
+									[].forEach.call(fadediv,function(ele){
+										ele.classList.contains('fade-in')&&(ele.classList.remove('fade-in'));
+									})
+									//避免闪动结束
+									
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 									Ypagenum++;//满足加载情况,应到页数+1
 									console.log('发起请求,实到'+Spagenum+'页');									
@@ -217,13 +325,43 @@
 											if(data.errno == 0){
 												var dataobj = {};
 												mui.each(data.data.data,function (index,ele) {
-													console.log('地址'+ eval("("+ele.logo+")")[0].picImg);
+													//console.log('地址'+ eval("("+ele.logo+")")[0].picImg);
 													data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
 												})
 												dataobj.list = data.data.data; 
 												//获取并渲染用户信息
 												var html=template("infolist",dataobj);
 												document.getElementById("infolistdiv").innerHTML += html;
+												
+												//懒加载开始 
+												var loadPics = mui('.loadPics'),
+												H = window.innerHeight;//可视窗口高度
+												window.onscroll = function(){ 
+													if(loadPics.length){
+													    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
+													    [].forEach.call(loadPics,function(img){
+													         if(!img.getAttribute('data-src')){return}
+													         if(H + S > getTop(img)){
+													             img.src=img.getAttribute("data-src");
+													             img.removeAttribute("data-src");
+													             img.style.backgroundImage = 'url()';
+													             img.classList.add('fade-in');//开始动画
+													             if(img.classList.contains('loadPics')){ 
+													             	img.classList.remove('loadPics');
+													             }
+													         }
+												        })
+													}    
+												}
+												//window.onscroll();//先默认显示
+												function getTop(e){//获取元素距离顶部高度方法。  
+												    var T = e.offsetTop;
+												    while(e = e.offsetParent ){
+												        T += e.offsetTop
+													}
+												    return T
+												} 
+												//懒加载开始结束
 											}
 											mui("#upload")[0].innerHTML = " ";
 											Spagenum++;//加载成功,当前页+1

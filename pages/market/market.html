@@ -311,7 +311,7 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">宏帆广场</h1>
 		</header>
-		<script src="../../js/statusBar.js"></script><!--状态栏--> 
+		<script src="../../js/statusBar.js"></script><!--状态栏-->  
 		<div id="main">
 			<div id="scroller">
 			<!--轮播图-->
@@ -325,7 +325,7 @@
 				    	<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
 				    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 				    	<% }else{ %>
-				    		<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>')">
+				    		<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','two')"> 
 					    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 					   		</a>
 				    	<% } %>
@@ -335,18 +335,18 @@
 							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
 					    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 					    	<% }else{ %>
-					    		<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>')">
+					    		<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','two')">
 						    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 						   		</a>
 					    	<% } %>
 				    	</div>
 				    <% } %>
-				    <!--支持循环，需要重复图片节点-->
+				    <!--支持循环，需要重复图片节点--> 
 				    <div class="mui-slider-item mui-slider-item-duplicate">
 						<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
 				    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 				    	<% }else{ %>
-				    		<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
+				    		<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','two')">
 					    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 					   		</a>
 				    	<% } %>
@@ -673,21 +673,9 @@
 					plus.nativeUI.closeWaiting();//关闭等待框
 					
 				}
-			});
+			}); 
 			//banner跳转
-			 window.bannerGo = function(url, name) {
-				if(url != '#'){
-					openview({
-						view: "../bannerTpl.html",
-						id: "bannerTpl",
-						extrasobj: {
-							bannerUrl: url,
-							bannerName: name
-						}
-					})
-				}
-				
-			}
+
 			//会场数据渲染
 			mui.ajax(serverUrl+'/api/mall/shopactivestoreorgoods',{
 				data:{type:1,isVenue:''}, 

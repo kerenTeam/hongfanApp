@@ -16,7 +16,6 @@
 		<link rel="stylesheet" href="../css/one.css">
 		<script type="text/javascript" src="../js/jquery.min.js"></script> 
 		<script src="../js/mui.min.js"></script>
-
 		<script src="../js/app.js"></script>
 		<!--引入模板引擎-->
 		<script src="../js/artTemplate-native.js"></script>
@@ -727,11 +726,11 @@
 						<!--支持循环，需要重复图片节点-->
 						<div class="mui-slider-item mui-slider-item-duplicate">
 							<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
-							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>',2)">
+							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
 								<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>	
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>',2)">
+							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
 								<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>
 							<% } %>
@@ -739,11 +738,11 @@
 						<% for(var i=0;i<bannerList.length;i++){ %>
 						<div class="mui-slider-item">
 							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
-							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>',<%= i%>)">
+							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
 								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>	
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>',<%= i%>)">
+							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
 								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>
 							<% } %>
@@ -754,7 +753,7 @@
 							<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
 							<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>',0)"> 
+							<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','one')"> 
 								<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							</a>
 							<% } %>
@@ -769,8 +768,7 @@
 				</script>
 			</div>
 			
-		<div id="main">
-		 
+		<div id="main"> 
 		<div class="onetable">
 			<table>
 				<tbody>
@@ -1015,7 +1013,7 @@
 		<div id="clickLeave"></div>
 
 		<script type="text/javascript"> 
-			  
+			
 			//跳转详情
 			function goInfo(goodsId, storeId) {
 				if(storeId == 0) {
@@ -1177,8 +1175,7 @@
 						qid:q_id
 					}
 				})
-			}
-			
+			}  
 			//点击进入商品详情
 			$(".adGo").each(function() {
 				$(this).click(function() {
@@ -1193,18 +1190,13 @@
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数 
 			mui.plusReady(function() {
-				//李洁要求 
-//				mainActivity = plus.android.runtimeMainActivity();
-//				MobclickAgent = plus.android.importClass("com.umeng.analytics.MobclickAgent");
-//				MobclickAgent.onPageStart("MainScreen");
-				//李洁要求结束
 				window.addEventListener('reload',function(event){
 					plus.webview.currentWebview().reload();
 				});
-				plus.nativeUI.showWaiting('加载中 ...', {
-					width: '100px',
-					height: '80px'
-				}); //显示等待框
+//				plus.nativeUI.showWaiting('加载中 ...', {
+//					width: '100px',
+//					height: '80px'
+//				}); //显示等待框
 				//跳转页面
 				var Timetoken = null;
 				var oldToken = null;

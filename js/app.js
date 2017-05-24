@@ -1,11 +1,12 @@
 //var serverUrl='http://192.168.199.191:7200';
 var serverUrl='http://hiji.hifete.com';
 //var serverUrl='http://s-365426.gotocdn.com';
+//var serverUrl='http://s-365426.gotocdn.com:7200';
 
 //var serverUrl='http://192.168.31.153:7200';
 
 //var propUrl = 'http://192.168.0.128:6789';
-var propUrl = 'http://hiji.hifete.com:6789';
+var propUrl = 'http://hiji.hifete.com:6789'; 
 //var propUrl = 'http://211.149.183.181:6789'; 
 var serverUrl0='http://192.168.199.191:7200';
 var serverUrl1='http://192.168.0.130:7200'; 
@@ -16,7 +17,7 @@ var serverUrl1='http://192.168.0.130:7200';
 var serverimgUrl='http://hiji.hifete.com:6789';
 //var serverimgUrl='http://211.149.183.181:6789'; 
 
-var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment'; 
+var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified'; 
 
@@ -36,101 +37,120 @@ window.showRedfun = function(){
 		var commentH = plus.storage.getItem('commentH');
 		var likeH = plus.storage.getItem('likeH');
 		console.error('请求小红点'+"赞："+likeH+"评论："+commentH+"私信："+PletterH);
-		//alert('请求小红点'+"赞："+likeH+"评论："+commentH+"私信："+PletterH);
+		//alert('请求小红点'+"赞："+plus.storage.getItem('likeH')+"评论："+plus.storage.getItem('commentH')+"私信："+plus.storage.getItem('PletterH'));
 		//document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-		if(likeH || commentH || PletterH){ 
-			document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-		}else{ 
-			//请求私信
-			mui.ajax(serverUrl+'/api/news/hasnewmsg',{
-				data:{"userid":myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},
-				success:function(data){
-					if(data.data && data.data.length){
-						mui.each(data.data,function (index,element) {
-		 					if(element.isnew){//有私信未读
-		 						//alert('私信'); 
-		 						plus.storage.setItem("PletterH",'yes');//私信标杆
-		 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-		 						mui('.reddian1')[2].style.display = 'inline-block'; 
-		 						return false;
-		 					}
-						})
+		if(plus.storage.getItem('userid')){ 
+			if(likeH || commentH || PletterH){ 
+				document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			}else{ 
+				//请求私信
+				mui.ajax(serverUrl+'/api/news/hasnewmsg',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data){
+						if(data.data && data.data.length){
+							mui.each(data.data,function (index,element) {
+			 					if(element.isnew){//有私信未读
+			 						//alert('私信'); 
+			 						plus.storage.setItem("PletterH",'yes');//私信标杆
+			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			 						mui('.reddian1')[2].style.display = 'inline-block'; 
+			 						return false;
+			 					}
+							})
+						}
 					}
-				}
-			});
-			//请求评论
-			mui.ajax(serverUrl+'/api/news/message',{ 
-				data:{"userid":myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},
-				success:function(data){
-					if(data.data && data.data.length){
-						mui.each(data.data,function (index,element) {
-		 					if(element.read_state){//有评论未读
-		 						//alert('评论');
-		 						plus.storage.setItem("commentH",'yes');//私信标杆
-		 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-		 						mui('.reddian1')[0].style.display = 'inline-block'; 
-		 						return false;
-		 					}
-						})
+				});
+				//请求评论
+				mui.ajax(serverUrl+'/api/news/message',{ 
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data){
+						if(data.data && data.data.length){
+							mui.each(data.data,function (index,element) {
+			 					if(element.read_state){//有评论未读
+			 						//alert('评论');
+			 						plus.storage.setItem("commentH",'yes');//私信标杆
+			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			 						mui('.reddian1')[0].style.display = 'inline-block'; 
+			 						return false;
+			 					}
+							})
+						}
 					}
-				}
-			});
-			//请求点赞
-			mui.ajax(serverUrl+'/api/news/newslike',{
-				data:{"userid":myuserid},
-				dataType:'json',
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},
-				success:function(data){ 
-					console.log(data);
-					if(data.errno == 0 && data.data.mynewsliker && data.data.mynewsliker.mynewsliker.length){
-						mui.each(data.data.mynewsliker.mynewsliker,function (index,element) {
-							console.log(1)
-		 					if(element.read_state){//有评论未读 
-		 						//alert('点赞');
-		 						plus.storage.setItem("likeH",'yes');//私信标杆
-		 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-		 						mui('.reddian1')[1].style.display = 'inline-block'; 
-		 						return false;
-		 					}
-						})
+				});
+				//请求点赞
+				mui.ajax(serverUrl+'/api/news/newslike',{
+					data:{"userid":myuserid},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers:{"token":oldtoken},
+					success:function(data){ 
+						console.log(data);
+						if(data.errno == 0 && data.data.mynewsliker && data.data.mynewsliker.mynewsliker.length){
+							mui.each(data.data.mynewsliker.mynewsliker,function (index,element) {
+			 					if(element.read_state){//有评论未读 
+			 						//alert('点赞');
+			 						plus.storage.setItem("likeH",'yes');//私信标杆
+			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
+			 						mui('.reddian1')[1].style.display = 'inline-block'; 
+			 						return false;
+			 					}
+							})
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	})
 }//发现红点
 
 //banner跳转
-window.bannerGo = function(url, name, nameid) {
+window.bannerGo = function(url, name, route) { 
 	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
-		openview({
-			view: "bannerTpl.html",
-			id: "bannerTpl",
-			extrasobj: {
-				bannerUrl: url,
-				bannerName: name
-			}
-		})
-	}else if(url.indexOf('&')>-1 ){//本地 
+		if(route == 'one'){//层级 
+			var bannerTplHtml = 'bannerTpl.html'; 
+		}else{
+			var bannerTplHtml = '../bannerTpl.html';
+		}
+		if(url.indexOf('?')>-1 || url.indexOf('pro')>-1){//高级功能的h5
+			localStorage.Burlname=url;  
+			openview({
+				view: bannerTplHtml,
+				id: "bannerTpl",
+				extrasobj: {
+					bannerUrl: url,
+					bannerName: name,
+					type:'pro'
+				}
+			})	
+		}else{
+			openview({
+				view: bannerTplHtml,
+				id: "bannerTpl",
+				extrasobj: {
+					bannerUrl: url,
+					bannerName: name
+				}
+			})
+		}
+	}else if(url.indexOf('&')>-1 ){//本地  
 		var localId = url.split('&')[1],localUrl = url.split('&')[0],localUId = url.split('&')[2] || -1;
 		openview({
 			view: localUrl,
 			create: true,
 			extrasobj: {
 				storeId:localId,//商铺主页
-				goodcatId:localId,//特色馆分类
+				goodcatId:localId,//特色馆分类 
 				goodsId:localId,//商品主页
-				activityId:localId,//活动主页
+				activityId:localId,//活动主页 
 				storeCouponId:localId,//优惠主页
 				newsId:localId,//帖子详情： 帖子id
 				userId:localUId,//帖子详情： 帖子userId 

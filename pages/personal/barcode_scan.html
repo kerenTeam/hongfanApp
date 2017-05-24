@@ -57,67 +57,105 @@
 			    	break;
 			    }
 			    //result = result.replace(/\n/g, ''); 
+			   	console.log(result);
 			   	//alert(result);
-			    console.log(JSON.parse(result));
-			    if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
-			    	var dataobj = JSON.parse(result);
-			    	if(dataobj.begin_date && dataobj.end_date){
-			    		var nowdate = new Date;
-				    	var beginDate = new Date(dataobj.begin_date); 
-				    	var endDate = new Date(dataobj.end_date);
-				    	console.log('核销数据',dataobj);
-				    	if(dataobj.user_coupon_state == 0){//判断是否已经使用
-				    		alert('该核销卷已经使用');
-				    		mui.back();
-				    	}else if(nowdate < beginDate){//判断时间开始
-				    		alert('使用时间没到！');
-				    		mui.back();
-				    	}else if(nowdate > endDate){//判断时间结束
-				    		alert('该卷已经过期!');
-				    		mui.back(); 
+			    //console.log(JSON.parse(result));
+			    var statestr1 = plus.webview.currentWebview().statestr;
+			    if(!statestr1){//商户扫码
+			    	if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
+				    	var dataobj = JSON.parse(result);
+				    	if(dataobj.begin_date && dataobj.end_date){
+				    		var nowdate = new Date;
+					    	var beginDate = new Date(dataobj.begin_date); 
+					    	var endDate = new Date(dataobj.end_date);
+					    	console.log('核销数据',dataobj);
+					    	if(dataobj.user_coupon_state == 0){//判断是否已经使用
+					    		alert('该核销卷已经使用');
+					    		mui.back();
+					    	}else if(nowdate < beginDate){//判断时间开始
+					    		alert('使用时间没到！');
+					    		mui.back();
+					    	}else if(nowdate > endDate){//判断时间结束
+					    		alert('该卷已经过期!');
+					    		mui.back(); 
+					    	}else{
+					    		updatafun(dataobj.user_coupon_id,result,dataobj.userid);   
+					    	}
 				    	}else{
-				    		updatafun(dataobj.user_coupon_id,result,dataobj.userid);   
+				    		console.error('没有typeid，核销失败！');
+				    		alert('核销失败，请重试！');
 				    	}
-			    	}else{
-			    		console.error('没有typeid，核销失败！');
-			    		alert('核销失败，请重试！');
-			    	}
+				    }else{
+				    	console.error('没有typeid，核销失败！');
+				    	alert('核销失败，请重试！'); 
+				    }
 			    }else{
-			    	console.error('没有typeid，核销失败！');
-			    	alert('核销失败，请重试！'); 
+			    	updatafun('',result,'');
 			    }
 			    
-			    function updatafun(codeid,result,uesrid){ //上传数据
+			    
+			    function updatafun(codeid,result,uesrid){
 				    mui.plusReady(function(){
 				    	var myuserid = plus.storage.getItem('userid');
 						var oldtoken = plus.storage.getItem('oldToken');
 						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
-					    mui.ajax(serverUrl + '/api/mall/couponverify',{
-							data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'storeid':myuserid},//qruserid:qr拥有者  
-							type:'post',
-							timeout:10000,
-							headers:{"token":oldtoken},
-							success:function(data,type,xhr){
-								plus.nativeUI.closeWaiting();
-								//alert('上传核销返回'+JSON.stringify(data));
-								console.log('上传核销返回',data);
-								if(data.errno == 0){
-									mui.alert('核销成功');
-									mui.toast('核销成功'); 
-								}else{
-									mui.alert('核销失败');
+						if(!statestr1){ //商户扫码上传数据
+							mui.ajax(serverUrl + '/api/mall/couponverify',{
+								data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'storeid':myuserid},//qruserid:qr拥有者  
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldtoken},
+								success:function(data,type,xhr){
+									plus.nativeUI.closeWaiting();
+									//alert('上传核销返回'+JSON.stringify(data));
+									console.log('上传核销返回',data);
+									if(data.errno == 0){
+										mui.alert('核销成功');
+										mui.toast('核销成功'); 
+									}else{
+										mui.alert('核销失败');
+										mui.toast('核销失败'); 
+									}
+									mui.back();							
+								},
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting();
 									mui.toast('核销失败'); 
+									mui.back();	
 								}
-								mui.back();							
-							},
-							error:function(xhr,type,errorThrown){
-								plus.nativeUI.closeWaiting();
-								mui.toast('核销失败'); 
-								mui.back();	
-							}
-						});
+							});
+						}else{//用户扫码上传数据
+							alert(result);
+							mui.ajax(serverUrl + '/api/index/verificationthemachinesmallbillticket',{
+								data:{"qrcode":result},//qruserid:qr拥有者  
+								type:'post',
+								timeout:10000,
+								headers:{"token":oldtoken},
+								success:function(data,type,xhr){
+									alert(JSON.stringify(data));
+									plus.nativeUI.closeWaiting();
+									//alert('上传核销返回'+JSON.stringify(data));
+									console.log('上传核销返回',data);
+									if(data.errno == 0){
+										mui.alert('核销成功');
+										mui.toast('核销成功'); 
+									}else{
+										mui.alert('核销失败');
+										mui.toast('核销失败'); 
+									}
+									//mui.back();							
+								},
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting();
+									mui.toast('核销失败'); 
+									mui.back();	
+								}
+							});
+						}
+					    
 					})  
-				}	
+			    }
+
 			}
 		</script>
 		
