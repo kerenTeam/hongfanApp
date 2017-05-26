@@ -191,9 +191,9 @@
 						</div>
 					</div>
 					<div class="deal" data-orderId="<%=data.order_id%>">
-						<%if(data.userPostData.storeid != 0){%>
-						<div class="sjname box-s" onclick="goStore('<%=data.PriceCalculation.Params.goodsData[0].store_id%>')">
-							<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.PriceCalculation.Params.goodsData[0].stores.store_name%></span>
+						<%if(data.seller != 0){%>
+						<div class="sjname box-s" onclick="goStore('<%=data.seller%>')">
+							<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data.stores.store_name%></span>
 							<span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
 						</div>
 						<%}else{%>
@@ -204,106 +204,117 @@
 						<%}%>
 
 						<dl class="list listtwo">
-							<%for(var i = 0;i<data.PriceCalculation.Params.goodsData[0].goods_Data.length;i++){%>
-							<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].g_id%>')">
-								<div class="react">
-									<div class="dealcard">
-										<div class="dealcard-img imgbox">
-											<span></span>
-											<%if(data.PriceCalculation.Params.goodsData[0].store_id == 0){%>
-											<% if(data.PriceCalculation.Params.goodsData[0].goods_Data[i].youpin){ %>
-											<img src="<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
-											<%}else{%>
-											<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
-											<%}%>
-											<%}else{%>
-											<img src="<%=myUrl%><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';" />
-											<%}%>
-
-										</div>
-										<div class="dealcard-block-right">
-											<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].title%></span> <span class="fr">￥<b><%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].price%></b></span></div>
-											<div class="title text-block fl">
-												<%=data.userPostData.goodsData[0].goodText%>
+							<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
+								<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
+									<%for(var i = 0;i<data.PriceCalculation.Params.goodsData[t].goods_Data.length;i++){%>
+										<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].g_id%>')">
+											<div class="react">
+												<div class="dealcard">
+													<div class="dealcard-img imgbox">
+														<span></span>
+														<%if(data.PriceCalculation.Params.goodsData[t].store_id == 0){%>
+														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin){ %>
+														<img src="<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<%}else{%>
+														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<%}%>
+														<%}else{%>
+														<img src="<%=myUrl%><%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';" />
+														<%}%>
+			
+													</div>
+													<div class="dealcard-block-right">
+														<div class="dealcard-brand single-line"><span style="display: inline-block;width: 83%"><%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].title%></span> <span class="fr">￥<b><%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].price%></b></span></div>
+														<div class="title text-block fl">
+															<%=data.userPostData.goodsData[0].goodText%>
+														</div>
+														<div class="title text-block fr">
+															x
+															<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].nums%>
+														</div>
+														<div class="clear">
+			
+														</div> 
+														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax_rate){%>
+														<span style="font-size: 0.12rem;">内含税费 ￥<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax%></span>
+														<%}%>
+														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].Floating_price){%>
+														<li class="gray">
+															<div class="tip-title">商品属性加价<span class="fr">￥ <%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].Floating_price%></span></div>
+														</li>
+														<%}%>
+														<div class="clear"></div>
+														<%if(data.order_status==2 || data.order_status==3){%>
+														<span class="mui-badge mui-badge-danger">
+																			七天退换
+																		</span>
+														<%}%>
+			
+													</div>
+													<!--<%if(data.order_status==2 || data.order_status==3){%>
+																	<button class="fr" style="margin-top: 0.2rem;">退款</button>
+																<%}%>-->
+			
+												</div>
 											</div>
-											<div class="title text-block fr">
-												x
-												<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].nums%>
-											</div>
-											<div class="clear">
-
-											</div>
-											<%if(data.PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate){%>
-											<span style="font-size: 0.12rem;">内含税费 ￥<%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].tax%></span>
-											<%}%>
-											<%if(data.PriceCalculation.Params.goodsData[0].goods_Data[i].Floating_price){%>
-											<li class="gray">
-												<div class="tip-title">商品属性加价<span class="fr">￥ <%=data.PriceCalculation.Params.goodsData[0].goods_Data[i].Floating_price%></span></div>
-											</li>
-											<%}%>
-											<div class="clear"></div>
-											<%if(data.order_status==2 || data.order_status==3){%>
-											<span class="mui-badge mui-badge-danger">
-																七天退换
-															</span>
-											<%}%>
-
-										</div>
-										<!--<%if(data.order_status==2 || data.order_status==3){%>
-														<button class="fr" style="margin-top: 0.2rem;">退款</button>
-													<%}%>-->
-
-									</div>
-								</div>
-							</dd>
+										</dd>
+										<%}%>
+								<%}%>
 							<%}%>
+							
 						</dl>
 
 						<dl id="deal-terms" class="list">
 							<dd class="dd-padding dd-paddingfour">
 								<ul>
-									<!--<li class="gray">
-										<div class="tip-title">商品总价<span class="fr">￥<%=data.goods_data.total_goods_prices%></span></div>
-									</li>-->
-									<%if(data.userPostData.express_id == -1){%>
-									<li class="gray">
-										<div class="tip-title">邮费<span class="fr">包邮</span></div>
-									</li>
-									<%}else if(data.userPostData.express_id == -2){%>
-									<li class="gray">
-										<div class="tip-title">邮费无<span class="fr">自提</span></div>
-									</li>
-									<%}else{%>
-									<%if(data.PriceCalculation.Params.goodsData[0].postAge){%>
-									<li class="gray">
-										<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[0].postAge%></span></div>
-									</li>
-									<%}else{%>
-									<li class="gray">
-										<div class="tip-title">邮费<span class="fr">包邮</span></div>
-									</li>
+									<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
+										<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
+											<li class="gray">
+												<div class="tip-title">商品总价<span class="fr">￥<%=data.goods_data.total_goods_prices%></span></div>
+											</li>
+											<%if(data.userPostData.express_id == -1){%>
+											<li class="gray">
+												<div class="tip-title">邮费<span class="fr">包邮</span></div>
+											</li>
+											<%}else if(data.userPostData.express_id == -2){%>
+											<li class="gray">
+												<div class="tip-title">邮费无<span class="fr">自提</span></div>
+											</li>
+											<%}else{%>
+											<%if(data.PriceCalculation.Params.goodsData[t].postAge){%>
+											<li class="gray">
+												<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+											</li>
+											<%}else{%>
+											<li class="gray">
+												<div class="tip-title">邮费<span class="fr">包邮</span></div>
+											</li>
+											<%}%>
+											<%}%>
+		
+											<%if(data.PriceCalculation.nowIntergal.intergral){%>
+											<li class="gray">
+												<div class="tip-title">是否使用积分抵扣<span class="fr">是</span></div>
+											</li>
+											<%}%>
+											<%if(data.PriceCalculation.Params.couponData && data.PriceCalculation.Params.couponData.coupon_amount){%>
+											<li class="gray">
+												<div class="tip-title">优惠券抵扣<span class="fr">-￥<%=data.PriceCalculation.Params.couponData.coupon_amount%></span></div>
+											</li>
+											<%}%>
+		
+											<li>
+												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥<%=data.amount%></span></div>
+											</li>
+										<%}%>
 									<%}%>
-									<%}%>
-
-									<%if(data.PriceCalculation.nowIntergal.intergral){%>
-									<li class="gray">
-										<div class="tip-title">是否使用积分抵扣<span class="fr">是</span></div>
-									</li>
-									<%}%>
-									<%if(data.PriceCalculation.Params.couponData && data.PriceCalculation.Params.couponData.coupon_amount){%>
-									<li class="gray">
-										<div class="tip-title">优惠券抵扣<span class="fr">-￥<%=data.PriceCalculation.Params.couponData.coupon_amount%></span></div>
-									</li>
-									<%}%>
-
-									<li>
-										<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥<%=data.PriceCalculation.PriceCalculValue%></span></div>
-									</li>
+									
 								</ul>
 							</dd>
 						</dl>
 						<dl id="deal-terms" class="list" style="margin-bottom:60px;">
 							<dd class="dd-padding dd-paddingfour gray">
+								
 								<ul>
 									<li>
 										<div class="tip-title">订单编号：
@@ -359,10 +370,15 @@
 					<%=data.refuse_refund%>
 				</div>
 				<%}%>
-				<%if(data.order_status==1){%>
+				<!--<%if(data.order_status==1){%>
 				<button class="fr BC" onclick="goOrder('<%=data.order_UUID%>','<%=data.rePayID%>','<%=data.seller%>','<%=data.buyer%>','<%=data.order_id%>')">付款</button>
 				<button class="fr" onclick="delOrder(this,'<%=data.order_id%>','取消')">取消订单</button>
-				<%}%>
+				<%}%>-->
+				<!--<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
+					<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
+						
+					<%}%>
+				<%}%>-->
 				<%if(data.order_status==2){%>
 				<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>
 				<%}%>
@@ -371,12 +387,12 @@
 				<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>
 				<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>
 				<%}%>
-				<%if(data.order_status==4 && data.PriceCalculation.Params.goodsData[0].store_id != 0){%>
+				<%if(data.order_status==4 && data.seller != 0){%>
 				<button class="fr BC" onclick="goComment('<%=data.order_id%>',<%=data.userPostData.goodsData.length%>,<%=data.userPostData.goodsData[0].goodsid%>,<%=data.userPostData.storeid%>)">评价</button>
 				<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
 				<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>
 				<%}%>
-				<%if(data.order_status==4 && data.PriceCalculation.Params.goodsData[0].store_id == 0){%>
+				<%if(data.order_status==4 && data.seller == 0){%>
 				<!--<button class="fr BC" onclick="goComment('<%=data.order_id%>',<%=data.userPostData.goodsData.length%>,<%=data.userPostData.goodsData[0].goodsid%>,<%=data.userPostData.storeid%>)">评价</button>-->
 				<!--<button class="fr BC" onclick="tuiOrder('<%=data.order_id%>','<%=data.PriceCalculation.totalMoney%>')">申请退款</button>-->
 				<button class="fr" onclick="viewLogistics('<%=data.order_id%>','<%=data.logistic_code%>','<%=data.shipper_code%>')">查看物流</button>
@@ -437,6 +453,7 @@
 			})
 			var myuserid = plus.storage.getItem('userid');
 			var orderId = plus.webview.currentWebview().orderId;
+			var storeId = plus.webview.currentWebview().storeId;
 			var oldtoken = plus.storage.getItem('oldToken');
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
@@ -508,6 +525,7 @@
 							//					       
 							orderInfo.myUrl = serverimgUrl;
 							orderInfo.data = data.data[0];
+							orderInfo.storeId = storeId;
 							console.log("orderInfo.data ", data)
 							document.getElementById("orderInfo").innerHTML = template("orderTpl", orderInfo);
 							document.getElementById("button").innerHTML = template("buttonTpl", orderInfo);
