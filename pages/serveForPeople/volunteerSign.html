@@ -382,7 +382,7 @@
 							<a href="#">
 								<p class="fl">姓名
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bname" placeholder="必填"/>
+								<input type="text" class="fr shuru Ynull" value="" name="" id="Bname" placeholder="点击填写(必填)"/>
 							</a>
 						</li> 
 						<li class="clearfloat" id="Bclass">
@@ -396,49 +396,49 @@
 							<a href="#">
 								<p class="fl">籍贯
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="PlaceBirth"/>
+								<input type="text" class="fr shuru Ynull" name="" id="PlaceBirth" placeholder="点击填写"/>
 							</a>
 						</li> 
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">电话
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="phone" placeholder="必填"/>
+								<input type="text" class="fr shuru Ynull" name="" id="phone" placeholder="点击填写(必填)"/>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">邮箱
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="email"/>
+								<input type="text" class="fr shuru Ynull" name="" id="email" placeholder="点击填写"/>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">QQ号码
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="qqnum"/>
+								<input type="text" class="fr shuru Ynull" name="" id="qqnum" placeholder="点击填写"/>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">身份证号
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="idcard"/>
+								<input type="text" class="fr shuru Ynull" name="" id="idcard" placeholder="点击填写"/>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">通讯地址
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="addressmy"/>
+								<input type="text" class="fr shuru Ynull" name="" id="addressmy" placeholder="点击填写"/>
 							</a>
 						</li>
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">政治面貌
 								</p>
-								<input type="text" class="fr shuru Ynull" name="" id="PoliticalStatus"/>
+								<input type="text" class="fr shuru Ynull" name="" id="PoliticalStatus" placeholder="点击填写"/>
 							</a>
 						</li>
 						<li class="clearfloat">
@@ -464,14 +464,14 @@
 								<p class="">活动经历</p>
 							</a>
 						</li>
-						<textarea name="" rows="4" id="Binfo" placeholder="请描述一下你的活动经历" class="textare box-s Ynull" value=""></textarea>
+						<textarea name="" rows="4" id="Binfo1" placeholder="请描述一下你的活动经历" class="textare box-s Ynull" value=""></textarea>
 						 <div style="background: #f2f1ee;height: 10px;"></div>
 					    <li class="clearfloat">
 							<a href="#">
 								<p class="">对活动的感想及展望</p>
 							</a>
 						</li>
-						<textarea name="" rows="4" id="Binfo" placeholder="畅所欲言吧" class="textare box-s Ynull" value=""></textarea>
+						<textarea name="" rows="4" id="Binfo2" placeholder="畅所欲言吧" class="textare box-s Ynull" value=""></textarea>
 					</ul>
 				</div>
 				 
@@ -495,33 +495,68 @@
 			data:{userid:myuserid},
 			type:'post',
 			timeout:10000,
-			headers:{"token":oldtoken},	              				
+			headers:{"token":oldtoken},
 			success:function(data,type,xhr){
-				console.log('获取用户数据返回',data);
-				if(data.errno == 0){
-				 if(data.data[0].phone){
+				if(data.errno == 0 && data.data[0].phone){
 				 	 mui('#phone')[0].value = data.data[0].phone;
-				 }
-					
-				}else{
-					mui.toast('获取用户信息失败'); 
-					console.log(data.errmsg);
 				}
-			},
-			error:function(xhr,type,errorThrown){
-				console.log('获取用户数据,响应失败');
 			}
 		});
 		var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 		mui('.baocun')[0].onclick = function(){
-			var Ynulls = mui('#Bname')[0];
-			var phone = mui('#phone')[0];
+			var Ynulls = mui('#Bname')[0],
+			phone = mui('#phone')[0],
+			PoliticalStatus = mui('#PoliticalStatus')[0].value,
+			cityResult3 = mui('#cityResult3')[0].innerHTML,
+			PlaceBirth = mui('#PlaceBirth')[0].value,
+			yesorno = mui('#yesorno')[0].value, 
+			idcard = mui('#idcard')[0].value,
+			addressmy = mui('#addressmy')[0].value,
+			email = mui('#email')[0].value, 
+			qqnum = mui('#qqnum')[0].value,
+			Binfo0 = mui('#Binfo0')[0].value,
+			Binfo1 = mui('#Binfo1')[0].value,
+			Binfo2 = mui('#Binfo2')[0].value; 
+			
 			if(!Ynulls.value){
-				mui.toast('请填写你的姓名');
+				mui.toast('请填写你的姓名'); 
 			}else if(!phone || !reg_phone.test(phone.value)){
 				 mui.toast('请填写正确的电话');
-			}else{
-				mui.toast("发送成功")
+			}else{//开始上传数据 
+				
+				mui.ajax(serverUrl+'/api/localservice/joincommunityservice',{
+					data:{
+						user_id: myuserid, 
+						name: Ynulls.value,
+						phoneNumber: phone.value, 
+						politicalGroup: PoliticalStatus,
+						gender: cityResult3,
+						birthPlace: PlaceBirth,
+						joined: yesorno,
+						IDNumber : idcard,
+						Address: addressmy,
+						email: email,
+						qq: qqnum,
+						Specialty: Binfo0,
+						history: Binfo1,
+						expecting: Binfo2
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{"token":oldtoken},
+					success:function(data){
+						console.log('报名',data);
+						if(data.errno == 0){
+							mui.toast('报名成功');
+							mui.back(); 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast('当前网络不好，请重试');
+					}
+				});				
+
 			}
 			
 		}
