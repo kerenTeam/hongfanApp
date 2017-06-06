@@ -36,7 +36,7 @@ function checkUpdateIos(){
             
 		},
 		error:function(xhr,type,errorThrown){
-			mui.toast('当前网络不好，请重试'); 
+			//mui.toast('当前网络不好，请重试'); 
 			console.error('操作响应失败');
 		}
 	});
@@ -68,7 +68,7 @@ function checkUpdate(hide){
             
 		},
 		error:function(xhr,type,errorThrown){
-			mui.toast('当前网络不好，请重试'); 
+			//mui.toast('当前网络不好，请重试'); 
 			console.error('操作响应失败');
 		}
 	});

@@ -111,10 +111,8 @@
 									console.log('上传核销返回',data);
 									if(data.errno == 0){
 										mui.alert('核销成功');
-										mui.toast('核销成功'); 
 									}else{
 										mui.alert('核销失败');
-										mui.toast('核销失败'); 
 									}
 									mui.back();							
 								},
@@ -124,26 +122,22 @@
 									mui.back();	
 								}
 							});
-						}else{//用户扫码上传数据
-							alert(result);
+						}else{//用户扫码上传数据 
 							mui.ajax(serverUrl + '/api/index/verificationthemachinesmallbillticket',{
-								data:{"qrcode":result},//qruserid:qr拥有者  
+								data:{"qrcode":result,userid:myuserid},//qruserid:qr拥有者  
 								type:'post',
 								timeout:10000,
 								headers:{"token":oldtoken},
 								success:function(data,type,xhr){
-									alert(JSON.stringify(data));
 									plus.nativeUI.closeWaiting();
-									//alert('上传核销返回'+JSON.stringify(data));
 									console.log('上传核销返回',data);
 									if(data.errno == 0){
 										mui.alert('核销成功');
-										mui.toast('核销成功'); 
+										mui.fire(plus.webview.getWebviewById('receiveHI'),'refresh');
 									}else{
 										mui.alert('核销失败');
-										mui.toast('核销失败'); 
 									}
-									//mui.back();							
+									mui.back();							
 								},
 								error:function(xhr,type,errorThrown){
 									plus.nativeUI.closeWaiting();
