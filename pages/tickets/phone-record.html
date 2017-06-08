@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>XX详情</title>
+		<title>充值记录</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -19,7 +19,7 @@
 		<style type="text/css">
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
-				width: 10px;
+				width: 10px; 
 				height: 10px;
 				border-radius: 8px;
 				background: black;
@@ -87,7 +87,7 @@
 			.icon-gas{
 				background-color: #006699;
 			}
-			.icon-water{
+			.icon-water{ 
 				background-color: #006699;
 			}
 			.icon img{
@@ -189,10 +189,10 @@
 						
 						<div id="rechargeList"></div>
 						<script type="text/html" id="rechargeTpl">
-							<%for(var t=0;t<list.length;t++){%>
-								<%if(list[t].payment_data.status ==1 && !list[t].payment_data.errorToken){%>
+							<%for(var t=list.length-1;t>=0;t--){%>
+								<%if(list[t].payment_data && list[t].payment_data.data && list[t].payment_data.data.payState && list[t].payment_data.data.payState == 1 && !list[t].payment_data.errorToken){%>
 									
-									<div class="recharge clearfloat"> <!-- onclick="recordDe('<%=list[t].uuid%>')"-->
+									<div class="recharge clearfloat" onclick="recordDe('<%=list[t].uuid%>')"> <!-- onclick="recordDe('<%=list[t].uuid%>')"-->
 									<div class="recharge clearfloat">  
 							    		<div class="czhi box-s">
 							    			<p style="font-size: 0.12rem;"><%=list[t].create_time%></p> 
@@ -201,7 +201,7 @@
 												</div>
 												<div class="recordDetail">
 													<p class="recordBig">-<%=list[t].payment_data.data.saleAmount%></p>
-													<p class="recordTiny">充值<%=list[t].payment_data.data.saleAmount%>元-<%=list[t].payment_data.data.rechargeAccount%></p>
+													<p class="recordTiny"><%=list[t].payment_data.data.itemName%>-<%=list[t].payment_data.data.rechargeAccount%></p>
 												</div> 
 							    		</div>
 							    	</div>	

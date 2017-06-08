@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script> 
 		
-		<style type="text/css">
+		<style type="text/css"> 
 			/*banner底部导航*/
 			.mui-slider-indicator .mui-indicator{
 				width: 10px;
@@ -208,7 +208,7 @@
 									<span class="mui-col-sm-9" id="phoneCharge"></span>
 								</li>
 								<li class="mui-row">
-									<p class="fl mui-col-sm-3">面值：</p>
+									<p class="fl mui-col-sm-3">金额：</p>
 									<span class="mui-col-sm-9" id="saleAmount"></span>
 								</li>
 								<li class="mui-row">
@@ -255,14 +255,14 @@
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						plus.nativeUI.closeWaiting()
-						console.log('fdf '+JSON.stringify(data))
+						console.log('fdf ',data)
 						if(data.errno==0){
 							mui(".deal")[0].style.display="block"
 							var infoData = JSON.parse(data.data.payment_data).data;
 							mui("#amount")[0].innerHTML = "<sub>￥"+parseFloat(infoData.saleAmount).toFixed(2)+"</sub>";
 							mui("#itemName")[0].innerHTML = infoData.itemName;
 							mui("#phoneCharge")[0].innerHTML = infoData.rechargeAccount;
-							mui("#saleAmount")[0].innerHTML =parseFloat(Amount).toFixed(2);
+							mui("#saleAmount")[0].innerHTML = parseFloat(infoData.saleAmount).toFixed(2)+'元';
 							mui("#cretime")[0].innerHTML = infoData.orderTime;
 						}
 					},

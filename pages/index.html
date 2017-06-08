@@ -67,7 +67,7 @@
 			<a class="mui-tab-item muidingwei" href="center.html" id="center" style="position: relative !important;top: 2px !important;">
 				<i class="demo-icon icon-user-circle"></i>
 				<!--<img src="../img/center/mine.png" style="width: 27px;height: 27px;"/><br />-->
-				<span class="mui-tab-label">我 的</span>
+				<span class="mui-tab-label" style="position: relative;">我 的<span id="isdisplay" style="display:none;position: absolute;width:8px;height:8px;background-color: coral;top: -25px;left: 15px;border-radius: 50%;"></span></span>
 			</a>
 			
 		</nav>
@@ -282,7 +282,17 @@
 					defaultTab.classList.add('mui-active');
 				}
 			});
-			
+			//自定义事件，气泡显示
+			document.addEventListener('refreshPop', function(obj) {
+				var allorder=obj.detail.allorder;
+				var isdisplay = document.getElementById("isdisplay");
+				 //是否显示
+				 if(allorder>0){
+				 	isdisplay.style.display="inline-block"
+				 }else{
+				 	isdisplay.style.display="none"
+				 }
+			});
 			
 //			//父页面遮罩层显隐函数
 //			var maskwarp = document.createElement("div");

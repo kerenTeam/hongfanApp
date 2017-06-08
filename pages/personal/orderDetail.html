@@ -187,14 +187,19 @@
 								</div>
 
 							</div>
-
 						</div>
 					</div>
 					<div class="deal" data-orderId="<%=data.order_id%>">
 						<%if(data.seller != 0){%>
-						<div class="sjname box-s" onclick="goStore('<%=data.seller%>')">
-							<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data.stores.store_name%></span>
+						<div class="sjname box-s">
+							<img onclick="goStore('<%=data.seller%>')" src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data.stores.store_name%></span>
 							<span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
+							<%if(data.goods_data.stores.phone){%>
+								<a href="tel:<%=data.goods_data.stores.phone%>" style="float: right;line-height: 0.2rem;"><span class="mui-icon mui-icon-phone" style="color: red;"></span></a>
+							<%}%>
+							<%if(data.goods_data.stores.qq){%>
+								<a onclick="openQQ(<%=data.goods_data.stores.qq%>)" style="float: right;line-height: 0.2rem;">联系客服 <span class="mui-icon mui-icon-qq" style="font-size: 20px;margin-top: 3px;color: dodgerblue;margin-right: 5px;"></span></a>
+							<%}%>
 						</div>
 						<%}else{%>
 						<div class="sjname box-s">
@@ -202,7 +207,7 @@
 							<span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
 						</div>
 						<%}%>
-
+  
 						<dl class="list listtwo">
 							<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
 								<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
@@ -620,6 +625,16 @@
 						storeId: storeId
 					}
 				})
+			}
+			//打开qq对话框
+			window.openQQ =function(qq){
+				if(/android/i.test(navigator.userAgent)) { //判断为android  
+					document.location.href="mqqwpa://im/chat?chat_type=wpa&uin="+qq;
+				} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+					document.location.href="mqq://im/chat?chat_type=wpa&uin="+qq+"&version=1&src_type=web";
+				} else { //pc端访问  
+					// mui('#downGame')[0].remove();
+				}
 			}
 			window.goGoods = function(goodsId) {
 				openview({
