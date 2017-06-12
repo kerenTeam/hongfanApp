@@ -17,8 +17,6 @@
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-
-		<!--<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>-->
 		<style type="text/css">
 			.mui-bar-nav.mui-bar .mui-icon,
 			.mui-title,
@@ -62,7 +60,7 @@
 				position: absolute;
 				right: 20px;
 				bottom: 0;
-				line-height: 100px;
+				line-height: 84px;
 				font-size: 30px;
 			}
 			
@@ -73,9 +71,9 @@
 			#mobileNo {
 				line-height: 28px;
 				width: 100%;
-				height: 100px;
+				height: 85px;
 				margin-bottom: 0;
-				padding: 20px;
+				padding: 14px;
 				font-size: 28px;
 				-webkit-user-select: text;
 				border: none !important;
@@ -260,6 +258,27 @@
 			#totalPayCash {
 				color: red;
 			}
+			.recording{
+				position: fixed;
+				top: 160px;
+				background: #fff;
+				width: 100%;
+				z-index: 100;
+			}
+			.recording p{
+				padding: 15px;
+				font-size: 16px;
+				color: #555;
+			}
+			.recording p.pp{
+				padding: 15px;
+				font-size: 14px;
+				color: red;
+				text-align: center;
+			}
+			.recording1{
+				display: none !important;
+			}
 		</style>
 	</head>
 
@@ -277,6 +296,9 @@
 				<span class="mui-icon mui-icon-contact contact-icon"></span>
 				<!--<span class="tips">默认号码（四川移动)</span>-->
 			</div>
+		</div>
+		<div class="recording" style="display: none;"><!--记录-->
+			
 		</div>
 		<div class="farm clearfloat rechargeOut">
 			<div class="rechargeWrap">
@@ -351,6 +373,36 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+		var flag1 = 0;
+		//充值记录
+		mui.plusReady(function(){
+			var Recording = JSON.parse(plus.storage.getItem('Recording')) || [];
+			console.log(Recording);
+			if(Recording.length){
+				var divStr = ''; 
+				mui.each(Recording,function (index,element) {
+					if(index == 3){
+						return false;
+					}
+					divStr += '<p class="fineB pp1 aClick">'+element+'</p>';
+				})
+				mui('.recording')[0].innerHTML = divStr + '<p class="fineB aClick pp">清空历史纪录</p>';
+			}
+			mui('.pp')[0].onclick = function(){
+				plus.storage.removeItem('Recording');
+				mui('.recording')[0].className = 'recording recording1';
+			}
+			mui('#mobileNo')[0].onfocus = function(){
+				mui('.recording')[0].style.display = 'block';
+			}
+			mui('#mobileNo')[0].onblur = function(){
+				var time1 = setTimeout(function(){
+					mui('.recording')[0].style.display = 'none';
+				},350)
+			}
+		})
+		//充值记录
+		
 		$(".paycontent").click(function() {
 			event.stopImmediatePropagation()
 		})
@@ -398,6 +450,11 @@
 					}
 					
 					phoneInput.oninput = function() {
+						if (mui('#mobileNo')[0].value.toString().length>3 || mui('#mobileNo')[0].value.toString().length==0) {
+							mui('.recording')[0].style.display = 'none';
+						}else{
+							mui('.recording')[0].style.display = 'block';
+						}
 
 						//系统检测获取支付通道
 						plus.payment.getChannels(function(channels) {
@@ -445,7 +502,7 @@
 
 						var mobileNo = this.value;
 						$(".mui-icon-clear").css("display", "block")
-						if(reg_phone.test(mobileNo)) {
+						if(reg_phone.test(mobileNo) || flag1) {
 							$(".mui-icon-clear").css("display", "none")
 							$(".rechargeItem").addClass("rechargeItemActive");
 							$(".rechargeItemActive").click(function() {
@@ -488,6 +545,24 @@
 															},
 															timeout: 10000, //超时时间设置为10秒；
 															success: function(data) {
+																//记录缓存
+																var Recording = JSON.parse(plus.storage.getItem('Recording')) || [];
+																if(Recording.length){
+																	mui.each(Recording,function (index,element) {
+																		if(element == mobileNo){
+																			Recording.splice(index,1);
+																			Recording.unshift(mobileNo);
+																			return false;
+																		}
+																		if(index == Recording.length-1){
+																			Recording.unshift(mobileNo);
+																		}
+																	})
+																}else{
+																	Recording.unshift(mobileNo);
+																}
+																plus.storage.setItem("Recording",JSON.stringify(Recording));
+																//记录缓存结束
 																console.error(data);
 //																alert(JSON.stringify(data))
 																plus.nativeUI.closeWaiting()
@@ -604,6 +679,15 @@
 								$(".rechargeItem").removeClass("rechargeItemActive");
 							}
 						}
+						//充值记录
+						mui.each(mui('.pp1'),function (index,element) {
+							element.onclick = function(){
+								mui('#mobileNo')[0].value = element.innerHTML;
+								mui('.recording')[0].style.display = 'none';
+								$(".rechargeItem").addClass("rechargeItemActive");
+								phoneInput.oninput();
+							}
+						})
 					})
 	</script>
 

@@ -56,7 +56,7 @@
 			    	type = "其它"+type;
 			    	break;
 			    }
-			    //result = result.replace(/\n/g, ''); 
+			    //result = result.replace(/\n/g, '');
 			   	console.log(result);
 			   	//alert(result);
 			    //console.log(JSON.parse(result));
@@ -79,7 +79,7 @@
 					    		alert('该卷已经过期!');
 					    		mui.back(); 
 					    	}else{
-					    		updatafun(dataobj.user_coupon_id,result,dataobj.userid);   
+					    		updatafun(dataobj.user_coupon_id,result,dataobj.userid,dataobj.storeid);   
 					    	}
 				    	}else{
 				    		console.error('没有typeid，核销失败！');
@@ -90,18 +90,18 @@
 				    	alert('核销失败，请重试！'); 
 				    }
 			    }else{
-			    	updatafun('',result,'');
+			    	updatafun('',result,'','');
 			    }
 			    
 			    
-			    function updatafun(codeid,result,uesrid){
+			    function updatafun(codeid,result,uesrid,storeId){
 				    mui.plusReady(function(){
 				    	var myuserid = plus.storage.getItem('userid');
 						var oldtoken = plus.storage.getItem('oldToken');
 						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
 						if(!statestr1){ //商户扫码上传数据
 							mui.ajax(serverUrl + '/api/mall/couponverify',{
-								data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'storeid':myuserid},//qruserid:qr拥有者  
+								data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'storeid':myuserid,'storeId':storeId},//qruserid:qr拥有者  
 								type:'post',
 								timeout:10000,
 								headers:{"token":oldtoken},
@@ -132,16 +132,16 @@
 									plus.nativeUI.closeWaiting();
 									console.log('上传核销返回',data);
 									if(data.errno == 0){
-										mui.alert('核销成功');
+										mui.alert('获取积分成功');
 										mui.fire(plus.webview.getWebviewById('receiveHI'),'refresh');
 									}else{
-										mui.alert('核销失败');
+										mui.alert('无效二维码');
 									}
-									mui.back();							
+									//mui.back();							
 								},
 								error:function(xhr,type,errorThrown){
 									plus.nativeUI.closeWaiting();
-									mui.toast('核销失败'); 
+									mui.toast('无效二维码');
 									mui.back();	
 								}
 							});

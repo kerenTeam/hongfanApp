@@ -1501,11 +1501,14 @@
 							"token": oldToken
 						},
 						success: function(data, type, xhr) {
-							//console.log("头条 "+JSON.stringify(data))
+							console.log("头条 ",data);
 							if(data.data.length == 0) {
 								$('#adNews').find('marquee').html('暂无家乡头条!');
 							} else {
 								var hotnews = '';
+								if(data.data.length == 3){
+									data.data.push(data.data[0]);
+								}
 								mui.each(data.data,function(index,ele){
 									hotnews+='<a class="Headlines" data-id="'+ele.id+'">'+ele.title+'</a>'
 								})
