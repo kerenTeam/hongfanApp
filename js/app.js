@@ -28,7 +28,7 @@ function alertF(content){ //非姐的方法
 function alertY(content){ //向前的方法 
 //	alert(content) 
 }
- 
+
 window.showRedfun = function(){
 	mui.plusReady(function(){
 		var oldtoken = plus.storage.getItem('oldToken');
