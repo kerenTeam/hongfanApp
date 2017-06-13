@@ -148,9 +148,9 @@
 			.searchtype{
 			    width: 15%;
 			    display: inline-block;
-			    border: 1px solid #e4e3e3;
+			    border-right: 1px solid #e4e3e3;
 			    height: 40px;
-				border-radius: 3px;
+				/*border-radius: 3px;*/
 			    vertical-align: bottom;
 			    /*pointer-events:auto ;*/
 			}
@@ -205,9 +205,9 @@
 			<div class="searchtype">
 					<div class="alltype curtype" data-id='1'>全部</div>
 					<div class="otherstype" style="display: none;">
-						<div class="alltype" data-id='1'>全部</div>
-						<div class="alltype" data-id='2'>店铺</div>
-						<div class="alltype" data-id='3'>商品</div>
+						<div class="alltype" data-id='1' data-type=''>全部</div>
+						<div class="alltype" data-id='2' data-type='store'>店铺</div>
+						<!--<div class="alltype" data-id='3' data-type='other'>其他</div>-->
 					</div>
 					
 				</div>
@@ -294,31 +294,38 @@
 		<script type="text/html" id="searchOutTpl">
 			<ul>
 				<!--房产-->
-				<%if(searchData.local_house.length!=0){%>
+				<%if(searchData.local_house && searchData.local_house.length!=0){%>
 				<%for(var i=0;i < searchData.local_house.length;i++){%>
 				<li onclick="opendetails1('<%=searchData.local_house[i].house_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
 					<%=searchData.local_house[i].name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 				<%}%>
 				<%}%>
 				<!--商城-->
-				<%if(searchData.goods.length!=0){%>
+				<%if(searchData.goods && searchData.goods.length!=0){%>
 				<%for(var i=0;i < searchData.goods.length;i++){%>
 				<li onclick="opendetails3('<%=searchData.goods[i].goods_id%>','<%=searchData.goods[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
 					<%=searchData.goods[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 				<%}%>
 				<%}%>
 				<!--二手市场-->
-				<%if(searchData.local_used_market.length!=0){%>
+				<%if(searchData.local_used_market && searchData.local_used_market.length!=0){%>
 				<%for(var i=0;i < searchData.local_used_market.length;i++){%>
 				<li onclick="opendetails4('<%=searchData.local_used_market[i].id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
 					<%=searchData.local_used_market[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 				<%}%>
 				<%}%>
 				<!--活动-->
-				<%if(searchData.system_activity.length!=0){%>
+				<%if(searchData.system_activity && searchData.system_activity.length!=0){%>
 				<%for(var i=0;i < searchData.system_activity.length;i++){%>
 				<li onclick="opendetails7('<%=searchData.system_activity[i].id%>','<%=searchData.system_activity[i].type%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
 					<%=searchData.system_activity[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+				<%}%>
+				<%}%>
+				<!--店铺-->
+				<%if(searchData.shop_store && searchData.shop_store.length!=0){%>
+				<%for(var i=0;i < searchData.shop_store.length;i++){%>
+				<li onclick="opendetails5('<%=searchData.shop_store[i].store_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+					<%=searchData.shop_store[i].store_name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 				<%}%>
 				<%}%>
 			</ul>
@@ -327,6 +334,10 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+		window.addEventListener('click',function(e){
+			 	$('.otherstype').css('display','none')
+//			if(event.target.)
+		},true)
 		$('.curtype').click(function(){
 			 if($('.otherstype').css('display') == 'none'){
 //			 	$('.curtype:after').css('transform','rotate(-180deg)'); 
@@ -357,6 +368,7 @@
 				$(this).css('color','black')
 			}
 		})
+		
 		document.getElementById('words').onfocus= function(){
 			$('.otherstype').css('display','none')
 		}
@@ -396,6 +408,8 @@
 			window.submitTest = function() {
 				if($("input").val() != '') {
 					var words = $("input").val();
+					var searchType = $('.curtype').attr('data-id');
+					
 					if(searchStorage.length != 0) {
 						var flag = false;
 						for(var i = 0; i < searchStorage.length; i++) {
@@ -418,7 +432,7 @@
 					$("#container").css("display", "none");
 					$(".searchOut").css("display", "block");
 					//执行搜索
-					doSearch(words);
+					doSearch(words,searchType);
 				} else {
 					mui.toast("请输入搜索内容！");
 					$("#container").css("display", "block");
@@ -426,12 +440,22 @@
 				}
 			}
 
-			function doSearch(words) {
-				plus.nativeUI.showWaiting()
+			function doSearch(words,searchType) {
+				plus.nativeUI.showWaiting();
+				if(searchType == 1){
+					searchType = '';
+				}
+				if(searchType == 2){
+					searchType = 'store'
+				}
+				if(searchType == 3){
+					searchType = 'other'
+				}
 				var oldtoken = plus.storage.getItem('oldToken');
 				mui.ajax(serverUrl + '/api/index/search', {
 					data: {
-						search: words
+						search: words,
+						searchType:searchType
 					},
 					dataType: 'json',
 					type: 'post',
@@ -441,9 +465,9 @@
 					},
 					success: function(data, type, xhr) {
 						plus.nativeUI.closeWaiting();
-
+						console.log(data)
 						if(data.errno == 0) {
-							if(data.data.local_house.length != 0 || data.data.local_used_market.length != 0 || data.data.goods.length != 0 || data.data.system_activity.length != 0) {
+							if((data.data.local_house && data.data.local_house.length != 0) || (data.data.local_used_market && data.data.local_used_market.length != 0) || (data.data.goods && data.data.goods.length != 0) || (data.data.system_activity && data.data.system_activity.length != 0) || (data.data.shop_store && data.data.shop_store.length != 0)) {
 								var searchObj = {};
 								searchObj.searchData = data.data;
 								document.getElementById("searchOut").innerHTML = template("searchOutTpl", searchObj);
@@ -478,7 +502,7 @@
 				e.preventDefault();
 				$("#container").css("display", "none");
 				$(".searchOut").css("display", "block");
-				$("input").val($(this).text());
+				$("input").val($.trim($(this).text()));
 				doSearch($.trim($(this).text()))
 			})
 		})
@@ -530,13 +554,13 @@
 				}
 			})
 		}
-		//跳转 帮帮团
+		//跳转 店铺
 		function opendetails5(id) {
 			openview({
-				view: '../serveForPeople/around.html',
-				id: 'volunActivityDetail',
+				view: "../market/shophome.html",
+				id:"shophome",
 				extrasobj: {
-					activityId: id
+					storeId: id
 				}
 			})
 		}
