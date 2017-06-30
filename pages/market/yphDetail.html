@@ -628,6 +628,8 @@
 			console.log(token)
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId;
+			var shopId = plus.webview.currentWebview().shopId;
+			alertF(shopId)
 			var differentiate = plus.webview.currentWebview().differentiate;
 			plus.nativeUI.showWaiting('加载中 ...', {
 				width: '100px',
@@ -736,9 +738,10 @@
 						window.cartStorageF = function(obj) {
 
 							if($('.cur').length == $(".choose").length) {
-								var shopName = obj.getAttribute("data-shop");
+								var shopName = shopId;
 								var goodsId = obj.getAttribute("data-gdId");
-								var storeid = obj.getAttribute("data-shopId");
+								var storeid = shopId;
+								var igetShopId = '0';
 								var goodsName = obj.getAttribute("data-gdName");
 								var goodsImg = obj.getAttribute("data-gdImg");
 								var goodsPrice = priceChange;
@@ -764,6 +767,7 @@
 								cartObj.goodsId = goodsId;
 								cartObj.shopName = shopName;
 								cartObj.shopId = storeid;
+								cartObj.igetShopId = igetShopId;
 								cartObj.goodsName = goodsName;
 								cartObj.goodsImg = goodsImg;
 								cartObj.goodsPrice = goodsPrice;
@@ -830,7 +834,10 @@
 							}
 						}
 						//mui.previewImage();
-					} else {
+					}else if(data.data=='分销商品不存在或者已过期'){
+						mui.toast('分销商品不存在或者已过期')	;
+						plus.nativeUI.closeWaiting();
+					}else {
 						plus.nativeUI.closeWaiting();
 						mui.toast("网络不好请重试！")
 					}

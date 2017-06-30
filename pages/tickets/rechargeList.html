@@ -88,12 +88,14 @@
 			var oldtoken = plus.storage.getItem('oldToken');
 			var typeCharge = plus.webview.currentWebview().typeCharge;
 			plus.nativeUI.showWaiting();
-			mui.ajax(serverUrl+'/api/qianmi/getwatercoalitemlist',{
+			mui.ajax(serverUrl+'/api/banma/watercoalitemlist',{
 				dataType:'json',
+				data:{pageSize:100},
 				type:'post',
 				timeout:'10000',
 				headers:{"token":oldtoken},
 				success:function(data,type,xhr){ 
+					console.log("watercoalitemlist",data)
 					if(data.errno ==0 ){
 						var List = data.data.admin_item_response.items.item;
 						var dataList = {};

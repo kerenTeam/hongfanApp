@@ -305,18 +305,13 @@
 				<p class="rechargeTitle">充话费</p>
 				<div class="mui-content">
 					<div class="mui-row">
-						<!--<div class="mui-col-sm-4 mui-col-xs-4 clickCss">
+						 <div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 							<div class="rechargeItem">
-								<p class="rechargeBig">10元</p>-->
+								<p class="rechargeBig">10元</p>
 								<!--<p class="rechargeTiny">售价29.97元</p>-->
-							<!--</div>
+							 </div>
 						</div>
-						<div class="mui-col-sm-4 mui-col-xs-4 clickCss">
-							<div class="rechargeItem">
-								<p class="rechargeBig">20元</p>-->
-								<!--<p class="rechargeTiny">售价29.97元</p>-->
-							<!--</div>
-						</div>-->
+						 
 						<div class="mui-col-sm-4 mui-col-xs-4 clickCss">
 							<div class="rechargeItem">
 								<p class="rechargeBig">30元</p>
@@ -532,7 +527,7 @@
 											}
 
 											function gopay(id) { 
-												mui.ajax(serverUrl + '/api/qianmi/createmobilebill', {
+												mui.ajax(serverUrl + '/api/banma/rechargemobilegetiteminfo', {
 														data: {
 																mobileNo: mobileNo,
 																rechargeAmount: rechargeAmount,
@@ -545,6 +540,7 @@
 															},
 															timeout: 10000, //超时时间设置为10秒；
 															success: function(data) {
+																console.log(data)
 																//记录缓存
 																var Recording = JSON.parse(plus.storage.getItem('Recording')) || [];
 																if(Recording.length){
@@ -567,23 +563,32 @@
 //																alert(JSON.stringify(data))
 																plus.nativeUI.closeWaiting()
 //																alert("----- 请求订单成功 -----" + JSON.stringify(data));
-																var orderCost = data.data.BillData.data.orderCost; //总价
-																var saleAmount = data.data.BillData.data.saleAmount;//实际价格
-																var subject = data.data.BillData.data.itemName;//名称
-																var billId = data.data.BillData.data.billId;//订单号
-																var newOrderID = data.data.new_qianmi_order_id; 
+//																var orderCost = data.data.BillData.data.orderCost; //总价
+//																var saleAmount = data.data.BillData.data.saleAmount;//实际价格
+//																var subject = data.data.BillData.data.itemName;//名称
+//																var billId = data.data.BillData.data.billId;//订单号
+//																var newOrderID = data.data.new_qianmi_order_id; 
 
-																console.log("new_qianmi_order_id "+newOrderID+"billId "+billId+"noiftyData "+JSON.stringify(data.data.PaymentData))
+//																console.log("new_qianmi_order_id "+newOrderID+"billId "+billId+"noiftyData "+JSON.stringify(data.data.PaymentData))
 																var varpay;
 																if(id == 'wxpay') {
+//																	varpay = {
+//																		"appid": data.data.PaymentData.appid,
+//																		"noncestr": data.data.PaymentData.noncestr,
+//																		"package": "Sign=WXPay",
+//																		"partnerid": data.data.PaymentData.partnerid,
+//																		"prepayid": data.data.PaymentData.prepayid,
+//																		"timestamp": parseInt(data.data.PaymentData.timestamp),
+//																		"sign": data.data.PaymentData.sign
+//																	};
 																	varpay = {
-																		"appid": data.data.PaymentData.appid,
-																		"noncestr": data.data.PaymentData.noncestr,
+																		"appid": data.data.appid,
+																		"noncestr": data.data.noncestr,
 																		"package": "Sign=WXPay",
-																		"partnerid": data.data.PaymentData.partnerid,
-																		"prepayid": data.data.PaymentData.prepayid,
-																		"timestamp": parseInt(data.data.PaymentData.timestamp),
-																		"sign": data.data.PaymentData.sign
+																		"partnerid": data.data.partnerid,
+																		"prepayid": data.data.prepayid,
+																		"timestamp": parseInt(data.data.timestamp),
+																		"sign": data.data.sign
 																	};
 																	//微信
 																	plus.payment.request(pays[id], varpay, function(result) {
@@ -591,27 +596,27 @@
 																		$("#payChoose").removeClass("mui-active");
 																		var result = JSON.stringify(result)
 																		//修改状态  
-																		mui.ajax(serverUrl+'/api/qianmi/paybill',{
-																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},	
-																			dataType:'json',//服务器返回json格式数据
-																			type:'post',//HTTP请求类型 
-																			timeout:10000,//超时时间设置为10秒；
-																			headers:{"token":oldToken},	
-																			success:function(data){ 
-																				plus.nativeUI.closeWaiting()
-																				 plus.nativeUI.alert("支付成功");
-																				  setTimeout(function(){
-																				 	openview({
-																						view:"../tickets/phone-record-de.html",
-																						extrasobj:{qianmiOrderID:newOrderID,Amount:rechargeAmount}
-																					})
-																				 },1000)
-																			},
-																			error:function(xhr,type,errorThrown){
-																				//异常处理；
-																				console.log(type);
-																			}
-																		});
+//																		mui.ajax(serverUrl+'/api/qianmi/paybill',{
+//																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},	
+//																			dataType:'json',//服务器返回json格式数据
+//																			type:'post',//HTTP请求类型 
+//																			timeout:10000,//超时时间设置为10秒；
+//																			headers:{"token":oldToken},	
+//																			success:function(data){ 
+//																				plus.nativeUI.closeWaiting()
+//																				 plus.nativeUI.alert("支付成功");
+//																				  setTimeout(function(){
+//																				 	openview({
+//																						view:"../tickets/phone-record-de.html",
+//																						extrasobj:{qianmiOrderID:newOrderID,Amount:rechargeAmount}
+//																					})
+//																				 },1000)
+//																			},
+//																			error:function(xhr,type,errorThrown){
+//																				//异常处理；
+//																				console.log(type);
+//																			}
+//																		});
 																	}, function(e) {
 																		console.log("----- 支付失败 -----");
 //																		alert(JSON.stringify("[" + e.code + "]：" + e.message));
@@ -620,35 +625,35 @@
 																	});
 																} else {
 																	//支付宝
-																	varpay = data.data.PaymentData;
+																	varpay = data.data;
 																	plus.payment.request(pays[id], varpay, function(result) {
 																		console.log("----- 支付成功 -----", JSON.stringify(result));
 																		plus.nativeUI.closeWaiting();
 																		plus.nativeUI.alert("支付成功");
 																		$("#payChoose").removeClass("mui-active");
 																		var result = JSON.stringify(result)
-																		//修改状态  
-																		mui.ajax(serverUrl+'/api/qianmi/paybill',{
-																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},	
-																			dataType:'json',//服务器返回json格式数据
-																			type:'post',//HTTP请求类型 
-																			timeout:10000,//超时时间设置为10秒；
-																			headers:{"token":oldToken},	
-																			success:function(data){ 
-																				plus.nativeUI.closeWaiting()
-																				 plus.nativeUI.alert("支付成功");
-																				  setTimeout(function(){
-																				 	openview({
-																						view:"../tickets/phone-record-de.html",
-																						extrasobj:{qianmiOrderID:newOrderID,Amount:rechargeAmount}
-																					})
-																				 },1000)
-																			},
-																			error:function(xhr,type,errorThrown){
-																				//异常处理；
-																				console.log(type);
-																			}
-																		});
+//																		//修改状态  
+//																		mui.ajax(serverUrl+'/api/qianmi/paybill',{
+//																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},	
+//																			dataType:'json',//服务器返回json格式数据
+//																			type:'post',//HTTP请求类型 
+//																			timeout:10000,//超时时间设置为10秒；
+//																			headers:{"token":oldToken},	
+//																			success:function(data){ 
+//																				plus.nativeUI.closeWaiting()
+//																				 plus.nativeUI.alert("支付成功");
+//																				  setTimeout(function(){
+//																				 	openview({
+//																						view:"../tickets/phone-record-de.html",
+//																						extrasobj:{qianmiOrderID:newOrderID,Amount:rechargeAmount}
+//																					})
+//																				 },1000)
+//																			},
+//																			error:function(xhr,type,errorThrown){
+//																				//异常处理；
+//																				console.log(type);
+//																			}
+//																		});
 																	}, function(e) {
 																		console.log("----- 支付失败 -----");
 																		console.log("[" + e.code + "]：" + e.message);

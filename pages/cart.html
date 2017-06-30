@@ -43,13 +43,13 @@
 				<% if(goodsList[j].shopName ==  cates[i]){%>
 				<dd>
 					<div class="mui-checkbox" style="top: 30%;">
-						<input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].shopId%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-gdDelivery="<%=goodsList[j].goodsDelivery%>" data-gdRate="<%=goodsList[j].goodsRate%>" data-num="<%=goodsList[j].goodsnum%>" data-gdweight="<%=goodsList[j].goodweight%>" data-gdreduce="<%=goodsList[j].goodsreduce%>" data-gdsaddress="<%=goodsList[j].goodsaddress%>" type="checkbox"></div>
-					<% if(goodsList[j].shopName == '跨境优品'){%>
-						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')">
+						<input name="checkbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-shopId="<%=goodsList[j].shopId%>" data-igetShopId="<%=goodsList[j].igetShopId%>" data-shop="<%=goodsList[j].shopName%>" data-gdName="<%=goodsList[j].goodsName%>" data-gdImg="<%=goodsList[j].goodsImg%>" data-gdprice="<%=goodsList[j].goodsPrice%>" data-gdPostfee="<%=goodsList[j].goodsPostfee%>" data-gdDelivery="<%=goodsList[j].goodsDelivery%>" data-gdRate="<%=goodsList[j].goodsRate%>" data-num="<%=goodsList[j].goodsnum%>" data-gdweight="<%=goodsList[j].goodweight%>" data-gdreduce="<%=goodsList[j].goodsreduce%>" data-gdsaddress="<%=goodsList[j].goodsaddress%>" type="checkbox"></div>
+					<% if(goodsList[j].igetShopId == '0'){%>
+						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>',0)">
 							<img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../img/market/none.png';"/>
 						</a>
 					<%}else{%>
-						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>')"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../img/market/none.png';"/></a>
+						<a class="goodsPic" onclick="goGoods('<%=goodsList[j].goodsId%>','<%=goodsList[j].shopId%>',1)"><img src="<%=myUrl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../img/market/none.png';"/></a>
 					<%}%>
 					<div class="goodsInfor"> <!--onclick="goGoods('<%=goodsList[j].goodsId%>')"-->
 						<h2>  
@@ -127,7 +127,12 @@
 			data.goodsList = cartStorage; 
 			var arr = [];
 			for(var i = 0; i < cartStorage.length; i++) {
+				if(cartStorage.igetShopId == 0){
+					arr.push('跨境优品'+i);
+				}else{
+					
 				arr.push(cartStorage[i].shopName);
+				}
 			}
 			data.cates = arr.unique1();
 			data.myUrl = serverimgUrl;
@@ -409,8 +414,16 @@
 									 	orderObj.goods_property = cartStorage[i].goods_property;
 									}
 								} 
-								orderObj.shopId = $(this).attr("data-shopId"); 
+								if($(this).attr("data-igetShopId") == 0){
+									orderObj.shopId = $(this).attr("data-shopId"); 
+									orderObj.igetShopId= 0;
+								}else{
+									orderObj.shopId = $(this).attr("data-shopId"); 
+									orderObj.igetShopId= 1;
+								}
+								
 								orderObj.shopName = $(this).attr("data-shop");
+								
 								orderObj.goodsName = $(this).attr("data-gdName");
 								orderObj.goodsaddress = $(this).attr("data-gdsaddress");
 								orderObj.goodsImg = $(this).attr("data-gdImg");
@@ -488,8 +501,8 @@
 				 })
 			}
 			//进商品详情
-			function goGoods(gid,did){
-				if(did==0){
+			function goGoods(gid,did,sd){
+				if(sd==0){
 					openview({
 					 	view:"market/yphDetail.html",
 					 	extrasobj:{goodsId:gid}
