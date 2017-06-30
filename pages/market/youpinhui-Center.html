@@ -411,29 +411,29 @@
 				<script type="text/html" id="recommendTpl">
 					<%if(list.length==0){%>
 					<%}else{%>
-					<%for(var i=0;i<list.length;i++){%>
-					<%if(list[i].num>30){%>
-					<li class="sy_recmd_list relist">
-						<div class="box">
-							<div class="pub_img">
-								<a class="rcdPadding" onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')">
-									<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
-
-								</a>
-							</div>
-							<div class="pub_wz">
-								<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].open_iid%>',3,'<%= list[i].pic_url.pic_url[0]%>')"><%=list[i].title%></a></h3>
-								<div class="nr_box mui-row">
-									<div class="mui-col-sm-7 mui-col-xs-7 ">
-										<p class="fl fontcl2">
-											￥<%=list[i].price%>
-										</p>
+					<%for(var i=0;i<list.length;i++){%> 
+						<%if(list[i].num>30){%>
+						<li class="sy_recmd_list relist">
+							<div class="box">
+								<div class="pub_img">
+									<a class="rcdPadding" onclick="goInfo('<%=list[i].open_iid%>','<%=list[i].bussinesno%>',3,'<%= list[i].thumb%>')">
+										<img src="<%= list[i].thumb%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';" width="145" height="145" class="hotImg">
+	
+									</a>
+								</div>
+								<div class="pub_wz">
+									<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].open_iid%>','<%=list[i].bussinesno%>',3,'<%= list[i].thumb%>')"><%=list[i].title%></a></h3>
+									<div class="nr_box mui-row">
+										<div class="mui-col-sm-7 mui-col-xs-7 ">
+											<p class="fl fontcl2">
+												￥<%=list[i].price%>
+											</p>
+										</div>
+										 
 									</div>
-									 
 								</div>
 							</div>
-						</div>
-					</li>
+						</li> 
 					<%}%>
 					<%}%>
 					<%}%>
@@ -450,12 +450,13 @@
 		<script src="../../js/app.js"></script>
 		<script type="text/javascript">
 			//跳转详情
-			function goInfo(goodsId, differentiate, img) {
+			function goInfo(goodsId,shopid,differentiate, img) {
 				openview({
 					view: "yphDetail.html",
 					id: "yphDetail",
 					extrasobj: {
 						goodsId: goodsId,
+						shopId:shopid,
 						differentiate: differentiate
 					}
 				})
@@ -521,7 +522,7 @@
 								"token": oldToken
 							},
 							success: function(data, type, xhr) {
-								console.log(data)
+								console.log('二级分类',data)
 								if(data.errno == 0) {
 									if(data.data.length != 0) {
 										//请求三级分类 
@@ -554,6 +555,7 @@
 							"token": oldToken
 						},
 						success: function(data, type, xhr) {
+							console.log('三级',data)
 							if(data.errno == 0) {
 								if(data.data.length != 0) {
 									//渲染列表
@@ -577,13 +579,11 @@
 					var currentPage = 1,
 						numsPerPage = 10;
 					//热门推荐 数据渲染  
-					mui.ajax('http://api.igetmall.net/DRP_getProList', {
+//					alertF(catgid)
+					mui.ajax(serverUrl+'/api/mall/igogoodslist', {
 						data: {
-							appkey: '2184365138',
-							appsecret: '47accd33cafb73548e135bb3bec6c290',
-							category_id: catgid,
-							page_no: currentPage,
-							page_size: numsPerPage
+							categoryid: catgid,
+							currentPage: currentPage,
 						},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型 
@@ -593,23 +593,13 @@
 						},
 						success: function(data) {
 							console.log('推荐', data);
-							if(data.status == "success") {
+							if(data.errno == 0) {
 
-								var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
-								var bannerArray = [];
-								if(d) {
-									for(var t = 0; t < Object.keys(d).length; t++) {
-										var vae = Object.keys(d)[t];
-										bannerArray.push(d[vae]);
-									}
-								}
-								for(var i in bannerArray) {
-									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-									for(var j in bannerArray[i].pic_url.pic_url) {
-										if(bannerArray[i].pic_url.pic_url[j].indexOf('net.') > -1) {
-											bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g, 'net')
-										}
-									}
+								var bannerArray = data.data.data; //{img1:dd,img2:aa,img3,cc}   
+								for(var i in bannerArray) { 
+										if(bannerArray[i].thumb.indexOf('net.') > -1) {
+											bannerArray[i].thumb = bannerArray[i].thumb.replace(/net./g, 'net')
+										} 
 								}
 								var objdata = {};
 								objdata.list = bannerArray;
@@ -628,13 +618,10 @@
 											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 											currentPage++;
 											var requestfun = function() {
-												mui.ajax('http://api.igetmall.net/DRP_getProList', {
+												mui.ajax(serverUrl+'/api/mall/igogoodslist', {
 													data: {
-														appkey: '2184365138',
-														appsecret: '47accd33cafb73548e135bb3bec6c290',
-														category_id: catgid,
-														page_no: currentPage,
-														page_size: numsPerPage
+														categoryid: catgid,
+														currentPage: currentPage,
 													},
 													dataType: 'json', //服务器返回json格式数据
 													type: 'post', //HTTP请求类型 
@@ -643,24 +630,14 @@
 														"token": oldToken
 													},
 													success: function(data) {
-														if(data.status == "success") {
-															var d = data.data.lists; //{img1:dd,img2:aa,img3,cc} 
-															var bannerArray = [];
-															if(d) {
-																for(var t = 0; t < Object.keys(d).length; t++) {
-																	var vae = Object.keys(d)[t];
-																	bannerArray.push(d[vae]);
-																}
-															}
-															for(var i in bannerArray) {
-																bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-																for(var j in bannerArray[i].pic_url.pic_url) {
-																	if(bannerArray[i].pic_url.pic_url[j].indexOf('net.') > -1) {
-																		bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g, 'net')
-																	}
-																}
-															}
+														if(data.errno == 0) {
 
+															var bannerArray = data.data.data; //{img1:dd,img2:aa,img3,cc}   
+															for(var i in bannerArray) { 
+																	if(bannerArray[i].thumb.indexOf('net.') > -1) {
+																		bannerArray[i].thumb = bannerArray[i].thumb.replace(/net./g, 'net')
+																	} 
+															}
 															var objdata = {};
 															objdata.list = bannerArray;
 															var html = template("recommendTpl", objdata);

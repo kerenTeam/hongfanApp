@@ -253,13 +253,14 @@
 					plus.nativeUI.showWaiting('正在查询机构',{width:'120px',height:'80px'});
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
-					mui.ajax(serverUrl+'/api/qianmi/watercoalitempropslist',{
+					mui.ajax(serverUrl+'/api/banma/watercoalitempropslist',{
 								data:{itemId:itemid},
 								dataType:'json',
 								type:'post',
 								timeout:10000,
 								headers:{"token":oldToken},	 
 								success:function(data,type,xhr){
+									console.log("data1",data)
 									if(data.errno==0){
 										var projectId = data.data.item_props_list_response.cid;
 										for(var i = 0;i<data.data.item_props_list_response.itemProps.itemProp.length;i++){
@@ -287,14 +288,15 @@
 										} 
 //										alert(itemid+"户号 "+mui("#huhao")[0].value+"projectId "+projectId+"unitId "+unitId+"province "+province+"city "+city+"unitName "+unitName+"cityId "+cityId+"modeId "+modeId+"modeType "+2)
 										
-										mui.ajax(serverUrl+'/api/qianmi/watercoalgetaccountinfo',{
+										mui.ajax(serverUrl+'/api/banma/getaccountinfo',{
 											data:{itemId:itemid,account:mui("#huhao")[0].value,projectId:projectId,unitId:unitId,province:province,city:city,unitName:unitName,cityId:cityId,modeId:modeId,modeType:2},
 											dataType:'json',
 											type:'post',
 											timeout:10000,
 											headers:{"token":oldToken},	 
 											success:function(data,type,xhr){
-												plus.nativeUI.closeWaiting()
+												plus.nativeUI.closeWaiting();
+												console.log("data2",data)
 												if(data.errno == 0) {
 													if(!data.data.water_coal_ubqs_response.waterCoalBills.waterCoalBill) {
 														mui.toast("查询失败")

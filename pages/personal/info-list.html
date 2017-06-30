@@ -98,7 +98,7 @@
 							</div>
 			  	    		<div style="text-align: right;font-size: 13px;color: #888;"><%= list[i].create_time.split('T')[0]%></div>
 						</dd>
-						<dd style="padding: 20px;"> 
+						<!--<dd style="padding: 20px;"> 
 							<div class="dealcard dealcardtwo clearfloat">
 									<div class="infoTitle">吐槽回复</div>
 								    <div style="display: flex;align-items: center;">
@@ -112,7 +112,7 @@
 								    </div>
 							</div>
 					        <div style="text-align: right;font-size: 13px;color: #888;">2017.06.06</div>
-						</dd>
+						</dd>-->
 					<%}%>
 				<%}%>	
 					
@@ -137,11 +137,15 @@
 					success:function(data,type,xhr){
 						console.log('消息',data);
 				       	if(data.errno == 0){
-			     			var dataobj = {};
-			     			dataobj.url = serverimgUrl;
-			     			dataobj.list = data.data;
-			     			var html = template("listinfo",dataobj);
-							document.getElementById("listinfodiv").innerHTML+=html;
+					       	if(data.data.length){
+				     			var dataobj = {};
+				     			dataobj.url = serverimgUrl;
+				     			dataobj.list = data.data;
+				     			var html = template("listinfo",dataobj);
+								document.getElementById("listinfodiv").innerHTML+=html;
+							}else{
+								mui('.nothing')[0].style.display = 'block';	
+							}
 				       	}
 				       	plus.nativeUI.closeWaiting();
 					},

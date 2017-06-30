@@ -242,18 +242,63 @@
 		<script src="../js/app.js"></script>
 		<script>
 			mui.plusReady(function() {
-				//关闭事件
 				//安卓返回键
 				mui.init({
 					beforeback: function() {
-						//plus.webview.currentWebview().close();
 						return false;
 					}
 				});
-
-				 var closeguide = setTimeout(function(){ 
+				
+				//缓存处理
+				//plus.storage.removeItem('$picCache');
+				var picCache = JSON.parse(plus.storage.getItem('$picCache')) || [];
+				console.log('缓存',picCache);
+				if(!picCache.length){//没有缓存
+					mui('#bannerdiv')[0].innerHTML = '<div class="mui-slider-item">' +
+						'<div class="item-logo" style="background-color: white">' +
+						'<img id="guide1" src="../img/advertising.png"/>' +
+						'<span id="jump">跳过<small></small></span></div>' +
+						'</div>';
+				}else{//有缓存
+					//排序
+					function sortNumber(a,b){
+						return a.sort - b.sort;
+					}
+					picCache.sort(sortNumber);
+					var allstr = '',
+					slidercircle = '';
+					mui.each(picCache, function(index, element) {
+						if(index == 0) {
+							slidercircle += '<div class="mui-indicator mui-active"></div>'
+						} else {
+							slidercircle += '<div class="mui-indicator"></div>'
+						}
+						if(index == picCache.length - 1) {
+							allstr += '<div class="mui-slider-item">' +
+								'<div class="item-logo" style="background-color: white">' +
+								'<img id="guide1" src="' + element.dataUrl + '"/>' +
+								'<span id="jump">跳过<small></small></span></div>' +
+								'</div>';
+							return false;
+						} else {
+							allstr += '<div class="mui-slider-item">' +
+								'<div class="item-logo" style="background-color: white">' +
+								'<img id="guide1" src="' + element.dataUrl + '"/>' +
+								'</div>' +
+								'</div>';
+						}
+	
+					})
+					mui('#bannerdiv')[0].innerHTML = allstr;
+					mui('#sliderlength')[0].innerHTML = slidercircle;
+				}
+				
+				
+				//关闭事件,
+				var closeguide = setTimeout(function(){ 
 					plus.webview.currentWebview().close();
-				},12000)
+				},1000)
+				//循环加载数据数据,避免白屏
 				var Timetoken = null;
 				var oldToken = null;
 				if(plus.storage.getItem('oldToken')) {
@@ -271,9 +316,9 @@
 						}
 					}, 200)
 				}
-
+				
+				//处理缓存
 				function againfun() {
-					//获取数据
 					mui.ajax(serverUrl + '/api/index/banner', {
 						data: {
 							banner_type: 12
@@ -281,53 +326,63 @@
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型
 						timeout: 10000, //超时时间设置为10秒；
-						headers: {
-							"token": oldToken
-						},
+						headers: {"token": oldToken},
 						success: function(data) {
-							console.log("guide "+JSON.stringify(data));
-							var dataobj = JSON.parse(data.data.banner); 
+							var dataobj = JSON.parse(data.data.banner);
+							
+							//缓存处理
+							console.log("dataobj ",dataobj);
+							function picCacheFun(){
+								
+								mui.each(dataobj,function (index,element) {
+									
+									var  oCanvas = document.createElement('canvas'),
+						            oCtx = oCanvas.getContext("2d"),
+						            oImg = new Image();
+						            oImg.src = serverimgUrl + element.pic;
+						            var picNnameA = element.pic.split('/'),
+										picNname = picNnameA[picNnameA.length-1];
+						            oImg.onload = function() {
+						                oCanvas.width  = oImg.width;
+						                oCanvas.height = oImg.height;
+						                oCtx.drawImage(oImg, 0, 0);
+						                if(oImg.width>2000 || oImg.height>2000){
+						                    console.error('load>2000');
+						                    picCache.push({sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
+                   							plus.storage.setItem("$picCache",JSON.stringify(picCache));
+						                }else if(oImg.width>300 || oImg.height>300){
+						                    console.error('load>300');
+						                    picCache.push({sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
+                   							plus.storage.setItem("$picCache",JSON.stringify(picCache));
+						                }else{
+						                    console.error('load>else');
+						                    picCache.push({sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
+                   							plus.storage.setItem("$picCache",JSON.stringify(picCache));
+						                }
+						            };
+								})
+							}
+							if(!picCache.length){
+								picCacheFun();
+							}else{
+								picCache = [];
+								plus.storage.removeItem('$picCache');
+								picCacheFun();
+							}
+							//缓存处理结束
+							
+							//倒计时 
 							var jumptime = data.data.Start_time;
 								if(!jumptime){
-									jumptime = 10;
+									jumptime = 6;
 								}
-							var allstr = '',
-								slidercircle = '';
-							mui.each(dataobj, function(index, element) {
-								if(index == 0) {
-									slidercircle += '<div class="mui-indicator mui-active"></div>'
-								} else {
-									slidercircle += '<div class="mui-indicator"></div>'
-								}
-//								<img class="img_contain" src="../img/loading.jpg" data-src="<%=recommendData[i].pic%>" onload="load(this)"/>
-								if(index == dataobj.length - 1) {
-									allstr += '<div class="mui-slider-item">' +
-										'<div class="item-logo" style="background-color: white">' +
-										'<img id="guide1" src="' + serverimgUrl + element.pic + '"/>' +
-//										'<button id="close" class="mui-btn mui-btn-danger">进入</button>' +
-										'<span id="jump">跳过<small></small></span></div>' +
-										'</div>';
-									return false;
-								} else {
-									allstr += '<div class="mui-slider-item">' +
-										'<div class="item-logo" style="background-color: white">' +
-										'<img id="guide1" src="' + serverimgUrl + element.pic + '"/>' +
-										'</div>' +
-										'</div>';
-								}
-
-							})
-							console.log(allstr);
-							mui('#bannerdiv')[0].innerHTML = allstr;
-							mui('#sliderlength')[0].innerHTML = slidercircle;
-							document.getElementsByTagName("small")[0].innerHTML = jumptime+"s";
-							//倒计时 
+							document.getElementsByTagName("small")[0].innerHTML = jumptime+"s";	
 							var time = jumptime;
 						    var timereduce = setInterval(function(){ 
 						    	time--;
 						    	document.getElementsByTagName("small")[0].innerHTML = time+"s";
 						    	if(time == -1){
-									plus.webview.currentWebview().close();
+									plus.webview.currentWebview().hide();
 						    	};
 						    },1000)
 							
@@ -339,7 +394,7 @@
 							//立即体验按钮点击事件
 							document.getElementById("jump").addEventListener('tap', function(event) {
 								plus.navigator.setFullscreen(false);
-								plus.webview.currentWebview().close();
+								plus.webview.currentWebview().hide();
 							}, false);
 							plus.nativeUI.closeWaiting();
 						},

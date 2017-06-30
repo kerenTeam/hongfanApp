@@ -258,11 +258,11 @@
 					
 					<%if(list[i].num>30){%>
 						<dd class="goodsItem">
-							<a class="react" onclick="goInfo(<%= list[i].open_iid%>,3,'<%= list[i].pic_url.pic_url[0]%>')">
+							<a class="react" onclick="goInfo(<%= list[i].open_iid%>,'<%=list[i].bussinesno%>',3,'<%= list[i].thumb%>')">
 								<div class="dealcard">
 									<div class="dealcard-img imgbox" >
 		 
-										<img src="<%= list[i].pic_url.pic_url[0]%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
+										<img src="<%= list[i].thumb%>" onerror="javascript:this.src='../../img/zhaoxiangji.svg';"/>
 		
 									</div>
 									<div class="dealcard-block-right">
@@ -473,33 +473,27 @@
 				curid = category_id
 				//数据渲染
 				var currentPage =1, numsPerPage=10;
-				mui.ajax('http://api.igetmall.net/DRP_getProList',{
-					data:{appkey:'2184365138',appsecret:'47accd33cafb73548e135bb3bec6c290',category_id:curid,page_no:currentPage,page_size:numsPerPage},
+				mui.ajax(serverUrl+'/api/mall/igogoodslist', {
+					data: {
+						categoryid: category_id,
+						currentPage: currentPage,
+					},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
-						console.log("是第三方的",data)
+						console.log("列表数据",data)
 						plus.nativeUI.closeWaiting() 
-						if(data.status=="success"){
-								var d = data.data.lists;//{img1:dd,img2:aa,img3,cc} 
-								var bannerArray = [];
-								if(d){
-									for(var t=0;t<Object.keys(d).length;t++){ 
-										var vae = Object.keys(d)[t] ;
-										bannerArray.push(d[vae]);
-									} 
-								} 
-								for(var i in bannerArray) {
-									bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-									for(var j in bannerArray[i].pic_url.pic_url){
-										if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
-											 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
-										}
-									}
-								} 
-								var objdata = {}; 
+						if(data.errno == 0) {
+
+								var bannerArray = data.data.data; //{img1:dd,img2:aa,img3,cc}   
+								for(var i in bannerArray) { 
+										if(bannerArray[i].thumb.indexOf('net.') > -1) {
+											bannerArray[i].thumb = bannerArray[i].thumb.replace(/net./g, 'net')
+										} 
+								}
+								var objdata = {};
 								objdata.list = bannerArray;
 								console.log("bannerArray"+JSON.stringify(bannerArray));
 								
@@ -518,31 +512,24 @@
 									　　if(scrollTop + windowHeight == scrollHeight){ 
 											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";  
 											currentPage++;
-											mui.ajax('http://api.igetmall.net/DRP_getProList',{ 									
-												data:{appkey:'2184365138',appsecret:'47accd33cafb73548e135bb3bec6c290',category_id:curid,page_no:currentPage,page_size:numsPerPage},
+											mui.ajax(serverUrl+'/api/mall/igogoodslist', {
+												data: {
+													categoryid: category_id,
+													currentPage: currentPage,
+												},
 												dataType:'json',//服务器返回json格式数据
 												type:'post',//HTTP请求类型 
 												timeout:10000,//超时时间设置为10秒；	
 												headers:{"token":oldToken}, 
 												success:function(data){
-													if(data.status=="success"){
-														var d = data.data.lists;//{img1:dd,img2:aa,img3,cc} 
-														var bannerArray = [];
-														if(d){
-															for(var t=0;t<Object.keys(d).length;t++){ 
-																var vae = Object.keys(d)[t] ;
-																bannerArray.push(d[vae]);
-															} 
+													if(data.errno == 0) { 
+														var bannerArray = data.data.data; //{img1:dd,img2:aa,img3,cc}   
+														for(var i in bannerArray) { 
+																if(bannerArray[i].thumb.indexOf('net.') > -1) {
+																	bannerArray[i].thumb = bannerArray[i].thumb.replace(/net./g, 'net')
+																} 
 														}
-														for(var i in bannerArray) {
-															bannerArray[i].pic_url.pic_url = bannerArray[i].pic_url.pic_url.split(',');
-															for(var j in bannerArray[i].pic_url.pic_url){
-																if(bannerArray[i].pic_url.pic_url[j].indexOf('net.')>-1){
-																	 bannerArray[i].pic_url.pic_url[j] = bannerArray[i].pic_url.pic_url[j].replace(/net./g,'net')
-																}
-															}
-														} 
-														var objdata = {}; 
+														var objdata = {};
 														objdata.list = bannerArray;
 														var html=template("goodsList-detail",objdata);
 														document.getElementById("goodsList").innerHTML+=html;
@@ -580,11 +567,11 @@
 			    getList(sbj.getAttribute("data-id"));
 			}
 			//跳转详情
-			window.goInfo =  function(goodsId,differentiate,img){  
+			window.goInfo =  function(goodsId,shopid,differentiate,img){  
 				 openview({
 				 	view:"yphDetail.html",
 				 	id:"yphDetail",
-				 	extrasobj:{goodsId:goodsId,differentiate:differentiate}
+				 	extrasobj:{goodsId:goodsId,shopId:shopid,differentiate:differentiate}
 				 })
 			}
 			

@@ -137,7 +137,6 @@
 		mui.plusReady(function(){
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
-			console.log(oldToken);
 			var userId = plus.storage.getItem("userid");
 			plus.nativeUI.showWaiting();
 			mui.ajax(serverUrl+'/api/mall/orderlist',{
@@ -163,14 +162,16 @@
 								console.log(data.data[i])
 							}
 						}
-						if(arr.indexOf(3)<-1){
+						if(!arr.indexOf(3)>-1){
 							mui('#main')[0].innerHTML='<div class="nothing"><img src="../../img/theList/del.png"/><p>你没有快递消息哟！</p></div>';
+						}else{
+							orderObj={};
+							orderObj.url = serverimgUrl;
+							orderObj.li = data.data;
+							var html = template('goodsList-detail',orderObj);
+							document.getElementById('goodsList').innerHTML = html;
 						}
-						orderObj={};
-						orderObj.url = serverimgUrl;
-						orderObj.li = data.data;
-						var html = template('goodsList-detail',orderObj);
-						document.getElementById('goodsList').innerHTML = html;
+						
 					}else{
 						mui('#main')[0].innerHTML='<div class="nothing"><img src="../../img/theList/del.png"/><p>你没有快递消息哟！</p></div>';
 					}
