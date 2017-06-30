@@ -280,7 +280,7 @@
 											<%if(orderData[i].order_status == 1 && orderData[i].order_UUID == oduuid[m]){%>
 												<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>" style="margin-bottom: 0;">
 													<div class="orderbh clearfloat box-s">
-														<%if(orderData[i].goods_data.store_id == 0){ %>
+														<%if(orderData[i].order_type == 0){ %>
 														<span>
 															<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
 															跨境优品
@@ -293,12 +293,12 @@
 														</span>
 													</div>
 													<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
-													<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>',<%=orderData[i].goods_data.store_id%>)">
+													<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.store_id%>')">
 														<div class="dealcard dealcardtwo clearfloat">
 															<div class="dealcard-img imgbox">
-																<% if(orderData[i].goods_data.store_id == 0){ %>
+																<% if(orderData[i].order_type == 0){ %>
 																	<% if(orderData[i].goods_data.goods_Data[j].youpin){ %>
-																		<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+																		<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 																	<%}else{%>
 																		<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
 																	<%}%>
@@ -341,7 +341,7 @@
 									<%if(orderData[i].order_status != 1){%>
 										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>">
 											<div class="orderbh clearfloat box-s">
-												<%if(orderData[i].goods_data.store_id == 0){ %>
+												<%if(orderData[i].order_type == 0){ %>
 												<span>
 													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
 													跨境优品
@@ -355,12 +355,12 @@
 												<span class="fr state"><%=state[orderData[i].order_status]%></span>
 											</div>
 											<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
-											<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>',<%=orderData[i].goods_data.store_id%>)">
+											<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.store_id%>')">
 												<div class="dealcard dealcardtwo clearfloat">
 													<div class="dealcard-img imgbox">
-														<% if(orderData[i].goods_data.store_id == 0){ %>
+														<% if(orderData[i].order_type == 0){ %>
 															<% if(orderData[i].goods_data.goods_Data[j].youpin){ %>
-																<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+																<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 															<%}else{%>
 																<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
 															<%}%>
@@ -553,7 +553,7 @@
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
 								}
-								if(data.data[i].goods_data.store_id == 0){
+								if(data.data[i].order_type == 0){
 									for(var j = 0;j<data.data[i].goods_data.goods_Data.length;j++){
 										if(data.data[i].goods_data.goods_Data[j].youpin){
 											data.data[i].goods_data.goods_Data[j].youpin = eval("("+data.data[i].goods_data.goods_Data[j].youpin+")");
@@ -572,8 +572,7 @@
 								}
 								if(data.data[i].userPostData){
 									data.data[i].userPostData=eval("("+data.data[i].userPostData+")");
-								}
-								console.log("post  ",data.data[i].userPostData)
+								} 
 									data.data[i].goods_data.totalMoney = data.data[i].goods_data.PriceCalculValue;
 									
 									if(data.data[i].fee>0){
@@ -845,7 +844,7 @@
 					extrasobj:{storeId:id}
 				})
 			}
-			window.orderInfo=function(orderId,storeid){
+			window.orderInfo=function(orderId,storeid){ 
 				openview({
 					view:'orderDetail.html',
 					id:'orderDetail',
