@@ -190,7 +190,7 @@
 						</div>
 					</div>
 					<div class="deal" data-orderId="<%=data.order_id%>">
-						<%if(data.seller != 0){%>
+						<%if(data.order_type != 0){%>
 						<div class="sjname box-s">
 							<img onclick="goStore('<%=data.seller%>')" src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;margin-right: 4px;" alt="" /> <span style="vertical-align: middle;"><%=data.goods_data.stores.store_name%></span>
 							<span class="mui-icon mui-icon-arrowright" style="vertical-align: middle;"></span>
@@ -212,14 +212,14 @@
 							<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
 								<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
 									<%for(var i = 0;i<data.PriceCalculation.Params.goodsData[t].goods_Data.length;i++){%>
-										<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].g_id%>')">
+										<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].id%>','<%=data.order_type%>')">
 											<div class="react">
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
 														<span></span>
-														<%if(data.PriceCalculation.Params.goodsData[t].store_id == 0){%>
+														<%if(data.order_type == 0){%>
 														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin){ %>
-														<img src="<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.imglist.img1%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<img src="<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}else{%>
 														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}%>
@@ -636,13 +636,23 @@
 					// mui('#downGame')[0].remove();
 				}
 			}
-			window.goGoods = function(goodsId) {
-				openview({
-					view: "../market/mall-detail.html",
-					extrasobj: {
-						goodsId: goodsId
-					}
-				})
+			window.goGoods = function(goodId,order_type) {
+				if(order_type == 0){
+					openview({
+						view: "../market/yphDetail.html",
+						extrasobj: {
+							goodsId: goodId
+						}
+					})
+				}else{
+					openview({
+						view: "../market/mall-detail.html",
+						extrasobj: {
+							goodsId: goodId
+						}
+					})
+				}
+				
 			}
 			window.goOrder = function(uuid, repayid, seller, buyer, orderid) {
 				$("#payChoose").addClass("mui-active");
