@@ -48,8 +48,10 @@
 		.cmquan button{
 			border: 1px solid coral;
 			color: coral;
-			width: 30%;
+			width: 42%;
 			margin:  auto;
+			margin-right: 10%;
+		    margin-right: -40%;
 		}
 	</style>
 	<body>
@@ -74,7 +76,7 @@
 			</div> 
 		</div>
 		<div id="Clickon"></div>
-		<div class="cmquan">
+		<div class="cmquan" style="display: none;">
 			<h5>新用户领取电商通用券</h5>
 			<div>
 				<button>领券</button> 
@@ -87,7 +89,7 @@
 			var myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
 			var clicked = false;
-			mui('#Clickon')[0].onclick=function(){ 
+			mui('#Clickon')[0].onclick=function(){
 				if(!clicked){
 					//执行领取  
 					mui.ajax(serverUrl+'/api/index/cheking',{  
@@ -178,6 +180,79 @@
 					}
 				});
 			}
+			
+			//新用户领卷(显示领取按钮)
+			mui.ajax(serverUrl+'/api/index/getnewuseraward',{
+				data:{"userid":myuserid},
+				type:'post',
+				timeout:10000,
+				headers:{"token":oldtoken},	              				
+				success:function(data,type,xhr){
+					console.log('获取用户卷',data);
+					if(data.errno == 0){
+						var userAward = data.data.id;
+						mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
+							data:{"userid":myuserid},
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldtoken},	              				
+							success:function(data1,type,xhr){
+								console.log('领过的卷',data1);
+								if(data1.errno == 0){
+									if(data1.data.user_coupon && data1.data.user_coupon.length){
+										mui.each(data1.data.user_coupon,function (index,element) {
+											if(element.id == userAward){//领过了
+												mui('.cmquan')[0].style.display = 'none';
+												return false;
+											}
+											if(index == data1.data.user_coupon.length -1 && element.id != userAward){
+												mui('.cmquan')[0].style.display = '-webkit-flex';
+											}
+										})
+									}
+								}else{
+									console.log(data1.errmsg);
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								console.log('获取用户数据,响应失败');
+							}
+						});
+						//点击领卷
+						var clickNum = 0;
+						mui('.cmquan')[0].onclick = function() {
+							clickNum++;
+							if(clickNum === 1){
+								mui.ajax(serverUrl+'/api/index/getcoupon',{
+									data:{id:userAward,userid:myuserid},
+									dataType:'json',
+									type:'post',
+									timeout:10000,
+									headers:{"token":oldtoken},	 
+									success:function(data,type,xhr){
+										if(data.errno == 0){
+											mui('.cmquan')[0].style.display = 'none';
+											mui.toast("领取成功！");
+										}else{
+											clickNum--;
+											mui.toast("领取失败，请重试！");
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('响应失败  !',xhr);
+									}
+								});
+							}	
+						}
+					}else{
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取用户数据,响应失败');
+				}
+			});
+			
 			
 		})
 		
