@@ -599,6 +599,12 @@
 									<%}%>
 								</dd>
 								<%if(igetShopId[i]==0){%>
+								<dd class="dd-padding kv-line-r posttaxWrap" style="display: none;">
+									<h6 class="mui-col-sm-4 mui-col-xs-4">运费税</h6>
+									<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8">
+										<span class="fr posttax" style="color: coral;"></span>
+									</div>
+								</dd>
 								<dd class="dd-padding kv-line-r postfeeWrap">
 									<h6>购买即同意<span onclick="gosearule()" style="color: orangered;"> 《跨境电商购物协议》</span></h6>
 								</dd>
@@ -1175,15 +1181,17 @@
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
 								 
 								//重新计算税费
-								var newgroup = 0
+								var newgroup = 0;
+								var posttax = parseFloat(countpostfee*0.17).toFixed(2);
 								$(this).parentsUntil("#orderTpl").find(".goodsWrap").each(function(){
-//										var newtax = parseFloat((parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html()+countpostfee)*$(this).find('.taxmoney').attr('data-rate')).toFixed(2);
-										var newtax = parseFloat((parseFloat($(this).find('.pricemoney').html()*$(this).find('.numint').html())+countpostfee)*0.17).toFixed(2);
-										$(this).find('.taxmoney').html(newtax);
+										var newtax = parseFloat((parseFloat($(this).find('.pricemoney').html()*$(this).find('.numint').html()))*0.17).toFixed(2);
+//										$(this).find('.taxmoney').html(newtax);
 										newgroup += parseFloat(parseFloat(newtax) + parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html());
 								})
 								//当前商店总价加邮费
-								 newgroup =newgroup+ parseFloat($(this).attr('data-charge'))								//							alert(newgroup)
+								 newgroup =newgroup+parseFloat(posttax)+ parseFloat($(this).attr('data-charge'));
+								 $(this).parentsUntil("#orderTpl").find('.posttaxWrap').css('display','');
+								 $(this).parentsUntil("#orderTpl").find('.posttaxWrap .posttax').html('￥'+posttax)
 								$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2));
 								
 								//重新计算 总金额
@@ -1653,7 +1661,7 @@
 											plus.nativeUI.alert("支付失败");
 										});
 									} else {
-										//支付宝
+										//支付宝 
 										varpay = data.data.payData;
 										plus.payment.request(pays[id], varpay, function(result) {
 											var resultStr = JSON.stringify(result);
