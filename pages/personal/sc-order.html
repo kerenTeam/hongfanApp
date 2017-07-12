@@ -326,6 +326,7 @@
 											<%}%>
 											<div class="order-bottom clearfloat box-s tip" style="background-color: white;margin: 0;">
 												<p> 
+												 
 													合计:￥</sub><%=ordermoney[m]%><sub> 
 													</sub></p>
 											</div>  
@@ -547,7 +548,19 @@
 								if(data.data[i].order_status == 1 && data.data[i].order_UUID){
 									orderuuid.push(data.data[i].order_UUID);
 									repayid.push(data.data[i].rePayID);
-									ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue)
+									if(data.data[i].fee){ 
+										data.data[i].PriceCalculation.PriceCalculValue = parseFloat(parseFloat(data.data[i].PriceCalculation.PriceCalculValue)+parseFloat(data.data[i].fee)).toFixed(2);
+										 
+										ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue);
+										if(data.data[i].fee > 0) {
+											data.data[i].fee = "+￥" + data.data[i].fee;
+										} else {
+											data.data[i].fee = "-￥" + data.data[i].fee*(-1);
+										}
+									}else{
+										ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue) 
+									}
+
 								}
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
@@ -574,11 +587,7 @@
 								} 
 									data.data[i].goods_data.totalMoney = data.data[i].goods_data.PriceCalculValue;
 									
-									if(data.data[i].fee>0){
-										data.data[i].fee = "+￥"+data.data[i].fee;
-									}else{
-										data.data[i].fee = "-￥"+data.data[i].fee;
-									}
+								 
 									 
 							 
 							}
@@ -591,6 +600,7 @@
 							console.log("goods_data "+JSON.stringify(data.data[0].goods_data))
 							var obj={}; 
 							 obj.orderData=data.data;
+							 console.log('啦啦啦',obj.orderData)
 							 obj.myUrl=serverimgUrl; 
 							 obj.oduuid = orderuuid;
 							
