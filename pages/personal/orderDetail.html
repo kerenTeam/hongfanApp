@@ -297,9 +297,9 @@
 											<%}%>
 											<%}%>
 		
-											<%if(data.PriceCalculation.nowIntergal.intergral){%>
+											<%if(data.PriceCalculation.nowIntergal.storenowIntergal){%>
 											<li class="gray">
-												<div class="tip-title">是否使用积分抵扣<span class="fr">是</span></div>
+												<div class="tip-title">积分抵扣<span class="fr">￥<%=data.PriceCalculation.nowIntergal.storenowIntergal%></span></div>
 											</li>
 											<%}%>
 											<%if(data.PriceCalculation.Params.couponData && data.PriceCalculation.Params.couponData.coupon_amount){%>
@@ -472,7 +472,7 @@
 						order_id: orderId
 					},
 					dataType: 'json',
-					type: 'post',
+					type: 'post', 
 					timeout: 10000,
 					headers: {
 						"token": oldtoken
@@ -483,6 +483,8 @@
 						if(data.errno === 0) {
 							data.data[0].PriceCalculation = eval("(" + data.data[0].PriceCalculation + ")");
 							data.data[0].PriceCalculation.PriceCalculValue = parseFloat(data.data[0].PriceCalculation.PriceCalculValue).toFixed(2);
+							data.data[0].PriceCalculation.nowIntergal.storenowIntergal = parseFloat(data.data[0].PriceCalculation.nowIntergal.storenowIntergal/100).toFixed(2);
+							
 							data.data[0].PriceCalculation.Params.goodsData[0].total_goods_prices = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].total_goods_prices).toFixed(2)
 							if(data.data[0].PriceCalculation.Params.couponData.coupon_amount){
 								data.data[0].PriceCalculation.Params.couponData.coupon_amount = parseFloat((1-data.data[0].PriceCalculation.Params.couponData.coupon_amount.split(',')[1])*data.data[0].PriceCalculation.Params.goodsData[0].total_goods_prices).toFixed(2)
@@ -510,6 +512,9 @@
 									data.data[0].fee = "-￥" + data.data[0].fee;
 								}
 
+							}
+							if(data.data[0].PriceCalculation.nowIntergal.storenowIntergal){
+								data.data[0].amount = parseFloat(data.data[0].amount - data.data[0].PriceCalculation.nowIntergal.storenowIntergal).toFixed(2)
 							}
 							var dt = new Date(data.data[0].create_time);
 							var date = [
