@@ -558,19 +558,31 @@
 			
 			
 			//其他筛选方法
+			var clickFlag = false;
 			mui('#Salesvolume')[0].onclick = function(){//销量 
-				order('sales','desc',nowstr);
+				if(clickFlag){
+					clickFlag = false;
+					order('sales','desc',nowstr);//从高到低
+				}else{
+					clickFlag = true;
+					order('sales','asc',nowstr);
+				}
+				
 			}
 			mui('#Newping')[0].onclick = function(){//新品
-				order('create_time','asc',nowstr)
+				clickFlag = true;
+				order('create_time','desc',nowstr)
 			}
 			mui('#evaluate')[0].onclick = function(){//评价
-				order('comments','asc',nowstr)
+				clickFlag = true;
+				order('comments','desc',nowstr)
 			}
 			mui('#Hightolow')[0].onclick = function(){//从高到低
+				clickFlag = true;
 				order('price','desc',nowstr);
 			}
 			mui('#lowtoHigh')[0].onclick = function(){//从低到高
+				clickFlag = true;
 				order('price','asc',nowstr);
 			}
 		 

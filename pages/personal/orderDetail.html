@@ -212,13 +212,20 @@
 							<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
 								<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
 									<%for(var i = 0;i<data.PriceCalculation.Params.goodsData[t].goods_Data.length;i++){%>
-										<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].g_id%>','<%=data.order_type%>')">
+										<%if(data.order_type == 0){%>
+											<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].id%>','<%=data.order_type%>')">
+											
+										<%}else{%>
+											<dd onclick="goGoods('<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].g_id%>','<%=data.order_type%>')">
+											
+											<%}%>
+
 											<div class="react">
 												<div class="dealcard">
 													<div class="dealcard-img imgbox">
 														<span></span>
 														<%if(data.order_type == 0){%>
-														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin){ %>
+														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin && data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.thumb){ %>
 														<img src="<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}else{%>
 														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
@@ -307,7 +314,11 @@
 												<div class="tip-title">优惠券抵扣<span class="fr">-￥<%=data.PriceCalculation.Params.couponData.coupon_amount%></span></div>
 											</li>
 											<%}%>
-		
+											<%if(data.fee){%>
+												<li class="gray">
+													<div class="tip-title">价格调整  <span class="fr"><%=data.fee%></span></div>
+												</li>	
+											<%}%>
 											<li>
 												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥<%=data.amount%></span></div>
 											</li>
@@ -481,33 +492,37 @@
 						console.log('详情', data);
 						plus.nativeUI.closeWaiting();
 						if(data.errno === 0) {
+
 							data.data[0].PriceCalculation = eval("(" + data.data[0].PriceCalculation + ")");
 							data.data[0].PriceCalculation.PriceCalculValue = parseFloat(data.data[0].PriceCalculation.PriceCalculValue).toFixed(2);
 							data.data[0].PriceCalculation.Params.goodsData[0].total_goods_prices = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].total_goods_prices).toFixed(2)
 							if(data.data[0].PriceCalculation.Params.couponData.coupon_amount){
 								data.data[0].PriceCalculation.Params.couponData.coupon_amount = parseFloat((1-data.data[0].PriceCalculation.Params.couponData.coupon_amount.split(',')[1])*data.data[0].PriceCalculation.Params.goodsData[0].total_goods_prices).toFixed(2)
-							}
-
+							} 
+							
 							for(var i = 0; i < data.data[0].PriceCalculation.Params.goodsData[0].goods_Data.length; i++) {
 								 
 								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = parseFloat((parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge) + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price) * 0.17 * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums).toFixed(2);
 								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price).toFixed(2)
 								if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin) {
 									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
+									 
 								}
 
 							}
 
 							data.data[0].userPostData = JSON.parse(data.data[0].userPostData)
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");
-							if(data.data[0].fee) {
+							data.data[0].goods_data.total_goods_prices = parseFloat(data.data[0].goods_data.total_goods_prices).toFixed(2)
 
-								data.data[0].goods_data.totalMoney = parseFloat(data.data[0].goods_data.totalMoney + data.data[0].fee).toFixed(2)
-
+							if(data.data[0].fee) { 
+								 
+								data.data[0].amount = parseFloat(data.data[0].amount+parseFloat(data.data[0].fee)).toFixed(2)
+								   
 								if(data.data[0].fee > 0) {
 									data.data[0].fee = "+￥" + data.data[0].fee;
 								} else {
-									data.data[0].fee = "-￥" + data.data[0].fee;
+									data.data[0].fee = "-￥" + data.data[0].fee*(-1);
 								}
 
 							}
@@ -629,7 +644,7 @@
 			//打开qq对话框
 			window.openQQ =function(qq){
 				if(/android/i.test(navigator.userAgent)) { //判断为android  
-					document.location.href="mqqwpa://im/chat?chat_type=wpa&uin="+qq;
+					document.location.href="mqq://im/chat?chat_type=wpa&uin="+qq+"&version=1&src_type=web";
 				} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
 					document.location.href="mqq://im/chat?chat_type=wpa&uin="+qq+"&version=1&src_type=web";
 				} else { //pc端访问  
@@ -637,7 +652,8 @@
 				}
 //mui.fire(plus.webview.getWebviewById('qq.html'),'refresh')
 			}
-			window.goGoods = function(goodId,order_type) {  
+			window.goGoods = function(goodId,order_type) { 
+				 
 				if(order_type == 0){
 					openview({
 						view: "../market/yphDetail.html",
