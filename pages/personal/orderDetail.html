@@ -225,7 +225,7 @@
 													<div class="dealcard-img imgbox">
 														<span></span>
 														<%if(data.order_type == 0){%>
-														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin && data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.thumb){ %>
+														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin){ %>
 														<img src="<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}else{%>
 														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
@@ -247,7 +247,7 @@
 														<div class="clear">
 			
 														</div> 
-														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax_rate){%>
+														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax){%>
 														<span style="font-size: 0.12rem;">内含税费 ￥<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax%></span>
 														<%}%>
 														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].Floating_price){%>
@@ -281,9 +281,7 @@
 								<ul>
 									<%for(var t=0;t<data.PriceCalculation.Params.goodsData.length;t++){%>
 										<%if(data.PriceCalculation.Params.goodsData[t].store_id == storeId){%>
-											<li class="gray">
-												<div class="tip-title">商品总价<span class="fr">￥<%=data.goods_data.total_goods_prices%></span></div>
-											</li>
+											
 											<%if(data.userPostData.express_id == -1){%>
 											<li class="gray">
 												<div class="tip-title">邮费<span class="fr">包邮</span></div>
@@ -295,7 +293,7 @@
 											<%}else{%>
 											<%if(data.PriceCalculation.Params.goodsData[t].postAge){%>
 											<li class="gray">
-												<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+												<div class="tip-title">邮费（含邮费税）<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
 											</li>
 											<%}else{%>
 											<li class="gray">
@@ -314,6 +312,9 @@
 												<div class="tip-title">优惠券抵扣<span class="fr">-￥<%=data.PriceCalculation.Params.couponData.coupon_amount%></span></div>
 											</li>
 											<%}%>
+											<li class="gray">
+												<div class="tip-title">商品总价<span class="fr">￥<%=data.goods_data.total_goods_prices%></span></div>
+											</li>
 											<%if(data.fee){%>
 												<li class="gray">
 													<div class="tip-title">价格调整  <span class="fr"><%=data.fee%></span></div>
@@ -502,16 +503,17 @@
 							
 							for(var i = 0; i < data.data[0].PriceCalculation.Params.goodsData[0].goods_Data.length; i++) {
 								 
-								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = parseFloat((parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge) + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price) * 0.17 * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums).toFixed(2);
+								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = parseFloat((data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price) * 0.17 * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums).toFixed(2);
 								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price).toFixed(2)
 								if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin) {
 									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
-									 
+									
 								}
 
 							}
 
-							data.data[0].userPostData = JSON.parse(data.data[0].userPostData)
+							data.data[0].userPostData = JSON.parse(data.data[0].userPostData); 
+							data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge)+1.02
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");
 							data.data[0].goods_data.total_goods_prices = parseFloat(data.data[0].goods_data.total_goods_prices).toFixed(2)
 
