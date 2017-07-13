@@ -247,7 +247,7 @@
 														<div class="clear">
 			
 														</div> 
-														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax){%>
+														<%if(data.order_type == 0 && data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax){%>
 														<span style="font-size: 0.12rem;">内含税费 ￥<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax%></span>
 														<%}%>
 														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].Floating_price){%>
@@ -292,16 +292,30 @@
 											</li>
 											<%}else{%>
 											<%if(data.PriceCalculation.Params.goodsData[t].postAge){%>
-											<li class="gray">
-												<div class="tip-title">邮费（含邮费税）<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
-											</li>
+												<%if(data.order_type == 0){%>
+													<li class="gray">
+														<div class="tip-title">邮费（含邮费税）<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+													</li>
+												<%}else{%>
+													<li class="gray">
+														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+													</li>	
+												<%}%>
+												
 											<%}else{%>
 											<li class="gray">
 												<div class="tip-title">邮费<span class="fr">包邮</span></div>
 											</li>
 											<%}%>
 											<%}%>
-		
+											<li class="gray">
+												<div class="tip-title">商品总价<span class="fr">￥<%=data.goods_data.total_goods_prices%></span></div>
+											</li>
+											<%if(data.fee){%>
+												<li class="gray">
+													<div class="tip-title">价格调整  <span class="fr"><%=data.fee%></span></div>
+												</li>	
+											<%}%>
 											<%if(data.PriceCalculation.nowIntergal.storenowIntergal){%>
 											<li class="gray">
 												<div class="tip-title">积分抵扣<span class="fr">￥<%=data.PriceCalculation.nowIntergal.storenowIntergal%></span></div>
@@ -312,14 +326,7 @@
 												<div class="tip-title">优惠券抵扣<span class="fr">-￥<%=data.PriceCalculation.Params.couponData.coupon_amount%></span></div>
 											</li>
 											<%}%>
-											<li class="gray">
-												<div class="tip-title">商品总价<span class="fr">￥<%=data.goods_data.total_goods_prices%></span></div>
-											</li>
-											<%if(data.fee){%>
-												<li class="gray">
-													<div class="tip-title">价格调整  <span class="fr"><%=data.fee%></span></div>
-												</li>	
-											<%}%>
+											
 											<li>
 												<div class="tip-title">实付款<span class="fr" style="color:#f53c42;">￥<%=data.amount%></span></div>
 											</li>
@@ -515,7 +522,10 @@
 							}
 
 							data.data[0].userPostData = JSON.parse(data.data[0].userPostData); 
-							data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge)+1.02
+							if(data.data[0].order_type == 0 ){
+								data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge)+1.02 
+							}
+
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");
 							data.data[0].goods_data.total_goods_prices = parseFloat(data.data[0].goods_data.total_goods_prices).toFixed(2)
 
