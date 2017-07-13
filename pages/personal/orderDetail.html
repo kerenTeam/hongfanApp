@@ -247,7 +247,7 @@
 														<div class="clear">
 			
 														</div> 
-														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax){%>
+														<%if(data.order_type == 0 && data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax){%>
 														<span style="font-size: 0.12rem;">内含税费 ￥<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax%></span>
 														<%}%>
 														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].Floating_price){%>
@@ -292,9 +292,16 @@
 											</li>
 											<%}else{%>
 											<%if(data.PriceCalculation.Params.goodsData[t].postAge){%>
-											<li class="gray">
-												<div class="tip-title">邮费（含邮费税）<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
-											</li>
+												<%if(data.order_type == 0){%>
+													<li class="gray">
+														<div class="tip-title">邮费（含邮费税）<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+													</li>
+												<%}else{%>
+													<li class="gray">
+														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+													</li>	
+												<%}%>
+												
 											<%}else{%>
 											<li class="gray">
 												<div class="tip-title">邮费<span class="fr">包邮</span></div>
@@ -515,7 +522,10 @@
 							}
 
 							data.data[0].userPostData = JSON.parse(data.data[0].userPostData); 
-							data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge)+1.02
+							if(data.data[0].order_type == 0 ){
+								data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge)+1.02 
+							}
+
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");
 							data.data[0].goods_data.total_goods_prices = parseFloat(data.data[0].goods_data.total_goods_prices).toFixed(2)
 
