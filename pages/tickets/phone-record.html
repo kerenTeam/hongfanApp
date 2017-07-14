@@ -189,9 +189,8 @@
 						
 						<div id="rechargeList"></div>
 						<script type="text/html" id="rechargeTpl">
-							<%for(var t=list.length-1;t>=0;t--){%>
-								<%if(list[t].payment_data && list[t].payment_data.data && list[t].payment_data.data.payState && list[t].payment_data.data.payState == 1){%>
-									
+							<%if(list.length !=0){%>
+							<%for(var t=list.length-1;t>=0;t--){%> 
 									<div class="recharge clearfloat" onclick="recordDe('<%=list[t].uuid%>')"> <!-- onclick="recordDe('<%=list[t].uuid%>')"-->
 									<div class="recharge clearfloat">  
 							    		<div class="czhi box-s">
@@ -200,12 +199,15 @@
 													<img src="../../img/tickets/phone.png"/>
 												</div>
 												<div class="recordDetail">
-													<p class="recordBig">-<%=list[t].payment_data.data.saleAmount%></p>
-													<p class="recordTiny"><%=list[t].payment_data.data.itemName%>-<%=list[t].payment_data.data.rechargeAccount%></p>
+													<p class="recordBig">-<%=list[t].payment_data.data.inPrice%></p>
+													<p class="recordTiny"><%=list[t].payment_data.data.itemName%></p>
 												</div> 
 							    		</div>
 							    	</div>	
-									<%}%> 
+									 
+								<%}%>
+								<%}else{%>
+									<img src="../../img/tickets/noorder.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">没有记录</span>
 								<%}%>
 						</script> 
 				    	
@@ -236,27 +238,30 @@
 				timeout:10000,
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){
-					console.log(data)
+						 			console.log(data)
 					plus.nativeUI.closeWaiting()
 					if(data.errno==0){
 						 if(data.data.length!=0){ 
 						 	var rcObj = {};
+						 	var objdata = [];
 						 	for(var t=0;t<data.data.length;t++){ 
 //						 		if(data.data[t].state == 1){ 
 						 			var dt = new Date(data.data[t].create_time);
 									var date = [
 									  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
 									data.data[t].create_time = date;
-						 			data.data[t].payment_data = eval("("+data.data[t].payment_data+")");
-						 			if(data.data[t].payment_data){
-						 				data.data[t].payment_data.data.itemCost = parseFloat(data.data[t].payment_data.data.itemCost).toFixed(2);
-							 			data.data[t].payment_data.data.orderCost = parseFloat(data.data[t].payment_data.data.orderCost).toFixed(2);
-								 	 	data.data[t].payment_data.data.saleAmount = parseFloat(data.data[t].payment_data.data.saleAmount).toFixed(2);
+						 			data.data[t].payment_data = JSON.parse(data.data[t].payment_data); 
+						 			console.log(data)
+						 			 
+						 			if(data.data[t].state == 1 && data.data[t].payment_data.data.inPrice){
+						 				data.data[t].payment_data.data.inPrice = parseFloat(data.data[t].payment_data.data.inPrice).toFixed(2);
+						 				objdata.push(data.data[t])
 						 			}
-						 		}  
-//						 		}
-						 	rcObj.list = data.data;
+						 }   
+						 	rcObj.list = objdata; 
+						 	console.log('objdata',rcObj.list)
 						 	mui("#rechargeList")[0].innerHTML = template("rechargeTpl",rcObj);
+						 	
 						 }else{
 						 	mui("#rechargeList")[0].innerHTML = '<img src="../../img/tickets/noorder.svg" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;">没有记录</span>';
 						 }
