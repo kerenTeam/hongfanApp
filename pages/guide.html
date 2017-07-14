@@ -306,8 +306,16 @@
 					console.log('循环加载数据11');
 					againfun();
 				} else {
+					var indexLoad = 0;
 					clearInterval(Timetoken);
 					Timetoken = setInterval(function() { //等待oldToken加载方法
+						indexLoad++;
+						if(indexLoad>20){
+							clearInterval(Timetoken);
+							console.log('超时了');
+							plus.webview.currentWebview().hide();
+						}
+						console.log('引导图循环加载');
 						if(plus.storage.getItem('oldToken')) {
 							clearInterval(Timetoken);
 							oldToken = plus.storage.getItem('oldToken');
@@ -328,6 +336,7 @@
 						timeout: 10000, //超时时间设置为10秒；
 						headers: {"token": oldToken},
 						success: function(data) {
+							
 							var dataobj = JSON.parse(data.data.banner);
 							
 							//缓存处理
@@ -376,9 +385,10 @@
 								if(!jumptime){
 									jumptime = 6;
 								}
-							document.getElementsByTagName("small")[0].innerHTML = jumptime+"s";	
+							document.getElementsByTagName("small")[0].innerHTML = jumptime+"s";
 							var time = jumptime;
 						    var timereduce = setInterval(function(){ 
+						    	console.log(time);
 						    	time--;
 						    	document.getElementsByTagName("small")[0].innerHTML = time+"s";
 						    	if(time == -1){
@@ -400,6 +410,20 @@
 						},
 						error: function(xhr, type, errorThrown) {
 							plus.nativeUI.closeWaiting();
+							document.getElementById("jump").addEventListener('tap', function(event) {
+								plus.navigator.setFullscreen(false);
+								plus.webview.currentWebview().hide();
+							}, false);
+							var time = 6;
+							document.getElementsByTagName("small")[0].innerHTML = time+"s";
+						    var timereduce = setInterval(function(){ 
+						    	console.log(time);
+						    	time--;
+						    	document.getElementsByTagName("small")[0].innerHTML = time+"s";
+						    	if(time == -1){
+									plus.webview.currentWebview().hide();
+						    	};
+						    },1000)
 						}
 					});
 
