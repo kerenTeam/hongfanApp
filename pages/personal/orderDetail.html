@@ -248,7 +248,7 @@
 			
 														</div> 
 														<%if(data.order_type == 0 && data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax){%>
-														<span style="font-size: 0.12rem;">内含税费 ￥<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax%></span>
+														<span style="font-size: 0.12rem;">税费（含邮费税） ￥<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].tax%></span>
 														<%}%>
 														<%if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].Floating_price){%>
 														<li class="gray">
@@ -294,7 +294,7 @@
 											<%if(data.PriceCalculation.Params.goodsData[t].postAge){%>
 												<%if(data.order_type == 0){%>
 													<li class="gray">
-														<div class="tip-title">邮费（含邮费税）<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
 													</li>
 												<%}else{%>
 													<li class="gray">
@@ -512,7 +512,7 @@
 							
 							for(var i = 0; i < data.data[0].PriceCalculation.Params.goodsData[0].goods_Data.length; i++) {
 								 
-								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = parseFloat((data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price) * 0.17 * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums).toFixed(2);
+								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = Math.floor(parseFloat((data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price) * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums+data.data[0].PriceCalculation.Params.goodsData[0].postAge*data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate)*100)/100;
 								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price).toFixed(2)
 								if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin) {
 									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
@@ -523,7 +523,7 @@
 
 							data.data[0].userPostData = JSON.parse(data.data[0].userPostData); 
 							if(data.data[0].order_type == 0 ){
-								data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge)+1.02 
+								data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge) 
 							}
 
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");

@@ -797,6 +797,7 @@
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]'); 
+			console.log('orderStorage',orderStorage)
 			//获取缓存
 			myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
@@ -839,12 +840,11 @@
 			data.goodsList = orderStorage;
 
 			for(var i = 0; i < orderStorage.length; i++) {
-				orderStorage[i].goodsDelivery = parseFloat(orderStorage[i].goodsDelivery*orderStorage[i].goodsnum).toFixed(2);
+				orderStorage[i].goodsDelivery = Math.floor(parseFloat(orderStorage[i].goodsDelivery*orderStorage[i].goodsnum)*100)/100;
 				
 			}
 
-			for(var i = 0; i < orderStorage.length; i++) {
-				alertF(orderStorage[i].shopId)
+			for(var i = 0; i < orderStorage.length; i++) { 
 				shopID.push(orderStorage[i].shopId); 
 				arr.push(orderStorage[i].shopName);
 				shopaddress.push(orderStorage[i].goodsaddress)
@@ -854,8 +854,7 @@
 			shopID = shopID.unique1();
 			shopaddress = shopaddress.unique1();
 			data.shopID = shopID;  
-			data.shopaddress = shopaddress;
-			alertF('data.shopID.length '+data.shopID.length)
+			data.shopaddress = shopaddress; 
 			for(var i = 0; i < data.shopID.length; i++) {
 				//分组 金额 和 数量  分组商品优惠小计
 				var groupNum = 0,
@@ -965,8 +964,7 @@
 
 				}
 				orderSubmitData.push(orderList);
-			}
-			alertF('arr length'+arr.length);
+			} 
 			 
 			arr= arr.unique1(); 
 			
@@ -1180,11 +1178,12 @@
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").val(parseFloat($(this).attr('data-charge')));
 								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
 								 
-								//重新计算税费
+								//重新计算税费 
+								var originRate = $(this).parentsUntil("#orderTpl").find('.taxmoney').attr('data-rate')
 								var newgroup = 0;
-								var posttax = parseFloat(countpostfee*0.17).toFixed(2);
+								var posttax = Math.floor(parseFloat(countpostfee*originRate)*100)/100;
 								$(this).parentsUntil("#orderTpl").find(".goodsWrap").each(function(){
-										var newtax = parseFloat((parseFloat($(this).find('.pricemoney').html()*$(this).find('.numint').html()))*0.17).toFixed(2);
+										var newtax = (parseFloat($(this).find('.pricemoney').html()*$(this).find('.numint').html()))*originRate;
 //										$(this).find('.taxmoney').html(newtax);
 										newgroup += parseFloat(parseFloat(newtax) + parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html());
 								})
@@ -1244,12 +1243,10 @@
 					$("dd .ddRadio").each(function() { 
 						$(this).find("input[type='checkbox']").click(function() { 
 						
-							var dataPostfee = parseFloat($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val());
-							alertF(dataPostfee)
+							var dataPostfee = parseFloat($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val()); 
 							var shopid = $(this).attr('data-shopId'); 
 							//alert($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id'))
-							if($(this).prop('checked') == true) {
-								alertF(2222)
+							if($(this).prop('checked') == true) { 
 								var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
 								$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost - dataPostfee).toFixed(2));
 								$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提'); 

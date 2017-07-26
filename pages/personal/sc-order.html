@@ -326,9 +326,11 @@
 											<%}%>
 											<div class="order-bottom clearfloat box-s tip" style="background-color: white;margin: 0;">
 												<p> 
-												 
-													合计:￥</sub><%=ordermoney[m]%><sub> 
+												 <%if(oduuid[m] == ordermoney[m].order_UUID){%>
+													合计:￥</sub><%=ordermoney[m].PriceCalculValue%><sub> 
+														<%}%>
 													</sub></p>
+													
 											</div>  
 											<div class="order-bottom clearfloat box-s" style="background-color：#fff;"> 
 												<a onclick="goOrder('<%=oduuid[m]%>','<%=repayid[m]%>')" class="fr confirm">付款</a>
@@ -550,16 +552,15 @@
 									repayid.push(data.data[i].rePayID);
 									if(data.data[i].fee){ 
 										data.data[i].PriceCalculation.PriceCalculValue = parseFloat(parseFloat(data.data[i].PriceCalculation.PriceCalculValue)+parseFloat(data.data[i].fee)).toFixed(2);
-										 
-										ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue);
+									 
 										if(data.data[i].fee > 0) {
 											data.data[i].fee = "+￥" + data.data[i].fee;
 										} else {
 											data.data[i].fee = "-￥" + data.data[i].fee*(-1);
 										}
-									}else{
-										ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue) 
-									}
+									} 
+//									ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue) 
+									 
 
 								}
 								if(data.data[i].goods_data){
@@ -594,8 +595,34 @@
 							if(orderuuid.length!=0){
 								orderuuid = orderuuid.unique1();//去重
 							}
-							repayid = repayid.unique1();
-							ordermoney = ordermoney.unique1();
+							for(var i = 0;i<orderuuid.length;i++){
+								for(var j=0;j<data.data.length;j++){
+									if(orderuuid[i] == data.data[j].order_UUID){
+										var mobj={order_UUID:data.data[j].order_UUID,PriceCalculValue:data.data[j].PriceCalculation.PriceCalculValue};
+									   	ordermoney.push(mobj)
+										 
+									}
+								}
+							} 
+							//json 数组去重
+							var arr = [];
+							var list = ordermoney;
+							for(var i = 0; i < list.length; i++){
+							if(i == 0) arr.push(list[i]);
+							var b = false;
+							if(arr.length > 0 && i > 0){
+							    for(var j = 0; j < arr.length; j++){
+							        if(arr[j].order_UUID == list[i].order_UUID){
+							            b = true;
+							        //break;
+							        }
+							    }
+							    if(!b){ arr.push(list[i]);}
+							}
+							} 
+						 	ordermoney = arr; 
+							repayid = repayid.unique1(); 
+							
 							console.log("对对对 ",data)
 							console.log("goods_data "+JSON.stringify(data.data[0].goods_data))
 							var obj={}; 
