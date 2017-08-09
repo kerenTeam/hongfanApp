@@ -24,7 +24,7 @@ var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 
 //执行alert方法
 function alertF(content){ //非姐的方法 
-	alert(content)
+	//alert(content)
 }
 function alertY(content){ //向前的方法 
 //	alert(content)
