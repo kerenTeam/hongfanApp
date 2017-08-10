@@ -29,21 +29,21 @@
 			 }
 			 
 			.mui-slider-indicator .mui-indicator {
-				width: 10px;
-				height: 10px;
+				width: 8px;
+				height: 8px;
 				border-radius: 8px;
-				background: black;
-				margin-right: 5px;
-				opacity: 0.3;
+				background: #fff;
+				opacity: 0.8;
 				cursor: pointer;
+				margin: 1px 1px;
 				border: none;
 				box-shadow: none;
 			}
-			
 			.mui-slider-indicator .mui-active.mui-indicator {
-				background-color: rgba(245, 60, 66, 0.8);
+				background-color: #fff;
+				width: 14px;
 				box-shadow: none;
-				opacity: 1;
+				opacity: .8;
 				border: none;
 			}
 			/*优化显示*/
@@ -53,10 +53,14 @@
 				margin-top: 0px;
 				top: 0px;
 				width: 100%;
-				padding-top: 42%;
+				padding-top: 48%;
+				/*padding-top: 42%;*/
 				overflow: hidden;
 				background: url(../img/bannerback.svg) 50% 50% no-repeat;
 				background-size: 20%;
+			}
+			.mui-slider .mui-slider-group .mui-slider-item>a:not(.mui-control-item){
+				height: 100%;
 			}
 			
 			.mui-slider .mui-slider-group {
@@ -117,11 +121,11 @@
 			.onetable {
 				margin-top: 0;
 				background-color: #fff;
-				padding-bottom: 10px;
+				padding-bottom: 14px;
 				margin-bottom: 0;
 			}
 			.onetable p {
-				margin-top: -10px;
+				margin-top: -5px;
 				font-size: 11px;
 				margin-bottom: 5px;
 			}
@@ -142,8 +146,13 @@
 			}
 			
 			.sy_recmd_list .pub_wz {
-				position: relative;
-				padding: 0 5%;
+			    position: relative;
+			    padding: 0 5%;
+		        border: 1px solid rgba(204, 204, 204, 0.73);
+			    border-top: none;
+			    border-bottom-left-radius: 4px;
+			    border-bottom-right-radius: 4px;
+			    top: -2px;
 			}
 			
 			sub {
@@ -170,7 +179,7 @@
 			
 			.onetable p {
 				font-size: 11px;
-				color: #666;
+				color: #777;
 			}
 			
 			.act_l img,
@@ -219,6 +228,8 @@
 			
 			.sy_recmd_list .pub_img img {
 				height: 100%;
+			    border-top-left-radius: 4px;
+				border-top-right-radius: 4px;
 			}
 			
 			.hotImg {
@@ -256,8 +267,9 @@
 			
 			.sy_recmd_list .box {
 				border: none;
-				margin: 0 3px; 
-				box-shadow: 0px 0px 2px #ccc;
+				margin: 0 !important; 
+				/*box-shadow: 0px 0px 2px #ccc;*/
+				/*border: 1px solid #cccccc;*/
 			}
 			
 			.saled {
@@ -286,7 +298,7 @@
 			}
 			
 			.sy_recmd_list .pub_wz h3 a {
-				color: #333;
+				color: #656565;
 				line-height: 18px;
 				font-size: 13px;
 				overflow: hidden;
@@ -295,7 +307,7 @@
 				white-space: nowrap;
 				display: block;
 				/*-webkit-line-clamp: 2;*/
-				margin-top: 5px;
+				padding-top: 10px;
 				/*-webkit-box-orient: vertical;*/
 				width: 100%;
 				/*display: -webkit-box;*/
@@ -304,8 +316,11 @@
 			
 			.sy_recmd_list_box {
 				padding-left: 0;
+				padding: 0 5px;
 			}
-			
+			.sy_recmd_list{
+				padding: 5px;
+			}
 			.imgWrap {
 				width: 56px;
 				height: 56px;
@@ -530,7 +545,7 @@
 			}
 			
 			.onetable table img {
-				width: 50%;
+				width: 59%;
 				margin: 14px 0;
 			}
 			
@@ -685,11 +700,23 @@
 			strong{color: #555;font-weight: 100;}
 			.tcImg12{width: 100px;height: 100px;}
 			#div1 a{display: inline-block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+			header {
+			    height: auto !important;
+			}
+			.yincang{display: none;}
+			.partTitle{
+				text-align: center;
+				font-size: 15px;
+				color: #555;
+				font-weight: initial;
+				padding: 10px 0;
+			}
+			.mui-content{background-color: #fff;}
 		</style>
 	</head>
 
 	<body>
-		<header class="hasManyCity mui-row mui-bar mui-bar-transparent" id="header">
+		<header class="hasManyCity mui-row mui-bar mui-bar-transparent" id="header" style="">
 			<div id="" class="cityBtn">邻水</div>
 			<div id="" class="searchBox">
 				<a class="openSearch">
@@ -702,18 +729,21 @@
 			</a>
 		</header>
 		<!--状态栏开始-->
-		<div id="sBar" style="background-color: #9d9d9d;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+		<style type="text/css" id="headStyle"></style>
+		<div id="sBar" style="background-color: #f7f7f7;position: fixed;width:100%;top: 0;z-index: 9999"></div>
 		<script type="text/javascript">
+			
 			var immersed = 0;
 			var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
 			if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
 			    immersed=parseFloat(ms[2]);// 获取状态栏的高度
 			}
-			var statusBar = document.getElementById('sBar');//这是模拟状态栏
 			var headdiv = document.getElementById('header');//这是现有的header
-			document.body.style.paddingTop =  immersed+'px';
-			statusBar&&(statusBar.style.height = immersed+'px');
-			headdiv&&(headdiv.style.top = immersed+'px');
+			var headH = parseInt(immersed) + parseInt(headdiv.offsetHeight);
+			document.getElementById('headStyle').innerHTML = '.headI{height: '+ headH +'px !important;} .hasManyCity .searchBox{top:'+immersed+'px} .qrcodeBtn{top:'+immersed+'px}';
+			headdiv.className  += " headI";
+			headdiv.style.paddingTop = immersed + "px";
+			
 		</script>
 		<!--状态栏结束-->
 		<!--<div id="container">-->
@@ -832,9 +862,8 @@
 			</div>
 		</div>
 		</div> 
-		<div class="sy_recmd">
-			<div class="sy_recmd_list_box choicenessWrap" style="padding-top: 5px;">
-
+		<div class="sy_recmd" style="background-color: #fff;">
+			<div class="sy_recmd_list_box choicenessWrap yincang" style="padding-top: 5px;"><!--隐藏达人谈点-->
 				<ul>
 					<li class="sy_recmd_list" id="storeRcmd" style="border-radius: 5px;padding: 0;">
 						<div class="box" style="border-radius: 3px;">
@@ -858,9 +887,9 @@
 					</li>
 				</ul>
 				<div class="clear"></div>
-			</div> 
+			</div> <!--达人谈点-->
 		<!--新增小模块-->
-		<table class="tablepay">
+		<table class="tablepay yincang">
 			<tr>
 				<td rowspan="2" style="width: 27.33%;padding: 10px 0;" ><img src="../img/chong.jpg" style="width: 100%;margin-left: -2%;" /></td>
 				<td onclick="tinyRecharge()">
@@ -883,7 +912,7 @@
 		</table> 
  
 	 	<!--服务团队-->
-	 	<div class="mui-row">
+	 	<div class="mui-row yincang">
 		 	<figure class="teams mui-col-sm-12 mui-col-xs-12" onclick="helpYou()"> 
 				<img src="../img/serveForPeople/linshuibang.jpg" style="width: 100%;" />
 			</figure>
@@ -895,7 +924,7 @@
 			</figure>
 		</div>
 		<!--发现   HI生活-->
-		<div class="sy_recmd">
+		<div class="sy_recmd yincang">
 			<div class="sy_title mb10 aClick fineB" style="margin-top: 5px;" onclick="gomore('find')">
 				<img src="../img/market/find.png" /><span style="vertical-align: middle;">HI 生活</span><span  style="float: right;font-size: 12px;vertical-align: middle;">更多<span style="font-size: 14px;" class="mui-icon mui-icon-arrowright"></span></span>
 			</div>
@@ -934,6 +963,7 @@
 			<img src="../img/market/mainact.png" /><span style="vertical-align: middle;">HI抢购</span><span style="float: right;font-size: 12px;vertical-align: middle;">更多<span style="font-size: 14px;" class="mui-icon mui-icon-arrowright"></span></span>
 		</div>
 		<img src="../img/market/limit.png" alt="" id="limtitbuy" />-->
+	 <div class="yincang">
 		<div class="sy_title mb10 aClick" id="shihui1" style="margin-top: 5px;">
 			<img src="../img/market/mainact.png" /><span style="vertical-align: middle;">HI实惠</span><span style="float: right;font-size: 12px;vertical-align: middle;">更多<span style="font-size: 14px;" class="mui-icon mui-icon-arrowright"></span></span>
 		</div>
@@ -962,11 +992,151 @@
 			</div>
 			<!--帮帮团-->  
 				<img src="../img/tj.jpg" id="shouye2" style="margin: 5px 0;box-shadow: 0px 0px 2px whitesmoke;"/>
+		
+		 	
+		 </div>
+		<!--HI友圈--> 
+		<style type="text/css">
+			.hiFriend .bigPic{display: block;}
+			.avaPic{width: 22px;height:22px;border-radius: 30px;}
+			.footFirend{height:25px;line-height: 25px;}
+			.lovePic{width: 20px;height:20px;float: right;}
+			.hiFriend{padding: 5px;}
+			.paddDiv{padding: 5px;}
+		</style>
+		<div class="mui-content hiFriend">
+			<h3 class="partTitle">HI友圈</h3>
+		    <div class="mui-row">
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv aClick">
+		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
+		            <p class="footFirend">
+		            	<img class="avaPic" src="../img/send.png"/>
+		            	王菲
+		            	<img class="lovePic" src="../img/shocang.svg"/>
+		            </p>
+		        </div>
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
+		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
+		            <p class="footFirend">
+		            	<img class="avaPic" src="../img/send.png"/>
+		            	王菲
+		            	<img class="lovePic" src="../img/shocang.svg"/>
+		            </p>
+		        </div>
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
+		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
+		            <p class="footFirend">
+		            	<img class="avaPic" src="../img/send.png"/>
+		            	王菲
+		            	<img class="lovePic" src="../img/shocang.svg"/>
+		            </p>
+		        </div>
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
+		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
+		            <p class="footFirend">
+		            	<img class="avaPic" src="../img/send.png"/>
+		            	王菲
+		            	<img class="lovePic" src="../img/shocang.svg"/>
+		            </p>
+		        </div>
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
+		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
+		            <p class="footFirend">
+		            	<img class="avaPic" src="../img/send.png"/>
+		            	王菲
+		            	<img class="lovePic" src="../img/shocang.svg"/>
+		            </p>
+		        </div>
+		        
+		    </div>
+		</div>
+		<!--HI问答-->
+		<style type="text/css">
+			.QAhead{text-align: center;background-color: #f3f3f3;;}
+			.QAhead span{position: relative; display: inline-block;height:38px;line-height: 38px;color: #343434;font-size: 15px;margin: 0 10px;padding: 0 5px;}
+			.QAhead span.active{color: #f93a38;}
+			.QAhead span:after {
+			    content: "";
+			    width: 0;
+			    height: 1px;
+			    background-color: #f31414;
+			    position: absolute;
+			    bottom: 0px;
+			    left: 50%;
+			}
+			.QAhead span.active:after {
+			    transition: all 0.3s;
+			    width: 100% !important;
+			    left: 0 !important;
+			}
+			.listHead{height: 40px;line-height: 40px;font-size: 14px;color: #656565;padding: 0 10px;}
+			.listHead img{width: 25px;height: 25px;}
+			.listHead span{float: right;color: #999999;border: 1px solid #999;line-height: 20px;margin-top: 10px;font-size: 13px;padding: 0 2px;border-radius: 4px;}
+			.listCon{padding: 10px 0 0 0;}
+			.listCon p{    color: #656565;padding: 10px 0px 20px 0px; margin: 0 10px;}
+			.moreCon{text-align: center;padding: 10px;}
+			.moreCon span{border: 1px solid #777;display: inline-block;padding: 4px 14px;color: #777;border-radius: 4px;}
+		</style>
+		<div class="QandA">
+			<h3 class="partTitle">HI问答</h3>
+			<div class="QAhead">
+				<span class="active aClick">我要问</span>
+				<span class="aClick">我要答</span>
+				<span class="aClick">精选</span>
+			</div>
+			<div class="listConW">
+				<div class="listCon aClick">
+					<h4 class="listHead">
+						<img src="../img/send.png"/>
+						wangfei
+						<span>
+							10HI豆
+						</span>
+					</h4>
+					<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
+				</div>
+				<div class="listCon  aClick">
+					<h4 class="listHead">
+						<img src="../img/10.png"/>
+						wangfei
+						<span>
+							10HI豆
+						</span>
+					</h4>
+					<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
+				</div>
+				<div class="listCon aClick">
+					<h4 class="listHead">
+						<img src="../img/10.png"/>
+						wangfei
+						<span>
+							10HI豆
+						</span>
+					</h4>
+					<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
+				</div>
+				
+				<div class="moreCon"><span>更多 </span></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
+			[].forEach.call(listCon,function(ele){
+				ele.onclick = function(){
+					if(!ele.className.includes('active')){
+						[].forEach.call(listCon,function(ele2){
+							ele2.className = '';
+						})
+						ele.className = 'active aClick';
+					}
+				}
+			})
+		</script>
 		 
 		<!--推荐列表-->
 		<div class="sy_recmd">
 			<!--推荐列表-->
- 
+ 			<h3 class="partTitle">HI抢购</h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 					<div id="moll_recommend"></div>

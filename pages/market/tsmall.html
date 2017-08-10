@@ -469,27 +469,26 @@
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/app.js"></script>
 	<script type="text/javascript">
-	 	//statisticsfun('特色馆主页');//统计代码
 	 	//统计开始
-			mui.plusReady(function(){
-				var starttime = new Date().getTime();
-				var old_back = mui.back;
-				var flagback = 0;
-				mui.back = function(){//结束计时逻辑代码
+		mui.plusReady(function(){
+			var starttime = new Date().getTime();
+			var old_back = mui.back;
+			var flagback = 0;
+			mui.back = function(){//结束计时逻辑代码
+				
+				plus.statistic.eventDuration( "leave", 1000, {'特色馆主页': 888} );//统计
+				old_back();
+			}
+			plus.webview.currentWebview().addEventListener( "popGesture", function(){
+				flagback++;
+				if(flagback == 1){//结束计时逻辑代码
 					
 					plus.statistic.eventDuration( "leave", 1000, {'特色馆主页': 888} );//统计
-					old_back();
 				}
-				plus.webview.currentWebview().addEventListener( "popGesture", function(){
-					flagback++;
-					if(flagback == 1){//结束计时逻辑代码
-						
-						plus.statistic.eventDuration( "leave", 1000, {'特色馆主页': 888} );//统计
-					}
-				}, false );
-				
-			}) 
-			//统计开始结束
+			}, false );
+			
+		}) 
+		//统计开始结束
 	
 		var Spagenum = 2;//实到页数
 		var Ypagenum = 1;//应到页数 
@@ -504,9 +503,9 @@
 		//分类跳转详情
 		function goList(catId){
 			 openview({
-				 	view:"goodsList.html",
-				 	extrasobj:{goodscatId:catId}
-				 })
+			 	view:"goodsList.html",
+			 	extrasobj:{goodscatId:catId}
+			 })
 		}
 
 		//跳转详情
