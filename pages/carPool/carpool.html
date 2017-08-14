@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />   
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+	</head>
+	<style type="text/css">
+		.mui-bar-nav{
+			box-shadow: none;
+		}
+		.tabPs{
+			border-bottom: 1px solid #EEEEEE;
+			position: relative; 
+			/*height: calc(31px + 0.13rem);*/
+			z-index: 99;
+		}
+		.tab{ 
+			background: white;
+			font-size: 0px; 
+		}
+	  
+		.tab div { 
+			padding: 15px 0; 
+			font-size: 0.8rem;
+			display: inline-block;
+			width: 50%;
+			text-align: center; 
+		} 
+		.tabActive {  
+			color: #F53C42;
+			/*border-bottom: 2px solid #F53C42;*/
+		}
+		.border{
+			position: absolute;
+			z-index: 99;
+			bottom: 0;
+			left: 0;
+			height: 2px;
+			background-color: #F53C42;
+			-webkit-transition: all 0.5s ease;
+		}
+		.tabcontent {
+			position: relative;
+			top: calc(31px + 0.13rem);
+			display: none;
+		}
+		.taactive{
+			display: block;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title">拼车</h1>
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<!--轮播-->
+		<div id="main">	
+			<div class="mui-slider">
+			  <div class="mui-slider-group mui-slider-loop">
+			    <!--支持循环，需要重复图片节点-->
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="https://b-ssl.duitang.com/uploads/people/201708/08/20170808184640_JGLch.thumb.710_443_c.jpeg" /></a></div>
+			    <div class="mui-slider-item"><a href="#"><img src="https://b-ssl.duitang.com/uploads/people/201708/07/20170807122901_4dteB.thumb.710_443_c.jpeg" /></a></div>
+			    <div class="mui-slider-item"><a href="#"><img src="https://b-ssl.duitang.com/uploads/people/201708/03/20170803141117_SUPvN.thumb.710_443_c.jpeg" /></a></div>
+			    <div class="mui-slider-item"><a href="#"><img src="https://b-ssl.duitang.com/uploads/people/201708/01/20170801122232_rfZ5i.thumb.710_443_c.jpeg" /></a></div>
+			    <div class="mui-slider-item"><a href="#"><img src="https://b-ssl.duitang.com/uploads/people/201708/08/20170808184640_JGLch.thumb.710_443_c.jpeg" /></a></div>
+			    <!--支持循环，需要重复图片节点-->
+			    <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="https://b-ssl.duitang.com/uploads/people/201708/07/20170807122901_4dteB.thumb.710_443_c.jpeg" /></a></div>
+			  </div>
+			</div>
+		</div>
+		<div id="tab">
+			<div class="tabPs" id="tabPs">
+				<div class="tab">
+					<div class="tabActive"><span>我要找车</span></div>
+					<div><span>我要找人</span></div> 
+				</div>
+				<div class="border"></div>
+			</div>
+			<!--出发地--目的地-->
+			<ul class="mui-table-view mar20 ft12">
+			    <li class="mui-table-view-cell" id="mapAddress">定位中...</li>
+			    <li class="mui-table-view-cell" id="gowhere">您要去哪儿</li> 
+			</ul>
+			<button type="button" class="mui-btn mui-btn-danger btn-block" style="width: 80%;margin: auto;">提交</button>
+			<div class="tabcontent tc1 taactive"> 
+				aaaa
+			 
+			</div>
+			<div class="tabcontent tc2">  
+				 dddd
+				 
+			</div>
+		</div>
+	
+		
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			
+			//定位当前位置
+		   	mui.plusReady(function(){
+			   	 //地图定位
+				var watchId;
+				var latitude=0;//经度
+				var longitude=0;//纬度
+				function geoInf(position) {
+					var str = "";
+					str += "地址：" + position.addresses + "\n"; //获取地址信息
+					str += "坐标类型：" + position.coordsType + "\n";
+					var timeflag = position.timestamp; //获取到地理位置信息的时间戳；一个毫秒数；
+					str += "时间戳：" + timeflag + "\n";
+					var codns = position.coords; //获取地理坐标信息；
+					var lat = codns.latitude; //获取到当前位置的纬度；
+					str += "纬度：" + lat + "\n";
+					var longt = codns.longitude; //获取到当前位置的经度
+					str += "经度：" + longt + "\n";
+					var alt = codns.altitude; //获取到当前位置的海拔信息；
+					str += "海拔：" + alt + "\n";
+					var accu = codns.accuracy; //地理坐标信息精确度信息；
+					str += "精确度：" + accu + "\n";
+					var altAcc = codns.altitudeAccuracy; //获取海拔信息的精确度；
+					str += "海拔精确度：" + altAcc + "\n";
+					var head = codns.heading; //获取设备的移动方向；
+					str += "移动方向：" + head + "\n";
+					var sped = codns.speed; //获取设备的移动速度；
+					str += "移动速度：" + sped;
+					console.log(JSON.stringify(position));
+					longitude = (position.coords.longitude).toFixed(6);
+					latitude = (position.coords.latitude).toFixed(6); 
+					$('#mapAddress').html(position.addresses);
+					
+				}
+				// 通过定位模块获取位置信息
+				function getGeocode() {
+					plus.geolocation.getCurrentPosition(geoInf, function(e) {
+						mui.toast("获取定位位置信息失败：" + e.message);
+					}, {
+						geocode: true,
+						provider: 'amap'
+					});
+				}
+				getGeocode();
+				$('#gowhere').click(function(){ 
+					alert(longitude)
+		    	openview({
+		    		view: encodeURI('origin.html'),
+					id: 'origin',
+					extrasobj:{iframsrc:'https://m.amap.com/picker/?center='+longitude+','+latitude+'&amp;key=608d75903d29ad471362f8c58c550daf'}
+		    	})
+		    })
+		   })
+			
+			//获得slider插件对象
+			var gallery = mui('.mui-slider');
+			gallery.slider({
+			  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+			});
+			
+			//找车 找人 
+			var widthF = $(".tab div").eq(0).width()
+		    $('.border').css({"left":0+"px","width":widthF+"px"});
+		    
+		    $(".tab div").click(function() {
+				var i = $(this).index(); 
+		 	    //设置底边框的left 
+		 	    var width = $(this).width();
+		 		var leftSlider = width*i; 
+              	$('.border').css({"left":leftSlider+"px","width":width+"px"});
+				$(".tab div").removeClass("tabActive")
+				$(this).addClass("tabActive");
+				if(!$(".tabcontent").eq(i).hasClass("taactive")) {
+					$(".tabcontent").removeClass("taactive");
+					$(".tabcontent").eq(i).addClass("taactive");
+				}
+			})
+		   
+		   
+		    
+		</script>
+	</body>
+
+</html>
