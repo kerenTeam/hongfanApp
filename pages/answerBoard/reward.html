@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>悬赏</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes"> 
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />  
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+
+	</head>
+	<style type="text/css">
+		.diyButton{background: url(../../img/answer/ask/hiunchecked.png) no-repeat ;background-position:left top;background-size: 100%;text-align: center;padding: 13px 5px;width: 80px;display: inline-block;margin-bottom: 20px;line-height: 1;}
+		.activebut{background: url(../../img/answer/ask/hichecked.png) no-repeat ;background-position:left top;background-size: 100%;text-align: center;padding: 13px 5px;width: 80px;display: inline-block;margin-bottom: 20px;line-height: 1;color: white;}
+		.mar20{padding: 0 25px;}
+		.disflex{display: flex;justify-content: space-between;}
+	 	.disbg{border: none;background-color: #f3f3f3;border-radius: 5px;}
+		.upbtn{padding: 8px!important;font-size: 16px!important;}
+		.mui-popup-inner{background-color: white;}
+		.mui-popup-button{background-color: white;color: black;}
+	</style>
+	<body style="background-color: white;">
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
+			<h1 class="mui-title findUser">悬赏</h1>
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="main">
+			<div class="maincl fttc" style="padding: 25px;">请选择悬赏金额</div>
+			<div class="mar20"> 
+				<div class="disflex">
+					<div class="diyButton disablecl ft16 activebut">
+	            		1HI豆	
+	            	</div>
+					<div class="diyButton disablecl ft16">
+	            		5HI豆
+	            	</div> 
+					<div class="diyButton disablecl ft16">
+	            		10HI豆
+	            	</div> 
+				</div>
+				<div class="disflex">
+					<div class="diyButton disablecl ft16">
+	            		15HI豆	
+	            	</div>
+					<div class="diyButton disablecl ft16">
+	            		20HI豆	
+	            	</div> 
+					<div class="diyButton disablecl ft16" id="diyhid">
+	            		任意赏	
+	            	</div> 
+				</div>
+				<textarea id="textCon" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="请收下我的膝盖"></textarea>
+			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn">确定</button>
+				 
+			</div>
+
+			
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/app.js"></script> 
+	<script type="text/javascript">
+		$('.diyButton').click(function(){
+			if(!$(this).hasClass('activebut')){
+				$('.diyButton').removeClass('activebut');
+				$(this).addClass('activebut')
+			}
+		})
+		
+		$('#diyhid').click(function(){
+			mui.prompt('请输入要悬赏的HI豆数','hi豆数量','悬赏',['确认','取消'],function(e) {
+								if(e.index == 0) { 
+									$('#diyhid').html(e.value+'HI豆') 
+								} 
+							},'div')
+			document.querySelector('.mui-popup-input input').type='number'
+			document.querySelector('.mui-popup-input input').min='0'
+		})
+	</script>
+</html>
