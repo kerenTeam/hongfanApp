@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>发布发现</title>
+		<title>提问</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes"> 
@@ -25,27 +25,28 @@
 	    .uppics div.onepic input{width: 0;height: 0;position: absolute;outline: none;}
  
 	    .picimg1{width: 25px;position: absolute;right: 0px;top: 2px;}
-	    /*图片上传结束*/
-	 	 
+	    /*图片上传结束*/ 
 		 .followA{ 
 		 	text-align: center;
 			padding:10px 15px; 
 			background-color: #f3f3f3;
 		} 
-		 
+		#maskInfo{z-index: 99999;position: fixed;top: 0;left: 0;width: 100%;bottom: 0;background-color:rgba(0,0,0,0.5);}
+		.ruleCt{position: absolute;padding-right: 15px;background-color: white;top:15%;left: 7%;width: 86%;bottom: 15%;padding:15px 5px;border-radius: 3px;}
+	 	.closemask{position: absolute;bottom: 20px;left: 50%;-webkit-transform: translateX(-50%);}
 	</style>
 
 	<body style="background-color: white;">
 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
-			<h1 class="mui-title findUser">发布</h1>
+			<h1 class="mui-title findUser">提问</h1>
 			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun"><img src="../../img/answer/goanswer/up.png"/></a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
 		<div id="main">
-			<div class="followA ft14 maincl"> 
+			<div class="followA ft14 maincl" id="lookRule"> 
 				查看问答细则及责任声明				 
 			</div> 
 			<div class="publishf">  
@@ -65,6 +66,40 @@
 			 
 		</div>
 		 
+		 
+		<!--遮罩-->
+		<div id="maskInfo" style="display: none;">
+			<div class="ruleCt" style="padding-bottom: 50px;">
+				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+					<div class="ft16 fttc">问答规则</div>
+					<ol class="ft14 disablecl ruleol">
+						<li>xxxxxx跑顶顶顶顶顶顶顶顶xx</li>
+						<li>xxx大大方方手动阀手动阀手动阀手动阀第三方孙大发大水法士大夫xxxx</li>
+						<li>xxxxxx</li>
+						<li>xxxxxxxx</li>
+					</ol>
+					<div class="ft16 fttc">责任声明</div>
+					<ol class="ft14 disablecl ruleol">
+						<li>xxxxxxxx</li>
+						<li>xxxxxxx</li>
+						<li>xxxxxx</li>
+						<li>xxxxxxxx</li>
+						<li>xxxxxxxx</li>
+						<li>xxxxxxx</li>
+						<li>xxxxxx</li>
+						<li>xxxxxxxx</li><li>xxxxxxxx</li>
+						<li>xxxxxxx</li>
+						<li>xxxxxx</li>
+						<li>xxxxxxxx</li><li>xxxxxxxx</li>
+						<li>xxxxxxx</li>
+						<li>xxxxxx</li>
+						<li>xxxxxxxx</li>
+					</ol>
+				</div>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
+				
+			</div>
+		</div>
 			 
 	</body>
 <script type="text/javascript" src="../../js/jquery.min.js"></script>
@@ -78,12 +113,24 @@
 	//选择图片
 	var Apic = [];//图片存放数组 
 	var qid;
-
+	$('#lookRule').click(function(){
+		$('#maskInfo').fadeIn(200);
+	})
+	
+	$('.ruleCt').click(function(){
+		event.stopPropagation()
+	})
+	$('#maskInfo,.closemask').click(function(){
+		event.preventDefault()
+		$('#maskInfo').fadeOut(200);
+	})
 	mui.plusReady(function() {
 		qid=plus.webview.currentWebview().qqid;
 		
 		$('.hipay').click(function(){
-			mui.alert(3)
+			openview({
+				view:'reward.html'
+			})
 		})
 		
 		mui('#nowpic')[0].addEventListener('tap',function(){
