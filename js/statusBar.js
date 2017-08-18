@@ -7,7 +7,7 @@
 	//这是封装的方法
 	var statusBar = document.createElement("div");//这是模拟状态栏
 	document.body.appendChild(statusBar);
-	statusBar.style.cssText = "background-color: white;position: fixed;width:100%;top: 0;z-index: 9999";//状态栏颜色
+	statusBar.style.cssText = "background-color: white;position: fixed;width:100%;top: 0;z-index: 999";//状态栏颜色
 	
 	// 获取状态栏的高度
 	var immersed = 0;
