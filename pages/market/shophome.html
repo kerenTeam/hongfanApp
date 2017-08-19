@@ -259,15 +259,15 @@
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">店铺详情</h1>
+		<header class="mui-bar" id="header" style="background: none!important;box-shadow: none;">
+			<a style="color: white;" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			<h1 style="color: white!important;" class="mui-title" id="mui-title">店铺详情</h1>
 		</header>
 
 		<!--<div id="container">-->
 		<!--<div id="main">-->
 		<!--店铺头部开始-->
-		<div class="store-header clearfix" id="vfshangdian" style="top: 50px;">
+		<div class="store-header clearfix" id="vfshangdian">
 			<div class="tu">
 				<span>
 						<img src="../../img/theList/storeLogo.png" id="storeLogo" style="display: none;"/>
@@ -319,24 +319,15 @@
 		</div>
 		<!--第三部分-->
 		<div id="shangjia_detail" class="page-center-box dldetail" style="display: none;">
-			<div class="imgInfor mb10">
-				<img src="" id="storeImg">
-				<!--<div class="nr">
-		                    <h2 class="overflow_clear" id="title2">我的小店</h2>
-		                    <p>月售<b class="fontcl1">58</b>份&nbsp;&nbsp;总售<b class="fontcl1">102</b>份</p>
-		                </div>-->
-			</div>
+			 
 			<div class="detailNr">
 				<div class="nr mb10">
-					<p>店铺地址：<span id="addressS"></span></p>
-					<p>自提地址：<span id="toshopAddress"></span></p>
-					<!--<p>店铺具体位置：<span id="doorNo"></span></p>-->
-					<!--<p>营业时间：<span id="businessH"></span></p>
-					<p>联系座机：<span id="phoneS"></span></p>-->
-					<p>联系电话：<span id="tel"></span></p>
-					<p>营业状态：<span id="openStaus"></span></p>
-					<!--<p>邮寄信息：<span id="delinfo"></span></p>-->
-					<p>店铺简介：<span id="description2"></span></p>
+					<p><b>店铺地址</b>：<span id="addressS"></span></p>
+					<p><b>自提地址</b>：<span id="toshopAddress"></span></p>
+					<p><b>联系电话</b>：<span id="tel"></span></p>
+					<p><b>营业状态</b>：<span id="openStaus"></span></p>
+					<img src="" id="storeImg" style="width: 100%;">
+					<p><b>店铺简介</b>：<span id="description2"></span></p>
 				</div>
 			</div>
 			<dl class="dealcard" id="moll_recommend2"></dl>
@@ -451,7 +442,26 @@
 		<script src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/app.js"></script>
 		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
-		<script type="text/javascript">
+		<script type="text/javascript"> 
+			
+			//head渐变效果
+			$(window).scroll(function() {
+				var scrollTop = $(this).scrollTop();　　
+				var scrollHeight = $(document).height();　　
+				var windowHeight = $(this).height();　　
+				if(scrollTop >= 100) {//不透明背景
+					mui('#header')[0].style.backgroundColor='white';
+					mui('.mui-action-back')[0].style.color='#999';
+					mui('#mui-title')[0].style.color='#999';
+					mui('#header')[0].style.boxShadow="0 0 2px rgba(175, 166, 166, 0.85)";
+				 }else{//透明背景
+				 	mui('#header')[0].style.backgroundColor='transparent';
+					mui('#mui-title')[0].style.color='white';
+					mui('.mui-action-back')[0].style.color='white';
+					mui('#header')[0].style.boxShadow="0 0 0 rgba(175, 166, 166, 0.85)";
+				 }
+			});
+			
 			function collectfun() { //收藏方法
 				
 				mui.plusReady(function(){
