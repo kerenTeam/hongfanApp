@@ -151,13 +151,7 @@
 				margin-bottom: 15px;
 			}
 			.centop span{display:inline-block;padding: 4px 0;}
-			.centop:after{
-				content: '';
-				display: block;
-				height: 1px;
-				background-color: rgba(255, 255, 255, 0.56);
-				-webkit-transform: scaleY(.5);
-			}
+			 
 			#beijing{position: absolute;z-index:10;width: 100%;height: 100%;top: 0;overflow: hidden; -webkit-filter: blur(5px);}
 			#beijing img{width: 100%;position: relative;top: -40%;}
 			#beijing2{position: absolute;z-index:20;width: 100%;height: 100%;top: 0;background-color: rgba(241, 63, 63, 0.76);}
@@ -198,12 +192,8 @@
 			    	<p class="centop">
 			    		<span class="denlu denluzhuce" style="z-index: 99;">登录/注册</span> <br />
 			    		<b class="denlu denluzhuce" style="display: inline-block;min-height: 20px;" id="numjifen"> </b>
-			    		<span class="cpage"><span style="vertical-align: middle;">个人主页</span><img src="../img/you.svg" alt="" /></span>
 			    	</p>
-			    	<div style="margin-top: 10px;font-size: 13px;display: none;"> 
-			    		<span id="follow1" style="display:inline-block;padding: 5px 0;">关注 100</span>
-			    		<span id="follow2" style="margin-left: 10px;display:inline-block;padding: 5px 0;">被关注 10</span>
-			    	</div>
+			     
 			    </div>
     			<img class="dao shezhi" style="top: 10px;width: 37px;" src="../img/shezhi.svg"/>
     		</div>
@@ -245,15 +235,16 @@
     			</tr>
     			<tr> 
     				<td class="aClick mycollect"><img style="width: 25px;padding-bottom: 3px;" src="../img/market/collects.svg"/>我的收藏</td>
-    				<!--<td class="aClick myHelp"><img style="width: 26px;padding-bottom: 2px;" src="../img/bangbangtuan.svg"/>帮帮团</td>-->
-    				<!--<td class="aClick myHelp2"><img style="width: 26px;padding-bottom: 2px;" src="../img/nvshi.svg"/>律师团</td>-->
+    				
     				<td class="aClick wodeyouhuijuan"><img  src="../img/youhuijuan.svg"/>优惠卷</td>
     				<td class="aClick hidou"><img  src="../img/huiyuan.svg"/>领HI豆</td>  
     				<td class="aClick" id="writeOff1" style="display: none;"><img style="width: 26px;padding-bottom: 2px;" src="../img/hexiao1.svg"/>核销</td> 
     			</tr>
     			<tr>
-    				<!--<td class="aClick shezhi"><img  src="../img/shezhi.svg"/>设置</td>--> 
-    				
+    				<td class="aClick myCricle"><img style="width: 26px;padding-bottom: 2px;" src="../img/bangbangtuan.svg"/>我的圈子</td>
+    				<td class="aClick myQa"><img style="width: 26px;padding-bottom: 2px;" src="../img/nvshi.svg"/>我的问答</td>
+    				<td class="aClick friendShip"><img style="width: 26px;padding-bottom: 2px;" src="../img/nvshi.svg"/>交友</td>
+    			
     			</tr>
      		</table>
     	</div>
@@ -322,9 +313,9 @@
 									}
 									//显示积分
 									if(!data.data[0].intergral || data.data[0].intergral==undefined){
-										mui('#numjifen')[0].innerHTML = '积分: '+0;
+										mui('#numjifen')[0].innerHTML = 'HI豆: '+0;
 									}else{
-										mui('#numjifen')[0].innerHTML = '积分: '+data.data[0].intergral;
+										mui('#numjifen')[0].innerHTML = 'HI豆: '+data.data[0].intergral;
 									}
 									//显示关注
 									
@@ -422,22 +413,7 @@
 						}
 					});
 					
-					
-					//进个人主页 
-					mui('.cpage')[0].addEventListener('tap',function(){
-						if(!plus.storage.getItem('myToken')){
-							mui.toast('请登录');
-							openview({
-								view:'login.html'
-							});
-						}else{
-							openview({
-								view:'centerPage.html',
-								id:"centerPage",
-								extrasobj:{"userid":1}
-							});
-						}
-					})
+				 
 					//领hi豆
 					mui('.hidou')[0].addEventListener('tap',function(){
 						if(!plus.storage.getItem('myToken')){
@@ -587,20 +563,34 @@
 							
 						}
 					});
-					//积分商城 jfmall
-//					mui('.jfmall')[0].addEventListener('tap',function(){
-//						if(!plus.storage.getItem('myToken')){ 
-//							mui.toast('请登录');
-//							openview({
-//								view:'login.html'
-//							});
-//						}else{//没登陆直接打开登录页面
-//							openview({
-//								view:'daikaifa.html' 
-//							}); 
-//							
-//						}
-//					});
+					//我的圈子
+					mui('.myCricle')[0].addEventListener('tap',function(){
+						if(!plus.storage.getItem('myToken')){ 
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						}else{//没登陆直接打开登录页面
+							openview({
+								view:'socialCircle/myCricle.html' 
+							}); 
+							
+						}
+					});
+					//我的问答
+					mui('.myQa')[0].addEventListener('tap',function(){
+						if(!plus.storage.getItem('myToken')){ 
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						}else{//没登陆直接打开登录页面
+							openview({
+								view:'socialCircle/myQa.html' 
+							}); 
+							
+						}
+					});
 				}//刷新	
 			});
 		</script>
