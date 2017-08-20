@@ -135,16 +135,17 @@
 			 	min-height: 100px;
 			}
 			.nplist {
-			    width: 1rem;
+		        width: 1.1rem;
 			    text-align: center;
 			    display: inline-block;
 			    box-shadow: 0px 0 5px 0px rgba(0,0,0,0.1);
-			    margin-left: 5px;
+			    margin: 10px;
+			    margin-right: 0;
 			}
 			.npimg {
 			    position: relative;
 			    width: 100%;
-			    padding-top: 100%;
+			    padding-top: 80%;
 			    overflow: hidden;
 			}
 			.nplist h4 {
@@ -213,10 +214,10 @@
 			<style type="text/css">
 				.new_class{overflow: hidden;text-align: center;background-color: #fff;}
 				.new_class li{width: 20%; float: left;margin-bottom: 18px;color: #555;}
-				.new_class li img{/*width: 40%;*/width: 28px;height: 28px;display: block;margin: 8px auto;}
+				.new_class li img{width: 65%;display: block;margin: 8px auto;margin-bottom: 0;}
 			</style>
 			<div class="new_class">
-				<ul id="columndiv"></ul>
+				<ul id="columndiv" style="display: none;"></ul>
 				<script type="text/html" id="column">
 					<% for(var i=0; i<5; i++){%>
 						<li class="<%= classnames[i]%>">
@@ -224,6 +225,30 @@
 						</li>
 					<% }%>	
 				</script>
+			</div>
+			<div class="new_class">
+				<ul id="columndiv">
+					<li class="weixiu0">
+						<img src="../../img/localLife/weuxiu.png">维修服务
+					</li>
+				
+					<li class="jiazheng0">
+						<img src="../../img/localLife/jiazheng.png">家政服务
+					</li>
+				
+					<li class="pingche0">
+						<img src="../../img/localLife/pingche.png">HI拼车
+					</li>
+				
+					<li class="zhaoping0">
+						<img src="../../img/localLife/jiuzhi.png">招聘求职
+					</li>
+				
+					<li class="tiaozao0">
+						<img src="../../img/localLife/ershou.png">跳蚤市场
+					</li>
+				</ul>
+				
 			</div>
 			<!--新的分类结束-->
 		</div>
@@ -267,7 +292,7 @@
 				<% }%>
 			</script>
 		</div>
-		<div class="wrapdiv">
+		<div class="wrapdiv" style="display: none;">
 			<div class="headdivdiv aClick Propertymore">
 				房产资讯推荐 <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
 			</div>
@@ -374,7 +399,7 @@
 			
 			recommendfun(1,1,1);//维修推荐
 			recommendfun(2,2,2);//维修推荐
-			recommendfun(3,3,3);//房产推荐
+			//recommendfun(3,3,3);//房产推荐
 			recommendfun(4,4,4);//跳蚤推荐
 			function recommendfun(type,script,div){//推荐方法
 				var dataobj = {};
@@ -431,7 +456,7 @@
 		//Monitor();
 		function Monitor(){
 			//打开维修
-			mui('.servicemore')[0].onclick = function(){
+			mui('.servicemore')[0].onclick = mui('.weixiu0')[0].onclick = function(){
 				openview({
 					view:'theList.html',
 					extrasobj:{name:'Repair'}
@@ -444,7 +469,7 @@
 				})
 			});
 			//打开家政
-			mui('.Housekeepingmore')[0].onclick = function(){
+			mui('.Housekeepingmore')[0].onclick = mui('.jiazheng0')[0].onclick = function(){
 				openview({ 
 					view:'theList.html',
 					extrasobj:{name:'Clean'}
@@ -456,45 +481,25 @@
 					extrasobj:{name:'Clean'}
 				})
 			});
-			//打开家乡话
-			mui('.babysister')[0].addEventListener('tap',function(){
-				openview({ 
-					view:'../Hreport/h_report.html',
-					extrasobj:{name:'h_report'}
-				})
-			});
-			//打开开锁页面（弃用）
-			mui('.openclock')[0].addEventListener('tap',function(){
-				openview({ 
-					view:'recruitList.html',
-//					extrasobj:{name:'Openclock'}
-				})
-			});
 			
-			//打开房产
-//			mui('.house')[0].onclick = mui('.Propertymore')[0].onclick = function(){
-//				openview({
-//					view:'buildList.html',
-//				})
-//			}
 			//打开跳蚤市场页面
-			mui('.tiaozao')[0].onclick = mui('.secondhandmore')[0].onclick = function(){
+			mui('.tiaozao0')[0].onclick = mui('.secondhandmore')[0].onclick = function(){
 				openview({ 
 					view:'2edMarket.html',
 				})
 			}
-			//打开快递上门页面
-//			mui('.express')[0].addEventListener('tap',function(){
-//				openview({ 
-//					view:'deliveryCenter.html',
-//				})
-//			});
-//			//打开超市特价页面
-//			mui('.supermarket')[0].addEventListener('tap',function(){
-//				openview({ 
-//					view:'marketPrice.html',
-//				})
-//			});
+			//HI拼车
+			mui('.pingche0')[0].onclick = function(){
+				openview({ 
+					view:'../carPool/carpool.html',
+				})
+			}
+			//求职招聘
+			mui('.zhaoping0')[0].onclick = function(){
+				openview({ 
+					view:'recruitList.html',
+				})
+			}
 		}
 		
 		//维修详情 //家政详情 
