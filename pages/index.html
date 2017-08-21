@@ -90,7 +90,7 @@
 				<b id="Bgouwu" class="Bicon gouwuB"></b>
 				<span class="mui-tab-label">购物车</span>
 			</a>
-			<a id="find" class="mui-tab-item" href="find.html" style="position: relative !important;top: 2px !important;">
+			<a id="circle" class="mui-tab-item" href="circle.html" style="position: relative !important;top: 2px !important;">
 				<b id="Byou" class="Bicon youB"></b>
 				<span class="mui-tab-label">HI友圈</span>
 			</a>
@@ -114,8 +114,8 @@
 				} else {//pc端访问  
 				}
 			}
-			var subpages = ['main.html', 'cart.html', 'find.html','qq.html','center.html'];
-			var subpages_id = ['main', 'cart', 'find','qq','center'];
+			var subpages = ['main.html', 'cart.html', 'circle.html','qq.html','center.html'];
+			var subpages_id = ['main', 'cart', 'circle','qq','center'];
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
@@ -228,32 +228,7 @@
 						qqmin.close();
 					} 
 				}
-				if(targetTab=="find.html"){
-					 mui.openWindow({
-					 	url:"find.html",
-					 	id:"find",
-					 	style:{"bottom":0,"top":0},
-					 	show:{
-					      aniShow:'fade-in',
-					      duration:300,//页面动画持续时间
-					   	},
-					   	waiting:{
-					      autoShow:false,//自动显示等待框，默认为true
-					    }
-					 })
-					//偷偷返回方法 
-					var activeTabid = activeTab.split('.')[0];
-					if(activeTab == 'main.html' || activeTab == 'qq.html'){
-						activeTabid = 'defaultTab'; 
-					} 
-					var appIndex = plus.webview.getLaunchWebview();
-					var mainweb = plus.webview.getWebviewById(activeTab);
-					var timemain = setTimeout(function(){
-						mui.fire(appIndex,'gohome',{hrefid:activeTabid});
-						plus.webview.show(mainweb);
-					},600);
-				    
-				}else if(targetTab=="qq.html"){
+			    if(targetTab=="qq.html"){
 					if (targetTab == activeTab) {
 						return;
 					}else{
@@ -274,7 +249,7 @@
 				activeTab = targetTab;
 				//更改当前活跃的选项卡
 				var Bicons = document.getElementsByClassName('Bicon');
-				var pagesBtn = ['main.html', 'cart.html', 'find.html','qq.html','center.html'];
+				var pagesBtn = ['main.html', 'cart.html', 'circle.html','qq.html','center.html'];
 				var iconBtn = ['Bmain', 'Bgouwu', 'Byou','Bkefu','Bwode'];
 				var classU = ['mainB', 'gouwuB', 'youB','kefuB','wodeB'];
 				var classC = ['mainBActive', 'gouwuBActive', 'youBActive','kefuBActive','wodeBActive'];

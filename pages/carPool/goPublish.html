@@ -41,6 +41,7 @@
 			}
 			.hasManyCitytwo .baocun{
 				font-size: 0.12rem;
+				
 			}
 			.toggle--off{
 				background-color: #f53c42 !important;
@@ -317,7 +318,7 @@
 			/*图片上传*/
 	    	*{margin: 0;padding: 0;box-sizing: border-box;} 
 	    	.clearfix:after {content: ""; display: block; clear:both;}
-	    	.uppics{text-align: center;overflow-y: hidden;background-color: #fff;;}
+	    	.uppics{overflow-y: hidden;padding: 10px;background: #F3F3F3;}
 	    	.uppics div.onepic{height: 120px;padding: 0 !important;padding-top: 31px !important;font-size: 14px;}
 		    .uppics div.onepic img{width: 50px;} 
 		    .uppics div.onepic input{width: 0px;height: 0px;position: relative;top:15px;left:28px;outline: none;}
@@ -358,14 +359,7 @@
 		    .hasManyCitytwo .header-tit{font-size: 15px;left: 49%;}
 		    .mui-bar-nav.mui-bar .mui-icon{margin-left: -2px;}
 		    .showCityPicker222{width: 37%;margin-top: 11px;padding: 6px 0;border: none;}
-		    .shijianp{position: relative;}
-		    .shijianp:after{     
-		    	content: "~";
-			    position: absolute; 
-			    top: 14px;
-			    font-size: 25px;
-			    right: 36%;
-			    color: #777;}  
+		     
 		   #showCityPicker4{
 				position: absolute;
 				right: 10px;
@@ -377,37 +371,51 @@
 				background-color: rgba(0,0,0,0);
 				color: #000;
 			}
+		.diyButton2{background:url(../../img/localLife/info.png) no-repeat;background-position:left top;background-size:100%;padding:35px 12px;font-size: 14px;color: #999;}
+		.diyButton2 span{color: #5394f2;}
+		.baocun img{width: 40%;}
+		#Releasebtn{border: none;background-color: #f63d41;color: white;font-size: 16px;padding: 10px 90px;margin: 20px auto 0;display: block;}
     </style>
 	</head>
 
-	<body>
+	<body style="background-color: white;">
 		<!--header star-->
 	  
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">服务发布</h1>  
-		    <a  id="Releasebtn" style="line-height: 50px;color:white;" class="fr baocun" onclick="help()">提交</a>
+		    <a style="line-height: 50px;color:white;text-align: right!important;" class="mui-pull-right baocun"><img src="../../img/answer/share.png"/></a>
 		</header>
 		
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<!--上传图片-->
 		<div class="uppics clearfix" style="margin-top: 50px;">
-	        <div class="onepic" >
-	            <input type="file" id="file_input"/> 
-	            <img src="../../img/zhaoxiangji.svg">
-	            <p>添加照片</p>
-	        </div>
-	    </div>
-		<!--上传图片结束-->
+	        <div class="diyButton2 activecl goanswer" onclick="disclaimer()">
+        		<span>免责申明：</span>本平台不对任何人提供任何形式的担保， 所有信息仅供参考，不承担由此产生的任何民事及法 律责任。点此查看详细拼车说明 
+        	</div>
+	   </div> 
 		<div id="container" style="margin-top:-40px">
 		    <div id="main" class="mui-clearfix add-address">
 		    	<div id="thisAddLi"></div>
 		    	<div class="plist clearfloat data">
 					<ul>
+						<li class="clearfloat" id="Bclass2">
+							<a href="javascript:;" id="mapAddress">
+								<p class="fl">拼车类型</p>
+								<button id='showCityPicker4' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
+								<div id='cityResult4' class="ui-alert">请选择类型</div>
+							</a>
+						</li> 
+					 
 						<li class="clearfloat">
 							<a class="afterI">
-								<p class="fl">服务名称</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bname" value="" placeholder="请输入服务名称" />
+								<p class="fl">出发时段</p>
+								<input type="datetime-local" class="fr shuru Ynull" name="" id="Bname" value="选择出发时间" placeholder="选择出发时间" />
+							</a>
+						</li>
+						<li class="clearfloat">
+							<a class="afterI">
+								<p class="fl">时间补充</p>
+								<input type="text" class="fr shuru Ynull" name="" id="Bname" value="" placeholder="选填" />
 							</a>
 						</li>
 						<li class="clearfloat">
@@ -418,51 +426,34 @@
 						</li>
 						<li class="clearfloat">
 							<a class="afterI afterI2">
-								<p class="fl">称谓</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Bcall" value="" placeholder="请输入称谓" />
-							</a>
-						</li>
-						<textarea name="" rows="4" id="Binfo" placeholder="请填写描述" class="textare box-s Ynull"></textarea>
-						<li class="clearfloat" style="border-top: 1px solid #efeff4;">
-							<a class="afterI shijianp">
-								<p class="fl">服务时段</p> 
-								<!--<input type="text" class="fr shuru Ynull" name="" id="Btime" value="" placeholder="请输入服务时段" />-->
-								<button id="showCityPicker2" class="showCityPicker222" style="margin-left: 6%;" type="button">开始时间</button>
-								<button id="showCityPicker22" class="showCityPicker222" type="button">结束时间</button>
+								<p class="fl">出发地</p>
+								<input type="text" class="fr shuru Ynull" name="" id="Bcall" value="" placeholder="请输入出发地" />
 							</a>
 						</li>
 						<li class="clearfloat">
-							<a id="mapAddress" class="afterI">
-								<p class="fl">服务范围</p>
-								<button id="showCityPicker3" type="button"><span class="mui-icon mui-icon-arrowdown"></span></button>
-								<div id="cityResult3" class="ui-alert"><span id="province" class="Brange1">请选择区域</span><span id="city" class="Brange2"></span><span id="area" class="Brange3"></span></div>
-							</a>
-						</li>
-						<li class="clearfloat" id="Bclass2">
-							<a href="javascript:;" id="mapAddress">
-								<p class="fl">身份</p>
-								<button id='showCityPicker4' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
-								<div id='cityResult4' class="ui-alert">请选择身份</div>
+							<a class="afterI afterI2">
+								<p class="fl">目的地</p>
+								<input type="text" class="fr shuru Ynull" name="" id="ecall" value="" placeholder="请输入目的地" />
 							</a>
 						</li>
 						<li class="clearfloat">
-							<a class="afterI">
-								<p class="fl">价格</p>
-								<input type="number" class="fr shuru Ynull" name="" id="Bprice" value="" placeholder="请输入价格" />
+							<a class="afterI afterI2">
+								<p class="fl">途径</p>
+								<input type="text" class="fr shuru Ynull" name="" id="zcall" value="" placeholder="途径地点" />
 							</a>
 						</li>
 						<li class="clearfloat">
-							<a class="afterI">
-								<p class="fl">地址</p>
-								<input type="text" class="fr shuru Ynull" name="" id="Baddress" value="" placeholder="请输入地址" />
+							<a class="afterI afterI2">
+								<p class="fl">人数/座位</p>
+								<input type="number" class="fr shuru Ynull" name="" id="peoples" value="" min="1" max="10" placeholder="至少1人最多6人" />
 							</a>
 						</li>
+						<textarea name="" rows="4" id="Binfo" placeholder="更多" class="textare box-s Ynull"></textarea>
+						 
 					</ul>
-				</div>
-				<div class="disclaimer">
-					<p class="fl" onclick="disclaimer()"><span class="gray">发布即同意</span>免责申明</p>
-				</div>
+				</div> 
 		    </div>
+		    <button id="Releasebtn">发布拼车信息</button>
 		</div>
 <script src="../../js/mui.min.js"></script>
 <script src="../../js/app.js"></script>
@@ -473,111 +464,12 @@
 //点击免责申明
 function disclaimer(){
 	openview({
-		view:'disclaimer.html'
+		view:'../localLife/disclaimer.html'
 	})
-}
-(function($, doc) {
-	$.init();
-	$.ready(function() {
-		//时间二级联动
-		var cityPicker = new $.PopPicker({
-			layer: 2
-		});
-		document.getElementsByClassName('mui-pciker-rule')[1].innerHTML += '<span style="position: relative;left: 97%;">:</span>'; 
-		cityPicker.setData(cityData);
-		var showCityPickerButton2 = doc.getElementById('showCityPicker2');
-		var showCityPickerButton22 = doc.getElementById('showCityPicker22');
-		var cityResult = doc.getElementById('cityResult');
-		showCityPickerButton2.addEventListener('tap', function(event) {
-			cityPicker.show(function(items) {
-				showCityPickerButton2.innerHTML = items[0].text + ":" + items[1].text;
-				//返回 false 可以阻止选择框的关闭
-				//return false; 
-			});
-		}, false); 
-		showCityPickerButton22.addEventListener('tap', function(event) {
-			cityPicker.show(function(items) {
-				showCityPickerButton22.innerText =  items[0].text + ":" + items[1].text;
-				//返回 false 可以阻止选择框的关闭
-				//return false; 
-			});
-		}, false);
-		
-		
-		//地址选择三级联动
-		var cityPicker3 = new $.PopPicker({ 
-			layer: 3
-		});
-		cityPicker3.setData(cityData3);
-		var showCityPickerButton = doc.getElementById('showCityPicker3');
-		var cityResult3 = doc.getElementById('cityResult3');
-		showCityPickerButton.addEventListener('tap', function(event) {
-			cityPicker3.show(function(items) {
-				doc.getElementById('province').innerText = (items[0] || {}).text + " ";
-				doc.getElementById('city').innerText =  (items[1] || {}).text + " ";
-				doc.getElementById('area').innerText = (items[2] || {}).text + " ";
-				//返回 false 可以阻止选择框的关闭
-				//return false;
-			});
-		}, false);
-	});
-})(mui, document);
-</script>
+}</script>
 
 <script type="text/javascript">
-	//选择图片
-	var onepic = document.getElementsByClassName('onepic')[0];
-    var uppics = document.getElementsByClassName('uppics')[0];
-    var p = document.getElementById('p');
-    var time1 = null;
-    var Apic = [];//存放图片数组
-    var Indexes = 0;//当前删除
-    onepic.onclick = function(){  
-    	var file_input = document.getElementById('file_input');
-    	if(Apic.length<=4){
-    		if(Apic.length ==4){
-    			file_input.style.display = 'none';
-    		}else{
-    			file_input.style.display = 'inline-block';
-    		}
-			
-        uppics.id = 'uppics2';
-        var imgnode = document.createElement("div");
-        clearInterval(time1);
-        time1 = setInterval(function(){
-            console.log('加载中');
-            if (file_input.files[0]) {
-                clearInterval(time1);
-                var reader = new FileReader();
-                Apic.push(file_input.files[0]);
-                var picname = file_input.files[0].name;
-                reader.readAsDataURL(file_input.files[0]); 
-                reader.onload = function(e){
-                    imgnode.innerHTML = '<img class="picimg1 '+picname+'" src="../../img/shanchu.svg"/><img class="picimg" src="'+this.result+'"/>';
-                    document.getElementsByClassName('picimg1')[Indexes].onclick = function(){
-                        this.parentNode.parentNode.removeChild(this.parentNode);
-                        var dename = this.className.slice(8);
-                        for (var i = 0; i < Apic.length; i++) {
-                            if (Apic[i].name == dename) {
-                               Apic.splice(i,1);
-                            }
-                        }
-                        Indexes--;
-                    }
-                    Indexes++;
-                }
-                uppics.appendChild(imgnode);
-                file_input.value = '';
-            }
-        },500)
-       }else{
-       	file_input.style.display = 'none';
-       	mui.toast('最多选择五张');
-       }
-    }
-	//选择图片结束
-	
-	
+
 	var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
 	mui.plusReady(function(){
 		//接受上页面参数
@@ -821,9 +713,9 @@ function disclaimer(){
 			//分类选择
 			var userPicker = new $.PopPicker();
 			userPicker.setData([{
-				text: '商家'
+				text: '车找人'
 			}, {
-				text: '个人'
+				text: '人找车'
 			}]);
 			var showUserPickerButton = doc.getElementById('showCityPicker4');
 			var userResult = doc.getElementById('cityResult4');
