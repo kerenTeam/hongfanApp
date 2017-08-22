@@ -791,38 +791,7 @@
 								recommendObj.recommendData = dataobj;
 								document.getElementById("moll_recommend").innerHTML = template("recommendTpl", recommendObj);
 								mui("#upload")[0].innerHTML = "";
-								
-								
-								//懒加载开始  
-								var loadPics = mui('.loadPics'),
-								H = window.innerHeight;//可视窗口高度
-								window.onscroll = function(){ 
-									if(loadPics.length){
-									    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
-									    [].forEach.call(loadPics,function(img){
-									         if(!img.getAttribute('data-src')){return}
-									         if(H + S -100 > getTop(img)){
-									         	
-									             img.src=img.getAttribute("data-src");
-									             img.removeAttribute("data-src");
-									             img.style.backgroundImage = 'url()';
-									             img.classList.add('fade-in');//开始动画
-									             if(img.classList.contains('loadPics')){ 
-									             	img.classList.remove('loadPics');
-									             }
-									         }
-								        })
-									}    
-								}
-								//window.onscroll();//先默认显示
-								function getTop(e){//获取元素距离顶部高度方法。  
-								    var T = e.offsetTop;
-								    while(e = e.offsetParent ){
-								        T += e.offsetTop
-									}
-								    return T
-								} 
-								//懒加载开始结束
+								lazyLoad();//懒加载
 								
 								//上滑加载
 								$(window).scroll(function() {　　
@@ -860,36 +829,8 @@
 														recommendObj.myUrl = serverimgUrl;
 														recommendObj.recommendData = dataobj
 														document.getElementById("moll_recommend").innerHTML += template("recommendTpl", recommendObj);
+														lazyLoad();//懒加载
 														
-														//懒加载开始  
-														var loadPics = mui('.loadPics'),
-														H = window.innerHeight;//可视窗口高度
-														window.onscroll = function(){ 
-															if(loadPics.length){
-															    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
-															    [].forEach.call(loadPics,function(img){
-															         if(!img.getAttribute('data-src')){return}
-															         if(H + S -100> getTop(img)){
-															             img.src=img.getAttribute("data-src");
-															             img.removeAttribute("data-src");
-															             img.style.backgroundImage = 'url()';
-															             img.classList.add('fade-in');//开始动画
-															             if(img.classList.contains('loadPics')){ 
-															             	img.classList.remove('loadPics');
-															             }
-															         }
-														        })
-															}    
-														}
-														//window.onscroll();//先默认显示
-														function getTop(e){//获取元素距离顶部高度方法。  
-														    var T = e.offsetTop;
-														    while(e = e.offsetParent ){
-														        T += e.offsetTop
-															}
-														    return T
-														} 
-														//懒加载开始结束
 													}
 													mui("#upload")[0].innerHTML = " ";
 													Spagenum++; //加载成功,当前页+1

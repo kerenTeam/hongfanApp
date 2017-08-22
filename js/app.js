@@ -274,4 +274,35 @@ function formatDate(v, format) {
     return format;
 };
 
+//懒加载方法
+//懒加载开始  
+window.lazyLoad = function(init,limit){
+	var limit = limit || 100;
+	var loadPics = mui('.loadPics'),
+	H = window.innerHeight;//可视窗口高度
+	window.onscroll = function(){
+		if(loadPics.length){
+		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
+		    [].forEach.call(loadPics,function(img){
+		         if(!img.getAttribute('data-src')){return}
+		         if(H + S - limit > getTop(img)){
+		             img.src=img.getAttribute("data-src");
+		             img.removeAttribute("data-src");
+		             img.style.backgroundImage = 'url()';
+		             if(img.classList.contains('loadPics')){ 
+		             	img.classList.remove('loadPics');
+		             }
+		         }
+	        })
+		}    
+	}
+	init && (window.onscroll())//先默认显示
+	function getTop(e){//获取元素距离顶部高度方法。  
+	    var T = e.offsetTop;
+	    while(e = e.offsetParent ){
+	        T += e.offsetTop
+		}
+	    return T
+	} 
+}
 
