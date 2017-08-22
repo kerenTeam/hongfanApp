@@ -17,7 +17,6 @@
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<style type="text/css">
 			.notice .tab-hd,.orderbh,dl.list dt, dl.list dd,dl.list{
-				/*border-bottom: 1px solid #eee;*/
 				box-sizing: border-box;
 				-webkit-box-sizing: border-box;
 				overflow-y: hidden;
@@ -29,12 +28,12 @@
 				background-color: #f3f3f3;
 			}
 			.notice .tab-bd{
-				padding-top: 1%;
+				padding-top:44px;
 			}
 			.notice li.active{
-				border-bottom: 2px solid red;
+				border-bottom: 2px solid #f63d41;
 				box-sizing: border-box;
-				color: red;
+				color: #f63d41;
 			}
 			dl.list dt, dl.list dd, dl.list{
 				margin-bottom: 10px;
@@ -42,12 +41,13 @@
 				border: none!important;
 			}
 			dl.listtwo dd>.react{
+				padding: 18px .12rem 10px .15rem;
 			}
 			dl.listtwo dd{
 				padding: 0;
 			}
 			.order-bottom{
-				margin: 5px 0;
+				margin: 12px 0px 6px;
 			}
 			.order-bottom a{
 				background-color: #fff;
@@ -59,16 +59,18 @@
 				font-size: 12px;
 				line-height: 27px;
 				padding: 0 2px !important;
+				border-radius: 2px;
 			}
 			.confirm{
-				color: #ff5601 !important;
-				border: 1px solid #ff5601 !important;
+				color: #f63d41 !important;
+				border: 1px solid #f63d41 !important;
 			}
 			.poi-name{
 				width: 70%;
 				overflow: hidden;
 				display: inline-block;
 				line-height: 20px;
+				color: #555;
 			}
 			.pricetwo{
 				position: absolute !important;
@@ -83,7 +85,7 @@
 				color: #333 !important;
 			}
 			.react{
-				height: 105px !important;
+				height: 112px !important;
 				margin-bottom: 2px;
 			}
 			.react:last-child{
@@ -113,28 +115,26 @@
 				font-size: 12px;
 			}
 			.state{
-				color: #ff5601 !important;
+				color: #f63d41 !important;
 				font-size: 12px !important;
 			}
 			.tip{
-				border-bottom: 1px solid #EFEFF4;
 				text-align: right;
 			}
 			.tip p{
-				color: #333;
+				color: #333;position: relative;top: 3px;
 			}
 			.tab-nav{ 
 				overflow-x: scroll !important;
 				width: 120%;
-				    /*background-color: white;*/
 				    white-space: nowrap; 
 			}
 			.tab-hd{
-				height: 41px !important;
+				height: 45px !important;
 				border-bottom: 1px solid #EFEFF4 !important;
 			}
 			.tab-nav li{
-				height: 40px !important;
+				height: 45px !important;
 			}
 			.tab-hdtwo{
 				overflow-x: scroll;
@@ -147,7 +147,7 @@
 			    display: inline-block;
 			    white-space: nowrap;
 			    height: auto;
-			    line-height: 2.8!important;
+			    line-height: 45px !important;
 		    }
 		    ::-webkit-scrollbar {
 				width: 0!important;
@@ -242,11 +242,24 @@
 				color: red;
 			}
 			.fineB:after{bottom: 1px;}
+			.fineB1:after{bottom: 0px;}
 			body{background-color: #f3f3f3;}
+			.orderbh span{font-size: 12px;color: #333;}
+			.shopImg{width: 22px; vertical-align: middle; margin-top: -3px;}
+			.mui-bar-nav{box-shadow: none !important;}
+			header.mui-bar{z-index: 200;}
+			#tabLink{
+				position: fixed;
+				width: 100%;
+				z-index: 100;
+				border: none !important;
+				box-shadow: 0 0 2px rgba(175, 166, 166, 0.85) !important;
+				
+			}
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav">
+		<header class="mui-bar mui-bar-nav fineB fineB1">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">商城订单</h1>  
 		</header>
@@ -257,16 +270,17 @@
 					
 					<script type="text/html" id="orderTpl">
 						<div class="notice">
-					<div class="tab-hd tab-hdtwo">
+					<div class="tab-hd tab-hdtwo" id="tabLink">
 						<ul class="tab-nav">
-						  <li class="active" data-statusId="-1">全部</li>
-						  <li data-statusId="1">待付款</li>
-						  <li data-statusId="2">待发货</li>
-						  <li data-statusId="3">待收货</li>
-						  <li data-statusId="4">待评价</li>
-						  <li data-statusId="7">退款</li>
+						  <li class="active aClick" data-statusId="-1">全部</li>
+						  <li class="aClick" data-statusId="1">待付款</li>
+						  <li class="aClick" data-statusId="2">待发货</li>
+						  <li class="aClick" data-statusId="3">待收货</li>
+						  <li class="aClick" data-statusId="4">待评价</li>
+						  <li class="aClick" data-statusId="7">退款</li>
 						</ul>
 					</div>
+					
 					<div class="tab-bd">
 						<div class="tab-pal">
 							<dl class="list listtwo list-in">
@@ -283,18 +297,18 @@
 													<div class="orderbh box-s fineB">
 														<%if(orderData[i].order_type == 0){ %>
 														<span>
-															<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+															<img class="shopImg" src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
 															跨境优品
 														<%}else{%>
 															<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
-															<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+															<img src="../../img/market/shop.png" class="shopImg" style="width: 0.2rem;vertical-align: middle;" /> 
 															<%=orderData[i].goods_data.stores.store_name%>
 															<%}%>
 															<span style="font-size: 0.10rem;"><%=orderData[i].create_time%></span>
 														</span>
 													</div>
 													<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
-													<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.store_id%>')">
+													<a href="#" class="react fineB" onclick="orderInfo('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.store_id%>')">
 														<div class="dealcard dealcardtwo clearfloat">
 															<div class="dealcard-img imgbox">
 																<% if(orderData[i].order_type == 0){ %>
@@ -347,11 +361,11 @@
 											<div class="orderbh box-s fineB">
 												<%if(orderData[i].order_type == 0){ %>
 												<span>
-													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+													<img src="../../img/market/shop.png" class="shopImg" style="width: 0.2rem;vertical-align: middle;" /> 
 													跨境优品
 												<%}else{%>
 													<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
-													<img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" /> 
+													<img src="../../img/market/shop.png" class="shopImg" style="width: 0.2rem;vertical-align: middle;" /> 
 													<%=orderData[i].goods_data.stores.store_name%>
 													<%}%>
 													<span style="font-size: 0.10rem;"><%=orderData[i].create_time%></span>
@@ -477,9 +491,8 @@
 						
 					</div>
 				</div>
-					</script>
-				
-												
+			</script>
+											
 			</div>
 		</div>
 		
@@ -526,10 +539,7 @@
 			var oldToken = plus.storage.getItem('oldToken'); 
 			var myuserid = plus.storage.getItem('userid'); 
 			//加载订单 
-			plus.nativeUI.showWaiting('加载中 ...', {
-				width: '100px',
-				height: '80px'
-			});
+			plus.nativeUI.showWaiting();
 			load();
 			function load(){
 				mui.ajax(serverUrl+'/api/mall/orderlist',{
