@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>设置付费机制</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />   
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
+	</head>
+	<style type="text/css"> 
+	 	.circleContain{padding: 5px;}
+		.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../../img/makeFriend/friendB.png) no-repeat;text-align: center;background-size: 100%;background-position: left top;padding: 1px;}
+		.circleImg{width: calc((100vw - 34px)/2);padding-top: 100%;overflow: hidden;position: relative;}
+		.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 5px 5px 0 0;}
+		.circleName{padding: 25px 0;line-height: 0.5;}
+		
+		.ruleCt{display: flex;justify-content: space-around;align-items: center;}
+		.closemask{position:absolute;bottom:20px;left:50%;-webkit-transform:translateX(-50%)}
+		.rule{position:absolute;top:50%;left:7%;width:86%;-webkit-transform: translateY(-50%);}
+		.ruleCt div{height: 100px;width:100px;border: 1px solid #F3F3F3;border-radius: 50%;text-align: center;line-height: 100px;color: black;background-color: white;}
+		.ruleAct{background-color: #fa3b3c!important;color: white!important;border: 1px solid #fa3b3c!important;}
+		.circleInput{display: flex;justify-content: center;align-items: center;border-bottom: 1px solid #fa3b3c;width: 80%;margin: auto;margin-top: 20px;}
+		.circleInput input{border: none;width: 80%;margin: 0;text-align: center;} 
+	</style>
+	<body style="background-color: white;padding-bottom: 0;">
+		 
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			<h1 class="mui-title">设置付费机制</h1>
+			 
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="main">	
+		 	<!--遮罩-->
+			<div id="maskInfo">
+			<div class="rule">
+				<div class="ruleCt">
+				 	<div class="ruleCtd ruleAct">
+				 		付费
+				 	</div>  
+				</div>
+				<div class="circleInput">
+			 	 	<span>￥</span>
+			 	 	<input type="number" min="50" max="3000" name="" id="" placeholder="输入50-3000的整数" />
+			 	 	<span>/年</span>
+			 	</div>
+			</div>	
+					
+			</div>
+		</div>  
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+		 
+		//搜索
+		$('.search').click(function(){
+			openview({
+				view:'searchQa.html'
+			})
+		})
+		//创建圈子 
+		$('#addCircle').click(function(){
+			$('.closeIcon').css("transform",'rotate(135deg)')
+			$('#maskInfo').fadeIn(200);
+		})
+		
+		$('.ruleCt').click(function(){
+			event.stopPropagation()
+		})
+		
+		$('.ruleCt div').click(function(){ 
+			$('.circleRule').css('display','block')
+			if(!$(this).hasClass('ruleAct')){
+				$('.ruleCtd').removeClass('ruleAct');
+				$(this).addClass('ruleAct')
+			} 
+		})
+		
+		$('.closemask').click(function(){
+			event.preventDefault()
+			$('#maskInfo').fadeOut(200);
+			$('.circleRule').css('display','none')
+			$('.ruleCtd').removeClass('ruleAct');
+		})
+		
+		
+		
+		$('.agree').click(function(){
+			if($(this).attr('src') == '../../img/makeFriend/diasgree.png'){
+				$(this).attr('src','../../img/makeFriend/agree.png');
+				$(this).siblings('button').removeAttr('disabled')
+			}else if($(this).attr('src') == '../../img/makeFriend/agree.png'){
+				$(this).attr('src','../../img/makeFriend/diasgree.png') 
+				$(this).siblings('button').attr('disabled','true')
+				
+			}
+		})
+		
+		$('.upbtn').click(function(){
+			$('#maskInfo').fadeOut(200);
+			$('.circleRule').css('display','none')
+			$('.ruleCtd').removeClass('ruleAct');
+			openview({
+				view:'addCircle.html'
+			})
+		})
+		</script>
+	</body>
+
+</html>
