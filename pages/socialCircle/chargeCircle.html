@@ -22,15 +22,18 @@
 		.rule{position:absolute;top:50%;left:7%;width:86%;-webkit-transform: translateY(-50%);}
 		.ruleCt div{height: 100px;width:100px;border: 1px solid #F3F3F3;border-radius: 50%;text-align: center;line-height: 100px;color: black;background-color: white;}
 		.ruleAct{background-color: #fa3b3c!important;color: white!important;border: 1px solid #fa3b3c!important;}
-		.circleInput{display: flex;justify-content: center;align-items: center;border-bottom: 1px solid #fa3b3c;width: 80%;margin: auto;margin-top: 20px;}
-		.circleInput input{border: none;width: 80%;margin: 0;text-align: center;} 
+		.circleInput{display: flex;justify-content: center;align-items: center;border-bottom: 1px solid #fa3b3c;width:80%;margin: auto;margin-top: 20px;}
+		.circleInput input{border: none;width: 76%;margin: 0;text-align: center;}
+		.chargeUnit{text-align: center;padding: 20px 10px;}
+		.diybut{color: #fa3b3c;background:url(../../img/answer/bouttonbr.png) no-repeat;background-size: 100% 100%;background-position: left top;width: 100px;text-align: center;padding: 16px 5px;display: inline-block;margin: 15px;} 
+		.diybuted{background-color:#fa3b3c ;color: white;border-radius: 5px;}
 	</style>
 	<body style="background-color: white;padding-bottom: 0;">
 		 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">设置付费机制</h1>
-			 
+			<a class="mui-pull-right ft14 nextStep" style="line-height: 50px;color: black;">下一步</a> 
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">	
@@ -45,7 +48,15 @@
 				<div class="circleInput">
 			 	 	<span>￥</span>
 			 	 	<input type="number" min="50" max="3000" name="" id="" placeholder="输入50-3000的整数" />
-			 	 	<span>/年</span>
+			 	 	<span class="unit">/年</span>
+			 	</div>
+			 	<div class="chargeUnit">
+			 		<div class="diybut diybuted" data-id='1'>
+			 			按年付费
+			 		</div>
+			 		<div class="diybut" data-id='2'>
+			 			永久
+			 		</div>
 			 	</div>
 			</div>	
 					
@@ -56,54 +67,22 @@
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 		 
-		//搜索
-		$('.search').click(function(){
-			openview({
-				view:'searchQa.html'
-			})
-		})
-		//创建圈子 
-		$('#addCircle').click(function(){
-			$('.closeIcon').css("transform",'rotate(135deg)')
-			$('#maskInfo').fadeIn(200);
-		})
-		
-		$('.ruleCt').click(function(){
-			event.stopPropagation()
-		})
-		
-		$('.ruleCt div').click(function(){ 
-			$('.circleRule').css('display','block')
-			if(!$(this).hasClass('ruleAct')){
-				$('.ruleCtd').removeClass('ruleAct');
-				$(this).addClass('ruleAct')
+	 
+		$('.diybut').click(function(){
+			if($(this).attr('data-id') == 1){
+				$('.unit').html('/年')
+			}else{
+				$('.unit').html('/永久')
+			}
+			if(!$(this).hasClass('diybuted')){
+				$('.diybut').removeClass('diybuted');
+				$(this).addClass('diybuted')
 			} 
 		})
 		
-		$('.closemask').click(function(){
-			event.preventDefault()
-			$('#maskInfo').fadeOut(200);
-			$('.circleRule').css('display','none')
-			$('.ruleCtd').removeClass('ruleAct');
-		})
-		
-		
-		
-		$('.agree').click(function(){
-			if($(this).attr('src') == '../../img/makeFriend/diasgree.png'){
-				$(this).attr('src','../../img/makeFriend/agree.png');
-				$(this).siblings('button').removeAttr('disabled')
-			}else if($(this).attr('src') == '../../img/makeFriend/agree.png'){
-				$(this).attr('src','../../img/makeFriend/diasgree.png') 
-				$(this).siblings('button').attr('disabled','true')
-				
-			}
-		})
-		
-		$('.upbtn').click(function(){
-			$('#maskInfo').fadeOut(200);
-			$('.circleRule').css('display','none')
-			$('.ruleCtd').removeClass('ruleAct');
+	 
+		$('.nextStep').click(function(){
+			
 			openview({
 				view:'addCircle.html'
 			})
