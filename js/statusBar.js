@@ -45,7 +45,7 @@
 	}
 
 //	这是单独加模拟状态栏的方法
-//	<div id="sBar" style="background-color: #af4444;position: fixed;width:100%;top: 0;z-index: 9999"></div>
+//	<div id="sBar" style="background-color: #fff;position: fixed;width:100%;top: 0;z-index: 999"></div>
 //	<script type="text/javascript">
 //		var immersed = 0;
 //		var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
