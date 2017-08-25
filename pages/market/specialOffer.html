@@ -28,8 +28,9 @@
 			.grade-eject, .Category-eject, .Sort-eject{
 				height: 120px;
 			}
+			div.screening>ul{padding: 5px 50px;}
 			div.screening>ul>li{
-				border-left: 1px solid #eee !important;
+				border-left: none!important;
 			}
 			div.screening>ul{
 				border-bottom:1px solid #eee; 
@@ -153,7 +154,7 @@
 			.Regional{
 				background-image: none !important; 
 			}
-			#main{padding-top: 36px !important;}
+			#main{padding-top: 46px !important;}
 			.guess-like{padding-top: 0 !important;}
 			#screendiv{
 				position: fixed;left: 0;top: 50px;height: 400px;width: 100%;background-color: #fff;
@@ -196,6 +197,16 @@
 			#upload{min-height: 30px;line-height: 10px;}
 			#upload img{width: 40px;margin-top: -10px;padding: 4px !important;}
 			.goodsItem{background-color: #fff};
+			
+			/*新下拉框*/
+			.Sort-height{position: relative;background: none;top:98px!important;}
+			#Sort-Sort{position: absolute;margin-top:8px;height: auto;}
+			.grade-eject>ul>li, .Category-eject>ul>li, .Sort-eject>ul>li{border-bottom: none!important;position: relative;}
+			.grade-eject>ul>li:after, .Category-eject>ul>li:after, .Sort-eject>ul>li:after{content: '';
+				display: block;
+				height: 1px;
+				background-color: #eee;
+				-webkit-transform: scaleY(.5);right: 5px;}
 		</style>
 		<style type="text/css">
             .special{padding: 15px 5px 15px 35%;padding-left: 32%;position: relative;background-color: #fff;overflow: hidden;min-height: 125px;}
@@ -255,20 +266,20 @@
         <script type="text/html" id="recommendTpl">
             <% for(var i=0;i<recommendData.length;i++){%>
                 <div class="special clearfix fineB aClick" onclick="goInfo(<%= recommendData[i].goods_id%>)">
-                    <!--<img src="../../img/special.jpg"/>-->
                     <img src="<%= myUrl%><%= recommendData[i].thumb%>" alt="<%= myUrl%>+<%= recommendData[i].thumb%>" onerror="this.src = '../../img/nopic.svg'"/>
                     <p class="overTwo">
                         <%= recommendData[i].title%>
                     </p>
-                    <div class="S_bottom">
+                    <div style="color: #999;font-size: 14px;position: absolute;top:60px">
+                    	剩余35盒
+                    </div>
+                    <div class="S_bottom"> 
                         <div class="S_bottom1 clearfix">
-                            <span>￥<%=recommendData[i].price%></span> 
+                            <span style="font-weight: 400;">￥<%=recommendData[i].price%></span> 
+                            <span style="color: #999;font-size: 12px;font-weight:400;margin-left: 5px;text-decoration: line-through;">￥<%=recommendData[i].originalprice%></span>
                             <a>立即抢购</a>
                         </div>
-                        <div class="S_bottom2">
-                            <span>原价￥<%=recommendData[i].originalprice%></span>
-                            
-                        </div>
+                        
                     </div>
                 </div>
             <% }%>  
@@ -284,19 +295,27 @@
 
 <script type="text/javascript">
 	$('.Sort').click(function(){
+		event.stopPropagation()
 		if(!$('.Sort-eject').hasClass("grade-w-roll")){
 			$('.Sort-eject').addClass("grade-w-roll")
 		}else{
 			$('.Sort-eject').removeClass("grade-w-roll")
 		}
 	})
-	
+	$('body').click(function(){
+		if(!$('.Sort-eject').hasClass("grade-w-roll")){
+			$('.Sort-eject').addClass("grade-w-roll")
+		}else{
+			$('.Sort-eject').removeClass("grade-w-roll")
+		}
+	})
 
     var Spagenum = 2; //实到页数
     var Ypagenum = 1; //应到页数 
     mui.plusReady(function() {
         var oldToken = plus.storage.getItem('oldToken');
         window.loadfun = function(order_field,orderby_type){
+        	event.stopPropagation()
 	        //获取天天特价
 	     	document.getElementById("main").innerHTML = loadstr;
 			mui('#nulldiv')[0].style.display = 'none'; 
