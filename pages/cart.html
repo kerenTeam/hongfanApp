@@ -27,17 +27,17 @@
 		<div id="cartData"></div>
 		<script type="text/html" id="cartTpl">
 			<%if(goodsList.length==0){%>
-				<div style="text-align: center;" onclick="hangout()">
+				<div onclick="hangout()">
 					<img src="../img/market/blankCart.png" style="width:30%;margin: auto;display: block;margin-top: 40%;" alt="" />
-
-				</div>
+					<div style="color: #333333;text-align: center;margin-top: 30px;font-size: 14px;">你的购物车还是空的哦</div>
+				</div> 
 			
 			<%}else{%>
 			<%for(var i =cates.length-1;i>=0;i--){%>
 			<dl class="cart">
 				<dt><div class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
 				<div class="shopName" style="white-space: nowrap;overflow: hidden;max-width:2.5rem;"><img class="cartLogo" src="../img/573a7a6742999.png" style="margin-right: 5px;"> <%=cates[i]%></div>
-				  <a class="edit">| 编辑</a>
+				  <a class="edit">编辑</a>
 				 </dt>
 				<%for(var j=goodsList.length-1;j>=0;j--){%>
 				<% if(goodsList[j].shopName ==  cates[i]){%>
@@ -69,7 +69,9 @@
 								<input class="mui-input-numbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" value="<%=goodsList[j].goodsnum%>" readonly="" type="number" />
 								<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
 							</div>
-
+							<!--<div class="extraBrief" style="margin-top: 10px;">
+								<%=goodsList[j].goodText%>
+							</div>-->
 						</div>
 					</div>
 					<a class="delBtn" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>">删除</a>
@@ -81,9 +83,10 @@
 							<!--bottom nav-->
 		<div style="height:1rem;"></div>
 		<aside class="btmNav" id="dibu">
-			<a class="dp" style="position: relative;">
-				<div class="mui-checkbox botCheck"><input name="checkbox" id="totalCheck" type="checkbox"></div>合计：￥<span class="totalMoney">0</span></a>
-			<a class="goOrder dp" style="background:#f53c42;color:white;text-shadow:none;">立即下单<span class="totalVisi">(<span class="totalNum">0</span>)</span>
+			<a class="dp" style="position: relative;color: #f63d43;">
+				<div class="mui-checkbox botCheck"><input name="checkbox" id="totalCheck" type="checkbox"></div><span style="color: #333333;">合计：</span>￥<span class="totalMoney">0</span>
+			</a>
+			<a class="goOrder dp" style="background:#f53c42;color:white;text-shadow:none;">结算<span class="totalVisi">(<span class="totalNum">0</span>)</span>
 			</a>
 			<a class="delBtnAll" style="background:#ff6910;color:white;text-shadow:none;display: none;">删除</span>
 			</a>
@@ -170,7 +173,7 @@
 				$(this).parentsUntil("#cartData").find(".priceArea").hide();
 			}, function() {
 				$(this).parent().siblings("dd").find(".delBtn").fadeOut();
-				$(this).html("| 编辑");
+				$(this).html("编辑");
 				$(this).parentsUntil("#cartData").find(".numberWidget").hide(); 
 				$(this).parentsUntil("#cartData").find("h2").css("visibility","visible"); 
 				$(this).parentsUntil("#cartData").find(".priceArea").show();
@@ -178,7 +181,7 @@
 			//编辑所有
 			$(".editAll").toggle(function() {
 				$(".edit,.delBtn").css("display", "none");
-				$(".edit").html("| 编辑");
+				$(".edit").html("编辑");
 				$(".delBtnAll").css("display", "block");
 				$(".delBtnAll").css("display", "block");
 				$("#cartData").find("h2").css("visibility","visible"); 

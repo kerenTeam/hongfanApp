@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>超市优选</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" href="../../css/one.css">
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<style type="text/css">
+			/*banner样式*/
+			.mui-slider-indicator .mui-indicator{
+				width: 10px;
+				height: 10px;
+				border-radius: 8px;
+				background: black;
+				margin-right: 5px;
+				opacity: 0.3;
+				cursor: pointer;
+				border: none;
+				box-shadow: none;
+			}
+			#banner{
+				position: relative;
+				width: 100%;
+				padding-top: 42%; 
+				overflow: hidden;
+				background: url(../../img/bannerback.svg) 50% 50% no-repeat;
+				background-size: 20%;
+			}
+			.mui-slider .mui-slider-group{
+				position: absolute;
+			    height: 100%;
+			    width: 100%;
+			    top: 0;
+			}
+			.mui-slider .mui-slider-group .mui-slider-item img{height: 100%;}
+			/*banner样式结束*/
+			.onetable{
+				margin-top: 0;
+			}
+			.onetable p{
+				margin-top: -10px;
+				font-size: 11px;
+				margin-bottom: 5px;
+			}
+			.fontcl2{
+				font-size: 16px;
+				line-height: 18px;
+			}
+			.sy_recmd_list .pub_wz{
+				position: relative;
+				padding: 0 5% !important;
+			}
+			sub{
+				bottom: 0;
+				font-size: 50%;
+				margin-left: 5px;
+			}
+			.fr {
+				position: absolute;
+				float: right;
+				display: block;
+				top: 12px;
+				right: 5px;
+				font-size: 10px;
+			}
+			.sy_recmd_list .pub_wz .nr_box{
+				border-top: none;
+				margin-top: 0;
+			}
+			.mui-bar{
+				height: 50px;
+			}
+			.mui-title,.mui-icon{
+				line-height: 50px;
+			}
+			.mui-bar .mui-icon{
+				padding: 0;
+			}
+
+			/*这一页*/
+			.onetable{
+				border-bottom: 0rem solid #e6e6e6;
+				padding-bottom: 12px;
+				background-color: #fff;
+				box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.1);
+			}
+
+			.onetable .table{
+				text-align: center;
+			}
+			.onetable .table img {
+				text-align: center;
+			    width: 80%;
+			    margin: 3px 0;
+			    margin-top: 8px;
+			}
+			.onetable p {
+				margin-top: -16px;
+				font-size: 12px;
+			}
+			.market-icon{
+				border-radius: 50%;
+				width: 0.55rem;
+				/*height: 0.55rem;*/
+				display: block;
+				margin: 0 auto;
+				/*padding-top: 10px;*/
+			}
+			.left{
+				
+			}
+			/*精选频道*/
+			.choiceness {
+				margin-top: 5px;
+				padding-bottom: 5px;
+			}
+			.choiceness p{
+				text-align: center;
+				color: #333;
+				line-height: 20px;
+			}
+			.choiceness .gray{
+				color: #666;
+				font-size: 11px;
+			}
+			.choiceness img{
+				width: 16px;
+				margin-top: -2px;
+				margin-right: 2px;
+			}
+			.choicenessWrap .pub_img img {
+				height: 100px;
+				min-height: 1rem;
+				overflow: hidden;
+			}
+			.box{
+				border: 1px solid #efefef;
+				/*box-shadow: 0px 0 5px 0px rgba(0,0,0,0.1);*/
+			}
+			.sy_recmd{
+				background-color: #fff;box-shadow: 0px 0px -1px 0px rgba(0,0,0,0.1);
+    			margin-bottom: 6px !important;
+			}
+			.sy_recmd:last-child{
+				margin-bottom: 0%!important;
+			}
+			.sy_title{
+				border-bottom: none;
+			}
+			.mui-bar-nav{
+				box-shadow: none;
+			}
+			.rcdPadding{
+				position: relative;
+				display: inline-block;
+				padding-top: 100%;
+				width: 100%;
+				overflow: hidden;
+			}
+			.rcdPadding img{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+			}
+			#upload{ 
+				text-align: center;font-size: 15px;line-height: 30px;min-height: 40px;
+			}
+			#upload img{width: 60px;margin-top: -15px;
+			}
+			.gocart{
+				position: fixed;
+				display: block;
+				right: 0.2rem;
+				bottom: 0.2rem;
+				height: 0.5rem;
+				width: 0.5rem;
+				background-color: #f53c42;
+				border-radius: 50%;
+				border: 0;
+				box-sizing: border-box;
+				z-index: 999;
+				padding: 0;
+				text-align: center;
+				line-height: 0.5rem;
+				box-shadow: 0px 0px 2px 2px rgba(208, 145, 145, 0.4);
+			}
+			.gocart img{
+				width: 60%;
+			}
+
+			.mb10{
+				border-top: none !important;
+			}
+			.table{
+				border-bottom: none !important;
+			}
+
+			/*广告*/
+			.adbox{line-height: 30px;width: 18% !important;}
+			.adbox p{padding: 10px 0;text-align: left !important;font-size: 12px !important;}
+			/*.adbox img{width: 30% !important;}*/
+			.overyou{width: auto !important;overflow-x: scroll !important;padding: 0 10px 10px 10px;}
+			.swiper-slide{
+				width: 50%;
+				border-radius: 3px !important;
+			}
+			.sy_limit_buy{
+				border-bottom: none;
+				padding: 0;
+			}
+			.sy_recmd_list .box{
+				border: none;
+				margin: 4px;
+				box-shadow: 0px 0px 3px #ccc;
+			}
+			.sy_recmd_list_box{
+				padding-left: 0;
+			}
+			.width_5{width: 25% !important;}
+			.hotlist{
+				overflow: scroll;
+				white-space: nowrap;
+				padding: 10px 10px;
+			}
+			::-webkit-scrollbar {display:none}
+			 
+			.hotlist .liste{
+				font-size: 0.13rem;
+				vertical-align: middle;
+				display: inline-block;
+				width:1rem;
+				margin: 0 10px;
+			}
+			.liste img{
+				width:1rem;
+				height: 1rem; 
+			}
+			.gdname{
+				white-space: normal;
+				line-height: 1.25;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+				margin-top: 5px;
+			}
+			.gdprice{
+				color: #F53C42;
+				text-align: center;
+				line-height: 1.5;
+			}
+			.HOT_pic{min-height: 1rem !important; text-align: center;}
+			.HOT_pic img{width: 30px !important;}
+			.baocun img {
+				width: 0.2rem;
+				vertical-align: middle;
+				margin-top: 5px;
+				margin-right: 5px;
+			}
+			.mb10{margin-bottom: 0;}
+			body{background-color: #fff;}
+			
+		</style>
+		<link rel="stylesheet" type="text/css" href="../../css/mainHtml.css"/>
+		<style type="text/css">
+			.left {
+			    padding-left: 10px;
+			    padding: 5px 0;
+		        text-align: left;
+			    width: 100%;
+			    font-size: 16px;
+			}
+			.sy_title{padding-left: 9px;}
+			.onetable p {
+			    margin-top: -17px;
+			    font-size: 12px;
+			}
+			#main {
+			    margin-top: 50px !important;
+			}
+			.loadPics{visibility: hidden;}
+			.rcdPadding{background: url(../../img/bannerback.svg) 50% 50% no-repeat;background-size: 30%;}
+			.jiazai{text-align: center;font-size: 14px;color: #888;margin-bottom: 10px;}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="padding-left: 16px;"></a>
+			<h1 class="mui-title">超市优选</h1>
+			<!--<a href="javascript:;" style="line-height: 50px;top: 0;" class="fr baocun" onclick="gosearch()"><img src="../../img/sousuo.svg" alt="" /></a>-->
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div>
+		<div id="main" style="margin-top: 50px;">
+				<!--轮播图-->
+				<div class="mui-slider" id="banner"></div>
+				<!--轮播图结束-->
+				<!--banner数据渲染-->
+				<script type="text/html" id="banner-detail">
+					<div class="mui-slider-group mui-slider-loop">
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate"  onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','two')">
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    </div>
+						<% for(var i=0;i<bannerList.length;i++){ %> 
+					    	<div class="mui-slider-item"  onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','two')">
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	</div>
+					     <% } %>
+					    <!--支持循环，需要重复图片节点-->
+					    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','two')">
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    </div>
+					</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator mui-active"></div>
+						<% for(var i=0;i<bannerList.length-1;i++){ %>
+					    	<div class="mui-indicator"></div>
+					    <% } %>
+		            </div> 
+				</script>
+			
+			 
+			
+			<!--商品分类-->
+			<div class="moll_typeWrap fineB">
+				<div id="moll_type">
+					<div class="onetable" style="margin-bottom: 0;">
+						<div class="table mui-row" style="">
+							<div class="mui-col-xs-4 width_5">	 <!--onclick="goList('52')"-->
+								<div class="market-icon" id="52">
+									<img src="../../img/superMarket/cake.png">
+								</div><br>
+								<p style="color: #666;">鲜花蛋糕</p>
+							</div>
+							<div class="mui-col-xs-4 width_5">
+								<div class="market-icon" id="53">
+									<img src="../../img/superMarket/office.png">
+								</div><br>
+								<p style="color: #666;">办公用品</p>
+							</div>
+						 
+							<div class="mui-col-xs-4 width_5">
+								<div class="market-icon" id="54">
+									<img src="../../img/superMarket/normalLife.png">
+								</div><br>
+								<p style="color: #666;">生活用品</p>
+							</div>
+						 
+							<div class="mui-col-xs-4 width_5" onclick="goList('55')">
+								<div class="market-icon" id="55">
+									<img src="../../img/superMarket/toliet.png">
+								</div><br>
+								<p style="color: #666;">日用百货</p>
+							</div>
+						</div>
+					</div>
+				</div> 
+			</div>
+			
+			
+			<div class="moll_typeWrap fineB" style="display: none;">
+				<div id="moll_type_NNN">
+					 
+				</div>
+			</div>
+			<script type="text/html" id="typeTpl_NNN">
+				<div class="onetable" style="margin-bottom: 0;">
+					<div class="table mui-row" style="">
+						<%for(var i=0;i<typeData.length;i++){%> 
+							<div class="mui-col-xs-5 width_5" onclick="goList('<%=typeData[i].catid%>')">
+								<div class="market-icon"  id="<%=typeData[i].catid%>">
+									<img src="<%=myUrl %><%=typeData[i].icon%>" />
+								</div><br/>
+								<p style="color: #666;"><%=typeData[i].catname%></p>
+							</div>
+						<%}%> 
+					</div>
+				</div>
+			</script> 
+			<!--商品分类结束-->
+
+			<!--推荐列表-->
+			<div class="sy_title mb10">
+				<span class="left">热门推荐</span>
+				<a href="#" class="fr morethree">更多&gt;&gt;</a>
+			</div>
+			<div class="sy_recmd_list_box" style="background-color: #fff !important;margin-top: -10px;padding-top: 10px;">
+				<ul>
+					<div id="moll_recommend">
+						<!--缓冲显示-->
+						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
+						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
+						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
+						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
+					</div>
+				</ul>
+				<div class="clear"></div>
+			</div>
+			<!--热门推荐-->
+				<script type="text/html" id="recommendTpl">
+					<%if(list.length==0){%>
+						暂无推荐商品
+					<%}else{%>
+						<%for(var i=0;i<list.length;i++){%>
+							<li class="sy_recmd_list relist">
+								<div class="box">
+									<div class="pub_img"> 
+										<a class="rcdPadding" onclick="goInfo('<%=list[i].goods_id%>')">
+											<img data-src="<%=myUrl %><%=list[i].thumb%>" src="" width="145" height="145" class="hotImg loadPics">
+										</a>
+									</div>
+									<div class="pub_wz">
+										<h3 class="overflow_clear"><a onclick="goInfo('<%=list[i].goods_id%>','<%=list[i].storeid%>')"><%=list[i].title%></a></h3>
+										<div class="nr_box mui-row">
+											<div class="mui-col-sm-5 mui-col-xs-5 ">
+									        	<p class="fl fontcl2">￥<%=list[i].price%><small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥<%=list[i].originalprice%></small>
+												</p>
+									       </div>
+									        <div class="mui-col-sm-7 mui-col-xs-7 saled"></p>
+									      	</div> 
+									     </div>
+									</div>
+								</div>
+							</li> 
+						<%}%>
+					<%}%>
+				</script> 
+				<div class="upload text-center text-xs gray" id="upload"></div>
+				<div id="nulldiv" style="text-align:center;margin-top: 2%;padding-bottom:15%;font-size: 14px;color: #999;display: none;">
+					<img style="width: 7%;margin-bottom: 1%; " src="../../img/unllfabu.svg"/>
+					暂无推荐
+				</div>
+		</div>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
+	<script src="../../js/app.js"></script>
+	<script type="text/javascript">
+	
+		var Spagenum = 2;//实到页数
+		var Ypagenum = 1;//应到页数 
+		
+		//跳转搜索
+		function gosearch(){
+			openview({
+				view: '../localLife/theSearch.html',
+				extrasobj:{searchcnt:"tsmall"}
+			});
+		}
+		//分类跳转详情
+		function goList(catId){
+			 openview({
+			 	view:"goodsList.html",
+			 	extrasobj:{goodscatId:catId}
+			 })
+		}
+
+		//跳转详情
+		function goInfo(goodsId,storeId){
+			if(storeId==0){
+				 openview({
+				 	view:"yphDetail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}else{
+				 openview({
+				 	view:"mall-detail.html",
+				 	extrasobj:{goodsId:goodsId}
+				 })
+			}
+
+		}
+		//hot详情
+		function openhot(argu){
+	 		openview({
+		 		view:"tsHOT.html",
+		 		extrasobj:{index:argu} 
+	 		})
+		}
+		
+		//跳转到土特产
+		function golocalSp(){
+			openview({
+				view:'localSpList.html'
+			})
+		}
+		//跳转优惠
+		function coupon(){
+			openview({
+				view:"../activity/coupon.html"
+			})
+		}
+		//跳转电影
+		function movie(){
+			openview({
+				view:"jifen-mall.html"
+			})
+		}
+		//跳转活动
+		function activity(){
+			openview({
+				view:"../activity/activity.html"
+			})
+		}
+
+
+		//点击广告跳转到商品详情
+		function goAdv(AdvId){
+			openview({
+				view:'../Adv-detail.html',
+				extrasobj:{AdvId:AdvId}
+			})
+		}
+
+		mui.plusReady(function(){
+			//去购物车
+			document.getElementsByClassName("gocart")[0].addEventListener('tap',function () {
+					openview({
+						view: "../cart.html",
+						id:'cart',
+						extrasobj: {
+							pageId: "detail"
+						}
+					})
+					var list = plus.webview.getWebviewById('cart');
+					//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+					mui.fire(list, 'refresh');
+			});
+			
+			var token=plus.storage.getItem("oldToken");//获取token
+			//banner
+			mui.ajax(serverUrl+'/api/index/banner',{
+				data:{banner_type:11},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers:{"token":token},	 
+				success:function(data,type,xhr){
+					console.log('banner',data);
+					bannerObj={};
+					bannerObj.bannerList = eval("("+data.data.banner+")");
+					bannerObj.url = serverimgUrl;
+					var html = template('banner-detail',bannerObj);
+					document.getElementById('banner').innerHTML = html;
+					plus.nativeUI.closeWaiting();//关闭等待框 
+					//轮播图,获得slider插件对象
+					var gallery = mui('.mui-slider');
+					gallery.slider({
+					  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+					});
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('响应失败  !');
+				}
+			});  
+			//超市优选分类 数据渲染
+			mui.ajax(serverUrl+'/api/mall/goodscategory',{
+				data:{parentid:0,type:2},
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型 
+				timeout:10000,//超时时间设置为10秒；	
+				headers:{"token":token}, 
+				success:function(data){ 
+					console.log('分类',data);
+					if(data.errno==0){
+						var typeObj = {};
+						typeObj.typeData = data.data;
+						typeObj.myUrl = serverimgUrl;
+	                    //_NNNdocument.getElementById("moll_type").innerHTML=template("typeTpl",typeObj);
+					}else{
+						plus.nativeUI.closeWaiting();
+						mui.toast("获取数据失败");
+					}
+
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+					console.log("获取失败！");
+					plus.nativeUI.closeWaiting();
+					mui.toast("当前网络不好请重试");
+				}
+			});
+			
+			//推荐数据渲染
+			var currentPage =1, numsPerPage=8;
+   			//热门推荐 数据渲染 
+			mui.ajax(serverUrl+'/api/mall/mallgooodslist', { 
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:4,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'},
+				dataType:'json',//服务器返回json格式数据 
+					type:'post',//HTTP请求类型 
+					timeout:10000,//超时时间设置为10秒；	
+					headers:{"token":token}, 
+					success:function(data){ 
+						console.log('推荐',data);
+						if(data.errno==0){
+						plus.nativeUI.closeWaiting();//关闭等待框
+							var objdata = {};
+							objdata.myUrl = serverimgUrl;
+							objdata.list = data.data.return.data;
+							var html=template("recommendTpl",objdata);
+							document.getElementById("moll_recommend").innerHTML=html;
+	                    mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
+	                    
+	                    lazyLoad(true,50);//懒加载
+	                     
+	                   	$(window).scroll(function(){
+						　　var scrollTop = $(this).scrollTop();
+						　　var scrollHeight = $(document).height();
+						　　var windowHeight = $(this).height();
+						　　if(scrollTop + windowHeight == scrollHeight){
+
+								if(Spagenum<=data.data.return.totalPages && Spagenum==Ypagenum+1){//当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+									Ypagenum++;//满足加载情况,应到页数+1
+									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,应到'+Ypagenum+'页');
+									var requestfun = function(){
+										mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
+											data:{currentPage:Spagenum,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:4,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'}, 
+											dataType:'json',//服务器返回json格式数据
+											type:'post',//HTTP请求类型 
+											timeout:5000,//超时时间设置为10秒；	
+											headers:{"token":token}, 
+											success:function(data){
+												if(data.errno == 0){
+												var objdata = {};
+													objdata.myUrl = serverimgUrl;
+													objdata.list = data.data.return.data;
+													var html=template("recommendTpl",objdata);
+													document.getElementById("moll_recommend").innerHTML+=html;
+													
+													lazyLoad(false,50);//懒加载
+													
+												}
+												mui("#upload")[0].innerHTML = " ";
+												Spagenum++;//加载成功,当前页+1
+												console.log('成功+1,实到'+Spagenum);
+												console.log('成功+1,应到'+Spagenum);
+											},
+											error:function(xhr,type,errorThrown){
+												//Ypagenum;//失败是应到-1
+												console.log("当前网络不好请重试");
+												requestfun();//失败继续加载
+												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+											}
+										});
+									}
+									requestfun(); 
+									
+								}else if(Spagenum == data.data.return.totalPages+1){//当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "到底了";
+								}
+							}
+						}); 
+	                   	 
+					}else{
+						mui("#upload")[0].innerHTML = ""; 
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+					
+				}, 
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();//关闭等待框
+					mui("#upload")[0].innerHTML = ""; 
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			}); 
+			
+		});
+
+	</script>
+  	<script type="text/javascript">
+		//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
+		//充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 超市优选 specialBar
+		mui.plusReady(function () {
+			var startTime, endTime, stayTime, flagback = 0;
+			startTime = new Date().getTime();
+			var old_back = mui.back;
+			//改写返回键返回的函数，返回时传页面停留时间 
+			mui.back = function(){
+				endTime = new Date().getTime();//返回时间
+				stayTime = Math.ceil((endTime - startTime) / 1000);   
+				console.log('超市优选'+stayTime); 
+				plus.statistic.eventDuration( "specialBar", stayTime);
+				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+				old_back(); 
+			}
+			plus.webview.currentWebview().addEventListener( "popGesture", function(){
+				flagback++;
+				if(flagback == 1){
+					endTime = new Date().getTime();
+					stayTime = Math.ceil((endTime - startTime) / 1000);  
+					plus.statistic.eventDuration( "specialBar", stayTime);
+					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+				}
+			}, false );
+		});
+	</script> 
+	</body>
+
+</html>
