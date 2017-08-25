@@ -190,7 +190,8 @@
 	</head>
 	<body>
     	<div class="clearfloat box-s box-ss" id="userBox">
-    		<div id="beijing"><img id="mypic1" src="../img/morentouxiang.jpg"/></div>
+    		<!--src="../img/morentouxiang.jpg"/-->
+    		<div id="beijing"><img id="mypic1" ></div>
     		<div id="beijing2"></div>
     		<div id="fixdtop"></div>
     		<div class="content clearfloat fl mui-row white">
@@ -273,6 +274,7 @@
 			}
 			
 			mui.plusReady(function(){
+				var cityNum = plus.storage.getItem('cityNum');
 				 // 等待加载PhoneGap 
 				//添加刷新监听
 				document.addEventListener('refresh', function() {
@@ -303,7 +305,8 @@
 								if(data.errno == 0){
 									//显示头像
 									if(data.data[0].avatar){
-										mui('#mypic1')[0].src = mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+											//mui('#mypic1')[0].src = 
+										mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
 									}
 									//显示昵称
 									if(data.data[0].nickname){ 
@@ -401,7 +404,8 @@
 						mui('.denluzhuce')[0].innerHTML = '登录\注册';
 						mui('#numjifen')[0].innerHTML = '';
 //						mui('.dao')[0].innerHTML = '签到';
-						mui('#mypic')[0].src = mui('#mypic1')[0].src = '../img/morentouxiang.jpg';
+						mui('#mypic')[0].src =  '../img/morentouxiang.jpg';
+						//mui('#mypic1')[0].src =
 					}
 					//头像  
 					mui('.myInfo')[0].addEventListener('tap',function(){
@@ -472,6 +476,19 @@
 							});
 						}
 					}); 
+					//我的交友
+					mui('.friendShip')[0].addEventListener('tap',function(){ 
+						if(plus.storage.getItem('myToken')){ 
+							openview({
+								view:'socialCircle/circleIndex0.html'
+							});
+						}else{//没登陆直接打开登录页面
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						}
+					});
 					//我的消息
 					mui('.xiaoxi')[0].addEventListener('tap',function(){
 						if(plus.storage.getItem('myToken')){ 
