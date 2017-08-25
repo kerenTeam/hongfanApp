@@ -58,9 +58,9 @@
 			}
 			.data ul li .shuru{margin-bottom: 0;
 			}
-			.data ul li img {height: 50px;
-			    width: 50px;
-			    border-radius: 50%;
+			.data ul li img { 
+			    width: 100px;
+			    max-height: none; 
 			}
 			.wx_type_img{position: relative;
 			}
@@ -75,17 +75,10 @@
 			}
 			.plist ul li{
 				border-bottom: none;
+				
+			 	border-bottom: 10px solid #f2f1ee;
 			}
-			 .plist ul li:first-child a:after{
-			 	height: 0;
-			 	}
-			.plist ul li a:after{
-				content: '';
-				display: block;
-				height: 1px;
-				background-color: rgba(0,0,0,0.1);
-				-webkit-transform: scaleY(.5);
-			}
+			 
 			.renting-footer{height: 50px;}
 			.data ul li .shuru{
 				line-height: 14px;
@@ -105,59 +98,46 @@
 		<div id="main"> 
 	    	<div class="plist clearfloat data" id="userMessContainer">
 				<ul>
+					
+					<li class="clearfloat">
+						<a href="#">
+							<p class="fl">个性签名</p>
+							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="点击编辑" />
+						</a>
+					</li>
+					<li class="clearfloat">
+						<a href="#">
+							<p class="fl">星座</p>
+							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="点击编辑" />
+						</a>
+					</li>
+					<li class="clearfloat">
+						<a href="#">
+							<p class="fl">年龄</p>
+							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="点击编辑" />
+						</a>
+					</li>
+					 
 					<li class="clearfloat touxiang">
 						<a>
-							<p class="fl">头像</p>
-							<label>
-								<span class="fr">
-									<div class="text-center gray" id="preview">上传</div>
+							<p>更换背景图片</p>
+							<label style="display: block;">
+								<span>
+									<div class="text-center gray" id="preview"><img src="../../img/answer/editset.png"/></div>
 								</span>
 								<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
 							</label>
 						</a>
 					</li>
-					<!--<li class="clearfloat touxiang aClick">
-						<p class="fl">头像</p>
-						<div class="text-center gray fr" id="preview"><img id="imghead" src="http://hiji.hifete.com:6789/Upload/useraccount/avatar/With-Continental-Comedy-Charlie-Chaplin-Head-portrait-design-Linen-cotton-pillow-decoration-hotels-Clubhouse-office-sofa.jpg_640x640.jpg" width="50" height="50"></div>
-					</li>-->
-					<li class="clearfloat">
-						<a href="#">
-							<p class="fl">昵称</p>
-							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="点击编辑" />
-						</a>
-					</li>
-				
-					<li class="clearfloat">
-						<a href="#">
-							<p class="fl">性别</p>
-			    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn" dir="rtl">
-								<option value="item-1">点击选择</option>
-								<option value="item-2">男</option> 
-								<option value="item-2">女</option>
-							</select>
-						</a>
-					</li>
-					<li class="clearfloat">
-						<a href="#">
-							<p class="fl">身份证号码</p>
-							<input type="text" class="fr shuru" name="" id="IDcard" placeholder="点击编辑" />
-						</a>
-					</li>
+					 
+				 
 				</ul>
 			</div>
 	    </div>
 	    <div style="margin-top: -90px;text-indent: 20px;">
 	    	<p style="font-size: 12px;">注: 在跨境优品中购买商品必需填写身份证号。</p>
 	    </div>
-		<div class="muibackdrop">
-			<div class="mui-input-row">
-				<h5>请选择性别</h5>
-				<select name="genderChoose" class="mui-pull-right mui-input">
-					<option value="男">男</option>
-					<option value="女">女</option>
-				</select>
-			</div>
-		</div>
+		 
 	</body>
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -179,33 +159,9 @@
 				success:function(data){
 					console.log('获取用户数据返回',data);
 					if(data.errno == 0){
-						if(data.data[0].avatar){ //显示头像
-							var imgurl = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
-							mui('#preview')[0].innerHTML = '<img id="imghead" src="'+imgurl+'" width="50" height="50">';
-						}
-						//显示昵称
-						if(data.data[0].nickname){  
-							if(data.data[0].nickname.indexOf('null') == -1){
-								mui('#mynickname')[0].value =data.data[0].nickname; 
-							}
-						}
-						//显示ID
-						if(data.data[0].id_card && data.data[0].id_card!=' '){
-							idnum = data.data[0].id_card;
-							mui('#IDcard')[0].value = data.data[0].id_card.substr(0, 1) +'****************'+ data.data[0].id_card.substr(-1);
-						}
-						//显示性别
-						switch (data.data[0].gender){//Nextbtn
-							case '男':
-							mui('#Nextbtn')[0].getElementsByTagName('option')[1].selected = true;
-							break;
-							case '女':
-							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
-							break;
-							case '择'|| null:
-							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
-							break;
-						}
+						 
+						 
+					 
 					}else{
 						mui.toast('获取信息失败');
 						console.log(data.errmsg);

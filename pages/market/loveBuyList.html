@@ -296,16 +296,16 @@
 		mui.plusReady(function(){
 			//去购物车
 			document.getElementsByClassName("gocart")[0].addEventListener('tap',function () {
-				//当前页 
-	 		    plus.webview.getWebviewById('youpinhui-Center').close();
-	 
-				//获得主页面的webview
-			    var main = plus.webview.getLaunchWebview();
-			    //触发主页面的gohome事件
-			    mui.fire(main,'gohome',{hrefid:'cart'}); 
-		    	main.show();
-		    	mui.back();
-		    	plus.webview.currentWebview().close(); 
+				openview({
+					view: "../cart.html",
+					id:'cart',
+					extrasobj: {
+						pageId: "detail"
+					}
+				})
+				var list = plus.webview.getWebviewById('cart');
+				//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+				mui.fire(list, 'refresh');
 			});
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken'); 
