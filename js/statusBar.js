@@ -58,3 +58,13 @@
 //		statusBar&&(statusBar.style.height = immersed+'px');
 //		headdiv&&(headdiv.style.top = immersed+'px');
 //	</script>
+
+//闲置方法
+function openQQ() {
+	if(/android/i.test(navigator.userAgent)) { //判断为android  
+		document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
+	} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
+		document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
+	} else {//pc端访问  
+	}
+}

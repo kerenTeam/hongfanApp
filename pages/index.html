@@ -12,80 +12,32 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<style>
-			html,
-			body {
-				background-color: rgba(192, 192, 192, 0.66);line-height: 17px !important;font-size: 18px;
-			}
+			html, body { background-color: rgba(192, 192, 192, 0.66);line-height: 17px !important;font-size: 18px; }
 			.mui-bar-tab{height: 51px;}
-			.demo-icon{
-				display: block;font-size: 18px;margin-bottom: 4px;margin-top: 2px; 
-			}
+			.demo-icon{ display: block;font-size: 18px;margin-bottom: 4px;margin-top: 2px; }
 			.mui-bar-tab .mui-tab-item{font-size: 10px!important;color: #999 !important;}
-			.mui-bar{
-				box-shadow: rgba(175, 166, 166, 0.85) 0px 0px 1px !important;
-				border: none !important;
-				box-shadow: none !important;
-				background-color: #fff;
-			}; 
-			.mui-bar-tab{
-				display: line !important;
-			}
-			.mui-bar-tab .mui-tab-item.mui-active{ 
-				color: #F53C42!important;
-			}
-			#header a b{
-			    display: block;
-				width: 26px;
-				height: 26px;
-				margin: 0 auto;
-				transition: all .1s;
-				background-size: 26px 26px;
-			}
-			
-			.mainB{
-				background: url(../img/mainHtml/Ushouye.png) no-repeat;
-			}
-			.mainBActive{
-				background: url(../img/mainHtml/Cshouye.png) no-repeat;
-			}
-			
-			.gouwuB{
-				background: url(../img/mainHtml/Ugouwu.png) no-repeat;
-			}
-			.gouwuBActive{
-				background: url(../img/mainHtml/Cgouwu.png) no-repeat;
-			}
-			
-			.youB{
-				background: url(../img/mainHtml/Uyou.png) no-repeat;
-			}
-			.youBActive{
-				background: url(../img/mainHtml/Cyou.png) no-repeat;
-			}
-			
-			.kefuB{
-				background: url(../img/mainHtml/Ukefu.png) no-repeat;
-			}
-			.kefuBActive{
-				background: url(../img/mainHtml/Ckefu.png) no-repeat;
-			}
-			
-			.wodeB{
-				background: url(../img/mainHtml/Uwode.png) no-repeat;
-			}
-			.wodeBActive{
-				background: url(../img/mainHtml/Cwode.png) no-repeat;
-			}
+			.mui-bar{ box-shadow: rgba(175, 166, 166, 0.85) 0px 0px 1px !important; border: none !important; box-shadow: none !important; background-color: #fff; }; 
+			.mui-bar-tab{ display: line !important; }
+			.mui-bar-tab .mui-tab-item.mui-active{ color: #F53C42!important; }
+			#header a b{ display: block; width: 26px; height: 26px; margin: 0 auto; transition: all .1s; background-size: 26px 26px; }
+			.mainB{ background: url(../img/mainHtml/Ushouye.png) no-repeat; }
+			.mainBActive{ background: url(../img/mainHtml/Cshouye.png) no-repeat; }
+			.gouwuB{ background: url(../img/mainHtml/Ugouwu.png) no-repeat; }
+			.gouwuBActive{ background: url(../img/mainHtml/Cgouwu.png) no-repeat; }
+			.youB{ background: url(../img/mainHtml/Uyou.png) no-repeat; }
+			.youBActive{ background: url(../img/mainHtml/Cyou.png) no-repeat; }
+			.kefuB{ background: url(../img/mainHtml/Ukefu.png) no-repeat; }
+			.kefuBActive{ background: url(../img/mainHtml/Ckefu.png) no-repeat; }
+			.wodeB{ background: url(../img/mainHtml/Uwode.png) no-repeat; }
+			.wodeBActive{ background: url(../img/mainHtml/Cwode.png) no-repeat; }
 		</style> 
 	</head>
-
 	<body>
 		<nav class="mui-bar mui-bar-tab" id="header">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="main.html" style="position: relative !important;top: 2px !important;">
 				<b id="Bmain" class="Bicon mainBActive"></b>
 				<span class="mui-tab-label">首 页</span>
 			</a>
-
 			<a id="cart" class="mui-tab-item" href="cart.html" style="position: relative !important;top: 2px !important;">
 				<b id="Bgouwu" class="Bicon gouwuB"></b>
 				<span class="mui-tab-label">购物车</span>
@@ -102,60 +54,75 @@
 				<b id="Bwode" class="Bicon wodeB"></b>
 				<span class="mui-tab-label">我的</span>
 			</a>
-			
 		</nav>
 		<script type="text/javascript" src="../js/update.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			function openQQ() {
-				if(/android/i.test(navigator.userAgent)) { //判断为android  
-					document.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=2654554180";
-				} else if(/ipad|iphone/i.test(navigator.userAgent)) { //判断为ios  
-					document.location.href = "mqq://im/chat?chat_type=wpa&uin=2654554180&version=1&src_type=web";
-				} else {//pc端访问  
-				}
-			}
 			var subpages = ['main.html', 'cart.html', 'circle.html','qq.html','center.html'];
 			var subpages_id = ['main', 'cart', 'circle','qq','center'];
-			var subpage_style = {
-				top: '0px',
-				bottom: '51px'
-			};
+			var subpage_style = { top: '0px', bottom: '51px' };
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏;
 			mui.plusReady(function() {
+				var cityNum = plus.storage.getItem('cityNum');
 				//显示启动导航
-				mui.openWindow({ 
-					id: 'guide',
-					url: 'guide.html',
-					styles: {
-						popGesture: "none" 
-					},
-					show: {
-						aniShow: 'none' 
-					},
-					waiting: {
-						autoShow: false
-					}
-				});
-				//处理父子页面的mask遮罩联动
-//			    var mask,oldclose;
-//				mask=mui.createMask();
-//				//原mask.close方法
-//				oldclose=mask.close;
-//				//重写mask.close方法
-//				mask.close=function(){
-//					 if (true) {//写成v == null也行
-//					      //因为点击遮罩时只会执行"mask.close()"，所以v==null，进入这里if模块，调用子页面关闭方法。				
-//					      //调用子页面重写close()时，加上参数不让子页面的close()继续传递。				
-//					      plus.webview.currentWebview().children()[0].evalJS('mask.close()');
-//							}
-//							  //关闭本页面遮罩
-//		
-//		    				oldclose();
-//		    		} 
+//				openview({
+//					view: 'guide.html', 
+//					id: 'guide',
+//				});
 				
+			   	
+			   	document.addEventListener('switchCity', function(obj) {
+					geoInf({'address':{'city':obj.detail.name}},true);
+				})
+			   	//地图定位初始化
+				function geoInf(position,Manual) {
+					var cityNum = plus.storage.getItem('cityNum');
+					if(cityNum == null){cityNum = 2}
+					//参数解释   0=其他    1=重庆   2=成都   3=上海
+					var nowCity = position.address.city;
+					if(nowCity.includes('成都') && cityNum != 2){
+						switchFun('成都','2',Manual);
+					}else if(nowCity.includes('上海') && cityNum != 3){
+						switchFun('上海','3',Manual);
+					}else if(nowCity.includes('重庆') && cityNum != 1 && cityNum != 0){
+						switchFun('重庆','1',Manual);
+					}else if(!nowCity.includes('成都') && !nowCity.includes('上海') && !nowCity.includes('重庆')){
+						if(cityNum != 0 && cityNum != 1){
+							plus.storage.setItem("cityNum",'0');
+	            			Preloading();
+						}
+					}
+					
+				}
+				function switchFun(city,num,Manual){
+					if(Manual){//手动
+						plus.storage.setItem("cityNum",num);
+		            	Preloading();
+		            	mui.toast('切换成功');
+					}else{//自动
+						mui.confirm('您当前在'+city+',是否切换至'+city+'市 !', '提示', ['取消', '确定'], function(e) {
+				            if (e.index == 1) {
+				            	plus.storage.setItem("cityNum",num);
+				            	Preloading();
+				            	mui.toast('切换成功');
+				            }
+				        })
+					}
+					
+				}
+				function getGeocode() {
+					plus.geolocation.getCurrentPosition(geoInf, function(e) {
+						mui.toast("获取定位位置信息失败：" + e.message);
+					}, {
+						geocode: true,provider: 'amap'
+					});
+				}
+				getGeocode();
+				//地图定位初始化结束
+
 				Sign();
 				var timeSign = null;
+				var loadNum = 0;
 				clearInterval(timeSign);
 				timeSign = setInterval(Sign,7000000);//两小时自动更新一次token
 				function Sign(){//登录方法
@@ -165,14 +132,26 @@
 							data:{"phone":18180924082,"password":'12345a'},
 							dataType:'json', 
 							type:'post',
-							timeout:10000,
+							timeout:5000,
 							success:function(data,type,xhr){
 								console.log('默认账号登录返回'+JSON.stringify(data)); 
 								plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
+								//app升级方法
+								if(/android/i.test(navigator.userAgent)){
+									checkUpdate(true); 
+								}else{
+									checkUpdateIos();
+								}
 							},
 							error:function(xhr,type,errorThrown){
-								mui.toast('当前网络不好请重试！');
-								console.log('获取默认token响应失败');
+								loadNum++;
+								if(loadNum<10){
+									console.error('再次登陆'+loadNum);
+									Sign();//递归请求
+								}else{
+									mui.toast('当前网络不好请重试！');
+									console.log('获取默认token响应失败');
+								}
 							}
 						});
 					}else{ 
@@ -182,38 +161,49 @@
 							data:{"phone":Acc_pass[0],"password":Acc_pass[1]},
 							dataType:'json',
 							type:'post',
-							timeout:10000,
+							timeout:5000,
 							success:function(data,type,xhr){
 								console.log('自动登录返回'+JSON.stringify(data)); 
 								plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
+								//app升级方法
+								if(/android/i.test(navigator.userAgent)){
+									checkUpdate(true); 
+								}else{
+									checkUpdateIos();
+								}
 							},
 							error:function(xhr,type,errorThrown){
-								mui.toast('当前网络不好请重试！');
-								console.log('获取自动登录token响应失败');
+								loadNum++;
+								if(loadNum<10){
+									console.error('再次登陆'+loadNum);
+									Sign();//递归请求
+								}else{
+									mui.toast('当前网络不好请重试！');
+									console.log('获取自动登录token响应失败');
+								}
 							}
 						});
 					}
-					
-					if(/android/i.test(navigator.userAgent)){
-						checkUpdate(true); 
-					}else{
-						checkUpdateIos();
-					}
-					
 				}//登录方法结束
 				
-				var self = plus.webview.currentWebview();
-				for (var i = 0; i < 5; i++) {
-					var temp = {};
-					var sub = plus.webview.create(subpages[i],subpages[i], subpage_style);
-					if (i > 0) {
-						sub.hide(); 
-					}else{
-						temp[subpages[i]] = "true";
-						mui.extend(aniShow,temp);
+				//首页webview预加载
+				function Preloading(){
+					var self = plus.webview.currentWebview();
+					for (var i = 0; i < 5; i++) {
+						var temp = {};
+						plus.webview.getWebviewById(subpages[i]) && (plus.webview.getWebviewById(subpages[i]).close());
+						var sub = plus.webview.create(subpages[i],subpages[i], subpage_style);
+						if (i > 0) {
+							sub.hide(); 
+						}else{
+							temp[subpages[i]] = "true";
+							mui.extend(aniShow,temp);
+						}
+						self.append(sub);
 					}
-					self.append(sub);
 				}
+				Preloading();
+				//首页webview预加载结束
 			});
 			
 			
@@ -235,7 +225,6 @@
 						plus.webview.show(targetTab,"fade-in",300); 
 						mui.fire(plus.webview.getWebviewById('qq.html'),'refresh')
 					}
-					    
 				}else{
 					if (targetTab == activeTab) {
 						return;
@@ -258,8 +247,6 @@
 				//变亮
 				document.getElementById(iconBtn[pagesBtn.indexOf(targetTabS)]).className = classC[pagesBtn.indexOf(targetTabS)];
 				//更改当前活跃的选项卡结束
-				
-				
 				
 			});
 			//自定义事件，模拟点击“首页选项卡”
@@ -286,34 +273,6 @@
 				 	isdisplay.style.display="none"
 				 }
 			});
-			
-//			//父页面遮罩层显隐函数
-//			var maskwarp = document.createElement("div");
-//			var style = document.createElement("style");
-//			function maskshow(){
-//				//移出主页面遮罩点击监听
-//				maskwarp.removeEventListener('touchstart',hidefun);
-//				maskwarp.style.display = 'block';
-//				document.body.appendChild(maskwarp);
-//				maskwarp.appendChild(style);
-//				style.innerHTML =  '.Animation{position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.4);z-index: 1000;animation-name: Animation;animation: Animation 0.1s alternate ;} @-webkit-keyframes Animation{0%{ opacity: 0}10%{ opacity: 0.1}20%{ opacity: 0.2}30%{ opacity: 0.3}40%{ opacity: 0.4}50%{ opacity: 0.5}60%{ opacity: 0.6}70%{ opacity: 0.7}80%{ opacity: 0.8}90%{ opacity: 0.9}100%{ opacity: 1}}';
-//				maskwarp.className = 'Animation';
-//			}
-//			function maskhide(){
-//				maskwarp.style.display = 'none';
-//			}
-//			//点击关闭
-//			function taphide(){
-//				maskwarp.addEventListener('touchstart',hidefun);
-//				
-//			}
-//			function hidefun(e){
-//				e.preventDefault();
-//				maskwarp.style.display = 'none';
-//				var mainweb = plus.webview.getWebviewById('main.html');
-//				mainweb.evalJS("haha()");
-//			}
-		  
 			
 		</script>
 	</body>

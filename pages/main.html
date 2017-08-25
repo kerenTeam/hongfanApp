@@ -22,12 +22,42 @@
 		<style type="text/css">
 			.loadPics{visibility: hidden;}
 			.rcdPadding{background: url(../img/bannerback.svg) 50% 50% no-repeat;background-size: 30%;}
+			.cityBtn{position: relative;}
+			.citys{    position: absolute;
+			    left: 10px;
+			    top: 47px;
+			    background-color: #fff;
+			    box-shadow: rgba(175, 166, 166, 0.85) 0px 0px 2px;
+			    color: #666;
+			    width: 100px;
+			    z-index: 1000;
+			    border-radius: 1px;
+			    
+		    }
+		    /*.nowCity{position: relative;z-index: 2000;}*/
+		    .citys:after{
+		    	content: url(../img/mainHtml/jiantou.png);
+			    position: absolute;
+			    top: -28px;
+			    transform: scale(0.6);
+			    left: 13px;
+		    }
+		    .citys div{
+		    	line-height: 40px;
+		    }
 		</style>
 	</head>
 
 	<body>
 		<header class="hasManyCity mui-row mui-bar mui-bar-transparent" id="header" style="z-index: 200;">
-			<div id="" class="cityBtn">邻水</div>
+			<div id="" class="cityBtn">
+				<span class="nowCity">成都</span> 
+				<div class="citys" style="display: none;">
+					<div class="fineB aClick citysBtn" onclick="citysBtn('成都')">成都</div>
+					<div class="fineB aClick citysBtn" onclick="citysBtn('上海')">上海</div>
+					<div class="fineB aClick citysBtn" onclick="citysBtn('重庆')">重庆</div>
+				</div>
+			</div>
 			<div id="" class="searchBox">
 				<a class="openSearch">
 					<i class="icon-search"></i>
@@ -607,32 +637,58 @@
 		<div id="clickLeave"></div>
 
 		<script type="text/javascript"> 
-			
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数 
+			function citysBtn(name){//手动城市切换
+				mui.fire(plus.webview.getWebviewById('H55E3990F'),'switchCity',{name:name});
+			}
 			mui.plusReady(function() {
+				//城市切换
+				var cityNum = plus.storage.getItem('cityNum');
+				var cityA = ['成都','上海','重庆','重庆'],cityN = ['2','3','1','0'];
+				mui('.nowCity')[0].innerHTML = cityA[cityN.indexOf(cityNum)] || '成都';
+				[].forEach.call(mui('.citysBtn'),function(ele){
+					if(ele.innerHTML == mui('.nowCity')[0].innerHTML){
+						ele.style.display = 'none';
+						return false;
+					}
+				})
+				mui('.nowCity')[0].onclick = function(){
+					var citys = mui('.citys')[0];
+					if(citys.style.display == 'none'){
+						citys.style.display = 'block';
+					}else{
+						citys.style.display = 'none';
+					}
+				}
+				//城市切换结束
+				
+				
+				
+				
 				plus.navigator.setStatusBarStyle('dark');
 				window.addEventListener('reload',function(event){
 					plus.webview.currentWebview().reload();
 				});
-				//跳转页面
+				
 				var Timetoken = null;
 				var oldToken = null;
 				if(plus.storage.getItem('oldToken')){
 					oldToken = plus.storage.getItem('oldToken');
-					console.log('循环加载数据1');
+					console.log('main_存在oldToken');
 					againfun();
 				}else{
 					clearInterval(Timetoken);
 					Timetoken = setInterval(function() { //等待oldToken加载方法
-					if(plus.storage.getItem('oldToken')) {
-						clearInterval(Timetoken);
-						oldToken = plus.storage.getItem('oldToken');
-						console.log('循环加载数据2');
-						againfun();
-					}
-				}, 200)
+						console.log('main_循环等待token');
+						if(plus.storage.getItem('oldToken')) {
+							clearInterval(Timetoken);
+							oldToken = plus.storage.getItem('oldToken');
+							againfun();
+						}
+					}, 200)
 				}
+				//跳转页面
 				function againfun() {
 					var locallife = document.getElementsByClassName('locallife')[0];
 					var darenbang = document.getElementsByClassName('darenbang')[0];
@@ -715,16 +771,19 @@
 					});
 					//打开消息
 					mui('#xiaoxi')[0].onclick = function() {
-						if(plus.storage.getItem('myToken')) {
-							openview({
-								view: 'personal/my-info.html'
-							});
-						} else { //没登陆直接打开登录页面
-							mui.toast('请登录');
-							openview({
-								view: 'login.html'
-							});
-						}
+						
+						mui.plusReady(function(){
+//						  	plus.storage.removeItem('myToken');
+//						  	plus.storage.removeItem('oldToken');
+//							plus.storage.removeItem('userid');
+//							plus.storage.removeItem('Acc_pass');
+//							plus.storage.removeItem('$gotCoupon');
+//							plus.storage.removeItem('likeH');
+//							plus.storage.removeItem('commentH');
+//							plus.storage.removeItem('PletterH');
+//							plus.storage.removeItem('cityNum');
+//							alert('清除缓存成功!');
+						})
 					};
 
 					//banner数据
@@ -740,11 +799,9 @@
 						},
 						success: function(data, type, xhr) {
 							console.log('banner', data);
-
 							bannerObj = {};
 							if(data.data.banner) {
 								bannerObj.bannerList = eval("(" + data.data.banner + ")");
-								console.log('banner图', bannerObj.bannerList);
 								bannerObj.url = serverimgUrl;
 								var html = template('banner-detail', bannerObj);
 
@@ -775,7 +832,6 @@
 							"token": oldToken
 						},
 						success: function(data) {
-							console.error(data);
 							if(data.errno == 0) {
 								var dataobj = data.data.return.data
 								var recommendObj = {}
@@ -872,6 +928,8 @@
 				}
 
 			}
+			
+			
 		</script>
 	</body>
 
