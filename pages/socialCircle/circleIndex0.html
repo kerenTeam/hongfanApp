@@ -20,7 +20,7 @@
 		<script src="../../js/artTemplate-native.js"></script>
 	</head>
 	<style type="text/css">
-		#header>*{ color: white; } 
+		#header>*{ color: white; }
 		#userBox{ background-color: #F53C42; padding: 0px 0; position: relative; overflow: hidden; height: 2.3rem; }
 		#mypic1{height: 100%;}
 		#beijing2{position: absolute;z-index:1;width: 100%;height: 100%;top: 0;background-color: rgba(0, 0, 0, 0.5);} 
@@ -177,15 +177,6 @@
 					</div>
 				</div>
 				
-				<style type="text/css">
-					.gift0{padding: 5px;}
-					.gift0 .mui-row .mui-col-sm-4{padding: 5px;}
-					.mui-content{background-color: #fff;}
-					.giftCon p{ height: calc((100vw - 40px) * 0.3);}
-					.giftCon{text-align: center;background: url(../../img/mainHtml/baisedikuang.png) 0 0 no-repeat;background-size: 100% 100%;border-radius: 2px;overflow: hidden;}
-					.giftCon h5{text-align: center;color: #f14a43;font-size: 15px;padding:3px 0;}
-					.giftCon span{background-color: #f14a43;color: #fff;display: inline-block;margin: 5px 0;padding: 4px 8px;font-size: 14px;border-radius: 4px;}
-				</style>
 				<!--礼物-->
 				<div class="gift0 mui-content contentChild" style="display: none;">
 					 <div class="mui-row">
@@ -193,14 +184,14 @@
 		            		<div class="giftCon">
 		            			<p style="background: url(https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg) 0 0 no-repeat;background-size: cover;"></p>
 		            			<h5>数量: &nbsp; 5个</h5>
-		            			<span>兑换HI豆</span>
+		            			<span onclick="exchangeHI('https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg',5,100)">兑换HI豆</span>
 		            		</div>
 				        </div>
 				        <div class="mui-col-sm-4 mui-col-xs-4">
 			             	<div class="giftCon">
 		            			<p style="background: url(https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg) 0 0 no-repeat;background-size: cover;"></p>
 		            			<h5>数量: &nbsp; 5个</h5>
-		            			<span>兑换HI豆</span>
+		            			<span onclick="exchangeHI('http://img3.duitang.com/uploads/item/201509/28/20150928092416_Q5yu8.thumb.224_224_c.jpeg',3,80)">兑换HI豆</span>
 		            		</div>
 				        </div>
 				        <div class="mui-col-sm-4 mui-col-xs-4">
@@ -220,6 +211,21 @@
 				    </div>
 				</div>
 				<!--礼物弹窗-->
+				<div class="changeHI" style="display: none;">
+					<div class="HIcon">
+					<div class="markHI" style="display: none;" onclick="closeC()"></div>
+						<div class="content12">
+							<div class="head1"></div>
+							<div class="operating">
+								<span class="span1 unitPrice"></span>
+								<img class="jianjian" src="../../img/makeFriend/liwujian.png"/>
+								<span class="span2" id="chageNum"> 1 </span>
+								<img class="jiajia" src="../../img/makeFriend/liwujia.png"/>
+							</div>
+							<div class="HIconfirm">兑换</div>
+						</div>
+					</div>
+				</div>
 				<!--底部操作-->
 				<div class="footF mui-content">
 					<div class="mui-row">
@@ -257,7 +263,52 @@
 			}
 		})
 		
-		
+		//礼物兑换HI豆
+		function exchangeHI(pic,num,price){
+			mui('.unitPrice')[0].innerHTML = price + 'HI豆';
+			mui('.head1')[0].style.background = " url("+pic+") 0 0 no-repeat";
+			mui('.head1')[0].style.backgroundSize = " cover ";
+			openC();
+			var flag = false,flag2 = false;
+			mui('.jiajia')[0].onclick = function(){ //加操作
+				flag2 = false;
+				mui('#chageNum')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) + 1;
+				if(mui('#chageNum')[0].innerHTML > num){
+					mui('#chageNum')[0].innerHTML = num;
+					if(!flag){mui.toast('已超出最大值'),console.log(111111111111) };
+					flag = true;
+				}
+				mui('.unitPrice')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) * price + 'HI豆';
+				
+			}
+			mui('.jianjian')[0].onclick = function(){ //减操作
+				flag = false;
+				mui('#chageNum')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) - 1;
+				if(mui('#chageNum')[0].innerHTML < 1){
+					mui('#chageNum')[0].innerHTML = 1;
+					if(!flag2){mui.toast('至少兑换一个哟'),console.log(22222222222) };
+					flag2 = true;
+				}
+				mui('.unitPrice')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) * price + 'HI豆';
+			}
+			mui('.HIconfirm')[0].onclick = function(){ //兑换操作
+				mui.confirm('是否确认兑换'+mui('.unitPrice')[0].innerHTML+'?', '提示', ['取消', '确定'], function(e) {
+		            if (e.index == 1) {
+		            	mui.toast('兑换成功');
+		            }
+		        })
+			}
+			
+		}
+		function openC(){
+			mui('.markHI')[0].style.display = 'block';
+			mui('.changeHI')[0].style.display = 'table';
+		}
+		function closeC(){
+			mui('.markHI')[0].style.display = 'none';
+			mui('.changeHI')[0].style.display = 'none';
+		}
+		//礼物兑换HI豆结束
 		
 	    //数据处理 
 		var myuserid;
