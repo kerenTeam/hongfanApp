@@ -14,345 +14,179 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>-->
-		<script src="../../js/hmt.js" type="text/javascript"></script>
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<script src="../../js/app.js" type="text/javascript"></script>
-		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript"></script>
 		<style type="text/css">
-			.coupons .list .right {
-				padding: 4% 0 5% 3%;
-			}
-			
-			/*图片预览*/
-			.mui-preview-image.mui-fullscreen {
-				position: fixed;
-				z-index: 20;
-				background-color: #000;
-			}
-			.mui-preview-header,
-			.mui-preview-footer {
-				position: absolute;
-				width: 100%;
-				left: 0;
-				z-index: 10;
-			}
-			.mui-preview-header {
-				height: 44px;
-				top: 0;
-			}
-			.mui-preview-footer {
-				height: 50px;
-				bottom: 0px;
-			}
-			.mui-preview-header .mui-preview-indicator {
-				display: block;
-				line-height: 25px;
-				color: #fff;
-				text-align: center;
-				margin: 15px auto 4;
-				width: 70px;
-				background-color: rgba(0, 0, 0, 0.4);
-				border-radius: 12px;
-				font-size: 16px;
-			}
-			.mui-preview-image {
-				display: none;
-				-webkit-animation-duration: 0.5s;
-				animation-duration: 0.5s;
-				-webkit-animation-fill-mode: both;
-				animation-fill-mode: both;
-			}
-			.mui-preview-image.mui-preview-in {
-				-webkit-animation-name: fadeIn;
-				animation-name: fadeIn;
-			}
-			.mui-preview-image.mui-preview-out {
-				background: none;
-				-webkit-animation-name: fadeOut;
-				animation-name: fadeOut;
-			}
-			.mui-preview-image.mui-preview-out .mui-preview-header,
-			.mui-preview-image.mui-preview-out .mui-preview-footer {
-				display: none;
-			}
-			.mui-zoom-scroller {
-				position: absolute;
-				display: -webkit-box;
-				display: -webkit-flex;
-				display: flex;
-				-webkit-box-align: center;
-				-webkit-align-items: center;
-				align-items: center;
-				-webkit-box-pack: center;
-				-webkit-justify-content: center;
-				justify-content: center;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				top: 0;
-				width: 100%;
-				height: 100%;
-				margin: 0;
-				-webkit-backface-visibility: hidden;
-			}
-			.mui-zoom {
-				-webkit-transform-style: preserve-3d;
-				transform-style: preserve-3d;
-			}
-			.mui-slider .mui-slider-group .mui-slider-item img {
-				width: auto;
-				height: auto;
-				max-width: 100%;
-				max-height: 100%;
-			}
-			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
-				width: 100%;
-			}
-			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
-				display: inline-table;
-			}
-			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
-				display: table-cell;
-				vertical-align: middle;
-			}
-			.mui-preview-loading {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				top: 0;
-				left: 0;
-				display: none;
-			}
-			.mui-preview-loading.mui-active {
-				display: block;
-			}
-			.mui-preview-loading .mui-spinner-white {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				margin-left: -25px;
-				margin-top: -25px;
-				height: 50px;
-				width: 50px;
-			}
-			.mui-preview-image img.mui-transitioning {
-				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
-				transition: transform 0.5s ease, opacity 0.5s ease;
-			}
-			@-webkit-keyframes fadeIn {
-				0% {
-					opacity: 0;
-				}
-				100% {
-					opacity: 1;
-				}
-			}
-			@keyframes fadeIn {
-				0% {
-					opacity: 0;
-				}
-				100% {
-					opacity: 1;
-				}
-			}
-			@-webkit-keyframes fadeOut {
-				0% {
-					opacity: 1;
-				}
-				100% {
-					opacity: 0;
-				}
-			}
-			@keyframes fadeOut {
-				0% {
-					opacity: 1;
-				}
-				100% {
-					opacity: 0;
-				}
-			}
-			p img {
-				max-width: 100%;
-				height: auto;
-			}
-			
-			
-			/*修改*/
-			.fl{
-				position: relative;
-			}
-			.qrcode{
-				position: absolute;
-				right: 0;
-				top: 0;
-				width: 40px;
-				height: 40px;
-				overflow: hidden;
-			}
-			.qrcode img{
-				width: 100%;
-			}
-			.activeImg img{
-				width: 40%;
-			}
-			.notice .tab-bd .tab-pal{
-				border: none;
-			}
-			.nothing img{
-				display: block;
-				margin: 20px auto;
-				width: 80px;
-			}
-			.nothing p{
-				text-align: center;
-			}
-			.notice .tab-bd{
-				padding-top: 0;
-			}
+			.coupons .list .right { padding: 4% 0 5% 3%; }
+			.fl{ position: relative; }
+			.qrcode{ position: absolute; right: 0; top: 0; width: 40px; height: 40px; overflow: hidden; }
+			.qrcode img{ width: 100%; }
+			.activeImg img{ width: 40%; }
+			.notice .tab-bd .tab-pal{ border: none; }
+			.nothing img{ display: block; margin: 20px auto; width: 80px; }
+			.nothing p{ text-align: center; }
+			.notice .tab-bd{ padding-top: 0; }
 			.notice .tab-hd li{width: 50%;}
 			.coupons .list{border-radius: 2px;}
+			/*新的优惠卷*/
+			body{ background-color: #f3f3f3; }
+			#offerId{ margin-top: 50px; padding: 3%; }
+			.offerWrap2 .offerTop{ background: url(../../img/market/youhuimianfei.png) 0 0 no-repeat; background-size: 100% 100%; }
+			.offerWrap3 .offerTop{ background: url(../../img/market/youhuishixiao.png) 0 0 no-repeat; background-size: 100% 100%; }
+			.offerTop{ background: url(../../img/market/youhuihong.png) 0 0 no-repeat; background-size: 100% 100%; }
+			.offerTop h4{ padding: 1.5% 0 1.5% 10%; }
+			.b1{ color: #fff; font-size: 15px; font-weight: 500; }
+			.b2{ font-weight: 500; color: #fff; font-size: 30px; margin-right: 0.5%; }
+			.span1{ color: #fedddd; font-size: 13px; }
+			.offerWrap2 .span1, .offerWrap2 .span2, .offerWrap2 .offerTop p{ color: #dddffe; }
+			.offerWrap3 .span1, .offerWrap3 .span2, .offerWrap3 .offerTop p{ color: #fff; }
+			.offerWrap2 .span3{ color: #5195f8; }
+			.offerWrap3 .span3{ color: #999; }
+			.span2{  color: #fedddd;  font-size: 12px; float: right; margin-top: 16px; margin-right: 2%; }
+			.offerTop p{ color: #fedddd; padding: 2.5%; padding-top: 2%; padding-bottom: 4%; font-size: 12px; width: 100%; }
+			.span3{ background-color: #fff; color: #fd6363;  border-radius: 3px; float: right; padding: 1.4%;  margin-top: -2.5%; font-size: 14px;display: inline-block;
+	      		white-space: nowrap; padding-right: calc(100vw * 0.025); }
+			.offerFoot{ overflow: hidden; }
+			.offerFoot img{  width: 22.5%; margin-right: 2%; float: left; padding: 2.5% 0; }
+			.offerFoot img:first-child{ margin-left: 2%; }
+			.offerWrap{ background-color: #fff; border-radius: 4px; margin-top: 18PX; }
+			#offerId .offerWrap:first-child{ margin-top: 0; }
 		</style>
 	</head>
 	<body>
-		<!--header star-->
-		 <header class="mui-bar mui-bar-nav">
-			    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			    <h1 class="mui-title">优惠券</h1>  
-			 
-			</header>
+	 	<header class="mui-bar mui-bar-nav">
+	    	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+	    	<h1 class="mui-title">优惠券</h1>  
+		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-	    <!--header end-->
-		<!--<div id="main">-->
-			<div class="notice" style="margin:50px auto">
-				<div class="tab-hd">
-					<ul class="tab-nav">
-					  <li>全部</li>
-					  <li>可用</li>
-					  <!--<li>已使用</li>-->
-					</ul>
+		<div class="notice" style="margin:50px auto;">
+			<div class="tab-hd">
+				<ul class="tab-nav">
+				  <li>全部</li>
+				  <li>可用</li>
+				</ul>
+			</div>
+			<div class="tab-bd">
+				<div class="tab-pal">
+					<div class="coupons clearfloat box-s" id="allC"></div>
 				</div>
-				<div class="tab-bd">
-					<div class="tab-pal">
-						<div class="coupons clearfloat box-s" id="allC"></div>
-					</div>
-					<div class="tab-pal">
-						<div class="coupons clearfloat box-s" id="ableC"></div>
-					</div>	
-					<div class="tab-pal">
-						<div class="coupons clearfloat box-s" id="disableC">
-							<div class="nothing">
-								<img src="../../img/theList/coupon.png"/>
-								<p>你没有已使用的优惠券哟！</p>
-							</div>
+				
+				<div class="tab-pal">
+					<div class="coupons clearfloat box-s" id="ableC"></div>
+				</div>	
+				
+				<div class="tab-pal">
+					<div class="coupons clearfloat box-s" id="disableC">
+						<div class="nothing">
+							<img src="../../img/theList/coupon.png"/>
+							<p>你没有已使用的优惠券哟！</p>
 						</div>
 					</div>
-					<!--全部--> 
-					<script type="text/html" id="allC-detail">
-						<% for(var i=0;i<allLi.length;i++){ %>
-							<div class="list clearfloat fl" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)">
-								<% if(allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
-									<% if(allLi[i].typeid == 2){ %>
-										<div class="left clearfloat fl">
-											<%= allLi[i].discountstr%><span>折</span>
-										</div>
-									<% }else if(allLi[i].typeid == 1){ %>
-										<div class="left clearfloat fl">
-											<span>¥</span><%= allLi[i].coupon_amount %>
-										</div> 
-									<% }else{ %>
-										<div class="left clearfloat fl activeImg you2222">
-											<img src="../../img/active.png"/>
-										</div>
-									<% } %>
-								<% }else{ %><!--不可用状态-->
-									<% if(allLi[i].typeid == 2){ %>
-										<div class="left leftwo clearfloat fl">
-											<%= allLi[i].discountstr%><span>折</span> 
-										</div>
-									<% }else if(allLi[i].typeid == 1){ %>
-										<div class="left leftwo clearfloat fl">
-											<span>¥</span><%= allLi[i].coupon_amount %>
-										</div> 
-									<% }else{ %>
-										<div class="left leftwo clearfloat fl activeImg  you1111">
-											<img src="../../img/active.png"/>
-										</div>
-									<% } %>
-								<% } %>
-								<div class="right clearfloat fl box-s">
-									<p class="tit">
-										<%= allLi[i].name %>
-									</p>
-									<p class="time"> 
-										<% if(allLi[i].typeid == 2){ %><!--满减折扣券-->
-											满<%= allLi[i].discountnum %>元，打<%= allLi[i].discountstr %>折 
-										<% }else{ %> 
-											无限制
-										<% } %>
-									</p>
-									<p class="time">
-										有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
-									</p>
+				</div>
+				<!--全部--> 
+				<script type="text/html" id="allC-detail">
+					<% for(var i=0;i<allLi.length;i++){ %>
+						
+						<% if(allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
+							<div class="offerWrap" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)"> 	
+								<div class="offerTop">
+										<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+										<p><%= allLi[i].name %> 无 <span class="span3">立即使用</span></p>
+									</div>
+								<div class="offerFoot">
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+								</div>
+							</div>
+						<% }else{ %><!--不可用状态-->
+							<div class="offerWrap offerWrap3" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)"> 	
+								<div class="offerTop">
+										<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+										<p><%= allLi[i].name %> <span class="span3">已失效</span></p>
+									</div>
+								<div class="offerFoot">
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
 								</div>
 							</div>
 						<% } %>
-					</script>
-					<!--可用-->
-					<script type="text/html" id="ableC-detail">
-						<% for(var i=0;i<allLi.length;i++){ %>
-							<% if(allLi[i].user_coupon_state == 1){ %>
-								<div class="list clearfloat fl" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)">
-									<% if(allLi[i].typeid == 2){ %>
-										<div class="left clearfloat fl">
-											<%= allLi[i].discountstr%><span>折</span>
-										</div>
-									<% }else if(allLi[i].typeid == 1){ %>
-										<div class="left clearfloat fl">
-											<span>¥</span><%= allLi[i].coupon_amount %>
-										</div>
-									<% }else{ %>
-										<div class="left clearfloat fl activeImg">
-											<img src="../../img/active.png"/>
-										</div>
-									<% } %>
-									<div class="right clearfloat fl box-s">
-										<p class="tit">
-											<%= allLi[i].name %>
-										</p>
-										<p class="time"> 
-											<% if(allLi[i].typeid == 2){ %><!--满减折扣券-->
-												满<%= allLi[i].discountnum %>元，打<%= allLi[i].discountstr %>折 
-											<% }else{ %> 
-												无限制
-											<% } %>
-										</p>
-										<p class="time">
-											有效时间：<%= allLi[i].begin_date %>到<%= allLi[i].end_date %>
-										</p>
+						
+					<% } %>
+				</script>
+				<!--可用-->
+				<script type="text/html" id="ableC-detail">
+					<% for(var i=0;i<allLi.length;i++){ %>
+						<% if(allLi[i].user_coupon_state == 1){ %>
+ 							<div class="offerWrap" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)"> 	
+								<div class="offerTop">
+										<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+										<p><%= allLi[i].name %> 无 <span class="span3">立即使用</span></p>
 									</div>
+								<div class="offerFoot">
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
+									<img src="../../img/market/chanpingkuang.png"/>
 								</div>
-							<% } %>
+							</div>
 						<% } %>
-					</script>
-					
+					<% } %>
+				</script>
+				
+			</div>
+		</div>
+		
+		<div id="offerId" style="display: none;">
+			<div class="offerWrap">
+				<div class="offerTop">
+					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+					<p>宏帆XX商家抵用卷 <span class="span3">付10元购买</span></p>
+				</div>
+				<div class="offerFoot">
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+				</div>
+			</div>
+			<div class="offerWrap offerWrap2">
+				<div class="offerTop">
+					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+					<p>宏帆XX商家抵用卷 <span class="span3">免费领取</span></p>
+				</div>
+				<div class="offerFoot">
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+				</div>
+			</div>
+			<div class="offerWrap offerWrap3">
+				<div class="offerTop">
+					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+					<p>宏帆XX商家抵用卷 <span class="span3">已失效</span></p>
+				</div>
+				<div class="offerFoot">
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
+					<img src="../../img/market/chanpingkuang.png"/>
 				</div>
 			</div>
 		</div>
+		
+		
 		<script src="../../js/jquery.SuperSlide.2.1.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });
+			jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });//tab切换
 		</script>
-		<!--图片预览-->
-		<script src="../../js/mui.zoom.js"></script>
-		<script src="../../js/mui.previewimage.js"></script>
-		<script>
-			mui.previewImage();
-		</script>
-		
 		<script type="text/javascript">
-			mui.init();
+			
 			mui.plusReady(function(){
 				var oldToken = plus.storage.getItem('oldToken');
 				var userId = plus.storage.getItem("userid");
