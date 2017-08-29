@@ -15,12 +15,7 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script src=" ../../js/hmt.js" type="text/javascript"></script>
-		<script src="../../js/other.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" ></script>
-		
-		<!--引入模板引擎-->
 		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
 		<style type="text/css">
 			.mui-bar-nav.mui-bar .mui-icon{margin-left: 0;}
@@ -28,7 +23,7 @@
 			.grade-eject, .Category-eject, .Sort-eject{
 				height: 120px;
 			}
-			div.screening>ul{padding: 5px 50px;}
+			div.screening>ul{padding: 2px 50px;}
 			div.screening>ul>li{
 				border-left: none!important;
 			}
@@ -154,7 +149,7 @@
 			.Regional{
 				background-image: none !important; 
 			}
-			#main{padding-top: 46px !important;}
+			#main{padding-top: 39px !important;}
 			.guess-like{padding-top: 0 !important;}
 			#screendiv{
 				position: fixed;left: 0;top: 50px;height: 400px;width: 100%;background-color: #fff;
@@ -208,9 +203,12 @@
 				background-color: #eee;
 				-webkit-transform: scaleY(.5);right: 5px;}
 			div.screening>ul>li{
-				background: url(../../img/localLife/xiala.png) no-repeat 68% center;
+				background: url(../../img/localLife/xiala.png) no-repeat 68% 43%;
     			background-size: 12%;
+    			font-size: 14px;
+    			color: #666;
 			}
+			.borNone{border: none;}
 		</style>
 		<style type="text/css">
             .special{padding: 15px 5px 15px 35%;padding-left: 32%;position: relative;background-color: #fff;overflow: hidden;min-height: 125px;}
@@ -221,7 +219,7 @@
             .S_bottom1{margin-bottom: 5px;} 
             .S_bottom1 span{font-size: 17px; color: #ef2b2b;position: relative;top: 9px;left: -2px;font-weight: 800;letter-spacing: .5px;}
             .S_bottom1 span b{font-size: 13px; color: #999;text-decoration: line-through;font-weight: 500;}
-            .S_bottom1 a{padding: 7px 9px;  color: #fff; font-size: 14px;background-color: #ef2b2b;float: right; border-radius: 2px;position: relative;top: -3px;}
+            .S_bottom1 a{padding: 7px 9px;  color: #fff; font-size: 14px;background-color: #ef2b2b;float: right; border-radius: 2px;position: relative;top: -3px;margin-right: 3px;}
             .S_bottom2 span{text-decoration: line-through;margin-left: 1px;}
             .S_bottom2 span, .S_bottom2 a{font-size: 13px; color: #999;}
             .S_bottom2 a{float: right;font-size: 12px;}
@@ -239,7 +237,7 @@
 		
 		 
 	 	<div class="screening" id="screeningdiv" style="top: 50px;">
-		    <ul class="borNone">
+		    <ul class="borNone fineB">
 		        <!--<li class="Brand">综合</li>-->
 		        <li class="Regional" id="Salesvolume" onclick="loadfun('sales','desc');">销量</li>
 		        <li class="Sort" id="goodsprice">价格  &nbsp;&nbsp;</li>
@@ -271,7 +269,7 @@
         <script type="text/html" id="recommendTpl">
             <% for(var i=0;i<recommendData.length;i++){%>
                 <div class="special clearfix fineB aClick" onclick="goInfo(<%= recommendData[i].goods_id%>)">
-                    <img src="<%= myUrl%><%= recommendData[i].thumb%>" alt="<%= myUrl%>+<%= recommendData[i].thumb%>" onerror="this.src = '../../img/nopic.svg'"/>
+                    <img data-src="<%= myUrl%><%= recommendData[i].thumb%>" class="loadPics" src=""  onerror="this.src = '../../img/market/tejia.png'"/>
                     <p class="overTwo">
                         <%= recommendData[i].title%>
                     </p>
@@ -329,7 +327,8 @@
 	                        var findList = {};
 	                            findList.myUrl = serverimgUrl;
 	                            findList.recommendData = data.data;
-	                        document.getElementById("main").innerHTML += template("recommendTpl",findList)   
+	                        	document.getElementById("main").innerHTML += template("recommendTpl",findList)   
+	                        	lazyLoad(true);//懒加载
 	                    }else{
 	                        document.getElementById("nulldiv").style.display="block";
 	                    }

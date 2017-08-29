@@ -275,7 +275,6 @@ function formatDate(v, format) {
 };
 
 //懒加载方法
-//懒加载开始  
 window.lazyLoad = function(init,limit){
 	var limit = limit || 100;
 	var loadPics = mui('.loadPics'),
