@@ -78,7 +78,7 @@
 			</div>
 			
 			<div class="todayHOt" style="background-color: white;">
-				<div class="ftr">
+				<div class="ftr" id="todayHOt">
 					<span class="ft14">今日热门</span>
 					<img src="../img/localLife/righticon.png"/>
 				</div> 
@@ -111,8 +111,9 @@
 			
 			</div>
 			<div class="QandA"> 
-				<div class="QAhead">
-					<span class="">好友动态</span> 
+				<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;">
+					<span class="active aClick">最新动态</span> 
+					<span class="aClick">好友动态</span> 
 				</div>
 				<div class="listCon">
 					<div class="follow"> 
@@ -265,9 +266,9 @@
 			<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
 			    <!-- 可选择菜单 -->
 			    <ul class="jubao">
-			      <!--<li>
+			      <li>
 			        <a href="#">加入黑名单</a>
-			      </li>-->
+			      </li>
 			      <li>
 			        <a href="#">举报</a>
 			      </li>
@@ -324,12 +325,36 @@
 					$(this).attr('src','../img/mainHtml/weizan.png') 
 				}
 			})
- 			
+ 			//动态详情
  			$('.listCon').click(function(){
  				openview({
  					view:'socialCircle/circleListInfo.html'
  				})
  			})
+ 			
+ 			//更多热门
+ 			$('#todayHOt').click(function(){
+ 				openview({
+ 					view:'socialCircle/make_friends.html'
+ 				})
+ 			})
+ 			$('.paddDiv').click(function(){
+ 				openview({
+ 					view:'socialCircle/circleIndex0.html'
+ 				})
+ 			})
+ 			
+ 			var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
+			[].forEach.call(listCon,function(ele,index){
+				ele.onclick = function(){
+					if(!ele.className.includes('active')){
+						[].forEach.call(listCon,function(ele2){
+							ele2.className = '';
+						})
+						ele.className = 'active aClick'; 
+					}
+				}
+			}) 
 		</script>
 	</body>
 
