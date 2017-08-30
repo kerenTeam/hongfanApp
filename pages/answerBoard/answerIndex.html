@@ -32,7 +32,7 @@
 		.diyButton{padding:5px 9pt;background:url(../../img/answer/bouttonbr.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;}
   		.flexrr{display: flex;}
 	</style>
-	<body style="background-color: white;padding-bottom: 0;">
+	<body style="background-color: white;padding-bottom: 0;overflow: hidden;">
 		 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
@@ -172,7 +172,7 @@
 			 
 		</style>
 		<div class="QandA"> 
-			<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;transform: translateX(20px);">
+			<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;">
 				<span class="active aClick">最新</span>
 				<span class="aClick">已解答</span> 
 			</div>
@@ -589,10 +589,6 @@
 							'<br />QQ好友'+
 						'</div>'+
 						'<div class="mui-col-sm-3 mui-col-xs-3">'+
-							'<img src="../../img/share/konjian.png" class="aClick2"/>'+
-							'<br />QQ空间'+
-						'</div>'+
-						'<div class="mui-col-sm-3 mui-col-xs-3">'+
 							'<img src="../../img/share/weibo.png" class="aClick2"/>'+
 							'<br />新浪微博'+
 						'</div>'+
@@ -604,6 +600,27 @@
 					'<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>'+
 				'</div>';
 			document.body.appendChild(shareWrap0);
+			
+			document.getElementById("share").addEventListener("click", function() {
+		    //分享内容，开发者可自定义
+		    var message = {
+		        title: "MONO", //应用名字
+		        content: "不错过你感兴趣的内容",
+		        href: "http://mmmono.com/", //分享出去后，点击跳转地址
+		        thumbs: ["https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=979572895,2889949287&fm=26&gp=0.jpg"] //分享缩略图
+		    }
+		    //调起分享
+		    plusShare(message, function(res) {
+		        //分享回调函数
+		        if(res) {
+		            plus.nativeUI.toast("分享成功");
+		        } else {
+		            plus.nativeUI.toast("分享失败");
+		        }
+		    })
+		});
+			
+			
 			//分享
 			function showSfun(link){
 				document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
@@ -616,18 +633,15 @@
 				document.getElementsByClassName('shareWrap')[0].style.opacity = '0';
 				document.getElementsByClassName('Scontent')[0].style.bottom = '-500px';
 			}
-			document.getElementById('share').onclick = function(){
-				$('.QAhead').css('transform','translateX(0px)')
-				showSfun('www.baidu.com');
-			}
-			document.getElementById('cancelS').onclick = function(){
-				$('.QAhead').css('transform','translateX(20px)')
-				hideSfun();
-			}
-			document.getElementsByClassName('shareWrap')[0].onclick = function(){
-				$('.QAhead').css('transform','translateX(20px)')
-				hideSfun();
-			}
+//			document.getElementById('share').onclick = function(){
+//				showSfun('www.baidu.com');
+//			}
+//			document.getElementById('cancelS').onclick = function(){
+//				hideSfun();
+//			}
+//			document.getElementsByClassName('shareWrap')[0].onclick = function(){
+//				hideSfun();
+//			}
 			
 		//调用系统分享方法	
 			var shares=null;
@@ -664,6 +678,7 @@
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
 			var listSon = mui('.listSon');
@@ -736,6 +751,7 @@
 			})
 		})
 		</script>
+		 
 	</body>
-
+<script src="../../js/plusShare.js" type="text/javascript" charset="utf-8"></script>
 </html>
