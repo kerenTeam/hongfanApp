@@ -10,8 +10,10 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">  
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
-		<link rel="stylesheet" href="../../css/reset.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" href="../../css/reset.css">
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
@@ -21,9 +23,9 @@
 	</head>
 	<style type="text/css">
 		 
-		#header>*{
+		/*#header>*{
 			color: white;
-		} 
+		} */
 		#userBox{
 				background-color: #F53C42;
 				padding: 0px 0;
@@ -75,20 +77,25 @@
 		.leftT{position: absolute;left: -20px !important;top: 0;opacity: 0; z-index: 10;}	
 		.QA{display: none;}
 		.qative{display: block;} 
+		.mui-bar-nav{box-shadow: none !important;}
 	</style>
 
 	<body style="background-color: white;">
 
-		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
+		<!--<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
 			<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 id="centertitle" class="mui-title">我的问答</h1>
-		 
+		</header>-->
+		<header class="mui-bar mui-bar-nav fineB">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="margin-left: 0;"></a>
+		    <h1 class="mui-title">我的问答</h1>  
 		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
 	 
 		<!--状态栏结束-->
 		<!--<div id="container">-->
 		<div id="main">
-			<div class="clearfloat box-s box-ss" id="userBox">
+			<div class="clearfloat box-s box-ss" id="userBox" style="display: none;">
 	    		<img id="mypic1" src="https://hbfile.b0.upaiyun.com/img/home/banner/1b2ee045f8bf04befb7cf3722fcc527eaeb18f23114c28"/>
 	    		<div id="beijing2"></div> 
 	    			<img src="../../img/market/atcenter.jpg" class="userAvator" id="mypic2"/> 
@@ -212,25 +219,25 @@
 	<script type="text/javascript">
  
 		//滚动监听
-		$(window).scroll(function() { 
-           var navBarHeight = 50;  
-            var targetID = "#header"; 
-            var scrollTo = $(window).scrollTop(); 
-            if (scrollTo > navBarHeight) {
-                $(targetID).css({
-              		//"background-image": "url(../../img/header.png)","background-size":"100%"
-                });
-                $('#leftbtn').css({'color':'#666'});
-                $('#centertitle').css({'color':'#666'});
-            } 
-            if (scrollTo < navBarHeight) {
-                $(targetID).css({
-                    "background-image": "none"
-                });
-                $('#leftbtn').css({'color':'#fff'});
-                $('#centertitle').css({'color':'#fff'});
-            } 
-        }).trigger('scroll');
+//		$(window).scroll(function() { 
+//         var navBarHeight = 50;  
+//          var targetID = "#header"; 
+//          var scrollTo = $(window).scrollTop(); 
+//          if (scrollTo > navBarHeight) {
+//              $(targetID).css({
+//            		//"background-image": "url(../../img/header.png)","background-size":"100%"
+//              });
+//              $('#leftbtn').css({'color':'#666'});
+//              $('#centertitle').css({'color':'#666'});
+//          } 
+//          if (scrollTo < navBarHeight) {
+//              $(targetID).css({
+//                  "background-image": "none"
+//              });
+//              $('#leftbtn').css({'color':'#fff'});
+//              $('#centertitle').css({'color':'#fff'});
+//          } 
+//      }).trigger('scroll');
 		 
 		var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div');
 		var listSon =mui('.QA'); 	
@@ -259,7 +266,6 @@
 	    	function reload(){
 	    		var oldtoken = plus.storage.getItem('oldToken');
 			myuserid = plus.storage.getItem('userid');
-			plus.nativeUI.showWaiting();
 			var loadnum = 0;
 			//头像名字
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
@@ -308,7 +314,6 @@
 				console.log(loadnum);
 //				if(loadnum == 3){ 
 					var time2 = setTimeout(function(){
-						plus.nativeUI.closeWaiting();
 					},300) 
 					mui('body')[0].style.display = 'block';
 			  		clearInterval(time1);
