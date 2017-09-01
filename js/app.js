@@ -163,35 +163,27 @@ window.bannerGo = function(url, name, route) {
 }
 
 //关注和取消关注
-function followBack(thisobj,friendid){
+function followBack(thisobj,likerId,curType){
 	event.stopPropagation();
 	function Success(){
 		event.stopPropagation();
-		$(thisobj).toggleClass(" mui-btn-outlined");
-	 	if($(thisobj).hasClass("mui-btn-outlined")){
-	 		if($(thisobj).hasClass("eachF")){
-	 			$(thisobj).html("互相关注")
-		 	}else{
-		 		$(thisobj).html("已关注")
-		 	}
-		 }else{
-	 		$(thisobj).html("+关注")
-		 }
+		thisobj.css('display','none'); 
+		thisobj.siblings().css('display','block'); 
 	}
 	Success();
  	mui.plusReady(function(){
-		var oldtoken = plus.storage.getItem('oldToken');
-		var myuserid = plus.storage.getItem('userid');
-		mui.ajax(serverUrl+'/api/news/followsb',{
-			data:{"userid":myuserid,friendid:friendid},
+		var oldToken = plus.storage.getItem('oldToken');
+		var cityNum = plus.storage.getItem('cityNum');
+		var	myuserid = plus.storage.getItem('userid');
+		mui.ajax(serverUrl+'/api/friends/likeusers',{
+			data:{userId:myuserid,likeUserId:likerId},
 			dataType:'json',
-			type:'post',
-			timeout:3000,
-			headers:{"token":oldtoken},
+			type:curType,
+			timeout:8000,
+			headers:{"token":oldToken,"city":cityNum},
 			success:function(data,type,xhr){
 				console.log('关注操作返回',data);
 				if(data.errno==0){
-					mui.toast('操作成功');
 				}else{
 					mui.toast('当前网络不好，请重试');
 					Success();
