@@ -1,8 +1,7 @@
-//var serverUrl='http://192.168.0.3:7200';
-//var serverUrl='http://211.149.183.181:7200';
-//var serverUrl='http://192.168.0.106:7200';
- 
-var serverUrl='http://hiji.hifete.com';
+
+var serverUrl= "http://192.168.199.191:7200";
+
+//var serverUrl='http://hiji.hifete.com';
 //var serverUrl='http://s-365426.gotocdn.com';
 //var serverUrl='http://s-365426.gotocdn.com:7200';
 //var serverUrl='http://192.168.31.153:7200';
@@ -280,10 +279,16 @@ window.lazyLoad = function(init,limit){
 	var loadPics = mui('.loadPics'),
 	H = window.innerHeight;//可视窗口高度
 	window.onscroll = function(){
+		if(H == 0){H = window.innerHeight;}
 		if(loadPics.length){
 		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
-		    [].forEach.call(loadPics,function(img){
+		    [].forEach.call(loadPics,function(img,index){
 		         if(!img.getAttribute('data-src')){return}
+		         /*if(index == 0){
+		         	console.log('H>>>>' + parseInt(H));
+		         	console.log('S>>>>' + parseInt(S));
+		         	console.error('getTop>>>>' +  getTop(img));
+		         }*/
 		         if(H + S - limit > getTop(img)){
 		             img.src=img.getAttribute("data-src");
 		             img.removeAttribute("data-src");
@@ -295,7 +300,9 @@ window.lazyLoad = function(init,limit){
 	        })
 		}    
 	}
-	init && (window.onscroll())//先默认显示
+	if(init){//先默认显示
+		window.onscroll();
+	}
 	function getTop(e){//获取元素距离顶部高度方法。  
 	    var T = e.offsetTop;
 	    while(e = e.offsetParent ){
