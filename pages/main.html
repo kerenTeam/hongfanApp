@@ -51,7 +51,7 @@
 	<body>
 		<header class="hasManyCity mui-row mui-bar mui-bar-transparent" id="header" style="z-index: 200;">
 			<div id="" class="cityBtn">
-				<span class="nowCity">成都</span> 
+				<span class="nowCity">重庆</span>
 				<div class="citys" style="display: none;">
 					<div class="fineB aClick citysBtn" onclick="citysBtn('成都')">成都</div>
 					<div class="fineB aClick citysBtn" onclick="citysBtn('上海')">上海</div>
@@ -368,7 +368,9 @@
 					<div class="moreCon fineB aClick"><span>更多 </span></div>
 				</div>
 			</div>
-		</div> 
+		</div>
+		<img id='hbrain' src="../img/center/bgs.png" style="position: fixed;right: 0px;bottom: 20px;width: 80px;z-index: 999999;display: none;"/>
+
 		<script type="text/javascript">
 			var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
 			var listSon = mui('.listSon');
@@ -648,7 +650,7 @@
 				//城市切换
 				var cityNum = plus.storage.getItem('cityNum');
 				var cityA = ['成都','上海','重庆','重庆'],cityN = ['2','3','1','0'];
-				mui('.nowCity')[0].innerHTML = cityA[cityN.indexOf(cityNum)] || '成都';
+				mui('.nowCity')[0].innerHTML = cityA[cityN.indexOf(cityNum)] || '重庆';
 				[].forEach.call(mui('.citysBtn'),function(ele){
 					if(ele.innerHTML == mui('.nowCity')[0].innerHTML){
 						ele.style.display = 'none';
@@ -806,7 +808,6 @@
 //							alert('清除缓存成功!');
 						})
 					};
-
 					//banner数据
 					mui.ajax(serverUrl + '/api/index/banner', {
 						data: {
@@ -816,7 +817,8 @@
 						type: 'post',
 						timeout: 10000,
 						headers: {
-							"token": oldToken
+							"token": oldToken,
+							'cityNum': cityNum
 						},
 						success: function(data, type, xhr) {
 							console.log('banner', data);

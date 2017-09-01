@@ -9,23 +9,26 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
 		<link rel="stylesheet" type="text/css" href="../../css/makeFhtml.css"/> 
+		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
 	</head>
 	<style type="text/css">
 		.mui-bar-nav{box-shadow: none !important; z-index: 400;}
 		.QAhead{background-color: #fff; position: fixed; width: 100%; z-index: 300;box-shadow: 0 0 2px rgba(175, 166, 166, 0.85);}
 		.listSon { margin-top: 35px; }
-		.QAhead span{margin: 0 6%;}
+		.QAhead span{margin: 0 3%;}
 		.circleName{font-size: 14px;padding: 8px;padding-bottom: 0px;color: #444;}
 		.circleName span{position: relative;top: -2px;color: #888;}
 		.circleName span b{font-weight: normal;margin-left: 10%; }
 		.circleImg{position: relative;}
 		.circleImg a{position: absolute;bottom: 7px;right: 12px;color: #fff;font-size: 14px;}
 		.circleImg a img{width: 16px;margin-bottom: -3px;margin-right: 2px;}
-		
+		#upload{min-height: 38px;padding-top: 0;}
+		#upload img{padding: 0 !important;margin: 0;width: 32px;}
 	</style>
 	<body style="background-color: white;padding-bottom: 0;">
-		 
 		<header class="mui-bar mui-bar-nav fineB" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">交友</h1>
@@ -41,68 +44,216 @@
 					<span class="aClick">男神</span>
 				</div>
 				<div id="listOldDiv">
-					<div id="listConW1" class="middleI listSon"><!--我要问 盒子1-->
-						<div class="circleContain">
-							<div class="circleBox" onclick="openDetail()">
-								<div class="circleImg">
-									<img class="img1" src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
-								</div>
-								<div class="circleName"> 陈海洋 <br /> <span>22岁 <b>175CM</b></span> </div>
-							</div>
-							<div class="circleBox">
-								<div class="circleImg">
-									<img class="img1" src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
-								</div>
-								<div class="circleName"> 陈海洋 <br /> <span>22岁 <b>175CM</b></span> </div>
-							</div>
-							<div class="circleBox">
-								<div class="circleImg">
-									<img class="img1" src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
-								</div>
-								<div class="circleName"> 陈海洋 <br /> <span>22岁 <b>175CM</b></span> </div>
-							</div>
-							<div class="circleBox">
-								<div class="circleImg">
-									<img class="img1" src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
-								</div>
-								<div class="circleName"> 陈海洋 <br /> <span>22岁 <b>175CM</b></span> </div>
-							</div>
-							<div class="circleBox">
-								<div class="circleImg">
-									<img class="img1" src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
-								</div>
-								<div class="circleName"> 陈海洋 <br /> <span>22岁 <b>175CM</b></span> </div>
-							</div>
-						</div>
+					<div id="listConW1" class="middleI listSon" style="display: block;"><!--推荐-->
+						<div class="circleContain" id="listData0" style="overflow: hidden;"></div>
 					</div>
+					<div id="listConW2" class="middleI listSon" style="display: none;"> <!--女神-->
+						<div class="circleContain" id="listData1" style="overflow: hidden;"></div>
+					</div>
+					<div id="listConW3" class="middleI listSon" style="display: none;"><!--男神-->
+						<div class="circleContain" id="listData2" style="overflow: hidden;"></div>
+					</div>
+					
+					<script type="text/html" id="listDataS">
+						<%for(var i=0;i<dataList.length;i++){%>
+							<div class="circleBox" onclick="openDetail()">
+								<!--<div class="circleImg" style="background: url(<%=dataList[i].avatar%>) 0 0 no-repeat;background-size: cover;">-->
+								<div class="circleImg">
+									<img class="img1 loadPics" onload="imgHeight(this)" data-src="<%=dataList[i].avatar%>" src=""/>
+									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
+								</div>
+								<div class="circleName"> <%=dataList[i].user_id%> <br /> <span>22岁 <b>175CM</b></span> </div>
+							</div>
+						<%}%>	
+					</script>
+					<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div>
 				</div>
 			</div>
-			
-			<script type="text/javascript">
-				var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
-				//初始化listOldDiv度
-				[].forEach.call(listCon,function(ele,index){/*点击方法*/
-					ele.onclick = function(){//点击tab切换
-						if(!ele.className.includes('active')){
-							[].forEach.call(listCon,function(ele2){
-								ele2.className = '';
-							})
-							ele.className = 'active aClick';
-						}
-	 				}
-				})
-			</script>
-			
 		</div>  
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		
-		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		
 		<script type="text/javascript">
+			function imgHeight(obj){
+				if(obj.offsetHeight<obj.parentNode.offsetHeight){
+					obj.style.height = '100%';
+					obj.style.width = 'auto';
+				}
+			}
+		</script>
+		<script type="text/javascript">
+			
+			var flag0 = 0,flag1 = 0,flag2 = 0;//是否   第一次点击
+			var SH0 = 0,SH1  = 0,SH2  = 0; /*保存的状态栏高度*/
+			var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');//按钮
+			var listSon = document.getElementsByClassName('listSon'); /*内容盒子*/
+			[].forEach.call(listCon,function(ele,index){/*点击切换tab*/
+				ele.onclick = function(){//点击tab切换
+					if(!ele.className.includes('active')){
+						[].forEach.call(listCon,function(ele2){
+							ele2.className = '';
+						})
+						ele.className = 'active aClick';
+						
+						[].forEach.call(listSon,function(ele3){
+							ele3.style.display = 'none';
+						})
+						listSon[index].style.display = 'block';
+						
+						if(index == 0){
+							if(flag0==0){
+								shopData(index,0);
+							}else{
+								$(window).scrollTop(SH0);
+							}
+						}else if(index == 1){
+							if(flag1==0){
+								shopData(index,1);
+							}else{
+								$(window).scrollTop(SH1);
+							}
+						}else if(index == 2){
+							if(flag2==0){
+								shopData(index,2);
+							}else{
+								$(window).scrollTop(SH2);
+							}
+						}
+					}
+ 				}
+			})
+			/*铺数据*/
+			shopData(0,0);//默认推荐
+			
+			function shopData(typeNum,gender){
+				var Spagenum = 2; //实到页数
+				var Ypagenum = 1; //应到页数
+				if(typeNum == 0){
+					flag0++;
+				}else if(typeNum == 1){
+					flag1++;
+				}else if(typeNum == 2){
+					flag2++;
+				}
+				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+				mui.plusReady(function(){
+					var currentPage = 1,
+						numsPerPage = 6;
+					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl + '/api/friends/friendslist', {
+						data: {
+							'recommend':1,
+							'gender':1,
+							'numsPerPage':numsPerPage,
+							'currentPage':currentPage,
+							'orderType':'ASC',
+							'orderField':'followers'
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) {
+							console.error('交友列表'+typeNum, data);
+							if(data.errno == 0) {
+								if(!data.data.data.length){
+									mui("#upload")[0].innerHTML = "当前城市没有数据 !";
+								}else{
+									var dataObj = {};
+									for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
+									 	if(data.data.data[i].avatar && data.data.data[i].avatar.indexOf("[")>-1){
+											data.data.data[i].avatar = serverimgUrl+ JSON.parse(data.data.data[i].avatar)[0].picImg;
+										}else if(data.data.data[i].avatar){
+											data.data.data[i].avatar = serverimgUrl+ data.data.data[i].avatar;
+										}else if(!data.data.data[i].avatar){
+											data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201708/27/20170827012922_JAncv.thumb.224_0.jpeg';
+										}
+									}
+									dataObj.dataList = data.data.data;
+									document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
+									mui("#upload")[0].innerHTML = "";
+									lazyLoad(true,50);//懒加载
+									
+									$(window).scroll(function() {
+										if(document.getElementsByClassName("listSon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
+												var scrollTop = $(this).scrollTop();　
+												if(typeNum == 0){
+													SH0 = $(this).scrollTop();
+												}else if(typeNum == 1){
+													SH1 = $(this).scrollTop();
+												}else if(typeNum == 2){
+													SH2 = $(this).scrollTop();
+												}
+												var scrollHeight = $(document).height();
+												var windowHeight = $(this).height();　　
+												if(scrollTop + windowHeight == scrollHeight) {
+													if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+														mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+														Ypagenum++; //满足加载情况,应到页数+1
+														console.log('发起请求,实到' + Spagenum + '页');
+														console.log('发起请求,应到' + Ypagenum + '页');
+														mui.ajax(serverUrl + '/api/friends/friendslist', {
+															data: {
+																'recommend':1,
+																'gender':1,
+																'numsPerPage':numsPerPage,
+																'currentPage':Spagenum,
+																'orderType':'ASC',
+																'orderField':'followers'
+															},
+															dataType: 'json',
+															type: 'post',
+															timeout: 8000,
+															headers: {"token": oldToken,'city': cityNum},
+															success: function(data) {
+																console.error('交友列表续'+typeNum, data);
+																if(data.errno == 0) {
+																	var dataObj = {};
+																	for(var i = 0 ;i<data.data.data.length;i++){
+																	 	if(data.data.data[i].avatar && data.data.data[i].avatar.indexOf("[")>-1){
+																			data.data.data[i].avatar = serverimgUrl+ JSON.parse(data.data.data[i].avatar)[0].picImg;
+																		}else if(data.data.data[i].avatar && data.data.data[i].avatar.indexOf("[") == -1){
+																			data.data.data[i].avatar = serverimgUrl + data.data.data[i].avatar[0];
+																		}else if(!data.data.data[i].avatar){
+																			data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201708/27/20170827012922_JAncv.thumb.224_0.jpeg';
+																		}
+																	 }
+																	dataObj.dataList = data.data.data;
+																	document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
+																	lazyLoad(false,50);//懒加载
+																}
+																mui("#upload")[0].innerHTML = " ";
+																Spagenum++; //加载成功,当前页+1
+																console.log('成功+1,实到' + Spagenum);
+																console.log('成功+1,应到' + Spagenum);
+															},
+															error: function(xhr, type, errorThrown) {
+																Ypagenum--; //失败是应到-1
+																mui.toast("当前网络不好请重试");
+																mui("#upload")[0].innerHTML = "";
+															}
+														});
+													} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+														mui("#upload")[0].innerHTML = "到底了";
+													}
+												} 
+										}
+									});
+								
+								}
+							}else{
+								mui.toast('当前网络不好,请重试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('交友列表,响应失败');
+							mui.toast('当前网络不好,请重试');
+						}
+					});
+				})
+			}
+			
+			
+			
 			//打开他人主页
 			function openDetail(){
 				openview({

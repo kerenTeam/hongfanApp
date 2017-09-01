@@ -62,7 +62,8 @@
 			//创建子页面，首个选项卡页面显示，其它均隐藏;
 			mui.plusReady(function() {
 				var cityNum = plus.storage.getItem('cityNum');
-				//显示启动导航
+				if(cityNum == null){plus.storage.setItem("cityNum",'1');}
+				//显示   广告导航页面
 //				openview({
 //					view: 'guide.html', 
 //					id: 'guide',
@@ -75,7 +76,7 @@
 			   	//地图定位初始化
 				function geoInf(position,Manual) {
 					var cityNum = plus.storage.getItem('cityNum');
-					if(cityNum == null){cityNum = 2}
+					if(cityNum == null){cityNum = 1}
 					//参数解释   0=其他    1=重庆   2=成都   3=上海
 					var nowCity = position.address.city;
 					if(nowCity.includes('成都') && cityNum != 2){
