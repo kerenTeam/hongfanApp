@@ -30,7 +30,7 @@
 			body{background-color: #f3f3f3;}
 			.photoItem{padding: 5px;}
 			.photoItem p{margin: 5px;}
-			.photoItem .frph{overflow: hidden;position: relative;width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px;float: left;}
+			.photoItem .frph{overflow: hidden;position: relative;width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px 70px;float: left;}
 			.frph img.disimg{width: 100%;}
 			.frph img.isDelet{width: 25px;position: absolute;top: 5px;right: 5px;display: none;}
 			.upbtn{position: fixed;bottom: 10px;width: 80%;left: 10%;}
@@ -64,7 +64,7 @@
 					<div style="clear: both;"></div>
 				</div>
 			</script>
-			
+			<div class="upload text-center text-xs gray" id="upload"></div>
 			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="delet" disabled="" style="display: none;">删除</button>					 
 			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic">添加</button>					 
 			
@@ -85,7 +85,7 @@
 		var oldToken = plus.storage.getItem('oldToken');
 		var cityNum = plus.storage.getItem('cityNum');
 		var	myuserid = plus.storage.getItem('userid');
-		var currentPage = 1,numsPerPage = 6;
+		var currentPage = 1,numsPerPage = 4;
 		//获取交友照片
 		mui.ajax(serverUrl+'/api/friends/photography',{
 			data:{"userId":myuserid,currentPage:currentPage,numsPerPage:numsPerPage,},
@@ -102,33 +102,72 @@
 						 	j=ele.picImg.length; 
 						 }) 
 						 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
-						 $('.frph').each(function(){
-							if($(this).height() > $(this).find('.disimg').height()){
-								$(this).find('.disimg').css('height','100%');
-								$(this).find('.disimg').css('width','auto');
-							} 
-						})
+						
+						mui("#upload")[0].innerHTML = "";
 						lazyLoad(true,50);//懒加载
 						//上滑加载
-								$(window).scroll(function() {　　
-									var scrollTop = $(this).scrollTop();　　
-									var scrollHeight = $(document).height();　　
-									var windowHeight = $(this).height();　　
-									if(scrollTop + windowHeight == scrollHeight) {
-										if(Spagenum <= data.data.return.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-											mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
-											Ypagenum++; //满足加载情况,应到页数+1
-											console.log('发起请求,实到' + Spagenum + '页');
-											console.log('发起请求,应到' + Ypagenum + '页');
-											 
-										} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-											mui("#upload")[0].innerHTML = "到底了";
+						$(window).scroll(function() {　　
+							var scrollTop = $(this).scrollTop();　　
+							var scrollHeight = $(document).height();　　
+							var windowHeight = $(this).height();　　
+							if(scrollTop + windowHeight == scrollHeight) {
+								if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+									Ypagenum++; //满足加载情况,应到页数+1
+									console.log('发起请求,实到' + Spagenum + '页');
+									console.log('发起请求,应到' + Ypagenum + '页');
+									mui.ajax(serverUrl + '/api/friends/photography', {
+										data: {
+											"userId":myuserid,
+											currentPage: Spagenum,
+											numsPerPage: numsPerPage,
+										},
+										dataType: 'json', //服务器返回json格式数据
+										type: 'post', //HTTP请求类型 
+										timeout: 8000, //超时时间设置为10秒；	
+										headers: {
+											"token":oldToken,"city":cityNum
+										},
+										success: function(data) {
+											if(data.errno == 0) {
+												
+												if(data.data.data && data.data.data.length){
+													 var picObj = data.data.data;  
+													 [].forEach.call(picObj,function(ele){
+													 	ele.picImg = JSON.parse(ele.picImg);
+													 	j=ele.picImg.length; 
+													 }) 
+													 $('#mfPic').append(template('mfPicTpl',{list:picObj}));
+												}
+												lazyLoad(true,50);//懒加载
+												 $('.frph').each(function(){
+													if($(this).height() > $(this).find('.disimg').height()){
+														$(this).find('.disimg').css('height','100%');
+														$(this).find('.disimg').css('width','auto');
+													} 
+												})
+											}
+											mui("#upload")[0].innerHTML = " ";
+											Spagenum++; //加载成功,当前页+1
+											console.log('成功+1,实到' + Spagenum);
+											console.log('成功+1,应到' + Spagenum);
+										},
+										error: function(xhr, type, errorThrown) {
+											Ypagenum--; //失败是应到-1
+											mui.toast("当前网络不好请重试");
+											mui("#upload")[0].innerHTML = "";
 										}
-									} 
-								});
+									});
+									 
+								} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+									mui("#upload")[0].innerHTML = "到底了";
+								}
+							} 
+						});
 						
 						
 					}else{
+						mui("#upload")[0].innerHTML = "";
 					}
 					
 					
@@ -137,6 +176,7 @@
 				}
 			},
 			error:function(xhr,type,errorThrown){
+				mui("#upload")[0].innerHTML = "";
 				console.log('获取数据,响应失败');
 			}
 		});
