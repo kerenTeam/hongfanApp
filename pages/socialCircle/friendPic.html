@@ -45,35 +45,33 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">
-			<div class="photoItem"> 
-				<div class="frph" style="background-size: cover;background-position: center;" >
-					<img class="disimg" src="https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg" data-preview-src="" data-preview-group="1"/>
-					<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
+			<div id="mfPic"></div>
+			<script type="text/html" id="mfPicTpl">
+				<div class="photoItem"> 
+					<%for(var i = 0;i<list.length;i++){%>
+						<%for(var j = 0;j<list[i].picImg.length;j++){%>
+							<div class="frph" style="background-size: cover;background-position: center;" >
+								<%if(list[i].picImg[j].picImg){%>
+									<img class="disimg loadPics" src="<%=list[i].picImg[j].picImg%>" data-preview-src="" data-preview-group="1"/>
+									<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
+									<%}else{%>
+										<img src="../../img/market/none.png"/>
+										<%}%>
+								</div> 
+						<%}%>
+					<%}%>
+					
+					<div style="clear: both;"></div>
 				</div>
-				<div class="frph" style="background-size: cover;background-position: center;" >
-					<img class="disimg" src="https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg" data-preview-src="" data-preview-group="1"/>
-					<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
-				</div>
-				<div class="frph" style="background-size: cover;background-position: center;" >
-					<img class="disimg" src="https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg" data-preview-src="" data-preview-group="1"/>
-					<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
-				</div>
-				<div class="frph" style="background-size: cover;background-position: center;" >
-					<img class="disimg" src="https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg" data-preview-src="" data-preview-group="1"/>
-					<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
-				</div>
-				<div class="frph" style="background-size: cover;background-position: center;" >
-					<img class="disimg" src="https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg" data-preview-src="" data-preview-group="1"/>
-					<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
-				</div>
-				<div style="clear: both;"></div>
-			</div>
+			</script>
+			
 			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="delet" disabled="" style="display: none;">删除</button>					 
 			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic">添加</button>					 
 			
 		</div>
 	</body>
-	
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
@@ -81,8 +79,68 @@
 	//选择图片
 	var Apic = [];//图片存放数组 
 	var qid;
- 
+ 	var Spagenum = 2; //实到页数
+	var Ypagenum = 1; //应到页数 
 	mui.plusReady(function() {
+		var oldToken = plus.storage.getItem('oldToken');
+		var cityNum = plus.storage.getItem('cityNum');
+		var	myuserid = plus.storage.getItem('userid');
+		var currentPage = 1,numsPerPage = 6;
+		//获取交友照片
+		mui.ajax(serverUrl+'/api/friends/photography',{
+			data:{"userId":myuserid,currentPage:currentPage,numsPerPage:numsPerPage,},
+			type:'post',
+			timeout:8000,
+			headers:{"token":oldToken,"city":cityNum},	              				
+			success:function(data,type,xhr){
+				console.log('交友照片',data);
+				if(data.errno == 0){ 
+					if(data.data.data && data.data.data.length){
+						 var picObj = data.data.data;  
+						 [].forEach.call(picObj,function(ele){
+						 	ele.picImg = JSON.parse(ele.picImg);
+						 	j=ele.picImg.length; 
+						 }) 
+						 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
+						 $('.frph').each(function(){
+							if($(this).height() > $(this).find('.disimg').height()){
+								$(this).find('.disimg').css('height','100%');
+								$(this).find('.disimg').css('width','auto');
+							} 
+						})
+						lazyLoad(true,50);//懒加载
+						//上滑加载
+								$(window).scroll(function() {　　
+									var scrollTop = $(this).scrollTop();　　
+									var scrollHeight = $(document).height();　　
+									var windowHeight = $(this).height();　　
+									if(scrollTop + windowHeight == scrollHeight) {
+										if(Spagenum <= data.data.return.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+											Ypagenum++; //满足加载情况,应到页数+1
+											console.log('发起请求,实到' + Spagenum + '页');
+											console.log('发起请求,应到' + Ypagenum + '页');
+											 
+										} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "到底了";
+										}
+									} 
+								});
+						
+						
+					}else{
+					}
+					
+					
+				}else{
+					console.log(data.errmsg); 
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				console.log('获取数据,响应失败');
+			}
+		});
+		
 		qid=plus.webview.currentWebview().qqid;
 		mui('#nowpic')[0].addEventListener('tap',function(){
 			plus.nativeUI.actionSheet({

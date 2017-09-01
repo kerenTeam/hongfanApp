@@ -43,95 +43,166 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 			 
-    		<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								
-							</div>
-						</div> 
-						<div class="disablecl ft12">
-							<div class="diybtn2" style="display: none;">
-								已关注
-							</div> 
-							<div class="diybtn">
-								关注
-							</div> 
-			           </div> 
-					</div>  
-				</div>
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								
-							</div>
-						</div> 
-						<div class="disablecl ft12">
-							<div class="diybtn2" style="display: none;">
-								已关注
-							</div> 
-							<div class="diybtn">
-								关注
-							</div> 
-			           </div> 
-					</div>  
+			 <div id="likeMe"></div>
+			 <script type="text/html" id="likeMeTpl">
+			 	 						 
+			 	<div class="listCon">
+			 		<%for(var i = 0;i<list.length;i++){%>
+						<div class="follow" data-id="<%=list[i].user_id%>"> 
+							<div class="fchidl">
+								<div>
+									<%if(list[i].avatar){%>
+										<img src="<%= list[i].avatar%>" class="userAvator mr25"/>
+										<%}else{%>
+											<img src="../../img/10.png" class="userAvator mr25"/>
+										<%}%>
+
+									<div>
+										<%= list[i].username%>
+										
+									</div>
+								</div> 
+								<div class="disablecl ft12">
+									<%if(list[i].eachOther == 1){%>
+										<div class="diybtn" style="display: none;">
+												关注
+											</div>
+										<div class="diybtn2">
+											互相关注
+										</div> 
+										<%}else{%>
+											<div class="diybtn">
+												关注
+											</div>
+											<div class="diybtn2" style="display: none;">
+												互相关注
+											</div> 
+											<%}%>
+									
+									
+					           </div> 
+							</div>  
+						</div>
+					<%}%>
+				 
 				</div> 
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								
-							</div>
-						</div> 
-						<div class="disablecl ft12">
-							<div class="diybtn2">
-								已关注
-							</div> 
-							<div class="diybtn" style="display: none;">
-								关注
-							</div> 
-			           </div> 
-					</div>  
-				</div> 
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								
-							</div>
-						</div> 
-						<div class="disablecl ft12">
-							<div class="diybtn2">
-								已关注
-							</div> 
-							<div class="diybtn" style="display: none;">
-								关注
-							</div> 
-			           </div> 
-					</div>  
-				</div> 
-			 
-			</div> 
-		  
+			 	
+			 	
+			 </script>
+    		
 		</div>
 	</body>
 
 	<script type="text/javascript">
  
-		 $('.diybtn').click(function(){
-    		$(this).css('display','none'); 
-    		$(this).siblings('.diybtn2').css('display','block')
-    	})
+		
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
+			var cityNum = plus.storage.getItem('cityNum');
+			var	myuserid = plus.storage.getItem('userid');
+			mui.ajax(serverUrl+'/api/friends/likeusers',{
+				data:{"userId":myuserid},
+				type:'post',
+				timeout:8000,
+				headers:{"token":oldToken,"city":cityNum},	              				
+				success:function(data,type,xhr){
+					console.log('获取数据返回',data);
+					if(data.errno == 0){
+						if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
+							for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
+								if(!data.data.LikeMeUsers[i].username){
+									data.data.LikeMeUsers[i].username = '匿名'
+								}
+								if(data.data.LikeMeUsers[i].avatar){
+									data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+								}
+								[].forEach.call(data.data.ILikeUsers,function(ele,index){
+									if(!ele.username){
+										ele.username = '匿名'
+									}
+									if(ele.avatar){
+										ele.avatar = serverimgUrl + JSON.parse(ele.avatar)[0].picImg;
+									} 
+									if(data.data.LikeMeUsers[i].user_id == ele.user_id){
+										data.data.LikeMeUsers[i].eachOther = 1
+									}
+								})
+							}
+							
+							
+							var likeMeObj = {}
+							likeMeObj.list = data.data.LikeMeUsers;
+							likeMeObj.url = serverimgUrl;
+							var html = template('likeMeTpl', likeMeObj); 
+							document.getElementById('likeMe').innerHTML = html;	
+							
+							$('.diybtn').click(function(){
+								var j = 0;
+								var curL = $(this);
+					    		var likerId = $(this).parentsUntil('#likeMe').find('.follow').attr('data-id')
+					    		//关注 
+					    		mui.ajax(serverUrl+'/api/friends/likeusers',{
+					                data:{userId:myuserid,likeUserId:likerId},
+					                type:'PUT',
+					                timeout:8000,
+					                headers:{"token":oldToken,"city":cityNum},                              
+					                success:function(data,type,xhr){ 
+					                    console.log('获取用户数据返回',data);
+					                    if(data.errno == 0){  
+					                    	console.log(++j)
+								    		curL.css('display','none'); 
+								    		curL.siblings('.diybtn2').css('display','block'); 
+					                    }else{
+					                        mui.toast('网络不好,请重试'); 
+					                    }
+					                     
+					                },
+					                error:function(xhr,type,errorThrown){
+					                    console.log('获取用户数据,响应失败');
+					                }
+					            }); 
+					    	})
+							
+							//取消关注
+							$('.diybtn2').click(function(){
+								var curL = $(this);
+					    		var likerId = $(this).parentsUntil('#likeMe').find('.follow').attr('data-id')
+					    		//关注 
+					    		mui.ajax(serverUrl+'/api/friends/likeusers',{
+					                data:{userId:myuserid,likeUserId:likerId},
+					                type:'get',
+					                timeout:8000,
+					                headers:{"token":oldToken,"city":cityNum},                              
+					                success:function(data,type,xhr){ 
+					                    console.log('获取用户数据返回',data);
+					                    if(data.errno == 0){   
+								    		curL.css('display','none'); 
+								    		curL.siblings('.diybtn').css('display','block'); 
+					                    }else{
+					                        mui.toast('网络不好,请重试'); 
+					                    }
+					                     
+					                },
+					                error:function(xhr,type,errorThrown){
+					                    console.log('获取用户数据,响应失败');
+					                }
+					            }); 
+					    	})
+							
+							
+						}else{
+							
+						}
+					}else{
+						console.log(data.errmsg); 
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取数据,响应失败');
+				}
+			});
+			
+		})
 	</script>
 
 </html>
