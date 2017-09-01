@@ -9,10 +9,9 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/common.css">
-		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
 		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
 		<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
@@ -31,8 +30,10 @@
 			body{background-color: #f3f3f3;}
 			.photoItem{padding: 5px;}
 			.photoItem p{margin: 5px;}
-			.photoItem .frph{width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px;float: left;}
-		
+			.photoItem .frph{overflow: hidden;position: relative;width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px;float: left;}
+			.frph img.disimg{width: 100%;}
+			.frph img.isDelet{width: 25px;position: absolute;top: 5px;right: 5px;display: none;}
+			.upbtn{position: fixed;bottom: 10px;width: 80%;left: 10%;}
 		</style>
 	</head>
 
@@ -40,26 +41,106 @@
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">交友照片</h1> 
-		    <span id="nowpic" class="mui-pull-right" style="font-size: 14px; margin-top: 18px;">添加</span>
+		    <span id='edit' class="mui-pull-right" style="font-size: 14px; margin-top: 18px;">编辑</span>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">
-			<div class="photoItem"> 
-				<div class="frph" style="background: url('https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg') no-repeat;background-size: cover;background-position: center;"></div>
-				<div class="frph" style="background: url('https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg') no-repeat;background-size: cover;background-position: center;"></div>
-				<div class="frph" style="background: url('https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg') no-repeat;background-size: cover;background-position: center;"></div>
-				<div class="frph" style="background: url('https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg') no-repeat;background-size: cover;background-position: center;"></div>
-				<div class="frph" style="background: url('https://b-ssl.duitang.com/uploads/item/201708/27/20170827110446_n8XPv.thumb.400_0.jpeg') no-repeat;background-size: cover;background-position: center;"></div>
-				<div style="clear: both;"></div>
-			</div>
+			<div id="mfPic"></div>
+			<script type="text/html" id="mfPicTpl">
+				<div class="photoItem"> 
+					<%for(var i = 0;i<list.length;i++){%>
+						<%for(var j = 0;j<list[i].picImg.length;j++){%>
+							<div class="frph" style="background-size: cover;background-position: center;" >
+								<%if(list[i].picImg[j].picImg){%>
+									<img class="disimg loadPics" src="<%=list[i].picImg[j].picImg%>" data-preview-src="" data-preview-group="1"/>
+									<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
+									<%}else{%>
+										<img src="../../img/market/none.png"/>
+										<%}%>
+								</div> 
+						<%}%>
+					<%}%>
+					
+					<div style="clear: both;"></div>
+				</div>
+			</script>
+			
+			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="delet" disabled="" style="display: none;">删除</button>					 
+			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic">添加</button>					 
+			
 		</div>
 	</body>
+	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
+		
 	//选择图片
 	var Apic = [];//图片存放数组 
 	var qid;
- 
+ 	var Spagenum = 2; //实到页数
+	var Ypagenum = 1; //应到页数 
 	mui.plusReady(function() {
+		var oldToken = plus.storage.getItem('oldToken');
+		var cityNum = plus.storage.getItem('cityNum');
+		var	myuserid = plus.storage.getItem('userid');
+		var currentPage = 1,numsPerPage = 6;
+		//获取交友照片
+		mui.ajax(serverUrl+'/api/friends/photography',{
+			data:{"userId":myuserid,currentPage:currentPage,numsPerPage:numsPerPage,},
+			type:'post',
+			timeout:8000,
+			headers:{"token":oldToken,"city":cityNum},	              				
+			success:function(data,type,xhr){
+				console.log('交友照片',data);
+				if(data.errno == 0){ 
+					if(data.data.data && data.data.data.length){
+						 var picObj = data.data.data;  
+						 [].forEach.call(picObj,function(ele){
+						 	ele.picImg = JSON.parse(ele.picImg);
+						 	j=ele.picImg.length; 
+						 }) 
+						 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
+						 $('.frph').each(function(){
+							if($(this).height() > $(this).find('.disimg').height()){
+								$(this).find('.disimg').css('height','100%');
+								$(this).find('.disimg').css('width','auto');
+							} 
+						})
+						lazyLoad(true,50);//懒加载
+						//上滑加载
+								$(window).scroll(function() {　　
+									var scrollTop = $(this).scrollTop();　　
+									var scrollHeight = $(document).height();　　
+									var windowHeight = $(this).height();　　
+									if(scrollTop + windowHeight == scrollHeight) {
+										if(Spagenum <= data.data.return.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
+											Ypagenum++; //满足加载情况,应到页数+1
+											console.log('发起请求,实到' + Spagenum + '页');
+											console.log('发起请求,应到' + Ypagenum + '页');
+											 
+										} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "到底了";
+										}
+									} 
+								});
+						
+						
+					}else{
+					}
+					
+					
+				}else{
+					console.log(data.errmsg); 
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				console.log('获取数据,响应失败');
+			}
+		});
+		
 		qid=plus.webview.currentWebview().qqid;
 		mui('#nowpic')[0].addEventListener('tap',function(){
 			plus.nativeUI.actionSheet({
@@ -80,34 +161,7 @@
 			);
 		})
 		var oldtoken = plus.storage.getItem('oldToken');
-		
-		mui.ajax(serverUrl+'/api/news/tags',{//请求id列表
-			dataType:'json',
-			type:'post',
-			timeout:10000,
-			headers:{"token":oldtoken},
-			success:function(data,type,xhr){ 
-				console.log('列表',data);
-				if(data.errno==0){
-					var dataobj = {};
-					if(data.data.length){
-						 
-						dataobj.list = data.data;
-						mui('#mainpic')[0].innerHTML = template('infolist',dataobj);
-						console.log(template('infolist',dataobj))
-					} 
-				}else{
-					mui.toast('当前网络不好，请重试！');	
-				}
-				plus.nativeUI.closeWaiting();
-			},
-			error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting(); 
-				mui.toast('当前网络不好，请重试！');
-				console.log('登录响应失败');
-			}
-		});
-		 
+	 
 		function getImage(){//拍照并保存
 			var cmr = plus.camera.getCamera();
 			cmr.captureImage( function ( path ) {
@@ -181,9 +235,43 @@
 			if(0!=url.indexOf("file://")){        
 				url="file://"+url;  
 			}
-			mui('#nowpic')[0].src = url;    
+				
+			mui('.photoItem')[0].innerHTML += '<div class="frph" style="background: url('+url+') no-repeat;background-size: cover;background-position: center;"><img src="../../img/makeFriend/uncheck.svg" alt="" /></div>';    
 		} 
 }); 
 	//选择图片结束
+	
+	
+	$('.frph img').click(function(){
+		event.stopPropagation();
+		var i = 0;
+		if($(this).attr('src') == '../../img/makeFriend/uncheck.svg'){
+			$(this).attr('src','../../img/makeFriend/check.svg');
+			i++;
+		}else if($(this).attr('src') == '../../img/makeFriend/check.svg'){
+			$(this).attr('src','../../img/makeFriend/uncheck.svg') 
+			i--;
+		}
+		if(i>0){
+			$('#delet').removeAttr('disabled')
+		}else{
+			$('#delet').attr('disabled','true')
+		}
+	})
+	
+	$('#edit').click(function(){
+		if($(this).html() == '编辑'){
+			$(this).html('取消');
+			$('#delet,.frph img.isDelet').css('display','block');
+			$('#nowpic').css('display','none');
+		}else{
+			$(this).html('编辑');
+			$('#delet,.frph img.isDelet').css('display','none');
+			$('#nowpic').css('display','block');
+		}
+		
+	})
+				mui.previewImage(); 
+	
 	</script>
 </html>

@@ -13,6 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
 		<style type="text/css">
 			#userMessContainer{margin-top: 50px;
 			}
@@ -101,23 +102,38 @@
 		<div id="main"> 
 	    	<div class="plist clearfloat data" id="userMessContainer">
 				<ul>
-					
+					<li class="clearfloat">
+						<a href="#">
+							<p class="fl">昵称</p>
+							<input type="text" class="fr shuru" name="" id="nkname" placeholder="填写" />
+						</a>
+					</li>
 					<li class="clearfloat">
 						<a href="#">
 							<p class="fl">个性签名</p>
-							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="填写" />
+							<input type="text" class="fr shuru" name="" id="explain" placeholder="填写" />
+						</a>
+					</li>
+					<li class="clearfloat">
+						<a href="#">
+							<p class="fl">性别</p>
+			    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn" dir="rtl">
+								<option value="item-1">点击选择</option>
+								<option value="item-2">男</option> 
+								<option value="item-2">女</option>
+							</select>
 						</a>
 					</li>
 					<li class="clearfloat">
 						<a href="#">
 							<p class="fl">星座</p>
-							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="填写" />
+							<input type="text" class="fr shuru" name="" id="horoscope" placeholder="填写" />
 						</a>
 					</li>
 					<li class="clearfloat">
 						<a href="#">
 							<p class="fl">年龄</p>
-							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="填写" />
+							<input type="number" class="fr shuru" name="" id="age" placeholder="填写" />
 						</a>
 					</li>
 					 
@@ -126,7 +142,7 @@
 							<p>更换背景图片</p>
 							<label style="display: block;">
 								<span>
-									<div class="text-center gray" id="preview"><img src="../../img/answer/editset.png"/></div>
+									<div class="text-center gray" id="preview"><img id="mypic1" src="../../img/answer/editset.png"/></div>
 								</span>
 								<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
 							</label>
@@ -135,30 +151,10 @@
 					<li class="clearfloat touxiang">
 						<a>
 							<p>个性标签</p>
-							<div class="diybut">
-					 			科技
-					 		</div> 
-					 		<div class="diybut">
-					 			文艺
-					 		</div>
-					 		<div class="diybut">
-					 			时尚
-					 		</div>
-					 		<div class="diybut">
-					 			娱乐
-					 		</div>
-					 		<div class="diybut">
-					 			经济
-					 		</div>
-					 		<div class="diybut">
-					 			教育
-					 		</div>
-					 		<div class="diybut">
-					 			健康
-					 		</div>
-					 		<div class="diybut">
-					 			生活
-					 		</div>
+							<div id="psLabel">
+							 
+							</div>
+							
 						</a>
 					</li> 
 				 
@@ -175,84 +171,294 @@
 	<script type="text/javascript">
 		var idnum = 0;
 		mui.plusReady(function(){
-			$('.diybut').click(function(){ 
-				if($('.diybuted').length>5){
-					if($(this).hasClass('diybuted')){
-						$(this).removeClass('diybuted')
-					}else{
-						alert('最多只能选6个标签');
-					}
-					return;
-				}else{
-					$(this).toggleClass('diybuted');
-				}
-			})
+		 
 			var myuserid = plus.storage.getItem('userid');
-			var oldtoken = plus.storage.getItem('oldToken');
+			var cityNum = plus.storage.getItem('cityNum');
+			var oldToken = plus.storage.getItem('oldToken');
 			//显示既有信息
-			//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
-				data:{"userid":myuserid},
-				type:'post',
-				timeout:10000,
-				headers:{"token":oldtoken},	              				
-				success:function(data){
+			mui.ajax(serverUrl+'/api/friends/friendhome/userId/'+myuserid,{
+				type:'get',
+				timeout:8000,
+				headers:{"token":oldToken,"city":cityNum},	              				
+				success:function(data,type,xhr){
 					console.log('获取用户数据返回',data);
 					if(data.errno == 0){
-						 
-						 
+						
+						if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.username)){
+							data.data.username = data.data.username.substring(0,3)+"****"+data.data.username.substring(7,11)
+						}
+						
+//						//显示头像
+//						if(data.data.avatar){
+//							mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+//						}
+//						
 					 
+						if(data.data.bgImg && JSON.parse(data.data.bgImg).length>0){ 
+								$('#mypic1').attr('src',JSON.parse(data.data.bgImg)[0].picImg)
+						}
+						
+						if(data.data.explain && data.data.explain!=null){ 
+							$('#explain').val(data.data.explain)
+						} 
+						if(data.data.age){ 
+							$('#age').val(data.data.age)
+						}else{
+							$('#age').val('填写')
+						}
+						
+						if(data.data.horoscope && data.data.horoscope!=null){ 
+							$('#horoscope').val(data.data.horoscope)
+						}else{
+							$('#horoscope').val('填写')
+						}
+//						显示昵称
+						if(data.data.username && data.data.username != ' '){  
+								$('#nkname').val(data.data.username) 
+						}
+						//显示性别
+						switch (data.data.gender){//Nextbtn
+							case '男':
+							mui('#Nextbtn')[0].getElementsByTagName('option')[1].selected = true;
+							break;
+							case '女':
+							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
+							break;
+							case '择'|| null:
+							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
+							break;
+						}
+						
 					}else{
-						mui.toast('获取信息失败');
-						console.log(data.errmsg);
+						//mui.toast('获取用户信息失败'); 
+						console.log(data.errmsg); 
 					}
-					plus.nativeUI.closeWaiting();
 				},
 				error:function(xhr,type,errorThrown){
-					plus.nativeUI.closeWaiting();
-					mui.toast('响应失败 ');
+					//mui.toast('获取用户信息响应失败');
+					console.log('获取用户数据,响应失败');
+				}
+			}); 
+			//获取标签
+			mui.ajax(serverUrl+'/api/friends/lable/userId/'+myuserid,{
+				type:'get',
+				timeout:8000,
+				headers:{"token":oldToken,"city":cityNum},	              				
+				success:function(data,type,xhr){
+					console.log('获取用户数据返回',data);
+					if(data.errno == 0){ 
+						var dataObj=data.data;
+						if(dataObj && dataObj.length){
+							[].forEach.call(dataObj,function(ele){
+								if(ele.lableName){
+									$('#psLabel').append('<div data-id="'+ele.id+'" class="diybut">'+ele.lableName+'</div> ')
+								}
+							}) 
+							
+							mui.ajax(serverUrl+'/api/friends/userlable/userId/'+myuserid,{
+								type:'get',
+								timeout:8000,
+								headers:{"token":oldToken,"city":cityNum},	              				
+								success:function(data,type,xhr){
+									console.log('获取用户数据返回',data);
+									if(data.errno == 0){ 
+										var dataObj=data.data;
+										if(dataObj && dataObj.length){
+											[].forEach.call(dataObj,function(ele){
+												[].forEach.call($('.diybut'),function(ele2,index){
+													if(ele2.innerText==ele.lableName){
+														$('.diybut').eq(index).addClass('diybuted');
+													}
+												})
+											}) 
+										}
+										
+									}else{
+										//mui.toast('获取用户信息失败'); 
+										console.log(data.errmsg); 
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									console.log('获取用户数据,响应失败');
+								}
+							});
+							
+						} 
+						
+					}else{
+						//mui.toast('获取用户信息失败'); 
+						console.log(data.errmsg); 
+					}
+					
+		            $('.diybut').click(function(){ 
+		                if($('.diybuted').length>5){
+		                    if($(this).hasClass('diybuted')){
+		                        var spanId = $(this).attr("data-id");  
+		                        //删除标签
+		                        var curSp = $(this);
+		                        mui.ajax(serverUrl+'/api/friends/userlable/userId/'+myuserid,{
+									data:{lableID:spanId},
+									type:'delete',
+									timeout:8000,
+									headers:{"token":oldToken,"city":cityNum},	              				
+									success:function(data,type,xhr){
+										 
+										console.log('获取用户数据返回',data);
+										if(data.errno == 0){ 
+		                        			curSp.removeClass('diybuted');
+										}else{
+											//mui.toast('获取用户信息失败'); 
+											console.log(data.errmsg); 
+										}
+										 
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('获取用户数据,响应失败');
+									}
+								});
+		                        
+		                    }else{
+		                        alert('最多只能选6个标签');
+		                    } 
+		                    return;
+		                }else{ 
+		                    var spanId = $(this).attr("data-id"); 
+		                    if($(this).hasClass('diybuted')){
+		                    	var curSp = $(this);
+		                    	
+		                        //删除标签
+		                        mui.ajax(serverUrl+'/api/friends/userlable',{
+									data:{lableID:spanId,userId:myuserid},
+									type:'DELETE',
+									timeout:8000,
+									headers:{"token":oldToken,"city":cityNum},	              				
+									success:function(data,type,xhr){ 
+										console.log('获取用户数据返回',data);
+										if(data.errno == 0){ 
+		                       			 	curSp.removeClass('diybuted');
+										}else{
+											//mui.toast('获取用户信息失败'); 
+											console.log(data.errmsg); 
+										}
+										 
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('获取用户数据,响应失败');
+									}
+								});
+		                        
+		                    }else{
+		                    	var curSp = $(this);
+		                    	//新增标签
+		                        mui.ajax(serverUrl+'/api/friends/userlable/userId/'+myuserid,{
+									data:{lableID:spanId,userId:myuserid},
+									type:'POST',
+									timeout:8000,
+									headers:{"token":oldToken,"city":cityNum},	              				
+									success:function(data,type,xhr){ 
+										console.log('获取用户数据返回',data);
+										if(data.errno == 0){ 
+											curSp.addClass('diybuted');
+										}else{
+											//mui.toast('获取用户信息失败'); 
+											console.log(data.errmsg); 
+										}
+										 
+									},
+									error:function(xhr,type,errorThrown){
+										console.log('获取用户数据,响应失败');
+									}
+								});
+		                        
+		                    }
+		                }
+		            })
+
+					
+//					$('.diybut').click(function(){
+//						if($('.diybuted').length>6){
+//							mui.toast('最多只能添加6个标签哦')
+//						}else{
+//							mui.prompt('','请输入标签名','添加签名',['确认','取消'],function(e) {
+//								if(e.index == 0) { 
+//									if(e.value=='' || e.value==' '){
+//										return false;
+//									}else{
+//										//新增标签
+//										mui.ajax(serverUrl+'/api/friends/userlable',{
+//											data:{lableName:e.value,userId:myuserid},
+//											type:'post',
+//											timeout:8000,
+//											headers:{"token":oldToken,"city":cityNum},	              				
+//											success:function(data,type,xhr){
+//												console.log('获取用户数据返回',data);
+//												if(data.errno == 0){ 
+//													mui.toast('新增成功');
+//													$('#psLabel').append('<div data-lableid="'+data.data.id+'" class="diybuted">'+e.value+'</div> ')
+//													
+//												}else{
+//													//mui.toast('获取用户信息失败'); 
+//													console.log(data.errmsg); 
+//												}
+//												$('#goLabel').click(function(){
+//													openview({
+//														view:'friendSet.html',
+//														id:'friendSet'
+//													})
+//												})
+//												
+//											},
+//											error:function(xhr,type,errorThrown){
+//												console.log('获取用户数据,响应失败');
+//											}
+//										});
+//									} 
+//								} 
+//							},'div')
+//						}
+//					})
+					
+					
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取用户数据,响应失败');
 				}
 			});
+		
+			//修改
+			 
 		})
 		var filepic = {};
 		//保存数据
 		mui('#Preservation')[0].addEventListener('tap',function(){ 
 			plus.nativeUI.showWaiting('保存中 ...',{width:'100px',height:'80px'});
-			var mynickname = mui('#mynickname')[0].value || null;
-			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
+			var explain = mui('#explain')[0].value || '';
+			var horoscope = mui('#horoscope')[0].value || '';
 			var touxiang = mui('#imgUpload')[0].files[0] || {};
+			var age = $('#age').val() || '';
+			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
+			var username = $('#nkname').val();
 			
 			mui.plusReady(function(){ 
 				var myuserid = plus.storage.getItem('userid');
-				var oldtoken = plus.storage.getItem('oldToken');
-				if(mui('#IDcard')[0].value.indexOf('****')>-1){
-					var IDnum = idnum;
-				}else{
-					var IDnum = mui('#IDcard')[0].value;
-				}
-					
-				var reg_ID = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-				if(IDnum == ''){
-					upfun1();
-				}else{
-					if(reg_ID.test(IDnum)){
-						upfun1();
-					}else{
-						plus.nativeUI.closeWaiting();//关闭等待框
-						mui.toast('请输入合法证件号');
-					}
-				}
+				var cityNum = plus.storage.getItem('cityNum');
+				var oldToken = plus.storage.getItem('oldToken');
+
+				upfun1();
+			 
 				function upfun1(){
 					var fd = new FormData(); 
 					if(touxiang.name){
-						fd.append('avatar',touxiang);
+						fd.append('bgImg',touxiang);
 					}
-			        fd.append('userid',myuserid);  		
-			        fd.append('nickname',mynickname);  		
-			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
-			        fd.append('IDCard',IDnum);  		
+					 fd.append('age',age);  
+			        fd.append('username',username);  		
+			        fd.append('userId',myuserid);  		
+			        fd.append('horoscope',horoscope);
+			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);
+			        fd.append('explain',explain); 		
 			        var xhr = new XMLHttpRequest();  	
-			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
+			        xhr.open('PUT',serverUrl+'/api/friends/friendhome',true); 	
 			    	xhr.onreadystatechange = function(){
 			    		if (xhr.readyState===4) { 
 	    					if (xhr.status===200) {
@@ -262,19 +468,8 @@
 	    						if(dataobj.errno == 0){
 	    							mui.toast('修改成功');	 
 	    							//触发跳转页面刷新
-									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-									if(plus.webview.getWebviewById('market-order')){ 
-										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
-									}
-									if(plus.webview.getWebviewById('center')){ 
-										mui.fire(plus.webview.getWebviewById('center'),'refresh2');
-									}
-									if(plus.webview.getWebviewById('centerPage')){
-										mui.fire(plus.webview.getWebviewById('centerPage'),'refresh2');
-									}
-									if(plus.webview.getWebviewById('othersPage')){
-										mui.fire(plus.webview.getWebviewById('othersPage'),'refresh2');
-									}
+									mui.fire(plus.webview.getWebviewById('mycircleIndex'),'refresh');
+									 
 									var time2 = setTimeout(function(){
 										plus.webview.currentWebview().close();
 									},500)
@@ -286,7 +481,7 @@
 	    					}
 	    				}
 			        } 
-			        xhr.setRequestHeader("token",oldtoken);
+			        xhr.setRequestHeader("token",oldToken);
 			        xhr.send(fd);
 				}
 			})
