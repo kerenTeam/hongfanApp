@@ -16,9 +16,16 @@
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js"></script>
-		<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/image-new.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/artTemplate-native.js"></script>
+		<script type="text/javascript">
+			//最优先的方法	
+			window.imgHeight = function(obj){
+				if(obj.offsetHeight<obj.parentNode.offsetHeight){
+					obj.style.height = '100%';
+					obj.style.width = 'auto';
+				}
+			}
+			
+		</script>
 	</head>
 	<style type="text/css">
 		#header>*{ color: white; }
@@ -37,7 +44,7 @@
 		.bottomop>div{padding:14px 0;display:flex;width:50%;justify-content:center;align-items:center;position:relative;}
 		.bottomop .active{color:#f63d41}
 		.bottomop div:after{position:absolute;bottom:0;left:50%;right:50%;height:2px;background-color:#f63d41;content:""}
-		.bottomop .active:after{left:25px!important;right:25px!important;transition:all .3s}
+		.bottomop .active:after{left:18px!important;right:18px!important;transition:all .3s}
 		#QA{padding: 10px;}
 		.qashadow{margin-bottom: 10px;box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);background-color: white;padding:10px }
 		.qashadow img{width: 20px;}
@@ -49,7 +56,7 @@
 		.leftT{position: absolute;left: -20px !important;top: 0;opacity: 0; z-index: 10;}	
 		.QA{display: none;}
 		.qative{display: block;}
-		.headRight{font-size: 14px;float: right; margin-top: 12px; margin-right: 6px;} 
+		.headRight{font-size: 15px;float: right; margin-top: 14px; margin-right: 6px;} 
 		.spanW{width: 7%;display: inline-block;}
 		body{background-color: #f3f3f3;padding-bottom: 0;}
 		.photoItem{padding: 5px;}
@@ -58,17 +65,19 @@
 		.frph img.disimg{width: 100%;}
 		.lkerName{display: block;max-width:60px;overflow: hidden;text-overflow: ellipsis;}
 		.phnone{background-color: white;}
+		#centertitle{visibility: hidden;}
+		.dongtai0{margin-bottom: 50px;}
+		.DitemRin1{overflow: hidden;}
+		.DitemRin1 img{width: 100%;}
+		.zhaopians li span{background-color: #f3f3f3;}
 	</style>
 	<body style="background-color: white;">
 		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
 			<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 id="centertitle" class="mui-title">他人主页</h1>
-			<span class="headRight" id="edit">
-				编辑
-			</span>  
+			<h1 id="centertitle" class="mui-title">主页</h1>
+			<span class="headRight" id="edit">编辑</span>  
 		</header>
 	 	<script type="text/javascript">
-	 		
 	 		if($('#userBox').height()>$('#mypic1').height()){
 	 			$('#mypic1').height('100%').width('auto')
 	 		}
@@ -79,22 +88,20 @@
                 var windowHeight = $(this).height();
                 if(scrollTop >= 100) {//不透明背景
                     mui('#header')[0].style.boxShadow="0 0 2px rgba(175, 166, 166, 0.85)";
-                    mui('#centertitle')[0].innerHTML = '海洋';
-                    mui('.headRight')[0].style.color = '#999';
+                    mui('#centertitle')[0].style.visibility = 'initial';
+                    mui('.headRight')[0].style.color = 'rgb(102, 102, 102)';
                 }else{//透明背景
                     mui('#header')[0].style.boxShadow="0 0 0 rgba(175, 166, 166, 0.85)";
-                    mui('#centertitle')[0].innerHTML = '';
-                    mui('.headRight')[0].style.color = 'white';
+                    mui('.headRight')[0].style.color = '#fff';
+                    mui('#centertitle')[0].style.visibility = 'hidden';
                 }
             });
         </script>
 		<!--状态栏结束-->
-		<!--<div id="container">-->
 		<div id="main">
 			<div class="clearfloat box-s box-ss" id="userBox">
 	    		<img id="mypic1" src=""/>
-	    		<div id="beijing2"></div> 
-
+	    		<div id="beijing2"></div>
 	    			<img src="../../img/morentouxiang.jpg" class="userAvator" id="mypic2"/> 
 	    			<div id="nickname" class="idhiji ft16"></div>
 	    			<div class="personalSign" id="personalSign">
@@ -113,43 +120,30 @@
 	    			</div>
 	    	</div>
 	    	<div class="bottomop flexr fineB">
-				<div class="ft14">动态</div>
-				<div class="ft14">相册</div>
+				<div class="ft14 ">动态</div>
+				<div class="ft14 ">相册</div>
 				<div class="ft14 active">交友</div>
 				<div class="ft14">礼物</div>
 		 	</div>  
 			<div class="content0">
 				<!--动态-->
 				<div class="dongtai0 contentChild" style="display: none;">
-					<div class="dongItem">
-						<div class="DitemL"> 09	<br /> <span>8月 2017</span> </div>	
-						<div class="DitemR">
-							<div class="DitemRin">
-								<div class="DitemRin1" style="background: url(https://hbimg.b0.upaiyun.com/72f19a235b072a8d790baf05e5bc61da896734061bafb-k6sxcn_sq320) 0 0 no-repeat;background-size: cover;"></div>
-								<h3>分享了图片</h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
-							</div>						
-						</div>
-					</div>
-					<div class="dongItem">
-						<div class="DitemL"> 09	<br /> <span>8月 2017</span> </div>	
-						<div class="DitemR">
-							<div class="DitemRin">
-								<div class="DitemRin1" style="background: url(https://b-ssl.duitang.com/uploads/people/201708/21/20170821154449_RyBKi.thumb.710_443_c.jpeg) 0 0 no-repeat;background-size: cover;"></div>
-								<h3>分享了图片</h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
-							</div>						
-						</div>
-					</div>
-					<div class="dongItem">
-						<div class="DitemL"> 09	<br /> <span>8月 2017</span> </div>	
-						<div class="DitemR">
-							<div class="DitemRin">
-								<div class="DitemRin1" style="background: url(https://hbimg.b0.upaiyun.com/72f19a235b072a8d790baf05e5bc61da896734061bafb-k6sxcn_sq320) 0 0 no-repeat;background-size: cover;"></div>
-								<h3>分享了图片</h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
-							</div>						
+					<div id="dynamicList">
+						<div class="dongItem">
+							<div class="DitemL"> 09	<br /> <span>8月 2017</span> </div>	
+							<div class="DitemR">
+								<div class="DitemRin">
+									<div class="DitemRin1">
+										<img onload="imgHeight(this)" src="https://hbimg.b0.upaiyun.com/72f19a235b072a8d790baf05e5bc61da896734061bafb-k6sxcn_sq320"/>
+									</div>
+									<h3>分享了图片</h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
+								</div>						
+							</div>
 						</div>
 					</div>
 					
-					<div class="footF mui-content" style="position: static;box-shadow: none;">
+					
+					<div class="footF mui-content">
 						<div class="mui-row">
 							<div class="mui-col-sm-12 mui-col-xs-12 write">
 								<img style="margin-right: 1px;margin-top: -3px;width: 28px;" src="../../img/makeFriend/guanzhu.png"/> 发动态
@@ -157,6 +151,8 @@
 						</div>
 					</div>
 				</div>
+				
+				
 				<!--相册-->
 				<div class="dongtai0 contentChild phnone" style="display: none;">
 					<div id="photograph"></div>
@@ -178,12 +174,27 @@
 						<%}%>
 					</script>
 				</div>
+				
 				<!--交友-->
 				<div class="jiaoyou0 contentChild" style="display: block;">
 					<div class="MFdiv1">
-						
 						<h3 id='allPic'>交友照片 <span id="picNum"></span> </h3>
-						<div id="mfPic"></div>
+						<div id="mfPic">
+							<ul class="clearfix zhaopians">
+								<li><span style="background-color: #f3f3f;"></span></li>
+								<li><span style="background-color: #f3f3f;"></span></li>
+								<li><span style="background-color: #f3f3f;"></span></li>
+								<li><span style="background-color: #f3f3f;"></span></li>
+ 							</ul>
+						</div>
+						<div id="mfPic">
+							<ul class="clearfix zhaopians">
+								<li><span style="background-color: #f3f3f;"></span></li>
+								<li><span style="background-color: #f3f3f;"></span></li>
+								<li><span style="background-color: #f3f3f;"></span></li>
+								<li><span style="background-color: #f3f3f;"></span></li>
+ 							</ul>
+						</div>
 						<script type="text/html" id="mfPicTpl">
 							<ul class="clearfix zhaopians">
 								<%for(var i = 0;i<list.length;i++){%>
@@ -191,7 +202,6 @@
 								<%}%>
  							</ul>
 						</script>
-						
 					</div>
 					<div class="MFdiv1 likeMe" style="margin-top: 10px;">
 						<div id="likeMe"></div>
@@ -199,7 +209,6 @@
 							<h3 style="padding-bottom: 12px;">喜欢他的人 <span>共<%= list.length%>人></span> </h3>
 							<ul style="padding-bottom: 2px;" class="clearfix touxiangs">
 								<%for(var i = 0;i<list.length;i++){%>
-									 
 									<li>
 										<%if(list[i].avatar){%>
 											<span style="background: url(<%=list[i].avatar%>) 0 0 no-repeat;background-size: cover;" class="span1"></span>
@@ -208,7 +217,6 @@
 										<%}%>
 										<br /> <span class="span2 lkerName"><%= list[i].username%></span>
 									</li>
-								
 								<%}%>
 							</ul>
 						</script>
@@ -260,6 +268,9 @@
 				        </div>
 				    </div>
 				</div>
+				
+				
+				
 				<!--礼物弹窗-->
 				<div class="changeHI" style="display: none;">
 					<div class="HIcon">
@@ -276,31 +287,16 @@
 						</div>
 					</div>
 				</div>
-				 
 				
 			</div>
 		</div>
-	 </body>
+	</body>
+	 
+	<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/image-new.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/artTemplate-native.js"></script>
 
 	<script type="text/javascript">
-		
-		//tab切换
-		var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div'),
-			contentChild = mui('.contentChild');
-			[].forEach.call(listCon,function(ele,index){
-				ele.onclick = function(){
-					if(!ele.className.includes('active')){
-						[].forEach.call(listCon,function(ele2){
-							ele2.className = 'ft14';
-						})
-						ele.className = 'active ft14';
-						[].forEach.call(contentChild,function(ele3){
-							ele3.style.display = 'none';
-						})
-						contentChild[index].style.display = 'block';
-					}
-				}
-			})
 		
 		//礼物兑换HI豆
 		function exchangeHI(pic,num,price){
@@ -350,18 +346,51 @@
 		//礼物兑换HI豆结束
 		
 		
-		
 	    //数据处理 
-		var myuserid;
+	    var Fload0 = 0,Fload1 = 0,Fload2 = 0,Fload3 = 0;/*是否首次加载*/
 	    mui.plusReady(function(){
-    		var oldToken = plus.storage.getItem('oldToken');
-			var cityNum = plus.storage.getItem('cityNum');
+    		var oldToken = plus.storage.getItem('oldToken'),
+		 		cityNum = plus.storage.getItem('cityNum'),
 				myuserid = plus.storage.getItem('userid');
 	    	document.addEventListener('refresh', function() {
-				reload();
+				headInfo();
 			})
-	    	reload();
-	    	function reload(){
+	    	
+	    	//tab切换
+			var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div'),
+				contentChild = mui('.contentChild');
+			[].forEach.call(listCon,function(ele,index){
+				ele.onclick = function(){
+					if(!ele.className.includes('active')){
+						[].forEach.call(listCon,function(ele2){
+							ele2.className = 'ft14';
+						})
+						ele.className = 'active ft14';
+						/*加载对应tab数据*/
+						if(index == 0){
+							
+						}else if(index == 1 && Fload1 == 0){
+							loadAlbum();
+						}else if(index == 2 && Fload2 == 0){
+							loadJiaoyou();
+						}else if(index == 3){
+							
+						}
+						
+						[].forEach.call(contentChild,function(ele3){
+							ele3.style.display = 'none';
+						})
+						contentChild[index].style.display = 'block';
+					}
+				}
+			})
+			//tab切换结束
+	    	
+	    	
+	    	headInfo();//默认加载头部信息
+	    	loadJiaoyou();//默认加载交友信息
+	    	
+	    	function headInfo(){//头部信息
 				var loadnum = 0;
 				//个人资料
 				mui.ajax(serverUrl+'/api/friends/friendhome/userId/'+myuserid,{
@@ -375,12 +404,10 @@
 							if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.username)){
 								data.data.username = data.data.username.substring(0,3)+"****"+data.data.username.substring(7,11)
 							}
-							
 							//显示头像
 							if(data.data.avatar){
 								mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
 							}
-							 
 							if(data.data.likes){
 								$('#likes').text(data.data.likes)
 							}
@@ -393,7 +420,6 @@
 							if(data.data.bgImg && JSON.parse(data.data.bgImg).length>0){  
 									$('#mypic1').attr('src',JSON.parse(data.data.bgImg)[0].picImg)
 							}
-							
 							if(data.data.explain && data.data.explain!= null){ 
 								$('#personalSign').text(data.data.explain)
 							}
@@ -407,7 +433,6 @@
 							}else{
 								$('#age').html('未填写')
 							}
-							
 							if(data.data.horoscope && data.data.horoscope != null){ 
 								$('#horoscope').text(data.data.horoscope)
 							}else{
@@ -419,179 +444,190 @@
 							} 
 							
 						}else{
-							//mui.toast('获取用户信息失败'); 
 							console.log(data.errmsg); 
 						}
 						loadnum++;
 					},
 					error:function(xhr,type,errorThrown){
 						loadnum++;
-						//mui.toast('获取用户信息响应失败');
 						console.log('获取用户数据,响应失败');
 					}
 				});
 	    	}
 			
-			//获取标签
-			mui.ajax(serverUrl+'/api/friends/userlable/userId/'+myuserid,{
-				type:'get',
-				timeout:8000,
-				headers:{"token":oldToken,"city":cityNum},	              				
-				success:function(data,type,xhr){
-					console.log('获取用户数据返回',data);
-					if(data.errno == 0){ 
-						var dataObj=data.data;
-						if(dataObj && dataObj.length){
-							[].forEach.call(dataObj,function(ele){
-								$('#psLabel').append("<span>"+ele.lableName+"</span>")
-							}) 
-						}else{
-							$('#psLabel').append("<div style='color: #000000!important;padding: 10px!important;' id='goLabel'>去添加吧</div>")
-						}
-						
-					}else{
-						//mui.toast('获取用户信息失败'); 
-						console.log(data.errmsg); 
-					}
-					$('#goLabel').click(function(){
-						openview({
-							view:'friendSet.html',
-							id:'friendSet'
-						})
-					})
-					
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('获取用户数据,响应失败');
-				}
-			});
-			//获取我关注的人 和 关注我的人
-			mui.ajax(serverUrl+'/api/friends/likeusers',{
-				data:{"userId":myuserid},
-				type:'post',
-				timeout:8000,
-				headers:{"token":oldToken,"city":cityNum},	              				
-				success:function(data,type,xhr){
-					console.log('获取数据返回',data);
-					if(data.errno == 0){
-						if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
-							for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
-								if(!data.data.LikeMeUsers[i].username || data.data.LikeMeUsers[i].username==null) {
-									data.data.LikeMeUsers[i].username = '匿名'
-								}
-								if(data.data.LikeMeUsers[i].avatar){
-									data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
-								}
+			/*交友tab信息*/
+			function loadJiaoyou(){
+				Fload2++;
+				//获取交友照片
+				mui.ajax(serverUrl+'/api/friends/photography',{
+					data:{"userId":myuserid,numsPerPage:4,currentPage:1},
+					type:'post',
+					timeout:8000,
+					headers:{"token":oldToken,"city":cityNum},	              				
+					success:function(data,type,xhr){
+						console.log('交友照片',data);
+						if(data.errno == 0){ 
+							if(data.data.data && data.data.data.length){
+								 var picObj = data.data.data;  
+								 [].forEach.call(picObj,function(ele){
+								 	ele.picImg = JSON.parse(ele.picImg);
+								 	j=ele.picImg.length; 
+								 }) 
+								 $('#picNum').html('共'+data.data.count+'张')
+								 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
+	
+							}else{
+								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px">去添加吧</div>')
 							}
-							var likeMeObj = {}
-							likeMeObj.list = data.data.LikeMeUsers;
-							likeMeObj.url = serverimgUrl;
-							var html = template('likeMeTpl', likeMeObj);
-
-							document.getElementById('likeMe').innerHTML = html;	
+							$('#allPic,#addPic').click(function(){
+								openview({
+									view:'friendPic.html',
+									id:'friendPic' 
+								})
+							})
+							
+						}else{
+							console.log(data.errmsg); 
 						}
-					}else{
-						console.log(data.errmsg); 
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取数据,响应失败');
 					}
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('获取数据,响应失败');
-				}
-			});
-			
-			//获取相册
-			mui.ajax(serverUrl+'/api/friends/photograph',{
-				data:{"userId":myuserid},
-				type:'post',
-				timeout:8000,
-				headers:{"token":oldToken,"city":cityNum},	              				
-				success:function(data,type,xhr){
-					console.log('获取数据返回',data);
-					if(data.errno == 0){
-						var groupTime = [];
-						if(data.data.Photograph && data.data.Photograph.length){
-							for(var i= 0;i<data.data.Photograph.length;i++){
-								//格式化时间
-								var dt = new Date(data.data.Photograph[i].create_time);
-								var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 
-								data.data.Photograph[i].create_time = date; 
-								groupTime.push(date);   
-								data.data.Photograph[i].pic=JSON.parse(JSON.parse(data.data.Photograph[i].pic));
-								for(var j= 0;j<data.data.Photograph[i].pic.length;j++){
-									if(data.data.Photograph[i].pic[j].picImg.indexOf('http')<0){
-										data.data.Photograph[i].pic[j].picImg = serverimgUrl + data.data.Photograph[i].pic[j].picImg;
+				});
+				
+				//获取我关注的人 和 关注我的人
+				mui.ajax(serverUrl+'/api/friends/likeusers',{
+					data:{"userId":myuserid},
+					type:'post',
+					timeout:8000,
+					headers:{"token":oldToken,"city":cityNum},	              				
+					success:function(data,type,xhr){
+						console.log('获取数据返回',data);
+						if(data.errno == 0){
+							if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
+								for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
+									if(!data.data.LikeMeUsers[i].username || data.data.LikeMeUsers[i].username==null) {
+										data.data.LikeMeUsers[i].username = '匿名'
+									}
+									if(data.data.LikeMeUsers[i].avatar){
+										data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
 									}
 								}
+								var likeMeObj = {}
+								likeMeObj.list = data.data.LikeMeUsers;
+								likeMeObj.url = serverimgUrl;
+								var html = template('likeMeTpl', likeMeObj);
+	
+								document.getElementById('likeMe').innerHTML = html;	
 							}
-							 
-							groupTime = groupTime.unique1();
-							var photoObj = {};
-								photoObj.timeGroup = groupTime;
-								photoObj.list = data.data.Photograph;
-								console.log('相册',data.data.Photograph)
-							$('#photograph').html(template('photographTpl',photoObj));
-							$('.frph').each(function(){
-								if($(this).height() > $(this).find('img').height()){
-									$(this).find('img').css('height','100%');
-									$(this).find('img').css('width','auto');
-								} 
-							})
-							lazyLoad(true,50);//懒加载  
-
 						}else{
-							$('.phnone').html('<img src="../../img/nocmt.png" style="width: 150px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;">发动态就有相册了哦</div>');
+							console.log(data.errmsg); 
 						}
-						
-						
-					}else{
-						console.log(data.errmsg); 
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取数据,响应失败');
 					}
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('获取数据,响应失败');
-				}
-			});
-			
-			//获取交友照片
-			mui.ajax(serverUrl+'/api/friends/photography',{
-				data:{"userId":myuserid,numsPerPage:4,currentPage:1},
-				type:'post',
-				timeout:8000,
-				headers:{"token":oldToken,"city":cityNum},	              				
-				success:function(data,type,xhr){
-					console.log('交友照片',data);
-					if(data.errno == 0){ 
-						if(data.data.data && data.data.data.length){
-							 var picObj = data.data.data;  
-							 [].forEach.call(picObj,function(ele){
-							 	ele.picImg = JSON.parse(ele.picImg);
-							 	j=ele.picImg.length; 
-							 }) 
-							 $('#picNum').html('共'+data.data.count+'张')
-							 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
-
+				});
+				
+				//获取标签
+				mui.ajax(serverUrl+'/api/friends/userlable/userId/'+myuserid,{
+					type:'get',
+					timeout:8000,
+					headers:{"token":oldToken,"city":cityNum},	              				
+					success:function(data,type,xhr){
+						console.log('获取用户数据返回',data);
+						if(data.errno == 0){ 
+							var dataObj=data.data;
+							if(dataObj && dataObj.length){
+								[].forEach.call(dataObj,function(ele){
+									$('#psLabel').append("<span>"+ele.lableName+"</span>")
+								}) 
+							}else{
+								$('#psLabel').append("<div style='color: #000000!important;padding: 10px!important;' id='goLabel'>去添加吧</div>")
+							}
+							
 						}else{
-							$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px">去添加吧</div>')
+							console.log(data.errmsg); 
 						}
-						$('#allPic,#addPic').click(function(){
+						$('#goLabel').click(function(){
 							openview({
-								view:'friendPic.html',
-								id:'friendPic' 
+								view:'friendSet.html',
+								id:'friendSet'
 							})
 						})
 						
-					}else{
-						console.log(data.errmsg); 
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取用户数据,响应失败');
 					}
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('获取数据,响应失败');
-				}
-			});
-		 
-			 
+				});
+				
+			}
+			/*交友tab信息结束*/
+			
+			//获取   相册
+			function loadAlbum(){
+				Fload1++;
+				mui.ajax(serverUrl+'/api/friends/photograph',{
+					data:{"userId":myuserid},
+					type:'post',
+					timeout:8000,
+					headers:{"token":oldToken,"city":cityNum},	              				
+					success:function(data,type,xhr){
+						console.log('获取数据返回',data);
+						if(data.errno == 0){
+							var groupTime = [];
+							if(data.data.Photograph && data.data.Photograph.length){
+								for(var i= 0;i<data.data.Photograph.length;i++){
+									//格式化时间
+									var dt = new Date(data.data.Photograph[i].create_time);
+									var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 
+									data.data.Photograph[i].create_time = date; 
+									groupTime.push(date);   
+									data.data.Photograph[i].pic=JSON.parse(JSON.parse(data.data.Photograph[i].pic));
+									for(var j= 0;j<data.data.Photograph[i].pic.length;j++){
+										if(data.data.Photograph[i].pic[j].picImg.indexOf('http')<0){
+											data.data.Photograph[i].pic[j].picImg = serverimgUrl + data.data.Photograph[i].pic[j].picImg;
+										}
+									}
+								}
+								 
+								groupTime = groupTime.unique1();
+								var photoObj = {};
+									photoObj.timeGroup = groupTime;
+									photoObj.list = data.data.Photograph;
+									console.log('相册',data.data.Photograph)
+								$('#photograph').html(template('photographTpl',photoObj));
+								$('.frph').each(function(){
+									if($(this).height() > $(this).find('img').height()){
+										$(this).find('img').css('height','100%');
+										$(this).find('img').css('width','auto');
+									} 
+								})
+								lazyLoad(true,50);//懒加载  
+	
+							}else{
+								$('.phnone').html('<img src="../../img/nocmt.png" style="width: 150px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;">发动态就有相册了哦</div>');
+							}
+							
+							
+						}else{
+							console.log(data.errmsg); 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取数据,响应失败');
+					}
+				});
+			}
+			//获取   相册结束
+			
+			
+
+
+//单独的方法			 
 			//编辑签名 
-			$('#edit').click(function(){ 
+			$('#edit').click(function(){
 				openview({
 					view:'friendSet.html',
 					id:'friendSet'
@@ -629,6 +665,9 @@
 	    })
    	  	
    	  	
+   	  	
+   	  	
+//其他js部分  	  	
 		//滚动监听
 		$(window).scroll(function() { 
            var navBarHeight = 50;  
