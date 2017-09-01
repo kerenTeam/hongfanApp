@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>详情</title>
+		<title>动态详情</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -11,12 +11,8 @@
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">  
 		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/> 
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.min.js"></script>
-		<script src="../../js/app.js"></script>
-		<script src="../../js/artTemplate-native.js"></script>
 		 
 	</head>
 	<style type="text/css">
@@ -63,9 +59,16 @@
 		.writecmt:focus:before{
 		    content:none;
 		}
-		.follow .maincl{letter-spacing: 0.5px;line-height: 1.3;margin-bottom: 10px;}
+		.follow .maincl{letter-spacing: 0.4px;line-height: 1.5;margin-bottom: 10px;}
 		.follow b{font-weight: 600;color: #FD6363;}
 		.fchidl3{padding: 10px 10px;border-left: 1px solid #ccc;}
+		.DTcontent{overflow: hidden;}
+		.dynamicPic{float: left;position: relative;overflow: hidden;border-right: 2px solid #fff;}
+		.dynamicPic1{width: 70%;padding-top: 68%;}
+		.dynamicPic2{width: 50%;padding-top: 48%;}
+		.dynamicPic3{width: 33%;padding-top: 31%;}
+		.dynamicPic img{width: 100%;}
+		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
 	</style>
 
 	<body style="background-color: white;">
@@ -78,8 +81,9 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 		 
-    		<div class="listCon">
-				<div class="follow"> 
+    		<div class="listCon" id="listInfoS"></div><!--内容-->
+			<script type="text/html" id="listDataS">
+				<div class="follow">
 					<div class="fchidl">
 						<div>
 							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
@@ -99,8 +103,26 @@
 							</div> 
 			           </div> 
 					</div>  
-					<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg"  style="max-width: 70%;"/>	 
+					
+					<div class="DTcontent">
+						<p class="ft15 maincl"><%=dataList.content%></p>
+						<%for(var j=0;j<dataList.picS.length;j++){%>
+							<%if(dataList.picS.length == 1){ %>
+								<div class="dynamicPic dynamicPic1">
+									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS[j]%>" /></span>
+								</div>
+							<%}else if(dataList.picS.length == 2){%>
+								<div class="dynamicPic dynamicPic2">
+									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS[j]%>" /></span>
+								</div>
+							<%}else{%>
+								<div class="dynamicPic dynamicPic3">
+									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS[j]%>" /></span>
+								</div>
+							<%}%>	
+						<%}%>
+					</div>
+					
 					<div class="flexrr">
 						<div class="disablecl ft14">
 							<img src="../../img/makeFriend/corn.png"/> 感谢您的赏脸阅读
@@ -109,8 +131,8 @@
 							<img src="../../img/makeFriend/cornw.png"/> 赏
 						</div>
 					</div> 
-				</div>  
-			</div> 
+				</div>
+			</script>
 		 	<!--评论-->
 			<div class="follow cmtflex">
 				<div style="text-align: center;line-height: 0.8;"> 
@@ -194,6 +216,9 @@
 				</div>
 			</div>
 		</div>
+		
+		
+		
 		<!--操作表-->
 		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
 		    <!-- 可选择菜单 -->
@@ -224,10 +249,59 @@
 			</div>
 		</div>
 	 </body>
-
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/app.js"></script>
+	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
- 
-		 
+		function imgHeight(obj){
+			if(obj.offsetHeight<obj.parentNode.offsetHeight){
+				obj.style.height = '100%';
+				obj.style.width = 'auto';
+			}
+		}
+		
+	</script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var cityNum = plus.storage.getItem('cityNum'),
+			    oldToken = plus.storage.getItem('oldToken'),
+				infiId = plus.webview.currentWebview().infoid;
+				
+			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId, {
+				dataType: 'json',
+				type: 'get',
+				timeout: 8000,
+				headers: {"token": oldToken,'city': cityNum},
+				success: function(data, type, xhr) {
+					console.error('动态详情', data);
+					if(data.errno == 0) {
+						var dataObj = {}, nowArray = data.data;
+						//整理内容图片
+						var nowArray2 = JSON.parse(JSON.parse(nowArray.pic));
+						if(nowArray2.length){
+							var picS = [];
+							for(var k = 0 ;k<nowArray2.length;k++){
+								picS.push(nowArray2[k].picImg);
+							}
+							nowArray.picS = picS;
+						}
+						
+						dataObj.dataList = data.data;
+						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj);
+						lazyLoad(true);//懒加载
+					}else{
+						mui.toast('当前网络不好,请重试');
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					console.error('交友列表,响应失败');
+					mui.toast('当前网络不好,请重试');
+				}
+			});
+		})
+	</script>
+	<script type="text/javascript">
       	//操作表
 		$('.goanswer').click(function(){
 		 	mui('#sheet1').popover('toggle');
