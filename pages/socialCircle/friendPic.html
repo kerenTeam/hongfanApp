@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>圈子栏目用户使用协议</title>
+		<title>交友照片</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -18,8 +18,10 @@
 		<script src="../../js/image-new.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			body{background-color: #fff !important;}
-			#container p, #container h5{
-				color: #555 !important;
+			#container{
+				color: #555 !important; 
+				height: calc(100vh - 140px);
+				overflow-y: scroll;
 			}
 			.mui-bar-nav{
 				box-shadow: none;
@@ -30,9 +32,9 @@
 			body{background-color: #f3f3f3;}
 			.photoItem{padding: 5px;}
 			.photoItem p{margin: 5px;}
-			.photoItem .frph{overflow: hidden;position: relative;width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px 70px;float: left;}
-			.frph img.disimg{width: 100%;}
-			.frph img.isDelet{width: 25px;position: absolute;top: 5px;right: 5px;display: none;}
+			.photoItem .frph{overflow: hidden;position: relative;width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px;float: left;background-color: #F3F3F3;}
+			.frph img.disimg{width: 100%;display: block;}
+			.frph img.isDelet{display: block;width: 25px;position: absolute;top: 5px;right: 5px;display: none;}
 			.upbtn{position: fixed;bottom: 10px;width: 80%;left: 10%;}
 		</style>
 	</head>
@@ -45,30 +47,30 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">
-			<div id="mfPic"></div>
-			<script type="text/html" id="mfPicTpl">
-				<div class="photoItem"> 
-					<%for(var i = 0;i<list.length;i++){%>
-						<%for(var j = 0;j<list[i].picImg.length;j++){%>
-							<div class="frph" style="background-size: cover;background-position: center;" >
-								<%if(list[i].picImg[j].picImg){%>
-									<img class="disimg loadPics" src="<%=list[i].picImg[j].picImg%>" data-preview-src="" data-preview-group="1"/>
-									<img src="../../img/makeFriend/uncheck.svg" class="isDelet" alt="" />
-									<%}else{%>
-										<img src="../../img/market/none.png"/>
-										<%}%>
-								</div> 
-						<%}%>
+			<div class="photoItem"> 
+				<div id="mfPic"></div>
+				<script type="text/html" id="mfPicTpl">
+				<%for(var i = 0;i<list.length;i++){%>
+					<%for(var j = 0;j<list[i].picImg.length;j++){%>
+						<div class="frph" style="background-size: cover;background-position: center;" >
+							<%if(list[i].picImg[j].picImg){%>
+								<img class="disimg loadPics" src="<%=list[i].picImg[j].picImg%>" data-preview-src="" data-preview-group="1"/>
+								<img src="../../img/makeFriend/uncheck.svg" class="isDelet" data-id="<%=list[i].id%>" alt="" />
+								<%}else{%>
+									<img src="../../img/market/none.png"/>
+									<%}%>
+							</div> 
 					<%}%>
-					
-					<div style="clear: both;"></div>
-				</div>
-			</script>
+				<%}%> 
+				</script>
+				<div style="clear: both;"></div>
+			</div>
 			<div class="upload text-center text-xs gray" id="upload"></div>
-			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="delet" disabled="" style="display: none;">删除</button>					 
-			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic">添加</button>					 
 			
 		</div>
+		<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="delet" disabled="" style="display: none;">删除</button>					 
+		<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic">添加</button>					 
+			
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
@@ -85,7 +87,7 @@
 		var oldToken = plus.storage.getItem('oldToken');
 		var cityNum = plus.storage.getItem('cityNum');
 		var	myuserid = plus.storage.getItem('userid');
-		var currentPage = 1,numsPerPage = 4;
+		var currentPage = 1,numsPerPage = 12;
 		//获取交友照片
 		mui.ajax(serverUrl+'/api/friends/photography',{
 			data:{"userId":myuserid,currentPage:currentPage,numsPerPage:numsPerPage,},
@@ -99,11 +101,19 @@
 						 var picObj = data.data.data;  
 						 [].forEach.call(picObj,function(ele){
 						 	ele.picImg = JSON.parse(ele.picImg);
-						 	j=ele.picImg.length; 
 						 }) 
 						 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
-						
+						 
 						mui("#upload")[0].innerHTML = "";
+						 $('.frph').each(function(){
+							if($(this).height() > $(this).find('.disimg').height()){
+								$(this).find('.disimg').css('height','100%');
+								$(this).find('.disimg').css('width','auto');
+							}else{
+								$(this).find('.disimg').css('height','auto');
+								$(this).find('.disimg').css('width','100%!important');
+							}
+						})
 						lazyLoad(true,50);//懒加载
 						//上滑加载
 						$(window).scroll(function() {　　
@@ -135,17 +145,20 @@
 													 var picObj = data.data.data;  
 													 [].forEach.call(picObj,function(ele){
 													 	ele.picImg = JSON.parse(ele.picImg);
-													 	j=ele.picImg.length; 
 													 }) 
 													 $('#mfPic').append(template('mfPicTpl',{list:picObj}));
 												}
-												lazyLoad(true,50);//懒加载
 												 $('.frph').each(function(){
 													if($(this).height() > $(this).find('.disimg').height()){
 														$(this).find('.disimg').css('height','100%');
 														$(this).find('.disimg').css('width','auto');
-													} 
+													}else{
+														$(this).find('.disimg').css('height','auto');
+														$(this).find('.disimg').css('width','100%');
+													}
 												})
+												 
+												lazyLoad(true,50);//懒加载
 											}
 											mui("#upload")[0].innerHTML = " ";
 											Spagenum++; //加载成功,当前页+1
@@ -165,7 +178,59 @@
 							} 
 						});
 						
+						//勾选要删除的照片
+						$('.frph .isDelet').click(function(){
+							event.stopPropagation();
+							var i = 0;
+							if($(this).attr('src') == '../../img/makeFriend/uncheck.svg'){
+								$(this).attr('src','../../img/makeFriend/check.svg');
+								i++;
+							}else if($(this).attr('src') == '../../img/makeFriend/check.svg'){
+								$(this).attr('src','../../img/makeFriend/uncheck.svg') 
+								i--;
+							}
+							if(i>0){
+								$('#delet').removeAttr('disabled')
+							}else{
+								$('#delet').attr('disabled','true')
+							}
+						})
 						
+						//执行删除
+						$('#delet').click(function(){
+							mui.confirm('确认删除吗','提示',['取消','确定'],function(e) {
+								if(e.index == 1) { 
+								 	 $('.frph .isDelet').each(function(){
+								 	 	if($(this).attr('src') == '../../img/makeFriend/check.svg'){
+								 	 		var imgId = $(this).attr('data-id');
+								 	 		var delImg = $(this).parent();
+								 	 		mui.ajax(serverUrl + '/api/friends/photography', {
+												data: {
+													"userId":myuserid, 
+													"photoId":imgId
+												},
+												dataType: 'json', //服务器返回json格式数据
+												type: 'DELETE', //HTTP请求类型 
+												timeout: 8000, //超时时间设置为10秒；	
+												headers: {
+													"token":oldToken,"city":cityNum
+												},
+												success: function(data) {
+													if(data.errno == 0) { 
+														delImg.remove();
+														 
+													}
+													 
+												},
+												error: function(xhr, type, errorThrown) { 
+													mui.toast("当前网络不好请重试"); 
+												}
+											});
+								 	 	}
+								 	 })
+								} 
+							},'')
+						})
 					}else{
 						mui("#upload")[0].innerHTML = "";
 					}
@@ -200,9 +265,9 @@
 				}
 			);
 		})
-		var oldtoken = plus.storage.getItem('oldToken');
 	 
 		function getImage(){//拍照并保存
+
 			var cmr = plus.camera.getCamera();
 			cmr.captureImage( function ( path ) {
 				plus.io.resolveLocalFileSystemURL(path,function(entry){ 
@@ -223,6 +288,7 @@
 					},
 					function() { 
 						showImg(endpic);
+						alert(endpic)
 						Apic = [];
 						Apic.push(endpic); 
 					},function(error) {
@@ -237,7 +303,7 @@
 			}, function ( e ) { 
 			}, {filename:"_doc/gallery/",index:1} );
 		}
-		//var lfs=null;// 保留上次选择图片列表
+		
 		function galleryImgsSelected(){//从相册中选择图片
 		    plus.gallery.pick( function(e){
 		    	lfs=e.files;
@@ -269,36 +335,55 @@
 		    	}
 		    }, function ( e ) {  
 //		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
-		    });
+		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
+				plus.nativeUI.alert('只能选择1张图片');  
+		    }});
 		}
+		
 		function showImg(url){//显示图片
 			if(0!=url.indexOf("file://")){        
 				url="file://"+url;  
 			}
 				
-			mui('.photoItem')[0].innerHTML += '<div class="frph" style="background: url('+url+') no-repeat;background-size: cover;background-position: center;"><img src="../../img/makeFriend/uncheck.svg" alt="" /></div>';    
-		} 
-}); 
+			mui('#mfPic')[0].innerHTML += '<div class="frph" style="background: url('+url+') no-repeat;background-size: cover;background-position: center;"><img src="../../img/makeFriend/uncheck.svg" style="display:none" alt="" /></div>';    
+			upImg()
+		}
+		
+		function upImg(){
+			var oldToken = plus.storage.getItem('oldToken');
+			
+			//发送数据
+			var task = plus.uploader.createUpload(serverUrl+'/api/friends/photography/', 
+				{ method:"PUT"},
+				function(back,status){
+					if(status == 200){ 
+						console.log(back); 
+						var dataobj = JSON.parse(back.responseText);
+						if(dataobj.errno == 0){
+						 
+							var time2 = setTimeout(function(){//关闭当前
+								mui.toast('添加成功');
+							},1000);
+						}else{ 
+							mui.toast('发布失败，请重试！');	
+						}
+					}else{
+						plus.nativeUI.closeWaiting();//关闭等待框
+						mui.toast('当前网络不好，请重试！');	
+					}
+					
+				}
+			); 
+			task.setRequestHeader("token",oldToken); 
+		    task.setRequestHeader("city",cityNum);
+			task.addData("userid",myuserid);  
+			task.addFile(Apic[0], {key:"pics"} );
+			task.start(); 
+		}
+		
+	}); 
 	//选择图片结束
-	
-	
-	$('.frph img').click(function(){
-		event.stopPropagation();
-		var i = 0;
-		if($(this).attr('src') == '../../img/makeFriend/uncheck.svg'){
-			$(this).attr('src','../../img/makeFriend/check.svg');
-			i++;
-		}else if($(this).attr('src') == '../../img/makeFriend/check.svg'){
-			$(this).attr('src','../../img/makeFriend/uncheck.svg') 
-			i--;
-		}
-		if(i>0){
-			$('#delet').removeAttr('disabled')
-		}else{
-			$('#delet').attr('disabled','true')
-		}
-	})
-	
+	 
 	$('#edit').click(function(){
 		if($(this).html() == '编辑'){
 			$(this).html('取消');
