@@ -61,7 +61,9 @@
 		.dynamicPic3{width: 33%;padding-top: 31%;}
 		.dynamicPic img{width: 100%;}
 		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
-		.line2{text-overflow: ellipsis;overflow: hidden;flex-basis: calc(100vw * 0.7);white-space: nowrap;}	
+		.line2{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;max-width: calc(100vw * 0.45);}	
+		.maxwn{white-space: nowrap;}	
+		.maxwt{flex-basis: 50px;white-space: nowrap;}	
 	</style>
 	<body style="background-color: white;">
 		<header class="mui-bar mui-bar-nav">
@@ -146,7 +148,7 @@
 										<div class="goanswer"> <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
 						           </div> 
 								</div>
-								<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>)">
+								<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
 									<p  class="ft14 maincl overTwo"><%=dataList[i].content%> </p><!--文字内容-->
 									
 									<%for(var j=0;j<dataList[i].picS.length;j++){%>
@@ -167,7 +169,7 @@
 									<%}%>
 								</div>
 								<div class="flexrr">
-									<div class="disablecl ft12"> <img src="../img/makeFriend/zan.png"/> 赞<span><%=dataList[i].likes%></span> </div> 
+									<div class="disablecl ft12" data-id='0' onclick="goZan(this,<%=dataList[i].id%>)"> <img src="../img/makeFriend/zan.png"/> 赞<span><%=dataList[i].likes%></span> </div> 
 									<div class="disablecl ft12" onclick="goInfoCmt(<%=dataList[i].id%>)"> <img src="../img/makeFriend/message.png" alt="" /> 评论 </div>
 									<div class="disablecl ft12"> <img src="../img/makeFriend/share.png"/> 转发 </div>
 								</div>
@@ -195,15 +197,15 @@
 					<%if(!list[i].commontid){%>
 						<div class="follow ft12" style="padding: 5px 10px;"> 
 							<div class="fchidl">
-								<div class="ctc"> <span data-id="<%=list[i].user_id%>" class="ft12"><%=list[i].nickname%></span>：<div class="line2"><%=list[i].commont%>顶顶顶顶顶顶顶</div></div> 
-								<div class="butright"> <div class="disablecl ft12"> <%=list[i].create_time%> </div> </div> 
+								<div class="ctc"> <span data-id="<%=list[i].user_id%>" class="ft12 maxwn"><%=list[i].nickname%></span>：<div class="line2"><%=list[i].commont%></div></div> 
+								<div class="butright maxwt"> <div class="disablecl ft12"> <%=list[i].create_time%> </div> </div> 
 							</div>
 						</div>
 						<%}else{%>
 							<div class="follow ft12" style="padding: 5px 10px;"> 
 								<div class="fchidl">
-									<div class="ctc"> <span data-id="<%=list[i].user_id%>" class="ft12"><%=list[i].nickname%></span>回复<span data-id="<%=list[i].touserid%>"class="ft12"><%=list[i].TO_nickname%></span>:<div class="line2">顶顶顶顶顶顶<%=list[i].commont%></div></div> 
-									<div class="butright"> <div class="disablecl ft12"> <%=list[i].create_time%> </div> </div> 
+									<div class="ctc"> <span data-id="<%=list[i].user_id%>" class="ft12 maxwn"><%=list[i].nickname%></span>回复<span data-id="<%=list[i].touserid%>"class="ft12"><%=list[i].TO_nickname%></span>:<div class="line2"><%=list[i].commont%></div></div> 
+									<div class="butright maxwt"> <div class="disablecl ft12"> <%=list[i].create_time%> </div> </div> 
 								</div>
 							</div> 
 							<%}%>
@@ -313,6 +315,53 @@
 				}
 				mui("#upload")[0].innerHTML = "<img src='../img/balls.svg' />";
 				mui.plusReady(function(){
+					var myuserid = plus.storage.getItem('userid');
+					//到主页
+					window.elseCircleIndex = function(id){
+						if(id == myuserid){
+							openview({
+					    		view:'socialCircle/mycircleIndex.html',
+					    		id:'mycircleIndex' 
+					    	})
+						}else{
+							openview({
+					    		view:'socialCircle/elsecircleIndex.html',
+					    		id:'elsecircleIndex',
+					    		extrasobj:{userId:id}
+					    	})
+						} 
+				    }
+					
+					window.goZan = function(obj,id){
+						if(obj.getAttribute('data-id') == 0){ 
+							 
+										alert(obj.getAttribute('data-id'))
+							mui.ajax(serverUrl + '/api/friends/newsinfo', {
+			    				data:{newsId:id,userid:myuserid},
+								dataType: 'json',
+								type: 'POST',
+								timeout: 8000,
+								headers: {"token": oldToken,'city': cityNum},
+								success: function(data, type, xhr) { 
+									if(data.errno == 0) { 
+						    			mui.toast('点赞成功'); 
+										obj.setAttribute('data-id',1);
+									}else{
+										mui.toast('点赞失败');
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									console.error('点赞,响应失败');
+									mui.toast('当前网络不好,请重试');
+								}
+							}); 
+						}else{
+							alert(obj.getAttribute('data-id'));
+							obj.setAttribute('data-id',0);
+							mui.toast('取消点赞');
+						}
+					}
+					
 					if(typeNum == 0){
 						var dataJson = {
 							'numsPerPage':6,
@@ -321,7 +370,6 @@
 							'orderField':'create_time',
 						}
 					}else if(typeNum == 1){
-						var myuserid = plus.storage.getItem('userid');
 						var dataJson = {
 							'userId':myuserid,
 							'numsPerPage':6,
@@ -492,6 +540,12 @@
 									}
 								});
 								
+								//操作表
+								$('.goanswer').click(function(){
+									event.stopPropagation();
+					 			 	mui('#sheet1').popover('toggle'); 
+								})
+								
 								//评论数据
 								$('.commentsShow').each(function(){
 									var newsId= $(this).attr('data-id');
@@ -559,6 +613,7 @@
 							mui.toast('当前网络不好,请重试');
 						}
 					});
+					
 				})
 			}
 			
@@ -577,7 +632,7 @@
 				var hourC =diffValue/hour;
 				var minC =diffValue/minute;
 				if(monthC>=1){
-				 result=parseInt(monthC) + "个月前";
+				 result=parseInt(monthC) + "月前";
 				 }
 				 else if(weekC>=1){
 				 result=parseInt(weekC) + "周前";
@@ -586,7 +641,7 @@
 				 result=parseInt(dayC) +"天前";
 				 }
 				 else if(hourC>=1){
-				 result=parseInt(hourC) +"个小时前";
+				 result=parseInt(hourC) +"小时前";
 				 }
 				 else if(minC>=1){
 				 result=parseInt(minC) +"分钟前";
@@ -618,13 +673,7 @@
 					view:'socialCircle/ranking.html'
 				})
 			})
-			
-			//操作表
-			$('.goanswer').click(function(){
-				event.stopPropagation();
- 			 	mui('#sheet1').popover('toggle'); 
-			})
-			
+			 
 			$('.jubao a').click(function(){
 				event.preventDefault();
 				event.stopPropagation(); 
@@ -642,11 +691,12 @@
 				}
 			})
  			//动态详情
- 			function DTdetail(id){
+ 			function DTdetail(id,userid){
  				openview({
  					view:'socialCircle/circleListInfo.html',
  					extrasobj: {
 						infoid: id,
+						UserId:userid
 					}
  				})
  			}

@@ -51,15 +51,14 @@
 		.opbot img{width: 28px;margin: 0 5px;}
 		/*为空时显示 element attribute content*/
 		.writecmt:empty:before{
-		    content: attr(placeholder);   /* element attribute*/
-		    /*content: ‘this is content‘;*/
+		    content: attr(placeholder);
 		    color:#999;
 		}
 		/*焦点时内容为空*/
-		.writecmt:focus:before{
+		/*.writecmt:focus:before{
 		    content:none;
-		}
-		.follow .maincl{letter-spacing: 0.4px;line-height: 1.5;margin-bottom: 10px;}
+		}*/
+		.follow .maincl{letter-spacing: 0.4px;line-height: 1.5;}
 		.follow b{font-weight: 600;color: #FD6363;}
 		.fchidl3{padding: 10px 10px;border-left: 1px solid #ccc;}
 		.DTcontent{overflow: hidden;}
@@ -86,19 +85,12 @@
 				<div class="follow">
 					<div class="fchidl">
 						<div>
-							<img src="<%=dataList.avatar%>" class="userAvator mr25"/>
+							<img src="<%=dataList.avatar%>" goCircleIndex(<%=dataList.userid%>) class="userAvator mr25"/>
 							<div>
 								<%=dataList.nickname%> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
 							</div>
 						</div> 
-						<div class="butright">
-							<div class="diybtn2" style="display: none;">
-								聊天
-							</div> 
-							<div class="diybtn">
-								关注
-							</div> 
-			           </div> 
+						 
 					</div>  
 					
 					<div class="DTcontent">
@@ -106,15 +98,15 @@
 						<%for(var j=0;j<dataList.picS.length;j++){%>
 							<%if(dataList.picS.length == 1){ %>
 								<div class="dynamicPic dynamicPic1">
-									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" /></span>
+									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" data-preview-group="1"/></span>
 								</div>
 							<%}else if(dataList.picS.length == 2){%>
 								<div class="dynamicPic dynamicPic2">
-									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" /></span>
+									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" data-preview-group="1"/></span>
 								</div>
 							<%}else{%>
 								<div class="dynamicPic dynamicPic3">
-									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" /></span>
+									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" data-preview-group="1"/></span>
 								</div>
 							<%}%>	
 						<%}%>
@@ -142,102 +134,59 @@
 		 		
 		 		<%for(var i=0;i<list.length;i++){%>
 					<%if(!list[i].commontid){%>
-						 
 						<div class="follow ft12"> 
 							<div class="fchidl2">
-								<div class="ctc" onclick="goCircleIndex(<%=list[i].user_id%>)">
-									<img src="<%=list[i].avatar%>" class="userAvator"/>
+								<div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+									<img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
 								</div> 
 								<div class="butright">
 									<div class="ft12 btop">
 					            		<b class="ft14"><%=list[i].nickname%></b> <span class="disablecl"><%=list[i].create_time%></span>
 					            	</div>
-					            	<div class="maincl ft14"><%=list[i].commont%></div>
-					            	<div class="cmtChild" data-curUserId="<%=list[i].user_id%>" data-curCmtId="<%=list[i].id%>"></div>
+					            	<div class="maincl ft14" data-toName="<%=list[i].nickname%>" data-userId="<%=list[i].userid%>" data-cmtId="<%=list[i].id%>"><%=list[i].commont%></div>
 					           </div> 
 							</div>
 						</div>
-						
-						<%}%>
+						<%}else{%>
+							 
+							<div class="follow ft12"> 
+	                            <div class="fchidl2">
+	                                <div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+	                                    <img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
+	                                </div> 
+	                                <div class="butright">
+	                                    <div class="ft12 btop">
+	                                        <b class="ft14"><%=list[i].nickname%></b> <span class="disablecl"><%=list[i].create_time%></span>
+	                                    </div>
+	                                    <div class="maincl ft14" data-toName="<%=list[i].nickname%>" data-userId="<%=list[i].userid%>" data-cmtId="<%=list[i].id%>"><%=list[i].commont%></div>
+	                                    <div class="cmtChild" data-toUserId="<%=list[i].touserid%>" data-toCmtId="<%=list[i].commontid%>"></div>
+	                               </div> 
+	                            </div>
+	                        </div>
+							 
+							<%}%> 
 					<%}%>
 		 	</script> 
-			
-			<!--子评论-->
-			<script type="text/html" id="cmtChildTpl">
-				
-				<%for(var i=0;i<list.length;i++){%> 
-						 
-						<div class="fchidl2 fchidl3">
-							<div class="ctc" onclick="goCircleIndex(<%=list[i].user_id%>)">
-								<img src="<%=list[i].avatar%>" class="userAvator3"/>
-							</div> 
-							<div class="butright">
-								<div class="ft12 btop">
-				            		<b><%=list[i].nickname%></b>
-				            	</div>
-				            	<div class="maincl ft12"><%=list[i].commont%></div>
-				           </div> 
-						</div>
-						<div class="cmtChild2" data-curUserId="<%=list[i].user_id%>" data-curCmtId="<%=list[i].id%>"></div>
-					<%}%>
+			 <!--子评论-->
+            <script type="text/html" id="cmtChildTpl">
+                
+                <%for(var i=0;i<list.length;i++){%> 
+                         
+                        <div class="fchidl2 fchidl3">
+                            <div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+                                <img src="<%=list[i].avatar%>" class="userAvator3 loadPics"/>
+                            </div> 
+                            <div class="butright">
+                                <div class="ft12 btop">
+                                    <b><%=list[i].nickname%></b>
+                                </div>
+                                <div class="maincl ft12"><%=list[i].commont%></div>
+                           </div> 
+                        </div>
+                    <%}%>
  
-			</script>
-			<!--子评论-->
-			<script type="text/html" id="cmtChild2Tpl">
-				
-				<%for(var i=0;i<list.length;i++){%> 
-						 
-						<div class="fchidl2 fchidl3">
-							<div class="ctc" onclick="goCircleIndex(<%=list[i].user_id%>)">
-								<img src="<%=list[i].avatar%>" class="userAvator3"/>
-							</div> 
-							<div class="butright">
-								<div class="ft12 btop">
-				            		<b><%=list[i].nickname%></b>&nbsp;&nbsp;回复&nbsp;&nbsp;<b><%=list[i].TO_nickname%></b>
-				            	</div>
-				            	<div class="maincl ft12"><%=list[i].commont%></div>
-				           </div> 
-						</div> 
-					 
-					<%}%> 
-			</script>
-		 
-			<!--<div class="follow ft12"> 
-				<div class="fchidl2">
-					<div class="ctc">
-						<img src="../../img/mainHtml/touxiang2.png" class="userAvator"/>
-					</div> 
-					<div class="butright">
-						<div class="ft12 btop">
-		            		<b class="ft14">陶丘的树枝</b> <span class="disablecl">1分钟前</span>
-		            	</div>
-		            	<div class="maincl ft14">发呆发呆</div>
-		            	<div class="fchidl2 fchidl3">
-							<div class="ctc">
-								<img src="https://b-ssl.duitang.com/uploads/people/201708/21/20170821154449_RyBKi.thumb.600_0_c.jpeg" class="userAvator3"/>
-							</div> 
-							<div class="butright">
-								<div class="ft12 btop">
-				            		<b>蒸汽波***~</b>
-				            	</div>
-				            	<div class="maincl ft12">什么年代啊</div>
-				           </div> 
-						</div>
-						<div class="fchidl2 fchidl3">
-							<div class="ctc">
-								<img src="https://b-ssl.duitang.com/uploads/item/201708/20/20170820000631_GYHQz.thumb.300_0.jpeg" class="userAvator3"/>
-							</div> 
-							<div class="butright">
-								<div class="ft12 btop">
-				            		<b>the fin.</b>&nbsp;&nbsp;回复&nbsp;&nbsp;<b>蒸汽波***~</b>
-				            	</div>
-				            	<div class="maincl ft12">今晚月色真美</div>
-				           </div> 
-						</div>
-		           </div> 
-				</div>
-			</div>-->
-		 
+            </script>
+			  
 		</div>
 		
 		
@@ -257,14 +206,14 @@
 		      </li>
 		    </ul>
 		</div>
-		
+		 
 		<!--底部评论-->
 		<div class="opbot">
 			<div class="writecmt ft14" placeholder="写评论" contenteditable="true" ></div>
 			<div id='cmtedup'>
 				<img src="../../img/makeFriend/message.png" alt="" />
 			</div>
-			<div>
+			<div id="doLike" data-id="0">
 				<img src="../../img/makeFriend/zan.png" alt="" />
 			</div>
 		</div>
@@ -272,6 +221,8 @@
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js"></script>
+	<script src="../../js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
 		function imgHeight(obj){
@@ -286,42 +237,58 @@
 		mui.plusReady(function(){
 			var cityNum = plus.storage.getItem('cityNum'),
 			    oldToken = plus.storage.getItem('oldToken'),
+				myuserid = plus.storage.getItem('userid'),
 				infiId = plus.webview.currentWebview().infoid,
-				toCmt = plus.webview.currentWebview().isCmt;
-				 
-				if(toCmt){ 
-					var main = document.getElementById('main');
-	  				main.scrollTop = main.scrollHeight;
-					//自动弹出输入法
-					var nativeWebview, imm, InputMethodManager;
-					var initNativeObjects = function() {
-						if(mui.os.android) {
-							var main = plus.android.runtimeMainActivity();
-							var Context = plus.android.importClass("android.content.Context");
-							InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
-							imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
-						} else {
-							nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
-						}
-					};
-					var showSoftInput = function() {
-						if(mui.os.android) {
-							imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-						} else {
-							nativeWebview.plusCallMethod({
-								"setKeyboardDisplayRequiresUserAction": false
-							});
-						}
-						//此处可写具体逻辑设置获取焦点的input
-						setTimeout(function() {
-							$('.writecmt').focus();
-						}, 0);
-					};
-					initNativeObjects();
-					showSoftInput();
+				toCmt = plus.webview.currentWebview().isCmt,
+				commontid = '',touserid='';
+			if(toCmt){ 
+				var main = document.getElementById('main');
+  				main.scrollTop = main.scrollHeight;
+				//自动弹出输入法
+				var nativeWebview, imm, InputMethodManager;
+				var initNativeObjects = function() {
+					if(mui.os.android) {
+						var main = plus.android.runtimeMainActivity();
+						var Context = plus.android.importClass("android.content.Context");
+						InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+						imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+					} else {
+						nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+					}
+				};
+				var showSoftInput = function() {
+					if(mui.os.android) {
+						imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+					} else {
+						nativeWebview.plusCallMethod({
+							"setKeyboardDisplayRequiresUserAction": false
+						});
+					}
+					//此处可写具体逻辑设置获取焦点的input
+					setTimeout(function() {
+						$('.writecmt').focus();
+					}, 0);
+				};
+				initNativeObjects();
+				showSoftInput();
 
-				}
-				
+			}
+		
+			window.goCircleIndex = function(id){
+				if(id == myuserid){
+					openview({
+			    		view:'mycircleIndex.html',
+			    		id:'mycircleIndex' 
+			    	})
+				}else{
+					openview({
+			    		view:'elsecircleIndex.html',
+			    		id:'elsecircleIndex',
+			    		extrasobj:{userId:id}
+			    	})
+				} 
+		    }
+			
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId, {
 				dataType: 'json',
 				type: 'get',
@@ -356,7 +323,7 @@
 						
 						
 						//整理内容图片
-						var nowArray2 = JSON.parse(JSON.parse(nowArray.pic));
+						var nowArray2 = JSON.parse(nowArray.pic);
 						if(nowArray2.length){
 							var picS = [];
 							for(var k = 0 ;k<nowArray2.length;k++){
@@ -379,163 +346,193 @@
 			});
 			
 			//评论
-			mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
-				dataType: 'json',
-				type: 'get',
-				timeout: 8000,
-				headers: {"token": oldToken,'city': cityNum},
-				success: function(data, type, xhr) {
-					console.error('评论详情', data);
-					 
-					if(data.errno == 0) {
-						var cmtArray = data.data; 
-						if(cmtArray && cmtArray.length>0){
-							 
-								for(var i = 0;i<cmtArray.length;i++){
-									if(!cmtArray[i].nickname){ 
-										cmtArray[i].nickname =  '匿名'
-									}
-									
-									if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
-										if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
-											cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
-										}else{
-											cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+			getCmt();
+			function getCmt(){
+				mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
+					dataType: 'json',
+					type: 'get',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.error('评论详情', data);
+						 
+						if(data.errno == 0) {
+							var cmtArray = data.data; 
+							if(cmtArray && cmtArray.length>0){
+								 
+									for(var i = 0;i<cmtArray.length;i++){
+										if(!cmtArray[i].nickname){ 
+											cmtArray[i].nickname =  '匿名'
 										}
-									}else{
-										cmtArray[i].avatar = '../../img/10.png'
-									}
-									
-									var dt = new Date(cmtArray[i].create_time).getTime(); 
-									cmtArray[i].create_time = getDateDiff(dt); 
-								}   
-								$('#curShow').html(template('cmtTpl',{list:cmtArray}));
-								
-								//子评论
-								$('.cmtChild').each(function(){
-									var curCmt = $(this);
-									var curUserId = curCmt.attr('data-curUserId');
-									var curCmtId = curCmt.attr('data-curCmtId');  
-									mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
-										dataType: 'json',
-										type: 'get',
-										timeout: 8000,
-										headers: {"token": oldToken,'city': cityNum},
-										success: function(data, type, xhr) {
-											console.error('评论详情', data);
-											 
-											if(data.errno == 0) {
-												var cmtArray = data.data; 
-												var childArray = [];
-												if(cmtArray && cmtArray.length>0){
-													 
-														for(var i = 0;i<cmtArray.length;i++){
-															if(!cmtArray[i].nickname){ 
-																cmtArray[i].nickname =  '匿名'
-															}
-															
-															if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
-																if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
-																	cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
-																}else{
-																	cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
-																}
-															}else{
-																cmtArray[i].avatar = '../../img/10.png'
-															}
-															
-															var dt = new Date(cmtArray[i].create_time).getTime(); 
-															cmtArray[i].create_time = getDateDiff(dt); 
-															if(cmtArray[i].commontid == curCmtId){
-																childArray.push(cmtArray[i])
-															}
-														}   
-														console.log('子评论',childArray)
-														curCmt.html(template('cmtChildTpl',{list:childArray}));
-													 
-															$('.cmtChild2').each(function(){
-																var curCmt = $(this);
-																var curUserId = curCmt.attr('data-curUserId');
-																var curCmtId = curCmt.attr('data-curCmtId');  
-																mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
-																	dataType: 'json',
-																	type: 'get',
-																	timeout: 8000,
-																	headers: {"token": oldToken,'city': cityNum},
-																	success: function(data, type, xhr) {
-																		console.error('评论详情', data);
-																		 
-																		if(data.errno == 0) {
-																			var cmtArray = data.data; 
-																			var childArray = [];
-																			if(cmtArray && cmtArray.length>0){
-																				 
-																					for(var i = 0;i<cmtArray.length;i++){
-																						if(!cmtArray[i].nickname){ 
-																							cmtArray[i].nickname =  '匿名'
-																						}
-																						if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
-																							if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
-																								cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
-																							}else{
-																								cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
-																							}
-																						}else{
-																							cmtArray[i].avatar = '../../img/10.png'
-																						}
-																						
-																						var dt = new Date(cmtArray[i].create_time).getTime(); 
-																						cmtArray[i].create_time = getDateDiff(dt); 
-																						if(cmtArray[i].commontid == curCmtId){
-																							childArray.push(cmtArray[i])
-																						}
-																					}   
-																					console.log('子评论',childArray)
-																					curCmt.html(template('cmtChild2Tpl',{list:childArray}));
-																				 
-																					  
-																			}
-																			
-																		 
-																		}else{
-																			mui.toast('当前网络不好,请重试');
-																		}
-																	},
-																	error: function(xhr, type, errorThrown) {
-																		console.error('评论列表,响应失败');
-																		mui.toast('当前网络不好,请重试');
-																	}
-																});
-															})  
-												}
-												
-											 
+										
+										if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+											if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+												cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
 											}else{
-												mui.toast('当前网络不好,请重试');
+												cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
 											}
-										},
-										error: function(xhr, type, errorThrown) {
-											console.error('评论列表,响应失败');
-											mui.toast('当前网络不好,请重试');
+										}else{
+											cmtArray[i].avatar = '../../img/10.png'
 										}
-									});
-								})
-								
+										
+										var dt = new Date(cmtArray[i].create_time).getTime(); 
+										cmtArray[i].create_time = getDateDiff(dt); 
+									}   
+									$('#curShow').html(template('cmtTpl',{list:cmtArray}));
+									//回复 或 评论
+							    	$('.butright .maincl').click(function(){ 
+							    		event.stopPropagation(); 
+							    		var toName = $(this).attr('data-toName'),
+							    			touserid = $(this).attr('data-userId');
+							    			commontid = $(this).attr('data-cmtId');
+							    		$('.writecmt').focus();
+   										$('.writecmt').attr('placeholder','回复:'+toName);
+   									 	$('.writecmt').attr('id',touserid);
+   									 	$('.writecmt').attr('data-id',commontid);
+							    	})
+ 									 //子评论
+                                    $('.cmtChild').each(function(){
+                                        var curCmt = $(this);
+                                        var curUserId = curCmt.attr('data-toUserId');
+                                        var curCmtId = curCmt.attr('data-toCmtId');  
+                                        mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
+                                            dataType: 'json',
+                                            type: 'get',
+                                            timeout: 8000,
+                                            headers: {"token": oldToken,'city': cityNum},
+                                            success: function(data, type, xhr) {
+                                                console.error('评论详情', data);
+                                                 
+                                                if(data.errno == 0) {
+                                                    var cmtArray = data.data; 
+                                                    var childArray = [];
+                                                    if(cmtArray && cmtArray.length>0){
+                                                        for(var i = 0;i<cmtArray.length;i++){
+                                                            if(!cmtArray[i].nickname){ 
+                                                                cmtArray[i].nickname =  '匿名'
+                                                            }
+                                                            
+                                                            if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+                                                                if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+                                                                    cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+                                                                }else{
+                                                                    cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+                                                                }
+                                                            }else{
+                                                                cmtArray[i].avatar = '../../img/10.png'
+                                                            }
+                                                            
+                                                            var dt = new Date(cmtArray[i].create_time).getTime(); 
+                                                            cmtArray[i].create_time = getDateDiff(dt); 
+                                                            if(cmtArray[i].id == curCmtId && curUserId == cmtArray[i].userid){
+                                                                childArray.push(cmtArray[i])
+                                                            }
+                                                        }   
+                                                        console.log('子评论',childArray)
+                                                        curCmt.html(template('cmtChildTpl',{list:childArray}));
+                                                     }
+                                                 
+                                                }else{
+                                                    mui.toast('当前网络不好,请重试');
+                                                }
+                                            },
+                                            error: function(xhr, type, errorThrown) {
+                                                console.error('评论列表,响应失败');
+                                                mui.toast('当前网络不好,请重试');
+                                            }
+                                        });
+                                    })
+									
+							}else{
+								$('#curShow').html('<img src="../../img/nocmt.png" style="width: 100px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;font-size:13px;color: #888;">快来抢沙发</div>');
+							}
 							
+						}else{
+							mui.toast('当前网络不好,请重试');
 						}
-						
-					 
-					}else{
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('评论列表,响应失败');
 						mui.toast('当前网络不好,请重试');
 					}
-				},
-				error: function(xhr, type, errorThrown) {
-					console.error('评论列表,响应失败');
-					mui.toast('当前网络不好,请重试');
+				});
+			} 
+			$('#cmtedup').click(function(){
+	    		if($('.writecmt').html() != ''){
+	    			var cur = $('.writecmt');
+	    			var commont = cur.html(),
+	    				touserid = $('.writecmt').attr('id'),
+	    				commontid = $('.writecmt').attr('data-id'); 
+	    			mui.ajax(serverUrl + '/api/friends/newscomment', {
+	    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
+						dataType: 'json',
+						type: 'POST',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) {
+							console.error('评论详情', data);
+							 
+							if(data.errno == 0) {
+				    			cur.html('');
+				    			mui.toast('评论成功');
+				    			getCmt();
+							}else{
+								mui.toast('当前网络不好,请重试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('评论列表,响应失败');
+							mui.toast('当前网络不好,请重试');
+						}
+					});
+	    			
+	    			
+	    		}else{
+	    			$('.writecmt').focus();
+	    		}
+	    		
+	    	})
+	    	
+	    	$('.giveBk').click(function(){
+	    		event.preventDefault()
+				openview({
+					view:'../answerBoard/reward.html'
+				})
+			})
+	    	
+			//点赞
+			$('#doLike').click(function(){
+				if($(this).attr('data-id') == 0){ 
+					var curThis = $(this);
+					mui.ajax(serverUrl + '/api/friends/newsinfo', {
+	    				data:{newsId:infiId,userid:myuserid},
+						dataType: 'json',
+						type: 'POST',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) { 
+							if(data.errno == 0) { 
+				    			mui.toast('点赞成功'); 
+								alert(curThis.attr('data-id'))
+								curThis.attr('data-id',1);
+							}else{
+								mui.toast('点赞失败');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('点赞,响应失败');
+							mui.toast('当前网络不好,请重试');
+						}
+					}); 
+				}else{
+					alert($(this).attr('data-id'));
+					$(this).attr('data-id',0);
+					mui.toast('取消点赞');
 				}
-			});
+			})
+	    	 
+		}) 
 		
-		})
 		//发布时间判断 
 		var minute = 1000 * 60;
 		var hour = minute * 60;
@@ -551,7 +548,7 @@
 			var hourC =diffValue/hour;
 			var minC =diffValue/minute;
 			if(monthC>=1){
-			 result=parseInt(monthC) + "个月前";
+			 result=parseInt(monthC) + "月前";
 			 }
 			 else if(weekC>=1){
 			 result=parseInt(weekC) + "周前";
@@ -560,7 +557,7 @@
 			 result=parseInt(dayC) +"天前";
 			 }
 			 else if(hourC>=1){
-			 result=parseInt(hourC) +"个小时前";
+			 result=parseInt(hourC) +"小时前";
 			 }
 			 else if(minC>=1){
 			 result=parseInt(minC) +"分钟前";
@@ -569,6 +566,8 @@
 			 }
 			return result;
 		}
+		
+		
 	</script>
 	<script type="text/javascript">
       	//操作表
@@ -588,34 +587,8 @@
 			alert('聊天')
 		})
 		
-	    //数据处理 
-		var myuserid;
-	    mui.plusReady(function(){
-	    	$('#cmtedup').click(function(){
-//	    		if($('.writecmt').html() != ;){
-	    			$('.writecmt').html('');
-	    			mui.toast('评论成功')
-//	    		}
-	    		
-	    	})
-	    	
-	    	$('.giveBk').click(function(){
-	    		event.preventDefault()
-				openview({
-					view:'../answerBoard/reward.html'
-				})
-			})
-	    	
-	    	//回复 或 评论
-	    	$('.butright .maincl').click(function(){
-	    		event.stopPropagation();
-	    		$('.writecmt').focus();
-	    		$('.writecmt').html('回复：xxx')
-	    	})
+ 		mui.previewImage(); 
 	    
-	    	
-	    })
-   	 
 	</script>
 
 </html>
