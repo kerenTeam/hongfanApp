@@ -684,7 +684,11 @@
 										data.data.LikeMeUsers[i].username = '匿名'
 									}
 									if(data.data.LikeMeUsers[i].avatar){
-										data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+										if(JSON.parse(data.data.avatar)[0].picImg.indexOf('http') == -1){
+											data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+										}else{
+											data.data.LikeMeUsers[i].avatar = JSON.parse(data.data.avatar)[0].picImg;
+										}
 									}
 								}
 								var likeMeObj = {}
