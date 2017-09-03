@@ -150,23 +150,24 @@
 								</div>
 								<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
 									<p  class="ft14 maincl overTwo"><%=dataList[i].content%> </p><!--文字内容-->
+									<%if(dataList[i].picS){%>
+										<%for(var j=0;j<dataList[i].picS.length;j++){%>
+											<%if(dataList[i].picS.length == 1){ %>
+												<div class="dynamicPic dynamicPic1">
+													<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+												</div>
+											<%}else if(dataList[i].picS.length == 2){%>
+												<div class="dynamicPic dynamicPic2">
+													<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+												</div>
+											<%}else{%>
+												<div class="dynamicPic dynamicPic3">
+													<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+												</div>
+											<%}%>	
+										<%}%>
+									<%}%>	
 									
-									<%for(var j=0;j<dataList[i].picS.length;j++){%>
-										<%if(dataList[i].picS.length == 1){ %>
-											<div class="dynamicPic dynamicPic1">
-												<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
-											</div>
-										<%}else if(dataList[i].picS.length == 2){%>
-											<div class="dynamicPic dynamicPic2">
-												<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
-											</div>
-										<%}else{%>
-											<div class="dynamicPic dynamicPic3">
-												<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
-											</div>
-										<%}%>	
-										
-									<%}%>
 								</div>
 								<div class="flexrr">
 									<div class="disablecl ft12" data-id='0' onclick="goZan(this,<%=dataList[i].id%>)"> <img src="../img/makeFriend/zan.png"/> 赞<span><%=dataList[i].likes%></span> </div> 
@@ -232,6 +233,17 @@
 			        <a href="#sheet1">取消</a>
 			      </li>
 			    </ul>
+			</div>
+			
+			<!--发布-->
+			<style type="text/css">
+				.fabu1{position: fixed;bottom: 15px;right: 12px;width: 50px;height: 50px;background-color: #fff;border-radius: 50%;opacity: 1;}
+				.fabu2{position: fixed;bottom: 40px;right: 37px;width: 0px;height: 0px;background-color: #fff;border-radius: 50%;opacity: 0;}
+				#fabu img{width: 100%;height: 100%;}
+				#fabu{transition: opacity .5s;}
+			</style>
+			<div id="fabu" class="fabu1">
+				<img src="../img/makeFriend/fabu.svg"/>
 			</div>
 		</div>
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
@@ -556,7 +568,7 @@
 										timeout: 8000,
 										headers: {"token": oldToken,'city': cityNum},
 										success: function(data, type, xhr) {
-											console.error('评论详情', data);
+											//console.error('评论详情', data);
 											 
 											if(data.errno == 0) {
 												var cmtArray = data.data;
@@ -722,6 +734,39 @@
  					view:'socialCircle/elsecircleIndex.html'
  				})
  			})
+ 			$('#fabu').click(function(){
+				openview({
+					view:'socialCircle/circlePublish.html',
+					id:'circlePublish' 
+				})
+			})
+ 			/*滑动显示发布按钮*/
+			var fangxiang;
+			function scroll(fn) {
+				var beforeScrollTop = document.body.scrollTop,
+					fn = fn || function() {};
+				window.addEventListener("scroll", function() {
+					var afterScrollTop = document.body.scrollTop,
+						delta = afterScrollTop - beforeScrollTop;
+					if(delta === 0) return false;
+					fn(delta > 0 ? "down" : "up");
+					beforeScrollTop = afterScrollTop;
+				}, false);
+			}
+			scroll(function(direction) {
+				fangxiang = direction;
+			});
+		
+			$(window).scroll(function() {
+				if(fangxiang == 'up') {
+					//alert('显示');
+					document.getElementById('fabu').className = 'fabu1';
+				}else{
+					//alert('隐藏');
+					document.getElementById('fabu').className = 'fabu2';
+				}
+			})
+
 		</script>
 	</body>
 
