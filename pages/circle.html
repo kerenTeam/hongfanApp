@@ -137,7 +137,7 @@
 							<div class="follow">
 								<div class="fchidl">
 									<div onclick="elseCircleIndex(<%=dataList[i].user_id%>)">
-										<img src="<%=dataList[i].avatar%>" class="userAvator mr25"/>
+										<img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/>
 										<div>
 											<%=dataList[i].nickname%> <div class="disablecl ft12"> <%=dataList[i].create_time%>  <span style="color: #5d86b2;"><%=dataList[i].read%></span>阅读 </div>
 										</div>
@@ -344,9 +344,8 @@
 								var dataObj = {};
 								var nowArray = data.data.data;
 
-								for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
-									var nowArray2 = JSON.parse(JSON.parse(nowArray[j].pic));
-									
+								for(var j = 0 ;j<nowArray.length;j++){
+									//整理头像格式
 									if(nowArray[j].avatar && nowArray[j].avatar!='null'){
 										if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
 											nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
@@ -372,7 +371,8 @@
 									}
 									var dt = new Date(nowArray[j].create_time).getTime(); 
 									nowArray[j].create_time = getDateDiff(dt);
- 
+									//整理内容图片格式
+ 									var nowArray2 = JSON.parse(nowArray[j].pic);
 									if(nowArray2.length){
 										var picS = [];
 										for(var k = 0 ;k<nowArray2.length;k++){
@@ -433,7 +433,8 @@
 															if(data.errno == 0) {
 																var dataObj = {};
 																var nowArray = data.data.data;
-																for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
+																for(var j = 0 ;j<nowArray.length;j++){
+																	//整理头像格式
 																	if(nowArray[j].avatar && nowArray[j].avatar!='null'){
 																		if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
 																			nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
@@ -459,8 +460,8 @@
 																	}
 																	var dt = new Date(nowArray[j].create_time).getTime(); 
 																	nowArray[j].create_time = getDateDiff(dt);
-																	
-																	var nowArray2 = JSON.parse(JSON.parse(nowArray[j].pic));
+																	/*整理内容图片格式*/
+																	var nowArray2 = JSON.parse(nowArray[j].pic);
 																	if(nowArray2.length){
 																		var picS = [];
 																		for(var k = 0 ;k<nowArray2.length;k++){
