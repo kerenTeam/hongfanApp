@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>发表</title>
+		<title>发布动态</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes"> 
@@ -17,34 +17,30 @@
 	<style type="text/css">
 		.disbg{border:none}
 		.uppics{padding:15px}
-		.uppics div.onepic img{width:4.5rem;height:4.5rem;display:inline-block;margin:0 5px;border-radius:3px}
+		.uppics div.onepic img{width:4.5rem;height:4.5rem;display:inline-block;margin:0 5px;}
 		.uppics div.onepic input{width:0;height:0;position:absolute;outline:0}
-		 
-
 	</style>
 
 	<body style="background-color: white;">
-
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
-			<h1 class="mui-title findUser">动态</h1>
+			<h1 class="mui-title findUser">发布动态</h1>
 			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun ft14">发表</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
 		<div id="main">
 			<div class="publishf">  
-					<div class="apsan"></div>
-					<textarea id="textCon" class="disbg ft14" rows="4" placeholder="发布的信息如果违反规定，将被管理员删帖"></textarea>
+				<div class="apsan"></div>
+				<textarea id="textCon" class="disbg ft14" rows="4" placeholder="发布的信息如果违反规定，将被管理员删帖"></textarea>
 			</div>
-			 
 			<div id="mainpic" class="biaoqian">
 			 
 			</div>
 			 
 			<div class="uppics clearfix" id="uppics2"> 
 		        <div class="onepic">
-		            <img id="nowpic" src="../../img/answer/goanswer/addpic.png">
+		            <img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">
 		            <p>添加照片</p>
 		        </div> 
 		    </div> 
@@ -62,81 +58,24 @@
 <!--引入模板引擎-->
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
-	//选择图片
 	var Apic = [];//图片存放数组 
-	var qid;
- 
-	mui.plusReady(function() {
-		qid=plus.webview.currentWebview().qqid;
-		mui('#nowpic')[0].addEventListener('tap',function(){
-			plus.nativeUI.actionSheet({
-					cancel: "取消",
-					buttons: [{
-						title: "相册选择"
-					}, {
-						title: '拍照'
-					}]
-				},
-				function(e) {
-					if (e.index == 1) { //点击从相册选择
-						galleryImgsSelected();
-					} else if (e.index == 2) {
-						getImage();
-					}
-				}
-			);
-		})
-		var oldtoken = plus.storage.getItem('oldToken');
-		 
-		function getImage(){//拍照并保存
-			var cmr = plus.camera.getCamera();
-			cmr.captureImage( function ( path ) {
-				plus.io.resolveLocalFileSystemURL(path,function(entry){ 
-					//把拍摄图片的路径转化成 本地文件url
-					path = plus.io.convertLocalFileSystemURL(path);
-					if(0!=path.indexOf("file://")){
-						path="file://"+path;
-					} 
-		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-		    		var endpic = path.split('.')[0]+"/"+nowpic;
-		    		console.error(path);
-		    		console.error(endpic);
-					plus.zip.compressImage({//压缩方法
-						src:path,
-						dst:endpic,
-						overwrite:true,
-						quality:30
-					},
-					function() { 
-						showImg(endpic);
-						Apic = [];
-						Apic.push(endpic); 
-					},function(error) {
-						mui.toast('图片获取错误，请重试'); 
-					}); 
-					//无压缩
-					//showImg(path);
-					//Apic = [];
-					//Apic.push(path);
-					//plus.gallery.save( path ); 
-				});
-			}, function ( e ) { 
-			}, {filename:"_doc/gallery/",index:1} );
-		}
-		//var lfs=null;// 保留上次选择图片列表
-		function galleryImgsSelected(){//从相册中选择图片
+	var lfs=null;// 保留上次选择图片列表
+		
+	function galleryImgsSelected(){//从相册中选择图片
+		mui.plusReady(function(){
 		    plus.gallery.pick( function(e){
+		    	mui('.onepic')[0].innerHTML = '<img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">';
 		    	lfs=e.files;
 		    	for(var i in e.files){
 		    		if(0!=e.files[i].indexOf("file://")){
-						e.files[i]="file://"+e.files[i];
+						e.files[i]="file://"+e.files[i];//图片地址
 					} 
-		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-		    		var endpic = e.files[i].split('.')[0]+"/"+nowpic;
-		    		
-		    		console.error(e.files[i]);
+		    		var nowpic = Math.random().toString(36).substr(2) + i + '.jpg';
+		    		var endpic = e.files[i].split('.')[0]+"/" +nowpic;
+		    		console.log(e.files[i]);
 		    		console.error(endpic);
-		    		plus.zip.compressImage({//压缩方法
+		    		//压缩方法
+		    		plus.zip.compressImage({
 						src:e.files[i],
 						dst:endpic,
 						overwrite:true,
@@ -144,38 +83,94 @@
 					},
 					function() {
 						showImg(endpic);
-						Apic = []; 
-						Apic.push(endpic);
 					},function(error) {
 						mui.toast('图片获取错误，请重试');  
 					});
-					//无压缩 
-			    	//showImg(e.files[i]);
-			    	//Apic = []; 
-					//Apic.push(e.files[i]);
 		    	}
 		    }, function ( e ) {  
-//		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
-		    },{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
-				plus.nativeUI.alert('只能选择10张图片');  
+		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
+    		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
+				plus.nativeUI.alert('最多上传9张图片');
 		    }});
-		}
-		function showImg(url){//显示图片
-			
-			if(0!=url.indexOf("file://")){        
-				url="file://"+url;  
-			} 
-			alert(url)
-			$('.onepic').prepend('<img style="width：4.5rem;height:4.5rem;display:inline" src="'+url+'"/>')
-			$('.onepic p').css('display','none');    
-		} 
-}); 
-	//选择图片结束
-	 
+			function showImg(url){//显示图片
+				if(0!=url.indexOf("file://")){
+					url="file://"+url;  
+				}
+				$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="'+url+'"/>')
+				$('.onepic p').css('display','none');
+			}
+		})	
+	}//从相册中选择图片结束
+	
+	
+	
 	//发送 发布
 	mui('.baocun')[0].addEventListener('tap',function(){ 
 		 alert(Apic)
-	})
+	})	
+	
+	
+	
+	
+	
+
+
+	 
+
 </script>
- 
+
+<!--弃用js-->
+<script type="text/javascript">
+//plus.nativeUI.actionSheet({
+//	cancel: "取消",
+//	buttons: [{
+//		title: "相册选择"
+//	}, {
+//		title: '拍照'
+//	}]
+//},
+//function(e) {
+//	if (e.index == 1) { //点击从相册选择
+//		galleryImgsSelected();
+//	} else if (e.index == 2) {
+//		getImage();
+//	}
+//})
+function getImage(){//拍照并保存(暂时搁置)
+	var cmr = plus.camera.getCamera();
+	cmr.captureImage( function ( path ) {
+		plus.io.resolveLocalFileSystemURL(path,function(entry){ 
+			//把拍摄图片的路径转化成 本地文件url
+			path = plus.io.convertLocalFileSystemURL(path);
+			if(0!=path.indexOf("file://")){
+				path="file://"+path;
+			} 
+    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+    		var endpic = path.split('.')[0]+"/"+nowpic;
+    		console.error(path);
+    		console.error(endpic);
+			plus.zip.compressImage({//压缩方法
+				src:path,
+				dst:endpic,
+				overwrite:true,
+				quality:30
+			},
+			function() { 
+				showImg(endpic);
+				Apic = [];
+				Apic.push(endpic); 
+			},function(error) {
+				mui.toast('图片获取错误，请重试');
+			}); 
+			//无压缩
+			//showImg(path);
+			//Apic = [];
+			//Apic.push(path);
+			//plus.gallery.save( path ); 
+		});
+	}, function ( e ) { 
+	}, {filename:"_doc/gallery/",index:1} );
+}
+
+</script>
 </html>
