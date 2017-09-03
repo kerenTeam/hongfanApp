@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>交友个人主页</title>
+		<title>他人主页</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -365,7 +365,6 @@
     		var oldToken = plus.storage.getItem('oldToken'),
 		 		cityNum = plus.storage.getItem('cityNum'),
 				myuserid = plus.webview.currentWebview().userId;
-				alert(myuserid);
 	    	document.addEventListener('refresh', function() {
 				headInfo();
 			})
@@ -557,7 +556,9 @@
 								});
 	
 							}else{
-								document.getElementById('dynamicList').innerHTML = '没有动态';
+								mui('.dongtai0')[0].style.backgroundColor = '#fff';
+								mui("#upload")[0].innerHTML = '';
+								document.getElementById('dynamicList').innerHTML = '<img src="../../img/nocmt.png" style="width: 150px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;font-size:13px;color: #888;">动态暂无内容</div>';
 							}
 						}
 					},
@@ -590,7 +591,7 @@
 								 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
 	
 							}else{
-								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px">去添加吧</div>')
+								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无动态</div>')
 							}
 							$('#allPic,#addPic').click(function(){
 								openview({
@@ -632,6 +633,8 @@
 								var html = template('likeMeTpl', likeMeObj);
 	
 								document.getElementById('likeMe').innerHTML = html;	
+							}else{
+								mui('.touxiangs')[0].innerHTML = '<li style="display:block"><span style="height:28px;display:inline-block"></span><br /><span class="span2" style="font-size:13px;color:#888;position: relative;top:-12px">暂无喜欢他的人</span></li>'
 							}
 						}else{
 							console.log(data.errmsg); 
@@ -656,7 +659,7 @@
 									$('#psLabel').append("<span>"+ele.lableName+"</span>")
 								}) 
 							}else{
-								$('#psLabel').append("<div style='color: #000000!important;padding: 10px!important;' id='goLabel'>去添加吧</div>")
+								$('#psLabel').append("<div style='color: #888!important;padding: 16px 10px!important;' id='goLabel'>暂无标签</div>")
 							}
 							
 						}else{
@@ -720,7 +723,7 @@
 								lazyLoad(true,50);//懒加载  
 	
 							}else{
-								$('.phnone').html('<img src="../../img/nocmt.png" style="width: 150px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;">发动态就有相册了哦</div>');
+								$('.phnone').html('<img src="../../img/nocmt.png" style="width: 150px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;font-size:13px;color: #888;">相册暂无内容</div>');
 							}
 							
 							
