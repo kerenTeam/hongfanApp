@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>编辑资料</title>
+		<title>编辑资料(交友)</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -142,9 +142,9 @@
 							<p>更换背景图片</p>
 							<label style="display: block;">
 								<span>
-									<div class="text-center gray" id="preview"><img id="mypic1" src="../../img/answer/editset.png"/></div>
+									<div class="text-center gray" id="preview"><img onclick="galleryImgsSelected()" id="mypic1" src="../../img/answer/editset.png"/></div>
 								</span>
-								<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
+								<!--<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" class="upload-add">-->
 							</label>
 						</a>
 					</li>
@@ -169,9 +169,7 @@
 	<script src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/jquery.min.js"></script> 
 	<script type="text/javascript">
-		var idnum = 0;
 		mui.plusReady(function(){
-		 
 			var myuserid = plus.storage.getItem('userid');
 			var cityNum = plus.storage.getItem('cityNum');
 			var oldToken = plus.storage.getItem('oldToken');
@@ -181,18 +179,11 @@
 				timeout:8000,
 				headers:{"token":oldToken,"city":cityNum},	              				
 				success:function(data,type,xhr){
-					console.log('获取用户数据返回',data);
+					console.log('交友编辑资料 显示既有信息',data);
 					if(data.errno == 0){
-						
 						if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.username)){
 							data.data.username = data.data.username.substring(0,3)+"****"+data.data.username.substring(7,11)
 						}
-						
-//						//显示头像
-//						if(data.data.avatar){
-//							mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
-//						}
-//						
 					 
 						if(data.data.bgImg && JSON.parse(data.data.bgImg).length>0){ 
 							$('#mypic1').attr('src',JSON.parse(data.data.bgImg)[0].picImg)
@@ -230,12 +221,10 @@
 						}
 						
 					}else{
-						//mui.toast('获取用户信息失败'); 
 						console.log(data.errmsg); 
 					}
 				},
 				error:function(xhr,type,errorThrown){
-					//mui.toast('获取用户信息响应失败');
 					console.log('获取用户数据,响应失败');
 				}
 			}); 
@@ -245,7 +234,7 @@
 				timeout:8000,
 				headers:{"token":oldToken,"city":cityNum},	              				
 				success:function(data,type,xhr){
-					console.log('获取用户数据返回',data);
+					console.log('获取系统总标签',data);
 					if(data.errno == 0){ 
 						var dataObj=data.data;
 						if(dataObj && dataObj.length){
@@ -260,7 +249,7 @@
 								timeout:8000,
 								headers:{"token":oldToken,"city":cityNum},	              				
 								success:function(data,type,xhr){
-									console.log('获取用户数据返回',data);
+									console.log('获取用户标签',data);
 									if(data.errno == 0){ 
 										var dataObj=data.data;
 										if(dataObj && dataObj.length){
@@ -274,7 +263,6 @@
 										}
 										
 									}else{
-										//mui.toast('获取用户信息失败'); 
 										console.log(data.errmsg); 
 									}
 								},
@@ -286,7 +274,6 @@
 						} 
 						
 					}else{
-						//mui.toast('获取用户信息失败'); 
 						console.log(data.errmsg); 
 					}
 					
@@ -303,7 +290,7 @@
 									headers:{"token":oldToken,"city":cityNum},	              				
 									success:function(data,type,xhr){
 										 
-										console.log('获取用户数据返回',data);
+										console.log('删除标签',data);
 										if(data.errno == 0){ 
 		                        			curSp.removeClass('diybuted');
 										}else{
@@ -427,124 +414,99 @@
 		
 			//修改
 			 
-		})
-		var filepic = {};
-		//保存数据
-		mui('#Preservation')[0].addEventListener('tap',function(){ 
+		})//显示既有信息 和 标签修改 上传 结束
+		
+		var Apic ='';
+		function galleryImgsSelected(){//从相册中选择图片
+		    plus.gallery.pick( function(e){
+		    	for(var i in e.files){
+		    		if(0!=e.files[i].indexOf("file://")){
+						e.files[i]="file://"+e.files[i];
+					} 
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+		    		var endpic = e.files[i].split('.')[0]+"/"+nowpic;
+		    		plus.zip.compressImage({//压缩操作
+						src:e.files[i],
+						dst:endpic,
+						overwrite:true,
+						quality:30
+					},
+					function(obj) {
+						if(!obj.target.includes("file://")){obj.target="file://"+obj.target;}
+						Apic = obj.target
+						mui('#mypic1')[0].src = obj.target;
+					},function(error) {
+						mui.toast('图片获取错误，请重试');  
+					});
+		    	}
+		    }, function ( e ) {  
+		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
+				plus.nativeUI.alert('只能选择1张图片');  
+		    }});
+		}
+		
+		//上传数据(不含标签)
+		mui('#Preservation')[0].addEventListener('tap',function(){
 			plus.nativeUI.showWaiting('保存中 ...',{width:'100px',height:'80px'});
 			var explain = mui('#explain')[0].value || '';
 			var horoscope = mui('#horoscope')[0].value || '';
-			var touxiang = mui('#imgUpload')[0].files[0] || {};
 			var age = $('#age').val() || '';
 			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
 			var username = $('#nkname').val();
 			 
-			mui.plusReady(function(){ 
+			mui.plusReady(function(){
 				var myuserid = plus.storage.getItem('userid');
 				var cityNum = plus.storage.getItem('cityNum');
 				var oldToken = plus.storage.getItem('oldToken');
 
-				upfun1();
-			 
-				function upfun1(){
-					var fd = new FormData(); 
-					if(touxiang.name){
-						fd.append('bgImg',touxiang);
-					}
-					fd.append('age',age);  
-			        fd.append('username',username);  		
-			        fd.append('userId',myuserid);  		
-			        fd.append('horoscope',horoscope);
-			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);
-			        fd.append('explain',explain); 		
-			        var xhr = new XMLHttpRequest();  	
-			        xhr.open('PUT',serverUrl+'/api/friends/friendhome',true); 	
-			    	xhr.onreadystatechange = function(){
-			    		if (xhr.readyState===4) { 
-	    					if (xhr.status===200) {
-	    						plus.nativeUI.closeWaiting();//关闭等待框
-	    						var dataobj = JSON.parse(xhr.responseText);
-	    						console.log('修改'+xhr.responseText);
-	    						if(dataobj.errno == 0){
-	    							mui.toast('修改成功');	 
-	    							//触发跳转页面刷新
+				releaseData();
+			 	//发送数据
+			 	function releaseData(){
+					var task = plus.uploader.createUpload(serverUrl+'/api/friends/friendhome', 
+						{ method:"POST"},
+						function(back,status){
+							if(status == 200){
+								console.log(back.responseText);
+								var dataobj = JSON.parse(back.responseText);
+								if(dataobj.errno == 0){
+									//触发跳转页面刷新
 									mui.fire(plus.webview.getWebviewById('mycircleIndex'),'refresh');
-									 
 									var time2 = setTimeout(function(){
+										plus.nativeUI.closeWaiting();//关闭等待框
 										plus.webview.currentWebview().close();
 									},500)
 	    						}else{
-	    							mui.toast('保存失败');	
+	    							plus.nativeUI.closeWaiting();//关闭等待框
+	    							mui.toast('发布失败，请重试！');
+	    							plus.nativeUI.closeWaiting();
 	    						}
-	    					}else{
-	    						mui.toast('响应失败');	
-	    					}
-	    				}
-			        } 
-			        xhr.setRequestHeader("token",oldToken);
-			        xhr.setRequestHeader("city",cityNum);
-			        
-			        xhr.send(fd);
-				}
+							}else{
+								plus.nativeUI.closeWaiting();//关闭等待框
+								mui.toast('当前网络不好，请重试！');	
+							}
+							
+						}
+					);
+					task.setRequestHeader('token',oldToken);
+					task.setRequestHeader('city',cityNum);
+					
+					if(Apic){task.addFile(Apic, {key:'bgImg'})}
+					task.addData('age',age);  
+			        task.addData('username',username);  		
+			        task.addData('userId',myuserid);  		
+			        task.addData('horoscope',horoscope);
+			        task.addData('gender',Nextbtnval[Nextbtnval.length-1]);
+			        task.addData('explain',explain);	
+					
+					task.start();
+					
+			 	}
+			 	//发送数据结束
+				
 			})
 		})
-		//新的图片上传方法
 		
-		
-		
-		//图片上传文件方法	
-		function previewImage(file) {
-			var MAXWIDTH = 350;
-			var MAXHEIGHT = 249;
-			var div = findPreview(file.parentNode);
-			if(file.files && file.files[0]) {
-				filepic = file.files[0];
-				div.innerHTML = '<img id=imghead>';
-				var img = div.lastChild;
-				img.onload = function() {
-					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-					img.width = rect.width;
-					img.height = rect.height;
-				}
-				var reader = new FileReader();
-				reader.onload = function(evt) {
-					img.src = evt.target.result;
-				}
-				reader.readAsDataURL(file.files[0]);
-			}
-		}
 
-		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
-			var param = {
-				top: 0,
-				left: 0,
-				width: width,
-				height: height
-			};
-			if(width > maxWidth || height > maxHeight) {
-				rateWidth = width / maxWidth;
-				rateHeight = height / maxHeight;
-	
-				if(rateWidth > rateHeight) {
-					param.width = maxWidth;
-					param.height = Math.round(height / rateWidth);
-				} else {
-					param.width = Math.round(width / rateHeight);
-					param.height = maxHeight;
-				}
-			}
-			param.left = Math.round((maxWidth - param.width) / 2);
-			param.top = Math.round((maxHeight - param.height) / 2);
-			return param;
-		}
-		function findPreview(parent) {
-			var childs = parent.childNodes;
-			for(var i = 0; i < childs.length; i++) {
-				if(childs[i].id == "preview")
-					return childs[i];
-			}
-			return div = document.getElementById('preview');
-		}
 	</script>
 	
 	
