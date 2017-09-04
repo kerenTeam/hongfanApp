@@ -359,8 +359,7 @@
 		
 		
 	    //数据处理 
-	    var Fload0 = 0,Fload1 = 0,Fload2 = 0,Fload3 = 0;/*是否首次加载*/
-	   	
+	    var Fload0 = 0,Fload1 = 0,Fload2 = 0,Fload3 = 0;/*是否首次加载*/ 
 	    mui.plusReady(function(){
     		var oldToken = plus.storage.getItem('oldToken'),
 		 		cityNum = plus.storage.getItem('cityNum'),
@@ -418,18 +417,25 @@
 								data.data.username = data.data.username.substring(0,3)+"****"+data.data.username.substring(7,11)
 							}
 							//显示头像
-							if(data.data.avatar){
-								mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+							if(data.data.avatar && data.data.avatar!='null'){
+								if(JSON.parse(data.data.avatar)[0].picImg.indexOf('http') == -1){
+									mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+								}else{
+									mui('#mypic2')[0].src = JSON.parse(data.data.avatar)[0].picImg;
+								}
+							}else{
+								mui('#mypic2')[0].src ='../../img/10.png' 
 							}
-							if(data.data.likes){
-								$('#likes').text(data.data.likes)
-							}
+							 
+//							if(data.data.likes){
+//								$('#likes').text(data.data.likes)
+//							}
 							if(data.data.gift){
 								$('#gifts').text(data.data.gift)
 							}
-							if(data.data.followers){
-								$('#followers').text(data.data.followers)
-							} 
+//							if(data.data.followers){
+//								$('#followers').text(data.data.followers)
+//							} 
 							if(data.data.bgImg && JSON.parse(data.data.bgImg).length>0){  
 									$('#mypic1').attr('src',JSON.parse(data.data.bgImg)[0].picImg)
 							}
@@ -618,14 +624,25 @@
 					success:function(data,type,xhr){
 						console.log('获取数据返回',data);
 						if(data.errno == 0){
+							if(data.data.ILikeUsers && data.data.ILikeUsers.length){
+								$('#likes').text(data.data.ILikeUsers.length)
+							}
 							if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
 								for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
+									$('#followers').text(data.data.LikeMeUsers.length)
 									if(!data.data.LikeMeUsers[i].username || data.data.LikeMeUsers[i].username==null) {
 										data.data.LikeMeUsers[i].username = '匿名'
 									}
-									if(data.data.LikeMeUsers[i].avatar){
-										data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+									if(data.data.LikeMeUsers[i].avatar && data.data.LikeMeUsers[i].avatar!='null'){
+										if(JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg.indexOf('http') == -1){
+											data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg;
+										}else{
+											data.data.LikeMeUsers[i].avatar = JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg;
+										}
+									}else{
+										data.data.LikeMeUsers[i].avatar = '../../img/10.png' 
 									}
+									
 								}
 								var likeMeObj = {}
 								likeMeObj.list = data.data.LikeMeUsers;
@@ -768,14 +785,17 @@
 	    	
 	    	$('.likeMe').click(function(){
 				openview({
-					view:'likeMe.html',
-					id:'likeMe' 
+					view:'likeOthers.html',
+					id:'likeOthers',
+					extrasobj:{userId:myuserid}
 				})
 			})
 	    	$('.melike').click(function(){
 				openview({
-					view:'melike.html',
-					id:'melike' 
+					view:'othersLike.html',
+					id:'othersLike',
+					extrasobj:{userId:myuserid}
+					
 				})
 			})
 	    	

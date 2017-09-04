@@ -46,7 +46,7 @@
   		.cmtflex{display: flex;justify-content: space-between;align-items: center;}
   		.ctc{font-size: 12px!important;}
   		.ctc span{color: #fb7e23;}
-  		.jubao{background-color: white;} 
+  		.jubao{background-color: white;bottom: 0!important;position: absolute;right: 0;left: 0;} 
 		.jubao li a{padding: 18px;line-height: 15px;text-align: center;border-bottom: 1px solid #EEEEEE;display: block;color: black;}
 		.jubao li:last-child a{color: rgb(153,153,153);}
 		/*.QandA{min-height: 720px;}*/
@@ -63,7 +63,8 @@
 		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
 		.line2{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;max-width: calc(100vw * 0.45);}	
 		.maxwn{white-space: nowrap;}	
-		.maxwt{flex-basis: 50px;white-space: nowrap;}	
+		.maxwt{flex-basis: 50px;white-space: nowrap;}
+		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}	
 	</style>
 	<body style="background-color: white;">
 		<header class="mui-bar mui-bar-nav">
@@ -230,7 +231,7 @@
 			
 			
 			<!--操作表-->
-			<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+			<div id="maskInfo" style="display: none;">
 			    <!-- 可选择菜单 -->
 			    <ul class="jubao">
 			      <li>
@@ -240,7 +241,7 @@
 			        <a href="#">举报</a>
 			      </li>
 			      <li>
-			        <a href="#sheet1">取消</a>
+			        <a href="javscript:;" class="closeMask" >取消</a>
 			      </li>
 			    </ul>
 			</div>
@@ -359,14 +360,12 @@
 						var likes = parseInt(curThis.siblings('span').html());
 						
 						if(curThis.attr('src') == '../img/makeFriend/zan.png'){
-							
-						alert(likes)
-							curThis.siblings('span').text(likes++)
+							likes = likes+1; 
+							curThis.siblings('span').html(likes);
 							likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../img/makeFriend/yizan.png');
 						}else{ 
-							
-						alert(likes)
-							curThis.siblings('span').text(likes--) 
+							likes = likes-1; 
+							curThis.siblings('span').html(likes);
 							likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../img/makeFriend/zan.png'); 
 						}
 					}
@@ -551,9 +550,17 @@
 								//操作表
 								$('.goanswer').click(function(){
 									event.stopPropagation();
-					 			 	mui('#sheet1').popover('toggle'); 
+									$('#maskInfo').fadeIn(200); 
 								})
-								
+								 
+								$('#maskInfo li').click(function(){
+									event.stopPropagation()
+								})
+								$('#maskInfo,.closeMask').click(function(){
+									event.preventDefault()
+									$('#maskInfo').fadeOut(200);
+								})
+								 
 								//评论数据
 								$('.commentsShow').each(function(){
 									var newsId= $(this).attr('data-id');
@@ -609,8 +616,7 @@
 											mui.toast('当前网络不好,请重试');
 										}
 									});
-								})
-								//点赞
+								}) 
 								 
 							}else{
 								mui.toast('当前网络不好,请重试');

@@ -77,7 +77,13 @@
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
 	<script type="text/javascript">
-		
+	var old_back = mui.back;
+		mui.back = function(){
+		var parentPage =plus.webview.getWebviewById('mycircleIndex');
+		mui.fire(parentPage,'refresh');
+		old_back();
+	};
+	
 	//选择图片
 	var Apic = [];//图片存放数组 
 	var qid;
@@ -336,7 +342,7 @@
 		    }, function ( e ) {  
 //		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
 		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
-				plus.nativeUI.alert('只能选择1张图片');  
+				plus.nativeUI.alert('每次只能选择1张图片哦');  
 		    }});
 		}
 		
@@ -354,10 +360,10 @@
 			
 			//发送数据
 			var task = plus.uploader.createUpload(serverUrl+'/api/friends/photography/', 
-				{ method:"PUT"},
+				{ method:"put"},
 				function(back,status){
 					if(status == 200){ 
-						console.log(back); 
+						console.log('添加照片',back); 
 						var dataobj = JSON.parse(back.responseText);
 						if(dataobj.errno == 0){
 						 

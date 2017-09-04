@@ -194,8 +194,7 @@ var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 
 
 //点赞 和取消点赞 帖子
-function likeThis(thisobj,newsId,cityNum,myuserid,oldtoken,curType,imgSrc){
-	alert(newsId)
+function likeThis(thisobj,newsId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
 	mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+newsId+'/userid/'+myuserid, {
 		dataType: 'json',
 		type: curType,

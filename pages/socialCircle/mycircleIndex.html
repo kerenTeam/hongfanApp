@@ -30,7 +30,7 @@
 	<style type="text/css">
 		#header>*{ color: white; }
 		#userBox{padding: 0px 0; position: relative; overflow: hidden; height: calc(100vw * 0.6); }
-		#mypic1{width: 100%;}
+		#mypic1{width: 100%;display: block;}
 		#beijing2{position: absolute;z-index:1;width: 100%;height: 100%;top: 0;background-color: rgba(0, 0, 0, 0.5);} 
 		.userAvator{ position: absolute; left: 50%; width: 70px; bottom: 1rem; height: 70px; -webkit-transform: translateX(-50%); z-index: 9; border-radius: 50%; }
 		.idhiji,.personalSign{ position: absolute; left: 50%; bottom: 0.75rem; -webkit-transform: translateX(-50%); z-index: 9; color: white; }  
@@ -74,9 +74,12 @@
 			<span class="headRight" id="edit">编辑</span>  
 		</header>
 	 	<script type="text/javascript">
-	 		if($('#userBox').height()>$('#mypic1').height()){
-	 			$('#mypic1').height('100%').width('auto')
-	 		}
+	 		function imgHeight(obj){
+				if(obj.offsetHeight<obj.parentNode.offsetHeight){
+					obj.style.height = '100%';
+					obj.style.width = 'auto';
+				}
+			}
             //head渐变效果
             $(window).scroll(function() {
                 var scrollTop = $(this).scrollTop();
@@ -96,7 +99,7 @@
 		<!--状态栏结束-->
 		<div id="main">
 			<div class="clearfloat box-s box-ss" id="userBox">
-	    		<img id="mypic1" src=""/>
+	    		<img id="mypic1" onload="imgHeight(this)" src=""/>
 	    		<div id="beijing2"></div>
 	    			<img src="../../img/morentouxiang.jpg" class="userAvator" id="mypic2"/> 
 	    			<div id="nickname" class="idhiji ft16"></div>
@@ -476,8 +479,14 @@
 								data.data.username = data.data.username.substring(0,3)+"****"+data.data.username.substring(7,11)
 							}
 							//显示头像
-							if(data.data.avatar){
-								mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+							if(data.data.avatar && data.data.avatar!='null'){
+								if(JSON.parse(data.data.avatar)[0].picImg.indexOf('http') == -1){
+									mui('#mypic2')[0].src = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
+								}else{
+									mui('#mypic2')[0].src = JSON.parse(data.data.avatar)[0].picImg;
+								}
+							}else{
+								mui('#mypic2')[0].src ='../../img/10.png' 
 							}
 							if(data.data.likes){
 								$('#likes').text(data.data.likes)
@@ -678,17 +687,27 @@
 					success:function(data,type,xhr){
 						console.log('获取数据返回',data);
 						if(data.errno == 0){
+							if(data.data.ILikeUsers && data.data.ILikeUsers.length){
+								$('#likes').text(data.data.ILikeUsers.length)
+							}
 							if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
 								for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
-									if(!data.data.LikeMeUsers[i].username || data.data.LikeMeUsers[i].username==null) {
-										data.data.LikeMeUsers[i].username = '匿名'
-									}
-									if(data.data.LikeMeUsers[i].avatar){
-										if(JSON.parse(data.data.avatar)[0].picImg.indexOf('http') == -1){
-											data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.avatar)[0].picImg;
-										}else{
-											data.data.LikeMeUsers[i].avatar = JSON.parse(data.data.avatar)[0].picImg;
+									$('#followers').text(data.data.LikeMeUsers.length) 
+									if(!data.data.LikeMeUsers[i].nickname || data.data.LikeMeUsers[i].nickname=='null'){
+										data.data.LikeMeUsers[i].nickname = '匿名'
+									}else{ 
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.LikeMeUsers[i].nickname)){
+											data.data.LikeMeUsers[i].nickname = data.data.LikeMeUsers[i].nickname.substring(0,3)+"****"+data.data.LikeMeUsers[i].nickname.substring(7,11);
 										}
+									} 
+									if(data.data.LikeMeUsers[i].avatar && data.data.LikeMeUsers[i].avatar!='null'){
+										if(JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg.indexOf('http') == -1){
+											data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg;
+										}else{
+											data.data.LikeMeUsers[i].avatar = JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg;
+										}
+									}else{
+										data.data.LikeMeUsers[i].avatar = '../../img/10.png' 
 									}
 								}
 								var likeMeObj = {}
@@ -721,7 +740,9 @@
 							var dataObj=data.data;
 							if(dataObj && dataObj.length){
 								[].forEach.call(dataObj,function(ele){
-									$('#psLabel').append("<span>"+ele.lableName+"</span>")
+									if(ele.lableName && ele.lableName != ' ' && ele.lableName != 'null'){
+										$('#psLabel').append("<span>"+ele.lableName+"</span>")
+									}
 								}) 
 							}else{
 								$('#psLabel').append("<div style='color: #888!important;padding: 16px 10px!important;' id='goLabel'>去添加吧</div>")

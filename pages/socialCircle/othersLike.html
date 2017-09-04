@@ -3,7 +3,7 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>我关注的</title>
+		<title>他关注的</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -38,7 +38,7 @@
 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
-			<h1 class="mui-title findUser">我关注的</h1>
+			<h1 class="mui-title findUser">他关注的</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
@@ -64,7 +64,7 @@
 									</div>
 								</div> 
 								<div class="disablecl ft12" data-id="<%=list[i].user_id%>"> 
-									<%if(list[i].eachOther == 1){%>
+									<!--<%if(list[i].eachOther == 1){%>
 										<div class="diybtn" style="display: none;">
 											 关注
 											</div>
@@ -79,7 +79,8 @@
 												关注
 											</div> 
 											<%}%>
-									
+									-->
+									<img style="width: 20px;" src="../../img/youjiantou.svg"/>
 					           </div> 
 							</div>  
 						</div>
@@ -96,19 +97,31 @@
 	</body>
 
 	<script type="text/javascript">
- 		function goOtherIndex(id){
- 			openview({
-	    		view:'elsecircleIndex.html',
-	    		id:'elsecircleIndex',
-	    		extrasobj:{userId:id}
-	    	})
- 		}
+ 	 
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken');
 			var cityNum = plus.storage.getItem('cityNum');
+			var otherUserId = plus.webview.currentWebview().userId;
 			var	myuserid = plus.storage.getItem('userid');
+			
+			window.goOtherIndex = function(id){
+	 			if(id == myuserid){
+	 				openview({
+			    		view:'mycircleIndex.html',
+			    		id:'mycircleIndex' 
+			    	})
+	 			}else{
+	 				openview({
+			    		view:'elsecircleIndex.html',
+			    		id:'elsecircleIndex',
+			    		extrasobj:{userId:id}
+			    	})
+	 			}
+	 			
+	 		}
+			
 			mui.ajax(serverUrl+'/api/friends/likeusers',{
-				data:{"userId":myuserid},
+				data:{"userId":otherUserId},
 				type:'post',
 				timeout:8000,
 				headers:{"token":oldToken,"city":cityNum},	              				
@@ -133,14 +146,7 @@
 									}else{
 										ele.avatar = '../../img/10.png'
 									}
-									if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
-										[].forEach.call(data.data.LikeMeUsers,function(ele2){
-										 
-											if(ele.user_id == ele2.user_id){
-												ele.eachOther = 1
-											}
-										})
-									}
+//								 
 								})
 							console.log('wl',data.data.ILikeUsers)
 							
@@ -149,22 +155,7 @@
 							likeMeObj.url = serverimgUrl;
 							var html = template('meLikeTpl', likeMeObj); 
 							document.getElementById('meLike').innerHTML = html;	
-							$('.diybtn').click(function(){ 
-								var curL = $(this);
-					    		var likerId = $(this).parent().attr('data-id');
-					    		//关注 
-					    		followBack(curL,likerId,'put')
-					    		 
-					    	})
-							
-							//取消关注
-							$('.diybtn2').click(function(){
-								var curL = $(this);
-					    		var likerId = $(this).parent().attr('data-id');
-					    		followBack(curL,likerId,'get')
-					    		
-					    	})
-							
+						 
 						}else{
 							document.getElementById('meLike').innerHTML = "<div style='text-align: center;padding: 30px;'>还未关注任何人哦</div>";
 						}
