@@ -193,71 +193,29 @@ function followBack(thisobj,likerId,curType){
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 
 
-//点赞 帖子
-function likeThis(newsId,likedUserid,myuserid,oldtoken){
-	mui.ajax(serverUrl+"/api/news/likethenews",{
-		data:{newsid:newsId,userid:likedUserid,like_user_id:myuserid},
-		dataType:'json',
-		type:'post',
-		timeout:10000,
-		headers:{"token":oldtoken},
-		success:function(data,type,xhr){
-		},
-		error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting();
-				console.log('响应失败  !');
+//点赞 和取消点赞 帖子
+function likeThis(thisobj,newsId,cityNum,myuserid,oldtoken,curType,imgSrc){
+	alert(newsId)
+	mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+newsId+'/userid/'+myuserid, {
+		dataType: 'json',
+		type: curType,
+		timeout: 8000,
+		headers: {"token": oldtoken,'city': cityNum},
+		success: function(data, type, xhr) {  
+			if(data.errno == 0) {  
+    			thisobj.attr('src',imgSrc);
+			}else{
+				mui.toast('操作失败'); 
 			}
-
-	})
-}
-//点赞 评论
-function likeCmt(commitid,commit_like_user_id,oldtoken){
-	mui.ajax(serverUrl+"/api/news/likesmcommit",{
-		data:{commit_like_user_id:commit_like_user_id,commitid:commitid},
-		dataType:'json',
-		type:'post',
-		timeout:10000,
-		headers:{"token":oldtoken},
-		success:function(data,type,xhr){
 		},
-		error:function(xhr,type,errorThrown){
-				plus.nativeUI.closeWaiting();
-				console.log('响应失败  !');
-			}
-
-	})
+		error: function(xhr, type, errorThrown) { 
+			console.error('点赞,响应失败');
+			mui.toast('当前网络不好,请重试');
+		}
+	}); 
 }
 
-//格式化时间戳
-function formatDate(v, format) {
-    if (!v) return "";
-    var d = v;
-    if (typeof v === 'string') {
-        if (v.indexOf("/Date(") > -1)
-            d = new Date(parseInt(v.replace("/Date(", "").replace(")/", ""), 10));
-        else
-            d = new Date(Date.parse(v.replace(/-/g, "/").replace("T", " ").split(".")[0]));//.split(".")[0] 用来处理出现毫秒的情况，截取掉.xxx，否则会出错
-    }
-    var o = {
-        "M+": d.getMonth() + 1,  //month
-        "d+": d.getDate(),       //day
-        "h+": d.getHours(),      //hour
-        "m+": d.getMinutes(),    //minute
-        "s+": d.getSeconds(),    //cond
-        "q+": Math.floor((d.getMonth() + 3) / 3),  //quarter
-        "S": d.getMilliseconds() //millisecond
-    };
-    if (/(y+)/.test(format)) {
-        format = format.replace(RegExp.$1, (d.getFullYear() + "").substr(4 - RegExp.$1.length));
-    }
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(format)) {
-            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
-        }
-    }
-    return format;
-};
-
+ 
 //懒加载方法
 window.lazyLoad = function(init,limit){
 	var limit = limit || 100;

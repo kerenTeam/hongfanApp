@@ -54,7 +54,7 @@
 	            		任意赏	
 	            	</div> 
 				</div>
-				<textarea id="textCon" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="请收下我的膝盖"></textarea>
+				<textarea id="textCon" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="请收下我的膝盖">得到</textarea>
 			<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn">确定</button>
 				 
 			</div>
@@ -67,6 +67,43 @@
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js"></script> 
 	<script type="text/javascript">
+		mui.plusReady(function(){
+			var cityNum = plus.storage.getItem('cityNum'),
+			    oldToken = plus.storage.getItem('oldToken'),
+				myuserid = plus.storage.getItem('userid'),
+				infiId = plus.webview.currentWebview().newsId,
+				acceptid = plus.webview.currentWebview().acceptId;
+			$('.upbtn').click(function(){
+				var hidou =$.trim($('.activebut').text().replace('HI豆',''));
+				var text = '';
+				if($('textarea').val()){
+					text = $('textarea').val();
+				} 
+				mui.ajax(serverUrl + '/api/friends/newsinfo', {
+					data:{newsId:infiId,userid:myuserid,acceptPersonId:acceptid,price:hidou,notice:text},
+					dataType: 'json',
+					type: 'PUT',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) { 
+						if(data.errno == 0) { 
+							mui.toast('打赏成功哦'); 
+						}else{
+							if(errmsg){
+								mui.toast(errmsg); 
+							}else{
+								mui.toast('网络不好，请重试');
+							}
+						}
+					},
+					error: function(xhr, type, errorThrown) {  
+						mui.toast('当前网络不好,请重试');
+					}
+				});
+			})
+				
+		})
+		
 		$('.diyButton').click(function(){
 			if(!$(this).hasClass('activebut')){
 				$('.diyButton').removeClass('activebut');

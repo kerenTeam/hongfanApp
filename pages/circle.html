@@ -135,50 +135,60 @@
 
 				<script type="text/html" id="listDataS">
 					<%for(var i=0;i<dataList.length;i++){%>
-						<div class="listCon">
-							<div class="follow">
-								<div class="fchidl">
-									<div onclick="elseCircleIndex(<%=dataList[i].user_id%>)">
-										<img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/>
-										<div>
-											<%=dataList[i].nickname%> <div class="disablecl ft12"> <%=dataList[i].create_time%>  <span style="color: #5d86b2;"><%=dataList[i].read%></span>阅读 </div>
+						<%if(dataList[i].user_id && dataList[i].user_id != 'null' && dataList[i].id){%>
+							<div class="listCon">
+								<div class="follow">
+									<div class="fchidl">
+										<div onclick="elseCircleIndex(<%=dataList[i].user_id%>)">
+											<img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/>
+											<div>
+												<%=dataList[i].nickname%> <div class="disablecl ft12"> <%=dataList[i].create_time%>  <span style="color: #5d86b2;"><%=dataList[i].read%></span>阅读 </div>
+											</div>
 										</div>
+										<div class="butright">
+											<div class="goanswer"> <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
+							           </div> 
 									</div>
-									<div class="butright">
-										<div class="goanswer"> <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
-						           </div> 
-								</div>
-								<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
-									<p  class="ft14 maincl overTwo"><%=dataList[i].content%> </p><!--文字内容-->
-									<%if(dataList[i].picS){%>
-										<%for(var j=0;j<dataList[i].picS.length;j++){%>
-											<%if(dataList[i].picS.length == 1){ %>
-												<div class="dynamicPic dynamicPic1">
-													<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
-												</div>
-											<%}else if(dataList[i].picS.length == 2){%>
-												<div class="dynamicPic dynamicPic2">
-													<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
-												</div>
-											<%}else{%>
-												<div class="dynamicPic dynamicPic3">
-													<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
-												</div>
-											<%}%>	
-										<%}%>
-									<%}%>	
+									<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
+										<p  class="ft14 maincl overTwo"><%=dataList[i].content%> </p><!--文字内容-->
+										<%if(dataList[i].picS){%>
+											<%for(var j=0;j<dataList[i].picS.length;j++){%>
+												<%if(dataList[i].picS.length == 1){ %>
+													<div class="dynamicPic dynamicPic1">
+														<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+													</div>
+												<%}else if(dataList[i].picS.length == 2){%>
+													<div class="dynamicPic dynamicPic2">
+														<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+													</div> 
+												<%}else{%>
+													<div class="dynamicPic dynamicPic3">
+														<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+													</div>
+												<%}%>	
+											<%}%>
+										<%}%>	
+										
+									</div>
+									<div class="flexrr">
+										<div class="disablecl ft12" >
+											<%if(dataList[i].likeUserId){%>
+												<img src="../img/makeFriend/yizan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<%}else{%>
+													<img src="../img/makeFriend/zan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+													<%}%>
+											 
+											 赞<span><%=dataList[i].likes%></span> </div> 
+										<div class="disablecl ft12" onclick="goInfoCmt(<%=dataList[i].id%>)"> <img src="../img/makeFriend/message.png" alt="" /> 评论 </div>
+										<div class="disablecl ft12"> <img src="../img/makeFriend/share.png"/> 转发 </div>
+									</div>
 									
-								</div>
-								<div class="flexrr">
-									<div class="disablecl ft12" data-id='0' onclick="goZan(this,<%=dataList[i].id%>)"> <img src="../img/makeFriend/zan.png"/> 赞<span><%=dataList[i].likes%></span> </div> 
-									<div class="disablecl ft12" onclick="goInfoCmt(<%=dataList[i].id%>)"> <img src="../img/makeFriend/message.png" alt="" /> 评论 </div>
-									<div class="disablecl ft12"> <img src="../img/makeFriend/share.png"/> 转发 </div>
-								</div>
-								
-								<div class="commentsShow" data-id="<%=dataList[i].id%>"></div>
-								 
-							</div> 
-						</div>
+									<div class="commentsShow" data-id="<%=dataList[i].id%>"></div>
+									 
+								</div> 
+							</div>
+							<%}%>
+						
 					<%}%>	
 				</script>
 				
@@ -344,33 +354,20 @@
 						} 
 				    }
 					
-					window.goZan = function(obj,id){
-						if(obj.getAttribute('data-id') == 0){ 
-							 
-										alert(obj.getAttribute('data-id'))
-							mui.ajax(serverUrl + '/api/friends/newsinfo', {
-			    				data:{newsId:id,userid:myuserid},
-								dataType: 'json',
-								type: 'POST',
-								timeout: 8000,
-								headers: {"token": oldToken,'city': cityNum},
-								success: function(data, type, xhr) { 
-									if(data.errno == 0) { 
-						    			mui.toast('点赞成功'); 
-										obj.setAttribute('data-id',1);
-									}else{
-										mui.toast('点赞失败');
-									}
-								},
-								error: function(xhr, type, errorThrown) {
-									console.error('点赞,响应失败');
-									mui.toast('当前网络不好,请重试');
-								}
-							}); 
-						}else{
-							alert(obj.getAttribute('data-id'));
-							obj.setAttribute('data-id',0);
-							mui.toast('取消点赞');
+					window.goZan = function(obj,id){ 
+						var curThis = $(obj); 
+						var likes = parseInt(curThis.siblings('span').html());
+						
+						if(curThis.attr('src') == '../img/makeFriend/zan.png'){
+							
+						alert(likes)
+							curThis.siblings('span').text(likes++)
+							likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../img/makeFriend/yizan.png');
+						}else{ 
+							
+						alert(likes)
+							curThis.siblings('span').text(likes--) 
+							likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../img/makeFriend/zan.png'); 
 						}
 					}
 					
@@ -426,9 +423,10 @@
 									}
 									if(!nowArray[j].likes){
 										nowArray[j].likes = 0
-									}else if((nowArray[j].likes / 1000)>1){
-										nowArray[j].likes = parseInt(nowArray[j].likes / 1000) +'K+'
 									}
+//									else if((nowArray[j].likes / 1000)>1){
+//										nowArray[j].likes = parseInt(nowArray[j].likes / 1000) +'K+'
+//									}
 									var dt = new Date(nowArray[j].create_time).getTime(); 
 									nowArray[j].create_time = getDateDiff(dt);
 									//整理内容图片格式
@@ -515,8 +513,6 @@
 																	}
 																	if(!nowArray[j].likes){
 																		nowArray[j].likes = 0
-																	}else if((nowArray[j].likes / 1000)>1){
-																		nowArray[j].likes = parseInt(nowArray[j].likes / 1000) +'K+'
 																	}
 																	var dt = new Date(nowArray[j].create_time).getTime(); 
 																	nowArray[j].create_time = getDateDiff(dt);
@@ -692,23 +688,14 @@
 			})
 			 
  			 $(".mui-backdrop").unbind()
- 			//关注
- 			$('.lovePic').click(function(){
-				event.stopPropagation()
-				if($(this).attr('src') == '../img/mainHtml/weizan.png'){
-					$(this).attr('src','../img/mainHtml/yizan.png')
-					mui.toast('点赞成功')
-				}else if($(this).attr('src') == '../img/mainHtml/yizan.png'){
-					$(this).attr('src','../img/mainHtml/weizan.png') 
-				}
-			})
+ 			 
  			//动态详情
- 			function DTdetail(id,userid){
+ 			function DTdetail(id,userid){ 
  				openview({
  					view:'socialCircle/circleListInfo.html',
- 					extrasobj: {
+ 					extrasobj:{
 						infoid: id,
-						UserId:userid
+						UserId:userid,
 					}
  				})
  			}

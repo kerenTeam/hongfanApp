@@ -85,30 +85,39 @@
 				<div class="follow">
 					<div class="fchidl">
 						<div>
-							<img src="<%=dataList.avatar%>" goCircleIndex(<%=dataList.userid%>) class="userAvator mr25"/>
+							<img src="<%=dataList.avatar%>" onclick="goCircleIndex(<%=dataList.userid%>)" class="userAvator mr25"/>
 							<div>
 								<%=dataList.nickname%> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
 							</div>
 						</div> 
-						 
+						<div class="butright isFollow">
+							<div class="diybtn2" style="display: none;">
+								聊天
+							</div> 
+							<div class="diybtn">
+								关注
+							</div> 
+			           </div> 
 					</div>  
 					
 					<div class="DTcontent">
 						<p class="ft15 maincl"><%=dataList.content%></p>
-						<%for(var j=0;j<dataList.picS.length;j++){%>
-							<%if(dataList.picS.length == 1){ %>
-								<div class="dynamicPic dynamicPic1">
-									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" data-preview-group="1"/></span>
-								</div>
-							<%}else if(dataList.picS.length == 2){%>
-								<div class="dynamicPic dynamicPic2">
-									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" data-preview-group="1"/></span>
-								</div>
-							<%}else{%>
-								<div class="dynamicPic dynamicPic3">
-									<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS%>" data-preview-group="1"/></span>
-								</div>
-							<%}%>	
+						<%if(dataList.picS && dataList.picS.length){%>
+							<%for(var j=0;j<dataList.picS.length;j++){%>
+								<%if(dataList.picS.length == 1){ %>
+									<div class="dynamicPic dynamicPic1">
+										<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
+									</div> 
+								<%}else if(dataList.picS.length == 2){%>
+									<div class="dynamicPic dynamicPic2">
+										<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
+									</div>
+								<%}else{%>
+									<div class="dynamicPic dynamicPic3">
+										<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
+									</div>
+								<%}%>	
+							<%}%>
 						<%}%>
 					</div>
 					
@@ -116,7 +125,7 @@
 						<div class="disablecl ft14">
 							<img src="../../img/makeFriend/corn.png"/> 感谢您的赏脸阅读
 						</div> 
-						<div class="disablecl ft14 giveBk">
+						<div class="disablecl ft14 giveBk" data-id="<%=dataList.userid%>">
 							<img src="../../img/makeFriend/cornw.png"/> 赏
 						</div>
 					</div> 
@@ -213,9 +222,10 @@
 			<div id='cmtedup'>
 				<img src="../../img/makeFriend/message.png" alt="" />
 			</div>
-			<div id="doLike" data-id="0">
-				<img src="../../img/makeFriend/zan.png" alt="" />
+			<div>
+				<img id="doLike" src="../../img/makeFriend/zan.png" alt="" />
 			</div>
+			 
 		</div>
 	 </body>
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
@@ -240,7 +250,9 @@
 				myuserid = plus.storage.getItem('userid'),
 				infiId = plus.webview.currentWebview().infoid,
 				toCmt = plus.webview.currentWebview().isCmt,
+				newsUserId = plus.webview.currentWebview().UserId; 
 				commontid = '',touserid='';
+				
 			if(toCmt){ 
 				var main = document.getElementById('main');
   				main.scrollTop = main.scrollHeight;
@@ -289,7 +301,7 @@
 				} 
 		    }
 			
-			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId, {
+			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 8000,
@@ -330,10 +342,69 @@
 								picS.push(nowArray2[k].picImg);
 							}
 							nowArray.picS = picS;
-						}
+						} 
 						
 						dataObj.dataList = data.data;
-						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj);
+						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
+						if(data.errmsg == 1){ 
+							$('#doLike').attr('src','../../img/makeFriend/yizan.png');
+						}else{
+							$('#doLike').attr('src','../../img/makeFriend/zan.png');
+						}
+						if(newsUserId == myuserid){
+							$('.isFollow').css('display','none')
+						} 
+						$('.giveBk').click(function(){
+				    		event.preventDefault();
+				    		var acceptid = $(this).attr('data-id');
+							openview({
+								view:'../answerBoard/reward.html',
+								id:'reward',
+								extrasobj:{newsId:infiId,acceptId:acceptid}
+							})
+						})
+						//判断是否关注
+						mui.ajax(serverUrl+'/api/friends/likeusers',{
+							data:{"userId":myuserid},
+							type:'post',
+							timeout:8000,
+							headers:{"token":oldToken,"city":cityNum},	              				
+							success:function(data,type,xhr){
+								console.log('获取数据返回',data);
+								if(data.errno == 0){
+									if(data.data.ILikeUsers && data.data.ILikeUsers.length){
+										[].forEach.call(data.data.ILikeUsers,function(ele,index){
+											if(ele.user_id == newsUserId && newsUserId != myuserid){
+												$('.diybtn2').css('display','');
+												$('.diybtn').css('display','none');
+											}
+										}) 
+										$('.diybtn').click(function(){  
+								    		//关注 
+								    		followBack(curL,newsUserId,'put')
+								    		 
+								    	})
+										
+										//取消关注
+										$('.diybtn2').click(function(){
+											var curL = $(this);
+								    		var likerId = $(this).parent().attr('data-id');
+								    		followBack(curL,likerId,'get')
+								    		
+								    	})
+										
+									}else{
+										document.getElementById('meLike').innerHTML = "<div style='text-align: center;padding: 30px;'>还未关注任何人哦</div>";
+									}
+								}else{
+									console.log(data.errmsg); 
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								console.log('获取数据,响应失败');
+							}
+						});
+				    	
 						lazyLoad(true);//懒加载
 					}else{
 						mui.toast('当前网络不好,请重试');
@@ -493,41 +564,14 @@
 	    		
 	    	})
 	    	
-	    	$('.giveBk').click(function(){
-	    		event.preventDefault()
-				openview({
-					view:'../answerBoard/reward.html'
-				})
-			})
-	    	
+	    
 			//点赞
 			$('#doLike').click(function(){
-				if($(this).attr('data-id') == 0){ 
-					var curThis = $(this);
-					mui.ajax(serverUrl + '/api/friends/newsinfo', {
-	    				data:{newsId:infiId,userid:myuserid},
-						dataType: 'json',
-						type: 'POST',
-						timeout: 8000,
-						headers: {"token": oldToken,'city': cityNum},
-						success: function(data, type, xhr) { 
-							if(data.errno == 0) { 
-				    			mui.toast('点赞成功'); 
-								alert(curThis.attr('data-id'))
-								curThis.attr('data-id',1);
-							}else{
-								mui.toast('点赞失败');
-							}
-						},
-						error: function(xhr, type, errorThrown) {
-							console.error('点赞,响应失败');
-							mui.toast('当前网络不好,请重试');
-						}
-					}); 
+				var curThis = $(this);
+				if(curThis.attr('src') == '../../img/makeFriend/zan.png'){ 
+					likeThis(curThis,infiId,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png')  
 				}else{
-					alert($(this).attr('data-id'));
-					$(this).attr('data-id',0);
-					mui.toast('取消点赞');
+					likeThis(curThis,infiId,cityNum,myuserid,oldToken,'DELETE','../../img/makeFriend/zan.png') 
 				}
 			})
 	    	 
