@@ -32,7 +32,7 @@
 		<div id="main">
 			<div class="publishf">  
 				<div class="apsan"></div>
-				<textarea id="textCon" class="disbg ft14" rows="4" placeholder="发布的信息如果违反规定，将被管理员删帖"></textarea>
+				<textarea id="textCon" maxlength="10" class="disbg ft14" rows="4" placeholder="发布的信息如果违反规定，将被管理员删帖"></textarea>
 			</div>
 			<div id="mainpic" class="biaoqian">
 			 
@@ -60,33 +60,44 @@
 <script type="text/javascript">
 	var Apic = [];//图片存放数组 
 	var lfs=null;// 保留上次选择图片列表
-		
+	var time1 = null;
 	function galleryImgsSelected(){//从相册中选择图片
 		mui.plusReady(function(){
 		    plus.gallery.pick( function(e){
+		    	//初始化
 		    	mui('.onepic')[0].innerHTML = '<img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">';
+		    	Apic = [];
+		    	//初始化结束
 		    	lfs=e.files;
-		    	for(var i in e.files){
-		    		if(0!=e.files[i].indexOf("file://")){
-						e.files[i]="file://"+e.files[i];//图片地址
-					} 
-		    		var nowpic = Math.random().toString(36).substr(2) + i + '.jpg';
-		    		var endpic = e.files[i].split('.')[0]+"/" +nowpic;
-		    		console.log(e.files[i]);
-		    		console.error(endpic);
+		    	clearInterval(time1);
+		    	var indexNum = 0;
+		    	var indexMax = e.files.length - 1;
+		    	time1 = setInterval(function(){
+		    		if(0!=e.files[indexNum].indexOf("file://")){
+						e.files[indexNum]="file://"+e.files[indexNum];//图片地址
+					}
+		    		if(indexNum == indexMax){//全部压缩完毕
+		    			clearInterval(time1);
+						time1 = null;
+		    		}
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
+		    		var endpic = e.files[indexNum].split('.')[0]+"/" +nowpic;
 		    		//压缩方法
-		    		plus.zip.compressImage({
-						src:e.files[i],
+	    			plus.zip.compressImage({
+						src:e.files[indexNum],
 						dst:endpic,
-						overwrite:true,
+						overwrite:true, 
 						quality:30
 					},
 					function() {
+						Apic.push(endpic);
 						showImg(endpic);
 					},function(error) {
 						mui.toast('图片获取错误，请重试');  
 					});
-		    	}
+		    		indexNum ++;
+		    		
+		    	},100)
 		    }, function ( e ) {  
 		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
     		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
@@ -94,7 +105,7 @@
 		    }});
 			function showImg(url){//显示图片
 				if(0!=url.indexOf("file://")){
-					url="file://"+url;  
+					url="file://"+url;
 				}
 				$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="'+url+'"/>')
 				$('.onepic p').css('display','none');
@@ -102,12 +113,80 @@
 		})	
 	}//从相册中选择图片结束
 	
-	
-	
 	//发送 发布
-	mui('.baocun')[0].addEventListener('tap',function(){ 
-		 alert(Apic)
-	})	
+	mui('.baocun')[0].addEventListener('tap',function(){
+		mui.plusReady(function(){
+			var cityNum  = plus.storage.getItem('cityNum'),
+				oldToken = plus.storage.getItem('oldToken'),
+			 	myuserid = plus.storage.getItem('userid');
+			console.log(Apic);
+		 	var textCon = mui('#textCon')[0];
+		 	if(Apic.length){//要传图片
+			 	if(time1 == null){//必须要图片全部处理完毕  才行    (开始发布)
+			 		plus.nativeUI.showWaiting();
+			 		var content = mui('#textCon')[0].value;
+			 		releaseData();
+			 	}else{
+			 		mui.toast('图片还在处理中');
+			 	}
+		 	}else{//不传图片
+			 	if(!textCon.value){
+			 		mui.toast('请填写内容或选择至少一张图片');
+			 	}else{//(开始发布)
+			 		plus.nativeUI.showWaiting();
+			 		var content = mui('#textCon')[0].value;
+			 		releaseData();
+			 	}
+		 	}
+		 	
+		 	//发送数据
+		 	function releaseData(){
+				var task = plus.uploader.createUpload(serverUrl+'/api/friends/addnews', 
+					{ method:"POST"},
+					function(back,status){
+						if(status == 200){
+							console.log(back.responseText);
+							var dataobj = JSON.parse(back.responseText);
+							console.log(dataobj);
+							if(dataobj.errno == 0){
+								alert('成功');
+								plus.nativeUI.closeWaiting();
+    						}else{
+    							plus.nativeUI.closeWaiting();//关闭等待框
+    							mui.toast('发布失败，请重试！');
+    							plus.nativeUI.closeWaiting();
+    						}
+						}else{
+							plus.nativeUI.closeWaiting();//关闭等待框
+							mui.toast('当前网络不好，请重试！');	
+						}
+						
+					}
+				);
+				task.setRequestHeader('token',oldToken);
+				task.setRequestHeader('city',cityNum);
+				task.addData("userId",myuserid); 
+				task.addData("content",content);
+				if(Apic.length){
+					alert(Apic.length);
+					[].forEach.call(Apic,function(ele,index){
+						console.error(ele);
+						task.addFile(ele, {key:index});
+						if(index == Apic.length-1){
+							task.start();
+						}
+					}) 
+					
+				}else{
+					task.start();
+				}
+				
+		 	}
+		 	//发送数据结束
+		})
+	})
+	
+
 	
 	
 	
