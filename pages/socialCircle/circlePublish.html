@@ -73,6 +73,7 @@
 		    	var indexNum = 0;
 		    	var indexMax = e.files.length - 1;
 		    	time1 = setInterval(function(){
+		    		console.log(time1);
 		    		if(0!=e.files[indexNum].indexOf("file://")){
 						e.files[indexNum]="file://"+e.files[indexNum];//图片地址
 					}
@@ -119,7 +120,6 @@
 			var cityNum  = plus.storage.getItem('cityNum'),
 				oldToken = plus.storage.getItem('oldToken'),
 			 	myuserid = plus.storage.getItem('userid');
-			console.log(Apic);
 		 	var textCon = mui('#textCon')[0];
 		 	if(Apic.length){//要传图片
 			 	if(time1 == null){//必须要图片全部处理完毕  才行    (开始发布)
@@ -147,7 +147,6 @@
 						if(status == 200){
 							console.log(back.responseText);
 							var dataobj = JSON.parse(back.responseText);
-							console.log(dataobj);
 							if(dataobj.errno == 0){
 								alert('成功');
 								plus.nativeUI.closeWaiting();
@@ -166,16 +165,17 @@
 				task.setRequestHeader('token',oldToken);
 				task.setRequestHeader('city',cityNum);
 				task.addData("userId",myuserid); 
+				task.addData("typeid",1);
 				task.addData("content",content);
 				if(Apic.length){
 					alert(Apic.length);
+					console.log(Apic);
 					[].forEach.call(Apic,function(ele,index){
-						console.error(ele);
-						task.addFile(ele, {key:index});
+						task.addFile(ele, {key:index.toString()});
 						if(index == Apic.length-1){
 							task.start();
 						}
-					}) 
+					})
 					
 				}else{
 					task.start();
@@ -187,69 +187,53 @@
 	})
 	
 
-	
-	
-	
-	
-	
-
-
-	 
-
 </script>
 
-<!--弃用js-->
+<!--弃用js(还有参考价值)-->
 <script type="text/javascript">
-//plus.nativeUI.actionSheet({
-//	cancel: "取消",
-//	buttons: [{
-//		title: "相册选择"
-//	}, {
-//		title: '拍照'
-//	}]
-//},
-//function(e) {
-//	if (e.index == 1) { //点击从相册选择
-//		galleryImgsSelected();
-//	} else if (e.index == 2) {
-//		getImage();
-//	}
-//})
-function getImage(){//拍照并保存(暂时搁置)
-	var cmr = plus.camera.getCamera();
-	cmr.captureImage( function ( path ) {
-		plus.io.resolveLocalFileSystemURL(path,function(entry){ 
-			//把拍摄图片的路径转化成 本地文件url
-			path = plus.io.convertLocalFileSystemURL(path);
-			if(0!=path.indexOf("file://")){
-				path="file://"+path;
-			} 
-    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-    		var endpic = path.split('.')[0]+"/"+nowpic;
-    		console.error(path);
-    		console.error(endpic);
-			plus.zip.compressImage({//压缩方法
-				src:path,
-				dst:endpic,
-				overwrite:true,
-				quality:30
-			},
-			function() { 
-				showImg(endpic);
-				Apic = [];
-				Apic.push(endpic); 
-			},function(error) {
-				mui.toast('图片获取错误，请重试');
-			}); 
-			//无压缩
-			//showImg(path);
-			//Apic = [];
-			//Apic.push(path);
-			//plus.gallery.save( path ); 
-		});
-	}, function ( e ) { 
-	}, {filename:"_doc/gallery/",index:1} );
-}
+	//plus.nativeUI.actionSheet({
+	//	cancel: "取消",
+	//	buttons: [{
+	//		title: "相册选择"
+	//	}, {
+	//		title: '拍照'
+	//	}]
+	//},
+	//function(e) {
+	//	if (e.index == 1) { //点击从相册选择
+	//		galleryImgsSelected();
+	//	} else if (e.index == 2) {
+	//		getImage();
+	//	}
+	//})
+	function getImage(){//拍照并保存(暂时搁置)
+		var cmr = plus.camera.getCamera();
+		cmr.captureImage( function ( path ) {
+			plus.io.resolveLocalFileSystemURL(path,function(entry){ 
+				//把拍摄图片的路径转化成 本地文件url
+				path = plus.io.convertLocalFileSystemURL(path);
+				if(0!=path.indexOf("file://")){
+					path="file://"+path;
+				} 
+	    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+	    		var endpic = path.split('.')[0]+"/"+nowpic;
+				plus.zip.compressImage({//压缩方法
+					src:path,
+					dst:endpic,
+					overwrite:true,
+					quality:30
+				},
+				function() { 
+					showImg(endpic);
+					Apic = [];
+					Apic.push(endpic); 
+				},function(error) {
+					mui.toast('图片获取错误，请重试');
+				}); 
+			});
+		}, function ( e ) { 
+		}, {filename:"_doc/gallery/",index:1} );
+	}
 
 </script>
 </html>

@@ -93,10 +93,11 @@
 			.data ul li .shuru::placeholder{
 				padding-top:4px;
 			}
+			.mui-bar-nav{box-shadow: none !important;}
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav">
+		<header class="mui-bar mui-bar-nav fineB">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">编辑资料</h1>  
 		    <a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun" id="Preservation">保存</a>
@@ -110,9 +111,8 @@
 							<p class="fl">头像</p>
 							<label>
 								<span class="fr">
-									<div class="text-center gray" id="preview">上传</div>
+									<div class="text-center gray" id="preview"><img id="imghead" onclick="galleryImgsSelected()" src="../../img/answer/editset.png" width="50" height="50"></div>
 								</span>
-								<input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" id="imgUpload" name="img[]" onchange="previewImage(this)" class="upload-add">
 							</label>
 						</a>
 					</li>
@@ -170,7 +170,6 @@
 			var myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
 			//显示既有信息
-			//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 				data:{"userid":myuserid},
 				type:'post',
@@ -180,8 +179,12 @@
 					console.log('获取用户数据返回',data);
 					if(data.errno == 0){
 						if(data.data[0].avatar){ //显示头像
-							var imgurl = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
-							mui('#preview')[0].innerHTML = '<img id="imghead" src="'+imgurl+'" width="50" height="50">';
+							if(JSON.parse(data.data[0].avatar)[0].picImg.includes('http')){
+								var imgurl = JSON.parse(data.data[0].avatar)[0].picImg;
+							}else{
+								var imgurl = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
+							}
+							mui('#imghead')[0].src = imgurl;
 						}
 						//显示昵称
 						if(data.data[0].nickname){  
@@ -219,16 +222,46 @@
 			});
 		})
 		var filepic = {};
+		
+		var Apic ='';
+		function galleryImgsSelected(){//从相册中选择图片
+		    plus.gallery.pick( function(e){
+		    	for(var i in e.files){
+		    		if(0!=e.files[i].indexOf("file://")){
+						e.files[i]="file://"+e.files[i];
+					} 
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+		    		var endpic = e.files[i].split('.')[0]+"/"+nowpic;
+		    		plus.zip.compressImage({//压缩操作
+						src:e.files[i],
+						dst:endpic,
+						overwrite:true,
+						quality:30
+					},
+					function(obj) {
+						if(!obj.target.includes("file://")){obj.target="file://"+obj.target;}
+						Apic = obj.target
+						mui('#imghead')[0].src = obj.target;
+					},function(error) {
+						mui.toast('图片获取错误，请重试');  
+					});
+		    	}
+		    }, function ( e ) {  
+		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
+				//plus.nativeUI.alert('只能选择1张图片');
+		    }});
+		}
+		
 		//保存数据
 		mui('#Preservation')[0].addEventListener('tap',function(){ 
 			plus.nativeUI.showWaiting('保存中 ...',{width:'100px',height:'80px'});
 			var mynickname = mui('#mynickname')[0].value || null;
 			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
-			var touxiang = mui('#imgUpload')[0].files[0] || {};
 			
-			mui.plusReady(function(){ 
+			mui.plusReady(function(){
 				var myuserid = plus.storage.getItem('userid');
 				var oldtoken = plus.storage.getItem('oldToken');
+				var cityNum = plus.storage.getItem('cityNum');
 				if(mui('#IDcard')[0].value.indexOf('****')>-1){
 					var IDnum = idnum;
 				}else{
@@ -237,15 +270,70 @@
 					
 				var reg_ID = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
 				if(IDnum == ''){
-					upfun1();
+					releaseData();
 				}else{
 					if(reg_ID.test(IDnum)){
-						upfun1();
+						releaseData();
 					}else{
 						plus.nativeUI.closeWaiting();//关闭等待框
 						mui.toast('请输入合法证件号');
 					}
 				}
+				
+				//发送数据
+			 	function releaseData(){
+					var task = plus.uploader.createUpload(serverUrl+'/api/useraccount/updateuserdata', 
+						{ method:"POST"},
+						function(back,status){
+							if(status == 200){
+								console.log(back.responseText);
+								var dataobj = JSON.parse(back.responseText);
+								if(dataobj.errno == 0){
+									mui.toast('修改成功');	 
+	    							//触发跳转页面刷新
+									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+									if(plus.webview.getWebviewById('market-order')){ 
+										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
+									}
+									if(plus.webview.getWebviewById('center')){ 
+										mui.fire(plus.webview.getWebviewById('center'),'refresh2');
+									}
+									if(plus.webview.getWebviewById('centerPage')){
+										mui.fire(plus.webview.getWebviewById('centerPage'),'refresh2');
+									}
+									if(plus.webview.getWebviewById('othersPage')){
+										mui.fire(plus.webview.getWebviewById('othersPage'),'refresh2');
+									}
+									var time2 = setTimeout(function(){
+										plus.webview.currentWebview().close();
+									},500)
+	    						}else{
+	    							plus.nativeUI.closeWaiting();//关闭等待框
+	    							mui.toast('发布失败，请重试！');
+	    							plus.nativeUI.closeWaiting();
+	    						}
+							}else{
+								plus.nativeUI.closeWaiting();//关闭等待框
+								mui.toast('当前网络不好，请重试！');	
+							}
+							
+						}
+					);
+					task.setRequestHeader('token',oldtoken);
+					task.setRequestHeader('city',cityNum);
+					
+					if(Apic){task.addFile(Apic, {key:'avatar'})}
+					
+					task.addData('userid',myuserid);  		
+			        task.addData('nickname',mynickname);  		
+			        task.addData('gender',Nextbtnval[Nextbtnval.length-1]);  		
+			        task.addData('IDCard',IDnum);
+					
+					task.start();
+					
+			 	}
+			 	//发送数据结束
+				
 				function upfun1(){
 					var fd = new FormData(); 
 					if(touxiang.name){
@@ -299,59 +387,7 @@
 		
 		
 		
-		//图片上传文件方法	
-		function previewImage(file) {
-			var MAXWIDTH = 350;
-			var MAXHEIGHT = 249;
-			var div = findPreview(file.parentNode);
-			if(file.files && file.files[0]) {
-				filepic = file.files[0];
-				div.innerHTML = '<img id=imghead>';
-				var img = div.lastChild;
-				img.onload = function() {
-					var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-					img.width = rect.width;
-					img.height = rect.height;
-				}
-				var reader = new FileReader();
-				reader.onload = function(evt) {
-					img.src = evt.target.result;
-				}
-				reader.readAsDataURL(file.files[0]);
-			}
-		}
 
-		function clacImgZoomParam(maxWidth, maxHeight, width, height) {
-			var param = {
-				top: 0,
-				left: 0,
-				width: width,
-				height: height
-			};
-			if(width > maxWidth || height > maxHeight) {
-				rateWidth = width / maxWidth;
-				rateHeight = height / maxHeight;
-	
-				if(rateWidth > rateHeight) {
-					param.width = maxWidth;
-					param.height = Math.round(height / rateWidth);
-				} else {
-					param.width = Math.round(width / rateHeight);
-					param.height = maxHeight;
-				}
-			}
-			param.left = Math.round((maxWidth - param.width) / 2);
-			param.top = Math.round((maxHeight - param.height) / 2);
-			return param;
-		}
-		function findPreview(parent) {
-			var childs = parent.childNodes;
-			for(var i = 0; i < childs.length; i++) {
-				if(childs[i].id == "preview")
-					return childs[i];
-			}
-			return div = document.getElementById('preview');
-		}
 	</script>
 	
 	
