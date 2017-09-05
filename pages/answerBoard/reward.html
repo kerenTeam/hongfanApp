@@ -72,34 +72,46 @@
 			    oldToken = plus.storage.getItem('oldToken'),
 				myuserid = plus.storage.getItem('userid'),
 				infiId = plus.webview.currentWebview().newsId,
-				acceptid = plus.webview.currentWebview().acceptId;
+				acceptid = plus.webview.currentWebview().acceptId,
+				page = plus.webview.currentWebview().page;
+				if(page){ 
+					$('textarea').css('display','none');
+				}
 			$('.upbtn').click(function(){
 				var hidou =$.trim($('.activebut').text().replace('HI豆',''));
-				var text = '';
-				if($('textarea').val()){
-					text = $('textarea').val();
-				} 
-				mui.ajax(serverUrl + '/api/friends/newsinfo', {
-					data:{newsId:infiId,userid:myuserid,acceptPersonId:acceptid,price:hidou,notice:text},
-					dataType: 'json',
-					type: 'PUT',
-					timeout: 8000,
-					headers: {"token": oldToken,'city': cityNum},
-					success: function(data, type, xhr) { 
-						if(data.errno == 0) { 
-							mui.toast('打赏成功哦'); 
-						}else{
-							if(errmsg){
-								mui.toast(errmsg); 
+				if(page){ 
+					$('textarea').css('display','none'); 
+					mui.fire(plus.webview.getWebviewById('ask'),'send',{'hidouNum': hidou});
+					plus.webview.currentWebview().close();
+					
+				}else{
+					var text = '';
+					if($('textarea').val()){
+						text = $('textarea').val();
+					} 
+					mui.ajax(serverUrl + '/api/friends/newsinfo', {
+						data:{newsId:infiId,userid:myuserid,acceptPersonId:acceptid,price:hidou,notice:text},
+						dataType: 'json',
+						type: 'PUT',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) { 
+							if(data.errno == 0) { 
+								mui.toast('打赏成功哦'); 
 							}else{
-								mui.toast('网络不好，请重试');
+								if(errmsg){
+									mui.toast(errmsg); 
+								}else{
+									mui.toast('网络不好，请重试');
+								}
 							}
+						},
+						error: function(xhr, type, errorThrown) {  
+							mui.toast('当前网络不好,请重试');
 						}
-					},
-					error: function(xhr, type, errorThrown) {  
-						mui.toast('当前网络不好,请重试');
-					}
-				});
+					});
+				}
+				
 			})
 				
 		})

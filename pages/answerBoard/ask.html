@@ -17,7 +17,7 @@
 	</head>
 	<style type="text/css">
 		.baocun img{width:20px}
-		.disbg{border:none}
+		.disbg{border:none;}
 		.uppics{padding:15px}
 		.onepic{margin-top:20px}
 		.uppics div.onepic img{width:4.5rem;height:4.5rem;display:inline-block;margin:0 5px;border-radius:3px}
@@ -27,7 +27,7 @@
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
 		.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:15%;left:7%;width:86%;bottom:15%;padding:15px 5px;border-radius:3px}
 		.closemask{position:absolute;bottom:10px;left:50%;-webkit-transform:translateX(-50%)}
-		.ruleol{padding: 0 15px 15px 15px;}
+		.ruleol{padding: 0 15px 0 15px;}
  
 	</style>
 
@@ -46,7 +46,7 @@
 			</div> 
 			<div class="publishf">  
 				<div class="apsan"></div>
-				<textarea id="textCon" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="你的问题（5到49字以内）"></textarea>
+				<textarea id="textCon" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="你的问题（5到49字以内）" required=""></textarea>
 			</div>
 			 
 			<div class="uppics clearfix" id="uppics2"> 
@@ -462,15 +462,26 @@
 		event.preventDefault()
 		$('#maskInfo').fadeOut(200);
 	})
+	window.addEventListener('send',function(event){
+	  //获得事件参数
+	  diyHidou = event.detail.hidouNum; 
+	  if(diyHidou){ 
+		$('.zhidou').css({'display':'inline-block','padding':'6px'}).html(diyHidou+'HI豆').attr('data-id',diyHidou);
+	  }
+	});
 	mui.plusReady(function() { 
 		var hidou = plus.webview.currentWebview().expertHI;
+		var diyHidou = 0;
+		// 添加send自定义事件监听
+		
 		if(hidou){
 			$('.hipay').css('display','none'); 
 			$('.zhidou').css('display','block').html(hidou+'HI豆').attr('data-id',hidou);
 		}
 		$('.hipay').click(function(){
 			openview({
-				view:'reward.html'
+				view:'reward.html',
+				extrasobj:{page:'ask'}
 			})
 		})  
 	}); 
@@ -538,7 +549,7 @@
 			    price = $('.zhidou').attr('data-id'),
 				oldToken = plus.storage.getItem('oldToken'),
 			 	myuserid = plus.storage.getItem('userid');
-		 	var textCon = mui('#textCon')[0]; 
+		 	var textCon = mui('#textCon')[0];  
 		 	if(!price || price == 0){//没有HI豆
 		 			mui.toast('选择悬赏的HI豆数');
 		 			return false;
@@ -592,8 +603,7 @@
 				task.addData("price",price);
 				task.addData("assignedExpert",expertId);
 				task.addData("content",content);
-				if(Apic.length){
-					alert(Apic.length);
+				if(Apic.length){ 
 					console.log(Apic);
 					[].forEach.call(Apic,function(ele,index){
 						task.addFile(ele, {key:index.toString()});
