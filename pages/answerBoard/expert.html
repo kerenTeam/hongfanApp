@@ -3,11 +3,11 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>答人榜</title>
+		<title>问专家</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />   
 		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
 	</head>
 	<style type="text/css">  
@@ -29,89 +29,96 @@
 		 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">答人榜</h1>
+			<h1 class="mui-title">问专家</h1>
 			 
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<!--轮播-->
 		<div id="main">	
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/emotionicon.png" class="Avator" />
-						<div>
-							<div>Amy</div>
-							<div class="text ft12"><span class="eadeg">律师</span><span class="eadeg">作者</span></div>
-							<div class="text ft14"><span class="activecl">18</span>次回答</div>
+			<div id="curExport"></div>
+			<script type="text/html" id="curExportTpl">
+				<%for(var i = 0;i<list.length;i++){%>
+					<div class="follow themeAsk"> 
+						<div class="fchidl">
+							<div>
+								<img src="<%=list[i].avatar%>" class="Avator" />
+								<div>
+									<div><%=list[i].nickname%></div>
+									<div class="text ft12"><span class="eadeg"><%=list[i].jodName%></span><span class="eadeg">作者</span></div>
+									<div class="text ft14"><span class="activecl"><%=list[i].answerNums%></span>次回答</div>
+								</div>
+							</div>
+							<div class="butright">
+				            	<div class="diyButton activecl goask" data-id="<%=list[i].answerProce%>">
+				            		<%=list[i].answerProce%>hi豆提问	
+				            	</div>
+				            </div>
+						</div>
+						<div class="jobInfo ft14 text">
+							<%=list[i].description%>
 						</div>
 					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask" data-id="10">
-		            		10hi豆提问	
-		            	</div>
-		            </div>
-				</div>
-				<div class="jobInfo ft14 text">
-					cxxxxxxxxxxxxxxxss手动阀手动阀手动阀手动阀撒旦发射点发生xxxxxxx
-				</div>
-			</div>
-			
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/emotionicon.png" class="Avator" />
-						<div>
-							<div>Amy</div>
-							<div class="text ft12"><span class="eadeg">律师</span><span class="eadeg">作者</span></div>
-							<div class="text ft14"><span class="activecl">18</span>次回答</div>
-						</div>
-					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask" data-id = "10">
-		            		10hi豆提问	
-		            	</div>
-		            </div>
-				</div>
-				<div class="jobInfo ft14 text">
-					cxxxxxxxxxxxxxxxss手动阀手动阀手动阀手动阀撒旦发射点发生xxxxxxx
-				</div>
-			</div>
-			
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/emotionicon.png" class="Avator" />
-						<div>
-							<div>Amy</div>
-							<div class="text ft12"><span class="eadeg">律师</span><span class="eadeg">作者</span></div>
-							<div class="text ft14"><span class="activecl">18</span>次回答</div>
-						</div>
-					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask"  data-id = "10">
-		            		10hi豆提问	
-		            	</div>
-		            </div>
-				</div>
-				<div class="jobInfo ft14 text">
-					cxxxxxxxxxxxxxxxss手动阀手动阀手动阀手动阀撒旦发射点发生xxxxxxx
-				</div>
-			</div>
+				<%}%>
+			</script> 
 		</div>
 	 	 
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			 
-		//直接提问
-		$('.goask').click(function(){
-			event.stopPropagation();
-			var hidou = $(this).attr("data-id"); 
-			openview({
-				view:'ask.html',
-				extrasobj:{expertHI:hidou}
-			})
+		
+		
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'),
+		 		cityNum = plus.storage.getItem('cityNum'),
+				myuserid = plus.storage.getItem('userid'),
+				group = plus.webview.currentWebview().exGroup;
+				group = 2;
+				mui.ajax(serverUrl+'/api/faqs/expert/groupId/'+group,{
+					type:'get',
+					timeout:8000,
+					headers:{"token":oldToken,"city":cityNum},	              				
+					success:function(data,type,xhr){
+						console.log('exppot',data);
+						if(data.errno == 0){ 
+							if(data.data && data.data.length){
+								 var picObj = data.data;  
+								 [].forEach.call(picObj,function(ele){
+								 	 if(ele.avatar && ele.avatar!='null'){
+										if(JSON.parse(ele.avatar)[0].picImg.indexOf('http') == -1){
+											ele.avatar = serverimgUrl + JSON.parse(ele.avatar)[0].picImg;
+										}else{
+											ele.avatar = JSON.parse(ele.avatar)[0].picImg;
+										}
+									}else{
+										ele.avatar ='../../img/10.png' 
+									}
+								 }) 
+								 $('#curExport').html(template('curExportTpl',{list:picObj}));
+	
+							}else{
+								$('#curExport').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无专家</div>')
+							}
+								 
+							//直接提问
+							$('.goask').click(function(){
+								event.stopPropagation();
+								var hidou = $(this).attr("data-id"); 
+								openview({
+									view:'ask.html',
+									extrasobj:{expertHI:hidou,userId:myuserid}
+								})
+							})
+							
+						}else{
+							console.log(data.errmsg); 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取数据,响应失败');
+					}
+				});
 		})
 		 
 		 

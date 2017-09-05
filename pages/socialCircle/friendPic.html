@@ -85,19 +85,19 @@
 	};
 	
 	//选择图片
-	var Apic = [];//图片存放数组 
+	var Apic = [];//图片存放数组  
+	var time1 = null;
 	var qid;
  	var Spagenum = 2; //实到页数
 	var Ypagenum = 1; //应到页数 
 	mui.plusReady(function() {
 		var oldToken = plus.storage.getItem('oldToken');
 		var cityNum = plus.storage.getItem('cityNum');
-		var	myuserid = plus.storage.getItem('userid');
+		var	myuserid = plus.storage.getItem('userid'); 
 		var currentPage = 1,numsPerPage = 12;
 		//获取交友照片
-		mui.ajax(serverUrl+'/api/friends/photography',{
-			data:{"userId":myuserid,currentPage:currentPage,numsPerPage:numsPerPage,},
-			type:'post',
+		mui.ajax(serverUrl+'/api/friends/photography/userId/'+myuserid+'/currentPage/'+currentPage+'/numsPerPage/'+numsPerPage,{
+			type:'get',
 			timeout:8000,
 			headers:{"token":oldToken,"city":cityNum},	              				
 			success:function(data,type,xhr){
@@ -279,71 +279,83 @@
 				plus.io.resolveLocalFileSystemURL(path,function(entry){ 
 					//把拍摄图片的路径转化成 本地文件url
 					path = plus.io.convertLocalFileSystemURL(path);
-					if(0!=path.indexOf("file://")){
-						path="file://"+path;
-					} 
-		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-		    		var endpic = path.split('.')[0]+"/"+nowpic;
-		    		console.error(path);
-		    		console.error(endpic);
-					plus.zip.compressImage({//压缩方法
-						src:path,
-						dst:endpic,
-						overwrite:true,
-						quality:30
-					},
-					function() { 
-						showImg(endpic);
-						alert(endpic)
-						Apic = [];
-						Apic.push(endpic); 
-					},function(error) {
-						mui.toast('图片获取错误，请重试'); 
-					}); 
-					//无压缩
-					//showImg(path);
-					//Apic = [];
-					//Apic.push(path);
-					//plus.gallery.save( path ); 
+					//初始化
+			    	Apic = [];
+			    	//初始化结束 
+			    	clearInterval(time1);
+			    	var indexNum = 0;
+			    	var indexMax = 0;
+					time1 = setInterval(function(){
+		    			if(0!=path.indexOf("file://")){
+							path="file://"+path;
+						} 
+						if(indexNum == indexMax){//全部压缩完毕
+			    			clearInterval(time1);
+							time1 = null;
+			    		}
+			    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+			    		var endpic = path.split('.')[0]+"/"+nowpic;
+			    		console.error(path);
+			    		console.error(endpic);
+							plus.zip.compressImage({
+							src:path,
+							dst:endpic,
+							overwrite:true, 
+							quality:30
+						},
+						function() {
+							Apic.push(endpic);
+							showImg(endpic);
+						},function(error) {
+							mui.toast('图片获取错误，请重试');  
+						});
+			    		indexNum ++;
+		    		},100)  
 				});
 			}, function ( e ) { 
 			}, {filename:"_doc/gallery/",index:1} );
 		}
 		
 		function galleryImgsSelected(){//从相册中选择图片
-		    plus.gallery.pick( function(e){
-		    	lfs=e.files;
-		    	for(var i in e.files){
-		    		if(0!=e.files[i].indexOf("file://")){
-						e.files[i]="file://"+e.files[i];
-					} 
-		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-		    		var endpic = e.files[i].split('.')[0]+"/"+nowpic;
-		    		console.error(e.files[i]);
-		    		console.error(endpic);
-		    		plus.zip.compressImage({//压缩方法
-						src:e.files[i],
+			 plus.gallery.pick( function(e){
+		    	//初始化
+		    	Apic = [];
+		    	//初始化结束 
+		    	clearInterval(time1);
+		    	var indexNum = 0;
+		    	var indexMax = e.files.length - 1;
+		    	time1 = setInterval(function(){
+		    		console.log(time1);
+		    		if(0!=e.files[indexNum].indexOf("file://")){
+						e.files[indexNum]="file://"+e.files[indexNum];//图片地址
+					}
+		    		if(indexNum == indexMax){//全部压缩完毕
+		    			clearInterval(time1);
+						time1 = null;
+		    		}
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
+		    		var endpic = e.files[indexNum].split('.')[0]+"/" +nowpic;
+		    		//压缩方法
+	    			plus.zip.compressImage({
+						src:e.files[indexNum],
 						dst:endpic,
-						overwrite:true,
+						overwrite:true, 
 						quality:30
 					},
 					function() {
-						showImg(endpic);
-						Apic = []; 
 						Apic.push(endpic);
+						showImg(endpic);
 					},function(error) {
 						mui.toast('图片获取错误，请重试');  
 					});
-					//无压缩 
-			    	//showImg(e.files[i]);
-			    	//Apic = []; 
-					//Apic.push(e.files[i]);
-		    	}
+		    		indexNum ++;
+		    		
+		    	},100)
 		    }, function ( e ) {  
-//		    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
-		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
-				plus.nativeUI.alert('每次只能选择1张图片哦');  
+		    },{filter:"image",multiple:true,maximum:1,selected:'',system:false,onmaxed:function(){//保存选择记录
+				plus.nativeUI.alert('每次最多上传1张图片');
 		    }});
+
 		}
 		
 		function showImg(url){//显示图片
@@ -352,15 +364,14 @@
 			}
 				
 			mui('#mfPic')[0].innerHTML += '<div class="frph" style="background: url('+url+') no-repeat;background-size: cover;background-position: center;"><img src="../../img/makeFriend/uncheck.svg" style="display:none" alt="" /></div>';    
-			upImg()
+			upImg();
 		}
 		
 		function upImg(){
-			var oldToken = plus.storage.getItem('oldToken');
-			
+			var oldToken = plus.storage.getItem('oldToken'); 
 			//发送数据
 			var task = plus.uploader.createUpload(serverUrl+'/api/friends/photography/', 
-				{ method:"put"},
+				{ method:"post"},
 				function(back,status){
 					if(status == 200){ 
 						console.log('添加照片',back); 
@@ -382,7 +393,7 @@
 			); 
 			task.setRequestHeader("token",oldToken); 
 		    task.setRequestHeader("city",cityNum);
-			task.addData("userid",myuserid);  
+			task.addData("userId",myuserid);  
 			task.addFile(Apic[0], {key:"pics"} );
 			task.start(); 
 		}

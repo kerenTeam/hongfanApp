@@ -174,7 +174,7 @@
 									<%if(list[j].create_time == timeGroup[i]){%>
 										<%for(var m=0;m<list[j].pic.length;m++){%>
 											<div class="frph" style="background-position: center;">
-												<img class="disimg loadPics" src="" data-src="<%=list[j].pic[m].picImg%>"/>
+												<img class="disimg loadPics" onload="imgHeight(this)" src="" data-src="<%=list[j].pic[m].picImg%>"/>
 											</div>	 
 										<%}%>
 									<%}%>
@@ -197,7 +197,9 @@
 						<script type="text/html" id="mfPicTpl">
 							<ul class="clearfix zhaopians">
 								<%for(var i = 0;i<list.length;i++){%>
-									<li><span style="background: url(<%=list[i].picImg[0].picImg%>) 0 0 no-repeat;background-size: cover;"></span></li>
+									<%if(list[i].picImg[0].picImg){%>
+										<li><span style="background: url(<%=list[i].picImg[0].picImg%>) 0 0 no-repeat;background-size: cover;"></span></li>
+									<%}%>
 								<%}%>
  							</ul>
 						</script>
@@ -223,7 +225,7 @@
 										<%}else{%>
 											<span style="background: url(../../img/10.png) 0 0 no-repeat;background-size: cover;" class="span1"></span>
 										<%}%>
-										<br /> <span class="span2 lkerName"><%= list[i].username%></span>
+										<br /> <span class="span2 lkerName"><%= list[i].nickname%></span>
 									</li>
 								<%}%>
 							</ul>
@@ -641,15 +643,14 @@
 			function loadJiaoyou(){
 				Fload2++;
 				//获取交友照片
-				mui.ajax(serverUrl+'/api/friends/photography',{
-					data:{"userId":myuserid,numsPerPage:4,currentPage:1},
-					type:'post',
+				mui.ajax(serverUrl+'/api/friends/photography/userId/'+myuserid+'/currentPage/1/numsPerPage/4',{
+					type:'get',
 					timeout:8000,
 					headers:{"token":oldToken,"city":cityNum},	              				
 					success:function(data,type,xhr){
 						console.log('交友照片',data);
 						if(data.errno == 0){ 
-							if(data.data.data && data.data.data.length){
+							if(data.data.data && data.data.data.length>0){
 								 var picObj = data.data.data;  
 								 [].forEach.call(picObj,function(ele){
 								 	ele.picImg = JSON.parse(ele.picImg);
