@@ -21,7 +21,7 @@
 		.follow,.followA{background-color:#fff;}
 		.followA{padding:5px 15px 0;padding-left: 20px;}
 		.follow:after{position:absolute;right:10px;bottom:0;left:10px;height:1px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
-		.follow:last-child:after{height:0;}
+		.follow:last-child:after{height:0!important;}
 		.fchidl{display:flex;align-items:center;justify-content:space-between;}
 		.Avator{margin-right:15px;width:40px;height:40px;}
 		.userAvator{margin-right:15px;width:2rem;height:2rem;}
@@ -29,7 +29,7 @@
 		.userAvator2{margin-right:15px;width:1.5rem;height:1.5rem;}
 		.fchidl>div{display:flex;vertical-align:middle;text-align:left;font-size:15px;align-items:center;}
 		.text{color:#999;}
-		.diyButton{padding:5px 9pt;background:url(../../img/answer/bouttonbr.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;}
+		.diyButton{padding:3px 9pt;background:url(../../img/answer/bouttonbr.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;}
   		.flexrr{display: flex;}
 		.QAhead{background-color:#f3f3f3;text-align:center;}
 		.QAhead span{position:relative;display:inline-block;margin:0 10px;padding:0 25px;height:38px;color:#343434;font-size:15px;line-height:38px}
@@ -42,7 +42,8 @@
 		.bottomop img{width:20px}
 		.flexr{justify-content:space-between}
 		.lookall{margin:10px 0;background:url(../../img/answer/lookall.png) no-repeat;background-position:center;background-size:50%;text-align:center}
-		.answerImf img{margin-right:5px;width:3.5rem;height:3.5rem;border-radius:3px}
+		.answerImf{padding: 0 15px;}
+		.answerImf .anImg{width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;}
 		#listOldDiv{position: relative;}
 	</style>
 	<body style="background-color: white;padding-bottom: 0;">
@@ -76,7 +77,7 @@
 								<img src="<%=list[i].icon%>" class="Avator" />
 								<div>
 									<div><%=list[i].name%></div>
-									<div class="text"><%=list[i].describe%></div>
+									<div class="text ft13"><%=list[i].describe%></div>
 								</div>
 							</div>
 							<div class="butright">
@@ -101,39 +102,70 @@
 				
 				<script type="text/html" id="listDataS">
 					<%for(var i=0;i<dataList.length;i++){%>
-						<div class="listCon">
+						<div class="listCon" onclick="openDetail(<%=dataList[i].id%>)" data-id="<%=dataList[i].assignedExpert%>" data-exper="<%=dataList[i].onlyExpert%>">
 							<div class="follow"> <!--问题-->
 								<div class="fchidl">
 									<div><img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/><div><%=dataList[i].nickname%></div></div> 
 									<div class="butright"><div class="diyButton activecl goanswer">抢答</div> </div> 
 								</div>  
-								<p class="ft15 maincl"><%=dataList[i].content%></p> 
-							 	<div class="bottomop flexr">
-							 		<div class="activecl ft14"></div>
-									<div class="flexrr">
+								<p class="ft15 maincl"><%=dataList[i].content%></p>
+								
+								<%if(dataList[i].pics && dataList[i].pics.length){%>
+									<div class="answerImf" style="padding: 0;">
+										<%for(var j = 0 ;j<dataList[i].pics.length;j++){%>
+											<div class="anImg loadPics" style="background: url(<%=dataList[i].pics[j].picImg%>) no-repeat;background-size: cover;"></div>
+										<%}%> 
+								 	</div>
+								<%}%> 
+								
+							 	<div class="bottomop flexr"> 
+							 		<div class="activecl ft14">
+							 			<%if(dataList[i].onlyExpert){%>
+								 			仅限特邀专家回答
+								 		<%}%>
+							 		</div>
+									<div class="bottomop flexrr"> 
 										<div class="bottomop mr25">
-											<img src="../../img/answer/liked.png" class="mr20" alt="" /><span class="activecl ft12">89</span>
+											<%if(dataList[i].likeUserId){%>
+												<img class="mr20" src="../../img/answer/liked.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+											<%}else{%>
+												<img class="mr20" src="../../img/answer/unlike.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<%}%>
+												 <span class="activecl ft12"><%=dataList[i].likes%></span>
 										</div> 
-										<div class="disablecl ft12">70人回答</div>
+										<div class="disablecl ft12"><%=dataList[i].answerNums%>人回答</div>
 									</div>
 							 	</div> 
 							</div> 
-	
-							<div class="followA"> <!--回答-->
-								<div class="fchidl">
-									<div>
-										<img src="../../img/10.png" class="userAvator2 mr25"/>
-										<div class="disablecl"> wangfei </div>
-									</div> 
-								</div>  
-								<p class="ft14 disablecl">感觉你要注意的应该只有几项而已</p> 
-							</div>
-							
-							<div class="lookall ft12 disablecl" > 查看全部回答  </div> 
+							<div class="commentsShow" data-id="<%=dataList[i].id%>"></div>
+						 
 						</div>
 					<%}%>	
 				</script>
+				<!--回答模板-->
+				<script type="text/html" id="cmtTpl">
 				
+					<%for(var i=0;i<list.length;i++){%> 
+						<div class="followA"> <!--回答-->
+							<div class="fchidl">
+								<div>
+									<img src="<%=list[i].avatar%>" class="userAvator2 mr25"/>
+									<div class="disablecl"> <%=list[i].nickname%> </div>
+								</div> 
+							</div>  
+							<p class="ft14 disablecl"><%=list[i].commont%></p> 
+						</div>
+						<%if(list[i].pics && list[i].pics.length){%>
+							<div class="answerImf">
+								<%for(var j = 0 ;j<list[i].pics.length;j++){%>
+									<div class="anImg loadPics" style="background: url(<%=list[i].pics[j].picImg%>) no-repeat;background-size: cover;"></div>
+								<%}%> 
+						 	</div>
+						<%}%>  
+					<%}%> 
+					<div class="lookall ft12 disablecl" > 查看全部回答  </div> 
+				
+				</script>
 				<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div><!--加载中-->
 				
 			</div>
@@ -149,12 +181,28 @@
 		//获取问答分类
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken'),
-		 		cityNum = plus.storage.getItem('cityNum');
-			 
+		 		cityNum = plus.storage.getItem('cityNum'),
+		 		myuserid = plus.storage.getItem('userid');
+	 		window.goZan = function(obj,id){ 
+	 			event.stopPropagation()
+				var curThis = $(obj); 
+				var likes = parseInt(curThis.siblings('span').html());
+				
+				if(curThis.attr('src') == '../../img/answer/unlike.png'){
+					likes = likes+1; 
+					curThis.siblings('span').html(likes);
+					likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
+				}else{ 
+					likes = likes-1; 
+					curThis.siblings('span').html(likes);
+					likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
+				}
+			}
+		 		
 				mui.ajax(serverUrl+'/api/faqs/group',{
 					type:'get',
 					timeout:8000,
-					headers:{"token":oldToken,"city":1},	              				
+					headers:{"token":oldToken,"city":cityNum},	              				
 					success:function(data,type,xhr){
 						console.log('exppot',data);
 						if(data.errno == 0){ 
@@ -291,6 +339,29 @@
 									}else{
 										nowArray[j].avatar = '../img/10.png'
 									}
+									
+									if(!nowArray[j].answerNums){
+										nowArray[j].answerNums = 0
+									}else if((nowArray[j].answerNums / 1000)>1){
+										nowArray[j].answerNums = parseInt(nowArray[j].answerNums / 1000) +'K+'
+									}
+									if(!nowArray[j].likes){
+										nowArray[j].likes = 0
+									}
+									if(!nowArray[j].onlyExpert){
+										nowArray[j].onlyExpert = 0
+									}
+									if(!nowArray[j].assignedExpert){
+										nowArray[j].assignedExpert = 0
+									}
+									if(nowArray[j].pic && nowArray[j].pic!='null'){
+										nowArray[j].pic = JSON.parse(nowArray[j].pic);
+										for(var k = 0; k<nowArray[j].pic.length;k++){
+											if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
+                                                nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
+                                            }
+										}
+									}
 								}
 									
 								dataObj.dataList = nowArray;
@@ -356,6 +427,29 @@
 																}else{
 																	nowArray[j].avatar = '../img/10.png'
 																}
+																
+																if(!nowArray[j].answerNums){
+																	nowArray[j].answerNums = 0
+																}else if((nowArray[j].answerNums / 1000)>1){
+																	nowArray[j].answerNums = parseInt(nowArray[j].answerNums / 1000) +'K+'
+																}
+																if(!nowArray[j].likes){
+																	nowArray[j].likes = 0
+																}
+																if(!nowArray[j].onlyExpert){
+																	nowArray[j].onlyExpert = 0
+																}
+																if(!nowArray[j].assignedExpert){
+																	nowArray[j].assignedExpert = 0
+																}
+																if(nowArray[j].pic && nowArray[j].pic!='null'){
+																	nowArray[j].pic = JSON.parse(nowArray[j].pic);
+																	for(var k = 0; k<nowArray[j].pic.length;k++){
+																		if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
+			                                                                nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
+			                                                            }
+																	}
+																}
 															}
 															
 															dataObj.dataList = nowArray;
@@ -373,6 +467,13 @@
 														mui("#upload")[0].innerHTML = "";
 													}
 												});
+												$('.listCon').each(function(){
+													if($(this).attr('data-exper') && $(this).attr('data-id')==myuserid){
+														$(this).find('.diyButton').css('display','none'); 
+													}else{
+														
+													}
+												})
 											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
 												mui("#upload")[0].innerHTML = "到底了";
 											}
@@ -382,10 +483,100 @@
 							}else{
 								mui("#upload")[0].innerHTML = "没有数据";
 							}
-							 
+							
+							//评论数据
+							$('.commentsShow').each(function(){
+								var newsId= $(this).attr('data-id'); 
+								var curShow = $(this);
+								mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+newsId, {
+									dataType: 'json',
+									type: 'get',
+									timeout: 8000,
+									headers: {"token": oldToken,'city': cityNum},
+									success: function(data, type, xhr) {
+										console.error('评论详情', data);
+										 
+										if(data.errno == 0) {
+											var cmtArray = data.data;
+											var newCmt = []
+											if(cmtArray && cmtArray.length>0){
+												if(cmtArray.length >3){
+													for(var i = 0;i<3;i++){
+														if(!cmtArray[i].nickname){ 
+															cmtArray[i].nickname =  '匿名'
+														}
+														
+														if(cmtArray[i].pics && cmtArray[i].pics!='null'){
+															cmtArray[i].pics = JSON.parse(cmtArray[i].pics);
+															for(var j = 0; j<cmtArray[i].pics.length;j++){
+																if(cmtArray[i].pics[j].picImg.indexOf('http') == -1){
+	                                                                cmtArray[i].pics[j].picImg = serverimgUrl + cmtArray[i].pics[j].picImg;
+	                                                            }
+															}
+														}
+                                                        if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+                                                            if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+                                                                cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+                                                            }else{
+                                                                cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+                                                            }
+                                                        }else{
+                                                            cmtArray[i].avatar = '../../img/10.png'
+                                                        }
+                                                        
+//														var dt = new Date(cmtArray[i].create_time).getTime(); 
+//														cmtArray[i].create_time = getDateDiff(dt);
+														newCmt.push(cmtArray[i])
+													} 
+												}else{
+													for(var i = 0;i<cmtArray.length;i++){
+														if(!cmtArray[i].nickname){ 
+															cmtArray[i].nickname =  '匿名'
+														}
+														
+														if(cmtArray[i].pics && cmtArray[i].pics!='null'){
+															cmtArray[i].pics = JSON.parse(cmtArray[i].pics);
+															for(var j = 0; j<cmtArray[i].pics.length;j++){
+																if(cmtArray[i].pics[j].picImg.indexOf('http') == -1){
+	                                                                cmtArray[i].pics[j].picImg = serverimgUrl + cmtArray[i].pics[j].picImg;
+	                                                            }
+															}
+														}
+                                                        if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+                                                            if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+                                                                cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+                                                            }else{
+                                                                cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+                                                            }
+                                                        }else{
+                                                            cmtArray[i].avatar = '../../img/10.png'
+                                                        }
+                                                            
+//														var dt = new Date(cmtArray[i].create_time).getTime(); 
+//														cmtArray[i].create_time = getDateDiff(dt);
+														newCmt.push(cmtArray[i])
+													} 
+												}
+//												alert(JSON.stringify(newCmt))
+												curShow.html(template('cmtTpl',{list:newCmt}))
+											}
+											
+										 
+										}else{
+											mui.toast('当前网络不好,请重试');
+										}
+									},
+									error: function(xhr, type, errorThrown) {
+										console.error('评论列表,响应失败');
+										mui.toast('当前网络不好,请重试');
+									}
+								});
+							}) 
 						}else{
 							mui.toast('当前网络不好,请重试');
 						}
+						
+						
 					},
 					error: function(xhr, type, errorThrown) {
 						console.error('交友列表,响应失败');
@@ -395,8 +586,7 @@
 				
 			})
 		}
-		
-		
+		 
 		
 		//搜索
 		$('.search').click(function(){
@@ -418,17 +608,7 @@
 				extrasobj:{groupId:id}
 			})
 		}
-		//点赞
-		$('.bottomop img').click(function(){
-			event.stopPropagation()
-			if($(this).attr('src') == '../../img/answer/liked.png'){
-				$(this).attr('src','../../img/answer/unlike.png')
-			}else if($(this).attr('src') == '../../img/answer/unlike.png'){
-				$(this).attr('src','../../img/answer/liked.png') 
-				mui.toast('点赞成功')
-			}
-		})
-		
+		 
 		//分享
 		$('#share').click(function(){
 			
@@ -443,11 +623,14 @@
 		})
 		
 		//查看全部
-		$('.listCon').click(function(){
+		/*打开详情*/
+		function openDetail(id){
 			openview({
-				view:'answerInfo.html'
+				view:'answerInfo.html',
+				id:'answerInfo',
+				extrasobj:{answerId:id}
 			})
-		})
+		}
 	</script>
 		
 		
