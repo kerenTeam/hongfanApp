@@ -148,8 +148,12 @@
 							console.log(back.responseText);
 							var dataobj = JSON.parse(back.responseText);
 							if(dataobj.errno == 0){
-								alert('成功');
-								plus.nativeUI.closeWaiting();
+								mui.fire(plus.webview.getWebviewById('circle.html'),'refresh');
+								var time2 = setTimeout(function(){
+									mui.toast('发布成功');
+									plus.nativeUI.closeWaiting();
+									plus.webview.currentWebview().close();
+								},800)
     						}else{
     							plus.nativeUI.closeWaiting();//关闭等待框
     							mui.toast('发布失败，请重试！');
@@ -168,7 +172,6 @@
 				task.addData("typeid",1);
 				task.addData("content",content);
 				if(Apic.length){
-					alert(Apic.length);
 					console.log(Apic);
 					[].forEach.call(Apic,function(ele,index){
 						task.addFile(ele, {key:index.toString()});
