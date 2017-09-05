@@ -49,8 +49,8 @@
 								</div>
 							</div>
 							<div class="butright">
-				            	<div class="diyButton activecl goask" data-id="<%=list[i].answerProce%>">
-				            		<%=list[i].answerProce%>hi豆提问	
+				            	<div class="diyButton activecl goask" data-id="<%=list[i].answerProce%>" data-expert="<%=list[i].userId%>">
+				            		<%=list[i].answerProce%>HI豆提问	
 				            	</div>
 				            </div>
 						</div>
@@ -73,8 +73,7 @@
 			var oldToken = plus.storage.getItem('oldToken'),
 		 		cityNum = plus.storage.getItem('cityNum'),
 				myuserid = plus.storage.getItem('userid'),
-				group = plus.webview.currentWebview().exGroup;
-				group = 2;
+				group = plus.webview.currentWebview().exGroup; 
 				mui.ajax(serverUrl+'/api/faqs/expert/groupId/'+group,{
 					type:'get',
 					timeout:8000,
@@ -104,10 +103,11 @@
 							//直接提问
 							$('.goask').click(function(){
 								event.stopPropagation();
-								var hidou = $(this).attr("data-id"); 
+								var hidou = $(this).attr("data-id");
+								var expertid= $(this).attr("data-expert");
 								openview({
 									view:'ask.html',
-									extrasobj:{expertHI:hidou,userId:myuserid}
+									extrasobj:{expertHI:hidou,userId:myuserid,expert:expertid}
 								})
 							})
 							

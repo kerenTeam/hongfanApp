@@ -23,7 +23,8 @@
 		.follow:after{position:absolute;right:10px;bottom:0;left:10px;height:1px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
 		.follow:last-child:after{height:0;}
 		.fchidl{display:flex;align-items:center;justify-content:space-between;}
-		.Avator,.userAvator{margin-right:15px;width:2rem;height:2rem;}
+		.Avator{margin-right:15px;width:40px;height:40px;}
+		.userAvator{margin-right:15px;width:2rem;height:2rem;}
 		.userAvator,.userAvator2{border-radius:50%;}
 		.userAvator2{margin-right:15px;width:1.5rem;height:1.5rem;}
 		.fchidl>div{display:flex;vertical-align:middle;text-align:left;font-size:15px;align-items:center;}
@@ -66,102 +67,27 @@
 					</div>
 				</div>
 			</div>
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/emotionicon.png" class="Avator" />
-						<div>
-							<div>情感类</div>
-							<div class="text">情感小烦恼，大家来开导</div>
-						</div>
+			<div id="curExport"></div>
+			<script type="text/html" id="curExportTpl">
+				<%for(var i = 0;i<list.length;i++){%>
+					<div class="follow themeAsk" onclick="themeAsk(<%=list[i].id%>)"> 
+						<div class="fchidl">
+							<div>
+								<img src="<%=list[i].icon%>" class="Avator" />
+								<div>
+									<div><%=list[i].name%></div>
+									<div class="text"><%=list[i].description%></div>
+								</div>
+							</div>
+							<div class="butright">
+				            	<div class="diyButton activecl goask">
+				            		提问	
+				            	</div>
+				            </div>
+						</div> 
 					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask">
-		            		提问	
-		            	</div>
-		            </div>
-				</div> 
-			</div>
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/lifeicon.png" class="Avator" />
-						<div>
-							<div>生活类</div>
-							<div class="text">生活琐事，为您支招</div>
-						</div>
-					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask">
-		            		提问	
-		            	</div>
-		            </div>
-				</div> 
-			</div>
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/enviromenticon.png" class="Avator" />
-						<div>
-							<div>求助类</div>
-							<div class="text">需要帮忙，到这求助</div>
-						</div>
-					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask">
-		            		提问	
-		            	</div>
-		            </div>
-				</div> 
-			</div>
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/workingicon.png" class="Avator" />
-						<div>
-							<div>职场类</div>
-							<div class="text">工作怎么办，大家说说看</div>
-						</div>
-					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask">
-		            		提问	
-		            	</div>
-		            </div>
-				</div> 
-			</div>
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/kidicon .png" class="Avator" />
-						<div>
-							<div>育儿类</div>
-							<div class="text">宝妈宝爸谈经验</div>
-						</div>
-					</div>
-					<div class="butright">
-		            	<div class="diyButton activecl goask">
-		            		提问	
-		            	</div>
-		            </div>
-				</div> 
-			</div>
-			<div class="follow themeAsk"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/answer/lawyericon.png" class="Avator" />
-						<div>
-							<div>法律类</div>
-							<div class="text">法律咨询，这里来找</div>
-						</div>
-					</div> 
-					<div class="butright">
-		            	<div class="diyButton activecl goask">
-		            		提问	
-		            	</div>
-		           </div> 
-				</div> 
-			</div>
+				<%}%>
+			</script> 
 		</div>
 		<div class="QandA"> 
 			<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;">
@@ -335,6 +261,47 @@
 			}
 		})
 		
+		//获取问答分类
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'),
+		 		cityNum = plus.storage.getItem('cityNum');
+			 
+				mui.ajax(serverUrl+'/api/faqs/group',{
+					type:'get',
+					timeout:8000,
+					headers:{"token":oldToken,"city":1},	              				
+					success:function(data,type,xhr){
+						console.log('exppot',data);
+						if(data.errno == 0){ 
+							if(data.data && data.data.length){
+								 var picObj = data.data;  
+								 [].forEach.call(picObj,function(ele){
+								 	 if(ele.icon && ele.icon!='null'){
+										if(JSON.parse(ele.icon)[0].picImg.indexOf('http') == -1){
+											ele.icon = serverimgUrl + JSON.parse(ele.icon)[0].picImg;
+										}else{
+											ele.icon = JSON.parse(ele.icon)[0].picImg;
+										}
+									}else{
+										ele.icon ='../../img/10.png' 
+									}
+								 }) 
+								 $('#curExport').html(template('curExportTpl',{list:picObj}));
+	
+							}else{
+								$('#curExport').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无分类</div>')
+							}
+						  
+						}else{
+							console.log(data.errmsg); 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取数据,响应失败');
+					}
+				});
+		})
+		
 		/*铺数据*/
 		shopData(0,0,false);//默认推荐
 		
@@ -358,14 +325,14 @@
 			}
 			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 			mui.plusReady(function(){
-				var myuserid = plus.storage.getItem('userid');
+				var myuserid = plus.storage.getItem('userid'); 
 				if(typeNum == 0){
 					var dataJson = {
 						'numsPerPage':6,
 						'currentPage':1,
 						'orderType':'DESC',
 						'orderField':'create_time',
-						'typeId':1
+						'typeId':2
 					}
 				}else if(typeNum == 1){
 					var dataJson = {
@@ -375,7 +342,7 @@
 						'orderType':'DESC',
 						'orderField':'create_time',
 						'isFriends':1,
-						'typeId':1
+						'typeId':2
 					}
 				}
 				var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
@@ -510,11 +477,12 @@
 			})
 		})
 		//主题提问
-		$('.themeAsk').click(function(){
+		function themeAsk(id){
 			openview({
-				view:'questionInfo.html'
+				view:'questionInfo.html',
+				extrasobj:{groupId:id}
 			})
-		})
+		}
 		//点赞
 		$('.bottomop img').click(function(){
 			event.stopPropagation()
