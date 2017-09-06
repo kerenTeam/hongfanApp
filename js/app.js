@@ -219,7 +219,7 @@ function likeThis(thisobj,newsId,cityNum,myuserid,oldtoken,curType,imgSrc){
 window.lazyLoad = function(init,limit){
 	var limit = limit || 100;
 	var loadPics = mui('.loadPics'),
-	H = window.innerHeight;//可视窗口高度
+	H = 590;//可视窗口高度
 	window.onscroll = function(){
 		if(H == 0){H = window.innerHeight;}
 		if(loadPics.length){
@@ -231,6 +231,7 @@ window.lazyLoad = function(init,limit){
 		         	console.log('S>>>>' + parseInt(S));
 		         	console.error('getTop>>>>' +  getTop(img));
 		         }*/
+	        	//console.log(H + S - limit +'===='+ getTop(img));
 		         if(H + S - limit > getTop(img)){
 		             img.src=img.getAttribute("data-src");
 		             img.removeAttribute("data-src");
