@@ -189,15 +189,7 @@
 			</div>  
 		</header>
 		<script src="../../js/statusBar.js" type="text/javascript" charset="utf-8"></script>
-		<div class="history">
-			  <span>热门搜索</span>
-			  <div class="clear"></div>
-			  <div class="hisList">
-			   		<span>时间管理</span>
-				  	<span>健康</span> 
-				  	<span>沟通技巧</span> 
-			  </div>
-		</div>
+	 
 		<div id="record">暂无搜索记录</div>
 		<script id="recordTpt" type="text/html">
 					<%if(data.length==0){%>
@@ -355,42 +347,24 @@
 				$("#tab").css("display","block"); 
 				$("input").blur(); 
 					plus.nativeUI.showWaiting();
-					var oldtoken = plus.storage.getItem('oldToken'); 
-					mui.ajax(serverUrl+'/api/news/searchnews',{
-						data:{serchValue:words},
+					var cityNum  = plus.storage.getItem('cityNum'), 
+						oldToken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/faqs/search',{
+						data:{title:words},
 						dataType:'json',
 						type:'post',
-						timeout:10000,
-						headers:{"token":oldtoken},	 
+						timeout:8000,
+						headers: {"token": oldToken,'city': cityNum},
 						success:function(data,type,xhr){ 
 							plus.nativeUI.closeWaiting();
 							if(data.errno==0){
-								if(data.data.friend_news.length!=0 || data.data.friend_news_tags.length!=0 || data.data.users.length!=0){
+								if(data.data && data.data.length!=0){
 									 var searchObj = {};
-									if(data.data.users.length){
-									 	for(var i = 0 ;i<data.data.users.length;i++){
-										 	if(data.data.users[i].avatar.indexOf("[")>-1){
-												data.data.users[i].avatar =serverimgUrl + JSON.parse(data.data.users[i].avatar)[0].picImg;
-											} 
-										 }
-									 }
-									if(data.data.friend_news.length){
-									 	for(var i = 0 ;i<data.data.friend_news.length;i++){
-										 	if(data.data.friend_news[i].pic.indexOf("[")>-1){
-												data.data.friend_news[i].pic =serverimgUrl + JSON.parse(data.data.friend_news[i].pic)[0].picImg;
-											} 
-										 }
-									}
+									 
 									 searchObj.searchData = data.data;
 									 console.log(JSON.stringify(data.data))
 									 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
-									 
-								   
-									
-									//js控制问题最多显示字数
-									$(".tc1 .follow span").wordLimit(10); 
-								 
-									 
+									  
 									//问题 跳转
 									$(".tc1 .follow").click(function(){ 
 										var newsId = $(this).attr("data-newsid");

@@ -105,11 +105,18 @@
 								event.stopPropagation();
 								var hidou = $(this).attr("data-id");
 								var expertid= $(this).attr("data-expert");
-								openview({
-									view:'ask.html',
-									id:'ask',
-									extrasobj:{expertHI:hidou,userId:myuserid,expert:expertid}
-								})
+								if(plus.storage.getItem('myToken')){
+									openview({
+										view:'ask.html',
+										id:'ask',
+										extrasobj:{expertHI:hidou,userId:myuserid,expert:expertid}
+									})
+								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									});
+								} 
 							})
 							
 						}else{
