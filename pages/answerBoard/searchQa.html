@@ -220,16 +220,16 @@
 				<div class="tabcontent tc1 taactive"> 
 					<div class="follow"> 
 						<div class="disablecl">问题 </div> 
-					</div> 
-					<%if(searchData.friend_news.length!=0){%>
-	    				<%for(var i=0;i < searchData.friend_news.length;i++){%>
-	    					<div class="follow" data-id="<%=searchData.friend_news[i].userid%>" data-newsid="<%=searchData.friend_news[i].news_id%>"> 
-								<div class="ft16">xxxxxxxxddadfsdf </div>
-								<div class="disablecl">回答者：222</div>
+					</div>  
+	    				<%for(var i=0;i < searchData.length;i++){%>
+	    					<%if(searchData[i].typeId == 2){%>
+	    						<div class="follow" data-id="<%=searchData[i].id%>"> 
+								<div class="ft16"><%=searchData[i].content%></div>
+								<div class="disablecl">回答者：<%=searchData[i].answerNums%></div>
 							</div> 
-	    				<%}%>
-	    			<%}%>
-					 
+	    						<%}%>
+	    					
+	    				<%}%>  
 				</div> 
 			</script>
 			</div>
@@ -366,14 +366,13 @@
 									 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
 									  
 									//问题 跳转
-									$(".tc1 .follow").click(function(){ 
-										var newsId = $(this).attr("data-newsid");
-										var userid = $(this).attr("data-id");
+									$(".tc1 .follow").click(function(){  
+										var newsid = $(this).attr("data-id");
 										openview({
-											view: "findInfo.html",
-											id:"findInfo",
+											view: "answerInfo.html",
+											id:"answerInfo",
 											extrasobj: {
-												userId: userid,newsId:newsId
+												answerId: newsid
 											}
 										})
 									})
