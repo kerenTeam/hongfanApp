@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>圈子</title>
+		<title>创建圈子</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />   
 		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
@@ -27,20 +27,20 @@
 		 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">圈子</h1>
-			<a class="mui-pull-right ft14 nextStep disablecl" style="line-height: 50px;">完成</a> 
+			<h1 class="mui-title">创建圈子</h1>
+			<a class="mui-pull-right ft14 nextStep disablecl" style="line-height: 50px;color: #555;">完成</a> 
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="main">	
+		<div id="main">
 		 	<!--遮罩-->
 			<div id="maskInfo">
 			<div class="rule">
 				<div class="onePic">
-					 <input class="doc-form-file" type="file">
-					<img src="../../img/answer/goanswer/addpic.png" class="disreve" />
+					 <!--<input class="doc-form-file" type="file">-->
+					<img src="../../img/answer/goanswer/addpic.png" onclick="galleryImgsSelected()" class="disreve" />
 				</div>
 				<div class="circleInput">
-			 	 	<input type="text" name="" id="" placeholder="请输入圈子名称" />
+			 	 	<input type="text" id="Cname" placeholder="请输入圈子名称" />
 			 	</div>
 			 	<div class="chargeUnit ft14">
 			 		<div class="diybut">
@@ -68,15 +68,110 @@
 			 			生活
 			 		</div>
 			 	</div>
-				<textarea id="textCon" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="圈子简介（选填）"></textarea>
+				<textarea id="Cmiaoshu" class="disbg ft14" minlength='4' maxlength='49' rows="3" placeholder="圈子简介（选填）"></textarea>
 				
 			</div>	
-					
 			</div>
 		</div>  
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var Apic = '';//图片存放数组 
+			function galleryImgsSelected(){//从相册中选择图片
+				mui.plusReady(function(){
+				    plus.gallery.pick( function(e){
+				    	Apic = [];
+			    		if(0!=e.files[0].indexOf("file://")){
+							e.files[0]="file://"+e.files[0];//图片地址
+						}
+			    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
+			    		var endpic = e.files[0].split('.')[0]+"/" +nowpic;
+			    		//压缩方法
+		    			plus.zip.compressImage({
+							src:e.files[0],
+							dst:endpic,
+							overwrite:true, 
+							quality:30
+						},
+						function(obj) {
+							console.log(obj.target);
+							Apic = obj.target;
+							if(0!=obj.target.indexOf("file://")){
+								obj.target="file://"+obj.target;
+							}
+							mui('.disreve')[0].src = obj.target;
+						},function(error) {
+							mui.toast('图片获取错误，请重试');  
+						});
+				    		
+				    }, function ( e ) {  
+		    		},{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
+				    }});
+				})	
+			}//从相册中选择图片结束
+			
+			//发送 发布
+			mui('.nextStep')[0].addEventListener('tap',function(){
+				mui.plusReady(function(){
+					var cityNum  = plus.storage.getItem('cityNum'),
+						oldToken = plus.storage.getItem('oldToken'),
+					 	myuserid = plus.storage.getItem('userid'),
+				 	    Cname = mui('#Cname')[0],
+				 	    Cmiaoshu = mui('#Cmiaoshu')[0];
+				 	if(!Cname.value){
+				 		mui.toast('请填写名称');
+				 	}else if(!Apic){
+				 		mui.toast('请选择封面');
+				 	}else{
+				 		plus.nativeUI.showWaiting();
+				 		releaseData();
+				 	}
+				 	
+				 	//发送数据
+				 	function releaseData(){
+						var task = plus.uploader.createUpload(serverUrl+'/api/friends/space', 
+							{ method:"POST"},
+							function(back,status){
+								if(status == 200){
+									console.log(back.responseText);
+									var dataobj = JSON.parse(back.responseText);
+									if(dataobj.errno == 0){
+										//mui.fire(plus.webview.getWebviewById('circle.html'),'refresh');
+										var time2 = setTimeout(function(){
+											mui.toast('发布成功');
+											plus.nativeUI.closeWaiting();
+											plus.webview.currentWebview().close();
+										},800)
+		    						}else{
+		    							plus.nativeUI.closeWaiting();//关闭等待框
+		    							mui.toast('发布失败，请重试！');
+		    							plus.nativeUI.closeWaiting();
+		    						}
+								}else{
+									plus.nativeUI.closeWaiting();//关闭等待框
+									mui.toast('当前网络不好，请重试！');	
+								}
+								
+							}
+						);
+						task.setRequestHeader('token',oldToken);
+						task.setRequestHeader('city',cityNum);
+						task.addData("userId",myuserid); 
+						task.addData("description",Cmiaoshu.value);
+						task.addData("name",Cname.value);
+						if(Apic){
+							task.addFile(Apic, {key:'pics'});
+							task.start();
+						}else{
+							mui.toast('没有图片,请重试');
+						}
+						
+				 	}
+				 	//发送数据结束
+				})
+			})
+		</script>
 		<script type="text/javascript">
 		 
 	 
@@ -84,30 +179,12 @@
 			$(this).toggleClass('diybuted')
 		})
 		
-		$('.nextStep').click(function(){
-			mui.alert('圈子创建成功','提示',['确定'],null,'div')
-		})
+//		$('.nextStep').click(function(){
+//			mui.alert('圈子创建成功','提示',['确定'],null,'div')
+//		})
 		
-		//上传图片
-        $(".doc-form-file").change(function(){
-            var objUrl = getObjectURL(this.files[0]) ;
-            console.log("objUrl = "+objUrl) ;
-            if (objUrl) {
-                $('.disreve').attr("src", objUrl) ;
-            }
-        }) ;
-        //建立一個可存取到該file的url
-        function getObjectURL(file) {
-            var url = null ; 
-            if (window.createObjectURL!=undefined) { // basic
-                url = window.createObjectURL(file) ;
-            } else if (window.URL!=undefined) { // mozilla(firefox)
-                url = window.URL.createObjectURL(file) ;
-            } else if (window.webkitURL!=undefined) { // webkit or chrome
-                url = window.webkitURL.createObjectURL(file) ;
-            }
-            return url ;
-        }
+
+
         
         //上传图片结束
 		</script>

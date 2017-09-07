@@ -1,124 +1,238 @@
 <!doctype html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title>圈子</title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../../css/mui.min.css" rel="stylesheet" />   
-		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
-		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
-	</head>
-	<style type="text/css"> 
-	 	.search{height:60px;background-color:#f3f3f3;}
-		.searchBox{position:relative;margin:auto;width:76%;height:100%;}
-		.searchBox img:first-child{width:100%;max-height:50px;}
-		.searchBox .searchIcon,.searchBox img:first-child{position:absolute;top:50%;z-index:1;-webkit-transform:translateY(-50%);}
-		.searchBox .searchIcon{left:10px;width:13px;}
-		.circleContain{padding: 5px;}
-		.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../../img/makeFriend/friendB.png) no-repeat;text-align: center;background-size: 100% 100%;background-position: left top;padding: 1px;}
-		.circleImg{width: calc((100vw - 34px)/2);padding-top: 100%;overflow: hidden;position: relative;}
-		.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 3px 3px 0 0;}
-		.circleName{padding: 25px 0;line-height: 0.5;}
+<head>
+	<meta charset="UTF-8">
+	<title>圈子</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
+</head>
+<style type="text/css">
+ 	.search{height:60px;background-color:#f3f3f3;}
+	.searchBox{position:relative;margin:auto;width:76%;height:100%;}
+	.searchBox img:first-child{width:100%;max-height:50px;}
+	.searchBox .searchIcon,.searchBox img:first-child{position:absolute;top:50%;z-index:1;-webkit-transform:translateY(-50%);}
+	.searchBox .searchIcon{left:10px;width:13px;}
+	.circleContain{padding: 5px;overflow: hidden;}
+	.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../../img/makeFriend/friendB.png) no-repeat;text-align: center;background-size: 100% 100%;background-position: left top;padding: 1px;}
+	.circleImg{width: calc((100vw - 34px)/2);padding-top: 100%;overflow: hidden;position: relative;}
+	.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 3px 3px 0 0;}
+	.circleName{padding: 18px 0;line-height: 0.5;}
+	
+	#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,0.6);filter: blur(0.8);-webkit-filter: blur(0.6);}
+	.ruleCt{position:absolute;top:15%;left:7%;width:86%;bottom:15%;display: flex;justify-content: space-around;align-items: center;}
+	.closemask{position:absolute;bottom:20px;left:50%;-webkit-transform:translateX(-50%)}
+	.ruleCt div{height: 100px;width:100px;border: 1px solid #F3F3F3;border-radius: 50%;text-align: center;line-height: 100px;color: black;background-color: white;}
+	.ruleAct{background-color: #fa3b3c!important;color: white!important;border: 1px solid #fa3b3c!important;}
+	.closeIcon{transform: rotate(45deg);position: absolute;top: 20px;left: calc(100vw - 40px);width: 30px;transition: all 5 ease;}
+	.circleRule{position: absolute;left: 0;bottom: 0;width: 100%;background-color: #F3F3F3 ;padding: 25px;text-align: center;}
+	.circleRule img{width: 20px;vertical-align: middle;}
+	.circleRule .ruleInfo{color: #fb7e23;}
+	.upbtn{margin-top: 20px;}
+	#upload img{margin-top: -20px;}
+	.circleImgZ, .circleImg{background-color: #f3f3f3;}
+	.circleNameZ{visibility: hidden;}
+</style>
+<body style="background-color: white;padding-bottom: 0;">
+	<header class="mui-bar mui-bar-nav" id="header">
+		<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		<h1 class="mui-title">圈子</h1>
+		<img src="../../img/makeFriend/userCenter.png" class="mui-pull-right circleCenter" style="width:20px;margin-top: 15px; margin-right: 6px;"/>
+	</header>
+	<script src="../../js/statusBar.js"></script><!--状态栏-->
+	<div id="main">	
+		<div class="search">
+			<div class="searchBox">
+				<img src="../../img/answer/searchBar.png"/>
+				<img class="searchIcon" src="../../img/answer/search.png"/>
+				<div style="position: absolute;left: 30px;font-size: 12px;top:50%;-webkit-transform: translateY(-50%);">
+					请输入您想找的内容
+				</div>
+			</div>
+		</div>
 		
-		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,0.6);filter: blur(0.8);-webkit-filter: blur(0.6);}
-		.ruleCt{position:absolute;top:15%;left:7%;width:86%;bottom:15%;display: flex;justify-content: space-around;align-items: center;}
-		.closemask{position:absolute;bottom:20px;left:50%;-webkit-transform:translateX(-50%)}
-		.ruleCt div{height: 100px;width:100px;border: 1px solid #F3F3F3;border-radius: 50%;text-align: center;line-height: 100px;color: black;background-color: white;}
-		.ruleAct{background-color: #fa3b3c!important;color: white!important;border: 1px solid #fa3b3c!important;}
-		.closeIcon{transform: rotate(45deg);position: absolute;top: 20px;left: calc(100vw - 40px);width: 30px;transition: all 5 ease;}
-		.circleRule{position: absolute;left: 0;bottom: 0;width: 100%;background-color: #F3F3F3 ;padding: 25px;text-align: center;}
-		.circleRule img{width: 20px;vertical-align: middle;}
-		.circleRule .ruleInfo{color: #fb7e23;}
-		.upbtn{margin-top: 20px;}
-	</style>
-	<body style="background-color: white;padding-bottom: 0;">
-		 
-		<header class="mui-bar mui-bar-nav" id="header">
-			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">圈子</h1>
-			<img src="../../img/makeFriend/userCenter.png" class="mui-pull-right circleCenter" style="width:20px;margin-top: 15px; margin-right: 6px;"/>
-		</header>
-		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="main">	
-			<div class="search">
-				<div class="searchBox">
-					<img src="../../img/answer/searchBar.png"/>
-					<img class="searchIcon" src="../../img/answer/search.png"/>
-					<div style="position: absolute;left: 30px;font-size: 12px;top:50%;-webkit-transform: translateY(-50%);">
-						请输入您想找的内容
+		<div class="circleContain" >
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
+		</div>
+		<script type="text/html" id="listDataS">
+			<%for(var i=0;i<dataList.length;i++){%>
+				<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>)">
+					<div class="circleImg">
+						<img class="loadPics" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
 					</div>
+					<div class="circleName ft16"><%=dataList[i].name%></div>
 				</div>
+			<%}%>	
+		</script>
+		<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div>
+		<!--<div class="circleBox" id="addCircle">
+			<div class="circleImg">
+				<img src="../../img/makeFriend/add.png"/>
 			</div>
-			
-			<div class="circleContain">
-				<div class="circleBox cbc">
-					<div class="circleImg">
-						<img src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-					</div>
-					<div class="circleName ft16">
-						摄影之眼
-					</div>
-				</div>
-				<div class="circleBox cbc">
-					<div class="circleImg">
-						<img src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-					</div>
-					<div class="circleName ft16">
-						摄影之眼
-					</div>
-				</div>
-				<div class="circleBox cbc">
-					<div class="circleImg">
-						<img src="https://b-ssl.duitang.com/uploads/item/201707/31/20170731035211_ENmHy.thumb.400_0.jpeg"/>
-					</div>
-					<div class="circleName ft16">
-						摄影之眼
-					</div>
-				</div>
-				<div class="circleBox" id="addCircle">
-					<div class="circleImg">
-						<img src="../../img/makeFriend/add.png"/>
-					</div>
-					<div class="circleName ft16">
-						创建圈子
-					</div>
-				</div>
-				 
+			<div class="circleName ft16">
+				创建圈子
 			</div>
-			
-			
-			<!--遮罩-->
-			<div id="maskInfo" style="display: none;">
-				<img class="closeIcon closemask" src="../../img/market/addtheme.svg"/>
-				<div class="ruleCt">
-				 	<div class="ruleCtd free">
-				 		免费
-				 	</div>
-				 	<div class="ruleCtd fufei">
-				 		付费
-				 	</div>
-				</div>
-				<div class="circleRule" style="display: none;">
-					<img src="../../img/makeFriend/diasgree.png" class="agree"/>
-					<span  class="ft16">我已同意并阅读<span class="ruleInfo goRule">《圈子圈主规则》</span>  </span>
-					<div class="ft14" style="background-color: white;border: 1px solid #EEEEEE;padding: 10px;margin-top: 15px;text-align: left;">
-						包含低俗、色情、暴力、引诱的圈子，将会被封停圈 子和账号
-						<div class="disablecl goRule" style="text-align: right;">
-							进入详情
-						</div>
-					</div>
-					
-					<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" disabled="">下一步</button>					 
-				</div>
+		</div>-->
+		<!--遮罩-->
+		<div id="maskInfo" style="display: none;">
+			<img class="closeIcon closemask" src="../../img/market/addtheme.svg"/>
+			<div class="ruleCt">
+			 	<div class="ruleCtd free">
+			 		免费
+			 	</div>
+			 	<div class="ruleCtd fufei">
+			 		付费
+			 	</div>
 			</div>
-		</div>  
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script src="../../js/mui.min.js"></script>
-		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript">
-		 
+			<div class="circleRule" style="display: none;">
+				<img src="../../img/makeFriend/diasgree.png" class="agree"/>
+				<span  class="ft16">我已同意并阅读<span class="ruleInfo goRule">《圈子圈主规则》</span>  </span>
+				<div class="ft14" style="background-color: white;border: 1px solid #EEEEEE;padding: 10px;margin-top: 15px;text-align: left;">
+					包含低俗、色情、暴力、引诱的圈子，将会被封停圈 子和账号
+					<div class="disablecl goRule" style="text-align: right;">
+						进入详情
+					</div>
+				</div>
+				
+				<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" disabled="">下一步</button>					 
+			</div>
+		</div>
+		<!--遮罩结束-->
+	</div>  
+	<script type="text/javascript" charset="utf-8" src="../../js/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../../js/mui.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../../js/artTemplate-native.js"></script>
+	<script type="text/javascript">
+		/*图片高宽处理*/
+		function imgHeight(obj){
+			if(obj.offsetHeight<obj.parentNode.offsetHeight){
+				obj.style.height = '100%';
+				obj.style.width = 'auto';
+			}
+		}
+		/*圈子详情*/
+		function openDetail(id){
+			openview({
+				view:'circleInfo.html',
+				extrasobj: {
+					circleId: id
+				}
+			})
+		}
+		
+	</script>
+	<script type="text/javascript">
+		shopData(0,0,1);//默认推荐
+		function shopData(typeNum,gender,suggest){
+			var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数
+
+			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+			mui.plusReady(function(){
+				var numsPerPage = 6;
+				var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
+				mui.ajax(serverUrl + '/api/friends/space/isAll/1/currentPage/1/numsPerPage/'+numsPerPage, {
+					dataType: 'json',
+					type: 'get',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.error('圈子列表'+typeNum, data);
+						if(data.errno == 0) {
+							if(!data.data.data.length){
+								mui("#upload")[0].innerHTML = "当前城市没有数据 !";
+							}else{
+								var dataObj = {};
+								for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
+								 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
+										data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
+									}
+								}
+								dataObj.dataList = data.data.data;
+								document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
+								lazyLoad(true,50);//懒加载
+								
+								$(window).scroll(function() {
+									var scrollTop = $(this).scrollTop();　
+									var scrollHeight = $(document).height();
+									var windowHeight = $(this).height();　　
+									if(scrollTop + windowHeight == scrollHeight) {
+										if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+											Ypagenum++; //满足加载情况,应到页数+1
+											console.log('发起请求,实到' + Spagenum + '页');
+											console.log('发起请求,应到' + Ypagenum + '页');
+											mui.ajax(serverUrl + '/api/friends/space/isAll/1/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage, {
+												dataType: 'json',
+												type: 'get',
+												timeout: 8000,
+												headers: {"token": oldToken,'city': cityNum},
+												success: function(data) {
+													console.error('圈子列表续'+typeNum, data);
+													if(data.errno == 0) {
+														var dataObj = {};
+														for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
+														 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
+																data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
+															}
+														}
+														dataObj.dataList = data.data.data;
+														document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
+														lazyLoad(false,50);//懒加载
+													}
+													//mui("#upload")[0].innerHTML = " ";
+													Spagenum++; //加载成功,当前页+1
+													console.log('成功+1,实到' + Spagenum);
+													console.log('成功+1,应到' + Spagenum);
+												},
+												error: function(xhr, type, errorThrown) {
+													Ypagenum--; //失败是应到-1
+													mui.toast("当前网络不好请重试");
+													mui("#upload")[0].innerHTML = "";
+												}
+											});
+										} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "到底了";
+										}
+									} 
+								});
+							
+							}
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('交友列表,响应失败');
+						mui.toast('当前网络不好,请重试');
+					}
+				});
+			})
+		}
+		/*我的圈子*/
+		$('.circleCenter').click(function(){
+			mui.plusReady(function(){
+				if(plus.storage.getItem('myToken')){
+				 	openview({
+						view:'ownCircle.html'
+					})
+				}else{//没登陆直接打开登录页面
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
+			})
+			
+		})
+	</script>
+	<script type="text/javascript">
 		//搜索
 		$('.search').click(function(){
 			openview({
@@ -126,7 +240,7 @@
 			})
 		})
 		//创建圈子 
-		$('#addCircle').click(function(){ 
+		$('#addCircle').click(function(){
 			$('#maskInfo').fadeIn(200);
 		})
 		
@@ -163,31 +277,22 @@
 		})
 		
 		$('.upbtn').click(function(){
-//			$('#maskInfo').fadeOut(200);
-//			$('.circleRule').css('display','none')
-//			$('.ruleCtd').removeClass('ruleAct');
+	//			$('#maskInfo').fadeOut(200);
+	//			$('.circleRule').css('display','none')
+	//			$('.ruleCtd').removeClass('ruleAct');
 			openview({
 				view:'chargeCircle.html'
 			})
 		})
 		
-		//圈子详情
-		$('.cbc').click(function(){
-			openview({
-				view:'circleInfo.html'
-			})
-		})
-		$('.circleCenter').click(function(){
-				openview({
-					view:'ownCircle.html'
-				})
-		})
+
+
 		$('.goRule').click(function(){
 				openview({
 					view:'circleRule.html'
 				})
 		})
-		</script>
-	</body>
+	</script>
+</body>
 
 </html>
