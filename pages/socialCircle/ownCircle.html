@@ -55,7 +55,7 @@
 			
 			<script type="text/html" id="listDataS">
 				<%for(var i=0;i<dataList.length;i++){%>
-					<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>)">
+					<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%= typeNum%>)">
 						<div class="circleImg">
 							<img class="loadPics" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
 						</div>
@@ -103,11 +103,13 @@
 				}
 			}
 			/*圈子详情*/
-			function openDetail(id){
+			function openDetail(id,typeNum){
 				openview({
 					view:'circleInfo.html',
+					id:'circleInfo',
 					extrasobj: {
-						circleId: id
+						circleId: id,
+						creator:typeNum
 					}
 				})
 			}
@@ -143,7 +145,11 @@
 					}
 				}
 			}) 
-			
+		
+			document.addEventListener('refresh', function() {
+				$(window).scrollTop(0);
+				shopData(0);//默认推荐
+			})
 			shopData(0);//默认推荐
 			function shopData(typeNum){
 				var Spagenum = 2; //实到页数
@@ -174,7 +180,7 @@
 							console.error('圈子列表'+typeNum, data);
 							if(data.errno == 0) {
 								if(!data.data.data.length){
-									mui("#upload")[0].innerHTML = "当前城市没有数据 !";
+									mui("#upload")[0].innerHTML = "没有数据 !";
 								}else{
 									var dataObj = {};
 									for(var i = 0 ;i<data.data.data.length;i++){//整理图片格式
@@ -183,6 +189,7 @@
 										}
 									}
 									dataObj.dataList = data.data.data;
+									dataObj.typeNum = typeNum;
 									document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
 									mui("#upload")[0].innerHTML = "";
 									lazyLoad(true,50);//懒加载
@@ -207,7 +214,7 @@
 													    	var openUrl = serverUrl + '/api/friends/space/isMyCreate/1/userId/'+myuserid+'/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage;
 													   }else{
 													    	var openUrl = serverUrl + '/api/friends/space/isJoin/1/userId/'+myuserid+'/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage;
-													    }
+													   }
 														mui.ajax(openUrl, {
 															dataType: 'json',
 															type: 'get',
@@ -223,6 +230,7 @@
 																		}
 																	}
 																	dataObj.dataList = data.data.data;
+																	dataObj.typeNum = typeNum;
 																	document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
 																	lazyLoad(false,50);//懒加载
 																}
@@ -305,19 +313,9 @@
 			})
 		})
 		
-		//圈子详情
-		$('.cmc').click(function(){
-			openview({
-				view:'circleInfo.html',
-				extrasobj:{creator:true}
-			})
-		})
+
 		
-		$('.cbc').click(function(){
-			openview({
-				view:'circleInfo.html'
-			})
-		})
+
 		</script>
 	</body>
 

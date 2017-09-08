@@ -24,91 +24,8 @@ function alertY(content){ //向前的方法
 //	alert(content)
 }
 
-window.showRedfun = function(){
-	mui.plusReady(function(){
-		var oldtoken = plus.storage.getItem('oldToken');
-		var myuserid = plus.storage.getItem('userid');
-		var PletterH = plus.storage.getItem('PletterH');
-		var commentH = plus.storage.getItem('commentH');
-		var likeH = plus.storage.getItem('likeH');
-		console.error('请求小红点'+"赞："+likeH+"评论："+commentH+"私信："+PletterH);
-		//alert('请求小红点'+"赞："+plus.storage.getItem('likeH')+"评论："+plus.storage.getItem('commentH')+"私信："+plus.storage.getItem('PletterH'));
-		//document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-		if(plus.storage.getItem('userid')){ 
-			if(likeH || commentH || PletterH){ 
-				document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-			}else{ 
-				//请求私信
-				mui.ajax(serverUrl+'/api/news/hasnewmsg',{
-					data:{"userid":myuserid},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},
-					success:function(data){
-						if(data.data && data.data.length){
-							mui.each(data.data,function (index,element) {
-			 					if(element.isnew){//有私信未读
-			 						//alert('私信'); 
-			 						plus.storage.setItem("PletterH",'yes');//私信标杆
-			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-			 						mui('.reddian1')[2].style.display = 'inline-block'; 
-			 						return false;
-			 					}
-							})
-						}
-					}
-				});
-				//请求评论
-				mui.ajax(serverUrl+'/api/news/message',{ 
-					data:{"userid":myuserid},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},
-					success:function(data){
-						if(data.data && data.data.length){
-							mui.each(data.data,function (index,element) {
-			 					if(element.read_state){//有评论未读
-			 						//alert('评论');
-			 						plus.storage.setItem("commentH",'yes');//私信标杆
-			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-			 						mui('.reddian1')[0].style.display = 'inline-block'; 
-			 						return false;
-			 					}
-							})
-						}
-					}
-				});
-				//请求点赞
-				mui.ajax(serverUrl+'/api/news/newslike',{
-					data:{"userid":myuserid},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},
-					success:function(data){
-						console.log(data);
-						if(data.errno == 0 && data.data.mynewsliker && data.data.mynewsliker.mynewsliker.length){
-							mui.each(data.data.mynewsliker.mynewsliker,function (index,element) {
-			 					if(element.read_state){//有评论未读 
-			 						//alert('点赞');
-			 						plus.storage.setItem("likeH",'yes');//私信标杆
-			 						document.getElementsByClassName('redDot')[0].style.display = 'inline-block';
-			 						mui('.reddian1')[1].style.display = 'inline-block'; 
-			 						return false;
-			 					}
-							})
-						}
-					}
-				});
-			}
-		}
-	})
-}//发现红点
-
 //banner跳转
-window.bannerGo = function(url, name, route) { 
+window.bannerGo = function(url, name, route) {
 	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
 		if(route == 'one'){//层级 
 			var bannerTplHtml = 'bannerTpl.html'; 
@@ -219,7 +136,7 @@ function likeThis(thisobj,newsId,cityNum,myuserid,oldtoken,curType,imgSrc){
 window.lazyLoad = function(init,limit){
 	var limit = limit || 100;
 	var loadPics = mui('.loadPics'),
-	H = 590;//可视窗口高度
+	H = window.innerHeight;//可视窗口高度
 	window.onscroll = function(){
 		if(H == 0){H = window.innerHeight;}
 		if(loadPics.length){
@@ -231,7 +148,7 @@ window.lazyLoad = function(init,limit){
 		         	console.log('S>>>>' + parseInt(S));
 		         	console.error('getTop>>>>' +  getTop(img));
 		         }*/
-	        	//console.log(H + S - limit +'===='+ getTop(img));
+	        	console.log(H + S - limit +'===='+ getTop(img) + plus.webview.currentWebview().id);
 		         if(H + S - limit > getTop(img)){
 		             img.src=img.getAttribute("data-src");
 		             img.removeAttribute("data-src");
