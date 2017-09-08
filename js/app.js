@@ -142,21 +142,16 @@ window.lazyLoad = function(init,limit){
 		if(loadPics.length){
 		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
 		    [].forEach.call(loadPics,function(img,index){
-		         if(!img.getAttribute('data-src')){return}
-		         /*if(index == 0){
-		         	console.log('H>>>>' + parseInt(H));
-		         	console.log('S>>>>' + parseInt(S));
-		         	console.error('getTop>>>>' +  getTop(img));
-		         }*/
+	         	if(!img.getAttribute('data-src')){return}
 	        	console.log(H + S - limit +'===='+ getTop(img) + plus.webview.currentWebview().id);
-		         if(H + S - limit > getTop(img)){
-		             img.src=img.getAttribute("data-src");
-		             img.removeAttribute("data-src");
-		             img.style.backgroundImage = 'url()';
-		             if(img.classList.contains('loadPics')){ 
-		             	img.classList.remove('loadPics');
-		             }
-		         }
+				if(H + S - limit > getTop(img)){
+			     	img.src=img.getAttribute("data-src");
+				 	img.removeAttribute("data-src");
+				 	img.style.backgroundImage = 'url()';
+				 	if(img.classList.contains('loadPics')){ 
+					img.classList.remove('loadPics');
+				     }
+			 	}
 	        })
 		}    
 	}
@@ -170,6 +165,23 @@ window.lazyLoad = function(init,limit){
 		}
 	    return T
 	} 
+}
+
+/*图片高宽处理*/
+ window.imgHeight =  function(obj){
+	if(obj.offsetHeight<obj.parentNode.offsetHeight){
+		obj.style.height = '100%';
+		obj.style.width = 'auto';
+		clearInterval(timePicWidth);
+		var timePicWidth = setTimeout(function(){
+			obj.style.opacity = 1;
+		},50)
+	}else{
+		clearInterval(timePicWidth2);
+		var timePicWidth2 = setTimeout(function(){
+			obj.style.opacity = 1;
+		},50)
+	}
 }
 
 

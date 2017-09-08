@@ -21,8 +21,9 @@
 		.circleContain{overflow: hidden;padding-top: 45px;margin-left: 5px;}
 		.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../../img/makeFriend/friendB.png) no-repeat;background-size: 100% 100%;background-position: left top;padding: 1px;}
 		.circleImg{width: calc((100vw - 34px)/2);padding-top: 100%;overflow: hidden;position: relative;}
-		.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 3px 3px 0 0;}
-		.circleName{padding:15px 10px;line-height: 1.5;}
+		.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 3px 3px 0 0;opacity: 0;transition: all 0.5s;}
+		.circleName{padding:10px;line-height: 1.5;}
+		.circleName b{color: #444;}
 		
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,0.6);filter: blur(0.8);-webkit-filter: blur(0.6);}
 		.ruleCt{position:absolute;top:15%;left:7%;width:86%;bottom:15%;display: flex;justify-content: space-around;align-items: center;}
@@ -37,6 +38,7 @@
 		.mui-bar-nav{box-shadow: none !important;}
 		#upload img{margin-top: -20px;}
 		.circleImgZ, .circleImg{background-color: #f3f3f3;}
+		
 	</style>
 	<body style="background-color: white;padding-bottom: 0;">
 		<header class="mui-bar mui-bar-nav fineB" id="header">
@@ -57,7 +59,7 @@
 				<%for(var i=0;i<dataList.length;i++){%>
 					<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%= typeNum%>)">
 						<div class="circleImg">
-							<img class="loadPics" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
+							<img class="loadPics picOp" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
 						</div>
 						<div class="circleName ft14">
 							<b><%=dataList[i].name%></b>
@@ -95,13 +97,7 @@
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			/*图片高宽处理*/
-			function imgHeight(obj){
-				if(obj.offsetHeight<obj.parentNode.offsetHeight){
-					obj.style.height = '100%';
-					obj.style.width = 'auto';
-				}
-			}
+
 			/*圈子详情*/
 			function openDetail(id,typeNum){
 				openview({

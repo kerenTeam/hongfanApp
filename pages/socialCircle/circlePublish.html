@@ -121,7 +121,6 @@
 				oldToken = plus.storage.getItem('oldToken'),
 				circleId = plus.webview.currentWebview().circleId,
 			 	myuserid = plus.storage.getItem('userid');
-			 	alert(circleId)
 		 	var textCon = mui('#textCon')[0];
 		 	if(Apic.length){//要传图片
 			 	if(time1 == null){//必须要图片全部处理完毕  才行    (开始发布)
@@ -171,8 +170,14 @@
 				task.setRequestHeader('token',oldToken);
 				task.setRequestHeader('city',cityNum);
 				task.addData("userId",myuserid);
-				task.addData("typeid",'1');
-				task.addData("spaceType",circleId.toString());
+				
+				if(circleId){
+					task.addData("spaceType",circleId.toString());
+					task.addData("typeid",'3');
+				}else{
+					task.addData("typeid",'1');
+				}
+				
 				task.addData("content",content);
 				if(Apic.length){
 					console.log(Apic);
