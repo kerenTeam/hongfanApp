@@ -16,10 +16,11 @@
 	.searchBox .searchIcon,.searchBox img:first-child{position:absolute;top:50%;z-index:1;-webkit-transform:translateY(-50%);}
 	.searchBox .searchIcon{left:10px;width:13px;}
 	.circleContain{padding: 5px;overflow: hidden;}
-	.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../../img/makeFriend/friendB.png) no-repeat;text-align: center;background-size: 100% 100%;background-position: left top;padding: 1px;}
+	.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../../img/makeFriend/friendB.png) no-repeat;background-size: 100% 100%;background-position: left top;padding: 1px;}
 	.circleImg{width: calc((100vw - 34px)/2);padding-top: 100%;overflow: hidden;position: relative;}
 	.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 3px 3px 0 0;}
-	.circleName{padding: 18px 0;line-height: 0.5;}
+	.circleName{padding:10px;line-height: 1.5;}
+	.circleName b{color: #444;}
 	
 	#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,0.6);filter: blur(0.8);-webkit-filter: blur(0.6);}
 	.ruleCt{position:absolute;top:15%;left:7%;width:86%;bottom:15%;display: flex;justify-content: space-around;align-items: center;}
@@ -54,18 +55,21 @@
 		</div>
 		
 		<div class="circleContain" >
-			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
-			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
-			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
-			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft16"> 占位 </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
 		</div>
 		<script type="text/html" id="listDataS">
 			<%for(var i=0;i<dataList.length;i++){%>
 				<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%=dataList[i].typeNum%>)">
 					<div class="circleImg">
-						<img class="loadPics" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
+						<img class="loadPics picOp" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
 					</div>
-					<div class="circleName ft16"><%=dataList[i].name%></div>
+					<div class="circleName ft14">
+						<b><%=dataList[i].name%></b>
+						<div class="ft10 disablecl">4条动态 · 8人加入 </div>
+					</div>
 				</div>
 			<%}%>	
 		</script>
@@ -110,12 +114,12 @@
 	<script type="text/javascript" charset="utf-8" src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
 		/*图片高宽处理*/
-		function imgHeight(obj){
-			if(obj.offsetHeight<obj.parentNode.offsetHeight){
-				obj.style.height = '100%';
-				obj.style.width = 'auto';
-			}
-		}
+//		function imgHeight(obj){
+//			if(obj.offsetHeight<obj.parentNode.offsetHeight){
+//				obj.style.height = '100%';
+//				obj.style.width = 'auto';
+//			}
+//		}
 		/*圈子详情*/
 		function openDetail(id,typeNum){
 			openview({
@@ -133,6 +137,13 @@
 		document.addEventListener('refresh', function() {
 			$(window).scrollTop(0);
 			shopData(0,0,1);
+		})
+		function refreshFun(){
+			document.getElementsByClassName("circleContain")[0].innerHTML = '';
+			shopData(0,0,1);//默认推荐
+		}
+		mui.plusReady(function(){
+			downRe(refreshFun);
 		})
 		shopData(0,0,1);//默认推荐
 		function shopData(typeNum,gender,suggest){
@@ -178,19 +189,20 @@
 									dataObj.dataList = data.data.data;
 									document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
 									mui("#upload")[0].innerHTML = "";
-									lazyLoad(true,50);//懒加载
+									lazyLoad(true,20);//懒加载
 									
 									$(window).scroll(function() {
+										
 										var scrollTop = $(this).scrollTop();　
 										var scrollHeight = $(document).height();
 										var windowHeight = $(this).height();　　
 										if(scrollTop + windowHeight == scrollHeight) {
-											if(Spagenum <= data.data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
 												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 												Ypagenum++; //满足加载情况,应到页数+1
 												console.log('发起请求,实到' + Spagenum + '页');
 												console.log('发起请求,应到' + Ypagenum + '页');
-												mui.ajax(serverUrl + '/api/friends/space/isAll/1/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage, {
+												mui.ajax(serverUrl + '/api/friends/space/isAll/1/userId/'+myuserid+'/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage, {
 													dataType: 'json',
 													type: 'get',
 													timeout: 8000,
@@ -203,10 +215,17 @@
 															 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
 																	data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
 																}
+															 	/*是否为创建者*/
+																if(data.data.data[i].createUserId == myuserid){
+																	data.data.data[i].typeNum = 0;
+																}else if(data.data.data[i].isJoined){
+																	/*是否为参加者*/
+																	data.data.data[i].typeNum = 1;
+																}
 															}
 															dataObj.dataList = data.data.data;
 															document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
-															lazyLoad(false,50);//懒加载
+															lazyLoad(false,20);//懒加载
 														}
 														mui("#upload")[0].innerHTML = " ";
 														Spagenum++; //加载成功,当前页+1
@@ -219,7 +238,7 @@
 														mui("#upload")[0].innerHTML = "";
 													}
 												});
-											} else if(Spagenum == data.data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
 												mui("#upload")[0].innerHTML = "到底了";
 											}
 										} 
