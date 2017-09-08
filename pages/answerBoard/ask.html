@@ -543,10 +543,15 @@
 		//发送 发布
 		mui('.baocun')[0].addEventListener('tap',function(){ 
 			var cityNum  = plus.storage.getItem('cityNum'),
-		        expertId= plus.webview.currentWebview().expert,
+		        expertId= plus.webview.currentWebview().expert,//专家id
+		        onlyExpert = plus.webview.currentWebview().onlyExpert, //是否是专家
+		        groupId= plus.webview.currentWebview().exGroup,//类别id
 			    price = $('.zhidou').attr('data-id'),
 				oldToken = plus.storage.getItem('oldToken'),
 			 	myuserid = plus.storage.getItem('userid');
+			 	if(expertId){
+			 		expertId = expertId.toString();
+			 	}
 		 	var textCon = mui('#textCon')[0];  
 		 	if(!price || price == 0){//没有HI豆
 		 			mui.toast('选择悬赏的HI豆数');
@@ -594,11 +599,14 @@
 						
 					}
 				);
+				console.error('groupId '+groupId,'onlyExpert '+onlyExpert,'expertId' +expertId,'myuserid '+myuserid,'content '+content)
 				task.setRequestHeader('token',oldToken);
 				task.setRequestHeader('city',cityNum);
 				task.addData("userId",myuserid); 
-				task.addData("typeid",2);
+				task.addData("typeid",'2'); 
+				task.addData("faqsType",groupId.toString());
 				task.addData("price",price);
+				task.addData("onlyExpert",onlyExpert.toString());
 				task.addData("assignedExpert",expertId);
 				task.addData("content",content);
 				if(Apic.length){ 

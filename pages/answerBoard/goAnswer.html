@@ -100,6 +100,7 @@
 		    oldToken = plus.storage.getItem('oldToken'),
 			myuserid = plus.storage.getItem('userid'),
 			infiId = plus.webview.currentWebview().questionId;
+			alert(myuserid)
 		mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId, {
 			dataType: 'json',
 			type: 'get',
@@ -244,7 +245,7 @@
 				{ method:"POST"},
 				function(back,status){
 					if(status == 200){
-						console.log(back.responseText);
+						console.log(back);
 						var dataobj = JSON.parse(back.responseText);
 						if(dataobj.errno == 0){
 							alert('成功');
@@ -261,11 +262,12 @@
 					
 				}
 			);
+			console.log(myuserid,infiId,questionUserId,content)
 			task.setRequestHeader('token',oldToken);
 			task.setRequestHeader('city',cityNum);
 			task.addData("userid",myuserid); 
-			task.addData("newsId",infiId); 
-			task.addData("touserid",questionUserId);
+			task.addData("newsId",infiId.toString()); 
+			task.addData("touserid",questionUserId.toString());
 			task.addData("commont",content);
 			if(Apic.length){ 
 				console.log(Apic);

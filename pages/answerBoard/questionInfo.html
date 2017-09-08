@@ -98,7 +98,7 @@
 							<%}%> 
 						 	<div class="bottomop flexr"> 
 						 		<div class="activecl ft14">
-						 			<%if(dataList[i].onlyExpert){%>
+						 			<%if(dataList[i].onlyExpert == 1){%>
 							 			仅限特邀专家回答
 							 		<%}%>
 						 		</div>
@@ -547,18 +547,20 @@
 				openview({
 					view:'expert.html',
 					id:'expert',
-					extrasobj:{exGroup:groupid}
+					extrasobj:{exGroup:groupid,onlyExpert:1}
 				})
 			}) 
 		})
 		 
 		//直接提问
 		$('.goask').click(function(){
+			var groupid = plus.webview.currentWebview().groupId;
 			event.stopPropagation()
 			if(plus.storage.getItem('myToken')){
 				openview({
 					view:'ask.html',
 					id:'ask',
+					extrasobj:{exGroup:groupid,onlyExpert:2}
 				})
 			}else{
 				mui.toast('请登录');

@@ -128,7 +128,25 @@
 				myuserid = plus.storage.getItem('userid'),
 				infiId = plus.webview.currentWebview().answerId;
 			window.goAnswer = function(isExpert,expertId,qusid){
-//				if((isExpert == 2) && (expertId == myuserid)){
+				console.error(isExpert)
+				if(isExpert == 1){
+					if(expertId == myuserid){
+						if(plus.storage.getItem('myToken')){
+							openview({
+								view:'goAnswer.html',
+								id:'goAnswer',
+								extrasobj:{expertid:expertId,questionId:infiId,questionUserId:qusid}
+							})
+						}else{
+							mui.toast('请登录');
+							openview({
+								view:'../login.html'
+							});
+						}
+					}else{ 
+						mui.toast('仅特邀专家可以回答')
+					}
+				}else{
 					if(plus.storage.getItem('myToken')){
 						openview({
 							view:'goAnswer.html',
@@ -141,9 +159,7 @@
 							view:'../login.html'
 						});
 					}
-//				}else{
-//					mui.toast('仅特邀专家可以回答')
-//				}
+				}
 				
 			}
 			window.goZan = function(obj,id){ 

@@ -105,8 +105,8 @@
  		.flexrr{display: flex;justify-content: flex-end;}
 		.bottomop{display:flex;align-items:center}
 		.bottomop img{width:20px}
-		.diyButton{background:url(../../img/localLife/carFind.png) no-repeat;background-position:left top;background-size:100%;text-align:center;padding:6px 12px;color: #5495f1;margin-right: 10px;}
-		.diyButton2{background:url(../../img/localLife/findpep.png) no-repeat;background-position:left top;background-size:100%;text-align:center;padding:6px 12px;color: #f63d42;margin-right: 10px;}
+		.diyButton{background:url(../../img/localLife/carFind.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;padding:6px 5px;color: #5495f1;margin-right: 10px;width: 60px;white-space: nowrap;}
+		.diyButton2{background:url(../../img/localLife/findpep.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;padding:6px 5px;color: #f63d42;margin-right: 10px;width: 60px;white-space: nowrap;}
 		.felsr{display: flex;justify-content: space-around;align-items: center;background-color: white;padding: 5px 20px;position: fixed;bottom: 0;left: 0;right: 0;text-align: center;box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);}
 		.felsr img{width: 20px;display: block;margin: auto;}
 	</style>
@@ -118,27 +118,90 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		
 		<div id="main">	
-			<img style="width: 100%;" src="https://b-ssl.duitang.com/uploads/people/201708/18/20170818121830_Pz3nC.thumb.512_320_c.jpeg" alt="" />
+			<img style="width: 100%;" src="../../img/carPool.png" alt="" /> 
 		</div>
 		<div id="tab">
-			<div class="tabPs" id="tabPs">
-				<div class="tab" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;">
-					<div class="tabActive"><span>我要找人</span></div>
-					<div><span>我要找车</span></div> 
+			<div class="tabPs" id="tabPs" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;">
+				<div class="tab">
+					<div class="tabActive" data-type='2'><span>我要找人</span></div>
+					<div data-type='1'><span>我要找车</span></div> 
 				</div>
 				<div class="border"></div>
 			</div>
 			<!--出发地--目的地-->
 			<div class="startEnd">
 				<ul class="mar20 ft12">
-				    <li id="mapAddress"><input type="text" placeholder="你在哪儿"/></li>
-				    <li id="gowhere"><input type="text" placeholder="您要去哪儿"/></li>
+				    <li id="fromwhere"><input type="text" placeholder="你在哪儿"/></li>
+				    <li id="gowhere"><input type="text" placeholder="你要去哪儿"/></li>
 				    <li>
-						<button type="button" class="mui-btn mui-btn-danger btn-block ft18" style="width: 80%;margin: auto;">查询</button>
+						<button type="button" class="mui-btn mui-btn-danger btn-block ft18 searchCar" style="width: 80%;margin: auto;">查询</button>
 				    </li>
 				</ul>
 			</div>
-			<div class="tabcontent tc1 taactive"> 
+			<div class="tabcontent tc1 taactive" id="tc1"></div>
+			<script type="text/html" id="tc1Tpl">
+				<div class="listCon">
+					<div class="follow"> 
+						<div class="fchidl">
+							<div>全部信息</div> 
+							<div class="butright">
+				            	<span class="disablecl ft14">共<%=list.length%>条信息</span>
+				           </div> 
+						</div> 
+					</div> 
+					
+					<%for(var i = 0;i<list.length;i++){%>
+						<div class="follow flexsb"> 
+							<div>
+								<div class="fchidl">
+									<div>
+										<div class="diyButton activecl goanswer">
+						            		车找人	
+						            	</div>
+						            	<div>
+						            		<%=list[i].startPlace%> --- <%=list[i].endPlace%>
+						            		<%if(list[i].pathLocation){%>
+						            			(经<%=list[i].pathLocation%>)
+						            		<%}%>
+						            	</div>
+									</div> 
+									 
+								</div>  
+								<p class="ft14 maincl">
+									<span style="margin-right: 10px;">
+										<%=list[i].persons%>空位
+									</span>
+									车主<br />
+									时间：<%=list[i].goTime%>出发<br />
+									<span class="activecl">
+										价格：￥<%=list[i].price%>
+									</span>
+								</p> 
+								
+							 	<div class="bottomop flexr">
+							 		<div class="disablecl ft14">
+							 			发布时间：
+							 		</div>
+									<div class="flexrr">
+										<div class="disablecl ft14">
+											<%=list[i].createTime%>
+										</div>
+									</div>
+							 	</div> 
+						
+							</div>
+							<div>
+								<a href="tel:<%=list[i].phoneNumber%>"><img src="../../img/localLife/phone.svg" style="width:30px"/></a>	
+							</div>
+						</div> 
+					<%}%>
+					 
+			 		
+			  
+				</div>	
+			</script>
+			<div class="tabcontent tc2" id="tc2"></div>
+			<script type="text/html" id="tc2Tpl">
 				<div class="listCon">
 					<div class="follow"> 
 						<div class="fchidl">
@@ -146,220 +209,55 @@
 								全部信息 
 							</div> 
 							<div class="butright">
-				            	<span class="disablecl ft14">共7条信息</span> 
+				            	<span class="disablecl ft14">共<%=list.length%>条信息</span> 
 				            			 
 				           </div> 
 						</div> 
-					</div> 
-					<div class="follow flexsb"> 
-						<div>
-							<div class="fchidl">
-								<div>
-									<div class="diyButton activecl goanswer">
-					            		车找人	
-					            	</div>
-					            	<div>新生 --- 新黎桥</div>
-								</div> 
-								 
-							</div>  
-							<p class="ft14 maincl">
-								<span style="margin-right: 10px;">
-									2空位
-								</span>
-								车主<br />
-								时间：今天 16:00 出发<br />
-								<span class="activecl">
-									价格：￥70
-								</span>
-							</p> 
-							
-						 	<div class="bottomop flexr">
-						 		<div class="disablecl ft14">
-						 			发布时间：
-						 		</div>
-								<div class="flexrr">
-									<div class="disablecl ft14">
-										2017-07-25 11:43:00
-									</div>
-								</div>
-						 	</div> 
-					
-						</div>
-						<div>
-							<a href="tel:15708434550"><img src="../../img/localLife/phone.svg" style="width:30px"/></a>	
-						</div>
-					</div> 
-			 		<div class="follow flexsb"> 
-						<div>
-							<div class="fchidl">
-								<div>
-									<div class="diyButton activecl goanswer">
-					            		车找人	
-					            	</div>
-					            	<div>新生 --- 新黎桥(经xxxxx)</div>
-								</div> 
-								 
-							</div>  
-							<p class="ft14 maincl">
-								<span style="margin-right: 10px;">
-									2空位
-								</span>
-								车主<br />
-								时间：今天 16:00 出发<br />
-								<span class="activecl">
-									价格：￥70
-								</span>
-							</p> 
-							
-						 	<div class="bottomop flexr">
-						 		<div class="disablecl ft14">
-						 			发布时间：
-						 		</div>
-								<div class="flexrr">
-									<div class="disablecl ft14">
-										2017-07-25 11:43:00
-									</div>
-								</div>
-						 	</div> 
-					
-						</div>
-						<div>
-							<img src="../../img/localLife/phone.svg" style="width:30px"/>
-						</div>
-					</div> 
-			 		<div class="follow flexsb"> 
-						<div>
-							<div class="fchidl">
-								<div>
-									<div class="diyButton activecl goanswer">
-					            		车找人	
-					            	</div>
-					            	<div>新生 --- 新黎桥</div>
-								</div> 
-								 
-							</div>  
-							<p class="ft14 maincl">
-								<span style="margin-right: 10px;">
-									2空位
-								</span>
-								车主<br />
-								时间：今天 16:00 出发<br />
-								<span class="activecl">
-									价格：￥70
-								</span>
-							</p> 
-							
-						 	<div class="bottomop flexr">
-						 		<div class="disablecl ft14">
-						 			发布时间：
-						 		</div>
-								<div class="flexrr">
-									<div class="disablecl ft14">
-										2017-07-25 11:43:00
-									</div>
-								</div>
-						 	</div> 
-					
-						</div>
-						<div>
-							<img src="../../img/localLife/phone.svg" style="width:30px"/>
-						</div>
-					</div> 
-			 		<div class="follow flexsb"> 
-						<div>
-							<div class="fchidl">
-								<div>
-									<div class="diyButton activecl goanswer">
-					            		车找人	
-					            	</div>
-					            	<div>新生 --- 新黎桥</div>
-								</div> 
-								 
-							</div>  
-							<p class="ft14 maincl">
-								<span style="margin-right: 10px;">
-									2空位
-								</span>
-								车主<br />
-								时间：今天 16:00 出发<br />
-								<span class="activecl">
-									价格：￥70
-								</span>
-							</p> 
-							
-						 	<div class="bottomop flexr">
-						 		<div class="disablecl ft14">
-						 			发布时间：
-						 		</div>
-								<div class="flexrr">
-									<div class="disablecl ft14">
-										2017-07-25 11:43:00
-									</div>
-								</div>
-						 	</div> 
-					
-						</div>
-						<div>
-							<img src="../../img/localLife/phone.svg" style="width:30px"/>
-						</div>
-					</div> 
-			 
-				</div>
-			</div>
-			<div class="tabcontent tc2">  
-				<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							全部信息 
-						</div> 
-						<div class="butright">
-			            	<span class="disablecl ft14">共7条信息</span> 
-			            			 
-			           </div> 
-					</div> 
-				</div> 
-				<div class="follow flexsb"> 
-					<div>
-						<div class="fchidl">
+					</div>
+					<%for(var i = 0;i<list.length;i++){%>
+						<div class="follow flexsb"> 
 							<div>
-								<div class="diyButton2 activecl goanswer">
-				            		人找车	
-				            	</div>
-				            	<div>新生 --- 新黎桥</div>
-							</div> 
-							 
-						</div>  
-						<p class="ft14 maincl">
-							<span style="margin-right: 10px;">
-								需要1个座位
-							</span>
-							乘客<br />
-							时间：今天 16:00 出发
-						</p> 
+								<div class="fchidl">
+									<div>
+										<div class="diyButton2 activecl goanswer">
+						            		人找车	
+						            	</div>
+						            	<div>
+						            		<%=list[i].startPlace%> --- <%=list[i].endPlace%>
+						            		<%if(list[i].pathLocation){%>
+						            			(经<%=list[i].pathLocation%>)
+						            		<%}%>
+						            	</div>
+									</div> 
+									 
+								</div>  
+								<p class="ft14 maincl">
+									<span style="margin-right: 10px;">
+										需要<%=list[i].persons%>个座位
+									</span>
+									乘客<br />
+									时间：<%=list[i].goTime%> 出发
+								</p> 
+								
+							 	<div class="bottomop flexr">
+							 		<div class="disablecl ft14">
+							 			发布时间：
+							 		</div>
+									<div class="flexrr">
+										<div class="disablecl ft14">
+											<%=list[i].createTime%>
+										</div>
+									</div>
+							 	</div> 
 						
-					 	<div class="bottomop flexr">
-					 		<div class="disablecl ft14">
-					 			发布时间：
-					 		</div>
-							<div class="flexrr">
-								<div class="disablecl ft14">
-									2017-07-25 11:43:00
-								</div>
 							</div>
-					 	</div> 
-				
-					</div>
-					<div>
-						<a href="tel:15708434450"><img src="../../img/localLife/phone.svg" style="width:30px"/></a>	
-					</div>
-				</div> 
-	 
-			</div> 
-		
-				 
-			</div>
-	
+							<div>
+								<a href="tel:<%=list[i].phoneNumber%>"><img src="../../img/localLife/phone.svg" style="width:30px"/></a>	
+							</div>
+						</div> 
+		 			<%}%>
+				</div> 	
+			</script>
 		</div>
 	
 		<!--底部-->
@@ -379,57 +277,15 @@
 		</div>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
 			$('.goPublish').click(function(){ 
 				openview({
 					view:'goPublish.html'
 				})
-		    })
-			 
-//			   	 //地图定位
-//				var watchId;
-//				var latitude=0;//经度
-//				var longitude=0;//纬度
-//				function geoInf(position) {
-//					var str = "";
-//					str += "地址：" + position.addresses + "\n"; //获取地址信息
-//					str += "坐标类型：" + position.coordsType + "\n";
-//					var timeflag = position.timestamp; //获取到地理位置信息的时间戳；一个毫秒数；
-//					str += "时间戳：" + timeflag + "\n";
-//					var codns = position.coords; //获取地理坐标信息；
-//					var lat = codns.latitude; //获取到当前位置的纬度；
-//					str += "纬度：" + lat + "\n";
-//					var longt = codns.longitude; //获取到当前位置的经度
-//					str += "经度：" + longt + "\n";
-//					var alt = codns.altitude; //获取到当前位置的海拔信息；
-//					str += "海拔：" + alt + "\n";
-//					var accu = codns.accuracy; //地理坐标信息精确度信息；
-//					str += "精确度：" + accu + "\n";
-//					var altAcc = codns.altitudeAccuracy; //获取海拔信息的精确度；
-//					str += "海拔精确度：" + altAcc + "\n";
-//					var head = codns.heading; //获取设备的移动方向；
-//					str += "移动方向：" + head + "\n";
-//					var sped = codns.speed; //获取设备的移动速度；
-//					str += "移动速度：" + sped;
-//					console.log(JSON.stringify(position));
-//					longitude = (position.coords.longitude).toFixed(6);
-//					latitude = (position.coords.latitude).toFixed(6); 
-//					$('#mapAddress').html(position.addresses);
-//					
-//				}
-//				// 通过定位模块获取位置信息
-//				function getGeocode() {
-//					plus.geolocation.getCurrentPosition(geoInf, function(e) {
-//						mui.toast("获取定位位置信息失败：" + e.message);
-//					}, {
-//						geocode: true,
-//						provider: 'amap'
-//					});
-//				}
-//				getGeocode();
-				 
- 				
+		   	}) 
 			//找车 找人 
 			var widthF = $(".tab div").eq(0).width()
 		    $('.border').css({"left":0+"px","width":widthF+"px"});
@@ -445,11 +301,83 @@
 				if(!$(".tabcontent").eq(i).hasClass("taactive")) {
 					$(".tabcontent").removeClass("taactive");
 					$(".tabcontent").eq(i).addClass("taactive");
-				}
+				} 
+				startSearch(); 
 			})
-		   
-		   
-		    
+		    window.addEventListener('refreash',function(event){
+				startSearch();  
+			});
+		   	startSearch(); 
+			//查询开始
+			$('.searchCar').click(function(){
+				startSearch();	
+			})
+		    function startSearch(){
+				var fromwhere = $('#fromwhere input').val();
+				var gowhere = $('#gowhere input').val(); 
+//				if(!fromwhere || fromwhere == ' '){
+//					mui.toast('请输入起始点');
+//					return false;
+//				}else if(!gowhere || gowhere == ' '){
+//					mui.toast('请输入终点');
+//					return false;
+//				}else{
+					mui.plusReady(function(){
+						var oldToken = plus.storage.getItem('oldToken');
+						var cityNum = plus.storage.getItem('cityNum');
+						var	myuserid = plus.storage.getItem('userid');
+						var ctype = $('.tabActive').attr('data-type'); 
+						console.log(fromwhere+'to '+gowhere)
+						plus.nativeUI.showWaiting();
+						mui.ajax(serverUrl+'/api/localservice/transport',{
+							data:{'startPlace':fromwhere,'endPlace':gowhere,'type':ctype},
+							type:'PATCH',
+							timeout:8000,
+							headers:{"token":oldToken,"city":cityNum},	              				
+							success:function(data,type,xhr){
+								console.log('获取数据返回',data);
+								plus.nativeUI.closeWaiting();
+								if(data.errno == 0){
+									if(data.data && data.data.length){
+										[].forEach.call(data.data,function(ele){
+											ele.goTime = ele.goTime.replace('T',' ');
+											var dt2 = new Date(ele.createTime);
+											var date2 = [
+											  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-'),
+											  [dt2.getHours(), dt2.getMinutes(), dt2.getSeconds()].join(':')
+											].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+											ele.createTime = date2;
+										}) 
+										var carObj = {}
+										carObj.list = data.data; 
+										if(ctype == 1){
+											var html = template('tc2Tpl', carObj); 
+											document.getElementById('tc2').innerHTML = html;	
+										}else{
+											var html = template('tc1Tpl', carObj); 
+											document.getElementById('tc1').innerHTML = html;
+										}
+									  
+									}else{
+										if(ctype == 1){ 
+											document.getElementById('tc2').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
+										}else{ 
+											document.getElementById('tc1').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
+										}
+	
+									}
+								}else{
+									console.log(data.errmsg); 
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								console.log('获取数据,响应失败');
+							}
+						});
+					})
+//				}
+			}
+			
 		</script>
 	</body>
 
