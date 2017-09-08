@@ -433,6 +433,7 @@
 							'typeId':1
 						}
 					}else if(typeNum == 1){
+						alert(myuserid)
 						var dataJson = {
 							'userId':myuserid,
 							'numsPerPage':6,
@@ -732,7 +733,8 @@
 			})
 			$('.goCircle').click(function(){
 				openview({
-					view:'socialCircle/circleAll.html'
+					view:'socialCircle/circleAll.html',
+					id:'circleAll'
 				})
 			})
 			$('.goAround').click(function(){
@@ -753,27 +755,6 @@
 			 
  			 $(".mui-backdrop").unbind()
  			 
- 			//动态详情
- 			function DTdetail(id,userid){ 
- 				openview({
- 					view:'socialCircle/circleListInfo.html',
- 					extrasobj:{
-						infoid: id,
-						UserId:userid,
-					}
- 				})
- 			}
- 			
- 			function goInfoCmt(id){
- 				openview({
- 					view:'socialCircle/circleListInfo.html',
- 					extrasobj: {
-						infoid: id,
-						isCmt:true,
-					}
- 				})
- 			}
- 			
  			//更多热门
  			$('#todayHOt').click(function(){
  				openview({
@@ -785,12 +766,28 @@
  					view:'socialCircle/elsecircleIndex.html'
  				})
  			})
- 			$('#fabu').click(function(){
-				openview({
-					view:'socialCircle/circlePublish.html',
-					id:'circlePublish' 
-				})
-			})
+ 			
+ 			
+ 			//动态详情1
+ 			function DTdetail(id,userid){
+ 				openview({
+ 					view:'socialCircle/circleListInfo.html',
+ 					extrasobj:{
+						infoid: id,
+						UserId:userid,
+					}
+ 				})
+ 			}
+ 			//动态详情2
+ 			function goInfoCmt(id){
+ 				openview({
+ 					view:'socialCircle/circleListInfo.html',
+ 					extrasobj: {
+						infoid: id,
+						isCmt:true,
+					}
+ 				})
+ 			}
  			/*滑动显示发布按钮*/
 			var fangxiang;
 			function scroll(fn) {
@@ -810,12 +807,16 @@
 		
 			$(window).scroll(function() {
 				if(fangxiang == 'up') {
-					//alert('显示');
 					document.getElementById('fabu').className = 'fabu1';
 				}else{
-					//alert('隐藏');
 					document.getElementById('fabu').className = 'fabu2';
 				}
+			})
+			$('#fabu').click(function(){
+				openview({
+					view:'socialCircle/circlePublish.html',
+					id:'circlePublish' 
+				})
 			})
 
 		</script>

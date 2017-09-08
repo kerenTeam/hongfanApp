@@ -40,6 +40,25 @@
 		.jubao li a{padding: 18px;line-height: 15px;text-align: center;border-bottom: 1px solid #EEEEEE;display: block;color: black;}
 		.jubao li:last-child a{color: rgb(153,153,153);}
 	   	ul{list-style: none;padding: inherit;margin: 0;}
+	   	
+	   	#upload{min-height: auto !important;padding-top: 5px;height: 37px;}
+		#upload img{padding: 0 !important;margin: 0;width: 32px;}
+		body{padding-bottom: 0;}
+		.loadPics{max-width: 80%;}
+		.DTcontent{overflow: hidden;}
+		.dynamicPic{float: left;position: relative;overflow: hidden;border-right: 2px solid #fff;}
+		.dynamicPic1{width: 70%;padding-top: 68%;}
+		.dynamicPic2{width: 50%;padding-top: 48%;}
+		.dynamicPic3{width: 33%;padding-top: 31%;}
+		.dynamicPic img{width: 100%;}
+		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
+		.line2{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;max-width: calc(100vw * 0.45);}	
+		.maxwn{white-space: nowrap;}	
+		.maxwt{flex-basis: 50px;white-space: nowrap;text-align: right;}
+		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
+		#upload{min-height: auto !important;padding-top: 5px;height: 37px;text-align: center;}
+		#upload img{padding: 0 !important;margin: 0;width: 32px;}
+	   	
 	</style>
 
 	<body style="background-color: white;">
@@ -51,154 +70,109 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
 		 
-    		<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								<div class="disablecl ft12">
-								1分钟  <span style="color: #5d86b2;">21</span>阅读	
-								</div>
+    		<!--动态-->
+			<div class="QandA">
+				
+				
+				<div class="dyCon" id="dyCon0" style="display: none;"></div><!--最新动态-->
+
+				<script type="text/html" id="listDataS">
+					<%for(var i=0;i<dataList.length;i++){%>
+						<%if(dataList[i].user_id && dataList[i].user_id != 'null' && dataList[i].id){%>
+							<div class="listCon">
+								<div class="follow">
+									<div class="fchidl">
+										<div onclick="elseCircleIndex(<%=dataList[i].user_id%>)">
+											<img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/>
+											<div>
+												<%=dataList[i].nickname%> <div class="disablecl ft12"> <%=dataList[i].create_time%>  <span style="color: #5d86b2;"><%=dataList[i].read%></span>阅读 </div>
+											</div>
+										</div>
+										<div class="butright">
+											<div class="goanswer"> <img src="../../img/makeFriend/down.png" style="width:15px;"/> </div>
+							           </div>
+									</div>
+									<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
+										<p  class="ft14 maincl overTwo"><%=dataList[i].content%> </p><!--文字内容-->
+										<%if(dataList[i].picS){%>
+											<%for(var j=0;j<dataList[i].picS.length;j++){%>
+												<%if(dataList[i].picS.length == 1){ %>
+													<div class="dynamicPic dynamicPic1">
+														<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+													</div>
+												<%}else if(dataList[i].picS.length == 2){%>
+													<div class="dynamicPic dynamicPic2">
+														<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+													</div> 
+												<%}else{%>
+													<div class="dynamicPic dynamicPic3">
+														<span><img onload="imgHeight(this)" class="loadPics" data-src="<%=dataList[i].picS[j]%>" /></span>
+													</div>
+												<%}%>	
+											<%}%>
+										<%}%>	
+										
+									</div>
+									<div class="flexrr">
+										<div class="disablecl ft12" >
+											<%if(dataList[i].likeUserId){%>
+												<img src="../../img/makeFriend/yizan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<%}else{%>
+													<img src="../../img/makeFriend/zan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+													<%}%>
+											 
+											 赞<span><%=dataList[i].likes%></span> </div> 
+										<div class="disablecl ft12" onclick="goInfoCmt(<%=dataList[i].id%>)"> <img src="../../img/makeFriend/message.png" alt="" /> 评论 </div>
+										<div class="disablecl ft12"> <img src="../../img/makeFriend/share.png"/> 转发 </div>
+									</div>
+									
+									<div class="commentsShow" data-id="<%=dataList[i].id%>"></div>
+									 
+								</div> 
 							</div>
-						</div> 
-						<div class="butright">
-							<div class="goanswer">
-			            		<img src="../../img/makeFriend/down.png" style="width:15px;"/>	
-			            	</div>
-			           </div> 
-					</div>  
-					<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg"  style="max-width: 70%;"/>	 
-					<div class="flexrr">
-						<div class="disablecl ft12">
-							<img src="../../img/makeFriend/zan.png"/> 赞
-						</div> 
-						<div class="disablecl ft12">
-							<img src="../../img/makeFriend/message.png" alt="" /> 评论
-						</div>
-						<div class="disablecl ft12">
-							<img src="../../img/makeFriend/share.png"/> 转发
-						</div>
-					</div>
-					<!--评论-->
-					<div class="cmtflex" style="border-top:1px solid #DDDDDD ;border-bottom: 1px solid #DDDDDD;padding: 10px 5px;">
+							<%}%>
+						
+					<%}%>	
+				</script>
+				
+				<!--评论模板-->
+				<script type="text/html" id="cmtTpl">
+					<div class="cmtflex" style="border-top:1px solid #DDDDDD ;border-bottom: 1px solid #DDDDDD;padding: 10px 5px;"><!--评论-->
 						<div style="text-align: center;line-height: 0.8;"> 
-							<div class="ft14">评论</div> 
-							<img style="width: 30px;margin: 0;" src="../../img/makeFriend/cmt.png"/>
+							<div class="ft14">评论</div>
+							<img style="width: 30px;margin: 0;" src="../..img/makeFriend/cmt.png"/>
 						</div>
 						<div class="cmtflex cmtall ft12">
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/mainHtml/touxiang2.png"/>
 							<img src="../../img/makeFriend/more.png"/>
-							评论13
+							评论<%=allL%>
 						</div>
 					</div>
-					<div class="follow ft12"> 
-						<div class="fchidl">
-							<div class="ctc">
-								<span>淘气的八爷</span>：xxxxxxxxx
-							</div> 
-							<div class="butright">
-								<div class="disablecl ft12">
-				            		1分钟前
-				            	</div>
-				           </div> 
-						</div>
-					</div>
-					<div class="follow ft12"> 
-						<div class="fchidl">
-							<div class="ctc">
-								<span>淘气的八爷</span>回复<span>小李子</span>:xxxxxxxxx
-							</div> 
-							<div class="butright">
-								<div class="disablecl ft12">
-				            		1分钟前
-				            	</div>
-				           </div> 
-						</div>
-					</div>
-				</div> 
-			 
-			</div> 
-		 	<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								<div class="disablecl ft12">
-								1分钟  <span style="color: #5d86b2;">21</span>阅读	
+					<%for(var i=0;i<list.length;i++){%>
+						<%if(!list[i].commontid){%>
+							<div class="follow ft12" style="padding: 5px;"> 
+								<div class="fchidl">
+									<div class="ctc"> <span data-id="<%=list[i].user_id%>" class="ft12 maxwn"><%=list[i].nickname%></span>：<div class="line2"><%=list[i].commont%></div></div> 
+									<div class="butright maxwt"> <div class="disablecl ft12"> <%=list[i].create_time%> </div> </div> 
 								</div>
 							</div>
-						</div> 
-						<div class="butright">
-							<div class="goanswer">
-			            		<img src="../../img/makeFriend/down.png" style="width:15px;"/>	
-			            	</div>
-			           </div> 
-					</div>  
-					<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg"  style="max-width: 70%;"/>	 
-					<div class="flexrr">
-						<div class="disablecl ft12">
-							<img src="../../img/makeFriend/zan.png"/> 赞
-						</div> 
-						<div class="disablecl ft12">
-							<img src="../../img/makeFriend/message.png" alt="" /> 评论
-						</div>
-						<div class="disablecl ft12">
-							<img src="../../img/makeFriend/share.png"/> 转发
-						</div>
-					</div>
-					<!--评论-->
-					<div class="cmtflex" style="border-top:1px solid #DDDDDD ;border-bottom: 1px solid #DDDDDD;padding: 10px 5px;">
-						<div style="text-align: center;line-height: 0.8;"> 
-							<div class="ft14">评论</div> 
-							<img style="width: 30px;margin: 0;" src="../../img/makeFriend/cmt.png"/>
-						</div>
-						<div class="cmtflex cmtall ft12">
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/mainHtml/touxiang2.png"/>
-							<img src="../../img/makeFriend/more.png"/>
-							评论13
-						</div>
-					</div>
-					<div class="follow ft12"> 
-						<div class="fchidl">
-							<div class="ctc">
-								<span>淘气的八爷</span>：xxxxxxxxx
-							</div> 
-							<div class="butright">
-								<div class="disablecl ft12">
-				            		1分钟前
-				            	</div>
-				           </div> 
-						</div>
-					</div>
-					<div class="follow ft12"> 
-						<div class="fchidl">
-							<div class="ctc">
-								<span>淘气的八爷</span>回复<span>小李子</span>:xxxxxxxxx
-							</div> 
-							<div class="butright">
-								<div class="disablecl ft12">
-				            		1分钟前
-				            	</div>
-				           </div> 
-						</div>
-					</div>
-				</div> 
-			 
-			</div> 
+							<%}else{%>
+								<div class="follow ft12" style="padding: 5px;"> 
+									<div class="fchidl">
+										<div class="ctc"> <span data-id="<%=list[i].user_id%>" class="ft12 maxwn"><%=list[i].nickname%></span>回复<span data-id="<%=list[i].touserid%>"class="ft12"><%=list[i].TO_nickname%></span>:<div class="line2"><%=list[i].commont%></div></div> 
+										<div class="butright maxwt"> <div class="disablecl ft12"> <%=list[i].create_time%> </div> </div> 
+									</div>
+								</div> 
+								<%}%>
+						<%}%>
+				
+				
+				</script>
+				<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div>
+			</div>
+			<!--动态结束-->
 		 
 		</div>
+		
 		<!--操作表-->
 		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
 		    <!-- 可选择菜单 -->
@@ -215,23 +189,377 @@
 		    
 		</div>
 	 </body>
-
+	 
 	<script type="text/javascript">
- 
-		 
-	      //操作表
-			$('.goanswer').click(function(){
- 			 	mui('#sheet1').popover('toggle');
- 			 	$('body').css('background-color','white')
+     	//操作表
+		$('.goanswer').click(function(){
+		 	mui('#sheet1').popover('toggle');
+		 	$('body').css('background-color','white')
+		})
+	      	
+		
+		//动态详情1
+		function DTdetail(id,userid){
+			openview({
+				view:'circleListInfo.html',
+				extrasobj:{
+					infoid: id,
+					UserId:userid,
+				}
 			})
-		 
-	    //数据处理 
-		var myuserid;
-	    mui.plusReady(function(){
-	    
-			 
-	    })
+		}
+		//动态详情2
+		function goInfoCmt(id){
+			openview({
+				view:'circleListInfo.html',
+				extrasobj: {
+					infoid: id,
+					isCmt:true,
+				}
+			})
+		}
+		/*图片高宽处理*/
+		function imgHeight(obj){
+			if(obj.offsetHeight<obj.parentNode.offsetHeight){
+				obj.style.height = '100%';
+				obj.style.width = 'auto';
+			}
+		}	
    	 
 	</script>
+	<script type="text/javascript">
+			
+			
+			/*铺数据*/
+			var dyCon = document.getElementsByClassName('dyCon'); /*内容盒子*/
+			shopData(0,0,false);//默认推荐
+			dyCon[0].style.display = 'block';
+			
+			function shopData(typeNum,gender,refresh){
+				var Spagenum = 2; //实到页数
+				var Ypagenum = 1; //应到页数
+				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+				mui.plusReady(function(){
+					var myuserid = plus.storage.getItem('userid');
+					//到主页
+					window.elseCircleIndex = function(id){
+						if(id == myuserid){
+							openview({
+					    		view:'mycircleIndex.html',
+					    		id:'mycircleIndex' 
+					    	})
+						}else{
+							openview({
+					    		view:'elsecircleIndex.html',
+					    		id:'elsecircleIndex',
+					    		extrasobj:{userId:id}
+					    	})
+						} 
+				    }
+					
+					window.goZan = function(obj,id){ 
+						var curThis = $(obj); 
+						var likes = parseInt(curThis.siblings('span').html());
+						
+						if(curThis.attr('src') == '../../img/makeFriend/zan.png'){
+							likes = likes+1; 
+							curThis.siblings('span').html(likes);
+							likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png');
+						}else{ 
+							likes = likes-1; 
+							curThis.siblings('span').html(likes);
+							likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/makeFriend/zan.png'); 
+						}
+					}
+					if(typeNum == 0){
+						var dataJson = {
+							'numsPerPage':6,
+							'currentPage':1,
+							'orderType':'DESC',
+							'orderField':'create_time',
+							'typeId':1
+						}
+					}
+					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl + '/api/friends/newslist', {
+						data: dataJson,
+						dataType: 'json',
+						type: 'post',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) {
+							console.error('交友列表'+typeNum, data);
+							if(data.errno == 0) {
+								var dataObj = {};
+								var nowArray = data.data.data;
+
+								for(var j = 0 ;j<nowArray.length;j++){
+									//整理头像格式
+									if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+										if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+											nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+										}else{
+											nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+										}
+									}else{
+										nowArray[j].avatar = '../../img/10.png'
+									}
+									
+									if(!nowArray[j].nickname){
+										nowArray[j].nickname = '匿名'
+									}
+									if(!nowArray[j].read){
+										nowArray[j].read = 0
+									}else if((nowArray[j].read / 1000)>1){
+										nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
+									}
+									if(!nowArray[j].likes){
+										nowArray[j].likes = 0
+									}
+//									else if((nowArray[j].likes / 1000)>1){
+//										nowArray[j].likes = parseInt(nowArray[j].likes / 1000) +'K+'
+//									}
+									var dt = new Date(nowArray[j].create_time).getTime(); 
+									nowArray[j].create_time = getDateDiff(dt);
+									//整理内容图片格式
+ 									var nowArray2 = JSON.parse(nowArray[j].pic);
+									if(nowArray2.length){
+										var picS = [];
+										for(var k = 0 ;k<nowArray2.length;k++){
+											picS.push(nowArray2[k].picImg);
+										}
+										nowArray[j].picS = picS;
+									}
+								}
+								
+								dataObj.dataList = data.data.data;
+								document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
+								mui("#upload")[0].innerHTML = "";
+								lazyLoad(true,50);//懒加载
+								 
+								$(window).scroll(function() {
+									if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
+											var scrollTop = $(this).scrollTop();　
+											if(typeNum == 0){
+												SH0 = $(this).scrollTop();
+											}else if(typeNum == 1){
+												SH1 = $(this).scrollTop();
+											}
+											var scrollHeight = $(document).height();
+											var windowHeight = $(this).height();　　
+											if(scrollTop + windowHeight == scrollHeight) {
+												if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+													mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+													Ypagenum++; //满足加载情况,应到页数+1
+													console.log('发起请求,实到' + Spagenum + '页');
+													console.log('发起请求,应到' + Ypagenum + '页');
+													if(typeNum == 0){
+														var dataJson = {
+															'numsPerPage':6,
+															'currentPage':Spagenum,
+															'orderType':'DESC',
+															'orderField':'create_time',
+															'typeId':1
+														}
+													}else if(typeNum == 1){
+														var myuserid = plus.storage.getItem('userid');
+														var dataJson = {
+															'userId':myuserid,
+															'numsPerPage':6,
+															'currentPage':Spagenum,
+															'orderType':'DESC',
+															'orderField':'create_time',
+															'isFriends':1,
+															'typeId':1
+														}
+													}
+													
+													mui.ajax(serverUrl + '/api/friends/newslist', {
+														data: dataJson,
+														dataType: 'json',
+														type: 'post',
+														timeout: 8000,
+														headers: {"token": oldToken,'city': cityNum},
+														success: function(data) {
+															console.error('交友列表续'+typeNum, data);
+															if(data.errno == 0) {
+																var dataObj = {};
+																var nowArray = data.data.data;
+																for(var j = 0 ;j<nowArray.length;j++){
+																	//整理头像格式
+																	if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+																		if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+																			nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+																		}else{
+																			nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+																		}
+																	}else{
+																		nowArray[j].avatar = '../../img/10.png'
+																	}
+																	
+																	if(!nowArray[j].nickname){
+																		nowArray[j].nickname = '匿名'
+																	}
+																	if(!nowArray[j].read){
+																		nowArray[j].read = 0
+																	}else if((nowArray[j].read / 1000)>1){
+																		nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
+																	}
+																	if(!nowArray[j].likes){
+																		nowArray[j].likes = 0
+																	}
+																	var dt = new Date(nowArray[j].create_time).getTime(); 
+																	nowArray[j].create_time = getDateDiff(dt);
+																	/*整理内容图片格式*/
+																	var nowArray2 = JSON.parse(nowArray[j].pic);
+																	if(nowArray2.length){
+																		var picS = [];
+																		for(var k = 0 ;k<nowArray2.length;k++){
+																			picS.push(nowArray2[k].picImg);
+																		}
+																		nowArray[j].picS = picS;
+																	}
+																}
+																dataObj.dataList = data.data.data;
+																document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
+																lazyLoad(false,50);//懒加载
+															}
+															mui("#upload")[0].innerHTML = " ";
+															Spagenum++; //加载成功,当前页+1
+															console.log('成功+1,实到' + Spagenum);
+															console.log('成功+1,应到' + Spagenum);
+														},
+														error: function(xhr, type, errorThrown) {
+															Ypagenum--; //失败是应到-1
+															mui.toast("当前网络不好请重试");
+															mui("#upload")[0].innerHTML = "";
+														}
+													});
+												} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+													//mui.toast('没有更多了');
+												}
+											} 
+									}
+								});
+								
+								//操作表
+								$('.goanswer').click(function(){
+									event.stopPropagation();
+									$('#maskInfo').fadeIn(200); 
+								})
+								 
+								$('#maskInfo li').click(function(){
+									event.stopPropagation()
+								})
+								$('#maskInfo,.closeMask').click(function(){
+									event.preventDefault()
+									$('#maskInfo').fadeOut(200);
+								})
+								 
+								//评论数据
+								$('.commentsShow').each(function(){
+									var newsId= $(this).attr('data-id');
+									var curShow = $(this);
+									mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+newsId, {
+										dataType: 'json',
+										type: 'get',
+										timeout: 8000,
+										headers: {"token": oldToken,'city': cityNum},
+										success: function(data, type, xhr) {
+											//console.error('评论详情', data);
+											 
+											if(data.errno == 0) {
+												var cmtArray = data.data;
+												var newCmt = []
+												if(cmtArray && cmtArray.length>0){
+													if(cmtArray.length >3){
+														for(var i = 0;i<3;i++){
+															if(!cmtArray[i].nickname){ 
+																cmtArray[i].nickname =  '匿名'
+															}
+															if(!cmtArray[i].TO_nickname){ 
+																cmtArray[i].TO_nickname =  '匿名'
+															}
+															var dt = new Date(cmtArray[i].create_time).getTime(); 
+															cmtArray[i].create_time = getDateDiff(dt);
+															newCmt.push(cmtArray[i])
+														} 
+													}else{
+														for(var i = 0;i<cmtArray.length;i++){
+															if(!cmtArray[i].nickname){ 
+																cmtArray[i].nickname =  '匿名'
+															}
+															if(!cmtArray[i].TO_nickname){ 
+																cmtArray[i].TO_nickname =  '匿名'
+															}
+															var dt = new Date(cmtArray[i].create_time).getTime(); 
+															cmtArray[i].create_time = getDateDiff(dt);
+															newCmt.push(cmtArray[i])
+														} 
+													}
+													
+													curShow.html(template('cmtTpl',{list:newCmt,allL:cmtArray.length}))
+												}
+												
+											 
+											}else{
+												mui.toast('当前网络不好,请重试');
+											}
+										},
+										error: function(xhr, type, errorThrown) {
+											console.error('评论列表,响应失败');
+											mui.toast('当前网络不好,请重试');
+										}
+									});
+								}) 
+								 
+							}else{
+								mui.toast('当前网络不好,请重试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('交友列表,响应失败');
+							mui.toast('当前网络不好,请重试');
+						}
+					});
+					
+				})
+			}
+			
+			//发布时间判断 
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+			function getDateDiff(dateTimeStamp){ 
+				var now = new Date().getTime(); 
+				var diffValue = now - dateTimeStamp; 
+				var monthC =diffValue/month;
+				var weekC =diffValue/(7*day);
+				var dayC =diffValue/day;
+				var hourC =diffValue/hour;
+				var minC =diffValue/minute;
+				if(monthC>=1){
+				 result=parseInt(monthC) + "月前";
+				 }
+				 else if(weekC>=1){
+				 result=parseInt(weekC) + "周前";
+				 }
+				 else if(dayC>=1){
+				 result=parseInt(dayC) +"天前";
+				 }
+				 else if(hourC>=1){
+				 result=parseInt(hourC) +"小时前";
+				 }
+				 else if(minC>=1){
+				 result=parseInt(minC) +"分钟前";
+				 }else{ 
+				 result="刚刚";
+				 }
+				return result;
+			}
+		</script>
+	
 
 </html>

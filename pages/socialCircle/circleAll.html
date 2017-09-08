@@ -61,7 +61,7 @@
 		</div>
 		<script type="text/html" id="listDataS">
 			<%for(var i=0;i<dataList.length;i++){%>
-				<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>)">
+				<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%=dataList[i].typeNum%>)">
 					<div class="circleImg">
 						<img class="loadPics" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
 					</div>
@@ -117,17 +117,23 @@
 			}
 		}
 		/*圈子详情*/
-		function openDetail(id){
+		function openDetail(id,typeNum){
 			openview({
 				view:'circleInfo.html',
+				id:'circleInfo',
 				extrasobj: {
-					circleId: id
+					circleId: id,
+					creator:typeNum
 				}
 			})
 		}
 		
 	</script>
 	<script type="text/javascript">
+		document.addEventListener('refresh', function() {
+			$(window).scrollTop(0);
+			shopData(0,0,1);
+		})
 		shopData(0,0,1);//默认推荐
 		function shopData(typeNum,gender,suggest){
 			var Spagenum = 2; //实到页数
@@ -135,84 +141,102 @@
 
 			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 			mui.plusReady(function(){
-				var numsPerPage = 6;
-				var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
-				mui.ajax(serverUrl + '/api/friends/space/isAll/1/currentPage/1/numsPerPage/'+numsPerPage, {
-					dataType: 'json',
-					type: 'get',
-					timeout: 8000,
-					headers: {"token": oldToken,'city': cityNum},
-					success: function(data, type, xhr) {
-						console.error('圈子列表'+typeNum, data);
-						if(data.errno == 0) {
-							if(!data.data.data.length){
-								mui("#upload")[0].innerHTML = "当前城市没有数据 !";
-							}else{
-								var dataObj = {};
-								for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
-								 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
-										data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
-									}
-								}
-								dataObj.dataList = data.data.data;
-								document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
-								lazyLoad(true,50);//懒加载
-								
-								$(window).scroll(function() {
-									var scrollTop = $(this).scrollTop();　
-									var scrollHeight = $(document).height();
-									var windowHeight = $(this).height();　　
-									if(scrollTop + windowHeight == scrollHeight) {
-										if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-											Ypagenum++; //满足加载情况,应到页数+1
-											console.log('发起请求,实到' + Spagenum + '页');
-											console.log('发起请求,应到' + Ypagenum + '页');
-											mui.ajax(serverUrl + '/api/friends/space/isAll/1/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage, {
-												dataType: 'json',
-												type: 'get',
-												timeout: 8000,
-												headers: {"token": oldToken,'city': cityNum},
-												success: function(data) {
-													console.error('圈子列表续'+typeNum, data);
-													if(data.errno == 0) {
-														var dataObj = {};
-														for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
-														 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
-																data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
-															}
-														}
-														dataObj.dataList = data.data.data;
-														document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
-														lazyLoad(false,50);//懒加载
-													}
-													//mui("#upload")[0].innerHTML = " ";
-													Spagenum++; //加载成功,当前页+1
-													console.log('成功+1,实到' + Spagenum);
-													console.log('成功+1,应到' + Spagenum);
-												},
-												error: function(xhr, type, errorThrown) {
-													Ypagenum--; //失败是应到-1
-													mui.toast("当前网络不好请重试");
-													mui("#upload")[0].innerHTML = "";
-												}
-											});
-										} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-											mui("#upload")[0].innerHTML = "到底了";
+				var cityNum = plus.storage.getItem('cityNum'),
+				    oldToken = plus.storage.getItem('oldToken'),
+				    myuserid = plus.storage.getItem('userid');
+				    
+				loadAll();
+				function loadAll(){
+			  		var numsPerPage = 6;
+					mui.ajax(serverUrl + '/api/friends/space/isAll/1/userId/'+myuserid+'/currentPage/1/numsPerPage/'+numsPerPage, {
+						dataType: 'json',
+						type: 'get',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) {
+							console.error('圈子列表'+typeNum, data);
+							if(data.errno == 0) {
+								if(!data.data.data.length){
+									mui("#upload")[0].innerHTML = "当前城市没有数据 !";
+								}else{
+									var dataObj = {};
+									for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
+									 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
+											data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
 										}
-									} 
-								});
-							
+									 	
+									 	/*是否为创建者*/
+										if(data.data.data[i].createUserId == myuserid){
+											data.data.data[i].typeNum = 0;
+										}else if(data.data.data[i].isJoined){
+											/*是否为参加者*/
+											data.data.data[i].typeNum = 1;
+										}
+									}
+									
+									
+									dataObj.dataList = data.data.data;
+									document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
+									mui("#upload")[0].innerHTML = "";
+									lazyLoad(true,50);//懒加载
+									
+									$(window).scroll(function() {
+										var scrollTop = $(this).scrollTop();　
+										var scrollHeight = $(document).height();
+										var windowHeight = $(this).height();　　
+										if(scrollTop + windowHeight == scrollHeight) {
+											if(Spagenum <= data.data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+												Ypagenum++; //满足加载情况,应到页数+1
+												console.log('发起请求,实到' + Spagenum + '页');
+												console.log('发起请求,应到' + Ypagenum + '页');
+												mui.ajax(serverUrl + '/api/friends/space/isAll/1/currentPage/'+Spagenum+'/numsPerPage/'+numsPerPage, {
+													dataType: 'json',
+													type: 'get',
+													timeout: 8000,
+													headers: {"token": oldToken,'city': cityNum},
+													success: function(data) {
+														console.error('圈子列表续'+typeNum, data);
+														if(data.errno == 0) {
+															var dataObj = {};
+															for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
+															 	if(data.data.data[i].picImg && data.data.data[i].picImg.indexOf("[")>-1){
+																	data.data.data[i].picImg =  JSON.parse(data.data.data[i].picImg)[0].picImg;
+																}
+															}
+															dataObj.dataList = data.data.data;
+															document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
+															lazyLoad(false,50);//懒加载
+														}
+														mui("#upload")[0].innerHTML = " ";
+														Spagenum++; //加载成功,当前页+1
+														console.log('成功+1,实到' + Spagenum);
+														console.log('成功+1,应到' + Spagenum);
+													},
+													error: function(xhr, type, errorThrown) {
+														Ypagenum--; //失败是应到-1
+														mui.toast("当前网络不好请重试");
+														mui("#upload")[0].innerHTML = "";
+													}
+												});
+											} else if(Spagenum == data.data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+												mui("#upload")[0].innerHTML = "到底了";
+											}
+										} 
+									});
+								
+								}
+							}else{
+								mui.toast('当前网络不好,请重试');
 							}
-						}else{
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('交友列表,响应失败');
 							mui.toast('当前网络不好,请重试');
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.error('交友列表,响应失败');
-						mui.toast('当前网络不好,请重试');
-					}
-				});
+					});
+					
+				}	
 			})
 		}
 		/*我的圈子*/
@@ -220,7 +244,8 @@
 			mui.plusReady(function(){
 				if(plus.storage.getItem('myToken')){
 				 	openview({
-						view:'ownCircle.html'
+						view:'ownCircle.html',
+						id:'ownCircle'
 					})
 				}else{//没登陆直接打开登录页面
 					mui.toast('请登录');
@@ -262,8 +287,6 @@
 			$('.circleRule').css('display','none')
 			$('.ruleCtd').removeClass('ruleAct');
 		})
-		
-		
 		
 		$('.agree').click(function(){
 			if($(this).attr('src') == '../../img/makeFriend/diasgree.png'){
