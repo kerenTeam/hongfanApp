@@ -16,16 +16,6 @@
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js"></script>
-		<script type="text/javascript">
-			//最优先的方法	
-//			window.imgHeight = function(obj){
-//				if(obj.offsetHeight<obj.parentNode.offsetHeight){
-//					obj.style.height = '100%';
-//					obj.style.width = 'auto';
-//				}
-//			}
-			
-		</script>
 	</head>
 	<style type="text/css">
 		#header>*{ color: white; }
@@ -63,7 +53,7 @@
 		.photoItem p{margin: 5px;}
 		.photoItem .frph{overflow: hidden;position: relative;width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);margin: 5px 5px;float: left;}
 		.frph img.disimg{width: 100%;}
-		.lkerName{display: block;max-width:60px;overflow: hidden;text-overflow: ellipsis;}
+		.lkerName{display: block;max-width:60px;overflow: hidden;text-overflow: ellipsis;min-height: 12px;}
 		.phnone{background-color: white;}
 		
 	</style>
@@ -130,11 +120,16 @@
 							<div class="dongItem">
 								<div class="DitemL"> 09	<br /> <span>8月 2017</span> </div>	
 								<div class="DitemR">
-									<div class="DitemRin">
-										<div class="DitemRin1" onclick="DTdetail(<%=dataList[i].id%>)">
-											<img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].picS%>"/>
-										</div>
-										<h3 onclick="DTdetail(<%=dataList[i].id%>)">分享了图片</h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
+									<div class="DitemRin" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
+										<%if(dataList[i].picS){%>
+											<div class="DitemRin1" >
+												<img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].picS%>"/>
+											</div>	
+										<%}else{%>
+											<div class="DitemRin1" style="width: 0;">
+											</div>
+										<%}%>	
+										<h3 class="overTwo"><%=dataList[i].content%></h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
 									</div>						
 								</div>
 							</div>
@@ -187,7 +182,7 @@
 						<script type="text/html" id="mfPicTpl">
 							<ul class="clearfix zhaopians">
 								<%for(var i = 0;i<list.length;i++){%>
-									<%if(list[i].picImg[0].picImg){%>
+									<%if(list[i].picImg.length && list[i].picImg[0].picImg){%>
 										<li><span style="background: url(<%=list[i].picImg[0].picImg%>) 0 0 no-repeat;background-size: cover;"></span></li>
 									<%}%>
 								<%}%>
@@ -311,6 +306,16 @@
 	<script src="../../js/artTemplate-native.js"></script>
 
 	<script type="text/javascript">
+		//动态详情
+		function DTdetail(id,userid){
+			openview({
+				view:'../socialCircle/circleListInfo.html',
+				extrasobj: {
+					infoid: id,
+					UserId:userid,
+				}
+			})
+		}	
 		
 		//礼物兑换HI豆
 		function exchangeHI(pic,num,price){
@@ -487,7 +492,8 @@
 						numsPerPage:4,
 						currentPage:1,
 						orderType:'DESC',
-						orderField:'create_time'
+						orderField:'create_time',
+						'typeId':1
 					},
 					type:'post',
 					timeout:8000,
@@ -526,7 +532,8 @@
 													numsPerPage:4,
 													currentPage:Spagenum,
 													orderType:'DESC',
-													orderField:'create_time'
+													orderField:'create_time',
+													'typeId':1
 												},
 												type:'post',
 												timeout:8000,
@@ -603,7 +610,10 @@
 							$('#allPic,#addPic').click(function(){
 								openview({
 									view:'friendPic.html',
-									id:'friendPic' 
+									id:'friendPic',
+									extrasobj:{
+										useridNum:myuserid
+									}
 								})
 							})
 							
@@ -734,12 +744,6 @@
 									photoObj.list = data.data.Photograph;
 									console.log('相册',data.data.Photograph)
 								$('#photograph').html(template('photographTpl',photoObj));
-								$('.frph').each(function(){
-									if($(this).height() > $(this).find('img').height()){
-										$(this).find('img').css('height','100%');
-										$(this).find('img').css('width','auto');
-									} 
-								})
 								lazyLoad(true,50);//懒加载  
 	
 							}else{
@@ -762,15 +766,7 @@
 
 
 //单独的方法	 			
-			//动态详情
- 			function DTdetail(id){
- 				openview({
- 					view:'socialCircle/circleListInfo.html',
- 					extrasobj: {
-						infoid: id,
-					}
- 				})
- 			}		 
+				 
 			//编辑签名 
 			$('#edit').click(function(){
 				openview({

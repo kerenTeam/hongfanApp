@@ -299,37 +299,44 @@
 					 
 	    	//加入圈子
 	    	$('.goaskZ').click(function(){
-	    		if($(this).attr('data-id')!= 0){
-					mui.confirm('加入圈子需要支付'+$(this).attr('data-id')+'HI豆','提示',['取消','确定'],function(e) {
-						if(e.index == 1) {
-							mui.ajax(serverUrl + '/api/friends/space/', {
-								data:{userId:myuserid,id:circleId},
-								dataType: 'json',
-								type: 'put',
-								timeout: 8000,
-								headers: {"token": oldToken,'city': cityNum},
-								success: function(data) {
-									console.error('加入圈子', data);
-									if(data.errno == 0) {
-										mui.toast('加入成功');
-										if(plus.webview.getWebviewById('circleAll')){
-											mui.fire(plus.webview.getWebviewById('circleAll'),'refresh')
+	    		if(plus.storage.getItem('myToken')){
+		    		if($(this).attr('data-id')!= 0){
+						mui.confirm('加入圈子需要支付'+$(this).attr('data-id')+'HI豆','提示',['取消','确定'],function(e) {
+							if(e.index == 1) {
+								mui.ajax(serverUrl + '/api/friends/space/', {
+									data:{userId:myuserid,id:circleId},
+									dataType: 'json',
+									type: 'put',
+									timeout: 8000,
+									headers: {"token": oldToken,'city': cityNum},
+									success: function(data) {
+										console.error('加入圈子', data);
+										if(data.errno == 0) {
+											mui.toast('加入成功');
+											if(plus.webview.getWebviewById('circleAll')){
+												mui.fire(plus.webview.getWebviewById('circleAll'),'refresh')
+											}
+											$('.goaskZ').css('display','none');
+			    							$('.goask,.gojh').css('display','');
 										}
-										$('.goaskZ').css('display','none');
-		    							$('.goask,.gojh').css('display','');
+									},
+									error: function(xhr, type, errorThrown) {
+										mui.toast("当前网络不好请重试");
 									}
-								},
-								error: function(xhr, type, errorThrown) {
-									mui.toast("当前网络不好请重试");
-								}
-							});
-						 	
-						} 
-					},'div')
-	    		}else{
-	    			$(this).css('display','none');
-	    			$('.goask,.gojh').css('display','');
-	    		}
+								});
+							 	
+							} 
+						},'div')
+		    		}else{
+		    			$(this).css('display','none');
+		    			$('.goask,.gojh').css('display','');
+		    		}
+		    	}else{
+		    		mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+		    	}
 	    	})
 			
 		})
