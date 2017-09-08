@@ -43,7 +43,7 @@
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title">交友照片</h1> 
-		    <span id='edit' class="mui-pull-right" style="font-size: 14px; margin-top: 18px;">编辑</span>
+		    <span id='edit' class="mui-pull-right" style="font-size: 14px; margin-top: 18px;display: none;">编辑</span>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="container">
@@ -69,7 +69,7 @@
 			
 		</div>
 		<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="delet" disabled="" style="display: none;">删除</button>					 
-		<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic">添加</button>					 
+		<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" id="nowpic" style="display: none;">添加</button>					 
 			
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -93,7 +93,12 @@
 	mui.plusReady(function() {
 		var oldToken = plus.storage.getItem('oldToken');
 		var cityNum = plus.storage.getItem('cityNum');
-		var	myuserid = plus.storage.getItem('userid'); 
+		var	myuserid = plus.webview.currentWebview().useridNum;
+		var myuserid0 = plus.storage.getItem('userid');
+		if(myuserid == myuserid0){
+			mui('#nowpic')[0].style.display = '';
+			mui('#edit')[0].style.display = '';
+		}
 		var currentPage = 1,numsPerPage = 12;
 		//获取交友照片
 		mui.ajax(serverUrl+'/api/friends/photography/userId/'+myuserid+'/currentPage/'+currentPage+'/numsPerPage/'+numsPerPage,{

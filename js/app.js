@@ -143,7 +143,7 @@ window.lazyLoad = function(init,limit){
 		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
 		    [].forEach.call(loadPics,function(img,index){
 	         	if(!img.getAttribute('data-src')){return}
-	        	console.log(H + S - limit +'===='+ getTop(img) + plus.webview.currentWebview().id);
+	        	//console.log(H + S - limit +'===='+ getTop(img) + plus.webview.currentWebview().id);
 				if(H + S - limit > getTop(img)){
 			     	img.src=img.getAttribute("data-src");
 				 	img.removeAttribute("data-src");
