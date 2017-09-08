@@ -212,20 +212,28 @@
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken'),
 					groupId = plus.webview.currentWebview().groupId; 
-	 		window.goZan = function(obj,id){ 
-	 			event.stopPropagation()
-				var curThis = $(obj); 
-				var likes = parseInt(curThis.siblings('span').html());
-				
-				if(curThis.attr('src') == '../../img/answer/unlike.png'){
-					likes = likes+1; 
-					curThis.siblings('span').html(likes);
-					likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
-				}else{ 
-					likes = likes-1; 
-					curThis.siblings('span').html(likes);
-					likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
+	 		window.goZan = function(obj,id){
+					event.stopPropagation()
+	 			if(plus.storage.getItem('myToken')){
+					var curThis = $(obj); 
+					var likes = parseInt(curThis.siblings('span').html());
+					
+					if(curThis.attr('src') == '../../img/answer/unlike.png'){
+						likes = likes+1; 
+						curThis.siblings('span').html(likes);
+						likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
+					}else{ 
+						likes = likes-1; 
+						curThis.siblings('span').html(likes);
+						likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
+					}
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
 				}
+	 			
 			}
 				if(typeNum == 0){
 					var dataJson = {

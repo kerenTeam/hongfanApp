@@ -160,11 +160,21 @@
 								}else{
 									var dataObj = {};
 									for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
-									 	if(data.data.data[i].avatar && data.data.data[i].avatar.indexOf("[")>-1){
-											data.data.data[i].avatar = serverimgUrl+ JSON.parse(data.data.data[i].avatar)[0].picImg;
-										}else if(data.data.data[i].avatar){
-											data.data.data[i].avatar = serverimgUrl+ data.data.data[i].avatar;
-										}else if(!data.data.data[i].avatar){
+									 	if(data.data.data[i].avatar){
+									 		if(data.data.data[i].avatar.indexOf("[")>-1){
+									 			if(JSON.parse(data.data.data[i].avatar)[0].picImg.indexOf('http')==-1){
+									 				data.data.data[i].avatar = serverimgUrl+ JSON.parse(data.data.data[i].avatar)[0].picImg;
+									 			}else{
+									 				data.data.data[i].avatar = JSON.parse(data.data.data[i].avatar)[0].picImg;
+									 			}
+									 		}else{
+									 			if(data.data.data[i].avatar.picImg.indexOf('http')==-1){
+									 				data.data.data[i].avatar = serverimgUrl+ data.data.data[i].avatar.picImg;
+									 			}else{
+									 				data.data.data[i].avatar = data.data.data[i].avatar.picImg;
+									 			}
+									 		}
+										}else{
 											data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201708/27/20170827012922_JAncv.thumb.224_0.jpeg';
 										}
 									}
@@ -209,11 +219,21 @@
 																if(data.errno == 0) {
 																	var dataObj = {};
 																	for(var i = 0 ;i<data.data.data.length;i++){
-																	 	if(data.data.data[i].avatar && data.data.data[i].avatar.indexOf("[")>-1){
-																			data.data.data[i].avatar = serverimgUrl+ JSON.parse(data.data.data[i].avatar)[0].picImg;
-																		}else if(data.data.data[i].avatar && data.data.data[i].avatar.indexOf("[") == -1){
-																			data.data.data[i].avatar = serverimgUrl + data.data.data[i].avatar[0];
-																		}else if(!data.data.data[i].avatar){
+																	 	if(data.data.data[i].avatar){
+																	 		if(data.data.data[i].avatar.indexOf("[")>-1){
+																	 			if(JSON.parse(data.data.data[i].avatar)[0].picImg.indexOf('http')==-1){
+																	 				data.data.data[i].avatar = serverimgUrl+ JSON.parse(data.data.data[i].avatar)[0].picImg;
+																	 			}else{
+																	 				data.data.data[i].avatar = JSON.parse(data.data.data[i].avatar)[0].picImg;
+																	 			}
+																	 		}else{
+																	 			if(data.data.data[i].avatar.picImg.indexOf('http')==-1){
+																	 				data.data.data[i].avatar = serverimgUrl+ data.data.data[i].avatar.picImg;
+																	 			}else{
+																	 				data.data.data[i].avatar = data.data.data[i].avatar.picImg;
+																	 			}
+																	 		}
+																		}else{
 																			data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201708/27/20170827012922_JAncv.thumb.224_0.jpeg';
 																		}
 																	 }
@@ -256,17 +276,33 @@
 			
 			//打开他人主页
 			function openDetail(id){
-				openview({
-					view: "elsecircleIndex.html",
-					extrasobj: {
-						userId: id
-					}
-				})
+				if(plus.storage.getItem('myToken')){
+					openview({
+						view: "elsecircleIndex.html",
+						extrasobj: {
+							userId: id
+						}
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+				
 			}
 			$('.friendCenter').click(function(){
-				openview({
-					view:'mycircleIndex.html'
-				})
+				if(plus.storage.getItem('myToken')){
+					openview({
+						view:'mycircleIndex.html'
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+			
 			})
 		</script>
 	</body>

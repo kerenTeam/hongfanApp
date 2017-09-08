@@ -337,11 +337,19 @@
 								$(window).scrollTop(SH0);
 							}
 						}else if(index == 1){
-							if(flag1==0){
-								shopData(index,1);
+							if(plus.storage.getItem('myToken')){
+								if(flag1==0){
+									shopData(index,1);
+								}else{
+									$(window).scrollTop(SH1);
+								}
 							}else{
-								$(window).scrollTop(SH1);
+								mui.toast('请登录');
+								openview({
+									view:'login.html'
+								});
 							}
+							
 						}
 					}else{//点击active项    就刷新
 						$(window).scrollTop(280);
@@ -395,33 +403,48 @@
 					var myuserid = plus.storage.getItem('userid');
 					//到主页
 					window.elseCircleIndex = function(id){
-						if(id == myuserid){
-							openview({
-					    		view:'socialCircle/mycircleIndex.html',
-					    		id:'mycircleIndex' 
-					    	})
+						if(plus.storage.getItem('myToken')){
+							if(id == myuserid){
+								openview({
+						    		view:'socialCircle/mycircleIndex.html',
+						    		id:'mycircleIndex' 
+						    	})
+							}else{
+								openview({
+						    		view:'socialCircle/elsecircleIndex.html',
+						    		id:'elsecircleIndex',
+						    		extrasobj:{userId:id}
+						    	})
+							} 
 						}else{
+							mui.toast('请登录');
 							openview({
-					    		view:'socialCircle/elsecircleIndex.html',
-					    		id:'elsecircleIndex',
-					    		extrasobj:{userId:id}
-					    	})
+								view:'login.html'
+							});
 						} 
 				    }
 					
-					window.goZan = function(obj,id){ 
-						var curThis = $(obj); 
-						var likes = parseInt(curThis.siblings('span').html());
-						
-						if(curThis.attr('src') == '../img/makeFriend/zan.png'){
-							likes = likes+1; 
-							curThis.siblings('span').html(likes);
-							likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../img/makeFriend/yizan.png');
-						}else{ 
-							likes = likes-1; 
-							curThis.siblings('span').html(likes);
-							likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../img/makeFriend/zan.png'); 
+					window.goZan = function(obj,id){
+						if(plus.storage.getItem('myToken')){
+							var curThis = $(obj); 
+							var likes = parseInt(curThis.siblings('span').html());
+							
+							if(curThis.attr('src') == '../img/makeFriend/zan.png'){
+								likes = likes+1; 
+								curThis.siblings('span').html(likes);
+								likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../img/makeFriend/yizan.png');
+							}else{ 
+								likes = likes-1; 
+								curThis.siblings('span').html(likes);
+								likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../img/makeFriend/zan.png'); 
+							}
+						}else{
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
 						}
+						
 					}
 					
 					if(typeNum == 0){
@@ -812,10 +835,18 @@
 				}
 			})
 			$('#fabu').click(function(){
-				openview({
-					view:'socialCircle/circlePublish.html',
-					id:'circlePublish' 
-				})
+				if(plus.storage.getItem('myToken')){
+					openview({
+						view:'socialCircle/circlePublish.html',
+						id:'circlePublish' 
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+				} 
+				
 			})
 
 		</script>

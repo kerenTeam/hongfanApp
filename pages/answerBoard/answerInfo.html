@@ -128,56 +128,34 @@
 				myuserid = plus.storage.getItem('userid'),
 				infiId = plus.webview.currentWebview().answerId;
 			window.goAnswer = function(isExpert,expertId,qusid){
-				console.error(isExpert)
-				if(isExpert == 1){
-					if(expertId == myuserid){
-						if(plus.storage.getItem('myToken')){
+				console.error(isExpert);
+				if(plus.storage.getItem('myToken')){
+					if(isExpert == 1){
+						if(expertId == myuserid){ 
 							openview({
 								view:'goAnswer.html',
 								id:'goAnswer',
 								extrasobj:{expertid:expertId,questionId:infiId,questionUserId:qusid}
 							})
-						}else{
-							mui.toast('请登录');
-							openview({
-								view:'../login.html'
-							});
+						 
+						}else{ 
+							mui.toast('仅特邀专家可以回答')
 						}
-					}else{ 
-						mui.toast('仅特邀专家可以回答')
-					}
-				}else{
-					if(plus.storage.getItem('myToken')){
+					}else{
 						openview({
 							view:'goAnswer.html',
 							id:'goAnswer',
 							extrasobj:{expertid:expertId,questionId:infiId,questionUserId:qusid}
 						})
-					}else{
-						mui.toast('请登录');
-						openview({
-							view:'../login.html'
-						});
 					}
-				}
-				
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
 			}
-			window.goZan = function(obj,id){ 
-				alert(id)
-	 			event.stopPropagation()
-				var curThis = $(obj); 
-				var likes = parseInt(curThis.siblings('span').html());
-				
-				if(curThis.attr('src') == '../../img/answer/unlike.png'){
-					likes = likes+1; 
-					curThis.siblings('span').html(likes);
-					likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
-				}else{ 
-					likes = likes-1; 
-					curThis.siblings('span').html(likes);
-					likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
-				}
-			}
+		 
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
 				dataType: 'json',
 				type: 'get',
@@ -226,17 +204,25 @@
 						}
 						//点赞
 						$('#doLike').click(function(){
-							var curThis = $(this);
-							var likes = parseInt(curThis.siblings('span').html());
-							if(curThis.attr('src') == '../../img/answer/unlike.png'){ 
-								likes = likes+1; 
-								curThis.siblings('span').html(likes);
-								likeThis(curThis,infiId,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png')  
+							if(plus.storage.getItem('myToken')){
+								var curThis = $(this);
+								var likes = parseInt(curThis.siblings('span').html());
+								if(curThis.attr('src') == '../../img/answer/unlike.png'){ 
+									likes = likes+1; 
+									curThis.siblings('span').html(likes);
+									likeThis(curThis,infiId,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png')  
+								}else{
+									likes = likes-1; 
+									curThis.siblings('span').html(likes);	
+									likeThis(curThis,infiId,cityNum,myuserid,oldToken,'DELETE','../../img/answer/unlike.png') 
+								}
 							}else{
-								likes = likes-1; 
-								curThis.siblings('span').html(likes);	
-								likeThis(curThis,infiId,cityNum,myuserid,oldToken,'DELETE','../../img/answer/unlike.png') 
+								mui.toast('请登录');
+								openview({
+									view:'../login.html'
+								});
 							}
+							
 						})
 						//回答
 						mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {

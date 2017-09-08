@@ -95,7 +95,7 @@
 							<div class="diybtn2" style="display: none;">
 								聊天
 							</div> 
-							<div class="diybtn">
+							<div class="diybtn" style="display: none;">
 								关注
 							</div> 
 			           </div> 
@@ -289,18 +289,25 @@
 			}
 		
 			window.goCircleIndex = function(id){
-				if(id == myuserid){
-					openview({
-			    		view:'mycircleIndex.html',
-			    		id:'mycircleIndex' 
-			    	})
+				if(plus.storage.getItem('myToken')){
+					if(id == myuserid){
+						openview({
+				    		view:'mycircleIndex.html',
+				    		id:'mycircleIndex' 
+				    	})
+					}else{
+						openview({
+				    		view:'elsecircleIndex.html',
+				    		id:'elsecircleIndex',
+				    		extrasobj:{userId:id}
+				    	})
+					} 
 				}else{
+					mui.toast('请登录');
 					openview({
-			    		view:'elsecircleIndex.html',
-			    		id:'elsecircleIndex',
-			    		extrasobj:{userId:id}
-			    	})
-				} 
+						view:'../login.html'
+					});
+				}  
 		    }
 			
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
@@ -348,6 +355,19 @@
 						
 						dataObj.dataList = data.data;
 						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
+						$('.diybtn').click(function(){  
+							var curL = $(this);
+				    		//关注 
+				    		if(plus.storage.getItem('myToken')){
+								followBack(curL,newsUserId,'put');
+							}else{
+								mui.toast('请登录');
+								openview({
+									view:'../login.html'
+								});
+							} 
+				    		 
+				    	})
 						if(data.errmsg == 1){ 
 							$('#doLike').attr('src','../../img/makeFriend/yizan.png');
 						}else{
@@ -373,12 +393,20 @@
 						//打赏
 						$('.giveBk').click(function(){
 				    		event.preventDefault();
-				    		var acceptid = $(this).attr('data-id');
-							openview({
-								view:'../answerBoard/reward.html',
-								id:'reward',
-								extrasobj:{newsId:infiId,acceptId:acceptid}
-							})
+				    		if(plus.storage.getItem('myToken')){
+								var acceptid = $(this).attr('data-id');
+									openview({
+										view:'../answerBoard/reward.html',
+										id:'reward',
+										extrasobj:{newsId:infiId,acceptId:acceptid}
+									})
+							}else{
+								mui.toast('请登录');
+								openview({
+									view:'../login.html'
+								});
+							} 
+				    		
 						})
 						//判断是否关注
 						mui.ajax(serverUrl+'/api/friends/likeusers',{
@@ -390,23 +418,24 @@
 								console.log('获取数据返回',data);
 								if(data.errno == 0){
 									if(data.data.ILikeUsers && data.data.ILikeUsers.length){
+										var m = 0;
 										[].forEach.call(data.data.ILikeUsers,function(ele,index){
+											
 											if(ele.user_id == newsUserId){
+												m++;
 												if(newsUserId != myuserid){
-													$('.diybtn2').css('display','');
+													$('.diybtn2').css('display','block');
 													$('.diybtn').css('display','none');
 												}else{
 													$('.diybtn2').css('display','none');
 													$('.diybtn').css('display','none');
-												}
-											} 
-										}) 
-										$('.diybtn').click(function(){  
-								    		//关注 
-								    		followBack(curL,newsUserId,'put')
-								    		 
-								    	})
-										
+												}; 
+											}
+											
+										})  
+										if(m==0){
+											$('.diybtn').css('display','block');
+										}
 										//聊天
 										$('.diybtn2').click(function(){
 										 	openview({
@@ -418,7 +447,7 @@
 								    	})
 										
 									}else{
-										document.getElementById('meLike').innerHTML = "<div style='text-align: center;padding: 30px;'>还未关注任何人哦</div>";
+										$('.diybtn').css('display','block');
 									}
 								}else{
 									console.log(data.errmsg); 
@@ -553,53 +582,68 @@
 				});
 			} 
 			$('#cmtedup').click(function(){
-	    		if($('.writecmt').html() != ''){
-	    			var cur = $('.writecmt');
-	    			var commont = cur.html(),
-	    				touserid = $('.writecmt').attr('id'),
-	    				commontid = $('.writecmt').attr('data-id'); 
-	    			mui.ajax(serverUrl + '/api/friends/newscomment', {
-	    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
-						dataType: 'json',
-						type: 'POST',
-						timeout: 8000,
-						headers: {"token": oldToken,'city': cityNum},
-						success: function(data, type, xhr) {
-							console.error('评论详情', data);
-							 
-							if(data.errno == 0) {
-				    			cur.html('');
-				    			mui.toast('评论成功');
-			    				$('.writecmt').attr('placeholder','');
-								 $('.writecmt').attr('id','');
-								 $('.writecmt').attr('data-id','');
-				    			getCmt();
-							}else{
+				if(plus.storage.getItem('myToken')){
+					if($('.writecmt').html() != ''){
+		    			var cur = $('.writecmt');
+		    			var commont = cur.html(),
+		    				touserid = $('.writecmt').attr('id'),
+		    				commontid = $('.writecmt').attr('data-id'); 
+		    			mui.ajax(serverUrl + '/api/friends/newscomment', {
+		    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
+							dataType: 'json',
+							type: 'POST',
+							timeout: 8000,
+							headers: {"token": oldToken,'city': cityNum},
+							success: function(data, type, xhr) {
+								console.error('评论详情', data);
+								 
+								if(data.errno == 0) {
+					    			cur.html('');
+					    			mui.toast('评论成功');
+				    				$('.writecmt').attr('placeholder','');
+									 $('.writecmt').attr('id','');
+									 $('.writecmt').attr('data-id','');
+					    			getCmt();
+								}else{
+									mui.toast('当前网络不好,请重试');
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								console.error('评论列表,响应失败');
 								mui.toast('当前网络不好,请重试');
 							}
-						},
-						error: function(xhr, type, errorThrown) {
-							console.error('评论列表,响应失败');
-							mui.toast('当前网络不好,请重试');
-						}
+						});
+		    			
+		    			
+		    		}else{
+		    			$('.writecmt').focus();
+		    		}
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
 					});
-	    			
-	    			
-	    		}else{
-	    			$('.writecmt').focus();
-	    		}
+				}
+	    		
 	    		
 	    	})
 	    	
 	    
 			//点赞
 			$('#doLike').click(function(){
-				var curThis = $(this);
-				if(curThis.attr('src') == '../../img/makeFriend/zan.png'){ 
-					likeThis(curThis,infiId,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png')  
+				if(plus.storage.getItem('myToken')){
+					var curThis = $(this);
+					if(curThis.attr('src') == '../../img/makeFriend/zan.png'){ 
+						likeThis(curThis,infiId,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png')  
+					}else{
+						likeThis(curThis,infiId,cityNum,myuserid,oldToken,'DELETE','../../img/makeFriend/zan.png') 
+					}
 				}else{
-					likeThis(curThis,infiId,cityNum,myuserid,oldToken,'DELETE','../../img/makeFriend/zan.png') 
-				}
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
 			})
 	    	 
 		}) 
@@ -642,12 +686,6 @@
 	</script>
 	<script type="text/javascript">
       
-		$('.diybtn').click(function(){
-    		$(this).css('display','none'); 
-    		$(this).siblings('.diybtn2').css('display','block')
-    		 
-    	})
-		
 		$('.diybtn2').click(function(){
     		event.preventDefault()
 			alert('聊天')
