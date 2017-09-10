@@ -11,135 +11,92 @@
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">  
 		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js"></script>
-		<script src="../../js/artTemplate-native.js"></script>
-		 
+		
 	</head>
 	<style type="text/css">
-		.QAhead{background-color:white;text-align:center;margin-bottom: 10px;}
-		.QAhead span{position:relative;display:inline-block;margin:0 10px;padding:0 5px;height:50px;color:#343434;font-size:16px;line-height:50px}
+		.QAhead{background-color:white;text-align:center;margin-bottom: 10px;position:fixed;width: 100%;box-shadow: 0 0 2px rgba(175, 166, 166, 0.85) !important; }
+		.QAhead span{position:relative;display:inline-block;margin:0 10px;padding:0 5px;height:45px;color:#343434;font-size:15px;line-height:45px}
 		.QAhead span.active{color:#f93a38}
 		.QAhead span:after{position:absolute;bottom:0;left:50%;width:0;height:1px;background-color:#f31414;content:""}
 		.QAhead span.active:after{left:0!important;width:100%!important;transition:all .3s}
-		.listCon{border-bottom: 15px solid #F3F3F3;} 
-		.follow{background-color:#fff;padding:15px 10px;}
+		.listCon{border-top: 15px solid #F3F3F3;} 
+		.follow{background-color:#fff;padding:15px 10px;overflow: hidden;}
 		.fchidl{display:flex;align-items:center;justify-content:space-between;}
 		.userAvator{margin-right:15px;width:2.5rem;height:2.5rem;border-radius:50%;}
 		.fchidl>div{display:flex;vertical-align:middle;text-align:left;font-size:15px;align-items:center;}
 		.text{color:#999;}
   		.diybtn{background: url(../../img/makeFriend/follow.png) no-repeat;background-size: 100% 100%;background-position: left top;color: white;padding: 4px 22px;;}
   		.diybtn2{background: url(../../img/makeFriend/unfollw.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 4px 22px;;}
-		.yhm{width:calc((100vw - 50px)/3);height: calc((100vw - 20px)/3);margin-left: 5px;margin-top:10px ;}
+		.yhm{width:calc((100vw - 40px)/3);height: calc((100vw - 40px)/3);margin-left: 5px;margin-top:10px ;float: left;overflow: hidden;background-color: #f3f3f3;}
+		.yhm img{width: 100%;}
+		.circleContain{padding-top: 45px;}
+		.listCon:first-child{border-top: 0 !important;}
+		.mui-bar-nav{box-shadow: none !important;}
+		body{padding-bottom: 0px;}
+		#upload{min-height: 48px;height: 48px; line-height: 30px;overflow: hidden;}
+		#upload img { padding-bottom: 0px !important; }
 	</style>
 
 	<body style="background-color: #F3F3F3;">
-
-		<header class="mui-bar mui-bar-nav" id="header">
+		<header class="mui-bar mui-bar-nav fineB" id="header">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
 			<h1 class="mui-title findUser">人气榜</h1>
-			
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		
 		<div id="main">
-			<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 9;">
+			<div class="QAhead">
 				<span class="active aClick">24H活跃度</span>
 				<span class="aClick">总活跃度</span> 
-			</div> 
-    		<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
+			</div>
+			
+			<div class="circleContain" style="display: block;"></div><!--盒子二-->
+			<div class="circleContain" style="display: none;"></div><!--盒子一-->
+    		<script type="text/html" id="listDataS">
+			<%for(var i=0;i<dataList.length;i++){%>
+				<div class="listCon">
+					<div class="follow"> 
+						<div class="fchidl">
 							<div>
-								wangfei
-								<div class="disablecl ft12">
-								<img style="width: 15px;vertical-align: middle;" src="../../img/answer/liked.png"/>  <span style="color: #5d86b2;">121</span>	
+								<img data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+								<div> <%=dataList[i].nickname%>
+									<div class="disablecl ft12">
+										<img style="width: 15px;vertical-align: middle;" src="../../img/answer/liked.png"/>  <span style="color: #5d86b2;"><%=dataList[i].likes%></span>	
+									</div>
 								</div>
-							</div>
-						</div> 
-						<div class="butright">
-							<div class="diybtn2">
-								聊天
 							</div> 
-							<div class="diybtn"  style="display: none;">
-								关注
-							</div> 
-			           </div> 
-					</div>  
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				</div> 
-			 
-			</div> 
-		 	<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								<div class="disablecl ft12">
-								<img style="width: 15px;vertical-align: middle;" src="../../img/answer/liked.png"/>  <span style="color: #5d86b2;">121</span>	
-								</div>
-							</div>
-						</div> 
-						<div class="butright">
-							
-							<div class="diybtn2" style="display: none;">
-								聊天
-							</div> 
-							<div class="diybtn">
-								关注
-							</div> 
-			           </div> 
-					</div>  
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				</div> 
-			 
-			</div> 
-		 	<div class="listCon">
-				<div class="follow"> 
-					<div class="fchidl">
-						<div>
-							<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
-							<div>
-								wangfei
-								<div class="disablecl ft12">
-								<img style="width: 15px;vertical-align: middle;" src="../../img/answer/liked.png"/>  <span style="color: #5d86b2;">121</span>	
-								</div>
-							</div>
-						</div> 
-						<div class="butright">
-							<div class="diybtn2">
-								聊天
-							</div> 
-							<div class="diybtn"  style="display: none;">
-								关注
-							</div> 
-			           </div> 
-					</div>  
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg" class="yhm"/>	 
-				</div> 
-			 
-			</div> 
-		 	
+							<div class="butright">
+								<%if(dataList[i].isfriend){%>
+									<div class="diybtn2">聊天</div>
+								<%}else{%>
+									<div class="diybtn">关注</div> 
+								<%}%>	
+				           </div> 
+						</div>
+						<%if(dataList[i].picS){%>
+							<%for(var j=0;j<dataList[i].picS.length;j++){%>
+								<div class="yhm"><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].picS[j]%>" src=""/></div>
+							<%}%>
+						<%}%>
+					</div> 
+				</div>
+			<%}%>	
+			</script>
+			
+			<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div><!--加载中效果-->
 		</div>
-	 
-	 </body>
-
+	</body>		
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
- 
+		var flag0 = 0,flag1 = 0,flag2 = 0;//是否   第一次点击
+		var SH0 = 0,SH1  = 0,SH2  = 0; /*保存的状态栏高度*/
 		var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
-		
+		var listSon = document.getElementsByClassName('circleContain'); /*内容盒子*/
 		[].forEach.call(listCon,function(ele,index){
 			ele.onclick = function(){
 				if(!ele.className.includes('active')){
@@ -147,33 +104,212 @@
 						ele2.className = '';
 					})
 					ele.className = 'active aClick'; 
+					$('.circleContain').css('display','none')
+				    $('.circleContain').eq(index).css('display','block');
+				    
+				    if(index == 0){//24H活跃度
+						if(flag0==0){
+							shopData(index);
+						}else{
+							$(window).scrollTop(SH0);
+						}
+					}else if(index == 1){//总活跃度
+						if(flag1==0){
+							shopData(index);
+						}else{
+							$(window).scrollTop(SH1);
+						}
+					}
+				    
 				}
 			}
 		}) 
-	      
-		 
-	    //数据处理 
-		var myuserid;
-	    	$('.diybtn').click(function(){
-	    		$(this).css('display','none'); 
-	    		$(this).siblings('.diybtn2').css('display','block')
-	    		 
-	    	})
-			
-			$('.diybtn2').click(function(){
-	    		event.preventDefault()
-				if(!plus.storage.getItem('myToken')){ 
-					mui.toast('请登录');
-					openview({
-						view:'login.html'
-					});
-				}else{//没登陆直接打开登录页面
-					openview({
-						view:'friendChat.html' 
-					}); 
-					
-				}
+	    
+	    
+	    shopData(0);//默认推荐
+		function shopData(typeNum){
+			var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数
+			if(typeNum == 0){
+				flag0++;
+			}else if(typeNum == 1){
+				flag1++;
+			}
+			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+			mui.plusReady(function(){
+				var numsPerPage = 6;
+				var cityNum = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken'),
+				    myuserid = plus.storage.getItem('userid');
+				    
+			    if(typeNum == 0){
+			    	var dataJson = {currentPage:1,numsPerPage:numsPerPage};
+			    }else{
+			    	var dataJson = {currentPage:1,numsPerPage:numsPerPage};
+			    }
+				mui.ajax(serverUrl+'/api/friends/hot', {
+					data:dataJson,
+					dataType: 'json',
+					type: 'post',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.error('人气榜列表'+typeNum, data);
+						if(data.errno == 0) {
+							if(!data.data.data.length){
+								mui("#upload")[0].innerHTML = "没有数据 !";
+							}else{
+								var dataObj = {};
+								for(var i = 0 ;i<data.data.data.length;i++){
+									if(data.data.data[i].avatar){//整理头像格式
+										if(data.data.data[i].avatar.indexOf("[")>-1){
+											if(data.data.data[i].avatar.includes('http')){
+												data.data.data[i].avatar =  JSON.parse(data.data.data[i].avatar)[0].picImg;
+											}else{
+												data.data.data[i].avatar = serverimgUrl + JSON.parse(data.data.data[i].avatar)[0].picImg;
+											}
+										}
+									}else{
+										data.data.data[i].avatar = '../../img/morentouxiang.jpg';
+									}
+								 	
+								 	if(data.data.data[i].photo && data.data.data[i].photo.length){//整理内容图片格式
+								 		var nowArray2 = data.data.data[i].photo;
+								 		var picS = [];
+								 		for(var k = 0 ;k<nowArray2.length;k++){
+								 			if(nowArray2[k].picImg.includes('picImg')){
+								 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
+								 			}
+										}
+								 		data.data.data[i].picS = picS;
+								 	}
+									
+								}
+								
+								
+								dataObj.dataList = data.data.data;
+								dataObj.typeNum = typeNum;
+								document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
+								//mui("#upload")[0].innerHTML = "";
+								lazyLoad(true,50);//懒加载
+								
+								$(window).scroll(function() {
+									if(document.getElementsByClassName("circleContain")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
+											var scrollTop = $(this).scrollTop();　
+											if(typeNum == 0){
+												SH0 = $(this).scrollTop();
+											}else if(typeNum == 1){
+												SH1 = $(this).scrollTop();
+											}
+											var scrollHeight = $(document).height();
+											var windowHeight = $(this).height();　　
+											if(scrollTop + windowHeight == scrollHeight) {
+												if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+													mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+													Ypagenum++; //满足加载情况,应到页数+1
+													console.log('发起请求,实到' + Spagenum + '页');
+													console.log('发起请求,应到' + Ypagenum + '页');
+													if(typeNum == 0){
+												    	var dataJson = {currentPage:Spagenum,numsPerPage:numsPerPage};
+												    }else{
+												    	var dataJson = {currentPage:Spagenum,numsPerPage:numsPerPage};
+												    }
+													mui.ajax(serverUrl+'/api/friends/hot', {
+														data:dataJson,
+														dataType: 'json',
+														type: 'post',
+														timeout: 8000,
+														headers: {"token": oldToken,'city': cityNum},
+														success: function(data) {
+															console.error('人气榜列表续'+typeNum, data);
+															if(data.errno == 0) {
+																var dataObj = {};
+																for(var i = 0 ;i<data.data.data.length;i++){
+																 	if(data.data.data[i].avatar){//整理头像格式
+																		if(data.data.data[i].avatar.indexOf("[")>-1){
+																			if(data.data.data[i].avatar.includes('http')){
+																				data.data.data[i].avatar =  JSON.parse(data.data.data[i].avatar)[0].picImg;
+																			}else{
+																				data.data.data[i].avatar = serverimgUrl + JSON.parse(data.data.data[i].avatar)[0].picImg;
+																			}
+																		}
+																	}else{
+																		data.data.data[i].avatar = '../../img/morentouxiang.jpg';
+																	}
+																	
+																 	//整理内容图片格式
+																 	if(data.data.data[i].photo && data.data.data[i].photo.length){
+																 		var nowArray2 = data.data.data[i].photo;
+																 		var picS = [];
+																 		for(var k = 0 ;k<nowArray2.length;k++){
+																 			if(nowArray2[k].picImg.includes('picImg')){
+																 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
+																 			}
+																		}
+																 		data.data.data[i].picS = picS;
+																 	}
+																}
+																dataObj.dataList = data.data.data;
+																dataObj.typeNum = typeNum;
+																document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
+																lazyLoad(false,50);//懒加载
+															}
+															mui("#upload")[0].innerHTML = " ";
+															Spagenum++; //加载成功,当前页+1
+															console.log('成功+1,实到' + Spagenum);
+															console.log('成功+1,应到' + Spagenum);
+														},
+														error: function(xhr, type, errorThrown) {
+															Ypagenum--; //失败是应到-1
+															mui.toast("当前网络不好请重试");
+															mui("#upload")[0].innerHTML = "";
+														}
+													});
+												} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+													mui("#upload")[0].innerHTML = "到底了";
+												}
+											} 
+									}
+								});
+							
+							}
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('交友列表,响应失败');
+						mui.toast('当前网络不好,请重试');
+					}
+				});
 			})
+		}
+		
+		
+		
+		
+		
+    	$('.diybtn').click(function(){/*关注*/
+    		alert(1)
+    		$(this).css('display','none'); 
+    		$(this).siblings('.diybtn2').css('display','block')
+    		 
+    	})
+			
+		$('.diybtn2').click(function(){/*聊天*/
+    		event.preventDefault()
+			if(!plus.storage.getItem('myToken')){ 
+				mui.toast('请登录');
+				openview({
+					view:'login.html'
+				});
+			}else{//没登陆直接打开登录页面
+				openview({
+					view:'friendChat.html' 
+				}); 
+				
+			}
+		})
    	 
 	</script>
 
