@@ -58,7 +58,7 @@
 			<div class="circleContain" style="display: none;"></div><!--盒子一-->
     		<script type="text/html" id="listDataS">
 			<%for(var i=0;i<dataList.length;i++){%>
-				<div class="listCon">
+				<div class="listCon" onclick="goCircleIndex(<%=dataList[i].user_id%>)">
 					<div class="follow"> 
 						<div class="fchidl">
 							<div>
@@ -69,11 +69,13 @@
 									</div>
 								</div>
 							</div> 
-							<div class="butright">
+							<div class="butright" data-id="<%=dataList[i].user_id%>">
 								<%if(dataList[i].isfriend){%>
 									<div class="diybtn2">聊天</div>
+									<div class="diybtn" style="display: none;">关注</div> 
 								<%}else{%>
 									<div class="diybtn">关注</div> 
+									<div class="diybtn2" style="display: none;">聊天</div>
 								<%}%>	
 				           </div> 
 						</div>
@@ -124,8 +126,7 @@
 				}
 			}
 		}) 
-	    
-	    
+	     
 	    shopData(0);//默认推荐
 		function shopData(typeNum){
 			var Spagenum = 2; //实到页数
@@ -141,11 +142,33 @@
 				var cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken'),
 				    myuserid = plus.storage.getItem('userid');
-				    
+				
+				window.goCircleIndex = function(id){
+					if(plus.storage.getItem('myToken')){
+						if(id == myuserid){
+							openview({
+					    		view:'mycircleIndex.html',
+					    		id:'mycircleIndex' 
+					    	})
+						}else{
+							openview({
+					    		view:'elsecircleIndex.html',
+					    		id:'elsecircleIndex',
+					    		extrasobj:{userId:id}
+					    	})
+						} 
+					}else{
+						mui.toast('请登录');
+						openview({
+							view:'../login.html'
+						});
+					}  
+			    }
+				
 			    if(typeNum == 0){
-			    	var dataJson = {currentPage:1,numsPerPage:numsPerPage};
+			    	var dataJson = {numsPerPage:20,time:24};
 			    }else{
-			    	var dataJson = {currentPage:1,numsPerPage:numsPerPage};
+			    	var dataJson = {numsPerPage:20};
 			    }
 				mui.ajax(serverUrl+'/api/friends/hot', {
 					data:dataJson,
@@ -156,122 +179,77 @@
 					success: function(data, type, xhr) {
 						console.error('人气榜列表'+typeNum, data);
 						if(data.errno == 0) {
-							if(!data.data.data.length){
+							if(!data.data.length){
 								mui("#upload")[0].innerHTML = "没有数据 !";
 							}else{
 								var dataObj = {};
-								for(var i = 0 ;i<data.data.data.length;i++){
-									if(data.data.data[i].avatar){//整理头像格式
-										if(data.data.data[i].avatar.indexOf("[")>-1){
-											if(data.data.data[i].avatar.includes('http')){
-												data.data.data[i].avatar =  JSON.parse(data.data.data[i].avatar)[0].picImg;
+								for(var i = 0 ;i<data.data.length;i++){
+									if(data.data[i].avatar){//整理头像格式
+										if(data.data[i].avatar.indexOf("[")>-1){
+											if(data.data[i].avatar.includes('http')){
+												data.data[i].avatar =  JSON.parse(data.data[i].avatar)[0].picImg;
 											}else{
-												data.data.data[i].avatar = serverimgUrl + JSON.parse(data.data.data[i].avatar)[0].picImg;
+												data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
 											}
 										}
 									}else{
-										data.data.data[i].avatar = '../../img/morentouxiang.jpg';
+										data.data[i].avatar = '../../img/morentouxiang.jpg';
 									}
 								 	
-								 	if(data.data.data[i].photo && data.data.data[i].photo.length){//整理内容图片格式
-								 		var nowArray2 = data.data.data[i].photo;
+								 	if(data.data[i].photo && data.data[i].photo.length){//整理内容图片格式
+								 		var nowArray2 = data.data[i].photo;
 								 		var picS = [];
 								 		for(var k = 0 ;k<nowArray2.length;k++){
 								 			if(nowArray2[k].picImg.includes('picImg')){
 								 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
 								 			}
 										}
-								 		data.data.data[i].picS = picS;
+								 		data.data[i].picS = picS;
 								 	}
 									
 								}
 								
 								
-								dataObj.dataList = data.data.data;
+								dataObj.dataList = data.data;
 								dataObj.typeNum = typeNum;
 								document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
 								//mui("#upload")[0].innerHTML = "";
 								lazyLoad(true,50);//懒加载
 								
-								$(window).scroll(function() {
-									if(document.getElementsByClassName("circleContain")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
-											var scrollTop = $(this).scrollTop();　
-											if(typeNum == 0){
-												SH0 = $(this).scrollTop();
-											}else if(typeNum == 1){
-												SH1 = $(this).scrollTop();
-											}
-											var scrollHeight = $(document).height();
-											var windowHeight = $(this).height();　　
-											if(scrollTop + windowHeight == scrollHeight) {
-												if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-													mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-													Ypagenum++; //满足加载情况,应到页数+1
-													console.log('发起请求,实到' + Spagenum + '页');
-													console.log('发起请求,应到' + Ypagenum + '页');
-													if(typeNum == 0){
-												    	var dataJson = {currentPage:Spagenum,numsPerPage:numsPerPage};
-												    }else{
-												    	var dataJson = {currentPage:Spagenum,numsPerPage:numsPerPage};
-												    }
-													mui.ajax(serverUrl+'/api/friends/hot', {
-														data:dataJson,
-														dataType: 'json',
-														type: 'post',
-														timeout: 8000,
-														headers: {"token": oldToken,'city': cityNum},
-														success: function(data) {
-															console.error('人气榜列表续'+typeNum, data);
-															if(data.errno == 0) {
-																var dataObj = {};
-																for(var i = 0 ;i<data.data.data.length;i++){
-																 	if(data.data.data[i].avatar){//整理头像格式
-																		if(data.data.data[i].avatar.indexOf("[")>-1){
-																			if(data.data.data[i].avatar.includes('http')){
-																				data.data.data[i].avatar =  JSON.parse(data.data.data[i].avatar)[0].picImg;
-																			}else{
-																				data.data.data[i].avatar = serverimgUrl + JSON.parse(data.data.data[i].avatar)[0].picImg;
-																			}
-																		}
-																	}else{
-																		data.data.data[i].avatar = '../../img/morentouxiang.jpg';
-																	}
-																	
-																 	//整理内容图片格式
-																 	if(data.data.data[i].photo && data.data.data[i].photo.length){
-																 		var nowArray2 = data.data.data[i].photo;
-																 		var picS = [];
-																 		for(var k = 0 ;k<nowArray2.length;k++){
-																 			if(nowArray2[k].picImg.includes('picImg')){
-																 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
-																 			}
-																		}
-																 		data.data.data[i].picS = picS;
-																 	}
-																}
-																dataObj.dataList = data.data.data;
-																dataObj.typeNum = typeNum;
-																document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
-																lazyLoad(false,50);//懒加载
-															}
-															mui("#upload")[0].innerHTML = " ";
-															Spagenum++; //加载成功,当前页+1
-															console.log('成功+1,实到' + Spagenum);
-															console.log('成功+1,应到' + Spagenum);
-														},
-														error: function(xhr, type, errorThrown) {
-															Ypagenum--; //失败是应到-1
-															mui.toast("当前网络不好请重试");
-															mui("#upload")[0].innerHTML = "";
-														}
-													});
-												} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-													mui("#upload")[0].innerHTML = "到底了";
-												}
-											} 
+							 
+								
+								$('.diybtn').click(function(){//关注 
+									var j = 0;
+									var curL = $(this); 
+						    		var likerId = $(this).parent().attr('data-id');
+						    		if(!plus.storage.getItem('myToken')){ 
+										mui.toast('请登录');
+										openview({
+											view:'../login.html'
+										});
+									}else{
+						    			followBack(curL,likerId,'PUT')
+										
 									}
-								});
-							
+						    		
+						    	 
+						    	}) 
+						    	
+								$('.diybtn2').click(function(){/*聊天*/
+						    		event.preventDefault();
+						    		var chatId = $(this).parent().attr('data-id');
+									if(!plus.storage.getItem('myToken')){ 
+										mui.toast('请登录');
+										openview({
+											view:'login.html'
+										});
+									}else{//没登陆直接打开登录页面
+										openview({
+											view:'friendChat.html' 
+										}); 
+										
+									}
+								})
 							}
 						}else{
 							mui.toast('当前网络不好,请重试');
@@ -286,30 +264,8 @@
 		}
 		
 		
+	 
 		
-		
-		
-    	$('.diybtn').click(function(){/*关注*/
-    		alert(1)
-    		$(this).css('display','none'); 
-    		$(this).siblings('.diybtn2').css('display','block')
-    		 
-    	})
-			
-		$('.diybtn2').click(function(){/*聊天*/
-    		event.preventDefault()
-			if(!plus.storage.getItem('myToken')){ 
-				mui.toast('请登录');
-				openview({
-					view:'login.html'
-				});
-			}else{//没登陆直接打开登录页面
-				openview({
-					view:'friendChat.html' 
-				}); 
-				
-			}
-		})
    	 
 	</script>
 

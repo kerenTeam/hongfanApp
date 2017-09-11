@@ -45,6 +45,20 @@
 		    .citys div{
 		    	line-height: 40px;
 		    }
+		    .hiFdW{
+		    	width: calc((100vw - 40px) / 3);
+		    	width: -webkit-calc((100vw - 40px) / 3);
+		    	width: -moz-calc((100vw - 40px) / 3);
+		    	height: -moz-calc((100vw - 40px) / 3);
+		    	height: -webkit-calc((100vw - 40px) / 3);
+		    	height: calc((100vw - 40px) / 3);
+		    	background: #f3f3f3;
+		    	border-radius: 3px;
+		    	overflow: hidden;
+		    }
+		    .hiFdW img{
+		    	width: 100%;
+		    }
 		</style>
 	</head>
 
@@ -210,58 +224,41 @@
 		<!--HI友圈--> 
 		<div class="mui-content hiFriend">
 			<h3 class="partTitle"> <img src="../img/mainHtml/hired.png"/> <span></span> 友圈</h3>
-		    <div class="mui-row">
-		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-		            <p class="footFirend">
-		            	<img class="avaPic" src="../img/mainHtml/touxiang2.png"/>
-		            	theFin
-		            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
-		            </p>
-		        </div>
-		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-		            <p class="footFirend">
-		            	<img class="avaPic" src="../img/mainHtml/touxiang2.png"/>
-		            	王菲
-		            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
-		            </p>
-		        </div>
-		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-		            <p class="footFirend">
-		            	<img class="avaPic" src="../img/mainHtml/touxiang2.png"/>
-		            	thefin
-		            	<img class="lovePic" src="../img/mainHtml/yizan.png"/>
-		            </p>
-		        </div>
-		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-		            <p class="footFirend">
-		            	<img class="avaPic" src="../img/mainHtml/touxiang.png"/>
-		            	王菲
-		            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
-		            </p>
-		        </div>
-		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-		            <p class="footFirend">
-		            	<img class="avaPic" src="../img/mainHtml/touxiang.png"/>
-		            	haiyang
-		            	<img class="lovePic" src="../img/mainHtml/yizan.png"/>
-		            </p>
-		        </div>
-		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-		            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-		            <p class="footFirend">
-		            	<img class="avaPic" src="../img/mainHtml/touxiang.png"/>
-		            	王菲
-		            	<img class="lovePic" src="../img/mainHtml/yizan.png"/>
-		            </p>
-		        </div>
-		        
+		    <div class="mui-row" id="homeFriend">
+		    	<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+		            <div class="hiFdW">
+		            </div> 
+		        </div>   
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+		            <div class="hiFdW">
+		            </div> 
+		        </div> 
+		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+		            <div class="hiFdW">
+		            </div> 
+		        </div> 
 		    </div>
 		</div>
+		<script type="text/html" id="hiFriendTpl">
+			<%for(var i=0;i<dataList.length;i++){%>
+				<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+		            <div class="hiFdW">
+		            	<img class="bigPic loadPics" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
+		            </div>
+		            <p class="footFirend">
+		            	<img class="avaPic loadPics" data-src="<%=dataList[i].avatar%>" src=""/>
+		            	<%=dataList[i].username%> 
+		            	<%if(dataList[i].isfriend){%>
+		            		<img class="lovePic" src="../img/mainHtml/yizan.png"/>
+		            	<%}else{%>
+		            		<img class="lovePic" src="../img/mainHtml/weizan.png"/>
+		            	<%}%>
+
+		            </p>
+		        </div>
+ 
+			<%}%>
+		</script>
 		<!--HI问答-->
 		<div class="QandA">
 			<h3 class="partTitle" style="margin-bottom: 5px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 答人榜</h3>
@@ -646,6 +643,25 @@
 				mui.fire(plus.webview.getWebviewById('H55E3990F'),'switchCity',{name:name});//发版app
 				mui.fire( plus.webview.getWebviewById('HBuilder'),'switchCity',{name:name});//测试app
 			}
+			//打开他人主页
+			function openDetail(id){
+				if(plus.storage.getItem('myToken')){
+					openview({
+						view: "socialCircle/elsecircleIndex.html",
+						id:'elsecircleIndex',
+						extrasobj: {
+							userId: id
+						}
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+				} 
+				
+			}
+
 			mui.plusReady(function() {
 				//城市切换
 				var cityNum = plus.storage.getItem('cityNum');
@@ -840,7 +856,65 @@
 							console.log('首页banner,响应失败');
 						}
 					});
-					
+					//HI友圈
+					mui.ajax(serverUrl + '/api/friends/friendslist', {
+						data:{
+							'numsPerPage':6,
+							'currentPage':1,
+							'orderType':'ASC',
+							'orderField':'followers',
+							'isRecommendOnHome':1,
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) {
+							console.error('交友列表', data);
+							if(data.errno == 0) {
+								if(data.data.data && data.data.data.length){
+								 
+									var dataObj = {};
+									for(var i = 0 ;i<data.data.data.length;i++){//整理头像格式
+									 	if(data.data.data[i].avatar && data.data.data[i].avatar!='null'){
+											if(JSON.parse(data.data.data[i].avatar)[0].picImg.indexOf('http')== -1){
+												data.data.data[i].avatar = serverimgUrl + JSON.parse(data.data.data[i].avatar)[0].picImg;
+											}else{
+												data.data.data[i].avatar = JSON.parse(data.data.data[i].avatar)[0].picImg;
+											}
+										}else{
+											data.data.data[i].avatar = '../../img/10.png'
+										}
+										if(!data.data.data[i].likes || data.data.data[i].likes=='null'){
+											data.data.data[i].likes = 0;
+										}
+										if(!data.data.data[i].username ||data.data.data[i].username == 'null'){
+											data.data.data[i].username = '匿名'
+										}
+										 
+										if(data.data.data[i].photo && data.data.data[i].photo.length){//整理内容图片格式
+									 		var nowArray2 = data.data.data[i].photo;
+									 		var picS = [];
+									 		for(var k = 0 ;k<nowArray2.length;k++){
+									 			if(nowArray2[k].picImg.includes('picImg')){
+									 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
+									 			}
+											}
+									 		data.data.data[i].picS = picS;
+									 	}
+									}
+									dataObj.dataList = data.data.data;
+									document.getElementById('homeFriend').innerHTML = template("hiFriendTpl", dataObj);
+								 
+									lazyLoad(true,50);//懒加载
+								}  
+							} 
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('交友列表,响应失败');
+							mui.toast('当前网络不好,请重试');
+						}
+					});
 					 
 					//热门推荐 数据渲染  
 					var currentPage = 1,

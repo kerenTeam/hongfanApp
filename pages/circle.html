@@ -97,33 +97,33 @@
 				<div class="ftr" id="todayHOt">
 					<span class="ft14">今日热门</span>
 					<img src="../img/localLife/righticon.png"/>
-				</div> 
-			    <div class="mui-row">
-			        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-			            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-			            <p class="footFirend">
-			            	<img class="avaPic" src="../img/mainHtml/touxiang2.png"/>
-			            	theFin
-			            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
-			            </p>
-			        </div>
-			        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-			            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-			            <p class="footFirend">
-			            	<img class="avaPic" src="../img/mainHtml/touxiang2.png"/>
-			            	王菲
-			            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
-			            </p>
-			        </div>
-			        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
-			            <img class="bigPic" src="../img/makeFriend/jiaoyou.png"/>
-			            <p class="footFirend">
-			            	<img class="avaPic" src="../img/mainHtml/touxiang2.png"/>
-			            	thefin
-			            	<img class="lovePic" src="../img/mainHtml/yizan.png"/>
-			            </p>
-			        </div>
-			    </div> 
+				</div>
+				<div id="circleContain">
+					<div class="mui-row">
+						<div class="mui-col-sm-4 mui-col-xs-4 paddDiv bigPic">
+				           
+				        </div>
+				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv bigPic">
+				             
+				        </div>
+				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv bigPic">
+				            
+				        </div>
+			       </div>
+				</div>
+			    <script type="text/html" id="listDataH">
+			    	<div class="mui-row">
+						<%for(var i=0;i<3;i++){%>
+							<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="goCircleIndex(<%=dataList[i].user_id%>)">
+					            <img class="bigPic loadPics" data-src="<%=dataList[i].avatar%>" />
+					            <p class="footFirend">
+					            	<%=dataList[i].nickname%>
+					            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
+					            </p>
+					        </div>
+						<%}%> 
+				    </div> 
+			    </script>
 			</div>
 			<!--今日热门结束-->
 			
@@ -377,8 +377,64 @@
 			})
 			/*铺数据*/
 			
+			
+			todayHot();
 			shopData(0,0,false);//默认推荐
 			dyCon[0].style.display = 'block';
+			
+			function todayHot(){
+				mui.plusReady(function(){
+					var cityNum = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/friends/hot', {
+						data:{numsPerPage:3,time:24},
+						dataType: 'json',
+						type: 'post',
+						timeout: 8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) { 
+							if(data.errno == 0) { 
+								var dataObj = {};
+								for(var i = 0 ;i<data.data.length;i++){
+									if(data.data[i].avatar){//整理头像格式
+										if(data.data[i].avatar.indexOf("[")>-1){
+											if(data.data[i].avatar.includes('http')){
+												data.data[i].avatar =  JSON.parse(data.data[i].avatar)[0].picImg;
+											}else{
+												data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+											}
+										}
+									}else{
+										data.data[i].avatar = '../img/morentouxiang.jpg';
+									}
+								 	
+								 	if(data.data[i].photo && data.data[i].photo.length){//整理内容图片格式
+								 		var nowArray2 = data.data[i].photo;
+								 		var picS = [];
+								 		for(var k = 0 ;k<nowArray2.length;k++){
+								 			if(nowArray2[k].picImg.includes('picImg')){
+								 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
+								 			}
+										}
+								 		data.data[i].picS = picS;
+								 	}
+									
+								} 
+								dataObj.dataList = data.data; 
+								document.getElementById("circleContain").innerHTML = template("listDataH", dataObj);
+								lazyLoad(true,50);//懒加载
+								
+							}else{
+								mui.toast('当前网络不好,请重试');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('交友列表,响应失败');
+							mui.toast('当前网络不好,请重试');
+						}
+					});
+				})
+			}
 			
 			function shopData(typeNum,gender,refresh){
 				var Spagenum = 2; //实到页数

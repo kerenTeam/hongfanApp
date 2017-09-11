@@ -310,72 +310,74 @@
 		   	startSearch(); 
 			//查询开始
 			$('.searchCar').click(function(){
-				startSearch();	
+				var fromwhere = $('#fromwhere input').val();
+				var gowhere = $('#gowhere input').val(); 
+				if(!fromwhere || fromwhere == ' '){
+					mui.toast('请输入起始点');
+					return false;
+				}else if(!gowhere || gowhere == ' '){
+					mui.toast('请输入终点');
+					return false;
+				}else{ 
+					startSearch();	
+				}
 			})
 		    function startSearch(){
 				var fromwhere = $('#fromwhere input').val();
-				var gowhere = $('#gowhere input').val(); 
-//				if(!fromwhere || fromwhere == ' '){
-//					mui.toast('请输入起始点');
-//					return false;
-//				}else if(!gowhere || gowhere == ' '){
-//					mui.toast('请输入终点');
-//					return false;
-//				}else{
-					mui.plusReady(function(){
-						var oldToken = plus.storage.getItem('oldToken');
-						var cityNum = plus.storage.getItem('cityNum');
-						var	myuserid = plus.storage.getItem('userid');
-						var ctype = $('.tabActive').attr('data-type'); 
-						console.log(fromwhere+'to '+gowhere)
-						plus.nativeUI.showWaiting();
-						mui.ajax(serverUrl+'/api/localservice/transport',{
-							data:{'startPlace':fromwhere,'endPlace':gowhere,'type':ctype},
-							type:'PATCH',
-							timeout:8000,
-							headers:{"token":oldToken,"city":cityNum},	              				
-							success:function(data,type,xhr){
-								console.log('获取数据返回',data);
-								plus.nativeUI.closeWaiting();
-								if(data.errno == 0){
-									if(data.data && data.data.length){
-										[].forEach.call(data.data,function(ele){
-											ele.goTime = ele.goTime.replace('T',' ');
-											var dt2 = new Date(ele.createTime);
-											var date2 = [
-											  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-'),
-											  [dt2.getHours(), dt2.getMinutes(), dt2.getSeconds()].join(':')
-											].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-											ele.createTime = date2;
-										}) 
-										var carObj = {}
-										carObj.list = data.data; 
-										if(ctype == 1){
-											var html = template('tc2Tpl', carObj); 
-											document.getElementById('tc2').innerHTML = html;	
-										}else{
-											var html = template('tc1Tpl', carObj); 
-											document.getElementById('tc1').innerHTML = html;
-										}
-									  
+				var gowhere = $('#gowhere input').val();  
+				mui.plusReady(function(){
+					var oldToken = plus.storage.getItem('oldToken');
+					var cityNum = plus.storage.getItem('cityNum');
+					var	myuserid = plus.storage.getItem('userid');
+					var ctype = $('.tabActive').attr('data-type'); 
+					console.log(fromwhere+'to '+gowhere)
+					plus.nativeUI.showWaiting();
+					mui.ajax(serverUrl+'/api/localservice/transport',{
+						data:{'startPlace':fromwhere,'endPlace':gowhere,'type':ctype},
+						type:'PATCH',
+						timeout:8000,
+						headers:{"token":oldToken,"city":cityNum},	              				
+						success:function(data,type,xhr){
+							console.log('获取数据返回',data);
+							plus.nativeUI.closeWaiting();
+							if(data.errno == 0){
+								if(data.data && data.data.length){
+									[].forEach.call(data.data,function(ele){
+										ele.goTime = ele.goTime.replace('T',' ');
+										var dt2 = new Date(ele.createTime);
+										var date2 = [
+										  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-'),
+										  [dt2.getHours(), dt2.getMinutes(), dt2.getSeconds()].join(':')
+										].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+										ele.createTime = date2;
+									}) 
+									var carObj = {}
+									carObj.list = data.data; 
+									if(ctype == 1){
+										var html = template('tc2Tpl', carObj); 
+										document.getElementById('tc2').innerHTML = html;	
 									}else{
-										if(ctype == 1){ 
-											document.getElementById('tc2').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
-										}else{ 
-											document.getElementById('tc1').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
-										}
-	
+										var html = template('tc1Tpl', carObj); 
+										document.getElementById('tc1').innerHTML = html;
 									}
+								  
 								}else{
-									console.log(data.errmsg); 
+									if(ctype == 1){ 
+										document.getElementById('tc2').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
+									}else{ 
+										document.getElementById('tc1').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
+									}
+
 								}
-							},
-							error:function(xhr,type,errorThrown){
-								console.log('获取数据,响应失败');
+							}else{
+								console.log(data.errmsg); 
 							}
-						});
-					})
-//				}
+						},
+						error:function(xhr,type,errorThrown){
+							console.log('获取数据,响应失败');
+						}
+					});
+				}) 
 			}
 			
 		</script>

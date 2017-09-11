@@ -285,7 +285,7 @@
 				<!--底部操作-->
                 <div class="footF mui-content">
                     <div class="mui-row">
-                        <div class="mui-col-sm-4 mui-col-xs-4">
+                        <div class="mui-col-sm-4 mui-col-xs-4 isLiked">
                             <img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/guanzhu.png"/> 关注
                         </div>
                         <div class="mui-col-sm-4 mui-col-xs-4">
@@ -636,7 +636,7 @@
 						console.log('获取数据返回',data);
 						if(data.errno == 0){
 							if(data.data.ILikeUsers && data.data.ILikeUsers.length){
-								$('#likes').text(data.data.ILikeUsers.length)
+								$('#likes').text(data.data.ILikeUsers.length);  
 							}
 							if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
 								for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
@@ -707,7 +707,7 @@
 						console.log('获取用户数据,响应失败');
 					}
 				});
-				
+				isLikeHim();
 			}
 			/*交友tab信息结束*/
 			
@@ -762,7 +762,37 @@
 			}
 			//获取   相册结束
 			
-			
+			//判断是否关注
+			function isLikeHim(){
+				var myuserid0 = plus.storage.getItem('userid');
+				mui.ajax(serverUrl+'/api/friends/likeusers',{
+					data:{"userId":myuserid0},
+					type:'post',
+					timeout:8000,
+					headers:{"token":oldToken,"city":cityNum},	              				
+					success:function(data,type,xhr){
+						console.log('获取数据返回',data);
+						if(data.errno == 0){
+							if(data.data.ILikeUsers && data.data.ILikeUsers.length){ 
+								[].forEach.call(data.data.ILikeUsers,function(ele,index){
+									
+									if(ele.user_id == myuserid){
+										$('.isLiked').html('<img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/beFriend.svg"/> 好友')
+										return;
+									}
+									
+								})  
+							 
+							}
+						}else{
+							console.log(data.errmsg); 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log('获取数据,响应失败');
+					}
+				});
+			}
 
 
 //单独的方法	 			

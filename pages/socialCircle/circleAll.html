@@ -62,7 +62,7 @@
 		</div>
 		<script type="text/html" id="listDataS">
 			<%for(var i=0;i<dataList.length;i++){%>
-				<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%=dataList[i].typeNum%>)">
+				<div class="circleBox cbc" onclick="openDetail('<%=dataList[i].id%>','<%=dataList[i].typeNum%>')">
 					<div class="circleImg">
 						<img class="loadPics picOp" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
 					</div>
@@ -113,23 +113,25 @@
 	<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
 	<script type="text/javascript" charset="utf-8" src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
-		/*图片高宽处理*/
-//		function imgHeight(obj){
-//			if(obj.offsetHeight<obj.parentNode.offsetHeight){
-//				obj.style.height = '100%';
-//				obj.style.width = 'auto';
-//			}
-//		}
+ 
 		/*圈子详情*/
-		function openDetail(id,typeNum){
-			openview({
-				view:'circleInfo.html',
-				id:'circleInfo',
-				extrasobj: {
-					circleId: id,
-					creator:typeNum
-				}
-			})
+		function openDetail(id,typeNum){ 
+			if(plus.storage.getItem('myToken')){
+				openview({
+					view:'circleInfo.html',
+					id:'circleInfo',
+					extrasobj:{
+						circleId: id,
+						creator:typeNum
+					}
+				})
+			}else{
+				mui.toast('请登录');
+				openview({
+					view:'../login.html'
+				});
+			}
+			
 		}
 		
 	</script>

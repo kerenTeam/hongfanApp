@@ -127,27 +127,43 @@
 			function shopData(typeNum,gender,suggest){
 				var Spagenum = 2; //实到页数
 				var Ypagenum = 1; //应到页数
+				var currentPage = 1,
+					numsPerPage = 6;
 				if(typeNum == 0){
 					flag0++;
-				}else if(typeNum == 1){
-					flag1++;
-				}else if(typeNum == 2){
-					flag2++;
-				}
-				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-				mui.plusReady(function(){
-					var currentPage = 1,
-						numsPerPage = 6;
-					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
-					mui.ajax(serverUrl + '/api/friends/friendslist', {
-						data: {
-							'recommend':suggest,
-							'gender':gender,
+					var dataJson = {
+							'recommend':suggest, 
 							'numsPerPage':numsPerPage,
 							'currentPage':currentPage,
 							'orderType':'ASC',
 							'orderField':'followers'
-						},
+						}
+				}else if(typeNum == 1){
+					flag1++;
+					var dataJson = {
+							'recommend':suggest, 
+							'gender':1,
+							'numsPerPage':numsPerPage,
+							'currentPage':currentPage,
+							'orderType':'ASC',
+							'orderField':'followers'
+						}
+				}else if(typeNum == 2){
+					flag2++;
+					var dataJson = {
+							'recommend':suggest, 
+							'gender':2,
+							'numsPerPage':numsPerPage,
+							'currentPage':currentPage,
+							'orderType':'ASC',
+							'orderField':'followers'
+						}
+				}
+				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+				mui.plusReady(function(){
+					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl + '/api/friends/friendslist', {
+						data:dataJson,
 						dataType: 'json',
 						type: 'post',
 						timeout: 8000,
@@ -213,14 +229,7 @@
 														console.log('发起请求,实到' + Spagenum + '页');
 														console.log('发起请求,应到' + Ypagenum + '页');
 														mui.ajax(serverUrl + '/api/friends/friendslist', {
-															data: {
-																'recommend':suggest,
-																'gender':gender,
-																'numsPerPage':numsPerPage,
-																'currentPage':Spagenum,
-																'orderType':'ASC',
-																'orderField':'followers'
-															},
+															data: dataJson,
 															dataType: 'json',
 															type: 'post',
 															timeout: 8000,
