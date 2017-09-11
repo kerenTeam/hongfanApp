@@ -177,9 +177,9 @@
 									<div class="flexrr">
 										<div class="disablecl ft12" >
 											<%if(dataList[i].likeUserId){%>
-												<img src="../img/makeFriend/yizan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<img src="../img/makeFriend/yizan.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 												<%}else{%>
-													<img src="../img/makeFriend/zan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+													<img src="../img/makeFriend/zan.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 													<%}%>
 											 
 											 赞<span><%=dataList[i].likes%></span> </div> 
@@ -424,7 +424,7 @@
 						} 
 				    }
 					
-					window.goZan = function(obj,id){
+					window.goZan = function(obj,id,toUserId){ 
 						if(plus.storage.getItem('myToken')){
 							var curThis = $(obj); 
 							var likes = parseInt(curThis.siblings('span').html());
@@ -432,11 +432,11 @@
 							if(curThis.attr('src') == '../img/makeFriend/zan.png'){
 								likes = likes+1; 
 								curThis.siblings('span').html(likes);
-								likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../img/makeFriend/yizan.png');
+								likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'POST','../img/makeFriend/yizan.png');
 							}else{ 
 								likes = likes-1; 
 								curThis.siblings('span').html(likes);
-								likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../img/makeFriend/zan.png'); 
+								likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'delete','../img/makeFriend/zan.png'); 
 							}
 						}else{
 							mui.toast('请登录');

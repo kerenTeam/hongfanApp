@@ -22,6 +22,7 @@
 		.followA{padding:5px 15px 0;padding-left: 20px;}
 		.follow:after{position:absolute;right:10px;bottom:0;left:10px;height:1px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
 		.follow:last-child:after{height:0!important;} 
+		.noafter:after{position:absolute;right:10px;bottom:0;left:10px;height:0px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
 		.fchidl{display:flex;align-items:center;justify-content:space-between;}
 		.Avator{margin-right:15px;width:40px;height:40px;}
 		.userAvator{margin-right:15px;width:2rem;height:2rem;}
@@ -102,7 +103,7 @@
 				
 				<script type="text/html" id="listDataS">
 					<%for(var i=0;i<dataList.length;i++){%>
-						<div class="listCon" onclick="openDetail(<%=dataList[i].id%>)" data-id="<%=dataList[i].assignedExpert%>" data-exper="<%=dataList[i].onlyExpert%>">
+						<div class="listCon" onclick="openDetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)" data-id="<%=dataList[i].assignedExpert%>" data-exper="<%=dataList[i].onlyExpert%>">
 							<div class="follow"> <!--问题-->
 								<div class="fchidl">
 									<div><img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/><div><%=dataList[i].nickname%></div></div> 
@@ -127,9 +128,9 @@
 									<div class="bottomop flexrr"> 
 										<div class="bottomop mr25">
 											<%if(dataList[i].likeUserId){%>
-												<img class="mr20" src="../../img/answer/liked.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<img class="mr20" src="../../img/answer/liked.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 											<%}else{%>
-												<img class="mr20" src="../../img/answer/unlike.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<img class="mr20" src="../../img/answer/unlike.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 												<%}%>
 												 <span class="activecl ft12"><%=dataList[i].likes%></span>
 										</div> 
@@ -183,7 +184,7 @@
 			var oldToken = plus.storage.getItem('oldToken'),
 		 		cityNum = plus.storage.getItem('cityNum'),
 		 		myuserid = plus.storage.getItem('userid');
-	 		window.goZan = function(obj,id){
+	 		window.goZan = function(obj,id,userid){
 		 			event.stopPropagation()
 	 			if(plus.storage.getItem('myToken')){ 
 					var curThis = $(obj); 
@@ -192,11 +193,11 @@
 					if(curThis.attr('src') == '../../img/answer/unlike.png'){
 						likes = likes+1; 
 						curThis.siblings('span').html(likes);
-						likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
+						likeThis(curThis,id,userid,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
 					}else{ 
 						likes = likes-1; 
 						curThis.siblings('span').html(likes);
-						likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
+						likeThis(curThis,id,userid,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
 					}
 				}else{
 					mui.toast('请登录');
@@ -474,13 +475,13 @@
 														mui("#upload")[0].innerHTML = "";
 													}
 												});
+												 
 												$('.listCon').each(function(){
-													if($(this).attr('data-exper') && $(this).attr('data-id')==myuserid){
-														$(this).find('.diyButton').css('display','none'); 
-													}else{
-														
+													if($(this).find('.followA').length==0){
+														$(this).find('.follow').addClass('noafter')
 													}
 												})
+												 
 											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
 												mui("#upload")[0].innerHTML = "到底了";
 											}
@@ -566,6 +567,11 @@
 												}
 //												alert(JSON.stringify(newCmt))
 												curShow.html(template('cmtTpl',{list:newCmt}))
+												$('.listCon').each(function(){
+													if($(this).find('.followA').length==1){
+														$(this).find('.follow').addClass('noafter')
+													}
+												})
 											}
 											
 										 
@@ -631,11 +637,11 @@
 		
 		//查看全部
 		/*打开详情*/
-		function openDetail(id){
+		function openDetail(id,userId){
 			openview({
 				view:'answerInfo.html',
 				id:'answerInfo',
-				extrasobj:{answerId:id}
+				extrasobj:{answerId:id,toUserId:userId}
 			})
 		}
 	</script>

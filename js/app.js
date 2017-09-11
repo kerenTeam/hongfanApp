@@ -110,9 +110,10 @@ function followBack(thisobj,likerId,curType){
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 
 
-//点赞 和取消点赞 帖子
-function likeThis(thisobj,newsId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
+//点赞 和取消点赞 帖子 
+function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
 	mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+newsId+'/userid/'+myuserid, {
+		data:{'referenceUserId':referenceUserId},
 		dataType: 'json',
 		type: curType,
 		timeout: 8000,

@@ -21,6 +21,7 @@
 	.followA{background-color:#fff;padding:5px 15px 0}
 	.follow:after{position:absolute;content:'';height:1px;left:10px;right:10px;-webkit-transform:scaleY(.3);background:#CACACA;bottom:0}
 	.follow:last-child:after{height:0}
+	.noafter:after{position:absolute;right:10px;bottom:0;left:10px;height:0px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
 	.fchidl{display:flex;align-items:center;justify-content:space-between}
 	.Avator{width:2rem;height:2rem;margin-right:15px}
 	.userAvator{width:2rem;height:2rem;border-radius:50%;margin-right:15px}
@@ -82,7 +83,7 @@
 			
 			<script type="text/html" id="listDataS">
 				<%for(var i=0;i<dataList.length;i++){%>
-					<div class="listCon" onclick="openDetail(<%=dataList[i].id%>)">
+					<div class="listCon" onclick="openDetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
 						<div class="follow" > <!--问题-->
 							<div class="fchidl">
 								<div><img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/><div><%=dataList[i].nickname%></div></div> 
@@ -105,9 +106,9 @@
 								<div class="bottomop flexrr"> 
 									<div class="bottomop mr25">
 										<%if(dataList[i].likeUserId){%>
-											<img class="mr20" src="../../img/answer/liked.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+											<img class="mr20" src="../../img/answer/liked.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 										<%}else{%>
-											<img class="mr20" src="../../img/answer/unlike.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+											<img class="mr20" src="../../img/answer/unlike.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 											<%}%>
 											 <span class="activecl ft12"><%=dataList[i].likes%></span>
 									</div> 
@@ -212,7 +213,7 @@
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken'),
 					groupId = plus.webview.currentWebview().groupId; 
-	 		window.goZan = function(obj,id){
+	 		window.goZan = function(obj,id,userid){
 					event.stopPropagation()
 	 			if(plus.storage.getItem('myToken')){
 					var curThis = $(obj); 
@@ -221,11 +222,11 @@
 					if(curThis.attr('src') == '../../img/answer/unlike.png'){
 						likes = likes+1; 
 						curThis.siblings('span').html(likes);
-						likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
+						likeThis(curThis,id,userid,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
 					}else{ 
 						likes = likes-1; 
 						curThis.siblings('span').html(likes);
-						likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
+						likeThis(curThis,id,userid,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
 					}
 				}else{
 					mui.toast('请登录');
@@ -294,13 +295,7 @@
 									}
 									if(!nowArray[j].likes){
 										nowArray[j].likes = 0
-									}
-//									if(!nowArray[j].onlyExpert){
-//										nowArray[j].onlyExpert = 0
-//									}
-//									if(!nowArray[j].assignedExpert){
-//										nowArray[j].assignedExpert = 0
-//									}
+									} 
 									if(nowArray[j].pic && nowArray[j].pic!='null'){
 										nowArray[j].pic = JSON.parse(nowArray[j].pic);
 										for(var k = 0; k<nowArray[j].pic.length;k++){
@@ -417,10 +412,8 @@
 													}
 												});
 												$('.listCon').each(function(){
-													if($(this).attr('data-exper') && $(this).attr('data-id')==myuserid){
-														$(this).find('.diyButton').css('display','none'); 
-													}else{
-														
+													if($(this).find('.followA').length==1){
+														$(this).find('.follow').addClass('noafter')
 													}
 												})
 											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
@@ -507,7 +500,12 @@
 													} 
 												}
 //												alert(JSON.stringify(newCmt))
-												curShow.html(template('cmtTpl',{list:newCmt}))
+												curShow.html(template('cmtTpl',{list:newCmt}));
+												$('.listCon').each(function(){
+													if($(this).find('.followA').length==1){
+														$(this).find('.follow').addClass('noafter')
+													}
+												})
 											}
 											
 										 
@@ -540,11 +538,11 @@
 		
 		
 		/*打开详情*/
-		function openDetail(id){
+		function openDetail(id,userId){
 			openview({
 				view:'answerInfo.html',
 				id:'answerInfo',
-				extrasobj:{answerId:id}
+				extrasobj:{answerId:id,toUserId:userId}
 			})
 		}
 		//问专家

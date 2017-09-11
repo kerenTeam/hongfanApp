@@ -176,8 +176,8 @@
 				
 				<!--交友-->
 				<div class="jiaoyou0 contentChild" style="display: block;">
-					<div class="MFdiv1">
-						<h3 id='allPic'>交友照片 <span id="picNum"></span> </h3>
+					<div class="MFdiv1" id='allPic'>
+						<h3 >交友照片 <span id="picNum"></span> </h3>
 						<div id="mfPic">
 							<ul class="clearfix zhaopians"><!--占位避免塌陷-->
 								<li><span></span></li><li><span></span></li><li><span></span></li><li><span></span></li>
@@ -403,7 +403,7 @@
 							lazyLoad(true,50);//懒加载
 
 						}else{//没有礼物
-							
+							document.getElementById('giftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
 						}
 						
 						
@@ -428,6 +428,7 @@
 				myuserid = plus.storage.getItem('userid');
 	    	document.addEventListener('refresh', function() {
 				headInfo();
+				loadJiaoyou();
 			})
 	    	
 	    	//tab切换
@@ -743,12 +744,15 @@
 						console.log('获取用户数据返回',data);
 						if(data.errno == 0){ 
 							var dataObj=data.data;
+							var allSpan = '';
 							if(dataObj && dataObj.length){
 								[].forEach.call(dataObj,function(ele){
 									if(ele.lableName && ele.lableName != ' ' && ele.lableName != 'null'){
-										$('#psLabel').append("<span>"+ele.lableName+"</span>")
+										allSpan+="<span>"+ele.lableName+"</span>";
+										
 									}
 								}) 
+								$('#psLabel').html(allSpan)
 							}else{
 								$('#psLabel').append("<div style='color: #888!important;padding: 16px 10px!important;' id='goLabel'>去添加吧</div>")
 							}

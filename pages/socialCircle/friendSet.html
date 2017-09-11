@@ -194,14 +194,10 @@
 						} 
 						if(data.data.age){ 
 							$('#age').val(data.data.age)
-						}else{
-							$('#age').val('填写')
 						}
 						
 						if(data.data.horoscope && data.data.horoscope!='null'){ 
 							$('#horoscope').val(data.data.horoscope)
-						}else{
-							$('#horoscope').val('填写')
 						}
 //						显示昵称
 						if(data.data.username && data.data.username != ' '){  
@@ -215,7 +211,7 @@
 							case '女':
 							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
 							break;
-							case '择'|| null:
+							case ''|| null:
 							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
 							break;
 						}
@@ -470,7 +466,8 @@
 								var dataobj = JSON.parse(back.responseText);
 								if(dataobj.errno == 0){
 									//触发跳转页面刷新
-									mui.fire(plus.webview.getWebviewById('mycircleIndex'),'refresh');
+									var parentPage =plus.webview.getWebviewById('mycircleIndex');
+										mui.fire(parentPage,'refresh');
 									var time2 = setTimeout(function(){
 										plus.nativeUI.closeWaiting();//关闭等待框
 										plus.webview.currentWebview().close();

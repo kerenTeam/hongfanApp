@@ -96,7 +96,12 @@
 	</body>
 
 	<script type="text/javascript">
- 		
+ 		var old_back = mui.back;
+			mui.back = function(){
+			var parentPage =plus.webview.getWebviewById('mycircleIndex');
+			mui.fire(parentPage,'refresh');
+			old_back();
+		};
  		function goOtherIndex(id){
  			openview({
 	    		view:'elsecircleIndex.html',
@@ -173,7 +178,7 @@
 							
 							
 						}else{
-							document.getElementById('meLike').innerHTML = "<div style='text-align: center;padding: 30px;'>还未关注任何人哦</div>";
+							document.getElementById('likeMe').innerHTML = "<div style='text-align: center;padding: 30px;color:#666;font-size: 14px;'>还没有人关注我哦TT</div>";
 							
 						}
 					}else{

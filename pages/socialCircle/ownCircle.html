@@ -63,7 +63,7 @@
 						</div>
 						<div class="circleName ft14">
 							<b><%=dataList[i].name%></b>
-							<div class="ft10 disablecl">4条动态 · 8人加入 </div>
+							<div class="ft10 disablecl"><%=dataList[i].newsNums%>条动态 · <%=dataList[i].joinNums%>人加入 </div>
 						</div>
 					</div>
 				<%}%>	
@@ -74,10 +74,10 @@
 			<div id="maskInfo" style="display: none;">
 				<img class="closeIcon closemask" src="../../img/market/addtheme.svg"/>
 				<div class="ruleCt">
-				 	<div class="ruleCtd free">
+				 	<div data-id='1' class="ruleCtd free">
 				 		免费
 				 	</div>
-				 	<div class="ruleCtd fufei">
+				 	<div data-id='2' class="ruleCtd fufei">
 				 		付费
 				 	</div>
 				</div>
@@ -304,9 +304,15 @@
 //			$('#maskInfo').fadeOut(200);
 //			$('.circleRule').css('display','none')
 //			$('.ruleCtd').removeClass('ruleAct');
-			openview({
-				view:'chargeCircle.html'
-			})
+			if($('.ruleAct').attr('data-id')==1){
+				openview({
+					view:'addCircle.html'
+				})
+			}else{
+				openview({
+					view:'chargeCircle.html'
+				})
+			}
 		})
 		
 

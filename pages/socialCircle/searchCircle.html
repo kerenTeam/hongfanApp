@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>搜索</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<!--<link rel="stylesheet" type="text/css" href="../../css/common.css">-->
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+		
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>  
+		<script src="../../js/mui.min.js"></script> 
+		<script src="../../js/app.js"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js"></script>
+	</head>
+	<style type="text/css">
+		header{
+			 height: 50px!important;
+		} 
+		.searchFind{
+			position: relative;
+		}
+		.sint{
+			right: 0;
+			top: 5px;
+			left: 0;
+			position: absolute;
+			display: flex;
+			align-items: center;
+		}
+		.sint .back{
+			font-size: 0.14rem;
+			color: #F53C42;
+			flex-basis: 40px;
+			margin-left: 10px; 
+			text-align: center;
+		}
+		.fsearch{
+			border-radius: 20px!important;
+		    background-color: #f9f9f9!important;
+		    border: 1px solid #dfdfdf!important;
+			font-size: 0.12rem!important;
+			padding-left: 30px!important;
+		}
+		.fsearch::-webkit-input-placeholder{
+			color: gray!important;
+			text-align: left;
+			font-size: 0.12rem;
+		}
+		.mui-icon-search{
+			position: absolute;
+			left: 5px;
+			top: 3px;
+			color: gray;
+		}
+		form{
+			width: 100%;
+		}
+		.tabPs{
+			border-bottom: 1px solid #EEEEEE;
+			position: fixed;
+			top: 50px;
+			left: 0;
+			right: 0;
+			height: calc(31px + 0.13rem);
+			z-index: 99;
+		}
+		.tab{
+			/*padding: 0 15px;*/
+			background: white;
+			font-size: 0px;
+			/*display: flex;
+			justify-content: space-around;*/
+		}
+	  
+		.tab div { 
+			padding: 15px 0; 
+			font-size: 0.13rem;
+			display: inline-block;
+			width: 50%;
+			text-align: center; 
+		} 
+		.tabActive {  
+			color: #F53C42;
+			/*border-bottom: 2px solid #F53C42;*/
+		}
+		.border{
+			position: absolute;
+			z-index: 99;
+			bottom: 0;
+			left: 0;
+			height: 2px;
+			background-color: #F53C42;
+			-webkit-transition: all 0.5s ease;
+		}
+		.tabcontent {
+			position: relative;
+			top: 0;
+			display: none;
+		}
+		.taactive{
+			display: block;
+		}
+		.cAvator{
+			width: 0.4rem;  
+				height: 0.4rem;   
+				margin-right: 10px;
+		}
+		   .userAvator{  
+				width: 0.4rem;  
+				height: 0.4rem;  
+				border-radius: 50%;
+				margin-right: 10px;
+			}
+			  .follow{
+			 	top: 50px;
+				position: relative;
+				background-color: white; 
+				padding:15px 15px; 
+				line-height: 1.5;
+			} 
+			 .follow:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 1px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.05);
+				/*-webkit-transform-origin: 0 bottom;
+				transform-origin: 0 bottom;*/
+				background: #000;
+				bottom: 0;
+			 }
+			 
+			.fchidl span{ 
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.fchidl>div{
+				color: darkgray;
+			}
+			
+			#tab{
+				display: none;
+			}
+			.history{
+				position: relative;
+				top: 50px; 
+				padding: 15px;
+				background-color: white;
+			} 
+			.history span{
+				vertical-align: middle;
+			}
+			.history img{
+				float: right;
+				width: 0.18rem;
+			}
+			.hisList{
+				margin-top: 15px;
+			}
+			.hisList span{
+				display: inline-block;
+				padding: 10px;
+				background: rgba(0, 0, 0, .1);
+				margin: 5px;
+				border-radius: 3px;
+				color: gray;
+			}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color: white;">
+			<div class="searchFind">
+				<span class="mui-icon mui-icon-search" onclick="submitTest();"></span>
+				<div class="sint">
+					<form onsubmit="submitTest();return false;" id="searchf"><!--onsubmit="submitTest();return false;" -->
+						<input type="search" class="fsearch" placeholder="搜索感兴趣的圈子">
+					</form>
+					<span class="mui-action-back back">取消</span>
+				</div>
+				
+			</div>  
+		</header>
+		<script src="../../js/statusBar.js" type="text/javascript" charset="utf-8"></script>
+	 
+		<div id="record">暂无搜索记录</div>
+		<script id="recordTpt" type="text/html">
+					<%if(data.length==0){%>
+						<div class="searchRecord">
+							&nbsp;&nbsp;搜索记录:无
+						</div> 
+					<%}else{%>
+						<div class="history latest">
+							  <span>最近搜索</span> <img src="../../img/delet.svg" class="clearStr"  alt="" />
+							  <div class="clear"></div>
+							  <div class="hisList">
+							  	<%for(var i=data.length-1;i>=0;i--){%>
+								  	<span><%=data[i]%></span>
+								 <%}%>
+							  </div>
+						</div>
+						 
+						<%}%> 
+		</script> 
+	
+		<!--tab-->
+		<div id="tab">
+			 
+			
+			<div id="searchOut"></div>
+			
+			<script type="text/html" id="searchOutTpl">
+				<div class="tabcontent tc1 taactive"> 
+					<div class="follow"> 
+						<div class="disablecl">圈子 </div> 
+					</div>  
+	    				<%for(var i=0;i < searchData.length;i++){%>
+    						<div class="follow" data-id="<%=searchData[i].id%>" data-type="<%=searchData[i].typeNum%>"> 
+								<div class="ft16"><%=searchData[i].name%></div>
+								<div class="disablecl"><%=searchData[i].description%></div>
+								<div class="disablecl">加入人数：<%=searchData[i].joinNums%></div>
+							</div> 
+	    				<%}%>   
+				</div> 
+			</script>
+			</div>
+			
+		<script type="text/javascript">
+				var immersed = 0;
+			 
+				var ms=(/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+				if(ms&&ms.length>=3){ // 当前环境为沉浸式状态栏模式
+				    immersed=parseFloat(ms[2]);// 获取状态栏的高度
+				}  
+				$(".tabPs").css("top",immersed+50+"px");
+				$(".tabcontent").css("top","calc(31px + 0.13rem + "+immersed+"px)")
+		</script>
+		
+	</body>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			//自动弹出输入法
+		  	var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+			    if (mui.os.android) {
+			        var main = plus.android.runtimeMainActivity();
+			        var Context = plus.android.importClass("android.content.Context");
+			        InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+			        imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+			    } else {
+			        nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+			    }
+			};
+			var showSoftInput = function() {
+			    if (mui.os.android) {
+			        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+			    } else {
+			        nativeWebview.plusCallMethod({
+			            "setKeyboardDisplayRequiresUserAction": false
+			        });
+			    }
+		        //此处可写具体逻辑设置获取焦点的input
+		        setTimeout(function() {
+			       var inputElem = document.getElementsByClassName('fsearch')[0];
+	               inputElem.focus(); 
+	            }, 0); 
+			};
+	    	initNativeObjects();
+	    	showSoftInput();
+	    	
+	    	//缓存记录
+			var searchCircleStorage =JSON.parse(plus.storage.getItem("$searchCircleStorage") || '[]');
+			var myuserid = plus.storage.getItem('userid');
+			//缓存记录 渲染
+			var recordObj = {};
+			recordObj.data= searchCircleStorage;
+			if(searchCircleStorage.length){
+				var htmlrecord = template('recordTpt', recordObj); 
+				document.getElementById('record').innerHTML = htmlrecord;
+			} 
+		   
+		    //清除记录
+		    $('.clearStr').click(function(){
+			 	plus.storage.removeItem("$searchCircleStorage");
+			 	$('.latest').css("display","none"); 
+			 	 document.getElementById('record').innerHTML = "暂无搜索记录";
+			})
+			//搜索某一条 缓存 
+			$('.hisList span').click(function(e){
+			    e.preventDefault(); 
+			    $("#container").css("display","none");
+				$(".searchOut").css("display","block"); 
+			   $("input").val($(this).text());
+			    doSearch($.trim($(this).text()))
+			})
+			 
+			
+	    	//搜索方法
+	    	$("input").focus(function(){
+	    		$(".latest").css("display","block");
+				$("#tab").css("display","none");
+	    	})
+			window.submitTest = function(){
+				var searchCircleStorage =JSON.parse(plus.storage.getItem("$searchCircleStorage") || '[]');
+				if($("input").val()!=''){ 
+					var words=$("input").val();
+					if(searchCircleStorage.length != 0) {
+						var flag = false;
+						for(var i = 0; i < searchCircleStorage.length; i++) {
+							if(searchCircleStorage[i] == words) {
+								searchCircleStorage[i] = words;
+								flag = false;
+								break;
+							} else {
+								flag = true;
+							}
+						}
+						if(flag) {
+							searchCircleStorage.push(words);
+						}
+					}else{ 
+						searchCircleStorage.push(words);
+						
+					} 
+					plus.storage.setItem('$searchCircleStorage', JSON.stringify(searchCircleStorage)); 
+					$(".latest").css("display","none");
+					$("#tab").css("display","block"); 
+					//执行搜索
+					doSearch(words);
+				}else{
+					mui.toast("请输入搜索问题！");
+					$(".latest").css("display","block");
+					$("#tab").css("display","none");
+				} 
+			}
+			function doSearch(words){
+				$(".history").css("display","none");
+				$("#tab").css("display","block"); 
+				$("input").blur(); 
+					plus.nativeUI.showWaiting();
+					var cityNum  = plus.storage.getItem('cityNum'), 
+						oldToken = plus.storage.getItem('oldToken');
+					mui.ajax(serverUrl+'/api/friends/space/isSearch/1/searchParam/'+words,{
+						dataType:'json',
+						type:'GET',
+						timeout:8000,
+						headers: {"token": oldToken,'city': cityNum},
+						success:function(data,type,xhr){ 
+							plus.nativeUI.closeWaiting();
+							if(data.errno==0){
+								console.error('查询',data)
+								if(data.data && data.data.length!=0){
+									 var searchObj = {};
+									 for(var i=0;i<data.data.length;i++){
+									 	/*是否为创建者*/
+										if(data.data[i].createUserId == myuserid){
+											data.data[i].typeNum = 0;
+										}else if(data.data[i].isJoined){
+											/*是否为参加者*/
+											data.data[i].typeNum = 1;
+										}
+									 }
+									 searchObj.searchData = data.data;
+									 console.log(JSON.stringify(data.data))
+									 document.getElementById("searchOut").innerHTML = template("searchOutTpl",searchObj);
+									  
+									//跳转
+									$(".tc1 .follow").click(function(){  
+										var id = $(this).attr("data-id");
+										var typeNum = $(this).attr('data-type');
+										openview({
+											view: "circleInfo.html",
+											id:"circleInfo",
+											extrasobj: {
+												circleId: id,
+												creator:typeNum
+											}
+										})
+									})
+									
+									 
+								}else{
+									
+									document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
+								}
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							console.log('响应失败  !');
+						}
+					});
+			}
+ 
+			  
+})
+	</script>
+</html>

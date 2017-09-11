@@ -60,9 +60,9 @@
 								<!--<div class="circleImg" style="background: url(<%=dataList[i].avatar%>) 0 0 no-repeat;background-size: cover;">-->
 								<div class="circleImg">
 									<img class="img1 picOp loadPics" onload="imgHeight(this)" data-src="<%=dataList[i].avatar%>" src=""/>
-									<a><img src="../../img/mainHtml/yizan.png"/>139</a>
+									<a><img src="../../img/mainHtml/yizan.png"/><%=dataList[i].likes%></a>
 								</div>
-								<div class="circleName"> <%=dataList[i].user_id%> <br /> <span>22岁 <b>175CM</b></span> </div>
+								<div class="circleName"><%=dataList[i].username%> <br /> <span><%=dataList[i].age%></span> </div>
 							</div>
 						<%}%>	
 					</script>
@@ -175,7 +175,18 @@
 									 			}
 									 		}
 										}else{
-											data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201708/27/20170827012922_JAncv.thumb.224_0.jpeg';
+											data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201501/23/20150123103002_zMeAw.jpeg';
+										}
+										if(!data.data.data[i].likes || data.data.data[i].likes=='null'){
+											data.data.data[i].likes = 0;
+										}
+										if(!data.data.data[i].username ||data.data.data[i].username == 'null'){
+											data.data.data[i].username = '匿名'
+										}
+										if(!data.data.data[i].age || data.data.data[i].age == 'null'|| data.data.data[i].age==' '){
+											data.data.data[i].age = '年龄保密'
+										}else{
+											data.data.data[i].age = data.data.data[i].age+'岁'
 										}
 									}
 									dataObj.dataList = data.data.data;
@@ -234,9 +245,21 @@
 																	 			}
 																	 		}
 																		}else{
-																			data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201708/27/20170827012922_JAncv.thumb.224_0.jpeg';
+																			
+																			data.data.data[i].avatar = 'https://b-ssl.duitang.com/uploads/item/201501/23/20150123103002_zMeAw.jpeg';
 																		}
-																	 }
+																		if(!data.data.data[i].likes || data.data.data[i].likes=='null'){
+																			data.data.data[i].likes = 0;
+																		}
+																		if(!data.data.data[i].username || data.data.data[i].username == 'null'){
+																			data.data.data[i].username = '匿名'
+																		}
+																		if(!data.data.data[i].age || data.data.data[i].age == 'null'|| data.data.data[i].age==' '){
+																			data.data.data[i].age = '年龄保密'
+																		}else{
+																			data.data.data[i].age = data.data.data[i].age+'岁'
+																		}
+																	}
 																	dataObj.dataList = data.data.data;
 																	document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
 																	lazyLoad(false,50);//懒加载
