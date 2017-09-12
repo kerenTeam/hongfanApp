@@ -34,7 +34,7 @@
 		.text{color:#999;}
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
 		.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:50%;left:10%;width:80%;-webkit-transform: translateY(-50%);height: auto;padding:15px 5px;border-radius:3px}
-		.closemask{left:50%;-webkit-transform:translateX(-50%)}
+		.closemaskb{left:50%;text-align: center;}
 		.sexs,.age{padding: 20px 0;text-align: center;}
 		.sexs span,.age span{display: inline-block;background: url(../../img/makeFriend/uncke.png) no-repeat;background-size: 100% 100%;background-position: left top;width: 80px;text-align:center;margin: 5px;padding: 4px 0;}
   		.sexs span.checked,.age span.checked{display: inline-block;background: url(../../img/makeFriend/cke.png) no-repeat;background-size: 100% 100%;background-position: left top;width: 80px;text-align:center;margin: 5px;padding: 4px 0;color: #f93a38;}
@@ -68,7 +68,7 @@
 				<div class="listCon">
 					<%if(typeNum == 0){%>
 						<%for(var i=0;i<dataList.length;i++){%>
-							<div class="follow"> 
+							<div class="follow" onclick="goCircleIndex(<%=dataList[i].user_id%>)"> 
 								<div class="fchidl">
 									<div>
 										<img data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
@@ -92,7 +92,7 @@
 							<div class="follow"> 
 								<div class="fchidl">
 									<div>
-										<img data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+										<img onclick="goCircleIndex(<%=dataList[i].user_id%>)" data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
 										<div>
 											<%=dataList[i].nickname%>
 											<div class="disablecl ft12">
@@ -141,9 +141,13 @@
 					</div> 
 					<div class="ft16 fttc">年龄</div>
 					<div class="age">
-						<span class="checked">不限</span><span>18-23</span><span>24-29</span><span>30-34</span><span>35以上</span>	
+						<span class="checked" data-age=''>不限</span><span data-age='18-23'>18-23</span><span data-age='24-29'>24-29</span><span data-age='30-34'>30-34</span><span data-age='35-50'>35以上</span>	
 					</div> 
-					<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
+					<div class="closemaskb">
+						<button type="button" class="mui-btn mar10 closemask" >取消</button>
+						<button type="button" class="mui-btn mui-btn-danger mar10 closemaskSure" >确定</button>
+					
+					</div>
 					
 				</div>
 			</div>
@@ -224,7 +228,7 @@
 		}) 
 	     
 	    shopData(0,age,gender);//默认推荐
-		function shopData(typeNum,age,gender){ 
+		function shopData(typeNum,age,gender){  
 			if(typeNum == 0){
 				flag0++;
 			}else if(typeNum == 1){
@@ -244,7 +248,7 @@
 				var cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken'),
 				    myuserid = plus.storage.getItem('userid');
-				
+				//到主页
 				window.goCircleIndex = function(id){
 					if(plus.storage.getItem('myToken')){
 						if(id == myuserid){
@@ -269,11 +273,11 @@
 				
 			    if(typeNum == 0){
 			    	var dataJson = {
-			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'member','gender':1,'age':18	
+			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'member','gender':gender,'age':age	
 			    	};
 			    }else{
 			    	var dataJson = {
-			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'news','gender':1,'age':18	
+			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'news','gender':gender,'age':age	
 			    	};
 			    }
 //			    alert(JSON.stringify(dataJson))
@@ -345,7 +349,16 @@
 			})
 		}
 		
-		
+		//动态详情1
+		function DTdetail(id,userid){
+			openview({
+				view:'circleListInfo.html',
+				extrasobj:{
+					infoid: id,
+					UserId:userid,
+				}
+			})
+		}
 	 
 	
 	    //筛选  
@@ -360,10 +373,24 @@
 			event.preventDefault()
 			$('#maskInfo').fadeOut(200);
 		})
+		//执行筛选
+		$('.closemaskSure').click(function(){
+			event.preventDefault()
+			$('#maskInfo').fadeOut(200); 
+			shopData(aroundType,age,gender);
+		})
 		
-		$('.sexs span,.age span').click(function(){
+		$('.sexs span').click(function(){
 			$(this).siblings().removeClass('checked');
-			$(this).addClass('checked')
+			$(this).addClass('checked');
+			gender = $(this).attr('data-gender');
+		})
+		$('.age span').click(function(){
+			$(this).siblings().removeClass('checked');
+			$(this).addClass('checked');
+			ageRange = $(this).attr('data-age').split('-');
+			age =JSON.stringify({min:ageRange[0],max:ageRange[1]})
+			alert(age);
 		})
 		
 		//发布时间判断 

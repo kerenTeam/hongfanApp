@@ -102,15 +102,15 @@
 				</div>
 				<div id="circleContain">
 					<div class="mui-row">
-						<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+						<div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
 				            <div class="hiFdW">
 				            </div> 
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
 				            <div class="hiFdW">
 				            </div> 
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv">
 				            <div class="hiFdW">
 				            </div> 
 				        </div>
@@ -412,38 +412,41 @@
 						type: 'post',
 						timeout: 8000,
 						headers: {"token": oldToken,'city': cityNum},
-						success: function(data, type, xhr) { 
+						success: function(data, type, xhr) {
+							console.log('remen ',data)
 							if(data.errno == 0) { 
-								var dataObj = {};
-								for(var i = 0 ;i<data.data.length;i++){
-									if(data.data[i].avatar){//整理头像格式
-										if(data.data[i].avatar.indexOf("[")>-1){
-											if(data.data[i].avatar.includes('http')){
-												data.data[i].avatar =  JSON.parse(data.data[i].avatar)[0].picImg;
-											}else{
-												data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+								if(data.data.length){
+									var dataObj = {};
+									for(var i = 0 ;i<data.data.length;i++){
+										if(data.data[i].avatar){//整理头像格式
+											if(data.data[i].avatar.indexOf("[")>-1){
+												if(data.data[i].avatar.includes('http')){
+													data.data[i].avatar =  JSON.parse(data.data[i].avatar)[0].picImg;
+												}else{
+													data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+												}
 											}
+										}else{
+											data.data[i].avatar = '../img/morentouxiang.jpg';
 										}
-									}else{
-										data.data[i].avatar = '../img/morentouxiang.jpg';
-									}
-								 	
-								 	if(data.data[i].photo && data.data[i].photo.length){//整理内容图片格式
-								 		var nowArray2 = data.data[i].photo;
-								 		var picS = [];
-								 		for(var k = 0 ;k<nowArray2.length;k++){
-								 			if(nowArray2[k].picImg.includes('picImg')){
-								 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
-								 			}
-										}
-								 		data.data[i].picS = picS;
-								 	}
-									
-								} 
-								dataObj.dataList = data.data; 
-								document.getElementById("circleContain").innerHTML = template("listDataH", dataObj);
-								lazyLoad(true,50);//懒加载
-								
+									 	
+									 	if(data.data[i].photo && data.data[i].photo.length){//整理内容图片格式
+									 		var nowArray2 = data.data[i].photo;
+									 		var picS = [];
+									 		for(var k = 0 ;k<nowArray2.length;k++){
+									 			if(nowArray2[k].picImg.includes('picImg')){
+									 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
+									 			}
+											}
+									 		data.data[i].picS = picS;
+									 	}
+										
+									} 
+									dataObj.dataList = data.data; 
+									document.getElementById("circleContain").innerHTML = template("listDataH", dataObj);
+									lazyLoad(true,50);//懒加载	
+								}
+								 
 							}else{
 								mui.toast('当前网络不好,请重试');
 							}
