@@ -38,6 +38,14 @@
 		.sexs,.age{padding: 20px 0;text-align: center;}
 		.sexs span,.age span{display: inline-block;background: url(../../img/makeFriend/uncke.png) no-repeat;background-size: 100% 100%;background-position: left top;width: 80px;text-align:center;margin: 5px;padding: 4px 0;}
   		.sexs span.checked,.age span.checked{display: inline-block;background: url(../../img/makeFriend/cke.png) no-repeat;background-size: 100% 100%;background-position: left top;width: 80px;text-align:center;margin: 5px;padding: 4px 0;color: #f93a38;}
+		.DTcontent{overflow: hidden;}
+		.dynamicPic{float: left;position: relative;overflow: hidden;border-right: 2px solid #fff;}
+		.dynamicPic1{width: 70%;padding-top: 68%;}
+		.dynamicPic2{width: 50%;padding-top: 48%;}
+		.dynamicPic3{width: 33%;padding-top: 31%;}
+		.dynamicPic img{width: 100%;}
+		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
+		
 	</style>
 
 	<body style="background-color: #F3F3F3;">
@@ -63,16 +71,18 @@
 							<div class="follow"> 
 								<div class="fchidl">
 									<div>
-										<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
+										<img data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
 										<div>
-											wangfei
+											<%=dataList[i].nickname%>
 											<div class="disablecl ft12">
-											有的人说不清哪里好嘻嘻嘻嘻
+												<%if(dataList[i].userExplain){%>
+													<%=dataList[i].userExplain%>
+												<%}%>
 											</div>
 										</div>
 									</div> 
 									<div class="disablecl ft12">
-										5km
+										<!--5km-->
 						           </div> 
 								</div>  
 							</div> 
@@ -82,11 +92,11 @@
 							<div class="follow"> 
 								<div class="fchidl">
 									<div>
-										<img src="../../img/mainHtml/touxiang2.png" class="userAvator mr25"/>
+										<img data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
 										<div>
-											wangfei
+											<%=dataList[i].nickname%>
 											<div class="disablecl ft12">
-											1分钟  <span style="color: #5d86b2;">21</span>阅读	
+											<%= dataList[i].create_time%>  <span style="color: #5d86b2;"><%= dataList[i].read%></span>阅读	
 											</div>
 										</div>
 									</div> 
@@ -94,8 +104,26 @@
 										 
 						           	</div> 
 								</div>  
-								<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-							 	<img src="https://b-ssl.duitang.com/uploads/item/201602/02/20160202134331_FnWKZ.thumb.224_0.jpeg"  style="max-width: 70%;"/>	 
+								<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
+									<p class="ft14 maincl overTwo"><%= dataList[i].content%></p> 
+									<%if(dataList[i].pic && dataList[i].pic.length>0){%>
+										<%for(var j=0;j<dataList[i].pic.length;j++){%>
+											<%if(dataList[i].pic.length == 1){ %>
+												<div class="dynamicPic dynamicPic1">
+													<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].pic[j].picImg%>" /></span>
+												</div>
+											<%}else if(dataList[i].pic.length == 2){%>
+												<div class="dynamicPic dynamicPic2">
+													<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].pic[j].picImg%>" /></span>
+												</div> 
+											<%}else{%>
+												<div class="dynamicPic dynamicPic3">
+													<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].pic[j].picImg%>" /></span>
+												</div>
+											<%}%>	
+										<%}%>
+									<%}%>
+								</div>
 							</div> 
 						<%}%>	
 					<%}%>
@@ -109,7 +137,7 @@
 				<div class="ruleCt"> 
 					<div class="ft16 fttc">性别</div>
 					<div class="sexs">
-						<span class="checked">不限</span><span>男</span><span>女</span>		
+						<span class="checked" data-gender=''>不限</span><span data-gender='1'>男</span><span data-gender='2'>女</span>		
 					</div> 
 					<div class="ft16 fttc">年龄</div>
 					<div class="age">
@@ -213,7 +241,6 @@
 				//y轴转换因子
 				yFactor = girthY / 360; 
 				console.log(Latitude+'-- '+Longitude+'-- '+xFactor+'-- '+yFactor);
-//				30.543073-- 104.060291-- 95.77224522552224-- 111.20178578851908
 				var cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken'),
 				    myuserid = plus.storage.getItem('userid');
@@ -242,7 +269,7 @@
 				
 			    if(typeNum == 0){
 			    	var dataJson = {
-			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'news','gender':1,'age':18	
+			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'member','gender':1,'age':18	
 			    	};
 			    }else{
 			    	var dataJson = {
@@ -274,16 +301,27 @@
 										data.data[i].avatar = '../../img/10.png' 
 									}
 								 	
-//								 	if(data.data[i].pic && data.data[i].pic.length){//整理内容图片格式
-//								 		var nowArray2 = data.data[i].pic;
-//								 		var picS = [];
-//								 		for(var k = 0 ;k<nowArray2.length;k++){
-//								 			if(nowArray2[k].picImg.includes('picImg')){
-//								 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
-//								 			}
-//										}
-//								 		data.data[i].picS = picS;
-//								 	}
+								  	if(data.data[i].pic && data.data[i].pic!='null'){
+										data.data[i].pic = JSON.parse(data.data[i].pic);
+										if(data.data[i].pic.length > 0){
+											for(var k = 0; k<data.data[i].pic.length;k++){
+												if(data.data[i].pic[k].picImg.indexOf('http') == -1){
+	                                                data.data[i].pic[k].picImg = serverimgUrl + data.data[i].pic[k].picImg;
+	                                            }
+											}
+										}
+										
+									}
+								  	
+								 	if(data.data[i].create_time){
+								 		var dt = new Date(data.data[i].create_time).getTime(); 
+										data.data[i].create_time = getDateDiff(dt);
+								 	}
+									if(!data.data[i].read){
+										data.data[i].read = 0
+									}else if((data.data[i].read / 1000)>1){
+										data.data[i].read = parseInt(data.data[i].read / 1000) +'K+'
+									}
 									
 								}
 								
@@ -327,6 +365,40 @@
 			$(this).siblings().removeClass('checked');
 			$(this).addClass('checked')
 		})
+		
+		//发布时间判断 
+		var minute = 1000 * 60;
+		var hour = minute * 60;
+		var day = hour * 24;
+		var halfamonth = day * 15;
+		var month = day * 30;
+		function getDateDiff(dateTimeStamp){ 
+			var now = new Date().getTime(); 
+			var diffValue = now - dateTimeStamp; 
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+			 result=parseInt(monthC) + "月前";
+			 }
+			 else if(weekC>=1){
+			 result=parseInt(weekC) + "周前";
+			 }
+			 else if(dayC>=1){
+			 result=parseInt(dayC) +"天前";
+			 }
+			 else if(hourC>=1){
+			 result=parseInt(hourC) +"小时前";
+			 }
+			 else if(minC>=1){
+			 result=parseInt(minC) +"分钟前";
+			 }else{ 
+			 result="刚刚";
+			 }
+			return result;
+		}
 	</script>
 
 </html>

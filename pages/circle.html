@@ -17,7 +17,7 @@
 		.ftr{display: flex;justify-content: space-between;align-items: center;}
 		.ftr img{width: 10px;}
 		.hiFriend .bigPic{display: block;}
-		.avaPic{width: 20px;height:20px;border-radius: 30px;}
+		.avaPic{width: 20px;height:20px;border-radius: 30px;vertical-align: middle;}
 		.footFirend{height:26px;line-height: 28px;color: #666;font-size: 13px;}
 		.lovePic{width: 18px;height:16px;float: right;margin-top: 6px;}
 		.hiFriend{padding: 5px;}
@@ -65,6 +65,8 @@
 		.maxwn{white-space: nowrap;}	
 		.maxwt{flex-basis: 50px;white-space: nowrap;text-align: right;}
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}	
+	 	.hiFdW{width: calc((100vw - 40px) / 3);width: -webkit-calc((100vw - 40px) / 3);width: -moz-calc((100vw - 40px) / 3);height: -moz-calc((100vw - 40px) / 3);height: -webkit-calc((100vw - 40px) / 3);height: calc((100vw - 40px) / 3);background: #f3f3f3;border-radius: 3px;overflow: hidden;}
+		.hiFdW img{width: 100%;}
 	</style>
 	<body style="background-color: white;">
 		<header class="mui-bar mui-bar-nav">
@@ -100,14 +102,17 @@
 				</div>
 				<div id="circleContain">
 					<div class="mui-row">
-						<div class="mui-col-sm-4 mui-col-xs-4 paddDiv bigPic">
-				           
+						<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+				            <div class="hiFdW">
+				            </div> 
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv bigPic">
-				             
+				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+				            <div class="hiFdW">
+				            </div> 
 				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv bigPic">
-				            
+				        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
+				            <div class="hiFdW">
+				            </div> 
 				        </div>
 			       </div>
 				</div>
@@ -115,10 +120,17 @@
 			    	<div class="mui-row">
 						<%for(var i=0;i<3;i++){%>
 							<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="goCircleIndex(<%=dataList[i].user_id%>)">
-					            <img class="bigPic loadPics" data-src="<%=dataList[i].avatar%>" />
+					            <div class="hiFdW">
+					            	<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
+					            </div>
 					            <p class="footFirend">
+					            <img class="avaPic loadPics picOp" data-src="<%=dataList[i].avatar%>" />
 					            	<%=dataList[i].nickname%>
-					            	<img class="lovePic" src="../img/mainHtml/weizan.png"/>
+					            	<%if(dataList[i].isfriend){%>
+					            		<img class="lovePic" src="../img/mainHtml/yizan.png"/>
+					            	<%}else{%>
+					            		<img class="lovePic" src="../img/mainHtml/weizan.png"/>
+					            	<%}%> 
 					            </p>
 					        </div>
 						<%}%> 
@@ -265,12 +277,24 @@
 		<script src="../js/app.js"></script>
 		<script src="../js/artTemplate-native.js"></script>
 		<script type="text/javascript">
-//			function imgHeight(obj){
-//				if(obj.offsetHeight<obj.parentNode.offsetHeight){
-//					obj.style.height = '100%';
-//					obj.style.width = 'auto';
-//				}
-//			}
+//			//打开他人主页
+			window.goCircleIndex = function(id){
+				if(plus.storage.getItem('myToken')){
+					openview({
+						view: "socialCircle/elsecircleIndex.html",
+						id:'socialCircle',
+						extrasobj: {
+							userId: id
+						}
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+				
+			}
 			window.lazyLoad2 = function(init,limit){
 				var limit = limit || 100;
 				var loadPics = mui('.loadPics'),
