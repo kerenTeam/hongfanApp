@@ -68,24 +68,26 @@
 				<div class="listCon">
 					<%if(typeNum == 0){%>
 						<%for(var i=0;i<dataList.length;i++){%>
-							<div class="follow" onclick="goCircleIndex(<%=dataList[i].user_id%>)"> 
-								<div class="fchidl">
-									<div>
-										<img data-src="<%=dataList[i].avatar%>" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+							<%if(dataList[i].user_id){%>
+								<div class="follow" onclick="goCircleIndex(<%=dataList[i].user_id%>)"> 
+									<div class="fchidl">
 										<div>
-											<%=dataList[i].nickname%>
-											<div class="disablecl ft12">
-												<%if(dataList[i].userExplain){%>
-													<%=dataList[i].userExplain%>
-												<%}%>
+											<img data-src="<%=dataList[i].avatar%>" onerror="../../img/10.png" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+											<div>
+												<%=dataList[i].nickname%>
+												<div class="disablecl ft12">
+													<%if(dataList[i].userExplain){%>
+														<%=dataList[i].userExplain%>
+													<%}%>
+												</div>
 											</div>
-										</div>
-									</div> 
-									<div class="disablecl ft12">
-										<!--5km-->
-						           </div> 
-								</div>  
-							</div> 
+										</div> 
+										<div class="disablecl ft12">
+											<!--5km-->
+							           </div> 
+									</div>  
+								</div>
+							<%}%>
 						<%}%>	
 					<%}else{%>
 						<%for(var i=0;i<dataList.length;i++){%>
@@ -372,6 +374,10 @@
 		$('#maskInfo,.closemask').click(function(){
 			event.preventDefault()
 			$('#maskInfo').fadeOut(200);
+			$('.sexs span,.age span').removeClass('checked');
+			$('.sexs').find('span').eq(0).addClass('checked');
+			$('.age').find('span').eq(0).addClass('checked');
+			
 		})
 		//执行筛选
 		$('.closemaskSure').click(function(){
@@ -389,8 +395,7 @@
 			$(this).siblings().removeClass('checked');
 			$(this).addClass('checked');
 			ageRange = $(this).attr('data-age').split('-');
-			age =JSON.stringify({min:ageRange[0],max:ageRange[1]})
-			alert(age);
+			age =JSON.stringify({min:ageRange[0],max:ageRange[1]}) 
 		})
 		
 		//发布时间判断 

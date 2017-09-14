@@ -1,164 +1,579 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>我的通知消息</title>
+		<title>我的消息</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="address=no">
+		<meta name="format-detection" content="address=no">  
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/jquery.flexslider-min.js"></script>
-		<script src="../../js/hmt.js" type="text/javascript"></script>
-		<script src="../../js/mui.min.js" type="text/javascript"></script>
-		<style type="text/css">
-			dl.list dt, dl.list dd, dl.list{
-				margin-bottom: 4%;
-				background-color: #fff;
-			}
-			dl.listtwo dd{
-				padding: 0;
-				margin: 10px;
-				box-shadow: 0px 0px 6px #ccc;
-			}
-			.list{
-				background-color: #efeff4 !important;
-			}
-			dl.listtwo dd>.react {
-				padding: .1rem .12rem .2rem .15rem;
-			}
-			.imgbox{
-				width: 100%;
-				margin-top: 7px;
-			}
-			.name{
-				font-size: 14px;
-				line-height: 22px;
-				padding-left: 10px;
-				color: #666;
-				overflow: hidden;
-				text-overflow: ellipsis; 
-			}
-			a.react{
-				display: table;
-			}
-			.infoTitle{
-				line-height: 40px;
-				font-size: 16px;
-			}
-			dl.list{
-				border: none;
-			}
-			.nothing img{
-				display: block;
-				margin: 20px auto;
-				width: 80px;
-			}
-			.nothing p{
-				text-align: center;
-			}
-			.notice .tab-bd{
-				padding-top: 0;
-			}
-			#main{
-				padding-top: 2px !important;
-			}
-			.dealcard{margin: 0;}
-		</style>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
+		 
 	</head>
+	<style type="text/css">
+		#userBox{
+				background-color: #F53C42;
+				padding: 0px 0;
+			    position: relative;
+			    overflow: hidden;
+			    height: 3rem;
+		}
+		#mypic1{height: 100%;}
+		#beijing2{position: absolute;z-index:1;width: 100%;height: 100%;top: 0;background-color: rgba(0, 0, 0, 0.5);} 
+		 
+		.userAvator{ 
+			position: absolute;
+			left: 50%;
+			width: 1rem; 
+			bottom: 1.2rem;
+			height: 1rem; 
+			-webkit-transform: translateX(-50%);
+			z-index: 9;
+			border-radius: 50%;
+		}
+		.idhiji,.personalSign{
+			position: absolute;
+			left: 50%; 
+			bottom: 0.9rem; 
+			-webkit-transform: translateX(-50%);
+			z-index: 9;
+			color: white; 
+		}  
+		.personalSign{bottom: 0.6rem; }
+		.personalSign img{width: 20px;margin-left: 5px;}
+		.newbop{bottom: 0.3rem;}
+		.bottomop{border-bottom: 1px solid #f3f3f3;}
+		.bottomop img{width:22px}
+		.flexr{display:flex;width:100%;background-color:white;justify-content:space-between;color: #303030;align-items: center;}
+		.flexa{display: flex;align-items: center;line-height: 1.5;} 
+		.bottomop>div{padding:14px 0;display:flex;width:50%;justify-content:center;align-items:center;position:relative;}
+		/*.bottomop div:first-child{border-right:1px solid #f3f3f3}*/ 
+		.bottomop .active{color:#f31414}
+		.bottomop div:after{position:absolute;bottom:0;left:50%;right:50%;height:2px;background-color:#f31414;content:""}
+		.bottomop .active:after{left:25px!important;right:25px!important;transition:all .3s}
+		#QA{padding-top: 52px;}
+		.qashadow{margin-bottom: 10px;background-color: white;padding:10px 15px;}
+		.qbot{margin-top: 10px;line-height: 1.3;}
+		.Avator{width: 40px!important;height: 40px!important;border-radius: 50%;}
+		.rsImg{margin-right:10px;border-radius:3px;overflow: hidden;flex-basis: calc(100vw * 0.2);}
+		.rsImg img{width: 100%;border-radius: 3px;}
+		.listSon{position: absolute;left: -20px;top: 0;width: 100%;}
+		.middleI{position: absolute;left: 0px !important;top: 0;opacity: 1; z-index: 1; transition-duration: .2s;transition-property:opacity left;transition-timing-function: ease-in-out;}
+		.leftT{position: absolute;left: -20px !important;top: 0;opacity: 0; z-index: 10;}	
+		.QA{display: none;}
+		.qative{display: block;} 
+		.mui-bar-nav{box-shadow: none !important;}
+		#upload{height: 30px;min-height: 30px;padding-top: 0;}
+		.answerImf{padding: 0 15px;}
+		.answerImf .anImg{width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;}
+		.adge{display: block;width: 20px;height:20px;background-color: #f31414;color: white;text-align: center;line-height: 1.6;border-radius: 50%;}
+	</style>
+
 	<body>
-		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">我的通知消息</h1>  
+		<header class="mui-bar mui-bar-nav fineB">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="margin-left: 0;"></a>
+		    <h1 class="mui-title">我的消息</h1>  
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="main">
-			<dl class="list listtwo list-in" id="listinfodiv"></dl>
-			<script id="listinfo" type="text/html">
-				<%if(list.length){%>
-					<% for(var i=0;i<list.length;i++){ %>
-						<dd style="padding: 20px;">
-							<div class="dealcard dealcardtwo clearfloat">
-									<div class="infoTitle"><%= list[i].title%></div>
-								    <div style="display: flex;align-items: center;">
-								    	<div style="flex-basis: 30px;">
-									    	<img src="../../img/12.png" style="width: 30px;">
-									    </div>
-									    <div class="name" style="flex-grow: 1;">
-									    	<%= list[i].content%>
- 
-										    </div>
-								    </div>
-							</div>
-			  	    		<div style="text-align: right;font-size: 13px;color: #888;"><%= list[i].create_time.split('T')[0]%></div>
-						</dd>
-						<!--<dd style="padding: 20px;"> 
-							<div class="dealcard dealcardtwo clearfloat">
-									<div class="infoTitle">吐槽回复</div>
-								    <div style="display: flex;align-items: center;">
-								    	<div style="flex-basis: 30px;">
-									    	<img src="../../img/12.png" style="width: 30px;">
-									    </div>
-									    <div class="name" style="flex-grow: 1;">
-									    	惺惺惜惺惺想
 	 
-									    </div>
-								    </div>
+		<!--状态栏结束-->
+		<!--<div id="container">-->
+		<div id="main">
+			<div class="clearfloat box-s box-ss" id="userBox" style="display: none;">
+	    		<img id="mypic1" src="https://hbfile.b0.upaiyun.com/img/home/banner/1b2ee045f8bf04befb7cf3722fcc527eaeb18f23114c28"/>
+	    		<div id="beijing2"></div> 
+	    			<img src="../../img/market/atcenter.jpg" class="userAvator" id="mypic2"/> 
+	    			<div id="nickname" class="idhiji ft18"></div>
+	    			<div class="personalSign">
+	    				今天真的很开心啊 <img src="../../img/answer/edit.png" id="edit"/>
+	    			</div>
+	    			<div class="personalSign newbop">
+	    				<img src="../../img/answer/heart.png"/> 80人
+	    			</div>
+	    	</div>
+	    	<div class="bottomop flexr" style="position: fixed;">
+				<div class="ft14 active">通知消息</div> 
+				<div class="ft14">物流消息</div>
+				<div class="ft14">聊天记录</div>
+		 	</div>  
+		 	
+		 	
+			<div id="QA"><!--大盒子-->
+				<div class="QA qative dyCon" id="questions" style="display: block;">
+					<div class="qashadow">
+						<div class="qtop flexr">
+							<div class="ft14">
+								Thefin
 							</div>
-					        <div style="text-align: right;font-size: 13px;color: #888;">2017.06.06</div>
-						</dd>-->
-					<%}%>
-				<%}%>	
-					
-			</script>	
+							<div class="">
+								<span class="disablecl">2017-09-02</span>
+							</div>
+						</div>
+						<div class="qbot ft14 ">
+							xxxxxxxxxx 
+						</div>
+					</div>
+					<div class="qashadow">
+						<div class="qtop flexr">
+							<div class="ft14">
+								Thefin
+							</div>
+							<div class="">
+								<span class="disablecl">2017-09-02</span>
+							</div>
+						</div>
+						<div class="qbot ft14 ">
+							xxxxxxxxxx 
+						</div>
+					</div>
+					<div class="qashadow">
+						<div class="qtop flexr">
+							<div class="ft14">
+								Thefin
+							</div>
+							<div class="">
+								<span class="disablecl">2017-09-02</span>
+							</div>
+						</div>
+						<div class="qbot ft14 ">
+							xxxxxxxxxx 
+						</div>
+					</div>
+				</div><!--盒子一-->
+				<div class="QA dyCon" id="answers" style="display: none;"> 
+					<div class="qashadow">
+						<div class="qtop flexr">
+							<div class="ft14">
+								订单已签收(申通快递)
+							</div>
+							<div class="">
+								<span class="disablecl">2017-09-02</span>
+							</div>
+						</div>
+						<div class="qbot ft14 flexa">
+							<div class="rsImg">
+								<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
+							</div>
+							<div>
+								<div class="maincl ft14">丽得姿补水面膜(10片装)</div>
+								<div class="disablecl ft12" style="margin-top: 5px;">
+									运单编号：12334324234223
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="qashadow">
+						<div class="qtop flexr">
+							<div class="ft14">
+								订单已签收(申通快递)
+							</div>
+							<div class="">
+								<span class="disablecl">2017-09-02</span>
+							</div>
+						</div>
+						<div class="qbot ft14 flexa">
+							<div class="rsImg">
+								<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
+							</div>
+							<div>
+								<div class="maincl ft14">丽得姿补水面膜(10片装)</div>
+								<div class="disablecl ft12" style="margin-top: 5px;">
+									运单编号：12334324234223
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="qashadow">
+						<div class="qtop flexr">
+							<div class="ft14">
+								订单已签收(申通快递)
+							</div>
+							<div class="">
+								<span class="disablecl">2017-09-02</span>
+							</div>
+						</div>
+						<div class="qbot ft14 flexa">
+							<div class="rsImg">
+								<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
+							</div>
+							<div>
+								<div class="maincl ft14">丽得姿补水面膜(10片装)</div>
+								<div class="disablecl ft12" style="margin-top: 5px;">
+									运单编号：12334324234223
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--盒子二-->
+				<div class="QA dyCon" id="toanswers" style="display: none;">
+					<div class="qashadow"> 
+						<div class="qbot ft14 flexa" style="justify-content: space-around;">
+							<div class="flexa">
+								<div class="rsImg">
+									<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
+								</div>
+								<div>
+									<div class="maincl ft14">Thefin</div>
+									<div class="disablecl ft12" style="margin-top: 5px;">
+										hello
+									</div>
+								</div>
+							</div>
+							<div>
+								<div class="disablecl ft12">
+									16:33
+								</div> 
+								<div class="ft12" style="margin-top: 5px;">
+									<span class="adge">2</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="qashadow"> 
+						<div class="qbot ft14 flexa" style="justify-content: space-around;">
+							<div class="flexa">
+								<div class="rsImg">
+									<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
+								</div>
+								<div>
+									<div class="maincl ft14">Thefin</div>
+									<div class="disablecl ft12" style="margin-top: 5px;">
+										hello
+									</div>
+								</div>
+							</div>
+							<div>
+								<div class="disablecl ft12">
+									16:33
+								</div> 
+								<div class="ft12" style="margin-top: 5px;">
+									<span class="adge">2</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--盒子三-->
 				
-			<div class="nothing" style="display: none;"><img src="../../img/theList/del.png"/><p>你没有通知消息哟！</p></div>
+				<!--<script type="text/html" id="listDataS">
+					<%for(var i=0;i<dataList.length;i++){%>
+						<div class="qashadow" onclick="openDetail(<%=dataList[i].id%>)">
+							<div class="qtop flexr">
+								<div class="ft14">
+									<img class="Avator loadPics" data-src="<%=dataList[i].avatar%>" src=""/> <%=dataList[i].nickname%>
+								</div>
+								<div class="">
+									<span class="disablecl">已回答</span>
+									<img class="loadPics" src="../../img/answer/zan.png"/> <span class="disablecl"><%=dataList[i].likes%></span>
+								</div>
+							</div>
+							<div class="qbot ft14 ">
+								<%=dataList[i].content%>
+								<div class="qaimg">
+									<%if(dataList[i].pic && dataList[i].pic.length){%>
+										<div class="answerImf" style="padding: 0;">
+											<%for(var j = 0 ;j<dataList[i].pic.length;j++){%>
+												<div class="anImg loadPics" style="background: url(<%=dataList[i].pic[j].picImg%>) no-repeat;background-size: cover;"></div>
+											<%}%> 
+									 	</div>
+									<%}%> 
+								</div>
+							</div>
+						</div>
+					<%}%>	
+				</script>	-->
+				<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div><!--加载中-->
+			</div><!--大盒子-->
+			
 		</div>
-	</body>
-	<script src="../../js/app.js"></script>
-	<script src="../../js/artTemplate-native.js"></script>
+	 </body>
+	 <script type="text/javascript">
+	 	/*打开详情*/
+		function openDetail(id){
+			openview({
+				view:'answerInfo.html',
+				id:'answerInfo',
+				extrasobj:{answerId:id}
+			})
+		}
+	 </script>
 	<script type="text/javascript">
-		mui.plusReady(function(){
-			var myuserid = plus.storage.getItem('userid');
-			var oldtoken = plus.storage.getItem('oldToken'); 
-			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			mui.ajax(serverUrl+'/api/index/message',{
-					data:{userid:myuserid},
-					dataType:'json',
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},
-					success:function(data,type,xhr){
-						console.log('消息',data);
-				       	if(data.errno == 0){
-					       	if(data.data.length){
-				     			var dataobj = {};
-				     			dataobj.url = serverimgUrl;
-				     			dataobj.list = data.data;
-				     			var html = template("listinfo",dataobj);
-								document.getElementById("listinfodiv").innerHTML+=html;
-							}else{
-								mui('.nothing')[0].style.display = 'block';	
+		var flag0 = 0,flag1 = 0,flag2 = 0,//是否   第一次点击
+	     	SH0 = 0,SH1  = 0,SH2  = 0;/*保存的状态栏高度*/
+		var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div');
+		var listSon = document.getElementsByClassName('dyCon');
+		[].forEach.call(listCon,function(ele,index){
+			ele.onclick = function(){
+				if(!ele.className.includes('active')){
+					[].forEach.call(listCon,function(ele2){
+						ele2.className = 'ft14';
+					})
+					ele.className = 'active ft14'; 
+					[].forEach.call(listSon,function(ele3){
+						ele3.className = 'QA dyCon';
+						ele3.style.display = 'none';
+					})
+					listSon[index].className = 'qative QA dyCon';
+					listSon[index].style.display = 'block';
+					
+					if(index == 0){
+						if(flag0==0){
+//							shopData(index,0);
+						}else{
+							$(window).scrollTop(SH0);
+						}
+					}else if(index == 1){
+						if(flag1==0){
+//							shopData(index,1);
+						}else{
+							$(window).scrollTop(SH1);
+						}
+					}else{
+						if(flag2==0){
+//							shopData(index,2);
+						}else{
+							$(window).scrollTop(SH2);
+						}
+					}
+				}
+			}
+		})
+		mui("#upload")[0].innerHTML = " ";
+		
+//		shopData(0,0,false);//默认推荐
+		
+		function shopData(typeNum,gender,refresh){
+			var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数
+
+			if(typeNum == 0){
+				flag0++;
+				if(flag0 == 2){
+					$(window).scrollTop(280);
+				}
+			}else if(typeNum == 1){
+				flag1++;
+				if(flag1 == 1){
+					$(window).scrollTop(280);
+				}
+			}else{
+				flag2++;
+				if(flag2 == 1){
+					$(window).scrollTop(280);
+				}
+			}
+			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+			mui.plusReady(function(){
+				var myuserid = plus.storage.getItem('userid'),
+				    cityNum = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken');
+				
+				if(typeNum == 0){
+					var dataJson = {
+						'userId':myuserid, 
+						'numsPerPage':6,
+						'currentPage':1,
+						'orderType':'DESC',
+						'orderField':'create_time',
+						'typeId':2,
+						
+					}
+				}else if(typeNum == 1){
+					var dataJson = {
+						'userId':myuserid, 
+						'numsPerPage':6,
+						'currentPage':1,
+						'orderType':'DESC',
+						'orderField':'create_time',
+						'typeId':2,
+						'isMyAnswer':1 
+					}
+				}else{
+					var dataJson = {
+						'userId':myuserid, 
+						'numsPerPage':6,
+						'currentPage':1,
+						'orderType':'DESC',
+						'orderField':'create_time',
+						'typeId':2,
+						'isAskMe ':1 
+					}
+				}
+				
+				mui.ajax(serverUrl + '/api/friends/newslist', {
+					data: dataJson,
+					dataType: 'json',
+					type: 'post',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.error('我的消息列表'+typeNum, data);
+						if(data.errno == 0) {
+							var dataObj = {};
+							var nowArray = data.data.data;
+
+							for(var j = 0 ;j<nowArray.length;j++){
+								//整理头像格式
+								if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+									if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+										nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+									}else{
+										nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+									}
+								}else{
+									nowArray[j].avatar = '../../img/10.png'
+								}
+								
+								if(!nowArray[j].nickname){
+									nowArray[j].nickname = '匿名'
+								}
+								if(nowArray[j].pic && nowArray[j].pic!='null'){
+									nowArray[j].pic = JSON.parse(nowArray[j].pic);
+									for(var k = 0; k<nowArray[j].pic.length;k++){
+										if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
+                                            nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
+                                        }
+									}
+								}
 							}
-				       	}
-				       	plus.nativeUI.closeWaiting();
+							
+							dataObj.dataList = data.data.data;
+							document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
+							mui("#upload")[0].innerHTML = "";
+							lazyLoad(true,50);//懒加载
+							 
+							$(window).scroll(function() {
+								if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
+										var scrollTop = $(this).scrollTop();　
+										if(typeNum == 0){
+											SH0 = $(this).scrollTop();
+										}else if(typeNum == 1){
+											SH1 = $(this).scrollTop();
+										}else{
+											SH2 = $(this).scrollTop();
+										}
+										var scrollHeight = $(document).height();
+										var windowHeight = $(this).height();　　
+										if(scrollTop + windowHeight == scrollHeight) {
+											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+												Ypagenum++; //满足加载情况,应到页数+1
+												console.log('发起请求,实到' + Spagenum + '页');
+												console.log('发起请求,应到' + Ypagenum + '页');
+												if(typeNum == 0){
+													var dataJson = {
+														'userId':myuserid, 
+														'numsPerPage':6,
+														'currentPage':Spagenum,
+														'orderType':'DESC',
+														'orderField':'create_time',
+														'typeId':2,
+														
+													}
+												}else if(typeNum == 1){
+													var dataJson = {
+														'userId':myuserid, 
+														'numsPerPage':6,
+														'currentPage':Spagenum,
+														'orderType':'DESC',
+														'orderField':'create_time',
+														'typeId':2,
+														'isMyAnswer':1 
+													}
+												}else{
+													var dataJson = {
+														'userId':myuserid, 
+														'numsPerPage':6,
+														'currentPage':Spagenum,
+														'orderType':'DESC',
+														'orderField':'create_time',
+														'typeId':2,
+														'isAskMe ':1 
+													}
+												}
+												
+												mui.ajax(serverUrl + '/api/friends/newslist', {
+													data: dataJson,
+													dataType: 'json',
+													type: 'post',
+													timeout: 8000,
+													headers: {"token": oldToken,'city': cityNum},
+													success: function(data) {
+														console.error('我的消息列表续'+typeNum, data);
+														if(data.errno == 0) {
+															var dataObj = {};
+															var nowArray = data.data.data;
+															for(var j = 0 ;j<nowArray.length;j++){
+																//整理头像格式
+																if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+																	if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+																		nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+																	}else{
+																		nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+																	}
+																}else{
+																	nowArray[j].avatar = '../../img/10.png'
+																}
+																
+																if(nowArray[j].pic && nowArray[j].pic!='null'){
+																	nowArray[j].pic = JSON.parse(nowArray[j].pic);
+																	for(var k = 0; k<nowArray[j].pic.length;k++){
+																		if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
+							                                                nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
+							                                            }
+																	}
+																}
+																
+																if(!nowArray[j].nickname){
+																	nowArray[j].nickname = '匿名'
+																}
+															}
+															dataObj.dataList = data.data.data;
+															document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
+															lazyLoad(false,50);//懒加载
+														}
+														mui("#upload")[0].innerHTML = " ";
+														Spagenum++; //加载成功,当前页+1
+														console.log('成功+1,实到' + Spagenum);
+														console.log('成功+1,应到' + Spagenum);
+													},
+													error: function(xhr, type, errorThrown) {
+														Ypagenum--; //失败是应到-1
+														mui.toast("当前网络不好请重试");
+														mui("#upload")[0].innerHTML = "";
+													}
+												});
+											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+												mui("#upload")[0].innerHTML = "到底了";
+											}
+										} 
+								}
+							});
+							 
+							 
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
 					},
-					error:function(xhr,type,errorThrown){
-						plus.nativeUI.closeWaiting();
-						console.log('当前网络不好,请重试');
+					error: function(xhr, type, errorThrown) {
+						console.error('交友列表,响应失败');
+						mui.toast('当前网络不好,请重试');
 					}
 				});
-		})
-		function helpRecord(){
-			openview({
-				view:'my-answer.html'
+				
 			})
 		}
 	</script>
+
+
 </html>
