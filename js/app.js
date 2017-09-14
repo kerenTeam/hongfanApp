@@ -136,23 +136,24 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 //懒加载方法
 window.lazyLoad = function(init,limit){
 	var limit = limit || 100;
-	var loadPics = mui('.loadPics'),
-	H = window.innerHeight;//可视窗口高度
+	var loadPics = mui('.loadPics');
+	var H = window.innerHeight || 1000;//可视窗口高度(避免第一次不加载)
 	window.onscroll = function(){
 		if(H == 0){H = window.innerHeight;}
 		if(loadPics.length){
 		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
 		    [].forEach.call(loadPics,function(img,index){
 	         	if(!img.getAttribute('data-src')){return}
-	        	//console.log(H + S - limit +'===='+ getTop(img) + plus.webview.currentWebview().id);
-				if(H + S - limit > getTop(img)){
-			     	img.src=img.getAttribute("data-src");
-				 	img.removeAttribute("data-src");
-				 	img.style.backgroundImage = 'url()';
-				 	if(img.classList.contains('loadPics')){ 
-					img.classList.remove('loadPics');
-				     }
-			 	}
+		        //console.error( H + S - limit +'===='+ getTop(img) +'====='+loadPics.length)
+	         	if(H + S - limit > getTop(img)){
+	             	img.src=img.getAttribute("data-src");
+	             	img.removeAttribute("data-src");
+             		img.style.backgroundImage = 'url()';
+	             	if(img.classList.contains('loadPics')){//减少每次滚动时遍历个数
+	             		img.classList.remove('loadPics');
+	             		loadPics = mui('.loadPics');
+	             	}
+	         	}
 	        })
 		}    
 	}
@@ -170,20 +171,44 @@ window.lazyLoad = function(init,limit){
 
 /*图片高宽处理*/
  window.imgHeight =  function(obj){
-	if(obj.offsetHeight<obj.parentNode.offsetHeight){
-		obj.style.height = '100%';
-		obj.style.width = 'auto';
-		clearInterval(timePicWidth);
+ 	if(obj.offsetHeight == 0){/*处理高宽都为零bug*/
+ 		var Delayloading = setTimeout(function(){
+ 			imgHeight(obj);
+ 			clearTimeout(Delayloading),Delayloading = null;
+ 		},500)
+ 	}else{
+		if(obj.offsetHeight<obj.parentNode.offsetHeight){
+			obj.style.height = '100%';
+			obj.style.width = 'auto';
+		}
 		var timePicWidth = setTimeout(function(){
 			obj.style.opacity = 1;
+			clearTimeout(timePicWidth),timePicWidth = null;
 		},50)
-	}else{
-		clearInterval(timePicWidth2);
-		var timePicWidth2 = setTimeout(function(){
-			obj.style.opacity = 1;
-		},50)
-	}
+ 	}
 }
+ 
+//config ===== 判断网络
+function internetF(){
+	var types = {}; 
+	types[plus.networkinfo.CONNECTION_UNKNOW] = "Unknown"; 
+	types[plus.networkinfo.CONNECTION_NONE] = "None"; 
+	types[plus.networkinfo.CONNECTION_ETHERNET] = "Ethernet"; 
+	types[plus.networkinfo.CONNECTION_WIFI] = "WiFi"; 
+	types[plus.networkinfo.CONNECTION_CELL2G] = "2G"; 
+	types[plus.networkinfo.CONNECTION_CELL3G] = "3G"; 
+	types[plus.networkinfo.CONNECTION_CELL4G] = "4G"; 
+	return(types[plus.networkinfo.getCurrentType()]);
+}
+//var IType = 'WiFi';
+//mui.plusReady(function(){
+//	alert(internetF());
+//	if(internetF() == '2G' || internetF() == '3G' || internetF() == '4G'){
+//		IType = 'dataW';
+//	}else if(internetF() == 'WiFi'){
+//		IType = 'WiFiW';
+//	}
+//})
 
 
 
