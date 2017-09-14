@@ -11,7 +11,6 @@ var serverimgUrl='http://hiji.hifete.com:6789';
 var propUrl = 'http://hiji.hifete.com:6789';
 //var propUrl = 'http://211.149.183.181:6789';
 
-
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
