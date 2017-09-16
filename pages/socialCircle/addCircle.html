@@ -114,6 +114,7 @@
 			//发送 发布
 			mui('.nextStep')[0].addEventListener('tap',function(){
 				mui.plusReady(function(){
+				var hidou = plus.webview.currentWebview().charges; 
 					var cityNum  = plus.storage.getItem('cityNum'),
 						oldToken = plus.storage.getItem('oldToken'),
 					 	myuserid = plus.storage.getItem('userid'),
@@ -141,6 +142,10 @@
 										var time2 = setTimeout(function(){
 											mui.toast('发布成功');
 											plus.nativeUI.closeWaiting();
+											if(plus.webview.getWebviewById('chargeCircle')){
+												plus.webview.getWebviewById('chargeCircle').close();
+											}
+											mui.fire(plus.webview.getWebviewById('circleAll'),'refresh');
 											plus.webview.currentWebview().close();
 										},800)
 		    						}else{
@@ -160,6 +165,7 @@
 						task.addData("userId",myuserid); 
 						task.addData("description",Cmiaoshu.value);
 						task.addData("name",Cname.value);
+						task.addData("price",hidou);
 						if(Apic){
 							task.addFile(Apic, {key:'0'});
 							task.start();

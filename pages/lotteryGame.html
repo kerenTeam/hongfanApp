@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>抽奖活动</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">  
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" /> 
+    	<link rel="stylesheet" type="text/css" href="../css/config.css"/>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/artTemplate-native.js"></script>
+		<script src="../js/awardRotate.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var turnplate={
+					restaraunts:[],				//大转盘奖品名称
+					colors:[],					//大转盘奖品区块对应背景颜色
+					outsideRadius:192,			//大转盘外圆的半径
+					textRadius:155,				//大转盘奖品位置距离圆心的距离
+					insideRadius:68,			//大转盘内圆的半径
+					startAngle:0, 
+					bRotate:false				//false:停止;ture:旋转
+			};
+			
+			$(document).ready(function(){
+				//动态添加大转盘的奖品与奖品区域背景颜色
+				turnplate.restaraunts = ["一等奖", "2等奖", "谢谢参与", "哦货", "1000元", "谢谢", "3等奖 ", "没有"];
+				 
+				var rotateTimeOut = function (){
+					$('#wheelcanvas').rotate({
+						angle:0,
+						animateTo:2160,
+						duration:8000,
+						callback:function (){
+							alert('网络超时，请检查您的网络设置！');
+						} 
+					});
+				};
+			
+				//旋转转盘 item:奖品位置; txt：提示语;
+				var rotateFn = function (item, txt){
+					var angles = item * (360 / turnplate.restaraunts.length) - (360 / (turnplate.restaraunts.length*2));
+					if(angles<270){
+						angles = 270 - angles; 
+					}else{
+						angles = 360 - angles + 270;
+					}
+					$('#wheelcanvas').stopRotate();
+					$('#wheelcanvas').rotate({
+						angle:0,
+						animateTo:angles+1800,
+						duration:8000,
+						callback:function (){
+							alert(txt);
+							turnplate.bRotate = !turnplate.bRotate;
+						}
+					});
+				};
+			
+				$('.turnBtn').click(function (){
+					if(!plus.storage.getItem('myToken')){ 
+						mui.toast('请登录');
+						openview({
+							view:'login.html'
+						});
+					}else{//抽奖
+						 $('.turnAw').css({'left':'19.6%','top':'13.1%'})
+						if(turnplate.bRotate)return;
+						turnplate.bRotate = !turnplate.bRotate;
+						//获取随机数(奖品个数范围内)
+						var item = rnd(1,turnplate.restaraunts.length);
+						//奖品数量等于8,指针落在对应奖品区域的中心角度[270, 225, 180, 135, 90, 45, 360, 315]
+						rotateFn(item, turnplate.restaraunts[item-1]);
+						 
+						console.log(item);
+						
+					}
+					
+				 	
+				});
+			});
+			
+			function rnd(n, m){
+				var random = Math.floor(Math.random()*(m-n+1)+n);
+				return random;
+				
+			}
+			
+		 
+		</script> 
+	</head>
+	<style type="text/css"> 
+		#header>*{color:white}
+		#userBox{background-color:#f85852;position:relative;overflow:hidden;padding-top: 15px;background:url(../img/center/biejing.png) no-repeat;background-size: 100% 100%;height: calc(100vw * 0.5 + 15px);}
+		.turning{position: relative;margin-top: 50px;}
+		.turnCircle,.turnAw,.turnBtn,.pointer{position: absolute;top: 8%;-webkit-transform: translateY(-50%);left: 50%;-webkit-transform: translateX(-50%);}
+		.turnCircle{width: 70%;}
+		.turnAw{width: 61%;top: 13%;}
+		.turnBtn{width: 21%;top:34.5%;z-index: 1;}
+		.pointer{width: 6%;top:27%;}
+		.hiMall{border-top: 10px solid #f3f3f3;padding-top: 10px;}
+		.circleContain .circleBox{margin: 5px 5px;float: left;background: url(../img/makeFriend/friendB.png) no-repeat;background-size: 100% 100%;background-position: left top;padding: 1px;}
+		.circleImg{width: calc((100vw - 24px)/2);padding-top: 100%;overflow: hidden;position: relative;}
+		.circleImg img{position: absolute; top: 0;left: 0;width: 100%;border-radius: 3px 3px 0 0;}
+		.circleName{padding:15px 10px;line-height: 1.5;}
+		#wheelcanvas{transform-origin: center;} 
+		.list_lh{ height:220px; overflow:hidden;}
+		.list_lh ul{padding: 10px 10px 0 10px;}
+		.list_lh ul li{padding: 10px;margin-bottom: 5px;border-radius: 3px;}
+  		.flexx{display: flex;align-items: center;background-color: white;}
+  		.avtar{width: 50px;height: 50px;margin-right: 10px;}
+  		.avtar img{border-radius: 50%;width: 100%;}
+	</style> 
+	 
+	<body style="background-color: white;background: url();">
+
+		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
+			<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="centertitle" class="mui-title">抽奖活动</h1>
+			<a href="javascript:;" style="line-height: 40px;text-align: right;" class="mui-pull-right baocun ft14"><img style="width: 50%;vertical-align: middle;" src="../img/center/more.png"/></a>
+		</header>
+	     
+		<div id="main">
+			 
+			<!--转盘-->
+			<div class="turning">
+				<img src="../img/center/turnBg.png" style="width: 100%;visibility: hidden;"/>
+				<img src="../img/center/turnCircle.png" class="turnCircle"/>
+				<img src="../img/center/turnAw.png" id="wheelcanvas" class="turnAw"/>
+				<img src="../img/center/turnBtn.png" class="turnBtn"/>
+				<img src="../img/center/pointer.png" class="pointer"/>
+			</div>
+			
+			<!--抽奖记录--> 
+			<div style="padding: 10px 10px;color: black;">中奖纪录</div>
+			<div class="list_lh">
+				<ul>
+					<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/bf7836fb8467641f8fc8c9a9c8bf06a2ca37976b13303-JpIVGz_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+				 	<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+					<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/d516c40a14878c1473d6c4cb3f8ceb4e067890094e5a-3GKCA6_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+					<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+					<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/bf7836fb8467641f8fc8c9a9c8bf06a2ca37976b13303-JpIVGz_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+				 	<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+					<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/d516c40a14878c1473d6c4cb3f8ceb4e067890094e5a-3GKCA6_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+					<li class="flexx">
+						<div class="avtar">
+							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
+						</div>
+						<div style="flex-grow: 1;">
+							<div class="flexx" style="justify-content: space-between;">
+								<div class="ft14 maincl">
+									恭喜用户 <span class="activecl">夏目</span>
+								</div>
+								<div class="disablecl ft12">
+									4分钟前
+								</div>
+							</div>
+							<div class="ft14">
+								抽取500HI豆
+							</div>
+						</div> 
+					</li>
+				</ul>
+			</div> 
+	 </body>
+	<script type="text/javascript">
+		
+		
+		(function($){
+			$.fn.myScroll = function(options){
+			//默认配置
+			var defaults = {
+				speed:40,  //滚动速度,值越大速度越慢
+				rowHeight:24 //每行的高度
+			};
+			
+			var opts = $.extend({}, defaults, options),intId = [];
+			
+			function marquee(obj, step){
+			
+				obj.find("ul").animate({
+					marginTop: '-=1'
+				},0,function(){
+						var s = Math.abs(parseInt($(this).css("margin-top")));
+						if(s >= step){
+							$(this).find("li").slice(0, 1).appendTo($(this));
+							$(this).css("margin-top", 0);
+						}
+					});
+				}
+				
+				this.each(function(i){
+					var sh = opts["rowHeight"],speed = opts["speed"],_this = $(this);
+					intId[i] = setInterval(function(){
+						if(_this.find("ul").height()<=_this.height()){
+							clearInterval(intId[i]);
+						}else{
+							marquee(_this, sh);
+						}
+					}, speed);
+		
+					_this.hover(function(){
+						clearInterval(intId[i]);
+					},function(){
+						intId[i] = setInterval(function(){
+							if(_this.find("ul").height()<=_this.height()){
+								clearInterval(intId[i]);
+							}else{
+								marquee(_this, sh);
+							}
+						}, speed);
+					});
+				
+				});
+		
+			}
+		
+		})(jQuery);
+		//抽奖记录滚动
+		$(function(){
+			$("div.list_lh").myScroll({
+				speed:40, //数值越大，速度越慢
+				rowHeight:68 //li的高度
+			});
+		});
+	</script>
+	<script type="text/javascript">
+ 	 
+		
+ 		
+		//滚动监听
+		$(window).scroll(function() { 
+           var navBarHeight = 50;  
+            var targetID = "#header"; 
+            var scrollTo = $(window).scrollTop(); 
+            if (scrollTo > navBarHeight) {
+                $(targetID).css({
+              		//"background-image": "url(../img/header.png)","background-size":"100%"
+                });
+                $('#leftbtn').css({'color':'#666'});
+                $('#centertitle').css({'color':'#666'});
+            } 
+            if (scrollTo < navBarHeight) {
+                $(targetID).css({
+                    "background-image": "none"
+                });
+                $('#leftbtn').css({'color':'#666'});
+                $('#centertitle').css({'color':'#666'});
+            } 
+        }).trigger('scroll');
+		 
+	</script>
+	 
+</html>

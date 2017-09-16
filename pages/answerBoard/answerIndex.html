@@ -10,8 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
 	</head>
 	<style type="text/css"> 
-		.baocun{text-align:right;}
-		.baocun img{margin:0 9pt;width:12%;vertical-align:middle;}
+		.baocun{text-align:right;margin:15px 8px 0;width:18px;vertical-align:middle;display: inline-block;}
 		.search{height:60px;background-color:#f3f3f3;}
 		.searchBox{position:relative;margin:auto;width:76%;height:100%;}
 		.searchBox img:first-child{width:100%;max-height:50px;}
@@ -52,10 +51,8 @@
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">答人榜</h1>
-			<a href="javascript:;" style="line-height: 50px;color:white;" class="mui-pull-right baocun">
-				<img class="" src="../../img/answer/user.png" alt="" />
-				<img id="share" src="../../img/answer/share.png" alt="" /> 
-			</a> 
+			<!--<img id="share" src="../../img/answer/share.png" alt="" class="mui-pull-right baocun"/>--> 
+			<img id="goMyQa" src="../../img/answer/user.png" alt="" class="mui-pull-right baocun"/>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<!--轮播-->
@@ -107,7 +104,12 @@
 							<div class="follow"> <!--问题-->
 								<div class="fchidl">
 									<div><img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/><div><%=dataList[i].nickname%></div></div> 
-									<div class="butright"><div class="diyButton activecl goanswer">抢答</div> </div> 
+									<%if(qustType == 1){%>
+										<div class="butright"><div class="activecl">已解答</div> </div> 
+									<%}else{%>
+										<div class="butright"><div class="diyButton activecl goanswer">抢答</div> </div> 
+									<%}%>
+
 								</div>  
 								<p class="ft15 maincl"><%=dataList[i].content%></p>
 								
@@ -179,6 +181,20 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" charset="utf-8"></script>
 	<script type="text/javascript">
+		$('#goMyQa').click(function(){
+			if(plus.storage.getItem('myToken')){
+				openview({
+					view:'myQa.html',
+					id:'myQa',
+				}) 
+			}else{
+				mui.toast('请登录');
+				openview({
+					view:'../login.html'
+				});
+			} 
+		})
+		
 		//获取问答分类
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken'),
@@ -242,6 +258,7 @@
 					}
 				});
 		})//获取问答分类结束
+	 
 	</script>
 	<script type="text/javascript">
 		/*tab切换*/
@@ -302,6 +319,7 @@
 				var myuserid = plus.storage.getItem('userid'),
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken');
+				
 				if(typeNum == 0){
 					var dataJson = {
 						'userId':myuserid,
@@ -356,12 +374,6 @@
 									if(!nowArray[j].likes){
 										nowArray[j].likes = 0
 									}
-//									if(!nowArray[j].onlyExpert){
-//										nowArray[j].onlyExpert = 0
-//									}
-//									if(!nowArray[j].assignedExpert){
-//										nowArray[j].assignedExpert = 0
-//									}
 									if(nowArray[j].pic && nowArray[j].pic!='null'){
 										nowArray[j].pic = JSON.parse(nowArray[j].pic);
 										for(var k = 0; k<nowArray[j].pic.length;k++){
@@ -373,6 +385,7 @@
 								}
 									
 								dataObj.dataList = nowArray;
+								dataObj.qustType = typeNum; 
 								document.getElementsByClassName("listSon")[typeNum].innerHTML = template("listDataS", dataObj);
 								lazyLoad(true,50);//懒加载
 								 
@@ -461,6 +474,7 @@
 															}
 															
 															dataObj.dataList = nowArray;
+															dataObj.qustType = typeNum; 
 															document.getElementsByClassName("listSon")[typeNum].innerHTML += template("listDataS", dataObj);
 															lazyLoad(false,50);//懒加载
 														}
@@ -725,7 +739,7 @@
 			var shares=null;
 			function plusReady(){
 				//updateSerivces();
-				shareSystem(); 
+//				shareSystem(); 
 			}
 			if(window.plus){
 				plusReady();

@@ -143,7 +143,7 @@
 					</div> 
 					<div class="ft16 fttc">年龄</div>
 					<div class="age">
-						<span class="checked" data-age=''>不限</span><span data-age='18-23'>18-23</span><span data-age='24-29'>24-29</span><span data-age='30-34'>30-34</span><span data-age='35-50'>35以上</span>	
+						<span class="checked" data-age='0-0'>不限</span><span data-age='18-23'>18-23</span><span data-age='24-29'>24-29</span><span data-age='30-34'>30-34</span><span data-age='35-50'>35以上</span>	
 					</div> 
 					<div class="closemaskb">
 						<button type="button" class="mui-btn mar10 closemask" >取消</button>
@@ -166,7 +166,7 @@
 <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=608d75903d29ad471362f8c58c550daf"></script>
 <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
 	<script type="text/javascript"> 
-		var Latitude='',Longitude='',xFactor='',yFactor='';
+		var Latitude,Longitude,xFactor='',yFactor='';
 		//获取地理位置  
 		 var map, geolocation;
 	    //加载地图，调用浏览器定位服务
@@ -190,7 +190,7 @@
 	    function onComplete(data) { 
 	    	Latitude = data.position.getLat();//纬度
 	    	Longitude = data.position.getLng();//经度
-//	  	alert('经度 '+Longitude+'纬度 '+Latitude) 
+	    	shopData(0,age,gender);//默认推荐
 	    } 
 		function onError(data) {
 	    	console.error('定位失败')
@@ -228,8 +228,7 @@
 				}
 			}
 		}) 
-	     
-	    shopData(0,age,gender);//默认推荐
+	   
 		function shopData(typeNum,age,gender){  
 			if(typeNum == 0){
 				flag0++;
@@ -238,7 +237,8 @@
 			}
 			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 			mui.plusReady(function(){  
-				//地球半径
+				//地球半径 
+//				alert(Latitude)
 				var R = 6371.393;  
 				var girthY = R * 2 * Math.PI; 
 				var girthX = Math.cos(Latitude / 180 * Math.PI) * girthY ;
@@ -391,6 +391,7 @@
 			$(this).addClass('checked');
 			gender = $(this).attr('data-gender');
 		})
+		
 		$('.age span').click(function(){
 			$(this).siblings().removeClass('checked');
 			$(this).addClass('checked');

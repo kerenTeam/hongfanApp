@@ -117,7 +117,8 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 		type: curType,
 		timeout: 8000,
 		headers: {"token": oldtoken,'city': cityNum},
-		success: function(data, type, xhr) {  
+		success: function(data, type, xhr) {
+			console.log('点赞返回',data)
 			if(data.errno == 0) {  
     			thisobj.attr('src',imgSrc);
 			}else{

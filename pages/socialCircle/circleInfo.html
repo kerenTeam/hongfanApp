@@ -91,7 +91,7 @@
 	    			<div id="miaoshu" class="personalSign ft14">---</div> 
 	    			<div class="newbop">
 						<button type="button" class="mui-btn mui-btn-danger goask" style="padding:4px 12px!important;display: none;">发表</button>
-						<button type="button" class="mui-btn mui-btn-blue goaskZ" data-id = "5" style="padding:4px 12px!important;display: none;">加入圈子</button>
+						<button type="button" class="mui-btn mui-btn-blue goaskZ" data-id = "0" style="padding:4px 12px!important;display: none;">加入圈子</button>
 						<button type="button" class="mui-btn mui-btn-blue gojh" data-id = "5" style="padding:4px 12px!important;display: none;">精华</button>
 	    			</div>
 	    	</div>
@@ -241,9 +241,9 @@
 	<script type="text/javascript">
 		mui.plusReady(function(){
 			var creator = plus.webview.currentWebview().creator;
-	    	if(creator == 0){//我创建的
+	    	if(creator === '0'){//我创建的
 	    		$('.goask,.gojh,#ediCircle,.caedit').css('display','');
-	    	}else if(creator == 1){//我加入的
+	    	}else if(creator === '1'){//我加入的
 	    		$('.goask,.gojh,.jubao').css('display','');
 	    	}else{
 	    		$('.goaskZ,.jubao').css('display','');
@@ -292,6 +292,7 @@
 							mui('#mypic1')[0].src = JSON.parse(data.data.picImg)[0].picImg;
 							mui('#nickname')[0].innerHTML = data.data.name;
 							mui('#miaoshu')[0].innerHTML = data.data.description;
+							$('.goaskZ').attr('data-id',data.data.price);
 						}
 					},
 					error: function(xhr, type, errorThrown) {

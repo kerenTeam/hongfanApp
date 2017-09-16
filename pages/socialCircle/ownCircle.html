@@ -57,15 +57,18 @@
 			
 			<script type="text/html" id="listDataS">
 				<%for(var i=0;i<dataList.length;i++){%>
-					<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%= typeNum%>)">
-						<div class="circleImg">
-							<img class="loadPics picOp" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
+					<%if(dataList[i].id){%>
+						<div class="circleBox cbc" onclick="openDetail(<%=dataList[i].id%>,<%= typeNum%>)">
+							<div class="circleImg">
+								<img class="loadPics picOp" data-src="<%=dataList[i].picImg%>" src="" onload="imgHeight(this)"/>
+							</div>
+							<div class="circleName ft14">
+								<b><%=dataList[i].name%></b>
+								<div class="ft10 disablecl"><%=dataList[i].newsNums%>条动态 · <%=dataList[i].joinNums%>人加入 </div>
+							</div>
 						</div>
-						<div class="circleName ft14">
-							<b><%=dataList[i].name%></b>
-							<div class="ft10 disablecl"><%=dataList[i].newsNums%>条动态 · <%=dataList[i].joinNums%>人加入 </div>
-						</div>
-					</div>
+					<%}%>
+					
 				<%}%>	
 			</script>
 			<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div>
@@ -83,9 +86,12 @@
 				</div>
 				<div class="circleRule" style="display: none;">
 					<img src="../../img/makeFriend/diasgree.png" class="agree"/>
-					<span  class="ft16">我已同意并阅读<span class="ruleInfo">《圈子圈主规则》</span>  </span>
+					<span  class="ft16">我已同意并阅读<span class="ruleInfo goRule">《圈子圈主规则》</span>  </span>
 					<div class="ft14" style="background-color: white;border: 1px solid #EEEEEE;padding: 10px;margin-top: 15px;text-align: left;">
 						包含低俗、色情、暴力、引诱的圈子，将会被封停圈 子和账号
+						<div class="disablecl goRule" style="text-align: right;">
+							进入详情
+						</div>
 					</div>
 					<button type="button" class="mui-btn mui-btn-danger btn-block ft16 upbtn" disabled="">下一步</button>					 
 				</div>
@@ -306,16 +312,22 @@
 //			$('.ruleCtd').removeClass('ruleAct');
 			if($('.ruleAct').attr('data-id')==1){
 				openview({
-					view:'addCircle.html'
+					view:'addCircle.html',
+					id:'addCircle'
 				})
 			}else{
 				openview({
-					view:'chargeCircle.html'
+					view:'chargeCircle.html',
+					id:'chargeCircle',
 				})
 			}
 		})
 		
-
+		$('.goRule').click(function(){
+			openview({
+				view:'circleRule.html'
+			})
+		})
 		
 
 		</script>

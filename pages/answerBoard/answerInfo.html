@@ -156,135 +156,140 @@
 					});
 				} 
 			}
-		 
-			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
-				dataType: 'json',
-				type: 'get',
-				timeout: 8000,
-				headers: {"token": oldToken,'city': cityNum},
-				success: function(data, type, xhr) {
-					console.error('问答详情', data);
-					if(data.errno == 0) {
-						var dataObj = {}, nowArray = data.data;
-						
-						if(nowArray.avatar && nowArray.avatar!='null'){
-							if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
-								nowArray.avatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
-							}else{
-								nowArray.avatar = JSON.parse(nowArray.avatar)[0].picImg
-							}
-						}else{
-							nowArray.avatar = '../../img/10.png'
-						}
-						
-						if(!nowArray.nickname){
-							nowArray.nickname = '匿名'
-						} 
-						if(!nowArray.answerNums){
-							nowArray.answerNums = 0
-						}else if((nowArray.answerNums / 1000)>1){
-							nowArray.answerNums = parseInt(nowArray.answerNums / 1000) +'K+'
-						}
-						if(!nowArray.likes){
-							nowArray.likes = 0
-						} 
-						if(nowArray.pic && nowArray.pic!='null'){
-							nowArray.pic = JSON.parse(nowArray.pic);
-							for(var k = 0; k<nowArray.pic.length;k++){
-								if(nowArray.pic[k].picImg.indexOf('http') == -1){
-                                    nowArray.pic[k].picImg = serverimgUrl + nowArray.pic[k].picImg;
-                                }
-							}
-						}
-						dataObj.dataList = data.data;
-						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
-						if(data.errmsg == 1){ 
-							$('#doLike').attr('src','../../img/answer/liked.png');
-						}else{
-							$('#doLike').attr('src','../../img/answer/unlike.png');
-						}
-						//点赞
-						$('#doLike').click(function(){
-							if(plus.storage.getItem('myToken')){
-								var curThis = $(this);
-								var likes = parseInt(curThis.siblings('span').html());
-								if(curThis.attr('src') == '../../img/answer/unlike.png'){ 
-									likes = likes+1; 
-									curThis.siblings('span').html(likes);
-									likeThis(curThis,infiId,touserid,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png')  
+			document.addEventListener('refresh', function() {
+				showData();
+			})
+			showData();
+			function showData(){
+				mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
+					dataType: 'json',
+					type: 'get',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.error('问答详情', data);
+						if(data.errno == 0) {
+							var dataObj = {}, nowArray = data.data;
+							
+							if(nowArray.avatar && nowArray.avatar!='null'){
+								if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
+									nowArray.avatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
 								}else{
-									likes = likes-1; 
-									curThis.siblings('span').html(likes);	
-									likeThis(curThis,infiId,touserid,cityNum,myuserid,oldToken,'DELETE','../../img/answer/unlike.png') 
+									nowArray.avatar = JSON.parse(nowArray.avatar)[0].picImg
 								}
 							}else{
-								mui.toast('请登录');
-								openview({
-									view:'../login.html'
-								});
+								nowArray.avatar = '../../img/10.png'
 							}
 							
-						})
-						//回答
-						mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
-							dataType: 'json',
-							type: 'get',
-							timeout: 8000,
-							headers: {"token": oldToken,'city': cityNum},
-							success: function(data, type, xhr) { 
-								if(data.errno == 0) {
-									var cmtArray = data.data; 
-									if(cmtArray && cmtArray.length>0){
-										for(var i = 0;i<cmtArray.length;i++){
-											if(!cmtArray[i].nickname){ 
-												cmtArray[i].nickname =  '匿名'
-											}
-											
-											if(cmtArray[i].pics && cmtArray[i].pics!='null'){
-												cmtArray[i].pics = JSON.parse(cmtArray[i].pics);
-												for(var j = 0; j<cmtArray[i].pics.length;j++){
-													if(cmtArray[i].pics[j].picImg.indexOf('http') == -1){
-                                                        cmtArray[i].pics[j].picImg = serverimgUrl + cmtArray[i].pics[j].picImg;
-                                                    }
-												}
-											}
-                                            if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
-                                                if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
-                                                    cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
-                                                }else{
-                                                    cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
-                                                }
-                                            }else{
-                                                cmtArray[i].avatar = '../../img/10.png'
-                                            }
-                                                 
-										}  
-										
-										$('.commentsShow').html(template('cmtTpl',{list:cmtArray}));
-										lazyLoad();
-									} 
-									
-								 
+							if(!nowArray.nickname){
+								nowArray.nickname = '匿名'
+							} 
+							if(!nowArray.answerNums){
+								nowArray.answerNums = 0
+							}else if((nowArray.answerNums / 1000)>1){
+								nowArray.answerNums = parseInt(nowArray.answerNums / 1000) +'K+'
+							}
+							if(!nowArray.likes){
+								nowArray.likes = 0
+							} 
+							if(nowArray.pic && nowArray.pic!='null'){
+								nowArray.pic = JSON.parse(nowArray.pic);
+								for(var k = 0; k<nowArray.pic.length;k++){
+									if(nowArray.pic[k].picImg.indexOf('http') == -1){
+	                                    nowArray.pic[k].picImg = serverimgUrl + nowArray.pic[k].picImg;
+	                                }
+								}
+							}
+							dataObj.dataList = data.data;
+							document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
+							if(data.errmsg == 1){ 
+								$('#doLike').attr('src','../../img/answer/liked.png');
+							}else{
+								$('#doLike').attr('src','../../img/answer/unlike.png');
+							}
+							//点赞
+							$('#doLike').click(function(){
+								if(plus.storage.getItem('myToken')){
+									var curThis = $(this);
+									var likes = parseInt(curThis.siblings('span').html());
+									if(curThis.attr('src') == '../../img/answer/unlike.png'){ 
+										likes = likes+1; 
+										curThis.siblings('span').html(likes);
+										likeThis(curThis,infiId,touserid,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png')  
+									}else{
+										likes = likes-1; 
+										curThis.siblings('span').html(likes);	
+										likeThis(curThis,infiId,touserid,cityNum,myuserid,oldToken,'DELETE','../../img/answer/unlike.png') 
+									}
 								}else{
+									mui.toast('请登录');
+									openview({
+										view:'../login.html'
+									});
+								}
+								
+							})
+							//回答
+							mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
+								dataType: 'json',
+								type: 'get',
+								timeout: 8000,
+								headers: {"token": oldToken,'city': cityNum},
+								success: function(data, type, xhr) { 
+									if(data.errno == 0) {
+										var cmtArray = data.data; 
+										if(cmtArray && cmtArray.length>0){
+											for(var i = 0;i<cmtArray.length;i++){
+												if(!cmtArray[i].nickname){ 
+													cmtArray[i].nickname =  '匿名'
+												}
+												
+												if(cmtArray[i].pics && cmtArray[i].pics!='null'){
+													cmtArray[i].pics = JSON.parse(cmtArray[i].pics);
+													for(var j = 0; j<cmtArray[i].pics.length;j++){
+														if(cmtArray[i].pics[j].picImg.indexOf('http') == -1){
+	                                                        cmtArray[i].pics[j].picImg = serverimgUrl + cmtArray[i].pics[j].picImg;
+	                                                    }
+													}
+												}
+	                                            if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+	                                                if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+	                                                    cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+	                                                }else{
+	                                                    cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+	                                                }
+	                                            }else{
+	                                                cmtArray[i].avatar = '../../img/10.png'
+	                                            }
+	                                                 
+											}  
+											
+											$('.commentsShow').html(template('cmtTpl',{list:cmtArray}));
+											lazyLoad();
+										} 
+										
+									 
+									}else{
+										mui.toast('当前网络不好,请重试');
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									console.error('评论列表,响应失败');
 									mui.toast('当前网络不好,请重试');
 								}
-							},
-							error: function(xhr, type, errorThrown) {
-								console.error('评论列表,响应失败');
-								mui.toast('当前网络不好,请重试');
-							}
-						});
-				    	
-						lazyLoad(true);//懒加载
-					}else{
+							});
+					    	
+							lazyLoad(true);//懒加载
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('交友列表,响应失败');
 						mui.toast('当前网络不好,请重试');
 					}
-				},
-				error: function(xhr, type, errorThrown) {
-					console.error('交友列表,响应失败');
-					mui.toast('当前网络不好,请重试');
-				}
-			});
+				});
+			}
 			
 		})
 	</script>
