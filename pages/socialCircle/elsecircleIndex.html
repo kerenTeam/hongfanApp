@@ -31,7 +31,7 @@
 		.newbop img{margin-right: 2px;}
 		.bottomop img{width:22px}
 		.flexr{display:flex;width:100%;background-color:white;justify-content:space-between;color: #303030;align-items: center;}
-		.bottomop>div{padding:14px 0;display:flex;width:50%;justify-content:center;align-items:center;position:relative;}
+		.bottomop>div{padding:14px 0;display:flex;flex: 1; justify-content:center;align-items:center;position:relative;}
 		.bottomop .active{color:#f63d41}
 		.bottomop div:after{position:absolute;bottom:0;left:50%;right:50%;height:2px;background-color:#f63d41;content:""}
 		.bottomop .active:after{left:18px!important;right:18px!important;transition:all .3s}
@@ -55,6 +55,12 @@
 		.frph img.disimg{width: 100%;}
 		.lkerName{display: block;max-width:60px;overflow: hidden;text-overflow: ellipsis;min-height: 12px;}
 		.phnone{background-color: white;}
+		.fixdBody{
+			position: fixed;
+		    width: 100%;
+		    height: 100%;
+		    overflow: hidden;
+		}
 		
 	</style>
 	<body style="background-color: white;">
@@ -109,7 +115,7 @@
 				<div class="ft14 ">动态</div>
 				<div class="ft14 ">相册</div>
 				<div class="ft14 active">交友</div>
-				<div class="ft14">礼物</div>
+				<!--<div class="ft14">礼物</div>-->
 		 	</div>  
 			<div class="content0">
 				<!--动态-->
@@ -172,7 +178,7 @@
 				
 				<!--交友-->
 				<div class="jiaoyou0 contentChild" style="display: block;">
-					<div class="MFdiv1">
+					<div class="MFdiv1 MFdiv133">
 						<h3 id='allPic'>交友照片 <span id="picNum"></span> </h3>
 						<div id="mfPic">
 							<ul class="clearfix zhaopians"><!--占位避免塌陷-->
@@ -230,72 +236,42 @@
 					</div>
 				</div>
 				
-				<!--礼物-->
-				<div class="gift0 mui-content contentChild" style="display: none;">
-					 <div class="mui-row">
-				        <div class="mui-col-sm-4 mui-col-xs-4">
-		            		<div class="giftCon">
-		            			<p style="background: url(https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg) 0 0 no-repeat;background-size: cover;"></p>
-		            			<h5>数量: &nbsp; 5个</h5>
-		            			<span onclick="exchangeHI('https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg',5,100)">兑换HI豆</span>
-		            		</div>
-				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4">
-			             	<div class="giftCon">
-		            			<p style="background: url(https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg) 0 0 no-repeat;background-size: cover;"></p>
-		            			<h5>数量: &nbsp; 5个</h5>
-		            			<span onclick="exchangeHI('http://img3.duitang.com/uploads/item/201509/28/20150928092416_Q5yu8.thumb.224_224_c.jpeg',3,80)">兑换HI豆</span>
-		            		</div>
-				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4">
-				            <div class="giftCon">
-		            			<p style="background: url(https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg) 0 0 no-repeat;background-size: cover;"></p>
-		            			<h5>数量: &nbsp; 5个</h5>
-		            			<span>兑换HI豆</span>
-		            		</div> 
-				        </div>
-				        <div class="mui-col-sm-4 mui-col-xs-4">
-				            <div class="giftCon">
-		            			<p style="background: url(https://b-ssl.duitang.com/uploads/item/201607/18/20160718011917_VBFTw.thumb.224_0.jpeg) 0 0 no-repeat;background-size: cover;"></p>
-		            			<h5>数量: &nbsp; 5个</h5>
-		            			<span>兑换HI豆</span>
-		            		</div> 
-				        </div>
-				    </div>
-				</div>
 				
-				
-				
-				<!--礼物弹窗-->
-				<div class="changeHI" style="display: none;">
-					<div class="HIcon">
-					<div class="markHI" style="display: none;" onclick="closeC()"></div>
-						<div class="content12">
-							<div class="head1"></div>
-							<div class="operating">
-								<span class="span1 unitPrice"></span>
-								<img class="jianjian" src="../../img/makeFriend/liwujian.png"/>
-								<span class="span2" id="chageNum"> 1 </span>
-								<img class="jiajia" src="../../img/makeFriend/liwujia.png"/>
-							</div>
-							<div class="HIconfirm">兑换</div>
-						</div>
-					</div>
-				</div>
 				<!--底部操作-->
                 <div class="footF mui-content">
                     <div class="mui-row">
                         <div class="mui-col-sm-4 mui-col-xs-4 isLiked">
                             <img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/guanzhu.png"/> 关注
                         </div>
-                        <div class="mui-col-sm-4 mui-col-xs-4">
-                            <img src="../../img/makeFriend/liwu2.png"/>礼物
-                        </div>
-                        <div class="mui-col-sm-4 mui-col-xs-4 smend">
-                            <img src="../../img/makeFriend/liaotian.png"/>聊天
-                        </div>
+                        <div class="mui-col-sm-4 mui-col-xs-4 giftBtn"><img src="../../img/makeFriend/liwu2.png"/>礼物</div>
+                        <div class="mui-col-sm-4 mui-col-xs-4 smend"><img src="../../img/makeFriend/liaotian.png"/>聊天</div>
                     </div>
                 </div>
+                
+                <!--赠送礼物-->
+            	<div class="shareWrap" style="z-index: 999; opacity: 1;"></div>
+            	<div class="Scontent" style="bottom: 0px;">
+            		<h3 class="h3">分享</h3>
+            		<div class="mui-row">
+            			<div class="mui-col-sm-3 mui-col-xs-3">
+            				<img src="../../img/share/weixing.png" class="aClick2"><br>微信好友
+            			</div>
+            			<div class="mui-col-sm-3 mui-col-xs-3 ">
+            				<img src="../../img/share/pengyouquan.png" class="aClick2"><br>朋友圈
+            			</div>
+        				<div class="mui-col-sm-3 mui-col-xs-3">
+        					<img src="../../img/share/QQ.png" class="aClick2"><br>QQ好友
+        				</div>
+        				<div class="mui-col-sm-3 mui-col-xs-3">
+        					<img src="../../img/share/weibo.png" class="aClick2"><br>新浪微博
+        				</div>
+        				<div class="mui-col-sm-3 mui-col-xs-3">
+        					<img src="../../img/share/fuzhi.png" class="aClick2"><br>复制链接
+        				</div>
+            		</div>
+            		<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>
+            	</div>
+                
 				
 			</div>
 		</div>
@@ -316,54 +292,6 @@
 				}
 			})
 		}	
-		
-		//礼物兑换HI豆
-		function exchangeHI(pic,num,price){
-			mui('.unitPrice')[0].innerHTML = price + 'HI豆';
-			mui('.head1')[0].style.background = " url("+pic+") 0 0 no-repeat";
-			mui('.head1')[0].style.backgroundSize = " cover ";
-			openC();
-			var flag = false,flag2 = false;
-			mui('.jiajia')[0].onclick = function(){ //加操作
-				flag2 = false;
-				mui('#chageNum')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) + 1;
-				if(mui('#chageNum')[0].innerHTML > num){
-					mui('#chageNum')[0].innerHTML = num;
-					if(!flag){mui.toast('已超出最大值'),console.log(111111111111) };
-					flag = true;
-				}
-				mui('.unitPrice')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) * price + 'HI豆';
-				
-			}
-			mui('.jianjian')[0].onclick = function(){ //减操作
-				flag = false;
-				mui('#chageNum')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) - 1;
-				if(mui('#chageNum')[0].innerHTML < 1){
-					mui('#chageNum')[0].innerHTML = 1;
-					if(!flag2){mui.toast('至少兑换一个哟'),console.log(22222222222) };
-					flag2 = true;
-				}
-				mui('.unitPrice')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) * price + 'HI豆';
-			}
-			mui('.HIconfirm')[0].onclick = function(){ //兑换操作
-				mui.confirm('是否确认兑换'+mui('.unitPrice')[0].innerHTML+'?', '提示', ['取消', '确定'], function(e) {
-		            if (e.index == 1) {
-		            	mui.toast('兑换成功');
-		            }
-		        })
-			}
-			
-		}
-		function openC(){
-			mui('.markHI')[0].style.display = 'block';
-			mui('.changeHI')[0].style.display = 'table';
-		}
-		function closeC(){
-			mui('.markHI')[0].style.display = 'none';
-			mui('.changeHI')[0].style.display = 'none';
-		}
-		//礼物兑换HI豆结束
-		
 		
 	    //数据处理 
 	    var Fload0 = 0,Fload1 = 0,Fload2 = 0,Fload3 = 0;/*是否首次加载*/ 
@@ -516,58 +444,60 @@
 								lazyLoad(true);//懒加载
 								
 								$(window).scroll(function() {
-									var scrollTop = $(this).scrollTop();
-									var scrollHeight = $(document).height();
-									var windowHeight = $(this).height();　　
-									if(scrollTop + windowHeight == scrollHeight) {
-										if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-											//mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-											Ypagenum++; //满足加载情况,应到页数+1
-											console.log('发起请求,实到' + Spagenum + '页');
-											console.log('发起请求,应到' + Ypagenum + '页');
-											
-											mui.ajax(serverUrl+'/api/friends/newslist',{
-												data:{
-													userId:myuserid,
-													numsPerPage:4,
-													currentPage:Spagenum,
-													orderType:'DESC',
-													orderField:'create_time',
-													'typeId':1
-												},
-												type:'post',
-												timeout:8000,
-												headers:{"token":oldToken,"city":cityNum},
-												success: function(data) {
-													console.error('动态列表续', data);
-													if(data.errno == 0) {
-														var dataObj = {};
-														var nowArray = data.data.data;
-														for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
-															var nowArray2 = JSON.parse(nowArray[j].pic);
-															if(nowArray2.length){
-																nowArray[j].picS = nowArray2[0].picImg;
+									if(mui('.contentChild')[0].style.display == 'block'){
+										var scrollTop = $(this).scrollTop();
+										var scrollHeight = $(document).height();
+										var windowHeight = $(this).height();　　
+										if(scrollTop + windowHeight == scrollHeight) {
+											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+												//mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+												Ypagenum++; //满足加载情况,应到页数+1
+												console.log('发起请求,实到' + Spagenum + '页');
+												console.log('发起请求,应到' + Ypagenum + '页');
+												
+												mui.ajax(serverUrl+'/api/friends/newslist',{
+													data:{
+														userId:myuserid,
+														numsPerPage:4,
+														currentPage:Spagenum,
+														orderType:'DESC',
+														orderField:'create_time',
+														'typeId':1
+													},
+													type:'post',
+													timeout:8000,
+													headers:{"token":oldToken,"city":cityNum},
+													success: function(data) {
+														console.error('动态列表续', data);
+														if(data.errno == 0) {
+															var dataObj = {};
+															var nowArray = data.data.data;
+															for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
+																var nowArray2 = JSON.parse(nowArray[j].pic);
+																if(nowArray2.length){
+																	nowArray[j].picS = nowArray2[0].picImg;
+																}
 															}
+															dataObj.dataList = data.data.data;
+															document.getElementById('dynamicList').innerHTML += template("Sdynamic", dataObj);
+															lazyLoad(false);//懒加载
 														}
-														dataObj.dataList = data.data.data;
-														document.getElementById('dynamicList').innerHTML += template("Sdynamic", dataObj);
-														lazyLoad(false);//懒加载
+														Spagenum++; //加载成功,当前页+1
+														console.log('成功+1,实到' + Spagenum);
+														console.log('成功+1,应到' + Spagenum);
+													},
+													error: function(xhr, type, errorThrown) {
+														Ypagenum--; //失败是应到-1
+														mui.toast("当前网络不好请重试");
+														mui("#upload")[0].innerHTML = "";
 													}
-													Spagenum++; //加载成功,当前页+1
-													console.log('成功+1,实到' + Spagenum);
-													console.log('成功+1,应到' + Spagenum);
-												},
-												error: function(xhr, type, errorThrown) {
-													Ypagenum--; //失败是应到-1
-													mui.toast("当前网络不好请重试");
-													mui("#upload")[0].innerHTML = "";
-												}
-											});
-											
-										} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-											mui("#upload")[0].innerHTML = '到底了';
+												});
+												
+											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+												mui("#upload")[0].innerHTML = '到底了';
+											}
 										}
-									} 
+									}
 								});
 	
 							}else{
@@ -607,7 +537,7 @@
 							}else{
 								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无动态</div>')
 							}
-							$('#allPic,#addPic').click(function(){
+							$('#allPic,#addPic,.MFdiv133').click(function(){
 								openview({
 									view:'friendPic.html',
 									id:'friendPic',
@@ -793,24 +723,9 @@
 					}
 				});
 			}
-
+			
 
 //单独的方法	 			
-				 
-			//编辑签名 
-			$('#edit').click(function(){
-				openview({
-					view:'friendSet.html',
-					id:'friendSet'
-				})
-			})
-	    	//动态详情
-	    	$('.dongItem').click(function(){
-				openview({
-					view:'circleListInfo.html',
-					id:'circleListInfo' 
-				})
-			})
 	    	
 	    	$('.likeMe').click(function(){
 				openview({
@@ -827,14 +742,31 @@
 					
 				})
 			})
-	    	
-	    	$('.write').click(function(){
-				openview({
-					view:'circlePublish.html',
-					id:'circlePublish' 
-				})
-			}) 
 	    })
+	    
+	    
+	    /*礼物*/
+		function showSfun(link){
+			document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
+			document.getElementsByClassName('shareWrap')[0].style.opacity = '1';
+			document.getElementsByClassName('Scontent')[0].style.bottom = '0px';
+			document.body.classList.add('fixdBody');
+		}
+		function hideSfun(){
+			document.getElementsByClassName('shareWrap')[0].style.zIndex = '-1';
+			document.getElementsByClassName('shareWrap')[0].style.opacity = '0';
+			document.getElementsByClassName('Scontent')[0].style.bottom = '-500px';
+			document.body.classList.remove('fixdBody');
+		}
+		document.getElementsByClassName('giftBtn')[0].onclick = function(){
+			showSfun('www.baidu.com');
+		}
+		document.getElementById('cancelS').onclick = function(){
+			hideSfun();
+		}
+		document.getElementsByClassName('shareWrap')[0].onclick = function(){
+			hideSfun();
+		}
    	  	
    	  	
    	  	

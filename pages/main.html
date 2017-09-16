@@ -59,6 +59,14 @@
 		    .hiFdW img{
 		    	width: 100%;
 		    }
+		    .moreCon b{
+		    	font-weight: initial;
+		    	color: #757575;
+		    }
+		    .listSon{overflow: hidden;}
+		    .listSon .fineB:nth-last-child(2):after{	
+	    		display: none;
+		    } 
 		</style>
 	</head>
 
@@ -227,7 +235,7 @@
 		    <div class="mui-row" id="homeFriend">
 		    	<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
 		            <div class="hiFdW">
-		            </div> 
+		            </div>
 		        </div>   
 		        <div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
 		            <div class="hiFdW">
@@ -268,132 +276,29 @@
 				<span class="aClick">精选</span>
 			</div>
 			<div id="listOldDiv">
-				<div id="listConW1" class="middleI listSon"><!--我要问 盒子1-->
-					<div class="listCon aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							wangfei
-							<span>
-								10HI豆
-							</span>
-							<b>悬赏</b>
-						</h4>
-						<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					<div class="listCon  aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							海洋
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					<div class="listCon aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							向前
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					
-					<div class="moreCon fineB aClick"><span>更多 </span></div>
-				</div>
-				
-				<div id="listConW2" class="leftT listSon"><!--我要问盒子2-->
-					
-					<div class="listCon  aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							万福
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					<div class="listCon aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							thefin
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					
-					<div class="moreCon fineB aClick"><span>更多 </span></div>
-				</div>
-				
-				<div id="listConW3" class="leftT listSon"><!--我要问盒子3-->
-					<div class="listCon aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							wangfei
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					<div class="listCon  aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							wangfei
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="fineB">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					<div class="listCon aClick">
-						<h4 class="listHead">
-							<img src="../img/mainHtml/touxiang2.png"/>
-							wangfei
-							<span>
-								10HI豆
-							</span>
-						</h4>
-						<p class="">女 25 眼霜需要多少岁呢 ? 现在我 25 用早不早,应该注意些什么 ? </p>
-					</div>
-					
-					<div class="moreCon fineB aClick"><span>更多 </span></div>
-				</div>
+				<div id="listConW1" class="middleI listSon"></div><!--我要问 盒子1-->
+				<div id="listConW2" class="leftT listSon"></div><!--我要问盒子2-->
+				<div id="listConW3" class="leftT listSon"></div><!--我要问盒子3-->
+				<script type="text/html" id="listDataS">
+					<%for(var i=0;i<dataList.length;i++){%>
+						<div class="listCon aClick fineB" onclick="openDetailA(<%=dataList[i].id%>,<%=dataList[i].user_id%>)"> 
+							<h4 class="listHead">
+								<img data-src="<%=dataList[i].avatar%>" src="" class="loadPics" />
+								<%=dataList[i].nickname%>
+								<%if(dataList[i].price){%>
+									<span><%=dataList[i].price%> HI豆</span><b>悬赏</b>
+								<%}%>
+								
+							</h4>
+							<p class=""><%=dataList[i].content%> </p>
+						</div>
+					<%}%>
+					<div class="moreCon fineB aClick" onclick="darenbang()" ><span>更多 </span></div>
+				</script>
 			</div>
 		</div>
 		<img id='hbrain' src="../img/center/bgs.png" style="position: fixed;right: 0px;bottom: 20px;width: 80px;z-index: 999999;display: none;"/>
 
-		<script type="text/javascript">
-			var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
-			var listSon = mui('.listSon');
-			//初始化listOldDiv度
-			mui('#listOldDiv')[0].style.height = mui('.listSon')[0].offsetHeight +'px';
-			[].forEach.call(listCon,function(ele,index){/*点击方法*/
-				ele.onclick = function(){
-					if(!ele.className.includes('active')){
-						[].forEach.call(listCon,function(ele2){
-							ele2.className = '';
-						})
-						ele.className = 'active aClick';
-						
-						[].forEach.call(listSon,function(ele3){
-							ele3.className = 'leftT listSon';
-						})
-						mui('#listOldDiv')[0].style.height = mui('.listSon')[index].offsetHeight +'px';
-						listSon[index].className = 'middleI listSon';
-					}
- 				}
-			})
-		</script>
-		 
-		 
-		 
-		 
 		<!--HI抢购                   推荐列表-->
 		<div class="sy_recmd">
  			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 抢购</h3>
@@ -586,7 +491,6 @@
 			</div> 
 		</div>
 		
-		 
 		<!--hi推荐   推荐列表-->
 		<div class="sy_recmd">
 			<!--推荐列表-->
@@ -634,7 +538,58 @@
 		</div>
 		</div>
 		<div id="clickLeave"></div>
-
+		<!--<style type="text/css">
+			.ceshi1, .ceshi2{
+				width: 100%;
+				height: 100px;
+				font-size: 30px;
+				color: #fff;
+				text-align: center;
+				line-height: 100px;
+			}
+			.ceshi1{
+				background-color: red;
+				position: fixed;
+				top: 100px;
+				z-index: 10000;
+				
+			}
+			.ceshi2{
+				background-color: blueviolet;
+				position: fixed;
+				top: 300px;
+				z-index: 10000;
+			}
+		</style>-->
+		<!--<div class="ceshi1">按钮一</div>
+		<div class="ceshi2">按钮二</div>-->
+		<!--<script type="text/javascript">
+			mui('.ceshi1')[0].onclick = function(){
+				mui.ajax('http://119.23.149.7:8080/maoku/success',{
+					type:'get',
+					timeout:8000,
+					success:function(data,type,xhr){
+						alert( JSON.stringify(data) )
+					},
+					error:function(xhr,type,errorThrown){
+						alert( JSON.stringify(xhr) )
+					}
+				});
+			}
+			mui('.ceshi2')[0].onclick = function(){
+				mui.ajax('http://119.23.149.7:8080/maoku/failure',{
+					type:'get',
+					timeout:8000,
+					success:function(data,type,xhr){
+						alert( JSON.stringify(data) )
+					},
+					error:function(xhr,type,errorThrown){
+						alert( JSON.stringify(xhr) )
+					}
+				});
+			}
+		</script>-->
+		
 		<script type="text/javascript">  
 			
 			var Spagenum = 2; //实到页数
@@ -643,24 +598,45 @@
 				mui.fire(plus.webview.getWebviewById('H55E3990F'),'switchCity',{name:name});//发版app
 				mui.fire( plus.webview.getWebviewById('HBuilder'),'switchCity',{name:name});//测试app
 			}
-			//打开他人主页
-			function openDetail(id){
-				if(plus.storage.getItem('myToken')){
-					openview({
-						view: "socialCircle/elsecircleIndex.html",
-						id:'elsecircleIndex',
-						extrasobj: {
-							userId: id
-						}
-					})
-				}else{
-					mui.toast('请登录');
-					openview({
-						view:'login.html'
-					});
-				} 
-				
+			function openDetailA(id,userId){/*问答详情*/
+				openview({
+					view:'answerBoard/answerInfo.html',
+					id:'answerInfo',
+					extrasobj:{answerId:id,toUserId:userId}
+				})
 			}
+			function darenbang(){/*达人榜单*/
+				openview({
+					view:'answerBoard/answerIndex.html',
+					id:"answerIndex", 
+				}); 
+			}
+			//打开他人主页
+			window.openDetail = function(id){
+				mui.plusReady(function(){
+					var myuserid = plus.storage.getItem('userid');
+					if(plus.storage.getItem('myToken')){
+					if(id == myuserid){
+						openview({
+				    		view:'socialCircle/mycircleIndex.html',
+				    		id:'mycircleIndex' 
+				    	})
+						}else{
+							openview({
+					    		view:'socialCircle/elsecircleIndex.html',
+					    		id:'elsecircleIndex',
+					    		extrasobj:{userId:id}
+					    	})
+						} 
+					}else{
+						mui.toast('请登录');
+						openview({
+							view:'login.html'
+						});
+					}
+				})
+		    }
+			
 
 			mui.plusReady(function() {
 				//城市切换
@@ -684,20 +660,7 @@
 				//城市切换结束
 				
 				
-				
-				$('.hiFriend .paddDiv').click(function(){
-					openview({
-						view:'socialCircle/circleInfo.html'
-					})
-				})
-				
-				$('.listCon').click(function(){
-					openview({
-						view:'answerBoard/questionInfo.html'
-					})
-				})
-				
-				plus.navigator.setStatusBarStyle('dark');
+				plus.navigator.setStatusBarStyle('dark');/*设置状态栏样式*/
 				window.addEventListener('reload',function(event){
 					plus.webview.currentWebview().reload();
 				});
@@ -719,7 +682,7 @@
 						}
 					}, 200)
 				}
-				//跳转页面
+				//反复加载方法 
 				function againfun() {
 					var locallife = document.getElementsByClassName('locallife')[0];
 					var darenbang = document.getElementsByClassName('darenbang')[0];
@@ -811,15 +774,6 @@
 					mui('#xiaoxi')[0].onclick = function() {
 						
 						mui.plusReady(function(){
-//						  	plus.storage.removeItem('myToken');
-//						  	plus.storage.removeItem('oldToken');
-//							plus.storage.removeItem('userid');
-//							plus.storage.removeItem('Acc_pass');
-//							plus.storage.removeItem('$gotCoupon');
-//							plus.storage.removeItem('likeH');
-//							plus.storage.removeItem('commentH');
-//							plus.storage.removeItem('PletterH');
-//							plus.storage.removeItem('cityNum');
 //							alert('清除缓存成功!');
 						})
 					};
@@ -915,6 +869,111 @@
 							mui.toast('当前网络不好,请重试');
 						}
 					});
+					
+					//答人榜
+					talent(0);
+					talent(1);
+					talent(2);
+					
+					function talent(typeNum){
+						if(typeNum == 0){
+							var dataJson = {
+								'numsPerPage':3,
+								'currentPage':1,
+								'orderType':'DESC',
+								'orderField':'create_time',
+								'typeId':2,
+							}
+						}else if(typeNum == 1){
+							var dataJson = {
+								'numsPerPage':3,
+								'currentPage':2,
+								'orderType':'DESC',
+								'orderField':'create_time',
+								'typeId':2,
+							}
+						}else{
+							var dataJson = {
+								'numsPerPage':3,
+								'currentPage':1,
+								'orderType':'DESC',
+								'orderField':'create_time',
+								'typeId':2,
+							}
+						}
+						mui.ajax(serverUrl + '/api/friends/newslist', {
+							data:dataJson,
+							dataType: 'json',
+							type: 'post',
+							timeout: 8000,
+							headers: {"token": oldToken,'city': cityNum},
+							success: function(data, type, xhr) {
+								console.error('首页达人榜'+typeNum, data);
+								if(data.errno == 0){
+									
+									var nowArray = data.data.data;
+									if(nowArray.length){
+										for(var j = 0 ;j<nowArray.length;j++){//整理数据
+											if(nowArray[j].avatar && nowArray[j].avatar!='null'){//整理头像
+												if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+													nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+												}else{
+													nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+												}
+											}else{
+												nowArray[j].avatar = '../img/10.png'
+											}
+										}
+										
+										var dataObj = {};
+										dataObj.dataList = nowArray;
+										document.getElementsByClassName("listSon")[typeNum].innerHTML = template("listDataS", dataObj);
+										lazyLoad(true,50);//懒加载
+									}else{
+										mui('.listSon')[typeNum].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+									}
+								}else{
+									mui('.listSon')[typeNum].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								mui('.listSon')[typeNum].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+								console.error('交友列表,响应失败');
+							}
+						});
+					}	
+					var listCon = document.getElementsByClassName('QAhead')[0].getElementsByTagName('span');
+					var listSon = mui('.listSon');
+					//初始化listOldDiv度
+					if(mui('.listSon')[0].offsetHeight == 0){
+						var listOldDivH = setInterval(function(){
+							if(mui('.listSon')[0].offsetHeight > 0){
+								mui('#listOldDiv')[0].style.height = mui('.listSon')[0].offsetHeight +'px';
+								clearInterval(listOldDivH);
+								[].forEach.call(listCon,function(ele,index){/*点击方法*/
+									ele.onclick = function(){
+										if(!ele.className.includes('active')){
+											[].forEach.call(listCon,function(ele2){
+												ele2.className = '';
+											})
+											ele.className = 'active aClick';
+											
+											[].forEach.call(listSon,function(ele3){
+												ele3.className = 'leftT listSon';
+											})
+											mui('#listOldDiv')[0].style.height = mui('.listSon')[index].offsetHeight +'px';
+											listSon[index].className = 'middleI listSon';
+										}
+					 				}
+								})
+							}
+							
+						},500)
+					}
+					
+					
+					//答人榜结束
+					
 					 
 					//热门推荐 数据渲染  
 					var currentPage = 1,

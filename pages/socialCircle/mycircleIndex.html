@@ -572,58 +572,60 @@
 								lazyLoad(true);//懒加载
 								
 								$(window).scroll(function() {
-									var scrollTop = $(this).scrollTop();
-									var scrollHeight = $(document).height();
-									var windowHeight = $(this).height();　　
-									if(scrollTop + windowHeight == scrollHeight) {
-										if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-											//mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-											Ypagenum++; //满足加载情况,应到页数+1
-											console.log('发起请求,实到' + Spagenum + '页');
-											console.log('发起请求,应到' + Ypagenum + '页');
-											
-											mui.ajax(serverUrl+'/api/friends/newslist',{
-												data:{
-													userId:myuserid,
-													numsPerPage:4,
-													currentPage:Spagenum,
-													orderType:'DESC',
-													orderField:'create_time',
-													'typeId':1
-												},
-												type:'post',
-												timeout:8000,
-												headers:{"token":oldToken,"city":cityNum},
-												success: function(data) {
-													console.error('动态列表续', data);
-													if(data.errno == 0) {
-														var dataObj = {};
-														var nowArray = data.data.data;
-														for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
-															var nowArray2 = JSON.parse(nowArray[j].pic);
-															if(nowArray2.length){
-																nowArray[j].picS = nowArray2[0].picImg;
+									if(mui('.contentChild')[0].style.display == 'block'){
+										var scrollTop = $(this).scrollTop();
+										var scrollHeight = $(document).height();
+										var windowHeight = $(this).height();　　
+										if(scrollTop + windowHeight == scrollHeight) {
+											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+												//mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+												Ypagenum++; //满足加载情况,应到页数+1
+												console.log('发起请求,实到' + Spagenum + '页');
+												console.log('发起请求,应到' + Ypagenum + '页');
+												
+												mui.ajax(serverUrl+'/api/friends/newslist',{
+													data:{
+														userId:myuserid,
+														numsPerPage:4,
+														currentPage:Spagenum,
+														orderType:'DESC',
+														orderField:'create_time',
+														'typeId':1
+													},
+													type:'post',
+													timeout:8000,
+													headers:{"token":oldToken,"city":cityNum},
+													success: function(data) {
+														console.error('动态列表续', data);
+														if(data.errno == 0) {
+															var dataObj = {};
+															var nowArray = data.data.data;
+															for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
+																var nowArray2 = JSON.parse(nowArray[j].pic);
+																if(nowArray2.length){
+																	nowArray[j].picS = nowArray2[0].picImg;
+																}
 															}
+															dataObj.dataList = data.data.data;
+															document.getElementById('dynamicList').innerHTML += template("Sdynamic", dataObj);
+															lazyLoad(false);//懒加载
 														}
-														dataObj.dataList = data.data.data;
-														document.getElementById('dynamicList').innerHTML += template("Sdynamic", dataObj);
-														lazyLoad(false);//懒加载
+														Spagenum++; //加载成功,当前页+1
+														console.log('成功+1,实到' + Spagenum);
+														console.log('成功+1,应到' + Spagenum);
+													},
+													error: function(xhr, type, errorThrown) {
+														Ypagenum--; //失败是应到-1
+														mui.toast("当前网络不好请重试");
+														mui("#upload")[0].innerHTML = "";
 													}
-													Spagenum++; //加载成功,当前页+1
-													console.log('成功+1,实到' + Spagenum);
-													console.log('成功+1,应到' + Spagenum);
-												},
-												error: function(xhr, type, errorThrown) {
-													Ypagenum--; //失败是应到-1
-													mui.toast("当前网络不好请重试");
-													mui("#upload")[0].innerHTML = "";
-												}
-											});
-											
-										} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-											mui("#upload")[0].innerHTML = '到底了';
+												});
+												
+											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+												mui("#upload")[0].innerHTML = '到底了';
+											}
 										}
-									} 
+									}	
 								});
 	
 							}else{
