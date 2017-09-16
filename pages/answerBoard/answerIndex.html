@@ -646,71 +646,55 @@
 		}
 	</script>
 		
-		
-		<script type="text/javascript">
-		//自定义分享方法	
-			var shareWrap0 = document.createElement('div');
-			shareWrap0.innerHTML = '<div class="shareWrap"></div>'+
-				'<div class="Scontent">'+
-					'<h3 class="h3">分享</h3>'+
-					'<div class="mui-row">'+
-						'<div class="mui-col-sm-3 mui-col-xs-3">'+
-							'<img src="../../img/share/weixing.png" class="aClick2"/>'+
-							'<br />微信好友'+
-						'</div>'+
-						'<div class="mui-col-sm-3 mui-col-xs-3 ">'+
-							'<img src="../../img/share/pengyouquan.png" class="aClick2"/>'+
-							'<br />朋友圈'+
-						'</div>'+
-						'<div class="mui-col-sm-3 mui-col-xs-3">'+
-							'<img src="../../img/share/QQ.png" class="aClick2"/>'+
-							'<br />QQ好友'+
-						'</div>'+
-						'<div class="mui-col-sm-3 mui-col-xs-3">'+
-							'<img src="../../img/share/weibo.png" class="aClick2"/>'+
-							'<br />新浪微博'+
-						'</div>'+
-						'<div class="mui-col-sm-3 mui-col-xs-3">'+
-							'<img src="../../img/share/fuzhi.png" class="aClick2"/>'+
-							'<br />复制链接'+
-						'</div>'+
-					'</div>'+
-					'<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>'+
-				'</div>';
-			//document.body.appendChild(shareWrap0);
-			
-			document.getElementById("share").addEventListener("click", function() {
-			    //分享内容，开发者可自定义
-			    var message = {
-			        title: "MONO", //应用名字
-			        content: "不错过你感兴趣的内容",
-			        href: "http://mmmono.com/", //分享出去后，点击跳转地址
-			        thumbs: ["https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=979572895,2889949287&fm=26&gp=0.jpg"] //分享缩略图
-			    }
-			    //调起分享
-			    plusShare(message, function(res) {
-			        //分享回调函数
-			        if(res) {
-			            plus.nativeUI.toast("分享成功");
-			        } else {
-			            plus.nativeUI.toast("分享失败");
-			        }
-			    })
-			});
-			
-			
-			//分享
-			function showSfun(link){
-				document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
-				document.getElementsByClassName('shareWrap')[0].style.opacity = '1';
-				document.getElementsByClassName('Scontent')[0].style.bottom = '0px';
+	<script type="text/javascript">
+		//调用系统分享方法	
+//		shareSystem('https://www.baidu.com/');
+
+	</script>
+	<script type="text/javascript">
+	//自定义分享方法	
+//		var shareWrap0 = document.createElement('div');
+//			shareWrap0.innerHTML = '<div class="shareWrap"></div>'+
+//				'<div class="Scontent">'+
+//					'<h3 class="h3">分享</h3>'+
+//					'<div class="mui-row">'+
+//						'<div class="mui-col-sm-3 mui-col-xs-3">'+
+//							'<img src="../../img/share/weixing.png" class="aClick2"/>'+
+//							'<br />微信好友'+
+//						'</div>'+
+//						'<div class="mui-col-sm-3 mui-col-xs-3 ">'+
+//							'<img src="../../img/share/pengyouquan.png" class="aClick2"/>'+
+//							'<br />朋友圈'+
+//						'</div>'+
+//						'<div class="mui-col-sm-3 mui-col-xs-3">'+
+//							'<img src="../../img/share/QQ.png" class="aClick2"/>'+
+//							'<br />QQ好友'+
+//						'</div>'+
+//						'<div class="mui-col-sm-3 mui-col-xs-3">'+
+//							'<img src="../../img/share/weibo.png" class="aClick2"/>'+
+//							'<br />新浪微博'+
+//						'</div>'+
+//						'<div class="mui-col-sm-3 mui-col-xs-3">'+
+//							'<img src="../../img/share/fuzhi.png" class="aClick2"/>'+
+//							'<br />复制链接'+
+//						'</div>'+
+//					'</div>'+
+//					'<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>'+
+//				'</div>';
+//			//document.body.appendChild(shareWrap0);
+//			
+//			//分享
+//			function showSfun(link){
+//				document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
+//				document.getElementsByClassName('shareWrap')[0].style.opacity = '1';
+//				document.getElementsByClassName('Scontent')[0].style.bottom = '0px';
 //				alert(link);
-			}
-			function hideSfun(){
-				document.getElementsByClassName('shareWrap')[0].style.zIndex = '-1';
-				document.getElementsByClassName('shareWrap')[0].style.opacity = '0';
-				document.getElementsByClassName('Scontent')[0].style.bottom = '-500px';
-			}
+//			}
+//			function hideSfun(){
+//				document.getElementsByClassName('shareWrap')[0].style.zIndex = '-1';
+//				document.getElementsByClassName('shareWrap')[0].style.opacity = '0';
+//				document.getElementsByClassName('Scontent')[0].style.bottom = '-500px';
+//			}
 //			document.getElementById('share').onclick = function(){
 //				showSfun('www.baidu.com');
 //			}
@@ -721,38 +705,10 @@
 //				hideSfun();
 //			}
 			
-		//调用系统分享方法	
-			var shares=null;
-			function plusReady(){
-				//updateSerivces();
-				shareSystem(); 
-			}
-			if(window.plus){
-				plusReady();
-			}else{
-				document.addEventListener('plusready', plusReady, false);
-			}
-			function updateSerivces(){
-				plus.share.getServices(function(s){
-					shares={};
-					for(var i in s){
-						var t=s[i];
-						shares[t.id]=t;
-					}
-				}, function(e){
-					outSet('获取分享服务列表失败：'+e.message);
-				});
-			}
-			function shareSystem(){
-				plus.share.sendWithSystem({content:'分享内容',href:'http://www.dcloud.io/'}, function(){
-					console.log('分享成功');
-				}, function(e){
-					console.log('分享失败：'+JSON.stringify(e));
-				});
-			}
+
 			
 		</script>
 		 
 	</body>
-	<!--<script src="../../js/plusShare.js" type="text/javascript" charset="utf-8"></script>-->
+
 </html>

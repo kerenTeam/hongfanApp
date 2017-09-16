@@ -108,6 +108,18 @@ function followBack(thisobj,likerId,curType){
 }
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 
+//系统分享
+function shareSystem(href){
+	var newsData = {href:'http://hiji.hifete.com'};
+	if(/android/i.test(navigator.userAgent)){
+		newsData = {content:href};
+	}else{
+		newsData = {href:href};
+	}
+	mui.plusReady(function(){
+		plus.share.sendWithSystem(newsData, function(e){}, function(e){});
+	})
+}
 
 //点赞 和取消点赞 帖子 
 function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
@@ -209,6 +221,16 @@ function internetF(){
 //	}
 //})
 
+
+//						  	plus.storage.removeItem('myToken');
+//						  	plus.storage.removeItem('oldToken');
+//							plus.storage.removeItem('userid');
+//							plus.storage.removeItem('Acc_pass');
+//							plus.storage.removeItem('$gotCoupon');
+//							plus.storage.removeItem('likeH');
+//							plus.storage.removeItem('commentH');
+//							plus.storage.removeItem('PletterH');
+//							plus.storage.removeItem('cityNum');
 
 
 

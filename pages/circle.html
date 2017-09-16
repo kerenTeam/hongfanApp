@@ -121,7 +121,7 @@
 			    <script type="text/html" id="listDataH">
 			    	<div class="mui-row">
 						<%for(var i=0;i<dataList.length;i++){%>
-							<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="goCircleIndex(<%=dataList[i].user_id%>)">
+							<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="elseCircleIndex(<%=dataList[i].user_id%>)">
 					            <div class="hiFdW">
 					            	<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
 					            </div>
@@ -279,23 +279,7 @@
 		<script src="../js/artTemplate-native.js"></script>
 		<script type="text/javascript">
 //			//打开他人主页
-			window.goCircleIndex = function(id){
-				if(plus.storage.getItem('myToken')){
-					openview({
-						view: "socialCircle/elsecircleIndex.html",
-						id:'socialCircle',
-						extrasobj: {
-							userId: id
-						}
-					})
-				}else{
-					mui.toast('请登录');
-					openview({
-						view:'../login.html'
-					});
-				} 
-				
-			}
+
 			
 		</script>
 		<script type="text/javascript">
@@ -363,6 +347,31 @@
 				dyCon[0].style.display = 'block';
 				shopData(0,0,false);//默认推荐
 			})
+			/*打开主页,包括判断 他人 或 个人 主页*/
+			window.openDetail = function(id){
+				mui.plusReady(function(){
+					var myuserid = plus.storage.getItem('userid');
+					if(plus.storage.getItem('myToken')){
+					if(id == myuserid){
+						openview({
+				    		view:'socialCircle/mycircleIndex.html',
+				    		id:'mycircleIndex' 
+				    	})
+						}else{
+							openview({
+					    		view:'socialCircle/elsecircleIndex.html',
+					    		id:'elsecircleIndex',
+					    		extrasobj:{userId:id}
+					    	})
+						} 
+					}else{
+						mui.toast('请登录');
+						openview({
+							view:'login.html'
+						});
+					}
+				})
+		    }
 			/*铺数据*/
 			
 			
@@ -374,6 +383,28 @@
 				mui.plusReady(function(){
 					var cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken');
+					var myuserid = plus.storage.getItem('userid');
+					window.elseCircleIndex = function(id){
+						if(plus.storage.getItem('myToken')){
+							if(id == myuserid){
+								openview({
+						    		view:'socialCircle/mycircleIndex.html',
+						    		id:'mycircleIndex' 
+						    	})
+							}else{
+								openview({
+						    		view:'socialCircle/elsecircleIndex.html',
+						    		id:'elsecircleIndex',
+						    		extrasobj:{userId:id}
+						    	})
+							} 
+						}else{
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						} 
+				    }
 					mui.ajax(serverUrl+'/api/friends/hot', {
 						data:{numsPerPage:3,time:24},
 						dataType: 'json',
@@ -412,6 +443,7 @@
 									} 
 									dataObj.dataList = data.data; 
 									document.getElementById("circleContain").innerHTML = template("listDataH", dataObj);
+									
 									lazyLoad(true,10);//懒加载	
 								}
 								 
