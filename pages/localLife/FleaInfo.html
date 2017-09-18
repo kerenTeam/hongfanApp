@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>宝贝详情</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">  
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
+		 
+	</head>
+	<style type="text/css">
+		.baocun{text-align:right;}
+		.baocun img{vertical-align:middle;width: 30px;}
+		.listCon{border-bottom: 10px solid #f3f3f3;}
+		.listCon p{padding:10px 0 0}
+		.follow{position:relative;}
+		.follow{background-color:#fff;padding:15px 10px;}
+		.follow:after{position:absolute;right:10px;bottom:0;left:10px;height:1px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
+		.follow:last-child:after{height:0;}
+		.fchidl{display:flex;align-items:center;justify-content:space-between;}
+		.userAvator{margin-right:10px;width:2.5rem;height:2.5rem;border-radius:50%;}
+		.userAvator3{margin-right:10px;width:2rem;height:2rem;border-radius:50%;}
+		.fchidl>div{display:flex;vertical-align:middle;text-align:left;font-size:15px;align-items:center;}
+		.text{color:#999;}
+  		.flexrr{display: flex;justify-content: space-between;align-items: center;padding: 15px 0;}
+  		.flexrr>div img{width: 20px;vertical-align: middle;}
+  		.cmtall img{width: 25px;margin-right: 5px;}
+  		.cmtflex{display: flex;justify-content: space-between;align-items: center;}
+  		.ctc span{color: #fb7e23;}
+  		ul{list-style: none;padding: inherit;margin: 0;}
+	   	.diybtn{background: url(../../img/makeFriend/follow.png) no-repeat;background-size: 100% 100%;background-position: left top;color: white;padding: 4px 22px;}
+  		.diybtn2{background: url(../../img/makeFriend/unfollw.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 4px 22px;}
+		.yhm{width:calc((100vw - 50px)/3);height: calc((100vw - 20px)/3);margin-left: 5px;margin-top:10px ;}
+		.giveBk{background: url(../../img/makeFriend/give.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 6px 25px;color: white;}
+		.fchidl2{display: flex;align-items:;}
+		.fchidl2 .butright{flex-grow: 1;}
+		.fchidl2 .btop{display: flex;justify-content: space-between;align-items: center;}
+		.fchidl3 .btop{display: flex;justify-content: flex-start!important;align-items: center;}
+		.opbot{display: flex;height: 50px;align-items:center;position: fixed;bottom: 0;left: 0;right: 0;background-color: white;box-shadow: 0px 1px 1px 1px #EEEEEE;}
+		.opbf{flex-grow: 1;display: flex;justify-content: space-around;align-items: center;}
+		.opbf>div{flex: 1;text-align: center;}
+		.opbb{width: calc(100vw * 0.3);text-align: center;background-color: #f93a38;color: white!important;height: 100%;line-height: 50px;}
+		.writecmt{flex-grow: 1;background: url(../../img/makeFriend/cmtbor.png) no-repeat bottom;padding: 5px;max-height: 80px;overflow-y: scroll;}
+		.opbot img{width: 25px;height:25px;margin: 0 3px;vertical-align: middle;}
+		.follow .maincl{letter-spacing: 0.4px;line-height: 1.5;}
+		.follow b{font-weight: 600;color: #FD6363;}
+		.fchidl3{padding: 10px 10px;border-left: 1px solid #ccc;}
+		.DTcontent{overflow: hidden;}
+		.dynamicPic{float: left;position: relative;overflow: hidden;border-right: 2px solid #fff;}
+		.dynamicPic1{width: 70%;padding-top: 68%;}
+		.dynamicPic2{width: 50%;padding-top: 48%;}
+		.dynamicPic3{width: 33%;padding-top: 31%;}
+		.dynamicPic img{width: 100%;}
+		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}	
+		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
+	</style>
+
+	<body style="background-color: white;">
+
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
+			<h1 class="mui-title findUser">宝贝详情</h1>
+			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun goanswer"><img src="../../img/makeFriend/share.png"/></a>
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="main">
+		 
+    		<div class="listCon" id="listInfoS"></div><!--内容-->
+			<script type="text/html" id="listDataS">
+				<div class="follow">
+					<div class="fchidl">
+						<div>
+							<img src="<%=dataList.avatar%>" onclick="goCircleIndex(<%=dataList.userid%>)" class="userAvator mr25"/>
+							<div>
+								<%=dataList.nickname%> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
+							</div>
+						</div> 
+						<div class="butright isFollow">
+							<div class="diybtn2">
+								 ￥200
+							</div> 
+							 
+			           </div> 
+					</div>  
+					
+					<div class="DTcontent">
+						<p class="ft15 maincl"><%=dataList.content%></p>
+						<%if(dataList.picS && dataList.picS.length){%>
+							<%for(var j=0;j<dataList.picS.length;j++){%>
+								<%if(dataList.picS.length == 1){ %>
+									<div class="dynamicPic dynamicPic1">
+										<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
+									</div> 
+								<%}else if(dataList.picS.length == 2){%>
+									<div class="dynamicPic dynamicPic2">
+										<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
+									</div>
+								<%}else{%>
+									<div class="dynamicPic dynamicPic3">
+										<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
+									</div>
+								<%}%>	
+							<%}%>
+						<%}%>
+					</div>
+					 
+				</div>
+			</script>
+		 	<!--评论--> 
+			<div class="follow cmtflex">
+				<div style="text-align: center;line-height: 0.8;"> 
+					<div class="ft14">留言</div> 
+					<img style="width: 30px;margin: 0;" src="../../img/makeFriend/cmt.png"/>
+				</div>
+			</div>
+			<div id="curShow"></div>
+		 	<script type="text/html" id="cmtTpl">
+		 		
+		 		<%for(var i=0;i<list.length;i++){%>
+					<%if(!list[i].commontid){%>
+						<div class="follow ft12"> 
+							<div class="fchidl2">
+								<div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+									<img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
+								</div> 
+								<div class="butright">
+									<div class="ft12 btop">
+					            		<b class="ft14"><%=list[i].nickname%></b> <span class="disablecl"><%=list[i].create_time%></span>
+					            	</div>
+					            	<div class="maincl ft14" data-toName="<%=list[i].nickname%>" data-userId="<%=list[i].userid%>" data-cmtId="<%=list[i].id%>"><%=list[i].commont%></div>
+					           </div> 
+							</div>
+						</div>
+						<%}else{%>
+							 
+							<div class="follow ft12"> 
+	                            <div class="fchidl2">
+	                                <div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+	                                    <img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
+	                                </div> 
+	                                <div class="butright">
+	                                    <div class="ft12 btop">
+	                                        <b class="ft14"><%=list[i].nickname%></b> <span class="disablecl"><%=list[i].create_time%></span>
+	                                    </div>
+	                                    <div class="maincl ft14" data-toName="<%=list[i].nickname%>" data-userId="<%=list[i].userid%>" data-cmtId="<%=list[i].id%>"><%=list[i].commont%></div>
+	                                    <div class="cmtChild" data-toUserId="<%=list[i].touserid%>" data-toCmtId="<%=list[i].commontid%>"></div>
+	                               </div> 
+	                            </div>
+	                        </div>
+							 
+							<%}%> 
+					<%}%>
+		 	</script> 
+			 <!--子评论-->
+            <script type="text/html" id="cmtChildTpl">
+                
+                <%for(var i=0;i<list.length;i++){%> 
+                         
+                        <div class="fchidl2 fchidl3">
+                            <div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+                                <img src="<%=list[i].avatar%>" class="userAvator3 loadPics"/>
+                            </div> 
+                            <div class="butright">
+                                <div class="ft12 btop">
+                                    <b><%=list[i].nickname%></b>
+                                </div>
+                                <div class="maincl ft12"><%=list[i].commont%></div>
+                           </div> 
+                        </div>
+                    <%}%>
+ 
+            </script>
+			  
+		</div>
+		
+		
+		
+		<!--操作表-->
+		<div id="maskInfo" style="display: none;">
+		    <!-- 可选择菜单 -->
+		    <ul class="jubao">
+		      <li>
+		        <a href="#">加入黑名单</a>
+		      </li>
+		      <li>
+		        <a href="#">举报</a>
+		      </li>
+		      <li>
+		        <a href="javscript:;" class="closeMask" >取消</a>
+		      </li>
+		    </ul>
+		</div>
+		 
+		<!--底部-->
+		<div class="opbot maincl ft14">
+			<div class="opbf">
+				<div>
+					点赞<img id="doLike" src="../../img/localLife/weizan.png" alt="" />
+				</div>
+				<div style="border-left: 1px solid #EEEEEE;border-right: 1px solid #EEEEEE;">
+					收藏<img src="../../img/localLife/uncollt.png" alt="" />
+				</div>
+				<div id='cmtedup'>
+					留言<img src="../../img/makeFriend/message.png" alt="" />
+				</div>
+			</div>
+			<a href="javascript:;" class="opbb">
+				我想要
+			</a> 
+		</div>
+	 </body>
+	<script type="text/javascript" src="../../js/jquery.min.js"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/app.js"></script>
+	<script src="../../js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
+	<script src="../../js/artTemplate-native.js"></script>
+	<script type="text/javascript">
+//		function imgHeight(obj){
+//			if(obj.offsetHeight<obj.parentNode.offsetHeight){
+//				obj.style.height = '100%';
+//				obj.style.width = 'auto';
+//			}
+//		}
+		
+	</script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			var cityNum = plus.storage.getItem('cityNum'),
+			    oldToken = plus.storage.getItem('oldToken'),
+				myuserid = plus.storage.getItem('userid'),
+				infiId = plus.webview.currentWebview().infoid,
+				toCmt = plus.webview.currentWebview().isCmt,
+				newsUserId = plus.webview.currentWebview().UserId,
+				commontid = '',touserid='';
+			if(toCmt){ 
+				window.document.body.scrollTop = document.body.scrollHeight; 
+				//自动弹出输入法
+				var nativeWebview, imm, InputMethodManager;
+				var initNativeObjects = function() {
+					if(mui.os.android) {
+						var main = plus.android.runtimeMainActivity();
+						var Context = plus.android.importClass("android.content.Context");
+						InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+						imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+					} else {
+						nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+					}
+				};
+				var showSoftInput = function() {
+					if(mui.os.android) {
+						imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+					} else {
+						nativeWebview.plusCallMethod({
+							"setKeyboardDisplayRequiresUserAction": false
+						});
+					}
+					//此处可写具体逻辑设置获取焦点的input
+					setTimeout(function() {
+						$('.writecmt').focus();
+					}, 0);
+				};
+				initNativeObjects();
+				showSoftInput();
+
+			}
+		
+			window.goCircleIndex = function(id){
+				if(plus.storage.getItem('myToken')){
+					if(id == myuserid){
+						openview({
+				    		view:'mycircleIndex.html',
+				    		id:'mycircleIndex' 
+				    	})
+					}else{
+						openview({
+				    		view:'elsecircleIndex.html',
+				    		id:'elsecircleIndex',
+				    		extrasobj:{userId:id}
+				    	})
+					} 
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}  
+		    }
+			
+			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
+				dataType: 'json',
+				type: 'get',
+				timeout: 8000,
+				headers: {"token": oldToken,'city': cityNum},
+				success: function(data, type, xhr) {
+					console.error('动态详情', data);
+					if(data.errno == 0) {
+						var dataObj = {}, nowArray = data.data;
+						
+						if(nowArray.avatar && nowArray.avatar!='null'){
+							if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
+								nowArray.avatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
+							}else{
+								nowArray.avatar = JSON.parse(nowArray.avatar)[0].picImg
+							}
+						}else{
+							nowArray.avatar = '../../img/10.png'
+						}
+						
+						if(!nowArray.nickname){
+							nowArray.nickname = '匿名'
+						}
+						if(!nowArray.read){
+							nowArray.read = 0
+						}else if((nowArray.read / 1000)>1){
+							nowArray.read = parseInt(nowArray.read / 1000) +'K+'
+						}
+						 
+						var dt = new Date(nowArray.create_time).getTime(); 
+						nowArray.create_time = getDateDiff(dt);
+						
+						
+						//整理内容图片
+						var nowArray2 = JSON.parse(nowArray.pic);
+						if(nowArray2.length){
+							var picS = [];
+							for(var k = 0 ;k<nowArray2.length;k++){
+								picS.push(nowArray2[k].picImg);
+							}
+							nowArray.picS = picS;
+						} 
+						
+						dataObj.dataList = data.data;
+						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
+						$('.diybtn').click(function(){  
+							var curL = $(this);
+				    		//关注 
+				    		if(plus.storage.getItem('myToken')){
+								followBack(curL,newsUserId,'put');
+							}else{
+								mui.toast('请登录');
+								openview({
+									view:'../login.html'
+								});
+							} 
+				    		 
+				    	})
+						if(data.errmsg == 1){ 
+							$('#doLike').attr('src','../../img/answer/zan.png');
+						}else{
+							$('#doLike').attr('src','../../img/localLife/weizan.png');
+						}
+						if(newsUserId == myuserid){
+							$('.isFollow').css('display','none')
+						} 
+					 
+				    	
+						lazyLoad(true);//懒加载
+					}else{
+						mui.toast('当前网络不好,请重试');
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					console.error('交友列表,响应失败');
+					mui.toast('当前网络不好,请重试');
+				}
+			});
+			
+			//评论
+			getCmt();
+			function getCmt(){
+				mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
+					dataType: 'json',
+					type: 'get',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.error('评论详情', data);
+						 
+						if(data.errno == 0) { 
+							var cmtArray = data.data; 
+							if(cmtArray && cmtArray.length>0){
+								 
+									for(var i = 0;i<cmtArray.length;i++){
+										if(!cmtArray[i].nickname){ 
+											cmtArray[i].nickname =  '匿名'
+										}
+										
+										if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+											if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+												cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+											}else{
+												cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+											}
+										}else{
+											cmtArray[i].avatar = '../../img/10.png'
+										}
+										
+										var dt = new Date(cmtArray[i].create_time).getTime(); 
+										cmtArray[i].create_time = getDateDiff(dt); 
+									}   
+									$('#curShow').html(template('cmtTpl',{list:cmtArray}));
+									//回复 或 评论
+							    	$('.butright .maincl').click(function(){ 
+							    		event.stopPropagation(); 
+							    		var toName = $(this).attr('data-toName'),
+							    			touserid = $(this).attr('data-userId');
+							    			commontid = $(this).attr('data-cmtId');
+							    		$('.writecmt').focus();
+   										$('.writecmt').attr('placeholder','回复:'+toName);
+   									 	$('.writecmt').attr('id',touserid);
+   									 	$('.writecmt').attr('data-id',commontid);
+							    	})
+ 									 //子评论
+                                    $('.cmtChild').each(function(){
+                                        var curCmt = $(this);
+                                        var curUserId = curCmt.attr('data-toUserId');
+                                        var curCmtId = curCmt.attr('data-toCmtId');  
+                                        mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
+                                            dataType: 'json',
+                                            type: 'get',
+                                            timeout: 8000,
+                                            headers: {"token": oldToken,'city': cityNum},
+                                            success: function(data, type, xhr) {
+                                                console.error('评论详情', data);
+                                                 
+                                                if(data.errno == 0) {
+                                                    var cmtArray = data.data; 
+                                                    var childArray = [];
+                                                    if(cmtArray && cmtArray.length>0){
+                                                        for(var i = 0;i<cmtArray.length;i++){
+                                                            if(!cmtArray[i].nickname){ 
+                                                                cmtArray[i].nickname =  '匿名'
+                                                            }
+                                                            
+                                                            if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+                                                                if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+                                                                    cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+                                                                }else{
+                                                                    cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+                                                                }
+                                                            }else{
+                                                                cmtArray[i].avatar = '../../img/10.png'
+                                                            }
+                                                            
+                                                            var dt = new Date(cmtArray[i].create_time).getTime(); 
+                                                            cmtArray[i].create_time = getDateDiff(dt); 
+                                                            if(cmtArray[i].id == curCmtId && curUserId == cmtArray[i].userid){
+                                                                childArray.push(cmtArray[i])
+                                                            }
+                                                        }   
+                                                        console.log('子评论',childArray)
+                                                        curCmt.html(template('cmtChildTpl',{list:childArray}));
+                                                     }
+                                                 
+                                                }else{
+                                                    mui.toast('当前网络不好,请重试');
+                                                }
+                                            },
+                                            error: function(xhr, type, errorThrown) {
+                                                console.error('评论列表,响应失败');
+                                                mui.toast('当前网络不好,请重试');
+                                            }
+                                        });
+                                    })
+									
+							}else{
+								$('#curShow').html('<img src="../../img/nocmt.png" style="width: 100px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;font-size:13px;color: #888;">快来抢沙发</div>');
+							}
+							
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('评论列表,响应失败');
+						mui.toast('当前网络不好,请重试');
+					}
+				});
+			} 
+			$('#cmtedup').click(function(){
+				if(plus.storage.getItem('myToken')){
+					mui.prompt('null','请输入留言','留言',['确认','取消'],function(e) {
+						if(e.index == 0) { 
+							if(e.value && e.value!=' '){
+								alert('留言')
+//								var commont = cur.html(),
+		//		    				touserid = $('.writecmt').attr('id'),
+		//		    				commontid = $('.writecmt').attr('data-id'); 
+		//		    			mui.ajax(serverUrl + '/api/friends/newscomment', {
+		//		    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
+		//							dataType: 'json',
+		//							type: 'POST',
+		//							timeout: 8000,
+		//							headers: {"token": oldToken,'city': cityNum},
+		//							success: function(data, type, xhr) {
+		//								console.error('评论详情', data);
+		//								 
+		//								if(data.errno == 0) {
+		//					    			cur.html('');
+		//					    			mui.toast('评论成功');
+		//				    				$('.writecmt').attr('placeholder','');
+		//									 $('.writecmt').attr('id','');
+		//									 $('.writecmt').attr('data-id','');
+		//					    			getCmt();
+		//								}else{
+		//									mui.toast('当前网络不好,请重试');
+		//								}
+		//							},
+		//							error: function(xhr, type, errorThrown) {
+		//								console.error('评论列表,响应失败');
+		//								mui.toast('当前网络不好,请重试');
+		//							}
+		//						});
+							}else{
+								mui.toast('请输入留言')
+							}
+						} 
+					},'')
+//					if($('.writecmt').html() != ''){
+//		    			var cur = $('.writecmt');
+//		    			var commont = cur.html(),
+//		    				touserid = $('.writecmt').attr('id'),
+//		    				commontid = $('.writecmt').attr('data-id'); 
+//		    			mui.ajax(serverUrl + '/api/friends/newscomment', {
+//		    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
+//							dataType: 'json',
+//							type: 'POST',
+//							timeout: 8000,
+//							headers: {"token": oldToken,'city': cityNum},
+//							success: function(data, type, xhr) {
+//								console.error('评论详情', data);
+//								 
+//								if(data.errno == 0) {
+//					    			cur.html('');
+//					    			mui.toast('评论成功');
+//				    				$('.writecmt').attr('placeholder','');
+//									 $('.writecmt').attr('id','');
+//									 $('.writecmt').attr('data-id','');
+//					    			getCmt();
+//								}else{
+//									mui.toast('当前网络不好,请重试');
+//								}
+//							},
+//							error: function(xhr, type, errorThrown) {
+//								console.error('评论列表,响应失败');
+//								mui.toast('当前网络不好,请重试');
+//							}
+//						});
+//		    			
+//		    			
+//		    		}else{
+//		    			$('.writecmt').focus();
+//		    		}
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
+	    		
+	    		
+	    	})
+	    	
+	    
+			//点赞
+			$('#doLike').click(function(){
+				if(plus.storage.getItem('myToken')){
+					var curThis = $(this);
+					if(curThis.attr('src') == '../../img/localLife/weizan.png'){ 
+						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/answer/zan.png')  
+					}else{
+						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'DELETE','../../img/localLife/weizan.png') 
+					}
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+			})
+	    	 
+		}) 
+		
+		//发布时间判断 
+		var minute = 1000 * 60;
+		var hour = minute * 60;
+		var day = hour * 24;
+		var halfamonth = day * 15;
+		var month = day * 30;
+		function getDateDiff(dateTimeStamp){ 
+			var now = new Date().getTime(); 
+			var diffValue = now - dateTimeStamp; 
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+			 result=parseInt(monthC) + "月前";
+			 }
+			 else if(weekC>=1){
+			 result=parseInt(weekC) + "周前";
+			 }
+			 else if(dayC>=1){
+			 result=parseInt(dayC) +"天前";
+			 }
+			 else if(hourC>=1){
+			 result=parseInt(hourC) +"小时前";
+			 }
+			 else if(minC>=1){
+			 result=parseInt(minC) +"分钟前";
+			 }else{ 
+			 result="刚刚";
+			 }
+			return result;
+		}
+		
+		
+	</script>
+	<script type="text/javascript">
+       
+		
+ 		mui.previewImage(); 
+	    
+	</script>
+
+</html>
