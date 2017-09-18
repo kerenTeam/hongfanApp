@@ -530,75 +530,77 @@
 					</ul>
 					<div id="orderTpl"></div>
 					<script type="text/html" id="orderData">
-						<%for(var i =0;i<shopID.length;i++){%>
+						<%for(var i =0;i<goodsList.length;i++){%>
 						<dl class="list">
 							<dd class="dd-padding kv-line-r">
-								<h6><img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" alt="" /> <%=cates[i]%></h6>
+								<h6><img src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" alt="" />
+									<%if(goodsList[i].order_type == 0){%>
+										<%=goodsList[i].store_id%>
+									<%}else{%>
+										<%=goodsList[i].stores.store_name%>
+									<%}%>
+								</h6>
 							</dd>
-							<%for(var j =0;j<goodsList.length;j++){%>
-							<% if(goodsList[j].shopId ==  shopID[i]){%>
+							<%for(var j =0;j<goodsList[i].goods_Data.length;j++){%>
 							<dd class="dd-padding kv-line-r mui-row goodsWrap">
-								<!--onclick="goInfo('<%=goodsList[j].goodsId%>')"-->
-								<% if(goodsList[j].igetShopId == '0'){%>
-								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4" id="aigou"><img src="<%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
+								<% if(goodsList[i].goods_Data[j].youpin){%>
+								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4" id="aigou"><img src="<%=goodsList[i].goods_Data[j].youpin.thumb%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
 								<%}else{%>
-								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myurl%><%=goodsList[j].goodsImg%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
+								<h6 class="addTitle mui-col-sm-4 mui-col-xs-4"><img src="<%=myurl%><%=goodsList[i].goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/none.png';"/></h6>
 
 								<%}%>
 								<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8 goods">
 									<p>
-										<%=goodsList[j].goodsName%>
+										<%=goodsList[i].goods_Data[j].title%>
 									</p>
 									<p class="goodsDetail">
-										<%=goodsList[j].goodText%>
+										<%if(goodsList[i].goods_Data[j].differentiate != 0){%>
+											<%for(var k = 0 ;k<4;k++){%>
+												<%if(goodsList[i].goods_Data[j].stend+k){%>
+													<%=goodsList[i].goods_Data[j].stend+k%>:<%=goodsList[i].goods_Data[j].value+k%>;
+												<%}%>
+											<%}%>
+
+											 
+										<%}%>
 									</p>
 									<p class="price"><sub>￥</sub>
-										<span class="pricemoney"><%=goodsList[j].goodsPrice%></span> <span class="num">x<span class="numint"><%=goodsList[j].goodsnum%></span></span></p>
-									<%if(goodsList[j].shopName != '跨境优品' && goodsList[j].goodsreducemoney != 0){%>
-									<small style="color: coral;font-size: 0.12rem;" class="goodrd">商品优惠<sub>-￥</sub><%=goodsList[j].goodsreducemoney%></small>
+										<span class="pricemoney"><%=goodsList[i].goods_Data[j].price%></span> <span class="num">x<span class="numint"><%=goodsList[i].goods_Data[j].nums%></span></span></p>
+									<%if(goodsList[i].goods_Data[j].GoodsFavourablePrice && goodsList[i].goods_Data[j].GoodsFavourablePrice.favourablePrice){%>
+										<small style="color: coral;font-size: 0.12rem;" class="goodrd">商品优惠<sub>-￥</sub> <%=goodsList[i].goods_Data[j].GoodsFavourablePrice.favourablePrice%></small>
 									<%}%>
-									<%if(igetShopId[i] == 0){%>
+
+									<%if(goodsList[i].order_type == 0){%>
 									<samll style="font-size:0.1rem;color: gray;">税费
-										<span class='taxmoney' data-rate="<%=goodsList[j].goodsRate%>"><%=goodsList[j].goodsDelivery%></span> </samll>
+										<span class='taxmoney'><%=goodsList[i].goods_Data[j].tax%></span> </samll>
 									<%}%>
 								</div>
 							</dd>
 							<%}%>
-							<%}%>
-							<%if(igetShopId[i]!=0){%>
-							<%if(goodsreduce[i] != 0){%>
-							<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
-								<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">商品优惠总计</h6>
-
-								<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
-									<span class="fr" style="line-height: 40px;color: coral;">-￥<%=goodsreduce[i]%></span>
-								</div>
-							</dd>
-							<%}%>
-
-							<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
+							<%if(goodsList[i].order_type!=0 && goodsList[i].StoreFavourablePrice.favourablePrice){%>
+							<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=goodsList[i].store_id%>">
 								<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">店铺优惠</h6>
 
 								<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
-									<span class="fr storereduce" style="line-height: 40px;color: coral;" id="<%=shopID[i]%>"></span>
+									<span class="fr storereduce" style="line-height: 40px;color: coral;" id="<%=goodsList[i].store_id%>"></span>
 								</div>
 							</dd>
 							<%}%>
-							<%if((igetShopId[i]==0 &&  shopMoney[i].money>=88) || (storeWeight[i].weight == 0 && igetShopId[i]!=0)){%>
+							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0)){%>
 							<dd class="dd-padding kv-line-r postfeeWrap ddwl">
 								<h6>配送方式</h6>
 								<p class="jifen">包邮</p>
 								<%}else{%>
 								<dd class="dd-padding kv-line-r postfeeWrap ddwl" style="padding: 0.1rem 0.15rem;">
 									<li class="mui-table-view-cell mui-collapse choosewl">
-										<a class="mui-navigate-right getwl" data-id='0' data-weight='<%=storeWeight[i].weight%>' data-storeid="<%=shopID[i]%>" data-igetShopId="<%=igetShopId[i]%>" href="#">
+										<a class="mui-navigate-right getwl" data-id='0' data-weight='<%=goodsList[i].total_goods_weight%>' data-storeid="<%=goodsList[i].store_id%>" data-igetShopId="<%=goodsList[i].order_type%>" href="#">
 											<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">选择物流</span></a>
-										<div class="mui-collapse-content dlc" data-shopmoney = "<%=shopMoney[i].money%>">
+										<div class="mui-collapse-content dlc" data-shopmoney = "<%=goodsList[i].actualPrice%>">
 										</div>
 									</li>
 									<%}%>
 								</dd>
-								<%if(igetShopId[i]==0){%>
+								<%if(goodsList[i].order_type==0){%>
 								<dd class="dd-padding kv-line-r posttaxWrap" style="display: none;">
 									<h6 class="mui-col-sm-4 mui-col-xs-4">运费税</h6>
 									<div class="clearfloat fr mui-col-sm-8 mui-col-xs-8">
@@ -609,23 +611,8 @@
 									<h6>购买即同意<span onclick="gosearule()" style="color: orangered;"> 《跨境电商购物协议》</span></h6>
 								</dd>
 								<%}%>
-								<%if(igetShopId[i]!=0){%>
-								<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=shopID[i]%>">
-									<input type="hidden" class="isziti" value="0" data-id='' />
-									<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提</h6>
-
-									<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
-										<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=shopID[i]%>" data-postfee="0" class="groupCheck" type="checkbox" style="right: 5px;"></div>
-									</div>
-								</dd>
-								<%if(shopaddress[i]){%>
-									<dd class="dd-padding kv-line-r mui-row ztWrap ztaddress" style="display: none;">
-										<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">自提地址：<%=shopaddress[i]%></h6>
-									</dd>
-								<%}%>
-								 
-								<%}%>
-								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=shopID[i]%>">
+							 
+								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=goodsList[i].store_id%>">
 									<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">备注：</h6>
 									<div class="clearfloat fr mui-col-sm-10 mui-col-xs-10 goods">
 										<input type="text" id="" value="" placeholder="选填（对本次交易的说明）" class="tips" />
@@ -633,14 +620,20 @@
 								</dd>
 								<dd class="kv-line-r dd-padding priceWrap">
 									<p>
-										<sub>共计<span class="groupNum"><%=arrNum[i]%></span>件商品&nbsp;&nbsp;小计:<b style="color: #ff5f32;">￥</b></sub>
-										<span class="J_total-price groupMoney" data-id="0"><%=arrMoney[i]%></span>
+										小计:<b style="color: #ff5f32;">￥</b></sub>
+										<span class="J_total-price groupMoney" data-id="0"><%=goodsList[i].actualPrice%></span>
 									</p>
 								</dd>
 						</dl>
 
 						<%}%>
-
+						<div class="fixed">
+							<p>合计：<span class="show_delivery_fee">￥<span id="submit_order"><%=PriceCalculValue%></span></span>
+							</p>
+							<span class="fr btn">
+								<a onclick="goPay()" class="comm_btn">提交订单</a>
+							</span>
+						</div>
 					</script>
 
 					<dl class="list">
@@ -719,13 +712,7 @@
 					</dl>
 				</form>
 			</div>
-			<div class="fixed">
-				<p>合计：<span class="show_delivery_fee">￥<span id="submit_order"></span></span>
-				</p>
-				<span class="fr btn">
-					<a onclick="goPay()" class="comm_btn">提交订单</a>
-				</span>
-			</div>
+			
 
 			<!--操作表-->
 			<div id="payChoose" class="mui-popover mui-popover-action mui-popover-bottom closePay">
@@ -764,7 +751,7 @@
 			})
 		}
 		$(".paycontent").click(function() {
-			event.stopImmediatePropagation()
+			event.stopPropagation()
 		})
 		$(".closePay").click(function() {
 			event.stopPropagation();
@@ -797,12 +784,11 @@
 			});
 			//订单缓存
 			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]'); 
-			console.log('orderStorage',orderStorage)
 			//获取缓存
 			myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
-			orderAdd();
-
+			//获取收货地址
+			orderAdd(); 
 			function orderAdd() {
 				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
 					data: {
@@ -834,10 +820,10 @@
 					}
 				});
 			}
-
+			
 			//订单数据模板
 			var data = {};
-			data.goodsList = orderStorage;
+//			data.goodsList = orderStorage;
 
 			for(var i = 0; i < orderStorage.length; i++) {
 				orderStorage[i].goodsDelivery = Math.floor(parseFloat(orderStorage[i].goodsDelivery*orderStorage[i].goodsnum)*100)/100;
@@ -848,100 +834,9 @@
 				shopID.push(orderStorage[i].shopId); 
 				arr.push(orderStorage[i].shopName);
 				shopaddress.push(orderStorage[i].goodsaddress)
-			}
-			console.log(JSON.stringify(orderStorage));
-//			igetShopId = igetShopId.unique1() 
+			} 
 			shopID = shopID.unique1();
-			shopaddress = shopaddress.unique1();
-			data.shopID = shopID;  
-			data.shopaddress = shopaddress; 
-			for(var i = 0; i < data.shopID.length; i++) {
-				//分组 金额 和 数量  分组商品优惠小计
-				var groupNum = 0,
-					groupMoney = 0,
-					groupWeight = 0,
-					reduce = 0, 
-					alltax = 0,
-					groupMoneynoreduce = 0;
-					igetShopIdNum='';
-					arrsname=''; 
-				for(var j = 0; j < orderStorage.length; j++) {
-					var deliveryFee = 0;
-					if(data.shopID[i] == orderStorage[j].shopId) {
-						if(orderStorage[j].igetShopId == '0'){
-							igetShopIdNum = 0; 
-						}else{
 
-							igetShopIdNum = 1; 
-						}
-						var totolmoney = parseFloat(parseFloat(orderStorage[j].goodsPrice)* parseFloat(orderStorage[j].goodsnum)).toFixed(2);
-						if(!orderStorage[j].goodsreduce || orderStorage[j].goodsreduce.length == 0 || orderStorage[j].goodsreduce == ' ') {
-							orderStorage[j].goodsreducemoney = 0
-							reduce += parseFloat(0)
-						} else {
-							//做测试 排序 选择最佳的满减规则
-//							orderStorage[j].goodsreduce = [{"reachPrice":"100","reducePrice":"20"},{"reachPrice":"20","reducePrice":"10"},{"reachPrice":"200","reducePrice":"15"}]
-  
-							var sortBy = function (filed, rev, primer) {
-							    rev = (rev) ? -1 : 1;
-							    return function (a, b) {
-							        a = a[filed];
-							        b = b[filed];
-							        if (typeof (primer) != 'undefined') {
-							            a = primer(a);
-							            b = primer(b);
-							        }
-							        if (a < b) { return rev * 1; }
-							        if (a > b) { return rev * -1; }
-							        return 1;
-							    }
-							};
-							orderStorage[j].goodsreduce.sort(sortBy('reachPrice', false, parseInt));
-							console.log("ddd ",orderStorage[j].goodsreduce); 
-							for(var m = 0; m < orderStorage[j].goodsreduce.length; m++) { 
-								if(parseFloat(totolmoney) >= parseFloat(orderStorage[j].goodsreduce[m].reachPrice)) {
-									orderStorage[j].goodsreducemoney = orderStorage[j].goodsreduce[m].reducePrice;
-									break;
-								} else {
-									orderStorage[j].goodsreducemoney = 0;
-								}
-							}
-							reduce += parseFloat(orderStorage[j].goodsreducemoney);
-						}
-						console.log("goodsreduce " + orderStorage[j].goodsreducemoney);
-						groupNum += parseFloat(orderStorage[j].goodsnum);
-						deliveryFee = parseFloat(orderStorage[j].goodsDelivery); 
-						alltax += parseFloat(orderStorage[j].goodsDelivery);
-						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum)+deliveryFee;
-						groupMoney += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum) - parseFloat(orderStorage[j].goodsreducemoney);
-						if(!orderStorage[j].goodweight || orderStorage[j].goodweight == ' ') {
-							orderStorage[j].goodweight = 0;
-						}
-						groupWeight += parseFloat(orderStorage[j].goodweight) * parseFloat(orderStorage[j].goodsnum);
-						
-					}
-//					if(deliveryFee){
-//						deliveryarr.push(parseFloat(deliveryFee).toFixed(2));
-//					}
-
-				}
-				
-				igetShopId.push(igetShopIdNum);
-				
-				console.log("weight ",parseFloat(groupWeight).toFixed(2))
-				storeWeight.push({shopid:shopID[i],weight:parseFloat(groupWeight).toFixed(2)})
-				console.log("totalweight",storeWeight)
-				arrNum.push(groupNum);
-				shopMoney.push({
-					id: shopID[i],
-					money: parseFloat(groupMoneynoreduce).toFixed(2)
-				})
-				arrMoney.push(parseFloat(groupMoney + parseFloat(alltax)).toFixed(2));
-				goodsreduce.push(parseFloat(reduce).toFixed(2))
-
-			}
-			console.log("shopMoney " + JSON.stringify(shopMoney))
-			console.log("storereduce " + storereduce)
 			 
 			//分商店  订单数据 小计
 			for(var i = 0; i < shopID.length; i++) {
@@ -965,249 +860,7 @@
 				}
 				orderSubmitData.push(orderList);
 			} 
-			 
-			arr= arr.unique1(); 
-			
-//			alert(JSON.stringify(storeWeight))
-			data.cates = arr; 
-			data.igetShopId = igetShopId; 
-			data.deliveryarr = deliveryarr;
-			data.storeWeight = storeWeight;
-			data.arrNum = arrNum;
-			data.shopMoney = shopMoney
-			data.arrMoney = arrMoney;
-			data.myurl = serverimgUrl;
-			data.goodsreduce = goodsreduce;
-			
-			mui.each(shopMoney, function(index, item) {
-				mui.ajax(serverUrl + '/api/mall/storeinfo', {
-					data: {
-						store_id: item.id
-					},
-					dataType: 'json',
-					type: 'post',
-					timeout: 10000,
-					headers: {
-						"token": oldtoken
-					},
-					success: function(data, type, xhr) {
-						//						alert("index"+index)
-//												alert('店铺满减规则 '+JSON.stringify(data.data.store_reduction)); 
-						//						alert("店铺原总价"+parseFloat(item.mone));
-						if(data.data.store_reduction != undefined) {
-							//	alert(data.data.reduction_rule)
-							data.data.store_reduction = JSON.parse(data.data.store_reduction);
-						}
-
-						if(!data.data.store_reduction || data.data.store_reduction.length == 0 || data.data.store_reduction == ' ') {
-							storereduce[index] = 0;
-							//							alert("storereduce"+index+" "+storereduce[index])
-						} else {
-							//排序 选择最优店铺满减优惠
-//							data.data.store_reduction = [{"reachPrice":"100","reducePrice":"20"},{"reachPrice":"200","reducePrice":"10"},{"reachPrice":"20","reducePrice":"15"}]
-							//							alert("data.data.reduction_rule "+data.data.reduction_rule)
- 
-							var sortBy = function (filed, rev, primer) {
-							    rev = (rev) ? -1 : 1;
-							    return function (a, b) {
-							        a = a[filed];
-							        b = b[filed];
-							        if (typeof (primer) != 'undefined') {
-							            a = primer(a);
-							            b = primer(b);
-							        }
-							        if (a < b) { return rev * 1; }
-							        if (a > b) { return rev * -1; }
-							        return 1;
-							    }
-							};
-							data.data.store_reduction.sort(sortBy('reachPrice', false, parseInt));
-							console.log("ddd ",data.data.store_reduction);
-							
-							
-							for(var m = 0; m < data.data.store_reduction.length; m++) {
-								if(parseFloat(item.money) >= parseFloat(data.data.store_reduction[m].reachPrice)) {
-									//									alert(data.data.reduction_rule[m].reducePrice)
-									storereduce[index] = data.data.store_reduction[m].reducePrice;
-									break;
-								} else {
-									storereduce[index] = 0;
-								}
-							}
-							//							alert("storereduce"+index+" "+storereduce[index])
-						}
-
-						console.log("storereduce" + JSON.stringify(storereduce));
-						$('.storereduce').each(function() {
-							if($(this).attr('id') != 0) {
-								if($(this).attr('id') == item.id) {
-									if(storereduce[index] != 0) {
-										$(this).html('-￥' + storereduce[index]);
-										var newtotal = parseFloat(parseFloat($(this).parentsUntil('#orderTpl').find('.groupMoney').html()) - parseFloat(storereduce[index])).toFixed(2);
-										$(this).parentsUntil('#orderTpl').find('.groupMoney').html(newtotal);
-										countTotalPay();
-									} else {
-										$(this).parent().parent().remove();
-									}
-
-								}
-
-							}
-						})
-						plus.nativeUI.closeWaiting(); //关闭等待框
-					},
-					error: function(xhr, type, errorThrown) {
-						mui.toast('当前网络不好');
-						plus.webview.currentWebview().close();
-					}
-				});
-
-			})
-			data.storereduce = storereduce;
-			//			alert("dffddd "+JSON.stringify(data.storereduce))
-			var html = template('orderData', data);
-			document.getElementById('orderTpl').innerHTML = html;
-
-			//物流选择
-			$('.getwl').on('tap', function() {
-				var businid = $(this).attr('data-storeid');
-				var storeWeight = $(this).attr('data-weight');
-				var shopmoney =  $(this).parentsUntil("#orderTpl").find('.groupMoney').html();
-				if($(this).attr('data-id') == 0) {
-					var wlct = $(this).next(); 
-					if($(this).attr('data-igetShopId') != 0) {
-						mui.ajax(serverUrl + '/api/mall/expresslist', {
-							data: {
-								businid: businid
-							},
-							dataType: 'json',
-							type: 'post',
-							headers: {
-								token: oldtoken
-							},
-							timeout: 10000,
-							success: function(data, type, xhr) {
-								console.log("物流",data); 
-								var wlhtml = '';
-								console.log("youhuo "+JSON.stringify(data.data))
-								for(var i = 0; i < data.data.length; i++) {
-									var countpostfee = parseInt(data.data[i].basicsPrice);
-									if(data.data[i].beyondKg == 0){
-										data.data[i].beyondKg =1;
-									}
-									var overWeight =(parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg);
-									if(overWeight > 0) {
-										overWeight = Math.ceil(overWeight);
-										countpostfee = parseInt(data.data[i].basicsPrice) + overWeight * parseInt(data.data[i].beyondPrice)
-									}
-
-									wlhtml += '<div data-charge="' + countpostfee + '" data-epid="' + data.data[i].express_id + '" data-id="0">' + data.data[i].expressName + '<span class="charge fr">￥' + countpostfee + '</span></div>'
-								}
-								if(!wlhtml){
-									wlhtml="商家暂未填写物流"
-								}
-								wlct.html(wlhtml);
-								$(".dlc div").click(function() {
-//									alert($(this).attr("data-id"))
-
-									if($(this).attr("data-id") == 0) {
-										if($(this).parent().prev().find(".wlway").html() == "自提") {
-											$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
-										}
-										$(this).parent().prev().find(".wlway").html($(this).html());
-										//									alert(parseFloat($(this).attr('data-charge')));
-
-										for(var i = 0; i < orderSubmitData.length; i++) {
-											if(orderSubmitData[i].storeid == businid) {
-//												alert($(this).attr('data-epid'))
-												orderSubmitData[i].express_id = $(this).attr('data-epid');
-
-											}
-										}
-//										alert(JSON.stringify(orderSubmitData));
-										//自提 处 存邮费 和 运费id
-										$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").val(parseFloat($(this).attr('data-charge')));
-										$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
-										//当前商店总价减邮费
-										var newgroup =parseFloat(shopmoney) + parseFloat($(this).attr('data-charge'))
-										//									alert(newgroup)
-										$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2))
-										//重新计算 总金额
-										countTotalPay();
-									}
-									$(this).siblings().attr("data-id", 0);
-									$(this).attr("data-id", 1);
-									$(".choosewl").removeClass("mui-active")
-								})
-							},
-							error: function(xhr, type, errorThrown) {
-								plus.nativeUI.closeWaiting();
-								mui.toast("网络不好请重试")
-							}
-						})
-					} else {
-						var countpostfee = 6;
-						//							alert("storeWeight "+parseFloat(storeWeight))
-						var overWeight = Math.ceil(parseFloat(storeWeight) - 1);
-						if(overWeight > 0) {
-							countpostfee = 6 + overWeight * 2.5
-						}
-						wlhtml = '<div data-charge="' + countpostfee + '" data-epid="0" data-id="0">EMS<span class="charge fr">￥' + countpostfee + '</span></div>'
-						wlct.html(wlhtml); 
-						$(".dlc div").click(function() {
-//							alert($(this).attr("data-id"))
-							if($(this).attr("data-id") == 0) {
-								if($(this).parent().prev().find(".wlway").html() == "自提") {
-									$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
-								}
-								$(this).parent().prev().find(".wlway").html($(this).html());
-								//							alert(parseFloat($(this).attr('data-charge')));
-
-								 
-								
-								for(var i = 0; i < orderSubmitData.length; i++) {
-									for(j =0;j<orderStorage.length;j++){
-										if((orderSubmitData[i].storeid == orderStorage[j].shopId)&&(orderSubmitData[i].storeid == businid) && orderStorage[j].igetShopId == '0'){
-												orderSubmitData[i].express_id = "0";
-										}
-									}
-								}
-								
-								//							alert(JSON.stringify(orderSubmitData));
-								//自提 处 存邮费 和 运费id
-								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").val(parseFloat($(this).attr('data-charge')));
-								$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='hidden']").attr("data-id", $(this).attr('data-epid'))
-								 
-								//重新计算税费 
-								var originRate = $(this).parentsUntil("#orderTpl").find('.taxmoney').attr('data-rate')
-								var newgroup = 0;
-								var posttax = Math.floor(parseFloat(countpostfee*originRate)*100)/100;
-								$(this).parentsUntil("#orderTpl").find(".goodsWrap").each(function(){
-										var newtax = (parseFloat($(this).find('.pricemoney').html()*$(this).find('.numint').html()))*originRate;
-//										$(this).find('.taxmoney').html(newtax);
-										newgroup += parseFloat(parseFloat(newtax) + parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html());
-								})
-								//当前商店总价加邮费
-								 newgroup =newgroup+parseFloat(posttax)+ parseFloat($(this).attr('data-charge'));
-								 $(this).parentsUntil("#orderTpl").find('.posttaxWrap').css('display','');
-								 $(this).parentsUntil("#orderTpl").find('.posttaxWrap .posttax').html('￥'+posttax)
-								$(this).parentsUntil("#orderTpl").find('.groupMoney').html(parseFloat(newgroup).toFixed(2));
-								
-								//重新计算 总金额
-								countTotalPay();
-								
-
-							}
-							$(this).attr("data-id", 1);
-							$(".choosewl").removeClass("mui-active");
-							
-						})
-					}
-
-				}
-				$(this).attr('data-id', 1);
-			})
-
+		   
 		  	//商品重量为0 包邮  爱购88包邮  
 			for(var j = 0; j < igetShopId.length; j++) { 
 				if(igetShopId[j] == '0') {
@@ -1221,78 +874,10 @@
 				}
 			}
 			
-
  
-			countTotalPay();
-
-			function countTotalPay() {
-				var allThis = 0;
-				var everyGroup = document.getElementsByClassName("groupMoney");
-				for(var i = 0; i < everyGroup.length; i++) {
-					allThis += parseFloat(everyGroup[i].innerHTML);
-				} 
-				totalPay = parseFloat(allThis - jf - quan).toFixed(2);
-				if(totalPay < 0) {
-					totalPay = 0;
-				}
-				$("#submit_order").html(totalPay)
-			} 
-
-			//自提 or 配送  更新 邮费 和 分组价格 和 总价 
-					 
-					$("dd .ddRadio").each(function() { 
-						$(this).find("input[type='checkbox']").click(function() { 
-						
-							var dataPostfee = parseFloat($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val()); 
-							var shopid = $(this).attr('data-shopId'); 
-							//alert($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id'))
-							if($(this).prop('checked') == true) { 
-								var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
-								$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost - dataPostfee).toFixed(2));
-								$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提'); 
-								$(this).parentsUntil("#orderTpl").find("dd.ztaddress").css("display","")
-								for(var i = 0; i < orderSubmitData.length; i++) {
-									if(orderSubmitData[i].storeid == shopid) {
-										orderSubmitData[i].express_id = '-2';
-										break;
-									}
-								} 
-								countTotalPay();
-								$(this).parentsUntil("#orderTpl").find('.dlc div').attr("data-id",0);
-								$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0)
-							} else {
-								var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html()); 
-								$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost + dataPostfee).toFixed(2));
-								
-								for(var i = 0; i < orderSubmitData.length; i++) {
-									if(orderSubmitData[i].storeid == shopid) {
-										
-										if(storeWeight[i].weight == 0){
-											$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('包邮');
-											orderSubmitData[i].express_id = '-1';
-											$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id', '-1');
-										}else{
-											$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('选择物流');
-											orderSubmitData[i].express_id = '';
-											$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id', '');
-										}
-										break;
-									}
-								}
-								$(this).parentsUntil("#orderTpl").find("dd.ztaddress").css("display","none")
-//								alert(JSON.stringify(orderSubmitData))
-								countTotalPay();
-								$(this).parentsUntil("#orderTpl").find('.dlc div').attr("data-id",0);
-								$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
-							}
-
-						})
-					})
-				
 
 			//获取积分  和 身份证
 			getInfo();
-
 			function getInfo() {
 				mui.ajax(serverUrl + '/api/useraccount/userinfo', {
 					data: {
@@ -1418,9 +1003,189 @@
 					mui.toast("网络不好请重试!")
 				}
 			});
+ 
+			calculate();
+			function calculate(){
+				mui.toast('计算开始');
+					var yourSFZ = $('#sfzin').val();
+					//地址 
+					var addressid = $("#addid").attr("data-id");
+					//买家留言
+					var noticeData = []; 
+					//优惠券id
+					var coupon_id = ''; 
+					//积分使用
+					var isIntergal = 0;
+					 
+					var goodsdata = JSON.stringify(orderSubmitData);
+					console.log("goodsdata 445" ,goodsdata)
+					var notice = JSON.stringify(noticeData);
+					//获取总价
+					var payTotal = parseFloat($("#submit_order").html()).toFixed(2); 
+				 	gopay(); 
+						function gopay() {
+							console.log('goodsdata',JSON.parse(goodsdata))
+//							console.log(myuserid + id + addressid + goodsdata + coupon_id + isIntergal)
+							mui.ajax(serverUrl + '/api/mall/neworder', {
+								data: {
+									userid: myuserid, 
+									address_id: 1, 
+									payType: 'alipay',
+									storeData: goodsdata,
+									coupon_id: coupon_id,
+									isIntergal: isIntergal,
+									isCalculation:1
+								},
+								type: 'post', //HTTP请求类型
+								headers: {
+									"token": oldtoken
+								},
+								timeout: 300000, //超时时间设置为10秒；
+								success: function(data) {
+									console.error('计算返回',data);
+									plus.nativeUI.closeWaiting();
+									if(data.errno == 0){
+										var dataObj = {};
+										for(var i = 0 ;i<data.data.Params.goodsData.length;i++){
+											data.data.Params.goodsData[i].actualPrice = Math.floor(data.data.Params.goodsData[i].actualPrice * 100) / 100;
+											for(var j = 0 ;j<data.data.Params.goodsData[i].goods_Data.length;j++){
+												if(data.data.Params.goodsData[i].goods_Data[j].youpin){
+													data.data.Params.goodsData[i].goods_Data[j].youpin = JSON.parse(data.data.Params.goodsData[i].goods_Data[j].youpin);
+												}
+												if(data.data.Params.goodsData[i].goods_Data[j].tax_rate){
+													data.data.Params.goodsData[i].goods_Data[j].tax = Math.floor(data.data.Params.goodsData[i].goods_Data[j].tax_rate * data.data.Params.goodsData[i].goods_Data[j].price * data.data.Params.goodsData[i].goods_Data[j].nums * 100) / 100;
+												}
+											}
+										}
+									 	dataObj.goodsList = data.data.Params.goodsData;
+									 	dataObj.myurl = serverimgUrl;
+									 	dataObj.PriceCalculValue = data.data.PriceCalculValue;
+										var html = template('orderData', dataObj);
+										document.getElementById('orderTpl').innerHTML = html;
+										
+										//物流选择
+										$('.getwl').on('tap', function() { 
+											var businid = $(this).attr('data-storeid');
+											var storeWeight = $(this).attr('data-weight');
+											var shopmoney =  $(this).parentsUntil("#orderTpl").find('.groupMoney').html();
+											console.log(businid+' '+storeWeight+' '+shopmoney);
+											if($(this).attr('data-id') == 0) {
+												var wlct = $(this).next(); 
+												if($(this).attr('data-igetShopId') != 0) {
+													mui.ajax(serverUrl + '/api/mall/expresslist', {
+														data: {
+															businid: businid
+														},
+														dataType: 'json',
+														type: 'post',
+														headers: {
+															token: oldtoken
+														},
+														timeout: 10000,
+														success: function(data, type, xhr) {
+															console.log("物流",data); 
+															var wlhtml = '';
+							//								console.log("youhuo "+JSON.stringify(data.data))
+															for(var i = 0; i < data.data.length; i++) {
+																var countpostfee = parseInt(data.data[i].basicsPrice);
+																if(data.data[i].beyondKg == 0){
+																	data.data[i].beyondKg =1;
+																}
+																var overWeight =(parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg);
+																if(overWeight > 0) {
+																	overWeight = Math.ceil(overWeight);
+																	countpostfee = parseInt(data.data[i].basicsPrice) + overWeight * parseInt(data.data[i].beyondPrice)
+																}
+							
+																wlhtml += '<div data-charge="' + countpostfee + '" data-epid="' + data.data[i].express_id + '" data-id="0">' + data.data[i].expressName + '<span class="charge fr">￥' + countpostfee + '</span></div>'
+															}
+															if(!wlhtml){
+																wlhtml="商家暂未填写物流"
+															}
+															wlct.html(wlhtml);
+															$(".dlc div").click(function() {
+							//									alert($(this).attr("data-id"))
+							
+																if($(this).attr("data-id") == 0) {
+																	 
+																	$(this).parent().prev().find(".wlway").html($(this).html());
+																	//									alert(parseFloat($(this).attr('data-charge')));
+							
+																	for(var i = 0; i < orderSubmitData.length; i++) {
+																		if(orderSubmitData[i].storeid == businid) {
+																			orderSubmitData[i].express_id = $(this).attr('data-epid');
+							
+																		}
+																	}
+																}
+																$(this).siblings().attr("data-id", 0);
+																$(this).attr("data-id", 1);
+																$(".choosewl").removeClass("mui-active")
+															})
+														},
+														error: function(xhr, type, errorThrown) {
+															plus.nativeUI.closeWaiting();
+															mui.toast("网络不好请重试")
+														}
+													})
+												} else {
+													var countpostfee = 6;
+													var overWeight = Math.ceil(parseFloat(storeWeight) - 1);
+													if(overWeight > 0) {
+														countpostfee = 6 + overWeight * 2.5
+													}
+													wlhtml = '<div data-charge="' + countpostfee + '" data-epid="0" data-id="0">EMS<span class="charge fr">￥' + countpostfee + '</span></div>'
+													wlct.html(wlhtml); 
+													$(".dlc div").click(function() {
+														if($(this).attr("data-id") == 0) {
+															$(this).parent().prev().find(".wlway").html($(this).html());
+															for(var i = 0; i < orderSubmitData.length; i++) {
+																for(j =0;j<orderStorage.length;j++){
+																	if((orderSubmitData[i].storeid == orderStorage[j].shopId)&&(orderSubmitData[i].storeid == businid) && orderStorage[j].igetShopId == '0'){
+																			orderSubmitData[i].express_id = "0";
+																	}
+																}
+															}
+															
+							//								  
+							//								//重新计算税费 
+															var originRate = $(this).parentsUntil("#orderTpl").find('.taxmoney').attr('data-rate')
+															var newgroup = 0;
+															var posttax = Math.floor(parseFloat(countpostfee*originRate)*100)/100;
+															$(this).parentsUntil("#orderTpl").find(".goodsWrap").each(function(){
+																	var newtax = (parseFloat($(this).find('.pricemoney').html()*$(this).find('.numint').html()))*originRate;
+							//										$(this).find('.taxmoney').html(newtax);
+																	newgroup += parseFloat(parseFloat(newtax) + parseFloat($(this).find('.pricemoney').html())*$(this).find('.numint').html());
+															})
+														}
+														$(this).attr("data-id", 1);
+														$(".choosewl").removeClass("mui-active");
+														
+													})
+												}
+							
+											}
+											$(this).attr('data-id', 1);
+										})
+										
+									}
 
-			console.log("测试测试" + JSON.stringify(orderSubmitData))
+								
+								},
+								error: function(xhr, type, errorThrown) {
+									//异常处理；
+									console.log(type);
+									console.log("----- 请求订单失败 -----");
+									console.log(xhr.status);
+									plus.nativeUI.closeWaiting();
+									plus.nativeUI.alert("获取订单信息失败！");
+								}
+							});
 
+						}  
+			}
+
+			 
 			//系统检测获取支付通道
 			plus.payment.getChannels(function(channels) {
 				console.log("channel " + JSON.stringify(channels));

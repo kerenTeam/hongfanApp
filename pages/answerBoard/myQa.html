@@ -116,7 +116,7 @@
 				
 				<script type="text/html" id="listDataS">
 					<%for(var i=0;i<dataList.length;i++){%>
-						<div class="qashadow" onclick="openDetail(<%=dataList[i].id%>)">
+						<div class="qashadow" onclick="openDetail(<%=dataList[i].id%>,<%=typeNum%>)">
 							<div class="qtop flexr">
 								<div class="ft14">
 									<img class="Avator loadPics" data-src="<%=dataList[i].avatar%>" src=""/> <%=dataList[i].nickname%>
@@ -148,12 +148,21 @@
 	 </body>
 	 <script type="text/javascript">
 	 	/*打开详情*/
-		function openDetail(id){
-			openview({
-				view:'answerInfo.html',
-				id:'answerInfo',
-				extrasobj:{answerId:id}
-			})
+		function openDetail(id,typeNum){
+			if(typeNum == 0){
+				openview({
+					view:'bestAnswer.html',
+					id:'bestAnswer',
+					extrasobj:{answerId:id}
+				})
+			}else{
+				openview({
+					view:'answerInfo.html',
+					id:'answerInfo',
+					extrasobj:{answerId:id}
+				})
+			}
+			
 		}
 	 </script>
 	<script type="text/javascript">
@@ -296,6 +305,7 @@
 							}
 							
 							dataObj.dataList = data.data.data;
+							dataObj.typeNum = typeNum;
 							document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
 							mui("#upload")[0].innerHTML = "";
 							lazyLoad(true,50);//懒加载
@@ -387,6 +397,7 @@
 																}
 															}
 															dataObj.dataList = data.data.data;
+															dataObj.typeNum = typeNum;
 															document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
 															lazyLoad(false,50);//懒加载
 														}
