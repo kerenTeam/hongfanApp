@@ -14,9 +14,9 @@
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link rel="stylesheet" href="../../css/one.css">
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
+		<script type="text/javascript" src="../../js/app.js"></script>
 		<script src="../../js/mui.min.js"></script>
+		
 		<style type="text/css">
 			body{background-color:#fff;}
 			.formCon{margin-top: 60px;padding: 20px 10px;}
@@ -83,13 +83,13 @@
 			}
 			.mui-btn-block{
 				color: #fff;
-			    background-color: rgba(204, 204, 204, 0.7);
+			    background-color: #fc3833;
 			    border: none;
 			    font-size: 16px;
 			    width: 90%;
 			    margin: 0 auto;
 			    padding: 12px 0;
-			    margin-top: 20px;
+			    margin-top: 45px;
 			}
 		</style>
 	</head>
@@ -102,22 +102,26 @@
 		<div class="formCon">
 			<div class="formItem">
 				<span>姓名: </span>
-				<input type="text" placeholder="请输入您的姓名"/>
+				<input class="air" type="text" placeholder="请输入您的姓名"/>
 			</div>
 			<div class="formItem">
 				<span>手机: </span>
-				<input type="number" placeholder="请输入手机号"/>
+				<input class="air" type="number" placeholder="请输入手机号"/>
 			</div>
 			<div class="formItem2">
 				<span class="span0">项目类型: </span>
 				<div class="FItem2R">
-					<input value="" type="text" class="aClick" disabled placeholder="请选择项目类型" />
+					<input value="" type="text" class="aClick air" disabled placeholder="请选择项目类型" />
 					<div class="img" onclick="dropdownDiv(this)">
 						<img src="../../img/market/xialajiantou.png"/>
 					</div>
 					<ul  class="dropdown" style="display: none;">
-						<li onclick="dropdownLi(this)" class="fineB aClick">服装</li>
-						<li onclick="dropdownLi(this)" class="fineB aClick">食品</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">餐饮</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">儿童</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">服饰</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">生活超市</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">KTV</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">电影院</li>
 						<li onclick="dropdownLi(this)" class="aClick">其他</li>
 					</ul>
 				</div>
@@ -125,21 +129,20 @@
 			<div class="formItem2">
 				<span class="span0">经营模式: </span>
 				<div class="FItem2R">
-					<input value="" type="text" class="aClick" disabled placeholder="请选择经营模式" />
+					<input value="" type="text" class="aClick air" disabled placeholder="请选择经营模式" />
 					<div class="img" onclick="dropdownDiv(this)">
 						<img src="../../img/market/xialajiantou.png"/>
 					</div>
 					<ul  class="dropdown" style="display: none;">
-						<li onclick="dropdownLi(this)" class="fineB aClick">服装</li>
-						<li onclick="dropdownLi(this)" class="fineB aClick">食品</li>
-						<li onclick="dropdownLi(this)" class="aClick">其他</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">租赁</li>
+						<li onclick="dropdownLi(this)" class="fineB aClick">联营</li>
 					</ul>
 				</div>
 			</div>
-			<div class="formItem2">
+			<!--<div class="formItem2">
 				<span class="span0">经营方式: </span>
 				<div class="FItem2R">
-					<input value="" type="text" class="aClick" disabled placeholder="请选择经营方式" />
+					<input value="" type="text" class="aClick air" disabled placeholder="请选择经营方式" />
 					<div class="img" onclick="dropdownDiv(this)">
 						<img src="../../img/market/xialajiantou.png"/>
 					</div>
@@ -149,14 +152,15 @@
 						<li onclick="dropdownLi(this)" class="aClick">其他</li>
 					</ul>
 				</div>
-			</div>
+			</div>-->
 			<div class="formItem">
 				<span>所在地: </span>
-				<input type="text" placeholder="请输入您的所在地"/>
+				<input class="air" type="text" placeholder="请输入您的所在地"/>
 			</div>
-			<button id='' class="mui-btn-block">提交信息</button>
+			<button id='submitBtn' class="mui-btn-block">提交信息</button>
 		</div>
-		
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<script type="text/javascript">
 			function dropdownDiv(obj){
 				var dropUl = obj.nextSibling.nextSibling;
@@ -172,5 +176,62 @@
 				obj.parentNode.style.display = 'none';
 			}
 		</script>
+		<script type="text/javascript">
+			/*数据提交*/
+			var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+			mui('#submitBtn')[0].onclick = function(){
+				/*表单验证*/
+				var flag = true;
+				for (var i = 0; i < mui('.air').length; i++) {
+					if(!mui('.air')[i].value){
+						mui.toast(mui('.air')[i].placeholder);
+						mui('.air')[i].focus();
+						flag = false;
+						break;
+					}
+					if(i == 1){
+						if(!reg_phone.test(mui('.air')[i].value)){
+							mui.toast('请输入正确的手机号');
+							mui('.air')[i].focus();
+							flag = false;
+						}
+					}
+				}
+				/*发送数据*/
+				if(flag){
+					mui.plusReady(function(){
+						var oldToken = plus.storage.getItem('oldToken'),
+				 			cityNum = plus.storage.getItem('cityNum'),
+							myuserid = plus.storage.getItem('userid');
+						mui.ajax(serverUrl+'/api/index/attractinvestment',{
+							data:{
+								name:mui('.air')[0].value,
+								phone:mui('.air')[1].value,
+								projectType:mui('.air')[2].value,
+								mannagmentModel:mui('.air')[3].value,
+								mannagmentMode:mui('.air')[3].value,
+								location:mui('.air')[4].value,
+								userid:myuserid
+							},
+							type:'post',
+							timeout:8000,
+							headers:{"token":oldToken,"city":cityNum},
+							success: function(data) {
+								console.error('招商', data);
+								if(data.errno == 0) {
+									mui.alert('提交成功,请等待工作人员的回复.');
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								mui.toast("当前网络不好请重试");
+							}
+						});
+					})
+					
+				}
+				
+			}
+		</script>	
+			
 	</body>
 </html>
