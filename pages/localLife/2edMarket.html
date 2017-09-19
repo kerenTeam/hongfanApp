@@ -214,14 +214,14 @@
 					<script type="text/html" id="infolist">
 						<%for(var i=0;i<dataList.length;i++){%>
 							
-							<div class="follow"> 
+							<div class="follow" onclick="opendetails(<%=dataList[i].id%>,<%=dataList[i].user_id%>)"> 
 								<div class="fchidl">
 									<div>
 										<img class="userAvator mr25 loadPics" src="../../img/send.png" data-src="<%=dataList[i].avatar%>" />
 										<div> <%=dataList[i].nickname%> </div>
 									</div> 
 									<div class="butright">
-						            	<div class="diyButton activecl goanswer">￥30</div>
+						            	<div class="diyButton activecl goanswer">￥<%=dataList[i].price%></div>
 						           </div> 
 								</div>  
 								<p class="ft14 maincl" style="margin-bottom: 10px;"><%=dataList[i].content%></p> 
@@ -439,10 +439,13 @@ mui('#thePlus2')[0].onclick = function(){
 	}
 }
 //跳转详情
-function opendetails(id){
+function opendetails(id,userid){ 
 	openview({
-		view:'Fleadetails.html',
-		extrasobj:{name:id}
+		view:'FleaInfo.html',
+		extrasobj:{
+			infoid: id,
+			UserId:userid,
+		}
 	})
 }
 </script>
