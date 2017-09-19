@@ -13,6 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
 		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" href="../../css/config.css">
 		
 		<style type="text/css">
 			.dealcard{margin: 0 !important;}
@@ -102,6 +103,50 @@
     			background-size: 12%;
 			}
 			.grade-w-roll{top: 105px!important;}
+			 .follow{
+				position: relative;
+				background-color: white; 
+				padding:18px 15px 15px; 
+			}  
+			 .follow:after{
+			 	position: absolute;
+			 	content: '';
+			 	height: 1px;
+			 	left: 10px;
+			 	right: 10px;
+				-webkit-transform: scaleY(.3);
+				background: #CACACA;
+				bottom: 0;
+			 }
+			 .follow:last-child:after{ 
+			 	height: 0px; 
+			 }
+			 
+			.fchidl{
+				display: flex;
+				align-items: center;
+				justify-content: space-between; 
+			}  
+			.userAvator{  
+				width: 30px;
+				height: 30px;   
+				border-radius: 50%;
+				margin-right: 15px;
+			} 
+			.fchidl>div{
+				vertical-align: middle;
+				display: flex;
+			    font-size: 15px;	
+			    text-align: left; 
+			    align-items: center;
+			 }
+			 .text{
+			 	color: #999;
+			 }  
+			.diyButton{background: url(../../img/answer/bouttonbr.png) no-repeat ;background-position: left top;background-size: 100% 100%;text-align: center;width: 60px;height: 25px;line-height: 25px;}
+			.listCon p{padding: 10px 0px 0px 0px;} 
+			.answerImf{width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;}
+			.anImg{width: 100%;} 
 		</style>
 	</head>
 	<body>
@@ -155,42 +200,41 @@
 		    </ul>
 		</div>
 		<!-- End Category -->
-		<div id="container">		
+		<div id="container">
 			<div id="main">
-				
 				<section class="dealcard-waimai">
-					<dl class="dealcard" id="infolistdiv">
+					<dl class="dealcard listCon" id="infolistdiv">
 						<!--列表loading-->
 						<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
 							line-height: 30px;color: #666;-webkit-transition: all .3s;">  
 							<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
 						</div>
-						<!--列表loading结束--> 
+						<!--列表loading结束-->
 					</dl>
 					<script type="text/html" id="infolist">
-						<% for(var i=list.length-1; i>=0; i--){%>
-							<dd class="page-link aClick" onclick="opendetails(<%= list[i].id%>)"> 
-								<a href="javascript:;">
-									<div class="dealcard-img imgbox"> <img src="<%= list[i].list_pic%>" alt=""> </div>
-									<div class="dealcard-block-right">
-										<div class="brand branddiv"><%= list[i].title%></div>
-										<div class="title " style="padding-top: 5px;">
-											地址:<%= list[i].address%>
-											<% if(list[i].isbusiness == 1){%> 
-												<b class="typespan">商家 </b>
-											<% }else{%>
-												<b class="typespan">个人</b>
-											<% }%>	
-										</div>
-										<div class="coupon" style="padding-top: 5px;">
-											<p>
-												电话: <%= list[i].phone%>
-											</p>
-											<span><sub>￥</sub><%= list[i].price%><sub>起</sub></span>
-										</div>
-									</div>
-								</a>
-							</dd>
+						<%for(var i=0;i<dataList.length;i++){%>
+							
+							<div class="follow"> 
+								<div class="fchidl">
+									<div>
+										<img class="userAvator mr25 loadPics" src="../../img/send.png" data-src="<%=dataList[i].avatar%>" />
+										<div> <%=dataList[i].nickname%> </div>
+									</div> 
+									<div class="butright">
+						            	<div class="diyButton activecl goanswer">￥30</div>
+						           </div> 
+								</div>  
+								<p class="ft14 maincl" style="margin-bottom: 10px;"><%=dataList[i].content%></p> 
+							 	
+						 		
+						 		<%if(dataList[i].picS){%>
+									<%for(var j=0;j<dataList[i].picS.length;j++){%>
+										<div class="answerImf">
+											<img onload="imgHeight(this)" data-src="<%=dataList[i].picS[j]%>" class="anImg loadPics picOp" src=""/>
+								 		</div>	
+									<%}%>
+								<%}%>
+							</div> 
 						<%}%>	 
 					</script>
 				</section>
@@ -200,6 +244,9 @@
 					<br />
 					没有相关信息
 				</div>
+			</div>
+			<div class="listCon"> <!--新的列表-->
+				
 			</div>
 		</div>
 		
@@ -215,10 +262,10 @@
 <script type="text/javascript">
 	var Spagenum = 2;//实到页数
 	var Ypagenum = 1;//应到页数 
-	Loading(1,10,'','','','','price');//加载数据,包括上滑加载
+	Loading(1,5,'','','','','price');//加载数据,包括上滑加载
 	//添加刷新监听
 	document.addEventListener('refresh', function() {
-		Loading(1,10,'','','','','price');//加载数据,包括上滑加载
+		Loading(1,5,'','','','','price');//加载数据,包括上滑加载
 		console.log('刷新数据');
 	})
 	//加载方法
@@ -230,28 +277,51 @@
 		$('.grade-eject').removeClass('grade-w-roll');
 		mui.plusReady(function(){
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		var oldtoken = plus.storage.getItem('oldToken');
-		mui.ajax(serverUrl+'/api/localservice/usedmarketlist',{   									
-			data:{currentPage:gin1,
-				numsPerPage:gin2, 
-				type:gin3,
-				price_Starting:gin4,
-				price_point:gin44,
-				is_business:gin5,
-				orderType:gin6},
+		var oldToken = plus.storage.getItem('oldToken'),cityNum = plus.storage.getItem('cityNum');
+		mui.ajax(serverUrl+'/api/friends/newslist',{   									
+			data:{
+				'numsPerPage':6,
+				'currentPage':1,
+				'orderType':'DESC',
+				'orderField':'create_time',
+				'typeId':1
+			},
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
 			timeout:10000,//超时时间设置为10秒；	
-			headers:{"token":oldtoken}, 
+			headers: {"token": oldToken,'city': cityNum},
 			success:function(data){
-				console.log('列表返回'+JSON.stringify(data));
 				console.log('列表返回',data);
 				if(data.errno == 0){
 					var dataobj = {};
-					mui.each(data.data.data,function (index,ele) {
-						data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
-					})
-					dataobj.list = data.data.data; 
+					var nowArray = data.data.data;
+					for(var j = 0 ;j<nowArray.length;j++){
+						//整理头像格式
+						if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+							if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+								nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+							}else{
+								nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+							}
+						}else{
+							nowArray[j].avatar = '../img/10.png'
+						}
+									
+						if(!nowArray[j].nickname){
+							nowArray[j].nickname = '匿名'
+						}
+						//整理内容图片格式
+						var nowArray2 = JSON.parse(nowArray[j].pic);
+						if(nowArray2.length){
+							var picS = [];
+							for(var k = 0 ;k<nowArray2.length;k++){
+								picS.push(nowArray2[k].picImg);
+							}
+							nowArray[j].picS = picS;
+						}
+					}
+					
+					dataobj.dataList = data.data.data; 
 					//获取并渲染用户信息
 					var html=template("infolist",dataobj);
 					document.getElementById("infolistdiv").innerHTML += html;
@@ -261,6 +331,7 @@
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
 					}
+					lazyLoad(true,10);
 					
 					//滚动到底部加载
 					$(window).scroll(function(){
@@ -273,28 +344,53 @@
 								Ypagenum++;//满足加载情况,应到页数+1
 								console.log('发起请求,实到'+Spagenum+'页');									
 								console.log('发起请求,应到'+Ypagenum+'页');
-								mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-									data:{currentPage:Spagenum,
-										numsPerPage:gin2,
-										type:gin3,
-										price_Starting:gin4,
-										price_point:gin44,
-										is_business:gin5,
-										orderType:gin6}, 
+								mui.ajax(serverUrl+'/api/friends/newslist',{   									
+									data:{
+										'numsPerPage':6,
+										'currentPage':Spagenum,
+										'orderType':'DESC',
+										'orderField':'create_time',
+										'typeId':1
+									},
 									dataType:'json',//服务器返回json格式数据
 									type:'post',//HTTP请求类型 
 									timeout:10000,//超时时间设置为10秒；	
-									headers:{"token":oldtoken}, 
+									headers: {"token": oldToken,'city': cityNum},
 									success:function(data){
 										if(data.errno == 0){
 											var dataobj = {};
-											mui.each(data.data.data,function (index,ele) {
-												data.data.data[index].list_pic = serverimgUrl + eval("("+ele.list_pic+")")[0].picImg;
-											})
-											dataobj.list = data.data.data; 
+											var nowArray = data.data.data;
+											for(var j = 0 ;j<nowArray.length;j++){
+												//整理头像格式
+												if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+													if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+														nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+													}else{
+														nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+													}
+												}else{
+													nowArray[j].avatar = '../img/10.png'
+												}
+															
+												if(!nowArray[j].nickname){
+													nowArray[j].nickname = '匿名'
+												}
+												//整理内容图片格式
+												var nowArray2 = JSON.parse(nowArray[j].pic);
+												if(nowArray2.length){
+													var picS = [];
+													for(var k = 0 ;k<nowArray2.length;k++){
+														picS.push(nowArray2[k].picImg);
+													}
+													nowArray[j].picS = picS;
+												}
+											}
+											
+											dataobj.dataList = data.data.data; 
 											//获取并渲染用户信息
 											var html=template("infolist",dataobj);
 											document.getElementById("infolistdiv").innerHTML += html;
+											lazyLoad(true,10);
 										}
 										mui("#upload")[0].innerHTML = " ";
 										Spagenum++;//加载成功,当前页+1
