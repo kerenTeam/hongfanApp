@@ -586,7 +586,7 @@
 								</div>
 							</dd>
 							<%}%>
-							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0)){%>
+							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0) || goodsList[i].postAge.maxNums == 1 || goodsList[i].postAge.maxMoney == 1){%>
 							<dd class="dd-padding kv-line-r postfeeWrap ddwl">
 								<h6>配送方式</h6>
 								<p class="jifen">包邮</p>
@@ -837,7 +837,37 @@
 			} 
 			shopID = shopID.unique1();
 
-			 
+			for(var i = 0; i < shopID.length; i++) {
+				//分组 金额 和 数量  分组商品优惠小计
+				var igetShopIdNum='',
+					groupWeight = 0,
+					groupMoneynoreduce = 0;
+				for(var j = 0; j < orderStorage.length; j++) {
+					if(shopID[i] == orderStorage[j].shopId) {
+						if(orderStorage[j].igetShopId == '0'){
+							igetShopIdNum = 0; 
+						}else{
+
+							igetShopIdNum = 1; 
+						}
+						if(!orderStorage[j].goodweight || orderStorage[j].goodweight == ' ') {
+							orderStorage[j].goodweight = 0;
+						}
+						deliveryFee = parseFloat(orderStorage[j].goodsDelivery); 
+						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum)+deliveryFee;
+						groupWeight += parseFloat(orderStorage[j].goodweight) * parseFloat(orderStorage[j].goodsnum);
+						
+					} 
+				}
+				
+				igetShopId.push(igetShopIdNum);
+				shopMoney.push({
+					id: shopID[i],
+					money: parseFloat(groupMoneynoreduce).toFixed(2)
+				})
+				storeWeight.push({shopid:shopID[i],weight:parseFloat(groupWeight).toFixed(2)})
+				 
+			} 
 			//分商店  订单数据 小计
 			for(var i = 0; i < shopID.length; i++) {
 				var orderList = {};
@@ -866,6 +896,8 @@
 				if(igetShopId[j] == '0') {
 					if(shopMoney[j].money >= 88) {
 						orderSubmitData[j].express_id = '-1';
+					}else{
+						orderSubmitData[j].express_id = '0';
 					}
 				} else {   
 					if(storeWeight[j].weight == 0) { 
@@ -1018,10 +1050,8 @@
 					var isIntergal = 0;
 					 
 					var goodsdata = JSON.stringify(orderSubmitData);
-					console.log("goodsdata 445" ,goodsdata)
 					var notice = JSON.stringify(noticeData);
-					//获取总价
-					var payTotal = parseFloat($("#submit_order").html()).toFixed(2); 
+					 
 				 	gopay(); 
 						function gopay() {
 							console.log('goodsdata',JSON.parse(goodsdata))
@@ -1048,6 +1078,7 @@
 										var dataObj = {};
 										for(var i = 0 ;i<data.data.Params.goodsData.length;i++){
 											data.data.Params.goodsData[i].actualPrice = Math.floor(data.data.Params.goodsData[i].actualPrice * 100) / 100;
+											data.data.Params.goodsData[i].postAge = JSON.parse(data.data.Params.goodsData[i].postAge);
 											for(var j = 0 ;j<data.data.Params.goodsData[i].goods_Data.length;j++){
 												if(data.data.Params.goodsData[i].goods_Data[j].youpin){
 													data.data.Params.goodsData[i].goods_Data[j].youpin = JSON.parse(data.data.Params.goodsData[i].goods_Data[j].youpin);
@@ -1059,7 +1090,7 @@
 										}
 									 	dataObj.goodsList = data.data.Params.goodsData;
 									 	dataObj.myurl = serverimgUrl;
-									 	dataObj.PriceCalculValue = data.data.PriceCalculValue;
+									 	dataObj.PriceCalculValue = Math.floor(data.data.PriceCalculValue * 100) / 100;
 										var html = template('orderData', dataObj);
 										document.getElementById('orderTpl').innerHTML = html;
 										
@@ -1120,7 +1151,8 @@
 																}
 																$(this).siblings().attr("data-id", 0);
 																$(this).attr("data-id", 1);
-																$(".choosewl").removeClass("mui-active")
+																$(".choosewl").removeClass("mui-active");
+																calculate();
 															})
 														},
 														error: function(xhr, type, errorThrown) {
@@ -1160,7 +1192,7 @@
 														}
 														$(this).attr("data-id", 1);
 														$(".choosewl").removeClass("mui-active");
-														
+														calculate();
 													})
 												}
 							
