@@ -584,9 +584,14 @@
 						if(status == 200){
 							console.log(back.responseText);
 							var dataobj = JSON.parse(back.responseText);
-							if(dataobj.errno == 0){
-								alert('成功');
+							if(dataobj.errno == 0){ 
 								plus.nativeUI.closeWaiting();
+								mui.toast('提问成功');
+								setTimeout(function(){
+									var page = plus.webview.getWebviewById('questionInfo');
+									mui.fire(page,'refreash');
+									plus.webview.currentWebview().close();
+								},500)
 							}else{
 								plus.nativeUI.closeWaiting();//关闭等待框
 								mui.toast('发布失败，请重试！');
@@ -599,6 +604,22 @@
 						
 					}
 				);
+				//转换因子
+				var city={}; 
+				city.longitude=104.4567788;
+				city.latitude=33;
+				
+				//地球半径
+				var R = 6371.393; 
+				
+				var girthY = R * 2 * Math.PI;
+				
+				var girthX = Math.cos(city.latitude / 180 * Math.PI) * girthY ;
+				//x轴转换因子
+				city.xFactor = girthX / 360;
+				 
+				//y轴转换因子
+				city.yFactor = girthY / 360;
 				console.error('groupId '+groupId,'onlyExpert '+onlyExpert,'expertId' +expertId,'myuserid '+myuserid,'content '+content)
 				task.setRequestHeader('token',oldToken);
 				task.setRequestHeader('city',cityNum);
@@ -609,6 +630,8 @@
 				task.addData("onlyExpert",onlyExpert.toString());
 				task.addData("assignedExpert",expertId);
 				task.addData("content",content);
+				task.addData("location",JSON.stringify(city));
+				
 				if(Apic.length){ 
 					console.log(Apic);
 					[].forEach.call(Apic,function(ele,index){

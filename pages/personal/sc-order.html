@@ -13,6 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" href="../../css/reset.css"> 
+		<link rel="stylesheet" href="../../css/Recharge.css">
 		<script type="text/javascript" src="../../js/jquery.min.js"></script> 
 		<script src="../../js/mui.min.js" type="text/javascript"></script>
 		<style type="text/css">
@@ -158,89 +159,7 @@
 				white-space: normal;
 				font-size: 14px;
 			}
-			#payChoose {
-				top: 0;
-				left: 0;
-				bottom: 0;
-				z-index: 9999;
-				background-color: rgba(0, 0, 0, 0.2);
-			}
-			
-			#payChoose p {
-				text-align: center;
-				color: black;
-				position: relative;
-				font-size: 0.16rem;
-				padding: 15px;
-			}
-			
-			#payChoose p:after {
-				position: absolute;
-				right: 0;
-				bottom: 0;
-				content: '';
-				left: 0;
-				height: 1px!important;
-				-webkit-transform: scaleY(0.1);
-				-webkit-transform-origin: bottom;
-				background-color: #D1D2D4;
-			}
-			
-			#payChoose p img {
-				width: 16px;
-				position: absolute;
-				right: 15px;
-				top: 50%;
-				margin-top: -8px;
-			}
-			
-			.paycontent {
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				background: #EEEEEE;
-			}
-			
-			.mui-popover.mui-popover-action .mui-table-view {
-				margin: 0;
-			}
-			
-			.suborder a {
-				background-color: #F53C42;
-				color: white!important;
-				border-radius: 5px!important;
-				margin: 1px!important;
-			}
-			
-			.paycontent img {
-				width: 30px;
-				margin-right: 15px;
-			}
-			
-			.waypay li {
-				background: white;
-				color: black;
-				font-size: 0.15rem;
-				text-align: left;
-			}
-			
-			.waypay li img.fr {
-				width: 25px;
-				vertical-align: middle;
-			}
-			
-			.paytip {
-				position: relative;
-				background: white;
-				padding: 15px;
-				text-align: center;
-				font-size: 0.14rem;
-			}
-			
-			#totalPayCash {
-				color: red;
-			}
+			 
 			.fineB:after{bottom: 1px;}
 			.fineB1:after{bottom: 0px;}
 			body{background-color: #f3f3f3;}
@@ -499,17 +418,16 @@
 			</div>
 		</div>
 		
-		<!--操作表-->
-		<div id="payChoose" class="mui-popover mui-popover-action mui-popover-bottom closePay">
+		<!--操作表   支付弹窗--> 
+		<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 			<div class="paycontent">
-				<p><span>请选择支付方式</span><img src="../../img/close.svg" class="closePay" /></p>
-				<div class="paytip">请尽快完成支付 充值金额<span id="totalPayCash"></span></div>
 				<ul class="mui-table-view waypay">
-					<li class="mui-table-view-cell">
-						<a href="#" id="alipay" data-pay="alipay"><img src="../../img/alipay2-2.png" />支付宝</a>
+					<p><span>支付方式</span></p>
+					<li class="">
+						<a id="alipay" data-pay="alipay"><img class="aClick2" src="../../img/tickets/zhifubao.png"></a>
 					</li>
-					<li class="mui-table-view-cell">
-						<a href="#" id="wxpay" data-pay="wxpay"><img src="../../img/weixin2-2.png" />微信 </a>
+					<li class="">
+						<a id="wxpay" data-pay="wxpay"><img class="aClick2" src="../../img/tickets/weixin.png"> </a>
 					</li>
 				</ul>
 			</div>
@@ -1030,6 +948,7 @@
 								timeout: 300000, //超时时间设置为10秒；
 								success: function(data) {
 									plus.nativeUI.closeWaiting();
+									$("#payChoose").removeClass("mui-active");
 									console.log("Zf",data)
 									if(data.errno == 1000){
 										mui.toast('积分不足请重新生成订单')

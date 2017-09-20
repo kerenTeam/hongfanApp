@@ -36,10 +36,10 @@
   		.cmtall img{width: 25px;margin-right: 5px;}
   		.cmtflex{display: flex;justify-content: space-between;align-items: center;}
   		.ctc span{color: #fb7e23;}
-  		.jubao{background-color: white;} 
+  		.jubao{background-color: white;bottom: 0!important;position: absolute;right: 0;left: 0;} 
 		.jubao li a{padding: 18px;line-height: 15px;text-align: center;border-bottom: 1px solid #EEEEEE;display: block;color: black;}
 		.jubao li:last-child a{color: rgb(153,153,153);}
-	   	ul{list-style: none;padding: inherit;margin: 0;}
+		ul{list-style: none;padding: inherit;margin: 0;}
 	   	
 	   	#upload{min-height: auto !important;padding-top: 5px;height: 37px;}
 		#upload img{padding: 0 !important;margin: 0;width: 32px;}
@@ -58,7 +58,8 @@
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
 		#upload{min-height: auto !important;padding-top: 5px;height: 37px;text-align: center;}
 		#upload img{padding: 0 !important;margin: 0;width: 32px;}
-	   	
+	   	#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}	
+		
 	</style>
 
 	<body style="background-color: white;">
@@ -116,9 +117,9 @@
 									<div class="flexrr">
 										<div class="disablecl ft12" >
 											<%if(dataList[i].likeUserId){%>
-												<img src="../../img/makeFriend/yizan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+												<img src="../../img/makeFriend/yizan.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 												<%}else{%>
-													<img src="../../img/makeFriend/zan.png" onclick="goZan(this,<%=dataList[i].id%>)"/>
+													<img src="../../img/makeFriend/zan.png" onclick="goZan(this,<%=dataList[i].id%>,<%=dataList[i].user_id%>)"/>
 													<%}%>
 											 
 											 赞<span><%=dataList[i].likes%></span> </div> 
@@ -174,19 +175,19 @@
 		</div>
 		
 		<!--操作表-->
-		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+		<div id="maskInfo" style="display: none;">
 		    <!-- 可选择菜单 -->
 		    <ul class="jubao">
 		      <li>
-		        <a href="#">加入黑名单</a>
+		        <a href="javascript:;" onclick="doJubao()">加入黑名单</a>
 		      </li>
 		      <li>
-		        <a href="#">举报</a>
+		        <a href="javascript:;" onclick="doJubao()">举报</a>
 		      </li>
 		      <li>
-		        <a href="#sheet1">取消</a>
+		        <a href="javscript:;" class="closeMask" >取消</a>
 		      </li>
-		    
+		    </ul>
 		</div>
 	 </body>
 	 
@@ -252,18 +253,18 @@
 						} 
 				    }
 					
-					window.goZan = function(obj,id){ 
+					window.goZan = function(obj,id,toUserId){ 
 						var curThis = $(obj); 
 						var likes = parseInt(curThis.siblings('span').html());
 						
 						if(curThis.attr('src') == '../../img/makeFriend/zan.png'){
 							likes = likes+1; 
 							curThis.siblings('span').html(likes);
-							likeThis(curThis,id,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png');
+							likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png');
 						}else{ 
 							likes = likes-1; 
 							curThis.siblings('span').html(likes);
-							likeThis(curThis,id,cityNum,myuserid,oldToken,'delete','../../img/makeFriend/zan.png'); 
+							likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'delete','../../img/makeFriend/zan.png'); 
 						}
 					}
 					if(typeNum == 0){
@@ -331,7 +332,33 @@
 								document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
 								mui("#upload")[0].innerHTML = "";
 								lazyLoad(true,50);//懒加载
+								//操作表
+								var jbuid='',junsid;
+								$('.goanswer').click(function(){
+									jbuid = $(this).attr('data-id');
+									junsid = $(this).attr('data-useRId'); 
+									event.stopPropagation();
+									$('#maskInfo').fadeIn(200); 
+									
+								})
+								window.doJubao= function(){ 
+									if(plus.storage.getItem('myToken')){
+										jubao(junsid,jbuid,myuserid,cityNum,oldToken)
+									}else{
+										mui.toast('请登录');
+										openview({
+											view:'login.html'
+										});
+									} 
+								}
 								 
+								$('#maskInfo li').click(function(){
+									event.stopPropagation()
+								})
+								$('#maskInfo,.closeMask').click(function(){
+									event.preventDefault()
+									$('#maskInfo').fadeOut(200);
+								})  
 								$(window).scroll(function() {
 									if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
 											var scrollTop = $(this).scrollTop();　
@@ -418,6 +445,33 @@
 																dataObj.dataList = data.data.data;
 																document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
 																lazyLoad(false,50);//懒加载
+																//操作表
+																var jbuid='',junsid;
+																$('.goanswer').click(function(){
+																	jbuid = $(this).attr('data-id');
+																	junsid = $(this).attr('data-useRId'); 
+																	event.stopPropagation();
+																	$('#maskInfo').fadeIn(200); 
+																	
+																})
+																window.doJubao= function(){ 
+																	if(plus.storage.getItem('myToken')){
+																		jubao(junsid,jbuid,myuserid,cityNum,oldToken)
+																	}else{
+																		mui.toast('请登录');
+																		openview({
+																			view:'login.html'
+																		});
+																	} 
+																}
+																 
+																$('#maskInfo li').click(function(){
+																	event.stopPropagation()
+																})
+																$('#maskInfo,.closeMask').click(function(){
+																	event.preventDefault()
+																	$('#maskInfo').fadeOut(200);
+																}) 
 															}
 															mui("#upload")[0].innerHTML = " ";
 															Spagenum++; //加载成功,当前页+1
@@ -436,20 +490,7 @@
 											} 
 									}
 								});
-								
-								//操作表
-								$('.goanswer').click(function(){
-									event.stopPropagation();
-									$('#maskInfo').fadeIn(200); 
-								})
-								 
-								$('#maskInfo li').click(function(){
-									event.stopPropagation()
-								})
-								$('#maskInfo,.closeMask').click(function(){
-									event.preventDefault()
-									$('#maskInfo').fadeOut(200);
-								})
+							 
 								 
 								//评论数据
 								$('.commentsShow').each(function(){

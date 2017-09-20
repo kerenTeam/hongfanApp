@@ -9,11 +9,10 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/common.css">
-		<link rel="stylesheet" type="text/css" href="../../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" href="../../css/reset.css">
-		<link rel="stylesheet" href="../../css/one.css">
+		<link rel="stylesheet" href="../../css/Recharge.css">
 		<script src="../../js/mui.min.js"></script>
 		<style type="text/css">
 			body{ background-color: #f3f3f3; }
@@ -30,11 +29,11 @@
 			.offerTop p{ color: #fedddd; padding: 2.5%; padding-top: 2%; padding-bottom: 4%; font-size: 12px; width: 100%; }
 			.span3{ background-color: #fff; color: #fd6363;  border-radius: 3px; float: right; padding: 1.4%;  margin-top: -2.5%; font-size: 14px;display: inline-block;
 	      		white-space: nowrap; padding-right: calc(100vw * 0.025); }
-			.offerFoot{ overflow: hidden; }
-			.offerFoot img{  width: 22.5%; margin-right: 2%; float: left; padding: 2.5% 0; }
-			.offerFoot img:first-child{ margin-left: 2%; }
+			.offerFoot{ overflow: hidden;padding: 5px; }
 			.offerWrap{ background-color: #fff; border-radius: 4px; margin-top: 18PX; }
 			#offerId .offerWrap:first-child{ margin-top: 0; }
+			.answerImf{margin: 1px;width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;}
+			.anImg{width: 100%!important;opacity: 0;}
 		</style>
 	</head>
 	<body>
@@ -43,49 +42,258 @@
 			<h1 class="mui-title">优惠</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏--> 
-		<div id="offerId">
-			<div class="offerWrap">
-				<div class="offerTop">
-					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-					<p>宏帆XX商家抵用卷 <span class="span3">付10元购买</span></p>
-				</div>
-				<div class="offerFoot">
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-				</div>
-			</div>
-			<div class="offerWrap offerWrap2">
-				<div class="offerTop">
-					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-					<p>宏帆XX商家抵用卷 <span class="span3">免费领取</span></p>
-				</div>
-				<div class="offerFoot">
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-				</div>
-			</div>
-			<div class="offerWrap">
-				<div class="offerTop">
-					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-					<p>宏帆XX商家抵用卷 <span class="span3">付10元购买</span></p>
-				</div>
-				<div class="offerFoot">
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-				</div>
+		<div id="offerId"></div>
+		<script type="text/html" id="Alist-detail">
+			<%for(var i = 0 ;i<objData.length;i++){%>
+				<%if(objData[i].stock && objData[i].stock>0){%>
+					<%if(objData[i].price){%>
+						<div class="offerWrap">
+							<div class="offerTop" onclick="goPay(<%=objData[i].id%>)">
+								<h4> <b class="b2"></b><span class="span1"><%=objData[i].title%></span> <span class="span2"><%=objData[i].begin_date%> ~ <%=objData[i].end_date%></span></h4>
+								<p><%=objData[i].name%> <span class="span3">付<%=objData[i].price%>元购买</span></p>
+							</div>
+							<div class="offerFoot">
+								<%if(objData[i].pic && objData[i].pic.length){%>
+									<% for(var j= 0;j<objData[i].pic.length;j++){%>
+										<div class="answerImf">
+											<img class="anImg loadPics picOp" onerror="this.src='../../img/market/nodata.svg'" onload="imgHeight(this)" src="<%=objData[i].pic[j].picImg%>" alt="" />
+								 		</div> 
+									<%}%>
+								<%}%> 
+							</div>
+						</div> 
+					<%}else{%>
+						<div class="offerWrap offerWrap2">
+							<div class="offerTop" onclick="goPay(<%=objData[i].id%>)">
+								<h4> <b class="b2"></b><span class="span1"><%=objData[i].title%></span> <span class="span2"><%=objData[i].begin_date%> ~ <%=objData[i].end_date%></span></h4>
+								<p><%=objData[i].name%> <span class="span3">免费领取</span></p>
+							</div>
+							<div class="offerFoot">
+								<%if(objData[i].pic && objData[i].pic.length){%>
+									<% for(var j= 0;j<objData[i].pic.length;j++){%>
+										<div class="answerImf">
+											<img class="anImg loadPics picOp" onerror="this.src='../../img/market/nodata.svg'" onload="imgHeight(this)" src="<%=objData[i].pic[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>" alt="" />
+								 		</div>
+									<%}%>
+								<%}%> 
+							</div>
+						</div>	
+					<%}%>
+				<%}%> 
+			<%}%>
+		</script>
+		<!--操作表   支付弹窗--> 
+		<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
+			<div class="paycontent">
+				<ul class="mui-table-view waypay">
+					<p><span>支付方式</span></p>
+					<li class="">
+						<a id="alipay" data-pay="alipay"><img class="aClick2" src="../../img/tickets/zhifubao.png"></a>
+					</li>
+					<li class="">
+						<a id="wxpay" data-pay="wxpay"><img class="aClick2" src="../../img/tickets/weixin.png"> </a>
+					</li>
+				</ul>
 			</div>
 		</div>
-		
+		<!--操作表   支付弹窗结束-->
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+		 
+		$(".closePay").click(function() {
+			event.stopPropagation();
+			$("#payChoose").removeClass("mui-active");
+		})
+		var pays = {};
+		mui.plusReady(function(){
+			//铺数据
+			plus.nativeUI.showWaiting();
+			var cityNum = plus.storage.getItem('cityNum'),
+				myuserid = plus.storage.getItem('userid'),
+				oldToken = plus.storage.getItem('oldToken');
+			mui.ajax(serverUrl+'/api/index/couponlist',{
+				data:{type:2},
+				dataType:'json',
+				type:'post',
+				timeout:10000,
+				headers: {"token": oldToken,'city': cityNum},	 
+				success:function(data,type,xhr){
+					console.log('列表',data);				
+					var dateObj={};
+//					for(var i = 0;i < data.data.length;i++){
+//			       		var dt = new Date(data.data[i].begin_time);
+//			       		var dt2 = new Date(data.data[i].end_time);
+//						var date = [
+//						  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+//						var date2 = [
+//						  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+//						
+//						data.data[i].begin_time = date;
+//						data.data[i].end_time = date2;
+//					}
+					if(data.data && data.data.length){
+						for(var i = 0;i < data.data.length;i++){
+							if(data.data[i].pic && data.data[i].pic!='null'){//整理内容图片格式
+								 data.data[i].pic = JSON.parse(data.data[i].pic)
+						 		 for(var j= 0;j<data.data[i].pic.length;j++){
+									if(data.data[i].pic[j].picImg.indexOf('http')<0){
+										data.data[i].pic[j].picImg = serverimgUrl + data.data[i].pic[j].picImg;
+									}
+								}
+						 	}
+						}
+						dateObj.objData=data.data;
+						dateObj.url=serverimgUrl;
+						mui('#offerId')[0].innerHTML = template('Alist-detail',dateObj);
+					}else{
+						mui('#offerId')[0].innerHTML = '<div style="padding:50px;text-align:center">暂无优惠券</div>';
+					}
+					plus.nativeUI.closeWaiting();
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast('响应失败')
+					console.log('响应失败  !');
+				}
+			});
+			//goPay
+			//系统检测获取支付通道
+			plus.payment.getChannels(function(channels) {
+				console.log("channel " + JSON.stringify(channels));
+				for(var i in channels) {
+					var channel = channels[i];
+					// 过滤掉不支持的支付通道：暂不支持360相关支付
+					if(channel.id == 'qhpay' || channel.id == 'qihoo') {
+						continue;
+					}
+					pays[channel.id] = channel;
+					if(channel.id == 'alipay') { //添加支付事件
+						document.getElementById('alipay').setAttribute('onclick', 'payfun("alipay")');
+					}
+					if(channel.id == 'wxpay') {
+						document.getElementById('wxpay').setAttribute('onclick', 'payfun("wxpay")');
 
+					}
+					checkServices(channel);
+				}
+			}, function(e) {
+				plus.nativeUI.alert("支付失败，请重试", null, "提示");
+			});
+
+			// 检测是否安装支付服务
+			function checkServices(pc) {
+				if(!pc.serviceReady) {
+					var txt = null;
+					switch(pc.id) {
+						case "alipay":
+							txt = "检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？";
+							break;
+						default:
+							txt = "系统未安装“" + pc.description + "”服务，无法完成支付，是否立即安装？";
+							break;
+					}
+				 
+				}
+			}
+			//系统检测获取支付通道结束
+
+			window.goPay = function(cid) { 
+				var couponId = cid;
+				  $("#payChoose").addClass("mui-active");
+					// 支付方法 
+					window.payfun = function(id) {
+						var varpay; 
+						if(id == 'alipay' || id == 'wxpay') {
+							//调用支付功能
+							plus.nativeUI.showWaiting();
+								gopay(id); 
+						} else {
+							plus.nativeUI.alert("当前环境不支持此支付通道！", null, "提示");
+							return;
+						}
+
+						function gopay(id) {
+							mui.ajax(serverUrl + '/api/index/getcoupon', {
+								data: {
+									userid: myuserid,
+									payType: id, 
+									id:couponId,
+								},
+								type: 'post', //HTTP请求类型
+								headers: {"token": oldToken,'city': cityNum},
+								timeout: 10000, //超时时间设置为10秒；
+								success: function(data) {
+									console.error('支付返回',data);
+									plus.nativeUI.closeWaiting()  
+									if(data.errno == 1000) {
+										mui.toast('已领完') 
+									} 
+									if(data.errno == 0) {
+										
+										var varpay;
+										if(id == 'wxpay') {
+											varpay = {
+												"appid":data.data.appid,
+												"noncestr":data.data.noncestr,
+												"package":"Sign=WXPay",
+												"partnerid":data.data.partnerid,
+												"prepayid":data.data.prepayid,
+												"timestamp":parseInt(data.data.timestamp),
+												"sign":data.data.sign
+											};
+											//微信
+											 plus.payment.request(pays[id], varpay, function(result) {
+												var resultStr = JSON.stringify(result);
+												console.log("----- 支付成功 -----");
+												plus.nativeUI.closeWaiting();
+												//修改订单状态
+												 mui.toast('领取成功')
+											}, function(e) {
+												console.log("----- 支付失败 -----");
+												console.log("[" + e.code + "]：" + e.message);
+												plus.nativeUI.alert("支付失败");
+											});
+										} else {
+											//支付宝 
+											varpay = data.data;
+											plus.payment.request(pays[id], varpay, function(result) {
+												var resultStr = JSON.stringify(result);
+												console.log("----- 支付成功 -----", JSON.stringify(result));
+												plus.nativeUI.closeWaiting();
+												var oldtoken = plus.storage.getItem('oldToken');
+												//修改订单状态
+												 mui.toast('领取成功')
+	  
+											}, function(e) {
+												console.log("----- 支付失败 -----");
+												console.log("[" + e.code + "]：" + e.message);
+												//					console.log("["+e.code+"]："+e.message);
+												plus.nativeUI.closeWaiting();
+												plus.nativeUI.alert("支付失败");
+											});
+										}
+										 
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									//异常处理；
+									console.log(type);
+									console.log("----- 请求订单失败 -----");
+									console.log(xhr.status);
+									plus.nativeUI.closeWaiting();
+									plus.nativeUI.alert("获取订单信息失败！");
+								}
+							});
+
+						}
+
+					} 
+			}
+		});
+		
+		</script>
 	</body>
 	
 </html>

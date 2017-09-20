@@ -169,7 +169,7 @@
 											</div>
 										</div>
 										<div class="butright">
-											<div class="goanswer"> <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
+											<div class="goanswer" data-id="<%=dataList[i].id%>" data-userId="<%=dataList[i].user_id%>"> <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
 							           </div>
 									</div>
 									<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
@@ -257,10 +257,10 @@
 			    <!-- 可选择菜单 -->
 			    <ul class="jubao">
 			      <li>
-			        <a href="#">加入黑名单</a>
+			        <a href="javascript:;" onclick="doJubao()">加入黑名单</a>
 			      </li>
 			      <li>
-			        <a href="#">举报</a>
+			        <a href="javascript:;" onclick="doJubao()">举报</a>
 			      </li>
 			      <li>
 			        <a href="javscript:;" class="closeMask" >取消</a>
@@ -696,7 +696,34 @@
 																}
 																dataObj.dataList = data.data.data;
 																document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
-																lazyLoad(true,-100);//懒加载
+																lazyLoad(false,10);//懒加载
+																//操作表
+																var jbuid='',junsid;
+																$('.goanswer').click(function(){
+																	jbuid = $(this).attr('data-id');
+																	junsid = $(this).attr('data-useRId'); 
+																	event.stopPropagation();
+																	$('#maskInfo').fadeIn(200); 
+																	
+																})
+																window.doJubao= function(){ 
+																	if(plus.storage.getItem('myToken')){
+																		jubao(junsid,jbuid,myuserid,cityNum,oldToken)
+																	}else{
+																		mui.toast('请登录');
+																		openview({
+																			view:'login.html'
+																		});
+																	} 
+																}
+																 
+																$('#maskInfo li').click(function(){
+																	event.stopPropagation()
+																})
+																$('#maskInfo,.closeMask').click(function(){
+																	event.preventDefault()
+																	$('#maskInfo').fadeOut(200);
+																}) 
 															}
 															mui("#upload")[0].innerHTML = " ";
 															Spagenum++; //加载成功,当前页+1
@@ -717,10 +744,24 @@
 								});
 								
 								//操作表
+								var jbuid='',junsid;
 								$('.goanswer').click(function(){
+									jbuid = $(this).attr('data-id');
+									junsid = $(this).attr('data-useRId'); 
 									event.stopPropagation();
 									$('#maskInfo').fadeIn(200); 
+									
 								})
+								window.doJubao= function(){ 
+									if(plus.storage.getItem('myToken')){
+										jubao(junsid,jbuid,myuserid,cityNum,oldToken)
+									}else{
+										mui.toast('请登录');
+										openview({
+											view:'login.html'
+										});
+									} 
+								}
 								 
 								$('#maskInfo li').click(function(){
 									event.stopPropagation()
@@ -856,14 +897,8 @@
 				openview({
 					view:'socialCircle/ranking.html'
 				})
-			})
-			 
-			$('.jubao a').click(function(){
-				event.preventDefault();
-				event.stopPropagation(); 
-			})
-			 
- 			 $(".mui-backdrop").unbind()
+			}) 
+ 			$(".mui-backdrop").unbind()
  			 
  			//更多热门
  			$('#todayHOt').click(function(){
