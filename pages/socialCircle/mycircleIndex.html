@@ -56,8 +56,15 @@
 		.lkerName{display: block;max-width:60px;overflow: hidden;text-overflow: ellipsis;min-height: 12px;}
 		.phnone{background-color: white;}
 		.gift0 h4 {padding: 5px;font-size: 14px;color: #555;}
-		.moreliwu{float: left;width: 100%;}
+		.moreliwu{float: left;width: 100%;margin-bottom: 20px;}
 		.moreliwu img{width: 100%;padding: 5px;height: 40px;}
+		.giftCon p{overflow: hidden;background-color: #f3f3f3;}
+		.giftPic{width: 100%;height: 100%;}
+		.giftCon h5.h5, .giftCon span.span{visibility: hidden;}
+		.mui-row{overflow: hidden;}
+		.giftRecord p{line-height: 26px;padding: 2px 5px;font-size: 13px;}
+		.giftRecord p span{float: right;}
+		.giftItem{}
 		
 	</style>
 	<body style="background-color: white;">
@@ -124,13 +131,13 @@
 										<%if(dataList[i].picS){%>
 											<div class="DitemRin1" >
 												<img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList[i].picS%>"/>
-											</div>	
+											</div>
 										<%}else{%>
 											<div class="DitemRin1" style="width: 0;">
 											</div>
 										<%}%>	
 										<h3 class="overTwo" ><%=dataList[i].content%></h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
-									</div>						
+									</div>
 								</div>
 							</div>
 						<%}%>	
@@ -238,38 +245,61 @@
 				</div>
 				
 				<!--礼物-->
-				<style type="text/css">
-					.giftCon p{overflow: hidden;background-color: #f3f3f3;}
-					.giftPic{width: 100%;height: 100%;}
-					.giftCon h5.h5, .giftCon span.span{visibility: hidden;}
-				</style>
 				<div class="gift0 mui-content contentChild" style="display: none;">
 					<!--购买的礼物-->
-					<h4>购买的礼物</h4>
-			 		<div class="mui-row" id="giftDiv">
-				        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
-				        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
-				        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
-				        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
-				        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
-				        
-				        <div class="moreliwu"><img src="../../img/makeFriend/liwuxiala.png"/>sss </div>
-				    </div>
-				    <script type="text/html" id="SgiftDiv">
-				    	<%for(var i = 0;i<dataList.length;i++){%>
-				    		<div class="mui-col-sm-4 mui-col-xs-4">
-			            		<div class="giftCon">
-			            			<p><img class="giftPic loadPics" src="" data-src="<%=dataList[i].picS%>"/></p>
-			            			<h5>数量: &nbsp; 5个</h5>
-			            			<span onclick="exchangeHI('<%=dataList[i].picS%>',5,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换HI豆</span>
-			            		</div>
-					        </div>
-				    	<%}%>	
-						
-					</script>
+					<div id="">
+						<h4>购买的礼物</h4>
+				 		<div class="mui-row" id="giftDiv">
+					        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
+					        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
+					    </div>
+					    <div class="moreliwu" onclick="Unfolded(this)" style="display: none;"><img src="../../img/makeFriend/liwuxiala.png"/></div>
+					    <script type="text/html" id="SgiftDiv">
+					    	<%for(var i = 0;i<dataList.length;i++){%>
+					    		<div class="mui-col-sm-4 mui-col-xs-4 PlaceholderDiv">
+				            		<div class="giftCon giftCon2">
+				            			<p><img class="giftPic loadPics" src="" data-src="<%=dataList[i].picS%>"/></p>
+				            			<h5>数量: &nbsp; 5个</h5>
+				            			<span onclick="exchangeHI('<%=dataList[i].picS%>',5,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换</span>
+				            			<span onclick="Giftren()">赠送</span>
+				            		</div>
+						        </div>
+					    	<%}%>	
+						</script>
+					</div>
+					<!--他人赠送的礼物-->
+					<div id="" class="giftItem">
+						<h4>他人赠送的礼物</h4>
+				 		<div class="mui-row" id="giftDiv2">
+					        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
+					        <div class="mui-col-sm-4 mui-col-xs-4"><div class="giftCon"><p></p><h5 class="h5">占位</h5><span class="span">占位</span></div></div>
+					    </div>
+					    <div class="moreliwu" onclick="Unfolded(this)" style="display: none;"><img src="../../img/makeFriend/liwuxiala.png"/></div>
+					    <script type="text/html" id="SgiftDiv2">
+					    	<%for(var i = 0;i<dataList.length;i++){%>
+					    		<div class="mui-col-sm-4 mui-col-xs-4 PlaceholderDiv">
+				            		<div class="giftCon">
+				            			<p><img class="giftPic loadPics" src="" data-src="<%=dataList[i].picS%>"/></p>
+				            			<h5>数量: &nbsp; 5个</h5>
+				            			<span onclick="exchangeHI('<%=dataList[i].picS%>',5,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换HI豆</span>
+				            		</div>
+						        </div>
+					    	<%}%>
+						</script>
+					</div>
+					<!--礼物记录-->
+					<div id="" class="giftItem">
+						<h4>礼物记录</h4>
+				 		<div class="mui-row giftRecord">
+				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
+				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
+				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
+				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
+				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
+					    </div>
+					    
+					</div>
 				</div>
-				
-				
 				
 				<!--礼物弹窗-->
 				<div class="changeHI" style="display: none;">
@@ -353,7 +383,7 @@
 			mui('.markHI')[0].style.display = 'none';
 			mui('.changeHI')[0].style.display = 'none';
 		}
-		function exchangeGift(typeId,id){/*兑换  数据 方法*/
+		function exchangeGift(typeId,id){/*兑换礼物  数据 方法*/
  			mui.plusReady(function(){
  				var oldToken = plus.storage.getItem('oldToken'),
 		 			cityNum = plus.storage.getItem('cityNum'),
@@ -382,6 +412,15 @@
  			})
 			
 		}/*兑换  数据 方法结束*/
+		function Giftren(){/*赠送礼物*/
+			openview({
+				view:'../socialCircle/make_friends.html'
+			})
+		}
+		function Unfolded(ele){ /*展开更多礼物*/
+			ele.previousSibling.previousSibling.style.height = 'auto';
+			ele.style.display = 'none';
+		}
 		//礼物兑换HI豆结束
 		
 		
@@ -393,7 +432,7 @@
 				timeout:8000,
 				headers:{"token":oldToken,"city":cityNum},           				
 				success:function(data,type,xhr){
-					console.log('我的礼物数据',data);
+					console.log('我的礼物数据1',data);
 					if(data.errno == 0){
 						if(data.data && data.data.length){
 							for(var j = 0 ;j<data.data.length;j++){//整理内容图片
@@ -406,9 +445,56 @@
 						 	dataObj.dataList = data.data;
 							document.getElementById('giftDiv').innerHTML = template("SgiftDiv", dataObj);
 							lazyLoad(true,50);//懒加载
+							/*隐藏更多*/
+							if(data.data.length > 3){
+								mui('.moreliwu')[0].style.display = 'block';
+								var unitHeight = mui('.PlaceholderDiv')[0].offsetHeight;
+								mui('#giftDiv')[0].style.height = unitHeight + 'px';
+								
+							}
 
 						}else{//没有礼物
 							document.getElementById('giftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
+						}
+						
+						
+					}else{
+						console.log(data.errmsg); 
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.error('我的礼物数据,响应失败');
+					Fload3 = 0;
+				}
+			});
+			mui.ajax(serverUrl+'/api/friends/gift/userId/'+myuserid,{
+				type:'get',
+				timeout:8000,
+				headers:{"token":oldToken,"city":cityNum},           				
+				success:function(data,type,xhr){
+					console.log('我的礼物数据2',data);
+					if(data.errno == 0){
+						if(data.data && data.data.length){
+							for(var j = 0 ;j<data.data.length;j++){//整理内容图片
+								var nowArray2 = JSON.parse(data.data[j].picImg);
+								if(nowArray2.length){
+									data.data[j].picS = nowArray2[0].picImg;
+								}
+							}
+							var dataObj = {};
+						 	dataObj.dataList = data.data;
+							document.getElementById('giftDiv2').innerHTML = template("SgiftDiv2", dataObj);
+							lazyLoad(true,50);//懒加载
+							/*隐藏更多*/
+							if(data.data.length > 3){
+								mui('.moreliwu')[1].style.display = 'block';
+								var unitHeight = mui('.PlaceholderDiv')[0].offsetHeight;
+								mui('#giftDiv2')[0].style.height = unitHeight + 'px';
+								
+							}
+
+						}else{//没有礼物
+							document.getElementById('giftDiv2').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
 						}
 						
 						

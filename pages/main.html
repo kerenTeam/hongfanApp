@@ -76,17 +76,20 @@
 		    	right: 10px;
 		    	top: 10px;
 		    }
+		    .partTitlea:after{
+		    	display: none;
+		    }
 		</style>
 	</head>
 
 	<body>
 		<header class="hasManyCity mui-row mui-bar mui-bar-transparent" id="header" style="z-index: 200;">
 			<div id="" class="cityBtn">
-				<span class="nowCity">重庆</span>
+				<span class="nowCity">邻水</span>
 				<div class="citys" style="display: none;">
-					<div class="fineB aClick citysBtn" onclick="citysBtn('成都')">成都</div>
-					<div class="fineB aClick citysBtn" onclick="citysBtn('上海')">上海</div>
-					<div class="fineB aClick citysBtn" onclick="citysBtn('重庆')">重庆</div>
+					<div class="fineB aClick citysBtn" onclick="citysBtn('宣汉')">宣汉</div>
+					<div class="fineB aClick citysBtn" onclick="citysBtn('南江')">南江</div>
+					<div class="fineB aClick citysBtn" onclick="citysBtn('邻水')">邻水</div>
 				</div>
 			</div>
 			<div id="" class="searchBox">
@@ -200,7 +203,7 @@
 							<p>宏帆广场</p>
 						</td>
 						<td class="locallife"><img src="../img/mainHtml/bendi.png" /><br />
-							<p>本地生活</p>
+							<p id="locallifePP">邻水生活</p>
 						</td>
 						<td class="ticket"><img src="../img/mainHtml/chongzhi.png" /><br />
 							<p>充值缴费</p>
@@ -235,8 +238,8 @@
 		<div class="sy_recmd" style="background-color: #fff;">
  
  		<!--邻水印象-->
- 		<div id="" style="margin-bottom: 2px;">
- 			<img src="../img/mainHtml/yingxiang.png"/>
+ 		<div id="xianzhiWrap" style="margin-bottom: 2px;">
+ 			<img id="xianzhi" src="../img/mainHtml/yingxiang.png"/>
  		</div>
 		<!--HI友圈--> 
 		<div class="mui-content hiFriend">
@@ -258,9 +261,10 @@
 		</div>
 		<script type="text/html" id="hiFriendTpl">
 			<%for(var i=0;i<dataList.length;i++){%>
-				<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(')">
+				<%if(dataList[i].picS){%>
+				<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
 		            <div class="hiFdW">
-		            	<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
+	            		<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
 		            </div>
 		            <p class="footFirend">
 		            	<img class="avaPic loadPics picOp" data-src="<%=dataList[i].avatar%>" src=""/>
@@ -270,10 +274,9 @@
 		            	<%}else{%>
 		            		<img class="lovePic" src="../img/mainHtml/weizan.png"/>
 		            	<%}%>
-
 		            </p>
 		        </div>
- 
+ 				<%}%>
 			<%}%>
 		</script>
 		<!--HI问答-->
@@ -297,7 +300,6 @@
 								<%if(dataList[i].price){%>
 									<span><%=dataList[i].price%> HI豆</span><b>悬赏</b>
 								<%}%>
-								
 							</h4>
 							<p class=""><%=dataList[i].content%> </p>
 						</div>
@@ -308,198 +310,212 @@
 		</div>
 		<img id='hbrain' src="../img/center/bgs.png" style="position: fixed;right: 0px;bottom: 20px;width: 80px;z-index: 999999;display: none;"/>
 
-		<!--HI抢购                   推荐列表-->
+		<!--HI抢购     1     推荐列表-->
 		<div class="sy_recmd">
  			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 抢购</h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
-				<div id="">
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8932','230')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8932','230')">七夕情人节钜惠套餐：西班牙原瓶进口爱情洛丽塔干红葡萄酒750ML+恒都爽口牛排130G*3</a></h3>
-							<div class="nr_box mui-row">
-								<div class="mui-col-sm-5 mui-col-xs-5 ">
-									<p class="fl fontcl2">￥98<small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥207</small>
-									</p>
-								</div>
-								<div class="mui-col-sm-7 mui-col-xs-7 saled">
-								<p></p>
-								</div>
+				<div class="manyTJ">
+					<li class="sy_recmd_list">
+						<div class="box" style="margin-bottom: 5px;">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('8731','307')">
+									<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
+								</a>
 							</div>
-							<div class="hiLimit">
-								<span>限时抢购</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8652','230')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8652','230')">[布里斯班阳光]恒都腌制西冷牛排180g*5块</a></h3>
-							<div class="nr_box mui-row">
-								<div class="mui-col-sm-5 mui-col-xs-5 ">
-									<p class="fl fontcl2">￥198<small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥290</small>
-									</p>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
+								<div class="nr_box mui-row">
+									<div class="mui-col-sm-5 mui-col-xs-5 ">
+										<p class="fl fontcl2">￥170<small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥299</small>
+										</p>
+									</div>
+									<div class="mui-col-sm-7 mui-col-xs-7 saled">
+									<p></p>
+									</div>
 								</div>
-								<div class="mui-col-sm-7 mui-col-xs-7 saled">
-								<p></p>
+								<div class="hiLimit">
+									<span>限时抢购</span>
+									<img src="../img/mainHtml/addCart.png" alt="" />
 								</div>
 							</div>
-							<div class="hiLimit">
-								<span>限时抢购</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
 						</div>
-					</div>
-				</li>
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8731','307')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
-							<div class="nr_box mui-row">
-								<div class="mui-col-sm-5 mui-col-xs-5 ">
-									<p class="fl fontcl2">￥170<small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥299</small>
-									</p>
-								</div>
-								<div class="mui-col-sm-7 mui-col-xs-7 saled">
-								<p></p>
-								</div>
-							</div>
-							<div class="hiLimit">
-								<span>限时抢购</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8731','307')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
-							<div class="nr_box mui-row">
-								<div class="mui-col-sm-5 mui-col-xs-5 ">
-									<p class="fl fontcl2">￥170<small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥299</small>
-									</p>
-								</div>
-								<div class="mui-col-sm-7 mui-col-xs-7 saled">
-								<p></p>
-								</div>
-							</div>
-							<div class="hiLimit">
-								<span>限时抢购</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
-						</div>
-					</div>
-				</li>
+					</li>
 				</div>
 				</ul>
 				<div class="clear"></div>
 			</div> 
 		</div>
 		
-		<!--HI源头找土货      推荐列表-->
+		<!--HI货榜     2     推荐列表-->
+		<div class="sy_recmd">
+ 			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 货榜</h3>
+			<div class="sy_recmd_list_box">
+				<ul> 
+				<div class="manyTJ">
+					<li class="sy_recmd_list">
+						<div class="box" style="margin-bottom: 5px;">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('8731','307')">
+									<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
+								</a>
+							</div>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
+								<div class="hiLimit hiLimit2">
+									<span>￥98</span>
+									<img src="../img/mainHtml/addCart.png" alt="" />
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+				</ul>
+				<div class="clear"></div>
+			</div> 
+		</div>
+		
+		<!--HI源头找土货 3      推荐列表-->
 		<div class="sy_recmd">
  			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 找源头土货 <br/><b>农家直供  新鲜到家</b></h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
-				<div id="">
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8932','230')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8932','230')">七夕情人节钜惠套餐：西班牙原瓶进口爱情洛丽塔干红葡萄酒750ML+恒都爽口牛排130G*3</a></h3>
-							<div class="hiLimit hiLimit2">
-								<span>￥98</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
+				<div class="manyTJ">
+					<li class="sy_recmd_list">
+						<div class="box" style="margin-bottom: 5px;">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('8731','307')">
+									<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
+								</a>
+							</div>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
+								<div class="hiLimit hiLimit2">
+									<span>￥98</span>
+									<img src="../img/mainHtml/addCart.png" alt="" />
+								</div>
 							</div>
 						</div>
-					</div>
-				</li>
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8652','230')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8652','230')">[布里斯班阳光]恒都腌制西冷牛排180g*5块</a></h3>
-							<div class="hiLimit hiLimit2">
-								<span>￥98</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8731','307')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
-							<div class="hiLimit hiLimit2">
-								<span>￥98</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="sy_recmd_list">
-					<div class="box" style="margin-bottom: 5px;">
-						<div class="pub_img">
-							<a class="rcdPadding" onclick="goInfo('8731','307')">
-								<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
-							</a>
-						</div>
-						<div class="pub_wz">
-							<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
-							<div class="hiLimit hiLimit2">
-								<span>￥98</span>
-								<img src="../img/mainHtml/addCart.png" alt="" />
-							</div>
-						</div>
-					</div>
-				</li>
+					</li>
 				</div>
 				</ul>
 				<div class="clear"></div>
 			</div> 
 		</div>
 		
-		<!--hi推荐   推荐列表-->
+		<!--HI找海外洋货    4    推荐列表-->
+		<div class="sy_recmd">
+ 			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 找海外洋货  <br/><b>保税真品直购  海外直飞代购</b></h3>
+			<div class="sy_recmd_list_box">
+				<ul> 
+				<div class="manyTJ">
+					<li class="sy_recmd_list">
+						<div class="box" style="margin-bottom: 5px;">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('8731','307')">
+									<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
+								</a>
+							</div>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
+								<div class="hiLimit hiLimit2">
+									<span>￥98</span>
+									<img src="../img/mainHtml/addCart.png" alt="" />
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+				</ul>
+				<div class="clear"></div>
+			</div> 
+		</div>
+		
+		<!--HI找地方特色    5    推荐列表-->
+		<div class="sy_recmd ">
+ 			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span>找地方特色    <br/><b>私房独家秘制</b></h3>
+			<div class="sy_recmd_list_box">
+				<ul> 
+				<div class="manyTJ">
+					<li class="sy_recmd_list">
+						<div class="box" style="margin-bottom: 5px;">
+							<div class="pub_img">
+								<a class="rcdPadding" onclick="goInfo('8731','307')">
+									<img src="../img/mainHtml/shangpingtu.png" width="145" height="145" class="hotImg">
+								</a>
+							</div>
+							<div class="pub_wz">
+								<h3 class="overflow_clear"><a onclick="goInfo('8731','307')">韩国代购HERA赫拉阳光伴靓防晒霜 防紫外线清爽保湿隔离SPF50+</a></h3>
+								<div class="hiLimit hiLimit2">
+									<span>￥98</span>
+									<img src="../img/mainHtml/addCart.png" alt="" />
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+				</ul>
+				<div class="clear"></div>
+			</div> 
+		</div>
+		
+		<!--很对推荐的js   公用   -->
+		<script type="text/html" id="manyTJJS">
+			<% if(SE){ %>
+				<%for(var i=0;i< list.length;i++){%>
+				<li class="sy_recmd_list" onclick="goInfo(<%=list[i].goods_id%>,<%=list[i].storeid%>)">
+					<div class="box" style="margin-bottom: 5px;">
+						<div class="pub_img">
+							<a class="rcdPadding" >
+								<img onload="imgHeight(this)" data-src="<%=list[i].thumb%>" src="" width="145" height="145" class="hotImg loadPics picOp">
+							</a>
+						</div>
+						<div class="pub_wz">
+							<h3 class="overflow_clear"><a><%=list[i].title%></a></h3>
+							<div class="nr_box mui-row">
+								<div class="mui-col-sm-5 mui-col-xs-5 ">
+									<p class="fl fontcl2">￥<%=list[i].price%><small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥ <%=list[i].originalprice%> </small>
+									</p>
+								</div>
+								<div class="mui-col-sm-7 mui-col-xs-7 saled">
+								<p></p>
+								</div>
+							</div>
+							<div class="hiLimit">
+								<span>限时抢购</span>
+								<img src="../img/mainHtml/addCart.png" alt="" />
+							</div>
+						</div>
+					</div>
+				</li>
+				<%}%>
+			<% }else{%>
+				<%for(var i=0;i<list.length;i++){%>
+				<li class="sy_recmd_list" onclick="goInfo(<%=list[i].goods_id%>,<%=list[i].storeid%>)">
+					<div class="box" style="margin-bottom: 5px;">
+						<div class="pub_img">
+							<a class="rcdPadding">
+								<img onload="imgHeight(this)" data-src="<%=list[i].thumb%>" src="" width="145" height="145" class="hotImg loadPics picOp" >
+							</a>
+						</div>
+						<div class="pub_wz">
+							<h3 class="overflow_clear"><a><%=list[i].title%></a></h3>
+							<div class="hiLimit hiLimit2">
+								<span>￥ <%=list[i].price%></span>
+								<img src="../img/mainHtml/addCart.png" alt="" />
+							</div>
+						</div>
+					</div>
+				</li>
+				<%}%>
+			<% }%>	
+		</script>
+		
+		
+		<!--hi推荐  6  推荐列表-->
 		<div class="sy_recmd">
 			<!--推荐列表-->
- 			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hired.png"/> <span></span> 抢购</h3>
+ 			<h3 class="partTitle partTitlea" style="margin-top: 8px;"> <img src="../img/mainHtml/hired.png"/> <span></span> 推荐</h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 					<div id="moll_recommend"></div>
@@ -538,58 +554,6 @@
 			<div class="upload text-center text-xs gray" id="upload"></div>
 		</div>
 		</div>
-		<div id="clickLeave"></div>
-		<!--<style type="text/css">
-			.ceshi1, .ceshi2{
-				width: 100%;
-				height: 100px;
-				font-size: 30px;
-				color: #fff;
-				text-align: center;
-				line-height: 100px;
-			}
-			.ceshi1{
-				background-color: red;
-				position: fixed;
-				top: 100px;
-				z-index: 10000;
-				
-			}
-			.ceshi2{
-				background-color: blueviolet;
-				position: fixed;
-				top: 300px;
-				z-index: 10000;
-			}
-		</style>-->
-		<!--<div class="ceshi1">按钮一</div>
-		<div class="ceshi2">按钮二</div>-->
-		<!--<script type="text/javascript">
-			mui('.ceshi1')[0].onclick = function(){
-				mui.ajax('http://119.23.149.7:8080/maoku/success',{
-					type:'get',
-					timeout:8000,
-					success:function(data,type,xhr){
-						alert( JSON.stringify(data) )
-					},
-					error:function(xhr,type,errorThrown){
-						alert( JSON.stringify(xhr) )
-					}
-				});
-			}
-			mui('.ceshi2')[0].onclick = function(){
-				mui.ajax('http://119.23.149.7:8080/maoku/failure',{
-					type:'get',
-					timeout:8000,
-					success:function(data,type,xhr){
-						alert( JSON.stringify(data) )
-					},
-					error:function(xhr,type,errorThrown){
-						alert( JSON.stringify(xhr) )
-					}
-				});
-			}
-		</script>-->
 		
 		<script type="text/javascript">  
 			
@@ -642,9 +606,15 @@
 			mui.plusReady(function() {
 				//城市切换
 				var cityNum = plus.storage.getItem('cityNum');
-				var cityA = ['成都','上海','重庆','重庆'],cityN = ['2','3','1','0'];
-				mui('.nowCity')[0].innerHTML = cityA[cityN.indexOf(cityNum)] || '重庆';
-				[].forEach.call(mui('.citysBtn'),function(ele){
+				//所属城市 1重庆 2南江 3宣汉  4邻水
+				var cityA = ['宣汉','南江','邻水'],
+					citySA = ['宣汉生活','南江生活','邻水生活'],
+					cityX = ['../img/mainHtml/xianzhi (2).png','../img/mainHtml/xianzhi (3).png','../img/mainHtml/yingxiang.png'],
+					cityN = ['3','2','4'];
+				mui('.nowCity')[0].innerHTML = cityA[cityN.indexOf(cityNum)] || '邻水';
+				mui('#locallifePP')[0].innerHTML = citySA[cityN.indexOf(cityNum)] || '邻水生活';
+				
+				[].forEach.call(mui('.citysBtn'),function(ele){/*隐藏当前城市*/
 					if(ele.innerHTML == mui('.nowCity')[0].innerHTML){
 						ele.style.display = 'none';
 						return false;
@@ -698,7 +668,10 @@
 					//本地生活
 					locallife.addEventListener('tap', function() {
 						openview({
-							view: 'localLife/localLifeIndex.html'
+							view: 'localLife/localLifeIndex.html',
+							extrasobj: {
+								titleName:mui('#locallifePP')[0].innerHTML
+							}
 						});
 					});
 					//达人榜
@@ -773,23 +746,19 @@
 					});
 					//打开消息
 					mui('#xiaoxi')[0].onclick = function() {
-						
-						mui.plusReady(function(){
-//							alert('清除缓存成功!');
-						})
+						openview({ 
+							view:'personal/barcode_scan.html',
+							extrasobj:{statestr:'open'},
+							create:true
+						});
 					};
 					//banner数据
 					mui.ajax(serverUrl + '/api/index/banner', {
-						data: {
-							banner_type: 1
-						},
+						data: {banner_type: 1 },
 						dataType: 'json',
 						type: 'post',
 						timeout: 10000,
-						headers: {
-							"token": oldToken,
-							'cityNum': cityNum
-						},
+						headers: { "token": oldToken, 'city': cityNum },
 						success: function(data, type, xhr) {
 							console.log('banner', data);
 							bannerObj = {};
@@ -801,17 +770,42 @@
 								document.getElementById('banner').innerHTML = html;
 								plus.nativeUI.closeWaiting(); //关闭等待框
 							}
-							//轮播图,获得slider插件对象
 							var gallery = mui('.mui-slider');
 							gallery.slider({
-								interval: 5000 //自动轮播周期，若为0则不自动播放，默认为0；
+								interval: 5000
 							});
 						},
 						error: function(xhr, type, errorThrown) {
 							console.log('首页banner,响应失败');
 						}
 					});
-					//HI友圈
+					/*县志数据*/
+					mui.ajax(serverUrl + '/api/index/cityannals', {
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						headers: {"token": oldToken,'city': cityNum},
+						success: function(data, type, xhr) {
+							console.log('县志数据', data);
+							if(data.errno == 0 && data.data && data.data.pic){
+								mui('#xianzhiWrap')[0].innerHTML = '<img src="'+JSON.parse(data.data.pic)[0].picImg+'"/>';
+								mui('#xianzhiWrap')[0].onclick = function(){
+									openview({
+										view:'xianzhi.html',
+										extrasobj:{
+											title:data.data.title,
+											content:data.data.content
+										}
+									});
+								}
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log('县志数据,响应失败');
+						}
+					});
+					
+					//首页 HI友圈 
 					mui.ajax(serverUrl + '/api/friends/friendslist', {
 						data:{
 							'numsPerPage':6,
@@ -871,7 +865,7 @@
 						}
 					});
 					
-					//答人榜
+					//答人榜 开始
 					talent(0);
 					talent(1);
 					talent(2);
@@ -971,10 +965,51 @@
 							
 						},500)
 					}
-					
-					
 					//答人榜结束
 					
+					/*很烦的多模块推荐开始*/
+					manyTJFun(1);
+					manyTJFun(2);
+					manyTJFun(3);
+					manyTJFun(4);
+					manyTJFun(5);
+					function manyTJFun(index){
+						mui.ajax(serverUrl + '/api/index/indexrecomment', {
+							data:{recommentType:index},
+							dataType: 'json',
+							type: 'post',
+							timeout: 8000,
+							headers: {"token": oldToken,'city': cityNum},
+							success: function(data, type, xhr) {
+								console.error('烦人的商品推荐榜'+index, data);
+								if(data.errno == 0){
+									if(data.data.length){
+										var recommendObj = {}
+										if(index == 1){recommendObj.SE = true;}
+										recommendObj.list = data.data;
+										if(recommendObj.list.length > 4){recommendObj.list.length = 4}
+										for(var i=0;i<recommendObj.list.length;i++){
+											
+											if(!recommendObj.list[i].thumb.indexOf('http')>-1){
+												recommendObj.list[i].thumb = serverimgUrl + recommendObj.list[i].thumb;
+											}
+										}
+										mui('.manyTJ')[index-1].innerHTML = template("manyTJJS", recommendObj);
+										lazyLoad(false);//懒加载
+									}else{
+										mui('.manyTJ')[index-1].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+									}
+								}else{
+									mui('.manyTJ')[index-1].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								mui('.listSon')[index-1].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+								console.error('烦人的商品推荐榜,响应失败');
+							}
+						});
+					}
+					/*很烦的多模块推荐结束*/
 					 
 					//热门推荐 数据渲染  
 					var currentPage = 1,

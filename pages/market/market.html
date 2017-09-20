@@ -191,20 +191,20 @@
 					    <!--支持循环，需要重复图片节点-->
 					    <div class="mui-slider-item mui-slider-item-duplicate">
 					    	<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
-					    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" />
 					    	<% }else{ %>
 					    		<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','two')"> 
-						    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						    		<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>"  />
 						   		</a>
 					    	<% } %>
 					    </div>
 						<% for(var i=0;i<bannerList.length;i++){ %> 
 						    <div class="mui-slider-item">
 								<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
-						    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						    		<img src="<%= url %><%= bannerList[i].bannerPic %>"/>
 						    	<% }else{ %>
 						    		<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','two')">
-							    		<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+							    		<img src="<%= url %><%= bannerList[i].bannerPic %>" />
 							   		</a>
 						    	<% } %>
 					    	</div>
@@ -212,10 +212,10 @@
 					    <!--支持循环，需要重复图片节点--> 
 					    <div class="mui-slider-item mui-slider-item-duplicate">
 							<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
-					    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    		<img src="<%= url %><%= bannerList[0].bannerPic %>" />
 					    	<% }else{ %>
 					    		<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','two')">
-						    		<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						    		<img src="<%= url %><%= bannerList[0].bannerPic %>" />
 						   		</a>
 					    	<% } %>
 					    </div>
@@ -338,14 +338,15 @@
 		mui.plusReady(function(){ 
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
+			var cityNum = plus.storage.getItem('cityNum');
 			//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//banner数据渲染
 			mui.ajax(serverUrl+'/api/index/banner',{
-				data:{banner_type:3},
+				data:{banner_type:2},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldToken},	 
+				headers:{"token":oldToken,'city': cityNum},	 
 				success:function(data,type,xhr){
 					console.log('banner',data);
 					if(data.errno==0){
@@ -353,7 +354,8 @@
 //						bannerObj.bannerList = eval("("+data.data.banner+")");
 						bannerObj.bannerList = JSON.parse(data.data.banner);
 						console.log(bannerObj.bannerList);
-						bannerObj.url = serverimgUrl;
+						
+//						bannerObj.url = serverimgUrl;
 						var html = template('banner-detail',bannerObj);
 						document.getElementById('banner').innerHTML = html;
 						//轮播图,获得slider插件对象

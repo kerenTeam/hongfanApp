@@ -167,7 +167,7 @@
 						dataType: 'json',
 						type: 'post',
 						timeout: 8000,
-						headers: {"token": oldToken,'city': cityNum},
+						headers: {"token": oldToken,'city': 1},
 						success: function(data, type, xhr) {
 							console.error('交友列表'+typeNum, data);
 							if(data.errno == 0) {
@@ -224,16 +224,47 @@
 												var windowHeight = $(this).height();　　
 												if(scrollTop + windowHeight == scrollHeight) {
 													if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+														
 														mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 														Ypagenum++; //满足加载情况,应到页数+1
 														console.log('发起请求,实到' + Spagenum + '页');
 														console.log('发起请求,应到' + Ypagenum + '页');
+														if(typeNum == 0){
+															flag0++;
+															var dataJson = {
+																	'recommend':suggest, 
+																	'numsPerPage':numsPerPage,
+																	'currentPage':Spagenum,
+																	'orderType':'ASC',
+																	'orderField':'followers'
+																}
+														}else if(typeNum == 1){
+															flag1++;
+															var dataJson = {
+																	'recommend':suggest, 
+																	'gender':1,
+																	'numsPerPage':numsPerPage,
+																	'currentPage':Spagenum,
+																	'orderType':'ASC',
+																	'orderField':'followers'
+																}
+														}else if(typeNum == 2){
+															flag2++;
+															var dataJson = {
+																	'recommend':suggest, 
+																	'gender':2,
+																	'numsPerPage':numsPerPage,
+																	'currentPage':Spagenum,
+																	'orderType':'ASC',
+																	'orderField':'followers'
+																}
+														}
 														mui.ajax(serverUrl + '/api/friends/friendslist', {
 															data: dataJson,
 															dataType: 'json',
 															type: 'post',
 															timeout: 8000,
-															headers: {"token": oldToken,'city': cityNum},
+															headers: {"token": oldToken,'city': 1},
 															success: function(data) {
 																console.error('交友列表续'+typeNum, data);
 																if(data.errno == 0) {

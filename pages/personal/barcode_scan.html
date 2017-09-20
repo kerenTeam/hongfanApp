@@ -89,8 +89,40 @@
 				    	console.error('没有typeid，核销失败！');
 				    	alert('核销失败，请重试！'); 
 				    }
-			    }else{
+			    }else if(statestr1 == 'HIdou'){
 			    	updatafun('',result,'','');
+			    }else if(statestr1 == 'open'){
+			    	var dataobj = JSON.parse(result);
+			    	goInfo(dataobj.goods_id,dataobj.storeid);
+			    	var time1 = null;
+			    	clearInterval(time1);
+			    	time1 = setInterval(function(){
+			    		if(plus.webview.getWebviewById('mall-detail') || plus.webview.getWebviewById('yphDetail')){
+			    			plus.webview.currentWebview().hide();
+			    			var time2 = setTimeout(function(){
+			    				plus.webview.currentWebview().close();
+			    			},5000)
+			    		}
+			    	},100)
+    				function goInfo(goodsId, storeId) {
+						if(storeId == 0) {
+							openview({
+								view: "../market/yphDetail.html",
+								id:'yphDetail',
+								extrasobj: {
+									goodsId: goodsId
+								}
+							})
+						} else {
+							openview({
+								view: "../market/mall-detail.html",
+								id:'mall-detail',
+								extrasobj: {
+									goodsId: goodsId
+								}
+							})
+						}
+					}
 			    }
 			    
 			    
@@ -122,7 +154,7 @@
 									mui.back();	
 								}
 							});
-						}else{//用户扫码上传数据 
+						}else if(statestr1 == 'HIdou'){//用户扫码上传数据 
 							mui.ajax(serverUrl + '/api/index/verificationthemachinesmallbillticket',{
 								data:{"qrcode":result,userid:myuserid},//qruserid:qr拥有者  
 								type:'post',
