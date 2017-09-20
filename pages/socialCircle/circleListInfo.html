@@ -206,10 +206,10 @@
 		    <!-- 可选择菜单 -->
 		    <ul class="jubao">
 		      <li>
-		        <a href="#">加入黑名单</a>
+		        <a href="javascript:;" onclick="doJubao()">加入黑名单</a>
 		      </li>
 		      <li>
-		        <a href="#">举报</a>
+		        <a href="javascript:;" onclick="doJubao()">举报</a>
 		      </li>
 		      <li>
 		        <a href="javscript:;" class="closeMask" >取消</a>
@@ -237,15 +237,7 @@
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
-	<script type="text/javascript">
-//		function imgHeight(obj){
-//			if(obj.offsetHeight<obj.parentNode.offsetHeight){
-//				obj.style.height = '100%';
-//				obj.style.width = 'auto';
-//			}
-//		}
-		
-	</script>
+	 
 	<script type="text/javascript">
 		mui.plusReady(function(){
 			var cityNum = plus.storage.getItem('cityNum'),
@@ -308,6 +300,17 @@
 					});
 				}  
 		    }
+			window.doJubao= function(){ 
+
+				if(plus.storage.getItem('myToken')){
+					jubao(infiId,newsUserId,myuserid,cityNum,oldToken)
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+			}
 			
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
 				dataType: 'json',
@@ -688,7 +691,7 @@
       
 		$('.diybtn2').click(function(){
     		event.preventDefault()
-			alert('聊天')
+//			alert('聊天')
 		})
 		
  		mui.previewImage(); 

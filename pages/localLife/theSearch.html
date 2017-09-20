@@ -294,41 +294,54 @@
 		</section>
 		<script type="text/html" id="searchOutTpl">
 			<ul>
-				<!--房产-->
-				<%if(searchData.local_house && searchData.local_house.length!=0){%>
-				<%for(var i=0;i < searchData.local_house.length;i++){%>
-				<li onclick="opendetails1('<%=searchData.local_house[i].house_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-					<%=searchData.local_house[i].name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+				<%if(searchType == 'goods'){%>
+					<%for(var i=0;i < searchData.length;i++){%>
+					<li onclick="opendetails3('<%=searchData[i].goods_id%>','<%=searchData[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+				<%}else if(searchType == 'store'){%>
+					<%for(var i=0;i < searchData.length;i++){%>
+					<li onclick="opendetails5('<%=searchData[i].store_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData[i].store_name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+				<%}else{%>
+					<!--房产-->
+					<%if(searchData.local_house && searchData.local_house.length!=0){%>
+					<%for(var i=0;i < searchData.local_house.length;i++){%>
+					<li onclick="opendetails1('<%=searchData.local_house[i].house_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData.local_house[i].name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+					<%}%>
+					<!--商城-->
+					<%if(searchData.goods && searchData.goods.length!=0){%>
+					<%for(var i=0;i < searchData.goods.length;i++){%>
+					<li onclick="opendetails3('<%=searchData.goods[i].goods_id%>','<%=searchData.goods[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData.goods[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+					<%}%>
+					<!--二手市场-->
+					<%if(searchData.local_used_market && searchData.local_used_market.length!=0){%>
+					<%for(var i=0;i < searchData.local_used_market.length;i++){%>
+					<li onclick="opendetails4('<%=searchData.local_used_market[i].id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData.local_used_market[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+					<%}%>
+					<!--活动-->
+					<%if(searchData.system_activity && searchData.system_activity.length!=0){%>
+					<%for(var i=0;i < searchData.system_activity.length;i++){%>
+					<li onclick="opendetails7('<%=searchData.system_activity[i].id%>','<%=searchData.system_activity[i].type%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData.system_activity[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+					<%}%>
+					<!--店铺-->
+					<%if(searchData.shop_store && searchData.shop_store.length!=0){%>
+					<%for(var i=0;i < searchData.shop_store.length;i++){%>
+					<li onclick="opendetails5('<%=searchData.shop_store[i].store_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData.shop_store[i].store_name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%}%>
+					<%}%>
 				<%}%>
-				<%}%>
-				<!--商城-->
-				<%if(searchData.goods && searchData.goods.length!=0){%>
-				<%for(var i=0;i < searchData.goods.length;i++){%>
-				<li onclick="opendetails3('<%=searchData.goods[i].goods_id%>','<%=searchData.goods[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-					<%=searchData.goods[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
-				<%}%>
-				<%}%>
-				<!--二手市场-->
-				<%if(searchData.local_used_market && searchData.local_used_market.length!=0){%>
-				<%for(var i=0;i < searchData.local_used_market.length;i++){%>
-				<li onclick="opendetails4('<%=searchData.local_used_market[i].id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-					<%=searchData.local_used_market[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
-				<%}%>
-				<%}%>
-				<!--活动-->
-				<%if(searchData.system_activity && searchData.system_activity.length!=0){%>
-				<%for(var i=0;i < searchData.system_activity.length;i++){%>
-				<li onclick="opendetails7('<%=searchData.system_activity[i].id%>','<%=searchData.system_activity[i].type%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-					<%=searchData.system_activity[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
-				<%}%>
-				<%}%>
-				<!--店铺-->
-				<%if(searchData.shop_store && searchData.shop_store.length!=0){%>
-				<%for(var i=0;i < searchData.shop_store.length;i++){%>
-				<li onclick="opendetails5('<%=searchData.shop_store[i].store_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-					<%=searchData.shop_store[i].store_name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
-				<%}%>
-				<%}%>
+				
 			</ul>
 		</script>
 	</body>
@@ -452,7 +465,7 @@
 				if(searchType == 3){
 					searchType = 'other'
 				}
-				var oldtoken = plus.storage.getItem('oldToken');
+				var oldtoken = plus.storage.getItem('oldToken'); 
 				mui.ajax(serverUrl + '/api/index/search', {
 					data: {
 						search: words,
@@ -468,13 +481,26 @@
 						plus.nativeUI.closeWaiting();
 						console.log(data)
 						if(data.errno == 0) {
-							if((data.data.local_house && data.data.local_house.length != 0) || (data.data.local_used_market && data.data.local_used_market.length != 0) || (data.data.goods && data.data.goods.length != 0) || (data.data.system_activity && data.data.system_activity.length != 0) || (data.data.shop_store && data.data.shop_store.length != 0)) {
-								var searchObj = {};
-								searchObj.searchData = data.data;
-								document.getElementById("searchOut").innerHTML = template("searchOutTpl", searchObj);
-							} else {
-								document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
+							if(searchType){
+								if(data.data && data.data.length != 0) {
+									var searchObj = {};
+									searchObj.searchData = data.data;
+									searchObj.searchType = searchType;
+									document.getElementById("searchOut").innerHTML = template("searchOutTpl", searchObj);
+								} else {
+									document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
+								}
+							}else{
+								if((data.data.local_house && data.data.local_house.length != 0) || (data.data.local_used_market && data.data.local_used_market.length != 0) || (data.data.goods && data.data.goods.length != 0) || (data.data.system_activity && data.data.system_activity.length != 0) || (data.data.shop_store && data.data.shop_store.length != 0)) {
+									var searchObj = {};
+									searchObj.searchData = data.data;
+									searchObj.searchType = searchType;
+									document.getElementById("searchOut").innerHTML = template("searchOutTpl", searchObj);
+								} else {
+									document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
+								}
 							}
+							
 						}
 					},
 					error: function(xhr, type, errorThrown) {

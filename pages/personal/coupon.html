@@ -63,6 +63,8 @@
 			    line-height: 0.4rem;
 			}
 			.coupons{padding-top: 0;}
+			.answerImf{margin: 1px;width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;}
+			.anImg{width: 100%!important;opacity: 0;}
 		</style>
 	</head>
 	<body>
@@ -97,31 +99,37 @@
 				</div>
 				<!--全部--> 
 				<script type="text/html" id="allC-detail">
-					<% for(var i=0;i<allLi.length;i++){ %>
-						<% if(allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
-							<div class="offerWrap" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)"> 	
+					<% for(var i=0;i<allLi.length;i++){ %> 
+						<% if(allLi[i].id && allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
+							<div class="offerWrap"> 	
 								<div class="offerTop">
-									<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-									<p><%= allLi[i].name %> 无 <span class="span3">立即使用</span></p>
+									<h4><b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+									<p><%= allLi[i].name %><span style="visibility: hidden;">wu</span><span class="span3">立即使用</span></p>
 								</div>
 								<div class="offerFoot">
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
+									<%if(allLi[i].pic && allLi[i].pic.length){%>
+										<% for(var j= 0;j<allLi[i].pic.length;j++){%>
+											<div class="answerImf">
+												<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
+									 		</div> 
+										<%}%>
+									<%}%>
 								</div>
 							</div>
 						<% }else{ %><!--不可用状态-->
-							<div class="offerWrap offerWrap3" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)"> 	
+							<div class="offerWrap offerWrap3"> 	
 								<div class="offerTop">
-										<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-										<p><%= allLi[i].name %> <span class="span3">已失效</span></p>
+										<h4> <b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+										<p><%= allLi[i].name %> <span style="visibility: hidden;">wu</span> <span class="span3">已失效</span></p>
 									</div>
 								<div class="offerFoot">
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
+									<%if(allLi[i].pic && allLi[i].pic.length){%>
+										<% for(var j= 0;j<allLi[i].pic.length;j++){%>
+											<div class="answerImf">
+												<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
+									 		</div> 
+										<%}%>
+									<%}%>
 								</div>
 							</div>
 						<% } %>
@@ -130,18 +138,21 @@
 				</script>
 				<!--可用-->
 				<script type="text/html" id="ableC-detail">
-					<% for(var i=0;i<allLi.length;i++){ %>
-						<% if(allLi[i].user_coupon_state == 1){ %>
- 							<div class="offerWrap" onclick="Cdetail(<%= allLi[i].user_coupon_id %>)"> 	
-								<div class="offerTop">
-										<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-										<p><%= allLi[i].name %> 无 <span class="span3">立即使用</span></p>
+					<% for(var i=0;i<allLi.length;i++){ %> 
+						<% if(allLi[i].id && allLi[i].user_coupon_state == 1){ %>
+ 							<div class="offerWrap"> 	
+								<div class="offerTop"> 
+										<h4><b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+										<p><%= allLi[i].name %> <span style="visibility: hidden;">wu</span><span class="span3">立即使用</span></p>
 									</div>
 								<div class="offerFoot">
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
-									<img src="../../img/market/chanpingkuang.png"/>
+									<%if(allLi[i].pic && allLi[i].pic.length){%>
+										<% for(var j= 0;j<allLi[i].pic.length;j++){%>
+											<div class="answerImf">
+												<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
+									 		</div> 
+										<%}%>
+									<%}%> 
 								</div>
 							</div>
 						<% } %>
@@ -178,7 +189,7 @@
 			</div>
 			<div class="offerWrap offerWrap3">
 				<div class="offerTop">
-					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
+					<h4><b class="b2"></b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
 					<p>宏帆XX商家抵用卷 <span class="span3">已失效</span></p>
 				</div>
 				<div class="offerFoot">
@@ -200,23 +211,37 @@
 			mui.plusReady(function(){
 				var oldToken = plus.storage.getItem('oldToken');
 				var userId = plus.storage.getItem("userid");
+				var cityNum = plus.storage.getItem('cityNum');
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 				mui.ajax(serverUrl+'/api/useraccount/mycoupon',{  
 					data:{userid : userId}, 
 					dataType:'json',
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldToken},	 
+					headers:{"token": oldToken,'city': cityNum},	 
 					success:function(data,type,xhr){
 						console.log('data',data);
 						if (data.errno == 0) { 
 							if(!data.data.user_coupon.length){   
 									mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 								}else{
-									mui.each(data.data.user_coupon,function (index,element) {
-										element.coupon_amount && (element.discountstr = element.coupon_amount.split(',')[1]*10);
-										element.coupon_amount && (element.discountnum = element.coupon_amount.split(',')[0]);
-									})
+									for(var i = 0;i < data.data.user_coupon.length;i++){
+										if(data.data.user_coupon[i].pic && data.data.user_coupon[i].pic.indexOf('[')>0){//整理内容图片格式
+											 data.data.user_coupon[i].pic = JSON.parse(data.data.user_coupon[i].pic)
+									 		 for(var j= 0;j<data.data.user_coupon[i].pic.length;j++){
+												if(data.data.user_coupon[i].pic[j].picImg.indexOf('http')<0){
+													data.data.user_coupon[i].pic[j].picImg = serverimgUrl + data.data.user_coupon[i].pic[j].picImg;
+												}
+											}
+									 	}
+										if(data.data.user_coupon[i].pic && data.data.user_coupon[i].pic.indexOf("http")>0){
+//											alert(1)
+											var arr = [];
+											arr.push({picImg:data.data.user_coupon[i].pic})
+											data.data.user_coupon[i].pic = arr;
+											
+										}
+									}
 									var allC = {}; 
 									allC.allLi = data.data.user_coupon;
 									if(allC.allLi.length > 0){
@@ -247,12 +272,12 @@
 								}
 							
 							//点击进入券的详情
-							window.Cdetail = function(Cid){
-								openview({ 
-									view:'coupon-detail.html',
-									extrasobj:{couponId:Cid}
-								});
-							}
+//							window.Cdetail = function(Cid){
+//								openview({ 
+//									view:'coupon-detail.html',
+//									extrasobj:{couponId:Cid}
+//								});
+//							}
 						} else{
 							mui('#ableC-detail')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 						}

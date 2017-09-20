@@ -74,7 +74,7 @@
 		 
     		<div class="listCon" id="listInfoS"></div><!--内容-->
 			<script type="text/html" id="listDataS">
-				<div class="follow">
+				<div class="follow" id="curUser" data-id="<%=dataList.userid%>">
 					<div class="fchidl">
 						<div>
 							<img src="<%=dataList.avatar%>" onclick="goCircleIndex(<%=dataList.userid%>)" class="userAvator mr25"/>
@@ -113,7 +113,7 @@
 					 
 				</div>
 			</script>
-		 	<!--评论--> 
+		 	<!--留言--> 
 			<div class="follow cmtflex">
 				<div style="text-align: center;line-height: 0.8;"> 
 					<div class="ft14">留言</div> 
@@ -158,7 +158,7 @@
 							<%}%> 
 					<%}%>
 		 	</script> 
-			 <!--子评论-->
+			 <!--子留言-->
             <script type="text/html" id="cmtChildTpl">
                 
                 <%for(var i=0;i<list.length;i++){%> 
@@ -373,7 +373,7 @@
 				}
 			});
 			
-			//评论
+			//留言
 			getCmt();
 			function getCmt(){
 				mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
@@ -382,7 +382,7 @@
 					timeout: 8000,
 					headers: {"token": oldToken,'city': cityNum},
 					success: function(data, type, xhr) {
-						console.error('评论详情', data);
+						console.error('留言详情', data);
 						 
 						if(data.errno == 0) { 
 							var cmtArray = data.data; 
@@ -407,18 +407,8 @@
 										cmtArray[i].create_time = getDateDiff(dt); 
 									}   
 									$('#curShow').html(template('cmtTpl',{list:cmtArray}));
-									//回复 或 评论
-							    	$('.butright .maincl').click(function(){ 
-							    		event.stopPropagation(); 
-							    		var toName = $(this).attr('data-toName'),
-							    			touserid = $(this).attr('data-userId');
-							    			commontid = $(this).attr('data-cmtId');
-							    		$('.writecmt').focus();
-   										$('.writecmt').attr('placeholder','回复:'+toName);
-   									 	$('.writecmt').attr('id',touserid);
-   									 	$('.writecmt').attr('data-id',commontid);
-							    	})
- 									 //子评论
+									 
+ 									 //子留言
                                     $('.cmtChild').each(function(){
                                         var curCmt = $(this);
                                         var curUserId = curCmt.attr('data-toUserId');
@@ -429,7 +419,7 @@
                                             timeout: 8000,
                                             headers: {"token": oldToken,'city': cityNum},
                                             success: function(data, type, xhr) {
-                                                console.error('评论详情', data);
+                                                console.error('留言详情', data);
                                                  
                                                 if(data.errno == 0) {
                                                     var cmtArray = data.data; 
@@ -456,7 +446,7 @@
                                                                 childArray.push(cmtArray[i])
                                                             }
                                                         }   
-                                                        console.log('子评论',childArray)
+                                                        console.log('子留言',childArray)
                                                         curCmt.html(template('cmtChildTpl',{list:childArray}));
                                                      }
                                                  
@@ -465,7 +455,7 @@
                                                 }
                                             },
                                             error: function(xhr, type, errorThrown) {
-                                                console.error('评论列表,响应失败');
+                                                console.error('留言列表,响应失败');
                                                 mui.toast('当前网络不好,请重试');
                                             }
                                         });
@@ -480,7 +470,7 @@
 						}
 					},
 					error: function(xhr, type, errorThrown) {
-						console.error('评论列表,响应失败');
+						console.error('留言列表,响应失败');
 						mui.toast('当前网络不好,请重试');
 					}
 				});
@@ -490,75 +480,33 @@
 					mui.prompt('null','请输入留言','留言',['确认','取消'],function(e) {
 						if(e.index == 0) { 
 							if(e.value && e.value!=' '){
-								alert('留言')
-//								var commont = cur.html(),
-		//		    				touserid = $('.writecmt').attr('id'),
-		//		    				commontid = $('.writecmt').attr('data-id'); 
-		//		    			mui.ajax(serverUrl + '/api/friends/newscomment', {
-		//		    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
-		//							dataType: 'json',
-		//							type: 'POST',
-		//							timeout: 8000,
-		//							headers: {"token": oldToken,'city': cityNum},
-		//							success: function(data, type, xhr) {
-		//								console.error('评论详情', data);
-		//								 
-		//								if(data.errno == 0) {
-		//					    			cur.html('');
-		//					    			mui.toast('评论成功');
-		//				    				$('.writecmt').attr('placeholder','');
-		//									 $('.writecmt').attr('id','');
-		//									 $('.writecmt').attr('data-id','');
-		//					    			getCmt();
-		//								}else{
-		//									mui.toast('当前网络不好,请重试');
-		//								}
-		//							},
-		//							error: function(xhr, type, errorThrown) {
-		//								console.error('评论列表,响应失败');
-		//								mui.toast('当前网络不好,请重试');
-		//							}
-		//						});
+								var commont = e.value; 
+				    			mui.ajax(serverUrl + '/api/friends/newscomment', {
+				    				data:{newsId:infiId,userid:myuserid,commont:commont},
+									dataType: 'json',
+									type: 'POST',
+									timeout: 8000,
+									headers: {"token": oldToken,'city': cityNum},
+									success: function(data, type, xhr) {
+										console.error('留言详情', data);
+										 
+										if(data.errno == 0) { 
+							    			mui.toast('留言成功'); 
+							    			getCmt();
+										}else{
+											mui.toast('当前网络不好,请重试');
+										}
+									},
+									error: function(xhr, type, errorThrown) {
+										console.error('留言列表,响应失败');
+										mui.toast('当前网络不好,请重试');
+									}
+								});
 							}else{
-								mui.toast('请输入留言')
+								mui.toast('留言失败')
 							}
 						} 
 					},'')
-//					if($('.writecmt').html() != ''){
-//		    			var cur = $('.writecmt');
-//		    			var commont = cur.html(),
-//		    				touserid = $('.writecmt').attr('id'),
-//		    				commontid = $('.writecmt').attr('data-id'); 
-//		    			mui.ajax(serverUrl + '/api/friends/newscomment', {
-//		    				data:{newsId:infiId,userid:myuserid,touserid:touserid,commont:commont,commontid:commontid},
-//							dataType: 'json',
-//							type: 'POST',
-//							timeout: 8000,
-//							headers: {"token": oldToken,'city': cityNum},
-//							success: function(data, type, xhr) {
-//								console.error('评论详情', data);
-//								 
-//								if(data.errno == 0) {
-//					    			cur.html('');
-//					    			mui.toast('评论成功');
-//				    				$('.writecmt').attr('placeholder','');
-//									 $('.writecmt').attr('id','');
-//									 $('.writecmt').attr('data-id','');
-//					    			getCmt();
-//								}else{
-//									mui.toast('当前网络不好,请重试');
-//								}
-//							},
-//							error: function(xhr, type, errorThrown) {
-//								console.error('评论列表,响应失败');
-//								mui.toast('当前网络不好,请重试');
-//							}
-//						});
-//		    			
-//		    			
-//		    		}else{
-//		    			$('.writecmt').focus();
-//		    		}
 				}else{
 					mui.toast('请登录');
 					openview({

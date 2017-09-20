@@ -1,7 +1,7 @@
 
 var serverUrl= "http://192.168.199.191:7200";
 //var serverUrl='http://hiji.hifete.com';
-
+//var serverUrl='http://abcd.zlzmm.com:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
@@ -144,6 +144,33 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 	}); 
 }
 
+
+function jubao(newsId,nsuserId,userId,city,token){
+	mui.ajax(serverUrl + '/api/friends/report', {
+		data:{'newsId':newsId,'theNewsUserId':nsuserId,'userId':userId },
+		dataType: 'json',
+		type: 'post',
+		timeout: 8000,
+		headers: {"token": token,'city': city},
+		success: function(data, type, xhr) {
+			console.log('举报',data)
+			if(data.errno == 0) {   
+				mui.toast('操作成功'); 
+				$('#maskInfo').fadeOut(200);
+				
+			}else if(data.errno == 1000){
+				mui.toast('举报审核中'); 
+				$('#maskInfo').fadeOut(200);
+			}else{
+				mui.toast('操作失败'); 
+			}
+		},
+		error: function(xhr, type, errorThrown) { 
+			console.error('点赞,响应失败');
+			mui.toast('当前网络不好,请重试');
+		}
+	}); 
+}
  
 //懒加载方法
 window.lazyLoad = function(init,limit){
