@@ -196,9 +196,7 @@ window.lazyLoad = function(init,limit){
 	        })
 		}    
 	}
-	if(init){//先默认显示
-		window.onscroll();
-	}
+	window.onscroll();
 	function getTop(e){//获取元素距离顶部高度方法。  
 	    var T = e.offsetTop;
 	    while(e = e.offsetParent ){
