@@ -97,7 +97,7 @@
 			    color: darkgray;
 			    position: relative;
 			    text-align: center;
-			    margin-bottom: 20px;
+			    margin-bottom: 0px;
 			    margin-top: 10px;
 			}
 			.pagebottom:before {
@@ -214,10 +214,16 @@
 			 	color: #999;
 			 }  
 			.diyButton{background: url(../../img/answer/bouttonbr.png) no-repeat ;background-position: left top;background-size: 100% 100%;text-align: center;width: 60px;height: 25px;line-height: 25px;}
-			.listCon{border-bottom: 1px solid #ddd;}
 			.listCon p{padding: 10px 0px 0px 0px;} 
 			.answerImf{width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;}
 			.anImg{width: 100%;opacity: 1;} 
+			.dealcard-waimai {
+			    padding-top: 5px;
+			}
+			.dealcard, .cinemacard{margin: 0;margin-bottom: 10px;}
+			.mui-slider .mui-slider-group .mui-slider-item img {
+			     width: 100%; 
+			}
 		</style>    
 	</head>
 	<body>
@@ -237,16 +243,16 @@
 					<div class="mui-slider-group mui-slider-loop">
 					    <!--支持循环，需要重复图片节点-->
 					    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>')">
-					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" />
 					    </div>
 						<% for(var i=0;i<bannerList.length;i++){ %> 
 					    	<div class="mui-slider-item" onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>')">
-					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    		<img src="<%= url %><%=bannerList[i].bannerPic %>"  />
 					    	</div>
 					     <% } %>
 					    <!--支持循环，需要重复图片节点-->
 					    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>')">
-					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" />
 					    </div>
 					</div>
 					<div class="mui-slider-indicator">
@@ -303,200 +309,74 @@
 		<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;">
 			<span class="aClick">推荐</span> 
 		</div>
-		<div class="listCon">
-			<!--问题-->
-			<div class="follow" onclick="goInfo()"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/send.png" class="userAvator mr25"/>
-						<div>
-							wangfei
-						</div>
+		<section class="dealcard-waimai">
+			<dl class="dealcard listCon" id="infolistdiv">
+				<!--列表loading-->
+				<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
+					line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+					<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
+				</div>
+				<!--列表loading结束-->
+			</dl>
+			<script type="text/html" id="infolist">
+				<%for(var i=0;i<dataList.length;i++){%>
+					
+					<div class="follow" onclick="opendetails(<%=dataList[i].id%>,<%=dataList[i].user_id%>)"> 
+						<div class="fchidl">
+							<div>
+								<img class="userAvator mr25 loadPics" src="../../img/send.png" data-src="<%=dataList[i].avatar%>" />
+								<div> <%=dataList[i].nickname%> </div>
+							</div> 
+							<div class="butright">
+				            	<div class="diyButton activecl goanswer">￥<%=dataList[i].price%></div>
+				           </div> 
+						</div>  
+						<p class="ft14 maincl" style="margin-bottom: 10px;"><%=dataList[i].content%></p> 
+					 	
+				 		
+				 		<%if(dataList[i].picS){%>
+							<%for(var j=0;j<dataList[i].picS.length;j++){%>
+								<div class="answerImf">
+									<img onload="imgHeight(this)" data-src="<%=dataList[i].picS[j]%>" class="anImg loadPics picOp" src=""/>
+						 		</div>	
+							<%}%>
+						<%}%>
 					</div> 
-					<div class="butright">
-		            	<div class="diyButton activecl goanswer">
-		            		￥3000	
-		            	</div>
-		           </div> 
-				</div>  
-				<p class="ft14 maincl" style="margin-bottom: 10px;">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-			 	<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-			</div>
-			<div class="follow"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/send.png" class="userAvator mr25"/>
-						<div>
-							wangfei
-						</div>
-					</div> 
-					<div class="butright">
-		            	<div class="diyButton activecl goanswer">
-		            		￥3000	
-		            	</div>
-		           </div> 
-				</div>  
-				<p class="ft14 maincl" style="margin-bottom: 10px;">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-			 	<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-			</div> 
-			<div class="follow"> 
-				<div class="fchidl">
-					<div>
-						<img src="../../img/send.png" class="userAvator mr25"/>
-						<div>
-							wangfei
-						</div>
-					</div> 
-					<div class="butright">
-		            	<div class="diyButton activecl goanswer">
-		            		￥30	
-		            	</div>
-		           </div> 
-				</div>  
-				<p class="ft14 maincl" style="margin-bottom: 10px;">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-			 	<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-		 		<div class="answerImf">
-					<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-		 		</div> 
-			</div> 
-		</div>
-		
-		<div class="wrapdiv">
-			<div class="headdivdiv aClick servicemore">
-				维修服务推荐  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
-			</div>
-			<div class="npbk" id="recodiv1"></div>
-			<script type="text/html" id="reco1">
-				<% if(list.length > 10){%>
-					<% list.length = 10%>
-				<% }%>	
-				<% for(var i=0; i<list.length; i++){%>
-					<div class="nplist" onclick="opendetails2(<%= list[i].id%>)">
-						<div class="npimg">
-							<img src="<%= url%><%= list[i].logo%>"/>
-						</div>
-						<h4><%= list[i].name%></h4>
-					</div>
-				<% }%>
+				<%}%>	 
 			</script>
+		</section>
+		<div id="nulldiv" style="padding-top: 20%;text-align:center;font-size: 14px;color: #999;display: none;">
+			<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/><br />没有相关信息
 		</div>
-		<div class="wrapdiv">
-			<div class="headdivdiv aClick Housekeepingmore">
-				家政服务推荐  <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
-			</div>
-			<div class="npbk" id="recodiv2"></div>
-			<script type="text/html" id="reco2">
-				<% if(list.length > 10){%>
-					<% list.length = 10%>
-				<% }%>	
-				<% for(var i=0; i<list.length; i++){%>
-					<div class="nplist" onclick="opendetails2(<%= list[i].id%>)">
-						<div class="npimg">
-							<img src="<%= url%><%= list[i].logo%>"/>
-						</div>
-						<h4><%= list[i].name%></h4>
-					</div>
-				<% }%>
-			</script>
-		</div>
-		<div class="wrapdiv" style="display: none;">
-			<div class="headdivdiv aClick Propertymore">
-				房产资讯推荐 <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
-			</div>
-			<div class="npbk" id="recodiv3"></div>
-			<script type="text/html" id="reco3">
-				<% if(list.length > 10){%>
-					<% list.length = 10%>
-				<% }%>	
-				<% for(var i=0; i<list.length; i++){%>
-					<div class="nplist" onclick="opendetails3(<%= list[i].house_id%>)">
-						<div class="npimg">
-							<img src="<%= url%><%= list[i].logo%>"/>
-						</div>
-						<h4><%= list[i].name%></h4>  
-					</div>
-				<% }%>
-			</script>
-		</div>
-		<div class="wrapdiv">
-			<div class="headdivdiv aClick secondhandmore" >
-				跳蚤市场推荐 <span class="mui-icon mui-icon-arrowright span2"></span><span>更多</span>
-			</div>
-			<div class="npbk" id="recodiv4"></div>
-			<script type="text/html" id="reco4">
-				<% if(list.length > 10){%>
-					<% list.length = 10%>
-				<% }%>	
-				<% for(var i=0; i<list.length; i++){%>
-					<div class="nplist" onclick="opendetails4(<%= list[i].id%>)">
-						<div class="npimg">
-							<img src="<%= url%><%= list[i].logo%>"/>
-						</div>
-						<h4><%= list[i].title%></h4>
-						<!--<div class="nprice">￥338</div>-->
-					</div>
-				<% }%>
-			</script>
-		</div>
-		<div class="pagebottom" style="padding-bottom: 10px;">到底了</div>
+		<div class="pagebottom" style="padding-bottom: 10px;display: none;">到底了</div>
 					
 	</body>
 	<script src="../../js/swiper.min.js" type="text/javascript" ></script>
 	<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		function goInfo(){
+
+		//跳转 跳槽推荐 详情
+		function opendetails(id,userid){ 
 			openview({
-				view:'FleaInfo.html'
+				view:'FleaInfo.html',
+				extrasobj:{
+					infoid: id,
+					UserId:userid,
+				}
 			})
 		}
 		mui.plusReady(function(){
+			mui('.mui-title')[0].innerHTML = plus.webview.currentWebview().titleName;
 			var oldtoken = plus.storage.getItem('oldToken');
+			var cityNum = plus.storage.getItem('cityNum');
 			//栏目数据
 			mui.ajax(serverUrl+'/api/localservice/localservicecates',{
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldtoken},
+				headers:{"token":oldtoken,'city': cityNum},
 				success:function(data){
 					console.log('获取栏目返回',data);
 					if(data.errno == 0){ 
@@ -525,115 +405,129 @@
 			});
 			//banner
 			mui.ajax(serverUrl+'/api/index/banner',{
-				data:{banner_type:9},
+				data:{banner_type:3},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldtoken},	 
+				headers:{"token":oldtoken,'city': cityNum},
 				success:function(data,type,xhr){
-					bannerObj={};
-					bannerObj.bannerList = eval("("+data.data.banner+")");
-					bannerObj.url = serverimgUrl;
-					var html = template('banner-detail',bannerObj);
-					document.getElementById('banner').innerHTML = html;
-					//轮播图,获得slider插件对象
-					var gallery = mui('.mui-slider');
-					gallery.slider({
-					  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
-					});
+					console.log('banner',data);
+					if(data.errno == 0 && data.data.banner){
+						bannerObj={};
+						bannerObj.bannerList = eval("("+data.data.banner+")");
+						//bannerObj.url = serverimgUrl;
+						var html = template('banner-detail',bannerObj);
+						document.getElementById('banner').innerHTML = html;
+						//轮播图,获得slider插件对象
+						var gallery = mui('.mui-slider');
+						gallery.slider({
+						  	interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+						});
+					}
+					
 				},
 				error:function(xhr,type,errorThrown){
 					console.log('响应失败  !');
 				}
 			});  
 			
-			recommendfun(1,1,1);//维修推荐
-			recommendfun(2,2,2);//维修推荐
-			//recommendfun(3,3,3);//房产推荐
-			recommendfun(4,4,4);//跳蚤推荐
-			function recommendfun(type,script,div){//推荐方法
-				var dataobj = {};
-				if(type == 1 || type == 2){
-					dataobj = {type_name:type,service_name:'local_service'}
-				}else if(type == 3){
-					dataobj = {service_name:'local_house'}
-				}else{
-					dataobj = {service_name:'local_used_market'}
-				}
-				var nullstr = '<div id="nomore" style="text-align: center;line-height: 100px;font-size: 14px;color: #888;"><img style="width: 50px;" src="../../img/unllfabu.svg"/> &nbsp; 暂时没有推荐</div>';
-				mui.ajax(serverUrl+'/api/localservice/localservicecommend',{ 
-					data:dataobj, 
-					type:'post',
-					timeout:10000,
-					headers:{"token":oldtoken},	              				
-					success:function(data){
-						console.log('热门'+type,data);
-						if(data.errno == 0){ 
-							if(data.data.length){
-								var objdata = {};
-								mui.each(data.data,function (index,element) {
-									if (element.logo) {
-										element.logo = JSON.parse(element.logo)[0].picImg; 
-									} else{ 
-										element.logo = JSON.parse(element.list_pic)[0].picImg;
-									}
-									
-								})
-								objdata.list = data.data;
-								objdata.url = serverimgUrl;
-								var html = template("reco"+script,objdata); 
-								document.getElementById("recodiv"+div).innerHTML = html;
-							}else{
-								document.getElementById("recodiv"+div).innerHTML = nullstr;
-							}
-							plus.nativeUI.closeWaiting();
-						}else{
-							document.getElementById("recodiv"+div).innerHTML = nullstr;
-							plus.nativeUI.closeWaiting();
-							console.log(data.errmsg);
-						}
-					},
-					error:function(xhr,type,errorThrown){
-						document.getElementById("recodiv"+div).innerHTML = nullstr;
-						plus.nativeUI.closeWaiting();
-						mui.toast('当前网络不好,请重试');
-					}
-				});
-			}
-			
 			
 		})//plusready
+		
+		//跳蚤市场推荐
+		Loading();
+		function Loading(){
+			mui('#nulldiv')[0].style.display = 'none';
+			
+			mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'),cityNum = plus.storage.getItem('cityNum');
+			mui.ajax(serverUrl+'/api/friends/newslist',{   									
+				data:{
+					'numsPerPage':6,
+					'currentPage':1,
+					'orderType':'DESC',
+					'orderField':'create_time',
+					'typeId':1
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型 
+				timeout:10000,//超时时间设置为10秒；	
+				headers: {"token": oldToken,'city': cityNum},
+				success:function(data){
+					console.log('列表返回',data);
+					if(data.errno == 0){
+						var dataobj = {};
+						var nowArray = data.data.data;
+						for(var j = 0 ;j<nowArray.length;j++){
+							//整理头像格式
+							if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+								if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+									nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+								}else{
+									nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+								}
+							}else{
+								nowArray[j].avatar = '../img/10.png'
+							}
+										
+							if(!nowArray[j].nickname){
+								nowArray[j].nickname = '匿名'
+							}
+							//整理内容图片格式
+							var nowArray2 = JSON.parse(nowArray[j].pic);
+							if(nowArray2.length){
+								var picS = [];
+								for(var k = 0 ;k<nowArray2.length;k++){
+									picS.push(nowArray2[k].picImg);
+								}
+								nowArray[j].picS = picS;
+							}
+						}
+						
+						dataobj.dataList = data.data.data; 
+						//获取并渲染用户信息
+						var html=template("infolist",dataobj);
+						document.getElementById("infolistdiv").innerHTML += html;
+						
+						lazyLoad(true,10);
+						
+						
+					}else{
+
+						mui('#nulldiv')[0].style.display = 'block';
+					}
+					closeLoad();//关闭列表loading
+					mui('.pagebottom')[0].style.display = 'block';
+				},
+				error:function(xhr,type,errorThrown){
+					closeLoad();//关闭列表loading
+					mui('#nulldiv')[0].style.display = 'block';
+				}
+			});
+			});	
+		}
+		
+		
+		
 		//Monitor();
 		function Monitor(){
 			//打开维修
-			mui('.servicemore')[0].onclick = mui('.weixiu0')[0].onclick = function(){
+			mui('.weixiu0')[0].onclick = function(){
 				openview({
 					view:'theList.html',
 					extrasobj:{name:'Repair'}
 				})
 			}
-			mui('.repair')[0].addEventListener('tap',function(){
-				openview({ 
-					view:'theList.html',
-					extrasobj:{name:'Repair'}
-				})
-			});
+			
 			//打开家政
-			mui('.Housekeepingmore')[0].onclick = mui('.jiazheng0')[0].onclick = function(){
+			mui('.jiazheng0')[0].onclick = function(){
 				openview({ 
 					view:'theList.html',
 					extrasobj:{name:'Clean'}
 				})
 			}
-			mui('.cleaning')[0].addEventListener('tap',function(){
-				openview({ 
-					view:'theList.html',
-					extrasobj:{name:'Clean'}
-				})
-			});
-			
 			//打开跳蚤市场页面
-			mui('.tiaozao0')[0].onclick = mui('.secondhandmore')[0].onclick = function(){
+			mui('.tiaozao0')[0].onclick = function(){
 				openview({ 
 					view:'2edMarket.html',
 				})

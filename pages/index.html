@@ -61,40 +61,81 @@
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏;
 			mui.plusReady(function() {
-				var cityNum = plus.storage.getItem('cityNum');
-				if(cityNum == null){plus.storage.setItem("cityNum",'1');}
+				
 				//显示   广告导航页面
 //				openview({
 //					view: 'guide.html',
 //					id: 'guide',
 //				});
 				//转盘抽奖
-				openview({ 
-					view: 'lottery.html', 
-					id: 'lottery',
-				});
+//				openview({ 
+//					view: 'lottery.html', 
+//					id: 'lottery',
+//				});
 				
-			   	//切换定位
+			   	//切换定位, 通过更改缓存 实现 切换地区
+			   	var cityNum = plus.storage.getItem('cityNum');
+				if(cityNum == null){plus.storage.setItem("cityNum",'4');}
 			   	document.addEventListener('switchCity', function(obj) {
 					geoInf({'address':{'city':obj.detail.name}},true);
 				})
+			   	
+			   	function distance(lat,lng,goalLat,goalLng){  //经度:lng,106.844003
+	                var EARTH_RADIUS = 6378.137;//地球赤道半径
+	                if(lat != '' && lng != '' && goalLat != '' && goalLng != ''){
+	                      var radLat1 = rad(goalLat);
+	                       var radLat2 = rad(lat);
+	                      var a = radLat1 - radLat2;
+	                      var b = rad(goalLng) - rad(lng);
+	                      var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+	                      s = s * EARTH_RADIUS;
+	                       s = Math.round(s * 10000) / 10000;
+	                       return s*1000;
+	                }else{
+	                    return 0;
+	                }
+	                function rad(d){
+	                   return d * Math.PI / 180.0;
+	                }
+	            }
+			   	Array.prototype.min = function () {
+   	            	var min = this[0];
+   	            	this.forEach(function(ele, index,arr) {
+   	            		if(ele < min) { min = ele; } 
+   	            	}) 
+   	            	return min;
+   	            }
+			   	var nanjiang = [106.844003,32.350423];/*南江*/
+			   	var xuanhan = [107.731522,31.361482];/*宣汉*/
+			   	var linshui = [106.937265,30.346808];/*邻水*/
+			   	var nameArray = ['南江','宣汉','邻水'];
+			   	//var wode = [107.022768,32.465928]; 
+			   	var alljingwei = [nanjiang,xuanhan,linshui];
+			   	
 			   	//地图定位初始化
 				function geoInf(position,Manual) {
 					var cityNum = plus.storage.getItem('cityNum');
-					if(cityNum == null){cityNum = 1}
-					//参数解释   0=其他    1=重庆   2=成都   3=上海
-					var nowCity = position.address.city;
-					if(nowCity.includes('成都') && cityNum != 2){
-						switchFun('成都','2',Manual);
-					}else if(nowCity.includes('上海') && cityNum != 3){
-						switchFun('上海','3',Manual);
-					}else if(nowCity.includes('重庆') && cityNum != 1 && cityNum != 0){
-						switchFun('重庆','1',Manual);
-					}else if(!nowCity.includes('成都') && !nowCity.includes('上海') && !nowCity.includes('重庆')){
-						if(cityNum != 0 && cityNum != 1){
-							plus.storage.setItem("cityNum",'0');
-	            			Preloading();
-						}
+					if(cityNum == null){cityNum = 4}
+					//参数解释   0=其他    1=邻水   2=宣汉  3=南江
+					//所属城市 1重庆 2南江 3宣汉  4邻水
+					if(Manual){/*手动传值时*/
+						var nowCity = position.address.city;
+					}else{
+						//var wode = [position.coords.longitude,position.coords.latitude];
+						var wode = [106.567489,29.507532];
+						var distanceA = [];
+		   	            alljingwei.forEach(function(ele,index){
+		   	            	distanceA.push(distance(wode[1],wode[0],ele[1],ele[0]))
+		   	            })
+		   	            var nowCity = nameArray[distanceA.indexOf(distanceA.min())];
+					}
+					
+					if(nowCity.includes('宣汉') && cityNum != 3){
+						switchFun('宣汉','3',Manual);
+					}else if(nowCity.includes('南江') && cityNum != 2){
+						switchFun('南江','2',Manual);
+					}else if(nowCity.includes('邻水') && cityNum != 4){
+						switchFun('邻水','4',Manual);
 					}
 					
 				}
@@ -104,7 +145,7 @@
 		            	Preloading();
 		            	mui.toast('切换成功');
 					}else{//自动
-						mui.confirm('您当前在'+city+',是否切换至'+city+'市 !', '提示', ['取消', '确定'], function(e) {
+						mui.confirm('您离'+city+'最近,是否切换至'+city+'市 !', '提示', ['取消', '确定'], function(e) {
 				            if (e.index == 1) {
 				            	plus.storage.setItem("cityNum",num);
 				            	Preloading();
@@ -112,11 +153,10 @@
 				            }
 				        })
 					}
-					
 				}
-				function getGeocode() {
+				function getGeocode() {/*定位取经纬度*/
 					plus.geolocation.getCurrentPosition(geoInf, function(e) {
-						mui.toast("获取定位失败,请在设置中打开定位");
+						mui.toast("获取定位失败,请在设置中打开定位,或手动切换最近的城市!");
 					}, {
 						geocode: true,provider: 'amap'
 					});
@@ -128,13 +168,13 @@
 				var timeSign = null;
 				var loadNum = 0;
 				clearInterval(timeSign);
-				timeSign = setInterval(Sign,7000000);//两小时自动更新一次token
+				timeSign = setInterval(Sign,5000000);//两小时自动更新一次token
 				function Sign(){//登录方法
 					//设置默认token
 					if(!plus.storage.getItem('myToken')){//没有用户token
 						mui.ajax(serverUrl+'/api/useraccount/login',{
 							data:{"phone":18180924082,"password":'12345a'},
-							dataType:'json', 
+							dataType:'json',
 							type:'post',
 							timeout:5000,
 							success:function(data,type,xhr){
@@ -149,7 +189,7 @@
 							},
 							error:function(xhr,type,errorThrown){
 								loadNum++;
-								if(loadNum<100){
+								if(loadNum<10){
 									console.error('再次登陆'+loadNum);
 									Sign();//递归请求
 								}else{
@@ -178,7 +218,7 @@
 							},
 							error:function(xhr,type,errorThrown){
 								loadNum++;
-								if(loadNum<100){
+								if(loadNum<10){
 									console.error('再次登陆'+loadNum);
 									Sign();//递归请求
 								}else{
@@ -266,17 +306,6 @@
 					defaultTab.classList.add('mui-active');
 				}
 			});
-			//自定义事件，气泡显示
-//			document.addEventListener('refreshPop', function(obj) {
-//				var allorder=obj.detail.allorder;
-//				var isdisplay = document.getElementById("isdisplay");
-//				 //是否显示
-//				 if(allorder>0){
-//				 	isdisplay.style.display="inline-block"
-//				 }else{
-//				 	isdisplay.style.display="none"
-//				 }
-//			});
 			
 		</script>
 	</body>
