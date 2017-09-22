@@ -1,12 +1,10 @@
-
-//var serverUrl= "http://192.168.199.191:7200";
+//var serverUrl= "http://192.168.43.170:7200";
+var serverUrl= "http://192.168.1.101:7200";
 //var serverUrl='http://hiji.hifete.com';
-var serverUrl='http://abcd.zlzmm.com:7200';
-
+//var serverUrl='http://abcd.zlzmm.com:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
-
 
 //var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://hiji.hifete.com:6789';
@@ -134,6 +132,18 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 			console.log('点赞返回',data)
 			if(data.errno == 0) {  
     			thisobj.attr('src',imgSrc);
+    			var likes = parseInt(thisobj.siblings('span').html());
+    			if(curType == 'POST'){
+    				likes = likes+1;
+    				thisobj.siblings('span').html(likes);
+    			}else{
+    				likes = likes-1;
+    				if(likes<0){
+    					likes=0;
+    				}
+    				thisobj.siblings('span').html(likes);
+    			}
+    			
 			}else{
 				mui.toast('操作失败'); 
 			}
@@ -145,7 +155,38 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 	}); 
 }
 
- 
+function jubao(junsid,jbuid,myuserid,cityNum,oldToken){
+	if(jbuid == myuserid){
+		mui.toast('不能举报自己的帖子哦'); 
+		$('#maskInfo').fadeOut(200);
+	}else{
+		mui.ajax(serverUrl + '/api/friends/report', {
+			data:{'newsId':junsid,'userId':myuserid,'theNewsUserId':jbuid},
+			dataType: 'json',
+			type: 'post',
+			timeout: 8000,
+			headers: {"token": oldToken,'city': cityNum},
+			success: function(data, type, xhr) {
+				console.log('点赞返回',data);
+				if(data.errno == 0){  
+					mui.toast('举报成功');
+					
+				}else if(data.errno == 1000) {  
+	    			mui.toast('审核处理中');
+				}else{
+					mui.toast('操作失败'); 
+				}
+				
+				$('#maskInfo').fadeOut(200);
+			},
+			error: function(xhr, type, errorThrown) { 
+				console.error('举报,响应失败');
+				mui.toast('当前网络不好,请重试');
+			}
+		});
+	}
+
+}
 //懒加载方法
 window.lazyLoad = function(init,limit){
 	var limit = limit || 100;

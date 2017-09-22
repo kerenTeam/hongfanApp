@@ -300,7 +300,9 @@
 		var Ypagenum = 1;//应到页数 
 		mui.plusReady(function(){
 		 plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-		 var oldToken = plus.storage.getItem('oldToken');
+		 var oldToken = plus.storage.getItem('oldToken'),
+		 		cityNum = plus.storage.getItem('cityNum'),
+		 		myuserid = plus.storage.getItem('userid');
 		 order('');//初始化
 		 //获取业态
 //		 mui.ajax(serverUrl+'/api/mall/mallcategory',{
@@ -352,8 +354,9 @@
 				dataType:'json',
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldToken},	 
+				headers:{"token":oldToken,"city":cityNum},	 
 				success:function(data,type,xhr){
+					console.log('店 列表',data)
 					if(data.data.data.length!=0){
 						console.log(JSON.stringify(data))
 						var recommentObj = {};  
@@ -380,7 +383,7 @@
 										dataType:'json',
 										type:'post',
 										timeout:10000,
-										headers:{"token":oldToken},	 
+										headers:{"token":oldToken,"city":cityNum},	 
 										success:function(data,type,xhr){
 											plus.nativeUI.closeWaiting();
 											var recommentObj = {};  

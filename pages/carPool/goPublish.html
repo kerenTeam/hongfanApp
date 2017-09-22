@@ -238,13 +238,13 @@
 								<!--<input type="number" class="fr shuru Ynull" name="" id="peoples" value="" min="1" max="10" placeholder="至少1人最多6人" />-->
 							</a>
 						</li>
-						<li class="clearfloat" id="priceC" style="display: none;">
+						<!--<li class="clearfloat" id="priceC" style="display: none;">
 							<a class="afterI afterI2">
 								<p class="fl">价格</p>
 								<input type="text" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"  
                                     onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'0')}else{this.value=this.value.replace(/\D/g,'')}" class="fr shuru" name="" id="price" value="" placeholder="一口价" />
 							</a>
-						</li>
+						</li>-->
 						<textarea name="" rows="4" id="Binfo" placeholder="更多" class="textare box-s Ynull"></textarea>
 						 
 					</ul>
@@ -288,8 +288,6 @@ function disclaimer(){
 				mui.toast('请输入目的地'); 
 			}else if(mui('#Result3')[0].innerHTML == "请选择人数/座位"){
 				mui.toast('请选择人数/座位');
-			}else if($('#priceC').css('display') =='block' && !$('#price').val()){
-				mui.toast('请输入拼车价格');
 			}else{
 				var typeId,goTime,timeSupplement='',phoneNumber,startPlace,endPlace='',persons,other='',price,pathLocation='';
 				if($('#cityResult4').html() == '人找车'){
@@ -298,6 +296,8 @@ function disclaimer(){
 					typeId = 2;
 				}  
 				goTime = $('#goTime').val(); 
+				alert(goTime)
+//				alert('shijian '+(new Date(goTime).getTime())/1000);
 				timeSupplement = $('#Bname').val();
 				phoneNumber = mui('#Bphone')[0].value;
 				startPlace = $('#start').val();
@@ -313,7 +313,7 @@ function disclaimer(){
 					data:{
 						type:typeId,
 						userId:myuserid,
-						goTime:goTime,
+						goTime:new Date(goTime).getTime(),
 						timeSupplement:timeSupplement,
 						phoneNumber:phoneNumber,
 						startPlace:startPlace,
@@ -321,7 +321,7 @@ function disclaimer(){
 						pathLocation:pathLocation,
 						persons:persons,
 						other:other,
-						price:price
+						price:0
 					},
 					type:'POST',
 					timeout:8000,
@@ -366,11 +366,7 @@ function disclaimer(){
 			var userResult = doc.getElementById('cityResult4');
 			showUserPickerButton.addEventListener('tap', function(event) {
 				userPicker.show(function(items) {
-					if(items[0].text == '车找人'){
-						doc.getElementById('priceC').style.display = 'block';
-					}else{
-						doc.getElementById('priceC').style.display = 'none';
-					}
+					 
 					userResult.innerText = items[0].text;
 					//返回 false 可以阻止选择框的关闭
 					//return false;

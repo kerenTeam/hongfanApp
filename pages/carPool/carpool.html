@@ -16,7 +16,7 @@
 			border-bottom: 1px solid #EEEEEE;
 			position: relative; 
 			/*height: calc(31px + 0.13rem);*/
-			z-index: 99;
+			z-index: 1;
 		}
 		.tab{ 
 			background: white;
@@ -121,7 +121,7 @@
 			<img style="width: 100%;" src="../../img/carPool.png" alt="" /> 
 		</div>
 		<div id="tab">
-			<div class="tabPs" id="tabPs" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;">
+			<div class="tabPs" id="tabPs">
 				<div class="tab">
 					<div class="tabActive" data-type='2'><span>我要找车</span></div>
 					<div data-type='1'><span>我要找人</span></div> 
@@ -173,9 +173,9 @@
 									</span>
 									车主<br />
 									时间：<%=list[i].goTime%>出发<br />
-									<span class="activecl">
+									<!--<span class="activecl">
 										价格：￥<%=list[i].price%>
-									</span>
+									</span>-->
 								</p> 
 								
 							 	<div class="bottomop flexr">
@@ -302,13 +302,14 @@
 					$(".tabcontent").removeClass("taactive");
 					$(".tabcontent").eq(i).addClass("taactive");
 				} 
-				startSearch(); 
+				startSearch('get'); 
 			})
 		    window.addEventListener('refreash',function(event){
-				startSearch();  
+				startSearch('get');  
 			});
-		   	startSearch(); 
+		   	startSearch('get'); 
 			//查询开始
+//			vat dataType = 'get';
 			$('.searchCar').click(function(){
 				var fromwhere = $('#fromwhere input').val();
 				var gowhere = $('#gowhere input').val(); 
@@ -319,10 +320,10 @@
 					mui.toast('请输入终点');
 					return false;
 				}else{ 
-					startSearch();	
+					startSearch('PATCH');	
 				}
 			})
-		    function startSearch(){
+		    function startSearch(dataT){
 				var fromwhere = $('#fromwhere input').val();
 				var gowhere = $('#gowhere input').val();  
 				mui.plusReady(function(){
@@ -334,7 +335,7 @@
 					plus.nativeUI.showWaiting();
 					mui.ajax(serverUrl+'/api/localservice/transport',{
 						data:{'startPlace':fromwhere,'endPlace':gowhere,'type':ctype},
-						type:'PATCH',
+						type:dataT,
 						timeout:8000,
 						headers:{"token":oldToken,"city":cityNum},	              				
 						success:function(data,type,xhr){
@@ -343,7 +344,47 @@
 							if(data.errno == 0){
 								if(data.data && data.data.length){
 									[].forEach.call(data.data,function(ele){
-										ele.goTime = ele.goTime.replace('T',' ');
+//										ele.goTime = ele.goTime.replace('T',' ');
+										
+//										var date = new Date(ele.goTime/1000 *1000);
+//											Y = date.getFullYear() + '-';
+//											M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+//											D = date.getDate() + ' ';
+//											h = date.getHours() + ':';
+//											m = date.getMinutes() + ':';
+//											s = date.getSeconds(); 
+//											console.log(Y+M+D+h+m+s); //呀麻碟
+//											ele.goTime = Y+M+D+h+m+s;
+
+ele.goTime = getCommonTime(ele.goTime/1000 *1000);
+function getCommonTime(milliseconds) {
+    var date = new Date(milliseconds),
+            time = date.toLocaleString(),//这种方法获取的时间格式根据电脑的不同而有所不同
+            formatTime = getFormatDate(date,'-',':');//获取格式化后的日期
+//          alert(formatTime)
+    return time;
+}
+function getFormatDate(timeStr, dateSeparator, timeSeparator) {
+    dateSeparator = dateSeparator ? dateSeparator : "-";
+    timeSeparator = timeSeparator ? timeSeparator : ":";
+    var date = new Date(timeStr),
+            year = date.getFullYear(),// 获取完整的年份(4位,1970)
+            month = date.getMonth(),// 获取月份(0-11,0代表1月,用的时候记得加上1)
+            day = date.getDate(),// 获取日(1-31)
+            hour = date.getHours(),// 获取小时数(0-23)
+            minute = date.getMinutes(),// 获取分钟数(0-59)
+            seconds = date.getSeconds(),// 获取秒数(0-59)
+            Y = year + dateSeparator,
+            M = ((month + 1) > 9 ? (month + 1) : ('0' + (month + 1))) + dateSeparator,
+            D = (day > 9 ? day : ('0' + day)) + ' ',
+            h = (hour > 9 ? hour : ('0' + hour)) + timeSeparator,
+            m = (minute > 9 ? minute : ('0' + minute)) + timeSeparator,
+            s = (seconds > 9 ? seconds : ('0' + seconds)),
+            formatDate = Y + M + D + h + m + s;
+    return formatDate;
+    ele.goTime = formatDate
+     alert(formatTime)
+}
 										var dt2 = new Date(ele.createTime);
 										var date2 = [
 										  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-'),

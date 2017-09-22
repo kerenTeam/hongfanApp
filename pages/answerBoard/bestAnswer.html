@@ -90,7 +90,7 @@
 			
 		<!--抢答-->
 		<style type="text/css"> 
-			.listCon{border-bottom: 1px solid #ddd;}
+			/*.listCon{border-bottom: 1px solid #ddd;}*/
 			.listCon p{padding: 10px 0px 0px 0px;} 
 			.bottomop{display: flex;align-items: center;}
 			.bottomop img{width: 20px;}
@@ -102,100 +102,166 @@
 		<button type="button" class="mui-btn mui-btn-danger goask" style="padding:8px 15px!important;display: block;margin:0 auto 20px;">选择最佳答案</button>
 		
 		<div class="QandA"> 
-			 
-				<div class="listCon">
-					<!--问题-->
-					<div class="follow"> 
-						<div class="fchidl">
-							<div>
-								<img src="../../img/send.png" class="userAvator mr25"/>
-								<div>
-									wangfei
-								</div>
-							</div> 
-							<div class="butright">
-				            	<img src="../../img/answer/nobest.png"/>
-				           </div> 
-						</div>  
-						<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-					 	<div class="answerImf">
-							<img class="anImg" src="https://b-ssl.duitang.com/uploads/blog/201405/02/20140502181453_jkTv4.thumb.224_0.jpeg"/>
-				 		</div> 
-				 		 
-					</div> 
-				 	<div class="follow"> 
-						<div class="fchidl">
-							<div>
-								<img src="../../img/send.png" class="userAvator mr25"/>
-								<div>
-									wangfei
-								</div>
-							</div> 
-							<div class="butright">
-				            	<img src="../../img/answer/nobest.png"/>
-				           </div> 
-						</div>  
-						<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-					 	 
-					</div>
-					<div class="follow"> 
-						<div class="fchidl">
-							<div>
-								<img src="../../img/send.png" class="userAvator mr25"/>
-								<div>
-									wangfei
-								</div>
-							</div> 
-							<div class="butright">
-				            	<img src="../../img/answer/nobest.png"/>
-				           </div> 
-						</div>  
-						<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-					 	 
-					</div>
-					<div class="follow"> 
-						<div class="fchidl">
-							<div>
-								<img src="../../img/send.png" class="userAvator mr25"/>
-								<div>
-									wangfei
-								</div>
-							</div> 
-							<div class="butright">
-				            	<img src="../../img/answer/nobest.png"/>
-				           </div> 
-						</div>  
-						<p class="ft14 maincl">女 26 体检报告显示的这个胃蛋白酶之前从未有过，是不 是很严重，需要注意什么？</p> 
-					 	 
-					</div>
-				</div>
+			<div class="listCon">
+				 <div class="commentsShow"></div>
 			</div>
+			<!--回答模板-->
+			<script type="text/html" id="cmtTpl">
+			
+				<%for(var i=0;i<list.length;i++){%> 
+					<div class="follow"> 
+						<div class="fchidl">
+							<div>
+								<img src="<%=list[i].avatar%>" class="userAvator mr25"/>
+								<div>
+									<%=list[i].nickname%>
+								</div>
+							</div> 
+							<div class="butright">
+								<%if(list[i].adopt && list[i].adopt == 1){%>
+				            		<img data-id="<%=list[i].id%>" data-uid="<%=list[i].userid%>" src="../../img/answer/best.png"/>
+								<%}else{%>
+				            		<img data-id="<%=list[i].id%>" data-uid="<%=list[i].userid%>" src="../../img/answer/nobest.png"/>
+								<%}%>
+
+				           </div> 
+						</div>  
+						<p class="ft14 maincl"><%=list[i].commont%></p> 
+					 	<%if(list[i].pics && list[i].pics.length){%>
+							<%for(var j = 0 ;j<list[i].pics.length;j++){%>
+								<div class="answerImf">
+									<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=list[i].pics[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>" alt="" />
+						 		</div>
+						 	<%}%> 
+						<%}%>  
+				 		 
+					</div>
+					 
+					
+				<%}%>  
+			
+			</script>
+		</div>
 		
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			var flag = 0;
-	 		$('.butright img').click(function(){
-	 			$('.butright img').attr('src','../../img/answer/nobest.png');
-	 			flag = 0;
-	 			if($(this).attr('src') == '../../img/answer/nobest.png'){
-	 				$(this).attr('src','../../img/answer/best.png');
-	 				flag = 1;
-	 			}else{
-	 				$(this).attr('src','../../img/answer/nobest.png');
-	 				flag = 0;
-	 			}
-	 		})
-	 		$('.baocun').click(function(){
-	 			if(flag == 1){
-	 				mui.toast('选择成功');
-	 				plus.webview.currentWebview().close();
-	 			}else{
-	 				mui.toast('还未选择最佳答案哦')
-	 			}
-	 		})
+			
+			mui.plusReady(function(){
+				
+				var cityNum  = plus.storage.getItem('cityNum'),
+				    oldToken = plus.storage.getItem('oldToken'),
+					myuserid = plus.storage.getItem('userid'),
+					infiId = plus.webview.currentWebview().answerId;
+					
+				//回答列表 
+				mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
+					dataType: 'json',
+					type: 'get',
+					timeout: 8000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) { 
+						console.log('答案',data)
+						if(data.errno == 0) {
+							var cmtArray = data.data; 
+							if(cmtArray && cmtArray.length>0){
+								for(var i = 0;i<cmtArray.length;i++){
+									if(!cmtArray[i].nickname){ 
+										cmtArray[i].nickname =  '匿名'
+									}
+									var isBest=0;
+									if(cmtArray[i].adopt && cmtArray[i].adopt == 1){
+										$('.baocun').css('display','none');
+										$('.goask').html('已选择最佳答案'); 
+										isBest = 1;
+									}
+									if(cmtArray[i].pics && cmtArray[i].pics!='null'){
+										cmtArray[i].pics = JSON.parse(cmtArray[i].pics);
+										for(var j = 0; j<cmtArray[i].pics.length;j++){
+											if(cmtArray[i].pics[j].picImg.indexOf('http') == -1){
+	                                            cmtArray[i].pics[j].picImg = serverimgUrl + cmtArray[i].pics[j].picImg;
+	                                        }
+										}
+									}
+	                                if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
+	                                    if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
+	                                        cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
+	                                    }else{
+	                                        cmtArray[i].avatar = JSON.parse(cmtArray[i].avatar)[0].picImg
+	                                    }
+	                                }else{
+	                                    cmtArray[i].avatar = '../../img/10.png'
+	                                }
+	                                     
+								}  
+								
+								$('.commentsShow').html(template('cmtTpl',{list:cmtArray}));
+								lazyLoad();
+								//勾选最佳答案 
+								var flag = 0,commontId='',commontUserId='';
+						 		$('.butright img').click(function(){
+						 			if(isBest == 1){
+						 				$('.butright img').attr('src','../../img/answer/nobest.png');
+							 			flag = 0;
+							 			if($(this).attr('src') == '../../img/answer/nobest.png'){
+							 				$(this).attr('src','../../img/answer/best.png');
+							 				flag = 1;
+							 				commontId = $(this).attr('data-id');
+							 				commontUserId = $(this).attr('data-uid');
+							 			}else{
+							 				$(this).attr('src','../../img/answer/nobest.png');
+							 				flag = 0;
+							 				commontId = '',commontUserId='';
+							 			}
+						 			}
+						 		})
+						 		
+						 		//提交t
+						 		$('.baocun').click(function(){
+						 			if(flag == 1 && commontId){
+						 				plus.nativeUI.showWaiting();
+						 				alert(infiId+' '+commontId+" "+commontUserId)
+						 				mui.ajax(serverUrl + '/api/friends/adoptionissues', {
+						 					data:{newsId:infiId,commontId:commontId,commontUserId:commontUserId},
+											dataType: 'json',
+											type: 'post',
+											timeout: 8000,
+											headers: {"token": oldToken,'city': cityNum},
+											success: function(data, type, xhr) {
+												console.log(data)
+												plus.nativeUI.closeWaiting();
+												mui.toast('选择成功');
+						 						plus.webview.currentWebview().close();
+											},
+											error: function(xhr, type, errorThrown) {
+												plus.nativeUI.closeWaiting();
+												mui.toast('操作失败，当前网络不好,请重试');
+											}
+										})
+						 				
+						 			}else{
+						 				mui.toast('还未选择最佳答案哦')
+						 			}
+						 		})
+							}else{
+								$('.commentsShow').html('<div style="text-align:center;font-size:12px">暂无回答</div>');
+								$('.goask,.baocun').css('display','none')
+							}
+							
+						 
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('评论列表,响应失败');
+						mui.toast('当前网络不好,请重试');
+					}
+				});
+			})
+			 
 		</script>
 	</body>
 
