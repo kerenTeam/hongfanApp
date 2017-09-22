@@ -53,7 +53,7 @@ window.bannerGo = function(url, name, route) {
 				}
 			})
 		}
-	}else if(url.indexOf('&')>-1 ){//本地  
+	}else if(url.indexOf('&')>-1 ){//本地
 		var localId = url.split('&')[1],localUrl = url.split('&')[0],localUId = url.split('&')[2] || -1;
 		openview({
 			view: localUrl,

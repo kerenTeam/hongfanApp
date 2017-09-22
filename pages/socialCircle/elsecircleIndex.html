@@ -61,6 +61,9 @@
 		    height: 100%;
 		    overflow: hidden;
 		}
+		.Scontent .mui-col-sm-3 img{
+			height: 70%;
+		}
 		
 	</style>
 	<body style="background-color: white;">
@@ -251,28 +254,41 @@
                 <!--赠送礼物-->
             	<div class="shareWrap" style="z-index: 999; opacity: 1;"></div>
             	<div class="Scontent" style="bottom: 0px;">
-            		<h3 class="h3">礼物</h3>
-            		<div class="mui-row">
+            		<h3 class="h3">礼品</h3>
+            		<div class="mui-row" id="SgiftDiv">
             			<div class="mui-col-sm-3 mui-col-xs-3">
             				<img src="../../img/share/weixing.png" class="aClick2"><br>微信好友
             			</div>
-            			<div class="mui-col-sm-3 mui-col-xs-3 ">
-            				<img src="../../img/share/pengyouquan.png" class="aClick2"><br>朋友圈
-            			</div>
-        				<div class="mui-col-sm-3 mui-col-xs-3">
-        					<img src="../../img/share/QQ.png" class="aClick2"><br>QQ好友
-        				</div>
-        				<div class="mui-col-sm-3 mui-col-xs-3">
-        					<img src="../../img/share/weibo.png" class="aClick2"><br>新浪微博
-        				</div>
-        				<div class="mui-col-sm-3 mui-col-xs-3">
-        					<img src="../../img/share/fuzhi.png" class="aClick2"><br>复制链接
-        				</div>
+            			
             		</div>
+            		<script type="text/html" id="SgiftDiv2">
+				    	<%for(var i = 0;i<dataList.length;i++){%>
+					        <div class="mui-col-sm-3 mui-col-xs-3" onclick="giftGift(<%=dataList[i].hasing%>,<%=userId%>,<%=dataList[i].id%>,<%=acceptPersonId%>,'<%=dataList[i].picS%>','<%=dataList[i].title%>',<%=dataList[i].price%>)">
+	        					<img src="<%=dataList[i].picS%>" class="aClick2"><br><%=dataList[i].title%>
+	        				</div>
+				    	<%}%>
+					</script>
+            		
             		<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>
             	</div>
-                
-				
+            	
+            	<!--礼物弹窗-->
+				<div class="changeHI" style="display: none;">
+					<div class="HIcon">
+					<div class="markHI" style="display: none;" onclick="closeC()"></div>
+						<div class="content12">
+							<div class="head1"></div>
+							<div class="operating">
+								<span class="span1 unitPrice"></span>
+								<span class="span1 unitPrice2"></span>
+								<img class="jianjian" src="../../img/makeFriend/liwujian.png"/>
+								<span class="span2" id="chageNum"> 1 </span>
+								<img class="jiajia" src="../../img/makeFriend/liwujia.png"/>
+							</div>
+							<div class="HIconfirm">赠送</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
@@ -301,6 +317,10 @@
 				myuserid = plus.webview.currentWebview().userId;
 	    	document.addEventListener('refresh', function() {
 				headInfo();
+			})
+	    	
+	    	document.addEventListener('refreshGift', function() {
+				showGift();
 			})
 	    	
 	    	//tab切换
@@ -442,6 +462,7 @@
 							 	dataObj.dataList = data.data.data;
 								document.getElementById('dynamicList').innerHTML = template("Sdynamic", dataObj);
 								lazyLoad(true);//懒加载
+								mui("#upload")[0].innerHTML = "";
 								
 								$(window).scroll(function() {
 									if(mui('.contentChild')[0].style.display == 'block'){
@@ -450,7 +471,7 @@
 										var windowHeight = $(this).height();　　
 										if(scrollTop + windowHeight == scrollHeight) {
 											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-												//mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 												Ypagenum++; //满足加载情况,应到页数+1
 												console.log('发起请求,实到' + Spagenum + '页');
 												console.log('发起请求,应到' + Ypagenum + '页');
@@ -535,7 +556,7 @@
 								 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
 	
 							}else{
-								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无动态</div>')
+								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无照片</div>')
 							}
 							$('#allPic,#addPic,.MFdiv133').click(function(){
 								openview({
@@ -561,7 +582,7 @@
 					data:{"userId":myuserid},
 					type:'post',
 					timeout:8000,
-					headers:{"token":oldToken,"city":cityNum},	              				
+					headers:{"token":oldToken,"city":cityNum},        				
 					success:function(data,type,xhr){
 						console.log('获取数据返回',data);
 						if(data.errno == 0){
@@ -742,10 +763,56 @@
 					
 				})
 			})
-	    })
-	    
-	    
-	    /*礼物*/
+	    	
+	    	
+	    	
+			/*展示所有礼物*/
+			showGift();
+			function showGift(){
+				alert('加载礼物');
+				var myuserid0 = plus.storage.getItem('userid');
+				mui.ajax(serverUrl+'/api/friends/gift/userId/'+myuserid0,{
+					type:'get',
+					timeout:8000,
+					headers:{"token":oldToken,"city":1},				
+					success:function(data,type,xhr){
+						console.log('所有礼物',data);
+						if(data.errno == 0){
+							if(data.data && data.data.isAll.length){
+								for(var j = 0 ;j<data.data.isAll.length;j++){//整理内容图片
+									var nowArray2 = JSON.parse(data.data.isAll[j].picImg);
+									if(nowArray2.length){
+										data.data.isAll[j].picS = nowArray2[0].picImg;
+									}
+								}
+								var dataObj = {};
+								dataObj.userId = myuserid0;
+								dataObj.acceptPersonId = myuserid;
+							 	dataObj.dataList = data.data.isAll;
+								document.getElementById('SgiftDiv').innerHTML = template("SgiftDiv2", dataObj);
+								
+							}else{//没有礼物
+								document.getElementById('SgiftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
+							}
+							
+						}else{
+							console.log(data.errmsg); 
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.error('我的礼物数据,响应失败');
+						Fload3 = 0;
+					}
+				});
+			}
+			
+	   	  	/*礼物结束*/
+	    	
+	    	
+	    	
+	    })//plus结束
+	    /*赠送礼物开始*/
+	   /*礼物开始*/
 		function showSfun(link){
 			document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
 			document.getElementsByClassName('shareWrap')[0].style.opacity = '1';
@@ -768,7 +835,104 @@
 		document.getElementsByClassName('shareWrap')[0].onclick = function(){
 			hideSfun();
 		}
-   	  	
+	   		//赠送礼物
+   		function giftGift(hasing,userId,giftId,acceptPersonId,picS,title,price){
+	    	if(hasing>0){
+	    		hideSfun();
+	    		exchangeHI(picS,hasing,price,0,giftId,hasing,userId,acceptPersonId);
+	    		
+
+	    	}else{
+	    		hideSfun();
+	    		mui.confirm('你没有该礼物,立即购买?', '提示', ['取消', '确定'], function(e) {
+		            if (e.index == 1) {
+						openview({
+					 		view:'../market/jifen_detail.html',
+					 		extrasobj:{
+								picS: picS,
+								title:title,
+								price:price,
+								idNum:giftId
+							}
+					 	})
+		            }
+		        })
+	    	}
+			
+		}
+		function exchangeHI(pic,num,price,typeId,giftId,hasing,userId,acceptPersonId){
+			mui('.unitPrice2')[0].innerHTML =  '拥有'+hasing+'个';
+			mui('.head1')[0].style.background = " url("+pic+") 0 0 no-repeat";
+			mui('.head1')[0].style.backgroundSize = " cover ";
+			openC();
+			var flag = false,flag2 = false;
+			mui('.jiajia')[0].onclick = function(){ //加操作
+				flag2 = false;
+				mui('#chageNum')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) + 1;
+				if(mui('#chageNum')[0].innerHTML > num){
+					mui('#chageNum')[0].innerHTML = num;
+					if(!flag){mui.toast('已超出最大值')};
+					flag = true;
+				}
+				
+			}
+			mui('.jianjian')[0].onclick = function(){ //减操作
+				flag = false;
+				mui('#chageNum')[0].innerHTML = parseInt(mui('#chageNum')[0].innerHTML) - 1;
+				if(mui('#chageNum')[0].innerHTML < 1){
+					mui('#chageNum')[0].innerHTML = 1;
+					if(!flag2){mui.toast('至少赠送一个哟')};
+					flag2 = true;
+				}
+			}
+			mui('.HIconfirm')[0].onclick = function(){ //兑换操作
+				mui.confirm('是否确认赠送?', '提示', ['取消', '确定'], function(e) {
+		            if (e.index == 1) {
+		            	giftDataFun(giftId,userId,acceptPersonId);
+		            }
+		        })
+			}
+			
+		}
+		function openC(){
+			mui('.markHI')[0].style.display = 'block';
+			mui('.changeHI')[0].style.display = 'table';
+		}
+		function closeC(){
+			mui('.markHI')[0].style.display = 'none';
+			mui('.changeHI')[0].style.display = 'none';
+		}
+		/*赠送数据方法*/
+		function giftDataFun(giftId,userId,acceptPersonId){
+			mui.plusReady(function(){
+				var oldToken = plus.storage.getItem('oldToken');
+				mui.ajax(serverUrl+'/api/friends/gift/userId',{
+					data:{"userId":userId,'myGiftId':giftId,'acceptPersonId':acceptPersonId},
+					type:'post',
+					timeout:8000,
+					headers:{"token":oldToken,"city":1},	              				
+					success:function(data,type,xhr){
+						console.log('赠送礼物',data);
+						if(data.errno == 0){
+							alert('赠送成功');
+							mui.fire(plus.webview.getWebviewById('elsecircleIndex'),'refreshGift')
+						}else{
+							mui.toast(data.errmsg);
+						}
+						closeC();
+					},
+					error:function(xhr,type,errorThrown){
+						console.error('兑换  数据 方法,响应失败');
+						closeC();
+					}
+				});
+			})
+    		
+		}
+	    
+	    
+	    
+	    
    	  	
    	  	
    	  	
