@@ -255,15 +255,10 @@
 					
 					window.goZan = function(obj,id,toUserId){ 
 						var curThis = $(obj); 
-						var likes = parseInt(curThis.siblings('span').html());
 						
 						if(curThis.attr('src') == '../../img/makeFriend/zan.png'){
-							likes = likes+1; 
-							curThis.siblings('span').html(likes);
 							likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'POST','../../img/makeFriend/yizan.png');
 						}else{ 
-							likes = likes-1; 
-							curThis.siblings('span').html(likes);
 							likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'delete','../../img/makeFriend/zan.png'); 
 						}
 					}
@@ -309,7 +304,7 @@
 									}else if((nowArray[j].read / 1000)>1){
 										nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
 									}
-									if(!nowArray[j].likes){
+									if(!nowArray[j].likes || nowArray[j].likes<0){
 										nowArray[j].likes = 0
 									}
 //									else if((nowArray[j].likes / 1000)>1){
@@ -335,8 +330,8 @@
 								//操作表
 								var jbuid='',junsid;
 								$('.goanswer').click(function(){
-									jbuid = $(this).attr('data-id');
-									junsid = $(this).attr('data-useRId'); 
+									junsid = $(this).attr('data-id');
+									jbuid = $(this).attr('data-useRId'); 
 									event.stopPropagation();
 									$('#maskInfo').fadeIn(200); 
 									
@@ -427,7 +422,7 @@
 																	}else if((nowArray[j].read / 1000)>1){
 																		nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
 																	}
-																	if(!nowArray[j].likes){
+																	if(!nowArray[j].likes || nowArray[j].likes<0){
 																		nowArray[j].likes = 0
 																	}
 																	var dt = new Date(nowArray[j].create_time).getTime(); 
@@ -448,8 +443,8 @@
 																//操作表
 																var jbuid='',junsid;
 																$('.goanswer').click(function(){
-																	jbuid = $(this).attr('data-id');
-																	junsid = $(this).attr('data-useRId'); 
+																	junsid = $(this).attr('data-id');
+																	jbuid = $(this).attr('data-useRId'); 
 																	event.stopPropagation();
 																	$('#maskInfo').fadeIn(200); 
 																	

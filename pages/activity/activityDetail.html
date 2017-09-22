@@ -316,7 +316,7 @@
 			<% }%>	
 			
 			<!--代金券-->
-			<div class="cardMoney">
+			<!--<div class="cardMoney">
 				<img src="../../img/market/cardMoney.png"/>
 				<div class="carl">
 					<div class="red1">￥ <span style="font-size: 20px;">100</span></div>
@@ -326,11 +326,11 @@
 					<div class="ctop">520情人节共享券<br/>2017-08-30</div>
 					<div class="cbot red1">立即领取</div>
 				</div>
-			</div>
+			</div>-->
 			
 			
 			<!--活动券-->
-			<div class="cardMoney">
+			<!--<div class="cardMoney">
 				<img src="../../img/market/onlyCard.png"/>
 				<div class="cartop">
 					520情人节共享券<br />
@@ -339,7 +339,7 @@
 				<div class="carbot">
 					<button type="button" class="mui-btn mui-btn-danger goask" style="padding:5px 5px!important;background-color: #fd6363;border: none;">立即领取</button>
 				</div>
-			</div>
+			</div>-->
 			
 			
 			<div class="farmtc clearfloat mt10">
@@ -368,8 +368,9 @@
 		function Refresh(){
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 		//获取数据
-		var oldtoken = plus.storage.getItem('oldToken');
-		var myuserid = plus.storage.getItem('userid');
+		var oldToken = plus.storage.getItem('oldToken'),
+	 		cityNum = plus.storage.getItem('cityNum'),
+	 		myuserid = plus.storage.getItem('userid');
 		var activityId = plus.webview.currentWebview().activityId;
 		var mycannotid = []; 
 		mui.ajax(serverUrl+'/api/useraccount/mycoupon',{  
@@ -377,7 +378,7 @@
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型
 			timeout:10000,//超时时间设置为10秒；
-			headers:{"token":oldtoken},	
+			headers:{"token":oldToken,"city":cityNum},	
 			success:function(data){
 				console.log('领取过的',data);
 				if(data.errno == 0){
@@ -400,7 +401,7 @@
 				data:{"id":activityId},  
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldtoken},	               				
+				headers:{"token":oldToken,"city":cityNum},	               				
 				success:function(data){
 					console.log('活动详情返回',data); 
 					if(data.errno == 0){
@@ -487,7 +488,7 @@
 									dataType:'json',
 									type:'post',
 									timeout:10000,
-									headers:{"token":oldToken},	 
+									headers:{"token":oldToken,"city":cityNum},	 
 									success:function(data,type,xhr){
 										if(data.errno == 0){ 
 											mui.toast("领取成功！");

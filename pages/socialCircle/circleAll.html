@@ -55,12 +55,22 @@
 		</div>
 		
 		<div class="circleContain" >
+			<div class="circleBox" id="addCircle">
+				<div class="circleImg">
+					<img src="../../img/makeFriend/add.png"/>
+				</div>
+				<div class="circleName ft14">
+					<b style="margin: auto;display: block;text-align: center;">创建圈子</b>
+					<div style="visibility: hidden;" class="ft10 disablecl">xxx </div>
+				</div>
+			</div>
+			<!--<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
 			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
 			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
-			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
-			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>
+			<div class="circleBox cbc"><div class="circleImg circleImgZ"></div><div class="circleName circleNameZ ft14"> <b>占位</b><div class="ft10 disablecl">条</div> </div></div>-->
 		</div>
 		<script type="text/html" id="listDataS">
+			
 			<%for(var i=0;i<dataList.length;i++){%>
 				<div class="circleBox cbc" onclick="openDetail('<%=dataList[i].id%>','<%=dataList[i].typeNum%>')">
 					<div class="circleImg">
@@ -74,14 +84,7 @@
 			<%}%>	
 		</script>
 		<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div>
-		<!--<div class="circleBox" id="addCircle">
-			<div class="circleImg">
-				<img src="../../img/makeFriend/add.png"/>
-			</div>
-			<div class="circleName ft16">
-				创建圈子
-			</div>
-		</div>-->
+		
 		<!--遮罩-->
 		<div id="maskInfo" style="display: none;">
 			<img class="closeIcon closemask" src="../../img/market/addtheme.svg"/>
@@ -141,7 +144,7 @@
 			shopData(0,0,1);
 		})
 		function refreshFun(){
-			document.getElementsByClassName("circleContain")[0].innerHTML = '';
+			document.getElementsByClassName("circleContain")[0].innerHTML = '<div class="circleBox" id="addCircle"><div class="circleImg"><img src="../../img/makeFriend/add.png"/></div><div class="circleName ft14"><b style="margin: auto;display: block;text-align: center;">创建圈子</b><div style="visibility: hidden;" class="ft10 disablecl">xxx </div></div></div>';
 			shopData(0,0,1);//默认推荐
 		}
 		mui.plusReady(function(){
@@ -191,10 +194,13 @@
 									
 									
 									dataObj.dataList = data.data.data;
-									document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
+									document.getElementsByClassName("circleContain")[typeNum].innerHTML += template("listDataS", dataObj);
 									mui("#upload")[0].innerHTML = "";
 									lazyLoad(true,20);//懒加载
-									
+									//创建圈子 
+									$('#addCircle').click(function(){
+										$('#maskInfo').fadeIn(200);
+									})
 									$(window).scroll(function() {
 										
 										var scrollTop = $(this).scrollTop();　
@@ -247,7 +253,8 @@
 											}
 										} 
 									});
-								
+									
+									
 								}
 							}else{
 								mui.toast('当前网络不好,请重试');
@@ -287,11 +294,7 @@
 				view:'searchCircle.html'
 			})
 		})
-		//创建圈子 
-		$('#addCircle').click(function(){
-			$('#maskInfo').fadeIn(200);
-		})
-		
+	
 		$('.ruleCt').click(function(){
 			event.stopPropagation()
 		})
@@ -323,22 +326,26 @@
 		})
 		
 		$('.upbtn').click(function(){
-	//			$('#maskInfo').fadeOut(200);
-	//			$('.circleRule').css('display','none')
-	//			$('.ruleCtd').removeClass('ruleAct');
-			
+//			$('#maskInfo').fadeOut(200);
+//			$('.circleRule').css('display','none')
+//			$('.ruleCtd').removeClass('ruleAct');
+			if($('.ruleAct').attr('data-id')==1){
+				openview({
+					view:'addCircle.html',
+					id:'addCircle'
+				})
+			}else{
 				openview({
 					view:'chargeCircle.html',
 					id:'chargeCircle',
-				}) 
+				})
+			}
 		})
 		
-
-
 		$('.goRule').click(function(){
-				openview({
-					view:'circleRule.html'
-				})
+			openview({
+				view:'circleRule.html'
+			})
 		})
 	</script>
 </body>

@@ -192,7 +192,9 @@
 		})
 	
 		shopData(0,0,false);//默认最新tab
-		
+		document.addEventListener('refreash', function() {
+					shopData(0,0,false);
+				})
 		function shopData(typeNum,gender,refresh){
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数
@@ -213,19 +215,15 @@
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken'),
 					groupId = plus.webview.currentWebview().groupId; 
+				
 	 		window.goZan = function(obj,id,userid){
 					event.stopPropagation()
 	 			if(plus.storage.getItem('myToken')){
 					var curThis = $(obj); 
-					var likes = parseInt(curThis.siblings('span').html());
 					
 					if(curThis.attr('src') == '../../img/answer/unlike.png'){
-						likes = likes+1; 
-						curThis.siblings('span').html(likes);
 						likeThis(curThis,id,userid,cityNum,myuserid,oldToken,'POST','../../img/answer/liked.png');
 					}else{ 
-						likes = likes-1; 
-						curThis.siblings('span').html(likes);
 						likeThis(curThis,id,userid,cityNum,myuserid,oldToken,'delete','../../img/answer/unlike.png'); 
 					}
 				}else{
@@ -293,7 +291,7 @@
 									}else if((nowArray[j].answerNums / 1000)>1){
 										nowArray[j].answerNums = parseInt(nowArray[j].answerNums / 1000) +'K+'
 									}
-									if(!nowArray[j].likes){
+									if(!nowArray[j].likes || nowArray[j].likes<0){
 										nowArray[j].likes = 0
 									} 
 									if(nowArray[j].pic && nowArray[j].pic!='null'){
