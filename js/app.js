@@ -15,10 +15,10 @@ var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
 
 //执行alert方法
-function alertF(content){ //非姐的方法 
+function alertF(content){ //非姐的方法
 	//alert(content)
 }
-function alertY(content){ //向前的方法 
+function alertY(content){ //向前的方法
 //	alert(content)
 }
 
@@ -51,7 +51,7 @@ window.bannerGo = function(url, name, route) {
 				}
 			})
 		}
-	}else if(url.indexOf('&')>-1 ){//本地  
+	}else if(url.indexOf('&')>-1 ){//本地
 		var localId = url.split('&')[1],localUrl = url.split('&')[0],localUId = url.split('&')[2] || -1;
 		openview({
 			view: localUrl,
