@@ -471,6 +471,7 @@
 				headers:{"token":oldToken},	 
 				success:function(data,type,xhr){   
 					plus.nativeUI.closeWaiting(); 
+					console.log('订单列表',data)
 					if(data.errno==0){
 						if(data.data.length!=0){
 							var orderuuid = [],repayid=[],ordermoney=[];
@@ -492,8 +493,7 @@
 										}
 									} 
 //									ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue) 
-									 
-
+							 
 								}
 								if(data.data[i].goods_data){
 									data.data[i].goods_data=eval("("+data.data[i].goods_data+")");
@@ -527,6 +527,7 @@
 							if(orderuuid.length!=0){
 								orderuuid = orderuuid.unique1();//去重
 							}
+
 							for(var i = 0;i<orderuuid.length;i++){
 								for(var j=0;j<data.data.length;j++){
 									if(orderuuid[i] == data.data[j].order_UUID){
@@ -535,7 +536,8 @@
 										 
 									}
 								}
-							} 
+							}
+ 		
 							//json 数组去重
 							var arr = [];
 							var list = ordermoney;
@@ -556,12 +558,12 @@
 							repayid = repayid.unique1(); 
 							
 							console.log("对对对 ",data)
-							console.log("goods_data "+JSON.stringify(data.data[0].goods_data))
 							var obj={}; 
 							 obj.orderData=data.data;
 							 console.log('啦啦啦',obj.orderData)
 							 obj.myUrl=serverimgUrl; 
 							 obj.oduuid = orderuuid;
+								console.log('orderuuid',JSON.stringify(orderuuid))
 							
 							 obj.repayid = repayid;
 							 obj.ordermoney = ordermoney;
@@ -819,7 +821,7 @@
 				})
 			}
 			window.delOrder=function(obj,id,txt,uuid,payid,odst){ 
-				 console.log(payid)
+				 console.log('payid'+payid+' '+'uuid '+uuid)
 				if(odst == 1){
 					id = '';
 				}
@@ -930,6 +932,8 @@
 							return;
 						} 
 						function gopay(id) {
+				 console.log('payid'+repayid+' '+'uuid '+uuid)
+							
 							var oldToken = plus.storage.getItem('oldToken');
 							var myuserid = plus.storage.getItem('userid'); 
 							mui.ajax(serverUrl+'/api/mall/repayment', {

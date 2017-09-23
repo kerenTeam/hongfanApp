@@ -300,9 +300,9 @@
 						<%=searchData[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 					<%}%>
 				<%}else if(searchType == 'store'){%>
-					<%for(var i=0;i < searchData.length;i++){%>
-					<li onclick="opendetails5('<%=searchData[i].store_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-						<%=searchData[i].store_name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+					<%for(var i=0;i < searchData.shop_store.length;i++){%>
+					<li onclick="opendetails5('<%=searchData.shop_store[i].store_id%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+						<%=searchData.shop_store[i].store_name%><span class="mui-icon mui-icon-arrowright fr"></span></li>
 					<%}%>
 				<%}else{%>
 					<!--房产-->
@@ -479,9 +479,10 @@
 					},
 					success: function(data, type, xhr) {
 						plus.nativeUI.closeWaiting();
-						console.log(data)
+						console.log(searchType,data)
 						if(data.errno == 0) {
-							if(searchType){
+							console.log(searchType)
+							if(searchType == 'goods'){
 								if(data.data && data.data.length != 0) {
 									var searchObj = {};
 									searchObj.searchData = data.data;
@@ -490,8 +491,9 @@
 								} else {
 									document.getElementById("searchOut").innerHTML = "<div style='text-align: center;padding-top: 60%;'>换其它的试试呢</div>"
 								}
-							}else{
-								if((data.data.local_house && data.data.local_house.length != 0) || (data.data.local_used_market && data.data.local_used_market.length != 0) || (data.data.goods && data.data.goods.length != 0) || (data.data.system_activity && data.data.system_activity.length != 0) || (data.data.shop_store && data.data.shop_store.length != 0)) {
+							}
+							if(searchType == 'store'){
+								if(data.data.shop_store && data.data.shop_store.length != 0) {
 									var searchObj = {};
 									searchObj.searchData = data.data;
 									searchObj.searchType = searchType;
@@ -530,7 +532,7 @@
 				$("#container").css("display", "none");
 				$(".searchOut").css("display", "block");
 				$("input").val($.trim($(this).text()));
-				doSearch($.trim($(this).text()))
+				doSearch($.trim($(this).text()),$('.curtype').attr('data-id'))
 			})
 		})
 

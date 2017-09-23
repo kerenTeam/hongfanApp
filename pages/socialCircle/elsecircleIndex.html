@@ -138,7 +138,7 @@
 											<div class="DitemRin1" style="width: 0;">
 											</div>
 										<%}%>	
-										<h3 class="overTwo"><%=dataList[i].content%></h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
+										<h3 class="overTwo"><%=dataList[i].content%></h3> <p><%=dataList[i].read%>阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> <%=dataList[i].likes%></p>
 									</div>						
 								</div>
 							</div>
@@ -243,8 +243,11 @@
 				<!--底部操作-->
                 <div class="footF mui-content">
                     <div class="mui-row">
-                        <div class="mui-col-sm-4 mui-col-xs-4 isLiked">
-                            <img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/guanzhu.png"/> 关注
+                        <div class="mui-col-sm-4 mui-col-xs-4">
+                            <div class="isLiked">
+                            	<img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/guanzhu.png"/> 关注
+                            </div>
+                        	<div style="display: none;"><img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/beFriend.svg"/> 好友</div>
                         </div>
                         <div class="mui-col-sm-4 mui-col-xs-4 giftBtn"><img src="../../img/makeFriend/liwu2.png"/>礼物</div>
                         <div class="mui-col-sm-4 mui-col-xs-4 smend"><img src="../../img/makeFriend/liaotian.png"/>聊天</div>
@@ -457,6 +460,14 @@
 									if(nowArray2.length){
 										nowArray[j].picS = nowArray2[0].picImg;
 									}
+									if(!nowArray[j].read){
+										nowArray[j].read = 0
+									}else if((nowArray[j].read / 1000)>1){
+										nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
+									}
+									if(!nowArray[j].likes || nowArray[j].likes<0){
+										nowArray[j].likes = 0
+									}
 								}
 								
 							 	dataObj.dataList = data.data.data;
@@ -497,6 +508,14 @@
 																var nowArray2 = JSON.parse(nowArray[j].pic);
 																if(nowArray2.length){
 																	nowArray[j].picS = nowArray2[0].picImg;
+																}
+																if(!nowArray[j].read){
+																	nowArray[j].read = 0
+																}else if((nowArray[j].read / 1000)>1){
+																	nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
+																}
+																if(!nowArray[j].likes || nowArray[j].likes<0){
+																	nowArray[j].likes = 0
 																}
 															}
 															dataObj.dataList = data.data.data;
@@ -733,7 +752,23 @@
 									}
 									
 								})  
-							 
+							 	//关注
+							 	$('.isLiked').click(function(){ 
+							 		if($('.isLiked').html().indexOf('关注')>0){
+							 			var curL = $(this);
+							    		//关注 
+							    		if(plus.storage.getItem('myToken')){
+											followBack(curL,myuserid,'put');
+//											$('.isLiked').html('<img style="margin-right: 1px;margin-top: -3px;" src="../../img/makeFriend/beFriend.svg"/> 好友')
+											
+										}else{
+											mui.toast('请登录');
+											openview({
+												view:'../login.html'
+											});
+										}
+							 		}
+						    	})
 							}
 						}else{
 							console.log(data.errmsg); 
