@@ -100,40 +100,42 @@
 				<!--全部--> 
 				<script type="text/html" id="allC-detail">
 					<% for(var i=0;i<allLi.length;i++){ %> 
-						<% if(allLi[i].id && allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
-							<div class="offerWrap"> 	
-								<div class="offerTop">
-									<h4><b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
-									<p><%= allLi[i].name %><span style="visibility: hidden;">wu</span><span class="span3">立即使用</span></p>
-								</div>
-								<div class="offerFoot">
-									<%if(allLi[i].pic && allLi[i].pic.length){%>
-										<% for(var j= 0;j<allLi[i].pic.length;j++){%>
-											<div class="answerImf">
-												<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
-									 		</div> 
-										<%}%>
-									<%}%>
-								</div>
-							</div>
-						<% }else{ %><!--不可用状态-->
-							<div class="offerWrap offerWrap3"> 	
-								<div class="offerTop">
-										<h4> <b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
-										<p><%= allLi[i].name %> <span style="visibility: hidden;">wu</span> <span class="span3">已失效</span></p>
+						<%if(allLi[i].id){%>
+							<% if(allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
+								<div class="offerWrap"> 	
+									<div class="offerTop">
+										<h4><b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+										<p><%= allLi[i].name %><span style="visibility: hidden;">wu</span><span class="span3">立即使用</span></p>
 									</div>
-								<div class="offerFoot">
-									<%if(allLi[i].pic && allLi[i].pic.length){%>
-										<% for(var j= 0;j<allLi[i].pic.length;j++){%>
-											<div class="answerImf">
-												<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
-									 		</div> 
+									<div class="offerFoot">
+										<%if(allLi[i].pic && allLi[i].pic.length){%>
+											<% for(var j= 0;j<allLi[i].pic.length;j++){%>
+												<div class="answerImf">
+													<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
+										 		</div> 
+											<%}%>
 										<%}%>
-									<%}%>
+									</div>
 								</div>
-							</div>
-						<% } %>
-						
+							<% }else{ %><!--不可用状态-->
+								<div class="offerWrap offerWrap3"> 	
+									<div class="offerTop">
+											<h4> <b class="b2"></b><span class="span1"><%= allLi[i].title %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+											<p><%= allLi[i].name %> <span style="visibility: hidden;">wu</span> <span class="span3">已失效</span></p>
+										</div>
+									<div class="offerFoot">
+										<%if(allLi[i].pic && allLi[i].pic.length){%>
+											<% for(var j= 0;j<allLi[i].pic.length;j++){%>
+												<div class="answerImf">
+													<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic[j].picImg%>" alt="" />
+										 		</div> 
+											<%}%>
+										<%}%>
+									</div>
+								</div>
+							<% } %>
+						<%}%>
+						 
 					<% } %>
 				</script>
 				<!--可用-->
@@ -268,7 +270,10 @@
 										mui('#allC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 										mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 										mui('#disableC-detail')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有已使用的优惠券哟！</p></div>';
-									}	
+									}
+									if(!$('.offerWrap')){
+										mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有优惠券哟！</p></div>';
+									}
 								}
 							
 							//点击进入券的详情
