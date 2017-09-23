@@ -225,8 +225,8 @@
 													<div class="dealcard-img imgbox">
 														<span></span>
 														<%if(data.order_type == 0){%>
-														<% if(data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin){ %>
-														<img src="<%=data.PriceCalculation.Params.goodsData[t].goods_Data[i].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% if(data.goods_data.goods_Data[0].youpin){ %>
+														<img src="<%=data.goods_data.goods_Data[0].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}else{%>
 														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}%>
@@ -294,11 +294,11 @@
 											<%if(data.PriceCalculation.Params.goodsData[t].postAge){%>
 												<%if(data.order_type == 0){%>
 													<li class="gray">
-														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge.postage%></span></div>
 													</li>
 												<%}else{%>
 													<li class="gray">
-														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge%></span></div>
+														<div class="tip-title">邮费<span class="fr">￥<%=data.PriceCalculation.Params.goodsData[t].postAge.postage%></span></div>
 													</li>	
 												<%}%>
 												
@@ -511,22 +511,24 @@
 							} 
 							
 							for(var i = 0; i < data.data[0].PriceCalculation.Params.goodsData[0].goods_Data.length; i++) {
-								 
+//								if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].postAge){
+//									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].postAge.postage;
+//								}
 								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax = Math.floor(parseFloat((data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price) * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate * data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].nums+data.data[0].PriceCalculation.Params.goodsData[0].postAge*data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].tax_rate)*100)/100;
 								data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].price).toFixed(2)
-								if(data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin) {
-									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
-									
-								}
-
+								 
 							}
-
+							
 							data.data[0].userPostData = JSON.parse(data.data[0].userPostData); 
 							if(data.data[0].order_type == 0 ){
 								data.data[0].PriceCalculation.Params.goodsData[0].postAge = parseFloat(data.data[0].PriceCalculation.Params.goodsData[0].postAge) 
 							}
 
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");
+							if(data.data[0].goods_data.goods_Data[0].youpin) {
+//									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
+									data.data[0].goods_data.goods_Data[0].youpin = JSON.parse(data.data[0].goods_data.goods_Data[0].youpin);
+								}
 							data.data[0].goods_data.total_goods_prices = parseFloat(data.data[0].goods_data.total_goods_prices).toFixed(2)
 
 							if(data.data[0].fee) { 
@@ -567,7 +569,7 @@
 							document.getElementById("orderInfo").innerHTML = template("orderTpl", orderInfo);
 							document.getElementById("button").innerHTML = template("buttonTpl", orderInfo);
 							getadd(data.data[0].PriceCalculation.Params.postData.address_id)
-
+						console.log('详情2', data);
 						}
 					},
 					error: function(xhr, type, errorThrown) {

@@ -136,7 +136,7 @@
 											<div class="DitemRin1" style="width: 0;">
 											</div>
 										<%}%>	
-										<h3 class="overTwo" ><%=dataList[i].content%></h3> <p>999阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> 256</p>
+										<h3 class="overTwo" ><%=dataList[i].content%></h3> <p><%=dataList[i].read%>阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> <%=dataList[i].likes%></p>
 									</div>
 								</div>
 							</div>
@@ -656,6 +656,15 @@
 									if(nowArray2.length){
 										nowArray[j].picS = nowArray2[0].picImg;
 									}
+									
+									if(!nowArray[j].read){
+										nowArray[j].read = 0
+									}else if((nowArray[j].read / 1000)>1){
+										nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
+									}
+									if(!nowArray[j].likes || nowArray[j].likes<0){
+										nowArray[j].likes = 0
+									}
 								}
 								
 							 	dataObj.dataList = data.data.data;
@@ -696,6 +705,14 @@
 																var nowArray2 = JSON.parse(nowArray[j].pic);
 																if(nowArray2.length){
 																	nowArray[j].picS = nowArray2[0].picImg;
+																}
+																if(!nowArray[j].read){
+																	nowArray[j].read = 0
+																}else if((nowArray[j].read / 1000)>1){
+																	nowArray[j].read = parseInt(nowArray[j].read / 1000) +'K+'
+																}
+																if(!nowArray[j].likes || nowArray[j].likes<0){
+																	nowArray[j].likes = 0
 																}
 															}
 															dataObj.dataList = data.data.data;
