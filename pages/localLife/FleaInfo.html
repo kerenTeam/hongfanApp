@@ -77,16 +77,13 @@
 				<div class="follow" id="curUser" data-id="<%=dataList.userid%>">
 					<div class="fchidl">
 						<div>
-							<img src="<%=dataList.avatar%>" onclick="goCircleIndex(<%=dataList.userid%>)" class="userAvator mr25"/>
+							<img src="<%=dataList.avatar%>" class="userAvator mr25"/>
 							<div>
 								<%=dataList.nickname%> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
 							</div>
 						</div> 
-						<div class="butright isFollow">
-							<div class="diybtn2">
-								 ￥200
-							</div> 
-							 
+						<div class="butright isFollow activecl">
+								￥<%=dataList.price%>
 			           </div> 
 					</div>  
 					
@@ -127,7 +124,7 @@
 					<%if(!list[i].commontid){%>
 						<div class="follow ft12"> 
 							<div class="fchidl2">
-								<div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+								<div class="ctc">
 									<img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
 								</div> 
 								<div class="butright">
@@ -142,7 +139,7 @@
 							 
 							<div class="follow ft12"> 
 	                            <div class="fchidl2">
-	                                <div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+	                                <div class="ctc">
 	                                    <img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
 	                                </div> 
 	                                <div class="butright">
@@ -164,7 +161,7 @@
                 <%for(var i=0;i<list.length;i++){%> 
                          
                         <div class="fchidl2 fchidl3">
-                            <div class="ctc" onclick="goCircleIndex(<%=list[i].userid%>)">
+                            <div class="ctc">
                                 <img src="<%=list[i].avatar%>" class="userAvator3 loadPics"/>
                             </div> 
                             <div class="butright">
@@ -179,39 +176,21 @@
             </script>
 			  
 		</div>
-		
-		
-		
-		<!--操作表-->
-		<div id="maskInfo" style="display: none;">
-		    <!-- 可选择菜单 -->
-		    <ul class="jubao">
-		      <li>
-		        <a href="#">加入黑名单</a>
-		      </li>
-		      <li>
-		        <a href="#">举报</a>
-		      </li>
-		      <li>
-		        <a href="javscript:;" class="closeMask" >取消</a>
-		      </li>
-		    </ul>
-		</div>
 		 
 		<!--底部-->
 		<div class="opbot maincl ft14">
 			<div class="opbf">
 				<div>
-					点赞<img id="doLike" src="../../img/localLife/weizan.png" alt="" />
+					点赞<img id="doLike" src="../../img/localLife/weizan.png" alt="" /><span id="allzan"></span>
 				</div>
 				<div style="border-left: 1px solid #EEEEEE;border-right: 1px solid #EEEEEE;">
-					收藏<img src="../../img/localLife/uncollt.png" alt="" />
+					收藏<img id='collt' src="../../img/localLife/uncollt.png" alt="" />
 				</div>
 				<div id='cmtedup'>
 					留言<img src="../../img/makeFriend/message.png" alt="" />
 				</div>
 			</div>
-			<a href="javascript:;" class="opbb">
+			<a href="" class="opbb">
 				我想要
 			</a> 
 		</div>
@@ -271,29 +250,7 @@
 				showSoftInput();
 
 			}
-		
-			window.goCircleIndex = function(id){
-				if(plus.storage.getItem('myToken')){
-					if(id == myuserid){
-						openview({
-				    		view:'mycircleIndex.html',
-				    		id:'mycircleIndex' 
-				    	})
-					}else{
-						openview({
-				    		view:'elsecircleIndex.html',
-				    		id:'elsecircleIndex',
-				    		extrasobj:{userId:id}
-				    	})
-					} 
-				}else{
-					mui.toast('请登录');
-					openview({
-						view:'../login.html'
-					});
-				}  
-		    }
-			
+		  
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
 				dataType: 'json',
 				type: 'get',
@@ -322,6 +279,12 @@
 						}else if((nowArray.read / 1000)>1){
 							nowArray.read = parseInt(nowArray.read / 1000) +'K+'
 						}
+						if(nowArray.phone){
+							$('.opbb').attr('href','tel:'+phone);
+						}else{
+							$('.opbb').html('无联系方式')
+//							$('.opbb').attr('href','tel:15708434450');
+						}
 						 
 						var dt = new Date(nowArray.create_time).getTime(); 
 						nowArray.create_time = getDateDiff(dt);
@@ -336,6 +299,9 @@
 							}
 							nowArray.picS = picS;
 						} 
+						if(nowArray.likes && nowArray.likes>0){
+							$('#allzan').html(nowArray.likes)
+						}
 						
 						dataObj.dataList = data.data;
 						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
@@ -516,14 +482,29 @@
 	    		
 	    		
 	    	})
-	    	
+	    	//收藏
+	    	$('#collt').click(function(){
+	    		if(plus.storage.getItem('myToken')){
+					var curThis = $(this);
+					if(curThis.attr('src') == '../../img/localLife/uncollt.png'){ 
+						colltThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/collt.png')  
+					}else{
+						colltThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/uncollt.png') 
+					}
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+	    	})
 	    
 			//点赞
 			$('#doLike').click(function(){
 				if(plus.storage.getItem('myToken')){
 					var curThis = $(this);
 					if(curThis.attr('src') == '../../img/localLife/weizan.png'){ 
-						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/answer/zan.png')  
+						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/zan.png')  
 					}else{
 						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'DELETE','../../img/localLife/weizan.png') 
 					}

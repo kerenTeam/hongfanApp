@@ -15,11 +15,7 @@
 		<script src="../../js/artTemplate-native.js"></script>
 	</head>
 	<style type="text/css">
-		.search{height:60px;background-color:#f3f3f3;}
-		.searchBox{position:relative;margin:auto;width:76%;height:100%;}
-		.searchBox img:first-child{width:100%;max-height:50px;}
-		.searchBox .searchIcon,.searchBox img:first-child{position:absolute;top:50%;z-index:1;-webkit-transform:translateY(-50%);}
-		.searchBox .searchIcon{left:10px;width:13px;}
+		.searchIcon{width:18px;margin-top: 15px; margin-right: 6px;margin-left: 15px;}
 		.mui-bar-nav{box-shadow: none !important; z-index: 400;}
 		.QAhead{position: fixed;background-color: #fff; width: 100%; z-index: 300;box-shadow: 0 0px 2px rgba(175, 166, 166, 0.85);}
 		.listSon { margin-top: 35px; }
@@ -37,20 +33,13 @@
 		<header class="mui-bar mui-bar-nav fineB" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">交友</h1>
-			<img src="../../img/makeFriend/userCenter.png" class="mui-pull-right friendCenter" style="width:20px;margin-top: 15px; margin-right: 6px;"/>
+			<img class="search searchIcon mui-pull-right" src="../../img/answer/search.png"/>
+			<!--<img src="../../img/makeFriend/userCenter.png" class="mui-pull-right friendCenter" style="width:20px;margin-top: 15px; margin-right: 6px;"/>-->
 		</header>
 		<script src="../../js/statusBar.js"></script>
 		
 		<div id="main">	
-			<!--<div class="search">
-				<div class="searchBox">
-					<img src="../../img/answer/searchBar.png"/>
-					<img class="searchIcon" src="../../img/answer/search.png"/>
-					<div style="position: absolute;left: 30px;font-size: 12px;top:50%;-webkit-transform: translateY(-50%);">
-						请输入您想找的内容
-					</div>
-				</div>
-			</div>-->
+			 
 			<div class="QandA">
 				<div class="QAhead">
 					<span class="active aClick">推荐</span>
@@ -74,9 +63,10 @@
 								<!--<div class="circleImg" style="background: url(<%=dataList[i].avatar%>) 0 0 no-repeat;background-size: cover;">-->
 								<div class="circleImg">
 									<img class="img1 picOp loadPics" onload="imgHeight(this)" data-src="<%=dataList[i].avatar%>" src=""/>
-									<a><img src="../../img/mainHtml/yizan.png"/><%=dataList[i].likes%></a>
+									
 								</div>
-								<div class="circleName"><%=dataList[i].username%> <br /> <span><%=dataList[i].age%></span> </div>
+								
+								<div class="circleName"><%=dataList[i].username%> <a style="float: right;"><img style="width: 15px;vertical-align:middle;margin-right: 3px;" src="../../img/mainHtml/yizan.png"/><%=dataList[i].likes%></a><br /> <span><%=dataList[i].age%></span> </div>
 							</div>
 						<%}%>	
 					</script>
@@ -150,7 +140,7 @@
 							'numsPerPage':numsPerPage,
 							'currentPage':currentPage,
 							'orderType':'ASC',
-							'orderField':'followers'
+							'orderField':'resommendOnHomeIndex'
 						}
 				}else if(typeNum == 1){
 					flag1++;
@@ -160,7 +150,7 @@
 							'numsPerPage':numsPerPage,
 							'currentPage':currentPage,
 							'orderType':'ASC',
-							'orderField':'followers'
+							'orderField':'resommendOnHomeIndex'
 						}
 				}else if(typeNum == 2){
 					flag2++;
@@ -170,7 +160,7 @@
 							'numsPerPage':numsPerPage,
 							'currentPage':currentPage,
 							'orderType':'ASC',
-							'orderField':'followers'
+							'orderField':'resommendOnHomeIndex'
 						}
 				}
 				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
@@ -250,7 +240,7 @@
 																	'numsPerPage':numsPerPage,
 																	'currentPage':Spagenum,
 																	'orderType':'ASC',
-																	'orderField':'followers'
+																	'orderField':'resommendOnHomeIndex'
 																}
 														}else if(typeNum == 1){
 															flag1++;
@@ -260,7 +250,7 @@
 																	'numsPerPage':numsPerPage,
 																	'currentPage':Spagenum,
 																	'orderType':'ASC',
-																	'orderField':'followers'
+																	'orderField':'resommendOnHomeIndex'
 																}
 														}else if(typeNum == 2){
 															flag2++;
@@ -270,7 +260,7 @@
 																	'numsPerPage':numsPerPage,
 																	'currentPage':Spagenum,
 																	'orderType':'ASC',
-																	'orderField':'followers'
+																	'orderField':'resommendOnHomeIndex'
 																}
 														}
 														mui.ajax(serverUrl + '/api/friends/friendslist', {
@@ -350,7 +340,7 @@
 			}
 			
 			//搜索
-			$('.search').click(function(){
+			$('#header .search').click(function(){
 				openview({
 					view:'searchHuman.html'
 				})
@@ -373,7 +363,7 @@
 				} 
 				
 			}
-			$('.friendCenter').click(function(){
+			$('#header .friendCenter').click(function(){
 				if(plus.storage.getItem('myToken')){
 					openview({
 						view:'mycircleIndex.html'

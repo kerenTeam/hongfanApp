@@ -122,6 +122,9 @@
 						var nowCity = position.address.city;
 					}else{
 						//var wode = [position.coords.longitude,position.coords.latitude];
+						//定位传入 后台
+						sendLocation(position.coords.longitude,position.coords.latitude);
+						
 						var wode = [106.567489,29.507532];
 						var distanceA = [];
 		   	            alljingwei.forEach(function(ele,index){
@@ -139,6 +142,53 @@
 					}
 					
 				}
+				
+				//定位传入后台
+				function sendLocation(lont,lat){
+					console.log(lont+' '+lat);
+					if(plus.storage.getItem('myToken')){
+						var myuserid = plus.storage.getItem('userid'),
+						    cityNum  = plus.storage.getItem('cityNum'),
+							oldToken = plus.storage.getItem('oldToken');
+						//转换因子
+						var city={}; 
+						city.longitude = lont;
+						city.latitude = lat; 
+						//地球半径
+						var R = 6371.393;  
+						var girthY = R * 2 * Math.PI; 
+						var girthX = Math.cos(city.latitude / 180 * Math.PI) * girthY ;
+						//x轴转换因子
+						city.xFactor = girthX / 360; 
+						//y轴转换因子
+						city.yFactor = girthY / 360;
+						mui.ajax(serverUrl+'/api/index/userlocal',{
+							data:{"location":JSON.stringify(city),"userid":myuserid},
+							dataType:'json',
+							type:'post',
+							timeout:5000,
+							headers: {"token": oldToken,'city': cityNum},
+							success:function(data,type,xhr){
+								console.log('定位传入返回'+JSON.stringify(data)); 
+								 
+							},
+							error:function(xhr,type,errorThrown){
+								loadNum++;
+								if(loadNum<10){
+									console.error('再次登陆'+loadNum);
+									Sign();//递归请求
+								}else{
+									mui.toast('当前网络不好请重试！');
+									console.log('获取自动登录token响应失败');
+								}
+							}
+						});
+					}else{
+						console.log('未登录')
+					}
+					
+				}
+				
 				function switchFun(city,num,Manual){
 					if(Manual){//手动
 						plus.storage.setItem("cityNum",num);

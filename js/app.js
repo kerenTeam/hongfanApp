@@ -1,7 +1,7 @@
 //var serverUrl= "http://192.168.43.170:7200";
-var serverUrl= "http://192.168.1.101:7200";
+//var serverUrl= "http://192.168.1.101:7200";
 //var serverUrl='http://hiji.hifete.com';
-//var serverUrl='http://abcd.zlzmm.com:7200';
+var serverUrl='http://abcd.zlzmm.com:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
@@ -143,6 +143,36 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
     				}
     				thisobj.siblings('span').html(likes);
     			}
+    			
+			}else{
+				mui.toast('操作失败'); 
+			}
+		},
+		error: function(xhr, type, errorThrown) { 
+			console.error('点赞,响应失败');
+			mui.toast('当前网络不好,请重试');
+		}
+	}); 
+}
+
+//收藏和取消收藏  
+function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
+	mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+newsId+'/userid/'+myuserid, {
+		data:{'referenceUserId':referenceUserId},
+		dataType: 'json',
+		type: curType,
+		timeout: 8000,
+		headers: {"token": oldtoken,'city': cityNum},
+		success: function(data, type, xhr) {
+			console.log('点赞收藏',data)
+			if(data.errno == 0) {
+				if(data.data){
+					mui.toast('取消成功')
+					thisobj.attr('src',imgSrc);
+				}else{
+    				thisobj.attr('src',imgSrc);
+				}
+ 
     			
 			}else{
 				mui.toast('操作失败'); 

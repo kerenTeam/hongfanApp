@@ -48,7 +48,7 @@
 				<%if(objData[i].stock && objData[i].stock>0){%>
 					<%if(objData[i].price){%>
 						<div class="offerWrap">
-							<div class="offerTop" onclick="goPay(<%=objData[i].id%>)">
+							<div class="offerTop" onclick="goPay(<%=objData[i].id%>,<%=objData[i].price%>)">
 								<h4> <b class="b2"></b><span class="span1"><%=objData[i].title%></span> <span class="span2"><%=objData[i].begin_date%> ~ <%=objData[i].end_date%></span></h4>
 								<p><%=objData[i].name%> <span class="span3">付<%=objData[i].price%>元购买</span></p>
 							</div>
@@ -64,7 +64,7 @@
 						</div> 
 					<%}else{%>
 						<div class="offerWrap offerWrap2">
-							<div class="offerTop" onclick="goPay(<%=objData[i].id%>)">
+							<div class="offerTop" onclick="goPay(<%=objData[i].id%>,<%=objData[i].price%>)">
 								<h4> <b class="b2"></b><span class="span1"><%=objData[i].title%></span> <span class="span2"><%=objData[i].begin_date%> ~ <%=objData[i].end_date%></span></h4>
 								<p><%=objData[i].name%> <span class="span3">免费领取</span></p>
 							</div>
@@ -113,8 +113,9 @@
 			var cityNum = plus.storage.getItem('cityNum'),
 				myuserid = plus.storage.getItem('userid'),
 				oldToken = plus.storage.getItem('oldToken');
+				 
 			mui.ajax(serverUrl+'/api/index/couponlist',{
-				data:{type:2},
+				data:{isAll:1},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
@@ -199,9 +200,10 @@
 			}
 			//系统检测获取支付通道结束
 
-			window.goPay = function(cid) { 
-				var couponId = cid;
-				  $("#payChoose").addClass("mui-active");
+			window.goPay = function(cid,cprice) { 
+				if(cprice && cprice>0){
+					var couponId = cid; 
+				  	$("#payChoose").addClass("mui-active");
 					// 支付方法 
 					window.payfun = function(id) {
 						var varpay; 
@@ -289,7 +291,38 @@
 
 						}
 
-					} 
+					}	
+				}else{
+					mui.ajax(serverUrl + '/api/index/getcoupon', {
+						data: {
+							userid: myuserid,
+							payType: '', 
+							id:couponId,
+						},
+						type: 'post', //HTTP请求类型
+						headers: {"token": oldToken,'city': cityNum},
+						timeout: 10000, //超时时间设置为10秒；
+						success: function(data) {
+							console.error('支付返回',data);
+							plus.nativeUI.closeWaiting()  
+							if(data.errno == 1000) {
+								mui.toast('已领完') 
+							} 
+							if(data.errno == 0) {
+								mui.toast('领取成功') 
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							console.log(type);
+							console.log("----- 请求订单失败 -----");
+							console.log(xhr.status);
+							plus.nativeUI.closeWaiting();
+							plus.nativeUI.alert("获取订单信息失败！");
+						}
+					});
+				}
+				 
 			}
 		});
 		

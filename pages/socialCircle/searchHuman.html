@@ -174,6 +174,8 @@
 				border-radius: 3px;
 				color: gray;
 			}
+			.fal{display: flex;align-items: center;}
+			.fal img{width: 40px;height: 40px;border-radius: 50%;margin-right: 15px;}
 	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color: white;">
@@ -222,10 +224,9 @@
 						<div class="disablecl">用户 </div> 
 					</div>  
 	    				<%for(var i=0;i < searchData.length;i++){%>
-    						<div class="follow" data-id="<%=searchData[i].id%>" data-type="<%=searchData[i].typeNum%>"> 
-								<div class="ft16"><%=searchData[i].name%></div>
-								<div class="disablecl"><%=searchData[i].description%></div>
-								<div class="disablecl">加入人数：<%=searchData[i].joinNums%></div>
+    						<div class="follow fal" data-id="<%=searchData[i].user_id%>"> 
+								<div class="disablecl"><img src="<%=searchData[i].avatar%>"/></div> 
+								<div class="ft16"><%=searchData[i].nickname%></div>
 							</div> 
 	    				<%}%>   
 				</div> 
@@ -348,24 +349,33 @@
 					var cityNum  = plus.storage.getItem('cityNum'), 
 						oldToken = plus.storage.getItem('oldToken');
 					mui.ajax(serverUrl+'/api/friends/searchfriend',{
-						searchValue:{searchValue:words},
+						data:{searchValue:words},
 						dataType:'json',
 						type:'post',
 						timeout:8000,
 						headers: {"token": oldToken,'city': cityNum},
 						success:function(data,type,xhr){ 
+								console.error('查询',data)
 							plus.nativeUI.closeWaiting();
 							if(data.errno==0){
-								console.error('查询',data)
 								if(data.data && data.data.length!=0){
 									 var searchObj = {};
 									 for(var i=0;i<data.data.length;i++){
-									 	/*是否为创建者*/
-										if(data.data[i].createUserId == myuserid){
-											data.data[i].typeNum = 0;
-										}else if(data.data[i].isJoined){
-											/*是否为参加者*/
-											data.data[i].typeNum = 1;
+									 	if(!data.data[i].nickname){
+											data.data[i].nickname = '匿名'
+										}else{ 
+											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)){
+												data.data[i].nickname = data.data[i].nickname.substring(0,3)+"****"+data.data[i].nickname.substring(7,11);
+											}
+										}  
+										if(data.data[i].avatar && data.data[i].avatar!='null'){
+											if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http')== -1){
+												data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+											}else{
+												data.data[i].avatar = JSON.parse(data.data[i].avatar)[0].picImg;
+											}
+										}else{
+											data.data[i].avatar = '../../img/10.png'
 										}
 									 }
 									 searchObj.searchData = data.data;
@@ -375,15 +385,25 @@
 									//跳转
 									$(".tc1 .follow").click(function(){  
 										var id = $(this).attr("data-id");
-										var typeNum = $(this).attr('data-type');
-										openview({
-											view: "circleInfo.html",
-											id:"circleInfo",
-											extrasobj: {
-												circleId: id,
-												creator:typeNum
-											}
-										})
+										if(plus.storage.getItem('myToken')){
+											if(id == myuserid){
+												openview({
+										    		view:'mycircleIndex.html',
+										    		id:'mycircleIndex' 
+										    	})
+											}else{
+												openview({
+										    		view:'elsecircleIndex.html',
+										    		id:'elsecircleIndex',
+										    		extrasobj:{userId:id}
+										    	})
+											} 
+										}else{
+											mui.toast('请登录');
+											openview({
+												view:'../login.html'
+											});
+										}
 									})
 									
 									 
