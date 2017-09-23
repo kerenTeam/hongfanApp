@@ -369,20 +369,20 @@
 								<div id='cityResult3' class="ui-alert">请选择分类</div>
 							</a>
 						</li>
-						<li class="clearfloat" id="Bclass2">
+						<!--<li class="clearfloat" id="Bclass2">
 							<a href="javascript:;" id="mapAddress">
 								<p class="fl">身份</p>
 								<button id='showCityPicker4' type='button'><span class="mui-icon mui-icon-arrowdown"></span></button>
 								<div id='cityResult4' class="ui-alert">请选择身份</div>
 							</a>
-						</li>
+						</li>-->
 						<li class="clearfloat">
 							<a href="#">
 								<p class="fl">价格</p>
 								<input type="number" class="fr shuru Ynull" name="" id="Bprice" value="" placeholder="请输入价格" />
 							</a>
 						</li>
-						<textarea name="" rows="4" id="Binfo" placeholder="请填写描述" class="textare box-s Ynull" value=""></textarea>
+						<textarea maxlength="500" name="" rows="4" id="Binfo" placeholder="请填写描述" class="textare box-s Ynull" value=""></textarea>
 						
 					</ul>
 					<div class="uppics clearfix" id="uppics2"> 
@@ -472,42 +472,66 @@
 		mui('#Releasebtn')[0].onclick = function(){
 			var classification;//分类
 			switch(mui('#cityResult3')[0].innerHTML){
-				case '家用电器':
+				case '机械':
 				classification = 1;
 				break;
-				case '手机电脑':
+				case '数码':
 				classification = 2;
 				break;
-				case '衣服':
+				case '家具':
 				classification = 3;
 				break;
-				case '食品':
+				case '服装':
 				classification = 4;
 				break;
-			}
-			var classification_1;//身份
-			switch(mui('#cityResult4')[0].innerHTML){
-				case '商家':
-				classification_1 = 1;
+				case '文体\户外':
+				classification = 5;
 				break;
-				case '个人':
-				classification_1 = 0;
+				case '手机':
+				classification = 6;
+				break;
+				case '办公设备':
+				classification = 7;
+				break;
+				case '代步工具':
+				classification = 8;
+				break;
+				case '母婴':
+				classification = 9;
+				break;
+				case '宠物':
+				classification = 10;
+				break;
+				case '家电':
+				classification = 11;
+				break;
+				case '其他':
+				classification = 12;
 				break;
 			}
+//			var classification_1;//身份   (弃用)
+//			switch(mui('#cityResult4')[0].innerHTML){
+//				case '商家':
+//				classification_1 = 1;
+//				break;
+//				case '个人':
+//				classification_1 = 0;
+//				break;
+//			}
 			var Ynulls = mui('.Ynull');
 			if(!reg_phone.test(mui('#Bphone')[0].value)){
 				mui.toast('请输入正确的手机号');
 				mui('#Bphone')[0].focus();
 			}else if(mui('#cityResult3')[0].innerHTML == "请选择分类"){
 				mui.toast('请选择分类');
-			}else if(mui('#cityResult4')[0].innerHTML == "请选择身份"){
-				mui.toast('请选择身份');
 			}else if(!mui('#Bprice')[0].value){
 				mui.toast('请输入价格');
+				mui('#Bprice')[0].focus();
 			}else if(!mui('#Binfo')[0].value){
 				mui.toast('请输入宝贝描述');
+				mui('#Binfo')[0].focus();
 			}else{
-				if(Bnowid){//修改上传
+				if(Bnowid){//个人中心修改上传
 					for (var i=0; i<Ynulls.length; i++) {
 						if(!Ynulls[i].value){
 							Ynulls[i].focus();
@@ -530,6 +554,10 @@
 											console.log(back.responseText);
 											var dataobj = JSON.parse(back.responseText);
 											if(dataobj.errno == 0){ 
+												/*刷新二手列表*/
+												alert(1);
+												mui.fire(plus.webview.getWebviewById('2edMarket'),'refresh');
+												
 												var time2 = setTimeout(function(){
 													mui.toast('发布成功');
 													plus.nativeUI.closeWaiting();
@@ -591,13 +619,14 @@
 						 	//发送数据结束
 						} 
 					}
-				}else{//开始编辑上传
+				}else{//开始新增上传
 					if(Apic.length<3){
 						mui.toast('请至少选择3张图片');
 					}else{
 						releaseData();
 					 	//发送数据
 					 	function releaseData(){
+					 		plus.nativeUI.showWaiting();
 					 		var cityNum  = plus.storage.getItem('cityNum'),
 								oldToken = plus.storage.getItem('oldToken'),
 								circleId = plus.webview.currentWebview().circleId,
@@ -605,10 +634,12 @@
 							var task = plus.uploader.createUpload(serverUrl+'/api/friends/addnews', 
 								{ method:"POST"},
 								function(back,status){
+									console.log(back.responseText);
 									if(status == 200){
 										console.log(back.responseText);
 										var dataobj = JSON.parse(back.responseText);
 										if(dataobj.errno == 0){ 
+											mui.fire(plus.webview.getWebviewById('2edMarket'),'refresh');
 											var time2 = setTimeout(function(){
 												mui.toast('发布成功');
 												plus.nativeUI.closeWaiting();
@@ -616,8 +647,7 @@
 											},800)
 			    						}else{
 			    							plus.nativeUI.closeWaiting();//关闭等待框
-			    							mui.toast('发布失败，请重试！');
-			    							plus.nativeUI.closeWaiting();
+			    							mui.toast(dataobj.errmsg);
 			    						}
 									}else{
 										plus.nativeUI.closeWaiting();//关闭等待框
@@ -632,7 +662,7 @@
 							city.latitude=33;
 							
 							//地球半径
-							var R = 6371.393; 
+							var R = 6371.393;
 							
 							var girthY = R * 2 * Math.PI;
 							
@@ -650,7 +680,7 @@
 							task.addData("price",mui('#Bprice')[0].value.toString());
 							task.addData("phone",mui('#Bphone')[0].value);
 							task.addData("goodsType",classification.toString());
-							task.addData("launchType",classification_1.toString());
+							task.addData("launchType",'0');//类型 商家 or 个人
 							task.addData("location",JSON.stringify(city));
 							
 							if(Apic.length){
@@ -736,13 +766,29 @@
 			//分类选择
 			var userPicker = new $.PopPicker();
 			userPicker.setData([{
-				text: '家用电器'
+				text: '机械'
 			}, {
-				text: '手机电脑'
+				text: '数码'
 			}, {
-				text: '衣服'
+				text: '家具'
 			}, {
-				text: '食品'
+				text: '服装'
+			},{
+				text: '文体\户外'
+			},{
+				text: '手机'
+			},{
+				text: '办公设备'
+			},{
+				text: '代步工具'
+			},{
+				text: '母婴'
+			},{
+				text: '宠物'
+			},{
+				text: '家电'
+			},{
+				text: '其它'
 			}]);
 			var showUserPickerButton = doc.getElementById('showCityPicker3');
 			var userResult = doc.getElementById('cityResult3');
@@ -769,13 +815,13 @@
 			}]);
 			var showUserPickerButton = doc.getElementById('showCityPicker4');
 			var userResult = doc.getElementById('cityResult4');
-			showUserPickerButton.addEventListener('tap', function(event) {
-				userPicker.show(function(items) {
-					userResult.innerText = items[0].text;
-					//返回 false 可以阻止选择框的关闭
-					//return false;
-				});
-			}, false);
+//			showUserPickerButton.addEventListener('tap', function(event) {
+//				userPicker.show(function(items) {
+//					userResult.innerText = items[0].text;
+//					//返回 false 可以阻止选择框的关闭
+//					//return false;
+//				});
+//			}, false);
 		});
 	})(mui, document);
 </script>

@@ -19,7 +19,6 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js"></script>
 		<script src="../../js/artTemplate-native.js"></script>
-		 
 	</head>
 	<style type="text/css">
 		#userBox{
@@ -86,9 +85,7 @@
 		    <h1 class="mui-title">我的问答</h1>  
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-	 
 		<!--状态栏结束-->
-		<!--<div id="container">-->
 		<div id="main">
 			<div class="clearfloat box-s box-ss" id="userBox" style="display: none;">
 	    		<img id="mypic1" src="https://hbfile.b0.upaiyun.com/img/home/banner/1b2ee045f8bf04befb7cf3722fcc527eaeb18f23114c28"/>
@@ -107,7 +104,6 @@
 				<div class="ft14">我回答的</div>
 				<div class="ft14">问我的</div>
 		 	</div>  
-		 	
 		 	
 			<div id="QA"><!--大盒子-->
 				<div class="QA qative dyCon" id="questions" style="display: block;"></div><!--盒子一-->
@@ -253,7 +249,7 @@
 						'orderType':'DESC',
 						'orderField':'create_time',
 						'typeId':2,
-						'isMyAnswer':1 
+						'isMyAnswer':1
 					}
 				}else{
 					var dataJson = {
@@ -263,7 +259,7 @@
 						'orderType':'DESC',
 						'orderField':'create_time',
 						'typeId':2,
-						'isAskMe ':1 
+						'isAskMe':1
 					}
 				}
 				
@@ -278,37 +274,41 @@
 						if(data.errno == 0) {
 							var dataObj = {};
 							var nowArray = data.data.data;
-
-							for(var j = 0 ;j<nowArray.length;j++){
-								//整理头像格式
-								if(nowArray[j].avatar && nowArray[j].avatar!='null'){
-									if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
-										nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+							if(data.data.data.length){
+								for(var j = 0 ;j<nowArray.length;j++){
+									//整理头像格式
+									if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+										if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+											nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+										}else{
+											nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+										}
 									}else{
-										nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+										nowArray[j].avatar = '../../img/10.png'
 									}
-								}else{
-									nowArray[j].avatar = '../../img/10.png'
+									
+									if(!nowArray[j].nickname){
+										nowArray[j].nickname = '匿名'
+									}
+									if(nowArray[j].pic && nowArray[j].pic!='null'){
+										nowArray[j].pic = JSON.parse(nowArray[j].pic);
+										for(var k = 0; k<nowArray[j].pic.length;k++){
+											if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
+	                                            nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
+	                                        }
+										}
+									}
 								}
 								
-								if(!nowArray[j].nickname){
-									nowArray[j].nickname = '匿名'
-								}
-								if(nowArray[j].pic && nowArray[j].pic!='null'){
-									nowArray[j].pic = JSON.parse(nowArray[j].pic);
-									for(var k = 0; k<nowArray[j].pic.length;k++){
-										if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
-                                            nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
-                                        }
-									}
-								}
+								dataObj.dataList = data.data.data;
+								dataObj.typeNum = typeNum;
+								document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
+								mui("#upload")[0].innerHTML = "";
+								lazyLoad(true,50);//懒加载
+							}else{
+								document.getElementsByClassName("dyCon")[typeNum].innerHTML = ' <p style="text-align: center;">没有数据 </p>' ;
+								mui("#upload")[0].innerHTML = "";
 							}
-							
-							dataObj.dataList = data.data.data;
-							dataObj.typeNum = typeNum;
-							document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
-							mui("#upload")[0].innerHTML = "";
-							lazyLoad(true,50);//懒加载
 							 
 							$(window).scroll(function() {
 								if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子

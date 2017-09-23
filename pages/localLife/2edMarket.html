@@ -145,8 +145,10 @@
 			 }  
 			.diyButton{background: url(../../img/answer/bouttonbr.png) no-repeat ;background-position: left top;background-size: 100% 100%;text-align: center;width: 60px;height: 25px;line-height: 25px;}
 			.listCon p{padding: 10px 0px 0px 0px;} 
-			.answerImf{width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;}
+			.answerImf{width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;background-color: #eee;}
 			.anImg{width: 100%;} 
+			div.screening>ul>li:last-child{display: none;}
+			div.screening>ul>li{width: 50% !important;}
 		</style>
 	</head>
 	<body>
@@ -166,39 +168,40 @@
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div class="Category-eject">
 		    <ul class="Category-w" id="Categorytw" style="height: auto;">
-		        <li onclick="Loading(1,10,'','','','','price')">全部</li>
-		        <li onclick="Loading(1,10,1,'','','','price');">机械</li>
-		        <li onclick="Loading(1,10,2,'','','','price');">数码</li>
-		        <li onclick="Loading(1,10,3,'','','','price');">家具</li>
-		        <li onclick="Loading(1,10,4,'','','','price');">服装</li>
-		        <li onclick="Loading(1,10,5,'','','','price');">文体\户外</li>
-		        <li onclick="Loading(1,10,6,'','','','price');">手机</li>
-		        <li onclick="Loading(1,10,7,'','','','price');">办公设备</li>
-		        <li onclick="Loading(1,10,8,'','','','price');">代步工具</li>
-		        <li onclick="Loading(1,10,9,'','','','price');">母婴</li>
-		        <li onclick="Loading(1,10,11,'','','','price');">宠物</li>
-		        <li onclick="Loading(1,10,12,'','','','price');">家电</li>
-		        <li onclick="Loading(1,10,10,'','','','price');">其它</li>
+		        <li onclick="Loading('',0,9999999)">全部</li>
+		        <li onclick="Loading(1,0,9999999,'','','','price');">机械</li>
+		        <li onclick="Loading(2,0,9999999,'','','','price');">数码</li>
+		        <li onclick="Loading(3,0,9999999,'','','','price');">家具</li>
+		        <li onclick="Loading(4,0,9999999,'','','','price');">服装</li>
+		        <li onclick="Loading(5,0,9999999,'','','','price');">文体\户外</li>
+		        <li onclick="Loading(6,0,9999999,'','','','price');">手机</li>
+		        <li onclick="Loading(7,0,9999999,'','','','price');">办公设备</li>
+		        <li onclick="Loading(8,0,9999999,'','','','price');">代步工具</li>
+		        <li onclick="Loading(9,0,9999999,'','','','price');">母婴</li>
+		        <li onclick="Loading(10,0,9999999,'','','','price');">宠物</li>
+		        <li onclick="Loading(11,0,9999999,'','','','price');">家电</li>
+		        <li onclick="Loading(12,0,9999999,'','','','price');">其它</li>
 		        
 		    </ul>
 		</div>
 		<div class="grade-eject">
 		    <ul class="grade-w" id="gradew" style="height: auto;">
-		        <li onclick="Loading(1,10,'','','','','price')">全部</li>
-		        <li onclick="Loading(1,10,'','',100,'','price');">100元以下</li>
-		        <li onclick="Loading(1,10,'',100,1000,'','price');">100-1000元</li>
-		        <li onclick="Loading(1,10,'',1000,5000,'','price');">1000-5000元</li>
+		        <li onclick="Loading('',0,9999999)">全部</li>
+		        <li onclick="Loading('',0,100);">100元以下</li>
+		        <li onclick="Loading('',100,300);">100-300元</li>
+		        <li onclick="Loading('',300,500);">300-500元</li>
+		        <li onclick="Loading('',500,9999999);">500元以上</li>
 		    </ul>
 		</div>
 		<!-- End grade -->
 		<!-- Category -->
-		<div class="Sort-eject Sort-height">
+		<!--<div class="Sort-eject Sort-height">
 		    <ul class="Sort-Sort" id="Sort-Sort" style="height: auto;max-height: calc(100vh * 0.8);overflow: scroll;">
 		        <li onclick="Loading(1,10,'','','','','price')">全部</li>
 		        <li onclick="Loading(1,10,'','','',1,'price')">个人</li>
 		        <li onclick="Loading(1,10,'','','',0,'price')">商家</li>
 		    </ul>
-		</div>
+		</div>-->
 		<!-- End Category -->
 		<div id="container">
 			<div id="main">
@@ -262,21 +265,20 @@
 <script type="text/javascript">
 	var Spagenum = 2;//实到页数
 	var Ypagenum = 1;//应到页数 
-	Loading(1,5,'','','','','price');//加载数据,包括上滑加载
+	Loading('',0,9999999);//加载数据,包括上滑加载
 	//添加刷新监听
 	document.addEventListener('refresh', function() {
-		Loading(1,5,'','','','','price');//加载数据,包括上滑加载
-		console.log('刷新数据');
+		Loading('');//加载数据,包括上滑加载
+		
 	})
 	//加载方法
-	function Loading(gin1,gin2,gin3,gin4,gin44,gin5,gin6){
+	function Loading(goodsType,price1,price2){
 		document.getElementById("infolistdiv").innerHTML = loadstr;
 		mui('#nulldiv')[0].style.display = 'none';
 		$('.Category-eject').removeClass('grade-w-roll');
 		$('.Sort-eject').removeClass('grade-w-roll');
 		$('.grade-eject').removeClass('grade-w-roll');
 		mui.plusReady(function(){
-		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		var oldToken = plus.storage.getItem('oldToken'),cityNum = plus.storage.getItem('cityNum');
 		mui.ajax(serverUrl+'/api/friends/newslist',{   									
 			data:{
@@ -284,7 +286,10 @@
 				'currentPage':1,
 				'orderType':'DESC',
 				'orderField':'create_time',
-				'typeId':1
+				'typeId':4,
+				'isUsed':1,
+				'goodsType':goodsType,
+				'price':JSON.stringify({"min":price1,"max":price2})
 			},
 			dataType:'json',//服务器返回json格式数据
 			type:'post',//HTTP请求类型 
@@ -350,7 +355,10 @@
 										'currentPage':Spagenum,
 										'orderType':'DESC',
 										'orderField':'create_time',
-										'typeId':1
+										'typeId':4,
+										'isUsed':1,
+										'goodsType':goodsType,
+										'price':JSON.stringify({"min":price1,"max":price2})
 									},
 									dataType:'json',//服务器返回json格式数据
 									type:'post',//HTTP请求类型 
