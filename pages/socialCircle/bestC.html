@@ -237,6 +237,7 @@
 				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 				mui.plusReady(function(){
 					var myuserid = plus.storage.getItem('userid');
+					var infiId = plus.webview.currentWebview().infoid;
 					//到主页
 					window.elseCircleIndex = function(id){
 						if(id == myuserid){
@@ -262,13 +263,15 @@
 							likeThis(curThis,id,toUserId,cityNum,myuserid,oldToken,'delete','../../img/makeFriend/zan.png'); 
 						}
 					}
+					
 					if(typeNum == 0){
 						var dataJson = {
 							'numsPerPage':6,
 							'currentPage':1,
 							'orderType':'DESC',
 							'orderField':'create_time',
-							'typeId':1
+							'typeId':3,
+							'spaceType':infiId
 						}
 					}
 					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
@@ -357,11 +360,7 @@
 								$(window).scroll(function() {
 									if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
 											var scrollTop = $(this).scrollTop();　
-											if(typeNum == 0){
-												SH0 = $(this).scrollTop();
-											}else if(typeNum == 1){
-												SH1 = $(this).scrollTop();
-											}
+											
 											var scrollHeight = $(document).height();
 											var windowHeight = $(this).height();　　
 											if(scrollTop + windowHeight == scrollHeight) {
@@ -370,27 +369,18 @@
 													Ypagenum++; //满足加载情况,应到页数+1
 													console.log('发起请求,实到' + Spagenum + '页');
 													console.log('发起请求,应到' + Ypagenum + '页');
+													
 													if(typeNum == 0){
 														var dataJson = {
 															'numsPerPage':6,
-															'currentPage':Spagenum,
+															'currentPage':1,
 															'orderType':'DESC',
 															'orderField':'create_time',
-															'typeId':1
-														}
-													}else if(typeNum == 1){
-														var myuserid = plus.storage.getItem('userid');
-														var dataJson = {
-															'userId':myuserid,
-															'numsPerPage':6,
-															'currentPage':Spagenum,
-															'orderType':'DESC',
-															'orderField':'create_time',
-															'isFriends':1,
-															'typeId':1
+															'typeId':3,
+															'spaceType':infiId
 														}
 													}
-													
+													var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
 													mui.ajax(serverUrl + '/api/friends/newslist', {
 														data: dataJson,
 														dataType: 'json',

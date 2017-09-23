@@ -55,9 +55,9 @@
 		.frph img.disimg{width: 100%;}
 		.lkerName{display: block;max-width:60px;overflow: hidden;text-overflow: ellipsis;min-height: 12px;}
 		.phnone{background-color: white;}
-		.gift0 h4 {padding: 5px;font-size: 14px;color: #555;}
+		.gift0 h4 {padding: 8px;font-size: 14px;color: #555;background-color: #eee;}
 		.moreliwu{float: left;width: 100%;margin-bottom: 20px;}
-		.moreliwu img{width: 100%;padding: 5px;height: 40px;}
+		.moreliwu img{width: 100%;padding: 5px;height: 40px;background-color: #fff;}
 		.giftCon p{overflow: hidden;background-color: #f3f3f3;}
 		.giftPic{width: 100%;height: 100%;}
 		.giftCon h5.h5, .giftCon span.span{visibility: hidden;}
@@ -290,13 +290,13 @@
 					<!--礼物记录-->
 					<div id="" class="giftItem">
 						<h4>礼物记录</h4>
-				 		<div class="mui-row giftRecord">
+				 		<!--<div class="mui-row giftRecord">
 				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
 				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
 				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
 				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
 				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
-					    </div>
+					    </div>-->
 					    
 					</div>
 				</div>
@@ -434,19 +434,19 @@
 				success:function(data,type,xhr){
 					console.log('我的礼物数据1',data);
 					if(data.errno == 0){
-						if(data.data && data.data.length){
-							for(var j = 0 ;j<data.data.length;j++){//整理内容图片
-								var nowArray2 = JSON.parse(data.data[j].picImg);
+						if(data.data && data.data.isBuy.length){
+							for(var j = 0 ;j<data.data.isBuy.length;j++){//整理内容图片
+								var nowArray2 = JSON.parse(data.data.isBuy[j].picImg);
 								if(nowArray2.length){
-									data.data[j].picS = nowArray2[0].picImg;
+									data.data.isBuy[j].picS = nowArray2[0].picImg;
 								}
 							}
 							var dataObj = {};
-						 	dataObj.dataList = data.data;
+						 	dataObj.dataList = data.data.isBuy;
 							document.getElementById('giftDiv').innerHTML = template("SgiftDiv", dataObj);
 							lazyLoad(true,50);//懒加载
 							/*隐藏更多*/
-							if(data.data.length > 3){
+							if(data.data.isBuy.length > 3){
 								mui('.moreliwu')[0].style.display = 'block';
 								var unitHeight = mui('.PlaceholderDiv')[0].offsetHeight;
 								mui('#giftDiv')[0].style.height = unitHeight + 'px';
@@ -474,19 +474,19 @@
 				success:function(data,type,xhr){
 					console.log('我的礼物数据2',data);
 					if(data.errno == 0){
-						if(data.data && data.data.length){
-							for(var j = 0 ;j<data.data.length;j++){//整理内容图片
-								var nowArray2 = JSON.parse(data.data[j].picImg);
+						if(data.data && data.data.isGave.length){
+							for(var j = 0 ;j<data.data.isGave.length;j++){//整理内容图片
+								var nowArray2 = JSON.parse(data.data.isGave[j].picImg);
 								if(nowArray2.length){
-									data.data[j].picS = nowArray2[0].picImg;
+									data.data.isGave[j].picS = nowArray2[0].picImg;
 								}
 							}
 							var dataObj = {};
-						 	dataObj.dataList = data.data;
+						 	dataObj.dataList = data.data.isGave;
 							document.getElementById('giftDiv2').innerHTML = template("SgiftDiv2", dataObj);
 							lazyLoad(true,50);//懒加载
 							/*隐藏更多*/
-							if(data.data.length > 3){
+							if(data.data.isGave.length > 3){
 								mui('.moreliwu')[1].style.display = 'block';
 								var unitHeight = mui('.PlaceholderDiv')[0].offsetHeight;
 								mui('#giftDiv2')[0].style.height = unitHeight + 'px';
@@ -661,6 +661,7 @@
 							 	dataObj.dataList = data.data.data;
 								document.getElementById('dynamicList').innerHTML = template("Sdynamic", dataObj);
 								lazyLoad(true);//懒加载
+								mui("#upload")[0].innerHTML = "";
 								
 								$(window).scroll(function() {
 									if(mui('.contentChild')[0].style.display == 'block'){
@@ -669,7 +670,7 @@
 										var windowHeight = $(this).height();　　
 										if(scrollTop + windowHeight == scrollHeight) {
 											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-												//mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
+												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 												Ypagenum++; //满足加载情况,应到页数+1
 												console.log('发起请求,实到' + Spagenum + '页');
 												console.log('发起请求,应到' + Ypagenum + '页');
@@ -755,7 +756,7 @@
 								 $('#mfPic').html(template('mfPicTpl',{list:picObj}));
 	
 							}else{
-								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">去添加吧</div>')
+								$('#mfPic').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">点击添加照片</div>')
 							}
 							$('#allPic,#addPic').click(function(){
 								openview({
