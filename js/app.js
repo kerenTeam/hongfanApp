@@ -1,9 +1,11 @@
+//var serverUrl= "http://192.168.3.22:7200";
+//var serverUrl= "http://192.168.1.101:7200";
 //var serverUrl='http://hiji.hifete.com';
 var serverUrl='http://abcd.zlzmm.com:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
-
+var serverimgUrlE='';
 //var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://hiji.hifete.com:6789';
 //var propUrl = 'http://211.149.183.181:6789';
@@ -162,7 +164,7 @@ function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curT
 		timeout: 8000,
 		headers: {"token": oldtoken,'city': cityNum},
 		success: function(data, type, xhr) {
-			console.log('点赞收藏',data)
+			console.log('收藏',data)
 			if(data.errno == 0) {
 				if(data.data){
 					mui.toast('取消成功')
@@ -177,7 +179,7 @@ function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curT
 			}
 		},
 		error: function(xhr, type, errorThrown) { 
-			console.error('点赞,响应失败');
+			console.error('收藏,响应失败');
 			mui.toast('当前网络不好,请重试');
 		}
 	}); 
