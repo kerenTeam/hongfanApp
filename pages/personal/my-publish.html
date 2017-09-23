@@ -40,8 +40,8 @@
 				line-height: 27px;
 				padding: 0 2px !important;
 			}
-			.confirm{color: #ff5601 !important;
-				border: 1px solid #ff5601 !important;
+			.confirm{color: red !important;
+				border: 1px solid red !important;
 			}
 			.poi-name{width: 100%;
 				overflow: hidden;
@@ -63,9 +63,13 @@
 			}
 			.dealcard .price p{color: #333;
 			}
-			.state{color: #4cd964 !important;
-				font-size: 11px !important; 
-				line-height: 20px;
+			.state{
+			    color: #555!important;
+			    font-size: 14px !important;
+			    line-height: 20px;
+			    height: 50px;
+			    max-height: 50px;
+			    overflow: hidden;
 			}
 			.list{background-color: #efeff4 !important;
 			}
@@ -74,7 +78,7 @@
 			.imgbox{margin-top: -5px;}
 			.state_bottom{font-size: 11px;line-height: 20px;color: #999;
 			}
-			.state_bottom span{color: #ff5601;
+			.state_bottom span{color: #999;
 			}
 			.state_right{text-align: right;
 			}
@@ -82,7 +86,7 @@
 			}
 			.listtwo dd{margin-bottom: 3px !important;}
 			.notice .tab-hdtwo li{width: 33.3%;}
-			
+			dl.list{border:none}
 		</style>
 	</head>
 	<body>
@@ -142,20 +146,17 @@
 						<script type="text/html" id="infolist1">
 						<% for(var i=0; i<list.length; i++){%>
 							<dd>
-							<a class="react" onclick="open1(<%= list[i].id%>)">
+							<a class="react" onclick="open1(<%= list[i].id%>,<%= list[i].user_id%>)">
 								<div class="dealcard dealcardtwo clearfloat">
 									<div class="dealcard-img imgbox">
-										<%if(list[i].list_pic == 'null'){%>
-											<img style="display: none;" src="<%= list[i].list_pic%>">
-										<% }else{%>
-											<img src="<%= list[i].list_pic%>">
-										<% }%>	
-										
+										<%if(list[i].picS){%>
+											<img data-src="<%= list[i].picS%>" class="loadPics" src="../../img/Spinner.svg">
+										<% }%>
 									</div>
 									<div class="dealcard-block-right dealcard-block-righttwo">
 										<div class="dealcard-brand dealcard-brandtwo single-line">
-											<span class="poi-name icon-count-3"><%= list[i].title%></span>
-											<p class="state">地址: <%= list[i].address%></p>
+											<!--<span class="poi-name icon-count-3"><%= list[i].title%></span>-->
+											<p class="state"><%= list[i].content%></p>
 											<div class="mui-row state_bottom">
 										        <div class="mui-col-sm-6 mui-col-xs-6">
 									                                    发布于<%= list[i].create_time.split('T')[0]%>
@@ -169,7 +170,7 @@
 								</div>
 							</a>
 							<div class="order-bottom clearfloat box-s">
-								<a class="fr confirm" onclick="BsecondHand(<%= mytype%>,<%= list[i].id%>,<%= list[i].type%>)">编辑</a>
+								<!--<a class="fr confirm" onclick="BsecondHand(<%= mytype%>,<%= list[i].id%>,<%= list[i].type%>)">编辑</a>-->
 								<a class="fr confirm" onclick="DsecondHand(this,<%= list[i].id%>)">删除</a>
 							</div>
 						</dd>
@@ -287,7 +288,8 @@ mui.plusReady(function(){
 		}
 	})
 	var myuserid = plus.storage.getItem('userid');
-	var oldtoken = plus.storage.getItem('oldToken');
+	var oldToken = plus.storage.getItem('oldToken');
+	var cityNum = plus.storage.getItem('cityNum');
 	secondHand();//默认加载跳蚤市场
 	//点击切换
 	mui('#second_hand')[0].onclick = function(){
@@ -301,30 +303,45 @@ mui.plusReady(function(){
 	}
 	
 	//跳蚤市场
-	function secondHand(){ 
+	function secondHand(){
 		mui('#nulldiv')[0].style.display = 'none';
 		document.getElementById("infolistdiv").innerHTML = '';
 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
-		mui.ajax(serverUrl+'/api/localservice/myusedpublish',{
-			data:{"userid":myuserid},
+		mui.ajax(serverUrl+'/api/friends/newslist',{
+			data:{
+				userId:myuserid,
+				numsPerPage:50,
+				currentPage:1,
+				orderType:'DESC',
+				orderField:'create_time',
+				'typeId':4
+			},
 			type:'post',
 			timeout:10000,
-			headers:{"token":oldtoken},	              				
+			headers:{"token":oldToken,"city":cityNum},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
-				console.log('跳蚤市场'+JSON.stringify(data));
 				console.log('跳蚤市场',data);
 				if(data.errno == 0){
-					if(data.data.length){
+					if(data.data.data.length){
 						mui('#nulldiv')[0].style.display = 'none';
 						var dataobj = {};
-						mui.each(data.data,function (index,ele) {
-							data.data[index].list_pic = serverimgUrl + JSON.parse(ele.list_pic)[0].picImg;
-						})
-						dataobj.list = data.data; 
+//						mui.each(data.data,function (index,ele) {
+//							data.data[index].list_pic = serverimgUrl + JSON.parse(ele.list_pic)[0].picImg;
+//						})
+						var nowArray = data.data.data;
+						for(var j = 0 ;j<nowArray.length;j++){//整理内容图片
+							var nowArray2 = JSON.parse(nowArray[j].pic);
+							if(nowArray2.length){
+								nowArray[j].picS = nowArray2[0].picImg;
+							}
+						}
+						dataobj.list = data.data.data; 
 						dataobj.mytype = 1; 
 						var html=template("infolist1",dataobj);
 						document.getElementById("infolistdiv").innerHTML = html;
+						lazyLoad(true,0);//懒加载
+						
 					}else{
 						mui('#nulldiv')[0].style.display = 'block';
 						
@@ -350,7 +367,7 @@ mui.plusReady(function(){
 					data:{"my_used_id":id},
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldtoken},	               				
+					headers:{"token":oldToken},	               				
 					success:function(data){
 						console.log('删除返回'+JSON.stringify(data)); 
 						if(data.errno == 0){
@@ -375,11 +392,15 @@ mui.plusReady(function(){
 			extrasobj:{Bname:id,Btype:type,type_name:type_name}
 		})
 	}
-	//打开跳蚤市场
-	window.open1 = function(id){
+
+	//打开跳蚤市场详情
+	window.open1 = function(id,userid){ 
 		openview({
-			view:'../localLife/Fleadetails.html',
-			extrasobj:{name:id}
+			view:'../localLife/FleaInfo.html',
+			extrasobj:{
+				infoid: id,
+				UserId:userid,
+			}
 		})
 	}
 	//房产
@@ -391,7 +412,7 @@ mui.plusReady(function(){
 			data:{"userId":myuserid},
 			type:'post',
 			timeout:10000,
-			headers:{"token":oldtoken},	              				
+			headers:{"token":oldToken},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
 				console.log('我的发布返回'+JSON.stringify(data)); 
@@ -431,7 +452,7 @@ mui.plusReady(function(){
 					data:{"userId":myuserid,"houseId":id},
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldtoken},	               				
+					headers:{"token":oldToken},	               				
 					success:function(data){
 						console.log('删除返回'+JSON.stringify(data)); 
 						if(data.errno == 0){
@@ -471,7 +492,7 @@ mui.plusReady(function(){
 			data:{"userid":myuserid},
 			type:'post',
 			timeout:10000,
-			headers:{"token":oldtoken},	              				
+			headers:{"token":oldToken},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
 				console.log('服务',data);
@@ -517,7 +538,7 @@ mui.plusReady(function(){
 					data:{"my_local_service_id":id},
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldtoken},	               				
+					headers:{"token":oldToken},	               				
 					success:function(data){
 						console.log('删除返回'+JSON.stringify(data)); 
 						if(data.errno == 0){

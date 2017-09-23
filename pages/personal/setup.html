@@ -131,7 +131,7 @@
 						<a href="#">
 							<p class="fl">性别</p>
 			    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn" dir="rtl">
-								<option value="item-1">点击选择</option>
+								<option value="item-1">保密</option>
 								<option value="item-2">男</option> 
 								<option value="item-2">女</option>
 							</select>
@@ -199,13 +199,13 @@
 						}
 						//显示性别
 						switch (data.data[0].gender){//Nextbtn
-							case '男':
+							case '1':
 							mui('#Nextbtn')[0].getElementsByTagName('option')[1].selected = true;
 							break;
-							case '女':
+							case '2':
 							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
 							break;
-							case '择'|| null:
+							case '4'|| null:
 							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
 							break;
 						}
@@ -313,6 +313,8 @@
 							
 						}
 					);
+					var hanziX = ['男','女','密'];
+					var shuziX = [1,2,4];
 					task.setRequestHeader('token',oldtoken);
 					task.setRequestHeader('city',cityNum);
 					
@@ -320,7 +322,7 @@
 					
 					task.addData('userid',myuserid);  		
 			        task.addData('nickname',mynickname);  		
-			        task.addData('gender',Nextbtnval[Nextbtnval.length-1]);  		
+			        task.addData('gender',shuziX[hanziX.indexOf(Nextbtnval[Nextbtnval.length-1])].toString());  		
 			        task.addData('IDCard',IDnum);
 					
 					task.start();
@@ -328,53 +330,6 @@
 			 	}
 			 	//发送数据结束
 				
-				function upfun1(){
-					var fd = new FormData(); 
-					if(touxiang.name){
-						fd.append('avatar',touxiang);
-					}
-			        fd.append('userid',myuserid);  		
-			        fd.append('nickname',mynickname);  		
-			        fd.append('gender',Nextbtnval[Nextbtnval.length-1]);  		
-			        fd.append('IDCard',IDnum);  		
-			        var xhr = new XMLHttpRequest();  	
-			        xhr.open('POST',serverUrl+'/api/useraccount/updateuserdata',true); 	
-			    	xhr.onreadystatechange = function(){
-			    		if (xhr.readyState===4) { 
-	    					if (xhr.status===200) {
-	    						plus.nativeUI.closeWaiting();//关闭等待框
-	    						var dataobj = JSON.parse(xhr.responseText);
-	    						console.log('修改'+xhr.responseText);
-	    						if(dataobj.errno == 0){
-	    							mui.toast('修改成功');	 
-	    							//触发跳转页面刷新
-									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-									if(plus.webview.getWebviewById('market-order')){ 
-										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
-									}
-									if(plus.webview.getWebviewById('center')){ 
-										mui.fire(plus.webview.getWebviewById('center'),'refresh2');
-									}
-									if(plus.webview.getWebviewById('centerPage')){
-										mui.fire(plus.webview.getWebviewById('centerPage'),'refresh2');
-									}
-									if(plus.webview.getWebviewById('othersPage')){
-										mui.fire(plus.webview.getWebviewById('othersPage'),'refresh2');
-									}
-									var time2 = setTimeout(function(){
-										plus.webview.currentWebview().close();
-									},500)
-	    						}else{
-	    							mui.toast('保存失败');	
-	    						}
-	    					}else{
-	    						mui.toast('响应失败');	
-	    					}
-	    				}
-			        } 
-			        xhr.setRequestHeader("token",oldtoken);
-			        xhr.send(fd);
-				}
 			})
 		})
 		//新的图片上传方法

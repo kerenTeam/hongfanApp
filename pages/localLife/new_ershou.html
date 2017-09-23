@@ -338,7 +338,7 @@
 		   		color: #999 !important;
 		   	}
 		   	.uppics{padding:15px;background: white;}
-			.uppics div.onepic img{width:0.8rem;height:0.8rem!important;display:inline-block;margin:0 5px;}
+			.uppics div.onepic img{width:0.8rem;height:0.8rem!important;display:inline-block;margin:5px;border-radius: 4px;}
 			.uppics div.onepic input{width:0;height:0;position:absolute;outline:0}
     </style>
 	</head>
@@ -423,6 +423,10 @@
 		    	clearInterval(time1);
 		    	var indexNum = 0;
 		    	var indexMax = e.files.length - 1;
+		    	/*显示占位图片*/
+		    	e.files.forEach(function(){
+		    		$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="../../img/Spinner.svg"/>')
+		    	})
 		    	time1 = setInterval(function(){
 		    		console.log(time1);
 		    		if(0!=e.files[indexNum].indexOf("file://")){
@@ -441,25 +445,26 @@
 						overwrite:true, 
 						quality:30
 					},
-					function() {
-						Apic.push(endpic);
-						showImg(endpic);
+					function(obj) {
+						if(!obj.target.includes("file://")){obj.target="file://"+obj.target;}
+						Apic.push(obj.target);
+						showImg(endpic,indexNum);
 					},function(error) {
 						mui.toast('图片获取错误，请重试');  
 					});
 		    		indexNum ++;
 		    		
-		    	},100)
+		    	},1000)
 		    }, function ( e ) {  
 		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
     		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
 				plus.nativeUI.alert('最多上传9张图片');
 		    }});
-			function showImg(url){//显示图片
+			function showImg(url,indexNum){//显示图片
 				if(0!=url.indexOf("file://")){
 					url="file://"+url;
 				}
-				$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="'+url+'"/>')
+				document.getElementsByClassName('onepic')[0].getElementsByTagName('img')[indexNum-1].src = url;
 				$('.onepic p').css('display','none');
 			}
 		})	
@@ -470,7 +475,7 @@
 		var Bnowid = plus.webview.currentWebview().Bname;
 		var Btype = plus.webview.currentWebview().Btype;
 		mui('#Releasebtn')[0].onclick = function(){
-			var classification;//分类
+			var classification = 1;//分类
 			switch(mui('#cityResult3')[0].innerHTML){
 				case '机械':
 				classification = 1;
@@ -505,7 +510,7 @@
 				case '家电':
 				classification = 11;
 				break;
-				case '其他':
+				case '其它':
 				classification = 12;
 				break;
 			}
@@ -634,21 +639,26 @@
 							var task = plus.uploader.createUpload(serverUrl+'/api/friends/addnews', 
 								{ method:"POST"},
 								function(back,status){
-									console.log(back.responseText);
 									if(status == 200){
 										console.log(back.responseText);
-										var dataobj = JSON.parse(back.responseText);
-										if(dataobj.errno == 0){ 
-											mui.fire(plus.webview.getWebviewById('2edMarket'),'refresh');
-											var time2 = setTimeout(function(){
-												mui.toast('发布成功');
-												plus.nativeUI.closeWaiting();
-												plus.webview.currentWebview().close();
-											},800)
-			    						}else{
-			    							plus.nativeUI.closeWaiting();//关闭等待框
-			    							mui.toast(dataobj.errmsg);
-			    						}
+										if(back.responseText.includes('errno')){
+											var dataobj = JSON.parse(back.responseText);
+											if(dataobj.errno == 0){ 
+												mui.fire(plus.webview.getWebviewById('2edMarket'),'refresh');
+												var time2 = setTimeout(function(){
+													mui.toast('发布成功');
+													plus.nativeUI.closeWaiting();
+													plus.webview.currentWebview().close();
+												},800)
+				    						}else{
+				    							plus.nativeUI.closeWaiting();//关闭等待框
+				    							mui.toast(JSON.stringify(dataobj.errmsg));
+				    						}
+										}else{/*返回超时html乱码*/
+											mui.toast('内容格式错误，请重试！');
+											plus.nativeUI.closeWaiting();//关闭等待框
+										}
+										
 									}else{
 										plus.nativeUI.closeWaiting();//关闭等待框
 										mui.toast('当前网络不好，请重试！');	

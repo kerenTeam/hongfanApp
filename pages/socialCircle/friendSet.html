@@ -118,7 +118,7 @@
 						<a href="#">
 							<p class="fl">性别</p>
 			    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn" dir="rtl">
-								<option value="item-1">点击选择</option>
+								<option value="item-1">保密</option>
 								<option value="item-2">男</option> 
 								<option value="item-2">女</option>
 							</select>
@@ -205,13 +205,13 @@
 						}
 						//显示性别
 						switch (data.data.gender){//Nextbtn
-							case '男':
+							case '1':
 							mui('#Nextbtn')[0].getElementsByTagName('option')[1].selected = true;
 							break;
-							case '女':
+							case '2':
 							mui('#Nextbtn')[0].getElementsByTagName('option')[2].selected = true;
 							break;
-							case ''|| null:
+							case '4'|| null:
 							mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
 							break;
 						}
@@ -471,10 +471,11 @@
 									var time2 = setTimeout(function(){
 										plus.nativeUI.closeWaiting();//关闭等待框
 										plus.webview.currentWebview().close();
+										mui.toast('修改成功');
 									},500)
 	    						}else{
 	    							plus.nativeUI.closeWaiting();//关闭等待框
-	    							mui.toast('发布失败，请重试！');
+	    							mui.toast('修改失败，请重试！');
 	    							plus.nativeUI.closeWaiting();
 	    						}
 							}else{
@@ -484,6 +485,8 @@
 							
 						}
 					);
+					var hanziX = ['男','女','密'];
+					var shuziX = [1,2,4];
 					task.setRequestHeader('token',oldToken);
 					task.setRequestHeader('city',cityNum);
 					
@@ -492,7 +495,7 @@
 			        task.addData('username',username);  		
 			        task.addData('userId',myuserid);  		
 			        task.addData('horoscope',horoscope);
-			        task.addData('gender',Nextbtnval[Nextbtnval.length-1]);
+			        task.addData('gender',shuziX[hanziX.indexOf(Nextbtnval[Nextbtnval.length-1])].toString());
 			        task.addData('userExplain',explain);	
 					
 					task.start();
