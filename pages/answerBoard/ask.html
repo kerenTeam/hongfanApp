@@ -498,6 +498,10 @@
 			    	clearInterval(time1);
 			    	var indexNum = 0;
 			    	var indexMax = e.files.length - 1;
+			    	/*显示占位图片*/
+			    	e.files.forEach(function(){
+			    		$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="../../img/Spinner.svg"/>')
+			    	})
 			    	time1 = setInterval(function(){
 			    		console.log(time1);
 			    		if(0!=e.files[indexNum].indexOf("file://")){
@@ -518,23 +522,23 @@
 						},
 						function() {
 							Apic.push(endpic);
-							showImg(endpic);
+							showImg(endpic,indexNum);
 						},function(error) {
 							mui.toast('图片获取错误，请重试');  
 						});
 			    		indexNum ++;
 			    		
-			    	},100)
+			    	},1000)
 			    }, function ( e ) {  
 			    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
 	    		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
 					plus.nativeUI.alert('最多上传9张图片');
 			    }});
-				function showImg(url){//显示图片
+				function showImg(url,indexNum){//显示图片
 					if(0!=url.indexOf("file://")){
 						url="file://"+url;
 					}
-					$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="'+url+'"/>')
+					document.getElementsByClassName('onepic')[0].getElementsByTagName('img')[indexNum-1].src = url;
 					$('.onepic p').css('display','none');
 				}
 			})	

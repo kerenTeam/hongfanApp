@@ -1,5 +1,3 @@
-//var serverUrl= "http://192.168.43.170:7200";
-//var serverUrl= "http://192.168.1.101:7200";
 //var serverUrl='http://hiji.hifete.com';
 var serverUrl='http://abcd.zlzmm.com:7200';
 
