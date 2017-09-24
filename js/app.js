@@ -69,7 +69,58 @@ window.bannerGo = function(url, name, route) {
 	}
 	
 }
+//懒加载方法
+window.lazyLoad = function(init,limit){
+	var limit = limit || 100;
+	var loadPics = mui('.loadPics');
+	var H = window.innerHeight || 1000;//可视窗口高度(避免第一次不加载)
+	window.onscroll = function(){
+		if(H == 0){H = window.innerHeight;}
+		if(loadPics.length){
+		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
+		    [].forEach.call(loadPics,function(img,index){
+	         	if(!img.getAttribute('data-src')){return}
+		        //console.error( H + S - limit +'===='+ getTop(img) +'====='+loadPics.length)
+	         	if(H + S - limit > getTop(img)){
+	             	img.src=img.getAttribute("data-src");
+	             	img.removeAttribute("data-src");
+             		img.style.backgroundImage = 'url()';
+	             	if(img.classList.contains('loadPics')){//减少每次滚动时遍历个数
+	             		img.classList.remove('loadPics');
+	             		loadPics = mui('.loadPics');
+	             	}
+	         	}
+	        })
+		}    
+	}
+	window.onscroll();
+	function getTop(e){//获取元素距离顶部高度方法
+	    var T = e.offsetTop;
+	    while(e = e.offsetParent ){
+	        T += e.offsetTop
+		}
+	    return T
+	} 
+}
 
+/*图片高宽处理*/
+ window.imgHeight =  function(obj){
+ 	if(obj.offsetHeight == 0){/*处理高宽都为零bug*/
+ 		var Delayloading = setTimeout(function(){
+ 			imgHeight(obj);
+ 			clearTimeout(Delayloading),Delayloading = null;
+ 		},500)
+ 	}else{
+		if(obj.offsetHeight<obj.parentNode.offsetHeight){
+			obj.style.height = '100%';
+			obj.style.width = 'auto';
+		}
+		var timePicWidth = setTimeout(function(){
+			obj.style.opacity = 1;
+			clearTimeout(timePicWidth),timePicWidth = null;
+		},50)
+ 	}
+}
 //关注和取消关注
 function followBack(thisobj,likerId,curType){
 	event.stopPropagation();
@@ -119,6 +170,121 @@ function shareSystem(href){
 		plus.share.sendWithSystem(newsData, function(e){}, function(e){});
 	})
 }
+/*自定义分享*/
+var shares=null;
+mui.plusReady(function(){
+	plus.share.getServices(function(s){
+		shares={};
+		for(var i in s){
+			//console.error('成功')
+			var t=s[i];
+			shares[t.id]=t;
+		}
+	}, function(e){
+		outSet('获取分享服务列表失败：'+e.message);
+	});
+})
+var shareWrap0 = document.createElement('div');
+	shareWrap0.innerHTML = '<div class="shareWrap"></div>'+
+		'<div class="Scontent">'+
+			'<h3 class="h3">分享</h3>'+
+			'<div class="mui-row">'+
+				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
+					'<img src="../../img/share/weixing.png" class="aClick2"/>'+
+					'<br />微信好友'+
+				'</div>'+
+				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
+					'<img src="../../img/share/pengyouquan.png" class="aClick2"/>'+
+					'<br />朋友圈'+
+				'</div>'+
+				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
+					'<img src="../../img/share/QQ.png" class="aClick2"/>'+
+					'<br />QQ(空间)'+
+				'</div>'+
+				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
+					'<img src="../../img/share/weibo.png" class="aClick2"/>'+
+					'<br />新浪微博'+
+				'</div>'+
+				
+			'</div>'+
+			'<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>'+
+		'</div>';
+document.body.appendChild(shareWrap0);
+function showSfun(msg,fun1,fun0){
+	document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
+	document.getElementsByClassName('shareWrap')[0].style.opacity = '1';
+	document.getElementsByClassName('Scontent')[0].style.opacity = '1';
+	document.getElementsByClassName('Scontent')[0].style.bottom = '0px';
+	function shareAction(sb) {
+		if(!sb||!sb.s){
+			mui.toast('无效的分享服务！');
+			return;
+		}
+		msg.extra = {scene:sb.x}//区分微信 还是朋友圈 有效
+		if(sb.s.authenticated){
+			shareMessage(msg, sb.s);
+		}else{
+			sb.s.authorize(function(){//新浪微博止步于此
+				shareMessage(msg,sb.s);
+			}, function(e){
+				mui.toast('授权失败');
+			});
+		}
+	}
+	function shareMessage(msg, s){
+		s.send(msg, function(){
+			hideSfun();
+			mui.toast('分享成功');
+			if(fun1){fun1()};
+		}, function(e){//alert('分享到"'+s.description+'"失败: '+JSON.stringify(e))
+			hideSfun();
+			mui.toast('分享失败');
+			if(fun0){fun0()};
+		});
+	}
+	// 分享链接
+	function shareHref(index){
+		var shareBts=[];
+		if(!shares.weixin){mui.toast('请重试')};
+		var ss=shares['weixin'];
+		ss&&(shareBts.push({title:'微信好友',s:ss,x:'WXSceneSession'}),
+		shareBts.push({title:'微信朋友圈',s:ss,x:'WXSceneTimeline'}));
+		ss=shares['qq'];
+		ss&&shareBts.push({title:'QQ',s:ss});
+		ss=shares['sinaweibo'];
+		ss&&shareBts.push({title:'新浪微博',s:ss});
+		shareAction(shareBts[index]);/*调用分享*/
+	}
+	var shareBtns = document.getElementsByClassName('shareBtn');
+	[].forEach.call(shareBtns,function(ele,index){
+		ele.onclick = function(){
+			shareHref(index);
+		}
+	})
+}
+function hideSfun(){
+	document.getElementsByClassName('shareWrap')[0].style.zIndex = '-1';
+	document.getElementsByClassName('shareWrap')[0].style.opacity = '0';
+	document.getElementsByClassName('Scontent')[0].style.opacity = '0';
+	document.getElementsByClassName('Scontent')[0].style.bottom = '-500px';
+}
+document.getElementById('cancelS').onclick = function(){
+	hideSfun();
+}
+document.getElementsByClassName('shareWrap')[0].onclick = function(){
+	hideSfun();
+}
+	//示例
+	//var msg = {
+	//	title:'分享测试',
+	//	content:'分享测试内容',
+	//	href:'http://hiji.hifete.com',
+	//	thumbs:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg'],
+	//	pictures:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg']
+	//	
+	//};
+	//showSfun(msg,function(){alert('1')},function(){alert('0')});
+//分享结束
 
 //点赞 和取消点赞 帖子 
 function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
@@ -178,7 +344,7 @@ function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curT
 				mui.toast('操作失败'); 
 			}
 		},
-		error: function(xhr, type, errorThrown) { 
+		error: function(xhr, type, errorThrown) {
 			console.error('收藏,响应失败');
 			mui.toast('当前网络不好,请重试');
 		}
@@ -217,58 +383,7 @@ function jubao(junsid,jbuid,myuserid,cityNum,oldToken){
 	}
 
 }
-//懒加载方法
-window.lazyLoad = function(init,limit){
-	var limit = limit || 100;
-	var loadPics = mui('.loadPics');
-	var H = window.innerHeight || 1000;//可视窗口高度(避免第一次不加载)
-	window.onscroll = function(){
-		if(H == 0){H = window.innerHeight;}
-		if(loadPics.length){
-		    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
-		    [].forEach.call(loadPics,function(img,index){
-	         	if(!img.getAttribute('data-src')){return}
-		        //console.error( H + S - limit +'===='+ getTop(img) +'====='+loadPics.length)
-	         	if(H + S - limit > getTop(img)){
-	             	img.src=img.getAttribute("data-src");
-	             	img.removeAttribute("data-src");
-             		img.style.backgroundImage = 'url()';
-	             	if(img.classList.contains('loadPics')){//减少每次滚动时遍历个数
-	             		img.classList.remove('loadPics');
-	             		loadPics = mui('.loadPics');
-	             	}
-	         	}
-	        })
-		}    
-	}
-	window.onscroll();
-	function getTop(e){//获取元素距离顶部高度方法
-	    var T = e.offsetTop;
-	    while(e = e.offsetParent ){
-	        T += e.offsetTop
-		}
-	    return T
-	} 
-}
 
-/*图片高宽处理*/
- window.imgHeight =  function(obj){
- 	if(obj.offsetHeight == 0){/*处理高宽都为零bug*/
- 		var Delayloading = setTimeout(function(){
- 			imgHeight(obj);
- 			clearTimeout(Delayloading),Delayloading = null;
- 		},500)
- 	}else{
-		if(obj.offsetHeight<obj.parentNode.offsetHeight){
-			obj.style.height = '100%';
-			obj.style.width = 'auto';
-		}
-		var timePicWidth = setTimeout(function(){
-			obj.style.opacity = 1;
-			clearTimeout(timePicWidth),timePicWidth = null;
-		},50)
- 	}
-}
  
 //config ===== 判断网络
 function internetF(){

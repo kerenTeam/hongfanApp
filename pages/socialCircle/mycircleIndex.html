@@ -65,6 +65,7 @@
 		.giftRecord p{line-height: 26px;padding: 2px 5px;font-size: 13px;}
 		.giftRecord p span{float: right;}
 		.giftItem{}
+		#giftDiv, #giftDiv2{padding-bottom: 20px;}
 		
 	</style>
 	<body style="background-color: white;">
@@ -259,8 +260,8 @@
 					    		<div class="mui-col-sm-4 mui-col-xs-4 PlaceholderDiv">
 				            		<div class="giftCon giftCon2">
 				            			<p><img class="giftPic loadPics" src="" data-src="<%=dataList[i].picS%>"/></p>
-				            			<h5>数量: &nbsp; 5个</h5>
-				            			<span onclick="exchangeHI('<%=dataList[i].picS%>',5,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换</span>
+				            			<h5>数量: &nbsp; <%=dataList[i].hasing%>个</h5>
+				            			<span onclick="exchangeHI('<%=dataList[i].picS%>',<%=dataList[i].hasing%>,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换</span>
 				            			<span onclick="Giftren()">赠送</span>
 				            		</div>
 						        </div>
@@ -280,8 +281,8 @@
 					    		<div class="mui-col-sm-4 mui-col-xs-4 PlaceholderDiv">
 				            		<div class="giftCon">
 				            			<p><img class="giftPic loadPics" src="" data-src="<%=dataList[i].picS%>"/></p>
-				            			<h5>数量: &nbsp; 5个</h5>
-				            			<span onclick="exchangeHI('<%=dataList[i].picS%>',5,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换HI豆</span>
+				            			<h5>数量: &nbsp; <%=dataList[i].hasing%>个</h5>
+				            			<span onclick="exchangeHI('<%=dataList[i].picS%>',<%=dataList[i].hasing%>,<%=dataList[i].price%>,<%=dataList[i].giftId%>,<%=dataList[i].id%>)">兑换HI豆</span>
 				            		</div>
 						        </div>
 					    	<%}%>
@@ -290,13 +291,10 @@
 					<!--礼物记录-->
 					<div id="" class="giftItem">
 						<h4>礼物记录</h4>
-				 		<!--<div class="mui-row giftRecord">
-				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
-				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
-				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
-				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
-				 			<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>
-					    </div>-->
+				 		<div class="mui-row giftRecord">
+				 			<p class="fineB">暂无记录</p>
+				 			<!--<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>-->
+					    </div>
 					    
 					</div>
 				</div>
@@ -343,6 +341,7 @@
 			mui('.unitPrice')[0].innerHTML = price + 'HI豆';
 			mui('.head1')[0].style.background = " url("+pic+") 0 0 no-repeat";
 			mui('.head1')[0].style.backgroundSize = " cover ";
+			mui('#chageNum')[0].innerHTML = 1;
 			openC();
 			var flag = false,flag2 = false;
 			mui('.jiajia')[0].onclick = function(){ //加操作
@@ -369,7 +368,7 @@
 			mui('.HIconfirm')[0].onclick = function(){ //兑换操作
 				mui.confirm('是否确认兑换'+mui('.unitPrice')[0].innerHTML+'?', '提示', ['取消', '确定'], function(e) {
 		            if (e.index == 1) {
-		            	exchangeGift(typeId,id);
+		            	exchangeGift(typeId,id,mui('#chageNum')[0].innerHTML);
 		            }
 		        })
 			}
@@ -383,14 +382,14 @@
 			mui('.markHI')[0].style.display = 'none';
 			mui('.changeHI')[0].style.display = 'none';
 		}
-		function exchangeGift(typeId,id){/*兑换礼物  数据 方法*/
+		function exchangeGift(typeId,id,nums){/*兑换礼物  数据 方法*/
  			mui.plusReady(function(){
  				var oldToken = plus.storage.getItem('oldToken'),
 		 			cityNum = plus.storage.getItem('cityNum'),
 					myuserid = plus.storage.getItem('userid');
-				
+				alert(nums)
 				mui.ajax(serverUrl+'/api/friends/gift/userId',{
-					data:{"userId":myuserid,'giftId':typeId,'myGiftId':id},
+					data:{"userId":myuserid,'giftId':typeId,'myGiftId':id,'nums':nums},
 					type:'put',
 					timeout:8000,
 					headers:{"token":oldToken,"city":cityNum},	              				
@@ -454,7 +453,7 @@
 							}
 
 						}else{//没有礼物
-							document.getElementById('giftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
+							document.getElementById('giftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:23px auto 0px;width: 76px;"/><div style="text-align: center;">暂无礼物</div>'
 						}
 						
 						
@@ -494,7 +493,7 @@
 							}
 
 						}else{//没有礼物
-							document.getElementById('giftDiv2').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
+							document.getElementById('giftDiv2').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:23px auto 0px;width: 76px;"/><div style="text-align: center;">暂无礼物</div>'
 						}
 						
 						
@@ -595,8 +594,10 @@
 							if(data.data.userExplain && data.data.userExplain!= 'null'){ 
 								$('#personalSign').text(data.data.userExplain)
 							}
-							if(data.data.gender){ 
-								$('#sex').html(data.data.gender)
+							if(data.data.gender){
+								var hanziX = ['男','女','保密'];
+								var shuziX = [1,2,4];
+								$('#sex').html(hanziX[shuziX.indexOf(parseFloat(data.data.gender))]);
 							}else{
 								$('#sex').html('未填写')
 							}
