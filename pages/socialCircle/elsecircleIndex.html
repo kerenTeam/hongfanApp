@@ -64,6 +64,7 @@
 		.Scontent .mui-col-sm-3 img{
 			height: 70%;
 		}
+		#giftDiv, #giftDiv2{padding-bottom: 20px;}
 		
 	</style>
 	<body style="background-color: white;">
@@ -400,8 +401,10 @@
 							if(data.data.userExplain && data.data.userExplain!= null){ 
 								$('#personalSign').text(data.data.userExplain)
 							}
-							if(data.data.gender){ 
-								$('#sex').html(data.data.gender)
+							if(data.data.gender){
+								var hanziX = ['男','女','保密'];
+								var shuziX = [1,2,4];
+								$('#sex').html(hanziX[shuziX.indexOf(parseFloat(data.data.gender))]);
 							}else{
 								$('#sex').html('未填写')
 							}
@@ -827,7 +830,7 @@
 								document.getElementById('SgiftDiv').innerHTML = template("SgiftDiv2", dataObj);
 								
 							}else{//没有礼物
-								document.getElementById('SgiftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:50px auto 20px;width: 100px;"/><div style="text-align: center;">暂无礼物</div>'
+								document.getElementById('SgiftDiv').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:23px auto 0px;width: 76px;"/><div style="text-align: center;">暂无礼物</div>'
 							}
 							
 						}else{
@@ -899,6 +902,7 @@
 			mui('.unitPrice2')[0].innerHTML =  '拥有'+hasing+'个';
 			mui('.head1')[0].style.background = " url("+pic+") 0 0 no-repeat";
 			mui('.head1')[0].style.backgroundSize = " cover ";
+			mui('#chageNum')[0].innerHTML = 1;
 			openC();
 			var flag = false,flag2 = false;
 			mui('.jiajia')[0].onclick = function(){ //加操作
@@ -923,7 +927,7 @@
 			mui('.HIconfirm')[0].onclick = function(){ //兑换操作
 				mui.confirm('是否确认赠送?', '提示', ['取消', '确定'], function(e) {
 		            if (e.index == 1) {
-		            	giftDataFun(giftId,userId,acceptPersonId);
+		            	giftDataFun(giftId,userId,acceptPersonId,mui('#chageNum')[0].innerHTML);
 		            }
 		        })
 			}
@@ -938,11 +942,12 @@
 			mui('.changeHI')[0].style.display = 'none';
 		}
 		/*赠送数据方法*/
-		function giftDataFun(giftId,userId,acceptPersonId){
+		function giftDataFun(giftId,userId,acceptPersonId,nums){
 			mui.plusReady(function(){
 				var oldToken = plus.storage.getItem('oldToken');
+				alert(nums)
 				mui.ajax(serverUrl+'/api/friends/gift/userId',{
-					data:{"userId":userId,'myGiftId':giftId,'acceptPersonId':acceptPersonId},
+					data:{"userId":userId,'myGiftId':giftId,'acceptPersonId':acceptPersonId,'nums':nums},
 					type:'post',
 					timeout:8000,
 					headers:{"token":oldToken,"city":1},	              				
