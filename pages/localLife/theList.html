@@ -156,6 +156,7 @@
 		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
 		var headtitle = document.getElementById('headtitle');
 		var oldtoken = plus.storage.getItem('oldToken');
+		var cityNum  = plus.storage.getItem('cityNum');
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		//添加刷新监听
 		document.addEventListener('refresh', function() {
@@ -193,7 +194,7 @@
 				dataType:'json',//服务器返回json格式数据
 				type:'post',//HTTP请求类型 
 				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":oldtoken}, 
+				headers:{"token":oldtoken,'city':cityNum}, 
 				success:function(data){
 					if(data.errno == 0){
 						//console.log('列表返回'+JSON.stringify(data));
@@ -323,7 +324,7 @@
 										dataType:'json',//服务器返回json格式数据
 										type:'post',//HTTP请求类型 
 										timeout:10000,//超时时间设置为10秒；	
-										headers:{"token":oldtoken}, 
+										headers:{"token":oldtoken,'city':cityNum}, 
 										success:function(data){
 											if(data.errno == 0){
 												var dataobj = {};

@@ -476,6 +476,7 @@ function disclaimer(){
 		//上传部分
 		var oldtoken = plus.storage.getItem('oldToken');
 		var myuserid = plus.storage.getItem('userid');
+		var cityNum  = plus.storage.getItem('cityNum');
 		mui('#Releasebtn')[0].onclick = function(){
 			var Ynulls = mui('.Ynull');
 			if(!reg_phone.test(mui('#Bphone')[0].value)){
@@ -526,6 +527,7 @@ function disclaimer(){
 		        				}
 					        }
 		        			xhr.setRequestHeader("token",oldtoken);
+		        			xhr.setRequestHeader("city",cityNum);
 		        			xhr.send(formD);
 						} 
 					}
@@ -582,6 +584,7 @@ function disclaimer(){
 			        				}
 						        }
 			        			xhr.setRequestHeader("token",oldtoken);
+			        			xhr.setRequestHeader("city",cityNum);
 			        			xhr.send(formD);
 							} 
 						}
@@ -598,11 +601,12 @@ function disclaimer(){
 			var Bnowid = plus.webview.currentWebview().Bname;
 			//显示信息
 			var oldtoken = plus.storage.getItem('oldToken');
+			var cityNum  = plus.storage.getItem('cityNum');
 			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
 				data:{sericeId:Bnowid},
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldtoken},	               				
+				headers:{"token":oldtoken,'city':cityNum},	               				
 				success:function(data){
 					console.log('获取修改数据返回',data); 
 					if(data.errno == 0){
