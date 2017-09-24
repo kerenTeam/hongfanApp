@@ -108,12 +108,25 @@
 				margin-top: -16px;
 				font-size: 12px;
 			}
-			.market-icon{
+			.market-icons{
 				border-radius: 50%;
 				width: 0.55rem;
-				/*height: 0.55rem;*/
+				height: 0.55rem;
 				display: block;
 				margin: 0 auto;
+				background-color: #F3F3F3;
+				/*padding-top: 10px;*/
+			}
+			.market-icon img{
+				padding: 10px 0;
+				border-radius: 50%;
+				width: 0.55rem;
+				height: 0.55rem;
+				display: block;
+				margin: 0 auto;
+				text-align: center;
+				margin: auto!important;
+				display: block;
 				/*padding-top: 10px;*/
 			}
 			.left{
@@ -227,7 +240,7 @@
 			.sy_recmd_list_box{
 				padding-left: 0;
 			}
-			.width_5{width: 25% !important;}
+			.width_5{width: 25%;}
 			.hotlist{
 				overflow: scroll;
 				white-space: nowrap;
@@ -337,38 +350,40 @@
 			<div class="moll_typeWrap fineB">
 				<div id="moll_type">
 					<div class="onetable" style="margin-bottom: 0;">
-						<div class="table mui-row" style="">
+						<div id="ctTables" class="table mui-row" style="">
 							<div class="mui-col-xs-5 width_5" onclick="goList('52')">
-								<div class="market-icon" id="52">
-									<img src="../../img/market/tsguan/shiping.png">
+								<div class="market-icons" id="52">
 								</div><br>
-								<p style="color: #666;">食品酒水</p>
 							</div>
 							<div class="mui-col-xs-5 width_5" onclick="goList('53')">
-								<div class="market-icon" id="53">
-									<img src="../../img/market/tsguan/liangyou.png">
+								<div class="market-icons" id="53">
 								</div><br>
-								<p style="color: #666;">粮油干货</p>
 							</div>
 						 
 							<div class="mui-col-xs-5 width_5" onclick="goList('54')">
-								<div class="market-icon" id="54">
-									<img src="../../img/market/tsguan/shengxian.png">
+								<div class="market-icons" id="54">
 								</div><br>
-								<p style="color: #666;">生鲜水果</p>
 							</div>
 						 
 							<div class="mui-col-xs-5 width_5" onclick="goList('55')">
-								<div class="market-icon" id="55">
-									<img src="../../img/market/tsguan/haiwai.png">
+								<div class="market-icons" id="55">
 								</div><br>
-								<p style="color: #666;">海外代购</p>
 							</div>
 							 
 						</div>
 					</div>
 				</div> 
 			</div>
+			<script type="text/html" id="ctTableTpl">
+				<%for(var i=0;i<typeData.length;i++){%>
+					<div class="mui-col-xs-5 width_5" onclick="goList('<%=typeData[i].catid%>')">
+						<div class="market-icon" id="55">
+							<img src="<%=typeData[i].icon%>">
+						</div><br>
+						<p style="color: #666;"><%=typeData[i].catname%></p>
+					</div>
+				<%}%> 
+			</script>
 			
 			
 			<div class="moll_typeWrap fineB" style="display: none;">
@@ -579,10 +594,26 @@
 				success:function(data){ 
 					console.log('分类',data);
 					if(data.errno==0){
-						var typeObj = {};
-						typeObj.typeData = data.data;
-						typeObj.myUrl = serverimgUrl;
-	                    //_NNNdocument.getElementById("moll_type").innerHTML=template("typeTpl",typeObj);
+						if(data.data && data.data.length){
+							var typeObj = {};
+							for(var j=0;j<data.data.length;j++){
+								if(data.data[j].icon && data.data[j].icon!='null'){
+									if(data.data[j].icon.indexOf('http') == -1){
+										data.data[j].icon = serverimgUrl + data.data[j].icon;
+									}else{
+										data.data[j].icon = data.data[j].icon;
+									}
+								}else{
+									data.data[j].icon = '../img/10.png'
+								}	
+							}
+							typeObj.typeData = data.data;
+							typeObj.myUrl = serverimgUrl;
+	                    	document.getElementById("ctTables").innerHTML=template("ctTableTpl",typeObj);
+	                    	var ct = 1/parseInt(data.data.length)*100+'%';
+							$('.width_5').css('width',ct); 
+						}
+						 
 					}else{
 						plus.nativeUI.closeWaiting();
 						mui.toast("获取数据失败");

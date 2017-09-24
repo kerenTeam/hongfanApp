@@ -190,6 +190,18 @@
 							}else{
 								var dataObj = {};
 								for(var i = 0 ;i<data.data.length;i++){
+									if(!data.data[i].username){
+										if(data.data[i].nickname && data.data[i].nickname !='null'){
+											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)){
+												data.data[i].nickname = data.data[i].nickname.substring(0,3)+"****"+data.data[i].nickname.substring(7,11)
+											}
+										}else{
+											data.data[i].nickname = '匿名'
+										}
+										 
+									}else{
+										data.data[i].nickname = data.data[i].username;
+									}
 									if(data.data[i].avatar){//整理头像格式
 										if(data.data[i].avatar.indexOf("[")>-1){
 											if(data.data[i].avatar.includes('http')){

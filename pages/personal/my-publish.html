@@ -363,11 +363,11 @@ mui.plusReady(function(){
 		var btnArray = ['取消', '确定'];
         mui.confirm('确认删除吗 ？', '提示', btnArray, function(e) {
             if (e.index == 1) {
-                mui.ajax(serverUrl+'/api/localservice/myuseddelete',{ 
-					data:{"my_used_id":id},
+                mui.ajax(serverUrl+'/api/friends/deletenews',{ 
+					data:{userId:myuserid,newsId:id},
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldToken},	               				
+					headers:{"token":oldToken,"city":cityNum},	               				
 					success:function(data){
 						console.log('删除返回'+JSON.stringify(data)); 
 						if(data.errno == 0){
@@ -412,7 +412,7 @@ mui.plusReady(function(){
 			data:{"userId":myuserid},
 			type:'post',
 			timeout:10000,
-			headers:{"token":oldToken},	              				
+			headers:{"token":oldToken,"city":cityNum},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
 				console.log('我的发布返回'+JSON.stringify(data)); 
@@ -492,7 +492,7 @@ mui.plusReady(function(){
 			data:{"userid":myuserid},
 			type:'post',
 			timeout:10000,
-			headers:{"token":oldToken},	              				
+			headers:{"token":oldToken,"city":cityNum},	              				
 			success:function(data){
 				plus.nativeUI.closeWaiting();
 				console.log('服务',data);
@@ -538,7 +538,7 @@ mui.plusReady(function(){
 					data:{"my_local_service_id":id},
 					type:'post',
 					timeout:10000,
-					headers:{"token":oldToken},	               				
+					headers:{"token":oldToken,"city":cityNum},	               				
 					success:function(data){
 						console.log('删除返回'+JSON.stringify(data)); 
 						if(data.errno == 0){

@@ -34,10 +34,10 @@
   		.cmtall img{width: 25px;margin-right: 5px;}
   		.cmtflex{display: flex;justify-content: space-between;align-items: center;}
   		.ctc span{color: #fb7e23;}
-  		.jubao{background-color: white;bottom: 0!important;position: absolute;right: 0;left: 0;} 
+  		ul{list-style: none;padding: inherit;margin: 0;}
+		.jubao{background-color: white;bottom: 0!important;position: absolute;right: 0;left: 0;} 
 		.jubao li a{padding: 18px;line-height: 15px;text-align: center;border-bottom: 1px solid #EEEEEE;display: block;color: black;}
 		.jubao li:last-child a{color: rgb(153,153,153);}
-	   	ul{list-style: none;padding: inherit;margin: 0;}
 	   	.diybtn{background: url(../../img/makeFriend/follow.png) no-repeat;background-size: 100% 100%;background-position: left top;color: white;padding: 4px 22px;}
   		.diybtn2{background: url(../../img/makeFriend/unfollw.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 4px 22px;}
 		.yhm{width:calc((100vw - 50px)/3);height: calc((100vw - 20px)/3);margin-left: 5px;margin-top:10px ;}
@@ -68,6 +68,9 @@
 		.dynamicPic3{width: 33%;padding-top: 31%;}
 		.dynamicPic img{width: 100%;}
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}	
+		.jubao{background-color: white;} 
+		.jubao li a{padding: 18px;line-height: 15px;text-align: center;border-bottom: 1px solid #EEEEEE;display: block;color: black;}
+		.jubao li:last-child a{color: rgb(153,153,153);}
 		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
 	</style>
 
@@ -205,11 +208,14 @@
 		<div id="maskInfo" style="display: none;">
 		    <!-- 可选择菜单 -->
 		    <ul class="jubao">
-		      <li>
+		      <li class="ownclose">
 		        <a href="javascript:;" onclick="doJubao()">加入黑名单</a>
 		      </li>
-		      <li>
+		      <li class="ownclose">
 		        <a href="javascript:;" onclick="doJubao()">举报</a>
+		      </li>
+		      <li class="ownDel" style="display:none">
+		        <a href="javascript:;" onclick="doDel()">删除</a>
 		      </li>
 		      <li>
 		        <a href="javscript:;" class="closeMask" >取消</a>
@@ -246,6 +252,7 @@
 				infiId = plus.webview.currentWebview().infoid,
 				toCmt = plus.webview.currentWebview().isCmt,
 				newsUserId = plus.webview.currentWebview().UserId,
+				delc = plus.webview.currentWebview().delc,
 				commontid = '',touserid='';
 			if(toCmt){ 
 				window.document.body.scrollTop = document.body.scrollHeight; 
@@ -278,7 +285,11 @@
 				showSoftInput();
 
 			}
-		
+			//删除自己的帖子 
+			if(delc==1 && newsUserId == myuserid){
+				$('.ownDel').css('display','block');
+				$('.ownclose').css('display','none')
+			}
 			window.goCircleIndex = function(id){
 				if(plus.storage.getItem('myToken')){
 					if(id == myuserid){
@@ -311,7 +322,39 @@
 					});
 				} 
 			}
-			
+			window.doDel= function(){ 
+				if(plus.storage.getItem('myToken')){
+					plus.nativeUI.showWaiting();
+					mui.ajax(serverUrl+'/api/friends/deletenews',{ 
+						data:{userId:myuserid,newsId:infiId},
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken,"city":cityNum},	               				
+						success:function(data){
+							console.log('删除返回'+JSON.stringify(data)); 
+							if(data.errno == 0){
+								plus.nativeUI.closeWaiting();
+								mui.toast('删除成功');
+								var page = plus.webview.getWebviewById('mycircleIndex');
+									mui.fire(page,'refreshcl');
+								setTimeout(function(){
+									plus.webview.currentWebview().close();	
+								},500)
+							}else{
+								mui.toast('删除失败, 请重试');
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast('响应失败  !');
+						}
+					});
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+			}
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
 				dataType: 'json',
 				type: 'get',
@@ -331,8 +374,12 @@
 						}else{
 							nowArray.avatar = '../../img/10.png'
 						}
-						
-						if(!nowArray.nickname){
+						 
+						if(nowArray.nickname && nowArray.nickname !='null'){
+							if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray.nickname)){
+								nowArray.nickname = nowArray.nickname.substring(0,3)+"****"+nowArray.nickname.substring(7,11)
+							}
+						}else{
 							nowArray.nickname = '匿名'
 						}
 						if(!nowArray.read){
@@ -354,7 +401,12 @@
 							}
 							nowArray.picS = picS;
 						} 
-						
+						//判断是否点赞
+						if(data.errmsg && data.errmsg.isLike==1){
+							$('#doLike').attr('src','../../img/makeFriend/yizan.png');
+						}else{
+							$('#doLike').attr('src','../../img/makeFriend/zan.png');
+						}
 						dataObj.dataList = data.data;
 						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
 						$('.diybtn').click(function(){  
@@ -370,11 +422,7 @@
 							} 
 				    		 
 				    	})
-						if(data.errmsg == 1){ 
-							$('#doLike').attr('src','../../img/makeFriend/yizan.png');
-						}else{
-							$('#doLike').attr('src','../../img/makeFriend/zan.png');
-						}
+						
 						if(newsUserId == myuserid){
 							$('.isFollow').css('display','none')
 						} 
@@ -537,7 +585,11 @@
                                                         for(var i = 0;i<cmtArray.length;i++){
                                                             if(!cmtArray[i].nickname){ 
                                                                 cmtArray[i].nickname =  '匿名'
-                                                            }
+                                                            }else{
+																if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(cmtArray[i].nickname)){
+																	cmtArray[i].nickname = cmtArray[i].nickname.substring(0,3)+"****"+cmtArray[i].nickname.substring(7,11)
+																}
+															}
                                                             
                                                             if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
                                                                 if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){

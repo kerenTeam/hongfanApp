@@ -285,7 +285,7 @@
 							$('.opbb').html('无联系方式')
 //							$('.opbb').attr('href','tel:15708434450');
 						}
-						 
+						
 						var dt = new Date(nowArray.create_time).getTime(); 
 						nowArray.create_time = getDateDiff(dt);
 						
@@ -318,10 +318,17 @@
 							} 
 				    		 
 				    	})
-						if(data.errmsg == 1){ 
+						
+						 //判断是否点赞
+						if(data.errmsg && data.errmsg.isLike==1){
 							$('#doLike').attr('src','../../img/localLife/zan.png');
 						}else{
 							$('#doLike').attr('src','../../img/localLife/weizan.png');
+						}
+						if(data.errmsg && data.errmsg.isCollect==1){ 
+							$('#collt').attr('src','../../img/localLife/collt.png');
+						}else{
+							$('#collt').attr('src','../../img/localLife/uncollt.png');
 						}
 					 
 						lazyLoad(true);//懒加载

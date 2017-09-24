@@ -85,6 +85,13 @@
 							if(data.data && data.data.length){
 								 var picObj = data.data;  
 								 [].forEach.call(picObj,function(ele){
+								 	if(!ele.nickname){
+										ele.nickname = '匿名'
+									}else{
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(ele.nickname)){
+											ele.nickname = ele.nickname.substring(0,3)+"****"+ele.nickname.substring(7,11)
+										}
+									}
 								 	 if(ele.avatar && ele.avatar!='null'){
 										if(JSON.parse(ele.avatar)[0].picImg.indexOf('http') == -1){
 											ele.avatar = serverimgUrl + JSON.parse(ele.avatar)[0].picImg;

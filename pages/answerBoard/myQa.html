@@ -118,8 +118,12 @@
 									<img class="Avator loadPics" data-src="<%=dataList[i].avatar%>" src=""/> <%=dataList[i].nickname%>
 								</div>
 								<div class="">
-									<span class="disablecl">已回答</span>
-									<img class="loadPics" src="../../img/answer/zan.png"/> <span class="disablecl"><%=dataList[i].likes%></span>
+									<%if(dataList[i].answerNums>0){%>
+										<span class="disablecl">已回答</span>
+									<%}else{%>
+										<span class="disablecl">暂无回答</span>
+									<%}%>
+									<span class="disablecl"><%=dataList[i].answerNums%></span>
 								</div>
 							</div>
 							<div class="qbot ft14 ">
@@ -289,6 +293,10 @@
 									
 									if(!nowArray[j].nickname){
 										nowArray[j].nickname = '匿名'
+									}else{
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+											nowArray[j].nickname = nowArray[j].nickname.substring(0,3)+"****"+nowArray[j].nickname.substring(7,11)
+										}
 									}
 									if(nowArray[j].pic && nowArray[j].pic!='null'){
 										nowArray[j].pic = JSON.parse(nowArray[j].pic);
@@ -394,6 +402,10 @@
 																
 																if(!nowArray[j].nickname){
 																	nowArray[j].nickname = '匿名'
+																}else{
+																	if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+																		nowArray[j].nickname = nowArray[j].nickname.substring(0,3)+"****"+nowArray[j].nickname.substring(7,11)
+																	}
 																}
 															}
 															dataObj.dataList = data.data.data;

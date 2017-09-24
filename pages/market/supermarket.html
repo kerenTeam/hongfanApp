@@ -108,12 +108,25 @@
 				margin-top: -16px;
 				font-size: 12px;
 			}
-			.market-icon{
+			.market-icons{
 				border-radius: 50%;
 				width: 0.55rem;
-				/*height: 0.55rem;*/
+				height: 0.55rem;
 				display: block;
 				margin: 0 auto;
+				background-color: #F3F3F3;
+				/*padding-top: 10px;*/
+			}
+			.market-icon img{
+				padding: 10px 0;
+				border-radius: 50%;
+				width: 0.55rem;
+				height: 0.55rem;
+				display: block;
+				margin: 0 auto;
+				text-align: center;
+				margin: auto!important;
+				display: block;
 				/*padding-top: 10px;*/
 			}
 			.left{
@@ -227,7 +240,7 @@
 			.sy_recmd_list_box{
 				padding-left: 0;
 			}
-			.width_5{width: 25% !important;}
+			.width_5{width: 25%;}
 			.hotlist{
 				overflow: scroll;
 				white-space: nowrap;
@@ -298,7 +311,6 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="padding-left: 16px;"></a>
 			<h1 class="mui-title">超市优选</h1>
-			<!--<a href="javascript:;" style="line-height: 50px;top: 0;" class="fr baocun" onclick="gosearch()"><img src="../../img/sousuo.svg" alt="" /></a>-->
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div class="gocart"><img src="../../img/center/gocart.svg" alt="" /></div>
@@ -337,37 +349,40 @@
 			<div class="moll_typeWrap fineB">
 				<div id="moll_type">
 					<div class="onetable" style="margin-bottom: 0;">
-						<div class="table mui-row" style="">
-							<div class="mui-col-xs-4 width_5">	 <!--onclick="goList('52')"-->
-								<div class="market-icon" id="52">
-									<img src="../../img/superMarket/cake.png">
+						<div id="ctTables" class="table mui-row" style="">
+							<div class="mui-col-xs-5 width_5" onclick="goList('52')">
+								<div class="market-icons" id="52">
 								</div><br>
-								<p style="color: #666;">鲜花蛋糕</p>
 							</div>
-							<div class="mui-col-xs-4 width_5">
-								<div class="market-icon" id="53">
-									<img src="../../img/superMarket/office.png">
+							<div class="mui-col-xs-5 width_5" onclick="goList('53')">
+								<div class="market-icons" id="53">
 								</div><br>
-								<p style="color: #666;">办公用品</p>
 							</div>
 						 
-							<div class="mui-col-xs-4 width_5">
-								<div class="market-icon" id="54">
-									<img src="../../img/superMarket/normalLife.png">
+							<div class="mui-col-xs-5 width_5" onclick="goList('54')">
+								<div class="market-icons" id="54">
 								</div><br>
-								<p style="color: #666;">生活用品</p>
 							</div>
 						 
-							<div class="mui-col-xs-4 width_5" onclick="goList('55')">
-								<div class="market-icon" id="55">
-									<img src="../../img/superMarket/toliet.png">
+							<div class="mui-col-xs-5 width_5" onclick="goList('55')">
+								<div class="market-icons" id="55">
 								</div><br>
-								<p style="color: #666;">日用百货</p>
 							</div>
+							 
 						</div>
 					</div>
 				</div> 
 			</div>
+			<script type="text/html" id="ctTableTpl">
+				<%for(var i=0;i<typeData.length;i++){%>
+					<div class="mui-col-xs-5 width_5" onclick="goList('<%=typeData[i].catid%>')">
+						<div class="market-icon" id="55">
+							<img src="<%=typeData[i].icon%>">
+						</div><br>
+						<p style="color: #666;"><%=typeData[i].catname%></p>
+					</div>
+				<%}%> 
+			</script>
 			
 			
 			<div class="moll_typeWrap fineB" style="display: none;">
@@ -422,7 +437,7 @@
 								<div class="box">
 									<div class="pub_img"> 
 										<a class="rcdPadding" onclick="goInfo('<%=list[i].goods_id%>')">
-											<img onload="imgHeight(this)" data-src="<%=myUrl %><%=list[i].thumb%>" src="" width="145" height="145" class="hotImg loadPics picOp">
+											<img onload="imgHeight(this)" data-src="<%=myUrl %><%=list[i].thumb%>" src="" width="145" height="145" class="hotImg picOp loadPics">
 										</a>
 									</div>
 									<div class="pub_wz">
@@ -544,8 +559,8 @@
 			
 			var token=plus.storage.getItem("oldToken");//获取token
 			//banner
-			mui.ajax(serverUrl+'/api/index/banner',{
-				data:{banner_type:7},
+			mui.ajax(serverUrl + '/api/index/banner', {
+				data:{banner_type:6},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
@@ -570,7 +585,7 @@
 			});  
 			//超市优选分类 数据渲染
 			mui.ajax(serverUrl+'/api/mall/goodscategory',{
-				data:{parentid:0,type:2},
+				data:{parentid:0,type:1},
 				dataType:'json',//服务器返回json格式数据
 				type:'post',//HTTP请求类型 
 				timeout:10000,//超时时间设置为10秒；	
@@ -578,10 +593,26 @@
 				success:function(data){ 
 					console.log('分类',data);
 					if(data.errno==0){
-						var typeObj = {};
-						typeObj.typeData = data.data;
-						typeObj.myUrl = serverimgUrl;
-	                    //_NNNdocument.getElementById("moll_type").innerHTML=template("typeTpl",typeObj);
+						if(data.data && data.data.length){
+							var typeObj = {};
+							for(var j=0;j<data.data.length;j++){
+								if(data.data[j].icon && data.data[j].icon!='null'){
+									if(data.data[j].icon.indexOf('http') == -1){
+										data.data[j].icon = serverimgUrl + data.data[j].icon;
+									}else{
+										data.data[j].icon = data.data[j].icon;
+									}
+								}else{
+									data.data[j].icon = '../img/10.png'
+								}	
+							}
+							typeObj.typeData = data.data;
+							typeObj.myUrl = serverimgUrl;
+	                    	document.getElementById("ctTables").innerHTML=template("ctTableTpl",typeObj);
+	                    	var ct = 1/parseInt(data.data.length)*100+'%';
+							$('.width_5').css('width',ct); 
+						}
+						 
 					}else{
 						plus.nativeUI.closeWaiting();
 						mui.toast("获取数据失败");
@@ -600,7 +631,7 @@
 			var currentPage =1, numsPerPage=8;
    			//热门推荐 数据渲染 
 			mui.ajax(serverUrl+'/api/mall/mallgooodslist', { 
-				data: {currentPage:currentPage,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:4,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'},
+				data: {currentPage:currentPage,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:1,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'},
 				dataType:'json',//服务器返回json格式数据 
 					type:'post',//HTTP请求类型 
 					timeout:10000,//超时时间设置为10秒；	
