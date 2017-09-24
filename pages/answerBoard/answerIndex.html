@@ -359,6 +359,13 @@
 									}else{
 										nowArray[j].avatar = '../img/10.png'
 									}
+									if(nowArray[j].nickname && nowArray[j].nickname !='null'){
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+											nowArray[j].nickname = nowArray[j].nickname.substring(0,3)+"****"+nowArray[j].nickname.substring(7,11)
+										}
+									}else{
+										nowArray[j].nickname = '匿名'
+									}
 									
 									if(!nowArray[j].answerNums){
 										nowArray[j].answerNums = 0
@@ -433,6 +440,13 @@
 															var nowArray = data.data.data;
 															
 															for(var j = 0 ;j<nowArray.length;j++){//整理数据
+																if(nowArray[j].nickname && nowArray[j].nickname !='null'){
+																	if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+																		nowArray[j].nickname = nowArray[j].nickname.substring(0,3)+"****"+nowArray[j].nickname.substring(7,11)
+																	}
+																}else{
+																	nowArray[j].nickname = '匿名'
+																}
 																if(nowArray[j].avatar && nowArray[j].avatar!='null'){//整理头像
 																	if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
 																		nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
@@ -520,6 +534,10 @@
 													for(var i = 0;i<2;i++){
 														if(!cmtArray[i].nickname){ 
 															cmtArray[i].nickname =  '匿名'
+														}else{
+															if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(cmtArray[i].nickname)){
+																cmtArray[i].nickname = cmtArray[i].nickname.substring(0,3)+"****"+cmtArray[i].nickname.substring(7,11)
+															}
 														}
 														
 														if(cmtArray[i].pics && cmtArray[i].pics!='null'){
@@ -548,6 +566,10 @@
 													for(var i = 0;i<cmtArray.length;i++){
 														if(!cmtArray[i].nickname){ 
 															cmtArray[i].nickname =  '匿名'
+														}else{
+															if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(cmtArray[i].nickname)){
+																cmtArray[i].nickname = cmtArray[i].nickname.substring(0,3)+"****"+cmtArray[i].nickname.substring(7,11)
+															}
 														}
 														
 														if(cmtArray[i].pics && cmtArray[i].pics!='null'){

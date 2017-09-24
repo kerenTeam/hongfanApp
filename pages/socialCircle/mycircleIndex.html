@@ -332,6 +332,7 @@
 				extrasobj: {
 					infoid: id,
 					UserId:userid,
+					delc:1,
 				}
 			})
 		}
@@ -520,6 +521,9 @@
 				headInfo();
 				loadJiaoyou();
 			})
+	    	document.addEventListener('refreshcl', function() {
+				loadDynamic();
+			})
 	    	//tab切换
 			var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div'),
 				contentChild = mui('.contentChild');
@@ -579,15 +583,15 @@
 							}else{
 								mui('#mypic2')[0].src ='../../img/10.png' 
 							}
-							if(data.data.likes){
-								$('#likes').text(data.data.likes)
-							}
+//							if(data.data.likes){
+//								$('#likes').text(data.data.likes)
+//							}
 							if(data.data.gift){
 								$('#gifts').text(data.data.gift)
 							}
-							if(data.data.followers){
-								$('#followers').text(data.data.followers)
-							} 
+//							if(data.data.followers){
+//								$('#followers').text(data.data.followers)
+//							} 
 							if(data.data.bgImg && JSON.parse(data.data.bgImg).length>0){  
 								$('#mypic1').attr('src',JSON.parse(data.data.bgImg)[0].picImg)
 							}
@@ -957,7 +961,8 @@
 	    	$('.dongItem').click(function(){
 				openview({
 					view:'circleListInfo.html',
-					id:'circleListInfo' 
+					id:'circleListInfo',
+					extrasobj:{delc:1}
 				})
 			})
 	    	

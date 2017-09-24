@@ -90,18 +90,7 @@
 		<!--状态栏结束-->
 		<!--<div id="container">-->
 		<div id="main">
-			<div class="clearfloat box-s box-ss" id="userBox" style="display: none;">
-	    		<img id="mypic1" src="https://hbfile.b0.upaiyun.com/img/home/banner/1b2ee045f8bf04befb7cf3722fcc527eaeb18f23114c28"/>
-	    		<div id="beijing2"></div> 
-	    			<img src="../../img/market/atcenter.jpg" class="userAvator" id="mypic2"/> 
-	    			<div id="nickname" class="idhiji ft18"></div>
-	    			<div class="personalSign">
-	    				今天真的很开心啊 <img src="../../img/answer/edit.png" id="edit"/>
-	    			</div>
-	    			<div class="personalSign newbop">
-	    				<img src="../../img/answer/heart.png"/> 80人
-	    			</div>
-	    	</div>
+			 
 	    	<div class="bottomop flexr" style="position: fixed;">
 				<div class="ft14 active">通知消息</div> 
 				<div class="ft14">物流消息</div>
@@ -114,42 +103,17 @@
 					<div class="qashadow">
 						<div class="qtop flexr">
 							<div class="ft14">
-								Thefin
+								---
 							</div>
 							<div class="">
-								<span class="disablecl">2017-09-02</span>
+								<span class="disablecl">---</span>
 							</div>
 						</div>
 						<div class="qbot ft14 ">
-							xxxxxxxxxx 
+							-------- 
 						</div>
 					</div>
-					<div class="qashadow">
-						<div class="qtop flexr">
-							<div class="ft14">
-								Thefin
-							</div>
-							<div class="">
-								<span class="disablecl">2017-09-02</span>
-							</div>
-						</div>
-						<div class="qbot ft14 ">
-							xxxxxxxxxx 
-						</div>
-					</div>
-					<div class="qashadow">
-						<div class="qtop flexr">
-							<div class="ft14">
-								Thefin
-							</div>
-							<div class="">
-								<span class="disablecl">2017-09-02</span>
-							</div>
-						</div>
-						<div class="qbot ft14 ">
-							xxxxxxxxxx 
-						</div>
-					</div>
+					 
 				</div><!--盒子一-->
 				<div class="QA dyCon" id="answers" style="display: none;"> 
 					<div class="qashadow">
@@ -265,34 +229,27 @@
 					</div>
 				</div><!--盒子三-->
 				
-				<!--<script type="text/html" id="listDataS">
-					<%for(var i=0;i<dataList.length;i++){%>
-						<div class="qashadow" onclick="openDetail(<%=dataList[i].id%>)">
+				<script type="text/html" id="listinfo">
+					<%for(var i=0;i<list.length;i++){%>
+						<div class="qashadow">
 							<div class="qtop flexr">
 								<div class="ft14">
-									<img class="Avator loadPics" data-src="<%=dataList[i].avatar%>" src=""/> <%=dataList[i].nickname%>
+									<%=list[i].nickname%>
 								</div>
 								<div class="">
-									<span class="disablecl">已回答</span>
-									<img class="loadPics" src="../../img/answer/zan.png"/> <span class="disablecl"><%=dataList[i].likes%></span>
+									<span class="disablecl"><%=list[i].create_time%></span>
 								</div>
 							</div>
 							<div class="qbot ft14 ">
-								<%=dataList[i].content%>
-								<div class="qaimg">
-									<%if(dataList[i].pic && dataList[i].pic.length){%>
-										<div class="answerImf" style="padding: 0;">
-											<%for(var j = 0 ;j<dataList[i].pic.length;j++){%>
-												<div class="anImg loadPics" style="background: url(<%=dataList[i].pic[j].picImg%>) no-repeat;background-size: cover;"></div>
-											<%}%> 
-									 	</div>
-									<%}%> 
-								</div>
+								<%=list[i].title%><br />
+								<%if(list[i].title.indexOf('打赏')>0 && list[i].content){%>
+									留言：<%=list[i].content%>
+								<%}%>
+								
 							</div>
 						</div>
 					<%}%>	
-				</script>	-->
-				<div class="upload text-center text-xs gray" id="upload"><img src='../../img/balls.svg' /></div><!--加载中-->
+				</script>	
 			</div><!--大盒子-->
 			
 		</div>
@@ -348,9 +305,8 @@
 				}
 			}
 		})
-		mui("#upload")[0].innerHTML = " ";
 		
-//		shopData(0,0,false);//默认推荐
+		shopData(0,0,false);//默认推荐
 		
 		function shopData(typeNum,gender,refresh){
 			var Spagenum = 2; //实到页数
@@ -372,22 +328,64 @@
 					$(window).scrollTop(280);
 				}
 			}
-			mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 			mui.plusReady(function(){
 				var myuserid = plus.storage.getItem('userid'),
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken');
 				
 				if(typeNum == 0){
-					var dataJson = {
-						'userId':myuserid, 
-						'numsPerPage':6,
-						'currentPage':1,
-						'orderType':'DESC',
-						'orderField':'create_time',
-						'typeId':2,
-						
-					}
+				 
+					plus.nativeUI.showWaiting();//显示等待框
+					mui.ajax(serverUrl+'/api/index/message',{
+						data:{userid:myuserid},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken,'city':cityNum},
+						success:function(data,type,xhr){
+							plus.nativeUI.closeWaiting();
+							console.log('消息',data);
+					       	if(data.errno == 0){
+						       	if(data.data.length){
+					     			var dataobj = {};
+					     			var nowArray = data.data;
+					     			for(var j = 0;j<nowArray.length;j++){
+					     				//整理头像格式
+										if(nowArray[j].avatar && nowArray[j].avatar!='null'){
+											if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+												nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+											}else{
+												nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+											}
+										}else{
+											nowArray[j].avatar = '../img/10.png'
+										}
+										
+										if(nowArray[j].nickname && nowArray[j].nickname !='null'){
+											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+												nowArray[j].nickname = nowArray[j].nickname.substring(0,3)+"****"+nowArray[j].nickname.substring(7,11)
+											}
+										}else{
+											nowArray[j].nickname = '匿名'
+										}
+										var dt = new Date(nowArray[j].create_time).getTime(); 
+										nowArray[j].create_time = getDateDiff(dt);
+					     			}
+					     			dataobj.url = serverimgUrl;
+					     			dataobj.list = data.data;
+					     			var html = template("listinfo",dataobj);
+									document.getElementById("questions").innerHTML=html;
+								}else{
+									document.getElementById("questions").innerHTML='<div style="text-align: center;padding: 50px;">暂无通知消息</div>'
+								}
+					       	}
+					       	plus.nativeUI.closeWaiting();
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							console.log('当前网络不好,请重试');
+						}
+					});
 				}else if(typeNum == 1){
 					var dataJson = {
 						'userId':myuserid, 
@@ -409,169 +407,43 @@
 						'isAskMe ':1 
 					}
 				}
-				
-				mui.ajax(serverUrl + '/api/friends/newslist', {
-					data: dataJson,
-					dataType: 'json',
-					type: 'post',
-					timeout: 8000,
-					headers: {"token": oldToken,'city': cityNum},
-					success: function(data, type, xhr) {
-						console.error('我的消息列表'+typeNum, data);
-						if(data.errno == 0) {
-							var dataObj = {};
-							var nowArray = data.data.data;
-
-							for(var j = 0 ;j<nowArray.length;j++){
-								//整理头像格式
-								if(nowArray[j].avatar && nowArray[j].avatar!='null'){
-									if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
-										nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
-									}else{
-										nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
-									}
-								}else{
-									nowArray[j].avatar = '../../img/10.png'
-								}
-								
-								if(!nowArray[j].nickname){
-									nowArray[j].nickname = '匿名'
-								}
-								if(nowArray[j].pic && nowArray[j].pic!='null'){
-									nowArray[j].pic = JSON.parse(nowArray[j].pic);
-									for(var k = 0; k<nowArray[j].pic.length;k++){
-										if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
-                                            nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
-                                        }
-									}
-								}
-							}
-							
-							dataObj.dataList = data.data.data;
-							document.getElementsByClassName("dyCon")[typeNum].innerHTML = template("listDataS", dataObj);
-							mui("#upload")[0].innerHTML = "";
-							lazyLoad(true,50);//懒加载
-							 
-							$(window).scroll(function() {
-								if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
-										var scrollTop = $(this).scrollTop();　
-										if(typeNum == 0){
-											SH0 = $(this).scrollTop();
-										}else if(typeNum == 1){
-											SH1 = $(this).scrollTop();
-										}else{
-											SH2 = $(this).scrollTop();
-										}
-										var scrollHeight = $(document).height();
-										var windowHeight = $(this).height();　　
-										if(scrollTop + windowHeight == scrollHeight) {
-											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
-												mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-												Ypagenum++; //满足加载情况,应到页数+1
-												console.log('发起请求,实到' + Spagenum + '页');
-												console.log('发起请求,应到' + Ypagenum + '页');
-												if(typeNum == 0){
-													var dataJson = {
-														'userId':myuserid, 
-														'numsPerPage':6,
-														'currentPage':Spagenum,
-														'orderType':'DESC',
-														'orderField':'create_time',
-														'typeId':2,
-														
-													}
-												}else if(typeNum == 1){
-													var dataJson = {
-														'userId':myuserid, 
-														'numsPerPage':6,
-														'currentPage':Spagenum,
-														'orderType':'DESC',
-														'orderField':'create_time',
-														'typeId':2,
-														'isMyAnswer':1 
-													}
-												}else{
-													var dataJson = {
-														'userId':myuserid, 
-														'numsPerPage':6,
-														'currentPage':Spagenum,
-														'orderType':'DESC',
-														'orderField':'create_time',
-														'typeId':2,
-														'isAskMe ':1 
-													}
-												}
-												
-												mui.ajax(serverUrl + '/api/friends/newslist', {
-													data: dataJson,
-													dataType: 'json',
-													type: 'post',
-													timeout: 8000,
-													headers: {"token": oldToken,'city': cityNum},
-													success: function(data) {
-														console.error('我的消息列表续'+typeNum, data);
-														if(data.errno == 0) {
-															var dataObj = {};
-															var nowArray = data.data.data;
-															for(var j = 0 ;j<nowArray.length;j++){
-																//整理头像格式
-																if(nowArray[j].avatar && nowArray[j].avatar!='null'){
-																	if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
-																		nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
-																	}else{
-																		nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
-																	}
-																}else{
-																	nowArray[j].avatar = '../../img/10.png'
-																}
-																
-																if(nowArray[j].pic && nowArray[j].pic!='null'){
-																	nowArray[j].pic = JSON.parse(nowArray[j].pic);
-																	for(var k = 0; k<nowArray[j].pic.length;k++){
-																		if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
-							                                                nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
-							                                            }
-																	}
-																}
-																
-																if(!nowArray[j].nickname){
-																	nowArray[j].nickname = '匿名'
-																}
-															}
-															dataObj.dataList = data.data.data;
-															document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
-															lazyLoad(false,50);//懒加载
-														}
-														mui("#upload")[0].innerHTML = " ";
-														Spagenum++; //加载成功,当前页+1
-														console.log('成功+1,实到' + Spagenum);
-														console.log('成功+1,应到' + Spagenum);
-													},
-													error: function(xhr, type, errorThrown) {
-														Ypagenum--; //失败是应到-1
-														mui.toast("当前网络不好请重试");
-														mui("#upload")[0].innerHTML = "";
-													}
-												});
-											} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
-												mui("#upload")[0].innerHTML = "到底了";
-											}
-										} 
-								}
-							});
-							 
-							 
-						}else{
-							mui.toast('当前网络不好,请重试');
-						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.error('交友列表,响应失败');
-						mui.toast('当前网络不好,请重试');
-					}
-				});
+				 
 				
 			})
+		}
+		
+		//发布时间判断 
+		var minute = 1000 * 60;
+		var hour = minute * 60;
+		var day = hour * 24;
+		var halfamonth = day * 15;
+		var month = day * 30;
+		function getDateDiff(dateTimeStamp){ 
+			var now = new Date().getTime(); 
+			var diffValue = now - dateTimeStamp; 
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+			 result=parseInt(monthC) + "月前";
+			 }
+			 else if(weekC>=1){
+			 result=parseInt(weekC) + "周前";
+			 }
+			 else if(dayC>=1){
+			 result=parseInt(dayC) +"天前";
+			 }
+			 else if(hourC>=1){
+			 result=parseInt(hourC) +"小时前";
+			 }
+			 else if(minC>=1){
+			 result=parseInt(minC) +"分钟前";
+			 }else{ 
+			 result="刚刚";
+			 }
+			return result;
 		}
 	</script>
 

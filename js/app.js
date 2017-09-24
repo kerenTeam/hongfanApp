@@ -1,4 +1,4 @@
-//var serverUrl= "http://192.168.3.22:7200";
+//var serverUrl= "http://192.168.125.117:7200";
 //var serverUrl= "http://192.168.1.101:7200";
 //var serverUrl='http://hiji.hifete.com';
 var serverUrl='http://abcd.zlzmm.com:7200';
@@ -323,8 +323,8 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 
 //收藏和取消收藏  
 function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
-	mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+newsId+'/userid/'+myuserid, {
-		data:{'referenceUserId':referenceUserId},
+	mui.ajax(serverUrl + '/api/friends/collector', {
+		data:{'userId':myuserid,'newsId':newsId,'newsUserId':referenceUserId},
 		dataType: 'json',
 		type: curType,
 		timeout: 8000,
@@ -332,14 +332,14 @@ function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curT
 		success: function(data, type, xhr) {
 			console.log('收藏',data)
 			if(data.errno == 0) {
-				if(data.data){
-					mui.toast('取消成功')
+				if(data.data && data.data.type=='add'){
+					mui.toast('收藏成功')
 					thisobj.attr('src',imgSrc);
-				}else{
-    				thisobj.attr('src',imgSrc);
 				}
- 
-    			
+				if(data.data && data.data==1){
+					mui.toast('取消成功')
+    				thisobj.attr('src',imgSrc);
+				} 
 			}else{
 				mui.toast('操作失败'); 
 			}
