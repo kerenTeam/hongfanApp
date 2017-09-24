@@ -75,14 +75,31 @@
 			</div>
 		</div>  
 		
+		<div id="maskTc" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9999;">
+			<img class="closeTk" style="position: absolute;top: 15px;right:15px;transform: rotate(45deg);z-index: 999999;" src="../../img/market/addtheme.svg"/>
+			<img class="tomypage" style="width: 100%;margin: auto;display: block;" src="../../img/makeFriend/friendT.png"/>
+		</div>
 		
 		<script type="text/javascript">
-//			function imgHeight(obj){
-//				if(obj.offsetHeight<obj.parentNode.offsetHeight){
-//					obj.style.height = '100%';
-//					obj.style.width = 'auto';
-//				}
-//			}
+			$('.closeTk').click(function(){
+				event.stopPropagation();
+				$('#maskTc').css('display','none')	
+			})
+			$('.tomypage').click(function(){
+				if(plus.storage.getItem('myToken')){
+					event.stopPropagation();
+					openview({
+						view:'mycircleIndex.html',
+						id:'mycircleIndex',
+					})
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				} 
+				 
+			})
 		</script>
 		<script type="text/javascript">
 			
@@ -336,6 +353,8 @@
 							mui.toast('当前网络不好,请重试');
 						}
 					});
+					
+					//判断是否上传交友照片
 				})
 			}
 			
@@ -367,7 +386,8 @@
 			$('#header .friendCenter').click(function(){
 				if(plus.storage.getItem('myToken')){
 					openview({
-						view:'mycircleIndex.html'
+						view:'mycircleIndex.html',
+						id:'mycircleIndex',
 					})
 				}else{
 					mui.toast('请登录');
