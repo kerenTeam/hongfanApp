@@ -67,28 +67,54 @@
     		<script type="text/html" id="listDataS">
 				<div class="listCon">
 					<%if(typeNum == 0){%>
-						<%for(var i=0;i<dataList.length;i++){%>
-							<%if(dataList[i].user_id){%>
-								<div class="follow" onclick="goCircleIndex(<%=dataList[i].user_id%>)"> 
-									<div class="fchidl">
-										<div>
-											<img data-src="<%=dataList[i].avatar%>" onerror="../../img/10.png" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+						<%if(dataList.length>20){%>
+							<%for(var i=0;i<20;i++){%> 
+								<%if(dataList[i].user_id){%>
+									<div class="follow" onclick="goCircleIndex(<%=dataList[i].user_id%>)"> 
+										<div class="fchidl">
 											<div>
-												<%=dataList[i].nickname%>
-												<div class="disablecl ft12">
-													<%if(dataList[i].userExplain){%>
-														<%=dataList[i].userExplain%>
-													<%}%>
+												<img data-src="<%=dataList[i].avatar%>" onerror="../../img/10.png" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+												<div>
+													<%=dataList[i].nickname%>
+													<div class="disablecl ft12">
+														<%if(dataList[i].userExplain){%>
+															<%=dataList[i].userExplain%>
+														<%}%>
+													</div>
 												</div>
-											</div>
-										</div> 
-										<div class="disablecl ft12">
-											<!--5km-->
-							           </div> 
-									</div>  
-								</div>
-							<%}%>
-						<%}%>	
+											</div> 
+											<div class="disablecl ft12">
+												<!--5km-->
+								           </div> 
+										</div>  
+									</div>
+								<%}%>
+							<%}%>			
+						<%}else{%>
+							<%for(var i=0;i<dataList.length;i++){%> 
+								<%if(dataList[i].user_id){%>
+									<div class="follow" onclick="goCircleIndex(<%=dataList[i].user_id%>)"> 
+										<div class="fchidl">
+											<div>
+												<img data-src="<%=dataList[i].avatar%>" onerror="../../img/10.png" src="../../img/morentouxiang.jpg" class="userAvator mr25 loadPics"/>
+												<div>
+													<%=dataList[i].nickname%>
+													<div class="disablecl ft12">
+														<%if(dataList[i].userExplain){%>
+															<%=dataList[i].userExplain%>
+														<%}%>
+													</div>
+												</div>
+											</div> 
+											<div class="disablecl ft12">
+												<!--5km-->
+								           </div> 
+										</div>  
+									</div>
+								<%}%>
+							<%}%>		
+						<%}%>
+						
 					<%}else{%>
 						<%for(var i=0;i<dataList.length;i++){%>
 							<div class="follow"> 
@@ -282,7 +308,7 @@
 			    		'latitude':Latitude,'yFactor':yFactor,'longitude':Longitude,'xFactor':xFactor,'type':'news','gender':gender,'age':age	
 			    	};
 			    }
-//			    alert(JSON.stringify(dataJson))
+			    plus.nativeUI.showWaiting();
 				mui.ajax(serverUrl+'/api/friends/thingsfromyournear', {
 					data:dataJson,
 					dataType: 'json',
@@ -348,16 +374,23 @@
 								dataObj.typeNum = typeNum;
 								document.getElementsByClassName("circleContain")[typeNum].innerHTML = template("listDataS", dataObj);
 								mui("#upload")[0].innerHTML = "";
+								plus.nativeUI.closeWaiting();
 								lazyLoad(true,50);//懒加载
 								 
 							}
 						}else{
+							mui("#upload")[0].innerHTML = "";
+							console.error('附近列表'+typeNum, data);
+							plus.nativeUI.closeWaiting();
 							mui.toast('当前网络不好,请重试');
 						}
 					},
 					error: function(xhr, type, errorThrown) {
 						console.error('交友列表,响应失败');
+						mui("#upload")[0].innerHTML = "";
+						plus.nativeUI.closeWaiting();
 						mui.toast('当前网络不好,请重试');
+						
 					}
 				});
 			})
