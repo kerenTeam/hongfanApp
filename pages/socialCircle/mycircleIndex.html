@@ -388,7 +388,6 @@
  				var oldToken = plus.storage.getItem('oldToken'),
 		 			cityNum = plus.storage.getItem('cityNum'),
 					myuserid = plus.storage.getItem('userid');
-				alert(nums)
 				mui.ajax(serverUrl+'/api/friends/gift/userId',{
 					data:{"userId":myuserid,'giftId':typeId,'myGiftId':id,'nums':nums},
 					type:'put',
@@ -436,9 +435,11 @@
 					if(data.errno == 0){
 						if(data.data && data.data.isBuy.length){
 							for(var j = 0 ;j<data.data.isBuy.length;j++){//整理内容图片
-								var nowArray2 = JSON.parse(data.data.isBuy[j].picImg);
-								if(nowArray2.length){
-									data.data.isBuy[j].picS = nowArray2[0].picImg;
+								if(data.data.isBuy[j].picImg){
+									var nowArray2 = JSON.parse(data.data.isBuy[j].picImg);
+									if(nowArray2.length){
+										data.data.isBuy[j].picS = nowArray2[0].picImg;
+									}
 								}
 							}
 							var dataObj = {};

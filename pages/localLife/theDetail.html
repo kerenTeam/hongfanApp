@@ -402,12 +402,13 @@
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});
 			//获取数据
 			var oldtoken = plus.storage.getItem('oldToken');
+			var cityNum  = plus.storage.getItem('cityNum');
 			var nowid = plus.webview.currentWebview().name;
 			mui.ajax(serverUrl+'/api/localservice/localserviceinfo',{
 				data:{"sericeId":nowid},
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldtoken},	               				
+				headers:{"token":oldtoken,'city':cityNum},	               				
 				success:function(data){
 					console.log('获取数据返回'+JSON.stringify(data));
 					console.log('获取数据返回',data);
