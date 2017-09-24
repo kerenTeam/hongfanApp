@@ -62,7 +62,7 @@
 		.bottomop .active{color:#f31414}
 		.bottomop div:after{position:absolute;bottom:0;left:50%;right:50%;height:2px;background-color:#f31414;content:""}
 		.bottomop .active:after{left:25px!important;right:25px!important;transition:all .3s}
-		#QA{padding-top: 52px;}
+		/*#QA{padding-top: 52px;}*/
 		.qashadow{margin-bottom: 10px;background-color: white;padding:10px 15px;}
 		.qbot{margin-top: 10px;line-height: 1.3;}
 		.Avator{width: 40px!important;height: 40px!important;border-radius: 50%;}
@@ -91,11 +91,10 @@
 		<!--<div id="container">-->
 		<div id="main">
 			 
-	    	<div class="bottomop flexr" style="position: fixed;">
+	    	<!--<div class="bottomop flexr" style="position: fixed;">
 				<div class="ft14 active">通知消息</div> 
-				<div class="ft14">物流消息</div>
 				<div class="ft14">聊天记录</div>
-		 	</div>  
+		 	</div>  -->
 		 	
 		 	
 			<div id="QA"><!--大盒子-->
@@ -110,76 +109,12 @@
 							</div>
 						</div>
 						<div class="qbot ft14 ">
-							-------- 
+							---
 						</div>
 					</div>
 					 
 				</div><!--盒子一-->
-				<div class="QA dyCon" id="answers" style="display: none;"> 
-					<div class="qashadow">
-						<div class="qtop flexr">
-							<div class="ft14">
-								订单已签收(申通快递)
-							</div>
-							<div class="">
-								<span class="disablecl">2017-09-02</span>
-							</div>
-						</div>
-						<div class="qbot ft14 flexa">
-							<div class="rsImg">
-								<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
-							</div>
-							<div>
-								<div class="maincl ft14">丽得姿补水面膜(10片装)</div>
-								<div class="disablecl ft12" style="margin-top: 5px;">
-									运单编号：12334324234223
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="qashadow">
-						<div class="qtop flexr">
-							<div class="ft14">
-								订单已签收(申通快递)
-							</div>
-							<div class="">
-								<span class="disablecl">2017-09-02</span>
-							</div>
-						</div>
-						<div class="qbot ft14 flexa">
-							<div class="rsImg">
-								<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
-							</div>
-							<div>
-								<div class="maincl ft14">丽得姿补水面膜(10片装)</div>
-								<div class="disablecl ft12" style="margin-top: 5px;">
-									运单编号：12334324234223
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="qashadow">
-						<div class="qtop flexr">
-							<div class="ft14">
-								订单已签收(申通快递)
-							</div>
-							<div class="">
-								<span class="disablecl">2017-09-02</span>
-							</div>
-						</div>
-						<div class="qbot ft14 flexa">
-							<div class="rsImg">
-								<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505302664713&di=afd24208c96df7088b6f6a3316cc28fa&imgtype=0&src=http%3A%2F%2Fimg14.360buyimg.com%2Fn1%2Fjfs%2Ft4300%2F175%2F3062826487%2F194099%2F8026677d%2F58d9ba97N66fbbcbb.jpg"/>
-							</div>
-							<div>
-								<div class="maincl ft14">丽得姿补水面膜(10片装)</div>
-								<div class="disablecl ft12" style="margin-top: 5px;">
-									运单编号：12334324234223
-								</div>
-							</div>
-						</div>
-					</div>
-				</div><!--盒子二-->
+				
 				<div class="QA dyCon" id="toanswers" style="display: none;">
 					<div class="qashadow"> 
 						<div class="qbot ft14 flexa" style="justify-content: space-around;">
@@ -231,21 +166,43 @@
 				
 				<script type="text/html" id="listinfo">
 					<%for(var i=0;i<list.length;i++){%>
+						<%if(list[i].sender && list[i].sender!='null')%>
+						<div class="qashadow" onclick="elseCircleIndex(<%=list[i].sender%>)">
+						<%}else{%>
 						<div class="qashadow">
+						<%}%>
 							<div class="qtop flexr">
-								<div class="ft14">
+								<div class="ft14 activecl">
 									<%=list[i].nickname%>
 								</div>
 								<div class="">
 									<span class="disablecl"><%=list[i].create_time%></span>
 								</div>
 							</div>
-							<div class="qbot ft14 ">
+							<div class="qbot ft14">
 								<%=list[i].title%><br />
 								<%if(list[i].title.indexOf('打赏')>0 && list[i].content){%>
 									留言：<%=list[i].content%>
 								<%}%>
-								
+								<%if(list[i].title.indexOf('举报')>0){%>
+									<div class="qbot ft14 flexa" onclick="DTdetail(<%=list[i].content.id%>,<%=list[i].content.userid%>)" style="justify-content: space-around;background-color:#f3f3f3;pading:5px!important">
+										 
+										<div class="flexa">
+											<div class="rsImg">
+												<%if(list[i].content.pic && list[i].content.pic.length){%>
+													<img src="<%=list[i].content.pic[0].picImg%>"/>
+												<%}%>
+											</div>
+											<div>
+												<div class="maincl ft14" style="margin-top: 5px;">
+													<%=list[i].content.content%>
+												</div>
+												<div class="disablecl ft12"><%=list[i].content.create_time%></div>
+												
+											</div>
+										</div>
+									</div>
+								<%}%>
 							</div>
 						</div>
 					<%}%>	
@@ -255,84 +212,108 @@
 		</div>
 	 </body>
 	 <script type="text/javascript">
-	 	/*打开详情*/
-		function openDetail(id){
+	 	//动态详情
+		function DTdetail(id,userid){
+			event.stopPropagation();
 			openview({
-				view:'answerInfo.html',
-				id:'answerInfo',
-				extrasobj:{answerId:id}
+				view:'../socialCircle/circleListInfo.html',
+				extrasobj: {
+					infoid: id,
+					UserId:userid,
+					delc:1,
+				}
 			})
 		}
 	 </script>
 	<script type="text/javascript">
-		var flag0 = 0,flag1 = 0,flag2 = 0,//是否   第一次点击
-	     	SH0 = 0,SH1  = 0,SH2  = 0;/*保存的状态栏高度*/
-		var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div');
-		var listSon = document.getElementsByClassName('dyCon');
-		[].forEach.call(listCon,function(ele,index){
-			ele.onclick = function(){
-				if(!ele.className.includes('active')){
-					[].forEach.call(listCon,function(ele2){
-						ele2.className = 'ft14';
-					})
-					ele.className = 'active ft14'; 
-					[].forEach.call(listSon,function(ele3){
-						ele3.className = 'QA dyCon';
-						ele3.style.display = 'none';
-					})
-					listSon[index].className = 'qative QA dyCon';
-					listSon[index].style.display = 'block';
-					
-					if(index == 0){
-						if(flag0==0){
-//							shopData(index,0);
-						}else{
-							$(window).scrollTop(SH0);
-						}
-					}else if(index == 1){
-						if(flag1==0){
-//							shopData(index,1);
-						}else{
-							$(window).scrollTop(SH1);
-						}
-					}else{
-						if(flag2==0){
-//							shopData(index,2);
-						}else{
-							$(window).scrollTop(SH2);
-						}
-					}
-				}
-			}
-		})
-		
+//		var flag0 = 0,flag1 = 0,flag2 = 0,//是否   第一次点击
+//	     	SH0 = 0,SH1  = 0,SH2  = 0;/*保存的状态栏高度*/
+//		var listCon = document.getElementsByClassName('bottomop')[0].getElementsByTagName('div');
+//		var listSon = document.getElementsByClassName('dyCon');
+//		[].forEach.call(listCon,function(ele,index){
+//			ele.onclick = function(){
+//				if(!ele.className.includes('active')){
+//					[].forEach.call(listCon,function(ele2){
+//						ele2.className = 'ft14';
+//					})
+//					ele.className = 'active ft14'; 
+//					[].forEach.call(listSon,function(ele3){
+//						ele3.className = 'QA dyCon';
+//						ele3.style.display = 'none';
+//					})
+//					listSon[index].className = 'qative QA dyCon';
+//					listSon[index].style.display = 'block';
+//					
+//					if(index == 0){
+//						if(flag0==0){
+////							shopData(index,0);
+//						}else{
+//							$(window).scrollTop(SH0);
+//						}
+//					}else if(index == 1){
+//						if(flag1==0){
+////							shopData(index,1);
+//						}else{
+//							$(window).scrollTop(SH1);
+//						}
+//					}else{
+//						if(flag2==0){
+////							shopData(index,2);
+//						}else{
+//							$(window).scrollTop(SH2);
+//						}
+//					}
+//				}
+//			}
+//		})
+//		
 		shopData(0,0,false);//默认推荐
 		
 		function shopData(typeNum,gender,refresh){
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数
 
-			if(typeNum == 0){
-				flag0++;
-				if(flag0 == 2){
-					$(window).scrollTop(280);
-				}
-			}else if(typeNum == 1){
-				flag1++;
-				if(flag1 == 1){
-					$(window).scrollTop(280);
-				}
-			}else{
-				flag2++;
-				if(flag2 == 1){
-					$(window).scrollTop(280);
-				}
-			}
+//			if(typeNum == 0){
+//				flag0++;
+//				if(flag0 == 2){
+//					$(window).scrollTop(280);
+//				}
+//			}else if(typeNum == 1){
+//				flag1++;
+//				if(flag1 == 1){
+//					$(window).scrollTop(280);
+//				}
+//			}else{
+//				flag2++;
+//				if(flag2 == 1){
+//					$(window).scrollTop(280);
+//				}
+//			}
 			mui.plusReady(function(){
 				var myuserid = plus.storage.getItem('userid'),
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken');
-				
+				window.elseCircleIndex = function(id){
+					if(plus.storage.getItem('myToken')){
+						if(id == myuserid){
+							openview({
+					    		view:'socialCircle/mycircleIndex.html',
+					    		id:'mycircleIndex' 
+					    	})
+						}else{
+							openview({
+					    		view:'socialCircle/elsecircleIndex.html',
+					    		id:'elsecircleIndex',
+					    		extrasobj:{userId:id}
+					    	})
+						} 
+					}else{
+						mui.toast('请登录');
+						openview({
+							view:'login.html'
+						});
+					} 
+			    }
 				if(typeNum == 0){
 				 
 					plus.nativeUI.showWaiting();//显示等待框
@@ -370,6 +351,17 @@
 										}
 										var dt = new Date(nowArray[j].create_time).getTime(); 
 										nowArray[j].create_time = getDateDiff(dt);
+										
+										if(nowArray[j].title.indexOf('举报')>0){
+											nowArray[j].content = JSON.parse(nowArray[j].content);
+										}
+										if(nowArray[j].content.pic && nowArray[j].content.pic!='null'){
+											nowArray[j].content.pic = JSON.parse(nowArray[j].content.pic);
+										}
+										//格式化时间
+										var dt = new Date(nowArray[j].content.create_time);
+										var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 
+										nowArray[j].content.create_time = date;
 					     			}
 					     			dataobj.url = serverimgUrl;
 					     			dataobj.list = data.data;
@@ -386,29 +378,7 @@
 							console.log('当前网络不好,请重试');
 						}
 					});
-				}else if(typeNum == 1){
-					var dataJson = {
-						'userId':myuserid, 
-						'numsPerPage':6,
-						'currentPage':1,
-						'orderType':'DESC',
-						'orderField':'create_time',
-						'typeId':2,
-						'isMyAnswer':1 
-					}
-				}else{
-					var dataJson = {
-						'userId':myuserid, 
-						'numsPerPage':6,
-						'currentPage':1,
-						'orderType':'DESC',
-						'orderField':'create_time',
-						'typeId':2,
-						'isAskMe ':1 
-					}
 				}
-				 
-				
 			})
 		}
 		
