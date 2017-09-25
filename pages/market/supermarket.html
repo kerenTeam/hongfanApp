@@ -121,7 +121,7 @@
 				padding: 10px 0;
 				border-radius: 50%;
 				width: 0.55rem;
-				height: 0.55rem;
+				/*height: 0.55rem;*/
 				display: block;
 				margin: 0 auto;
 				text-align: center;
@@ -240,7 +240,7 @@
 			.sy_recmd_list_box{
 				padding-left: 0;
 			}
-			.width_5{width: 25%;}
+			.width_5{width: 25%;padding: 10px;}
 			.hotlist{
 				overflow: scroll;
 				white-space: nowrap;
@@ -415,13 +415,13 @@
 				<ul>
 					<div id="moll_recommend">
 						<!--缓冲显示-->
-						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						<li class="sy_recmd_list relist lld"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						</a></div><div class="pub_wz jiazai lld">加载中 ...</div></div></li>
+						<li class="sy_recmd_list relist lld"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
 						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
-						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						<li class="sy_recmd_list relist lld"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
 						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
-						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
-						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
-						<li class="sy_recmd_list relist"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
+						<li class="sy_recmd_list relist lld"><div class="box"><div class="pub_img"><a class="rcdPadding" ><img src="" width="145" height="145" class="hotImg fade-in" style="visibility: hidden;">
 						</a></div><div class="pub_wz jiazai">加载中 ...</div></div></li>
 					</div>
 				</ul>
@@ -480,7 +480,7 @@
 		//分类跳转详情
 		function goList(catId){
 			 openview({
-			 	view:"goodsList.html",
+			 	view:"goodsList2.html",
 			 	extrasobj:{goodscatId:catId}
 			 })
 		}
@@ -610,7 +610,7 @@
 							typeObj.myUrl = serverimgUrl;
 	                    	document.getElementById("ctTables").innerHTML=template("ctTableTpl",typeObj);
 	                    	var ct = 1/parseInt(data.data.length)*100+'%';
-							$('.width_5').css('width',ct); 
+							$('.width_5').css({'width':ct,'height':ct}); 
 						}
 						 
 					}else{
@@ -646,7 +646,9 @@
 							var html=template("recommendTpl",objdata);
 							document.getElementById("moll_recommend").innerHTML=html;
 	                    mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg'/>";
-	                    
+	                    if(!data.data.return.data || data.data.return.data.length == 0){
+	                    	$('.lld').remove();
+	                    }
 	                    lazyLoad(true,50);//懒加载
 	                     
 	                   	$(window).scroll(function(){
@@ -662,7 +664,7 @@
 									console.log('发起请求,应到'+Ypagenum+'页');
 									var requestfun = function(){
 										mui.ajax(serverUrl+'/api/mall/mallgooodslist',{ 									
-											data:{currentPage:Spagenum,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:4,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'}, 
+											data:{currentPage:Spagenum,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:1,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'}, 
 											dataType:'json',//服务器返回json格式数据
 											type:'post',//HTTP请求类型 
 											timeout:5000,//超时时间设置为10秒；	
@@ -700,6 +702,7 @@
 						}); 
 	                   	 
 					}else{
+						$('.lld').remove();
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
 					}

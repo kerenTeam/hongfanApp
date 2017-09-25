@@ -267,13 +267,15 @@
 			plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
 			var oldToken = plus.storage.getItem('oldToken');
 			var myuserid = plus.storage.getItem('userid');
+			var cityNum = plus.storage.getItem('cityNum');
+			
 			//数据渲染
 			mui.ajax(serverUrl+'/api/index/couponoractivityinfo',{
 				data:{id:storeCouponId},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldToken},	 
+				headers:{"token": oldToken,'city': cityNum},	 
 				success:function(data,type,xhr){
 					console.log('详情',data);
 					var dt = new Date(data.data.system_activity.begin_time);

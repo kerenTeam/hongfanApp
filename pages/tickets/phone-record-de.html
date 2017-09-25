@@ -247,7 +247,7 @@
 				var orderId = plus.webview.currentWebview().qianmiOrderID;
 				var Amount = plus.webview.currentWebview().Amount;
 				plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-				mui.ajax(serverUrl+'/api/qianmi/billorderinfo',{
+				mui.ajax(serverUrl+'/api/banma/billorderinfo',{
 					data:{qianmiOrderID:orderId},
 					dataType:'json',
 					type:'post',
@@ -258,12 +258,16 @@
 						console.log('fdf ',data)
 						if(data.errno==0){
 							mui(".deal")[0].style.display="block"
-							var infoData = JSON.parse(data.data.payment_data).data;
-							mui("#amount")[0].innerHTML = "<sub>￥"+parseFloat(infoData.inPrice).toFixed(2)+"</sub>";
-							mui("#itemName")[0].innerHTML = infoData.itemName;
-							mui("#phoneCharge")[0].innerHTML = infoData.mobileNo;
-							mui("#saleAmount")[0].innerHTML = parseFloat(infoData.rechargeAmount).toFixed(2)+'元';
-							mui("#cretime")[0].innerHTML = JSON.parse(data.data.payverify).gmt_create;
+							var infoData = JSON.parse(data.data.payment_data);
+							mui("#amount")[0].innerHTML = "<sub>￥"+parseFloat(infoData.advicePrice).toFixed(2)+"</sub>";
+							mui("#itemName")[0].innerHTML = JSON.parse(data.data.business_cut_data).data.itemName;
+							mui("#phoneCharge")[0].innerHTML = JSON.parse(data.data.userPostData).mobileNo; 
+							mui("#saleAmount")[0].innerHTML = parseFloat(infoData.advicePrice).toFixed(2)+'元';
+							var dt = new Date(data.data.create_time);
+							var date = [
+							  [dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+							data.data.create_time = date;
+							mui("#cretime")[0].innerHTML = data.data.create_time;
 						}
 					},
 					error:function(xhr,type,errorThrown){

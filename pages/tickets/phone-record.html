@@ -199,8 +199,8 @@
 													<img src="../../img/tickets/phone.png"/>
 												</div>
 												<div class="recordDetail">
-													<p class="recordBig">-<%=list[t].payment_data.data.inPrice%></p>
-													<p class="recordTiny"><%=list[t].payment_data.data.itemName%></p>
+													<p class="recordBig">-<%=list[t].payment_data.advicePrice%></p>
+													<p class="recordTiny">话费充值<%=list[t].payment_data.name%>元</p>
 												</div> 
 							    		</div>
 							    	</div>	
@@ -231,7 +231,7 @@
 		 	
 		 	 
 			plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			mui.ajax(serverUrl+'/api/qianmi/billorder',{
+			mui.ajax(serverUrl+'/api/banma/billorder',{
 				data:{userid:myuserid,type:1},
 				dataType:'json',
 				type:'post',
@@ -253,8 +253,9 @@
 						 			data.data[t].payment_data = JSON.parse(data.data[t].payment_data); 
 						 			console.log(data)
 						 			 
-						 			if(data.data[t].state == 1 && data.data[t].payment_data.data.inPrice){
-						 				data.data[t].payment_data.data.inPrice = parseFloat(data.data[t].payment_data.data.inPrice).toFixed(2);
+						 			if(data.data[t].state == 1 && data.data[t].payment_data.originalPrice){
+						 				data.data[t].payment_data.advicePrice = parseFloat(data.data[t].payment_data.advicePrice).toFixed(2);
+						 				data.data[t].payment_data.originalPrice = parseFloat(data.data[t].payment_data.originalPrice).toFixed(2);
 						 				objdata.push(data.data[t])
 						 			}
 						 }   

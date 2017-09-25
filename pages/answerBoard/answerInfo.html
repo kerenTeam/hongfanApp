@@ -92,6 +92,12 @@
 							<img src="<%=list[i].avatar%>" class="userAvator mr25"/>
 							<div class="disablecl"> <%=list[i].nickname%> </div>
 						</div> 
+						<%if(list[i].adopt == 1){%>
+							<div class="activecl ft14">
+								最佳答案
+							</div> 
+						<%}%>
+						
 					</div>  
 					<p class="ft14 disablecl"><%=list[i].commont%></p> 
 					<%if(list[i].pics && list[i].pics.length){%>
@@ -240,6 +246,7 @@
 								timeout: 8000,
 								headers: {"token": oldToken,'city': cityNum},
 								success: function(data, type, xhr) { 
+									console.log('回答',data)
 									if(data.errno == 0) {
 										var cmtArray = data.data; 
 										if(cmtArray && cmtArray.length>0){

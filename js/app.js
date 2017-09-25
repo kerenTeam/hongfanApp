@@ -7,7 +7,7 @@ var serverUrl='http://abcd.zlzmm.com:7200';
 var serverimgUrl='http://hiji.hifete.com:6789';
 var serverimgUrlE='';
 //var propUrl = 'http://192.168.0.128:6789';
-var propUrl = 'http://hiji.hifete.com:6789';
+var propUrl = 'http://abcd.zlzmm.com:6789';
 //var propUrl = 'http://211.149.183.181:6789';
 
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
