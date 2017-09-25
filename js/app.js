@@ -2,7 +2,7 @@
 //var serverUrl= "http://192.168.1.101:7200";
 //var serverUrl='http://hiji.hifete.com';
 var serverUrl='http://abcd.zlzmm.com:7200';
-
+ 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
 var serverimgUrlE='';
