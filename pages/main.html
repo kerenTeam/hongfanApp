@@ -270,8 +270,8 @@
 	            		<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
 		            </div>
 		            <p class="footFirend">
-		            	<img class="avaPic loadPics picOp" data-src="<%=dataList[i].avatar%>" src=""/>
-		            	<%=dataList[i].username%> 
+		            	<!--<img class="avaPic loadPics picOp" data-src="<%=dataList[i].avatar%>" src=""/>-->
+		            	<%=dataList[i].nickname%> 
 		            	<%if(dataList[i].isfriend){%>
 		            		<img class="lovePic" src="../img/mainHtml/yizan.png"/>
 		            	<%}else{%>
@@ -763,10 +763,16 @@
 										if(!data.data.data[i].likes || data.data.data[i].likes=='null'){
 											data.data.data[i].likes = 0;
 										}
-										if(!data.data.data[i].username ||data.data.data[i].username == 'null'){
-											data.data.data[i].username = '匿名'
-										}
-										 
+//										if(!data.data.data[i].username ||data.data.data[i].username == 'null'){
+//											data.data.data[i].username = '匿名'
+//										}
+										if(data.data.data[i].nickname && data.data.data[i].nickname !='null'){
+											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.data[i].nickname)){
+												data.data.data[i].nickname = data.data.data[i].nickname.substring(0,3)+"****"+data.data.data[i].nickname.substring(7,11)
+											}
+										}else{
+											data.data.data[i].nickname = '匿名'
+										} 
 										if(data.data.data[i].photo && data.data.data[i].photo.length){//整理内容图片格式
 									 		var nowArray2 = data.data.data[i].photo;
 									 		var picS = [];

@@ -354,16 +354,18 @@
 		mui.plusReady(function(){ 
 			//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 			//获取缓存
-			var oldToken = plus.storage.getItem('oldToken');
+			var oldToken = plus.storage.getItem('oldToken'),
+		 		cityNum = plus.storage.getItem('cityNum');
 			//获取页面传值 商品分类id
 			var goodcatId = plus.webview.currentWebview().goodscatId;
+			var dfid = plus.webview.currentWebview().dfid;
 			var can1 = 'sales',can2 = 'desc',can3 = '';
 			//显示品牌信息
 			mui.ajax(serverUrl+'/api/mall/mallbrand',{ 	
 				data:{categoryid:goodcatId},
 				type:'post',
 				timeout:5000, 
-				headers:{"token":oldToken},	 
+				headers:{"token":oldToken,'city':cityNum},	 
 				success:function(data,type,xhr){
 					console.log('品牌返回',data);
 					if(data.errno == 0){
@@ -392,7 +394,7 @@
 						numsPerPage:pagenum,
 						categoryid:goodcatId,
 						recommend:'',
-						differentiate:4, 
+						differentiate:dfid, 
 						storeid:'',
 						brand:can3,
 						keyword:'',
@@ -463,7 +465,7 @@
 											numsPerPage:pagenum,
 											categoryid:goodcatId,
 											recommend:'',
-											differentiate:4,
+											differentiate:dfid,
 											storeid:'',
 											brand:can3,
 											keyword:'',
