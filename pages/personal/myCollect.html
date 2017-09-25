@@ -39,17 +39,6 @@
 				right: 0;
 				-webkit-transform: scaleY(0.3);
 			}
-			.message:last-of-type:after{
-				position: absolute;
-				content: '';
-				height: 0px;
-				background: #CCCCCC;
-				left: 0.8rem;
-				right: 0.8rem;
-				bottom: 0;
-				right: 0;
-				-webkit-transform: scaleY(0.3);
-			} 
 			.message .msgIcon{
 				flex-basis:0.8rem;
 				text-align: center;
@@ -111,34 +100,22 @@
 			.msgtxt small{
 				font-size: 0.14rem;
 			}
-			 
+			body{background-color:#fff}
 			</style>
 		</head>
 	
 		<body>
 			<header class="mui-bar mui-bar-nav" id="header"> 
 			    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			    <h1 class="mui-title findUser"><span class="titleS activeS aClick">商品</span><span class="titleS aClick">店铺</span> </h1>
+			    <h1 class="mui-title findUser">
+			    	<span class="titleS activeS aClick">商品</span>
+			    	<span class="titleS aClick">店铺</span>
+			    	<span class="titleS aClick">二手</span>
+			    </h1>
 			</header>
 			<script src="../../js/statusBar.js"></script>
-			<script type="text/javascript">
-				//head渐变效果
-				$(window).scroll(function() {
-					var scrollTop = $(this).scrollTop();　　
-					var scrollHeight = $(document).height();　　
-					var windowHeight = $(this).height();　　
-					if(scrollTop >= 100) {//不透明背景
-						mui('#header')[0].style.boxShadow="0 0 2px rgba(175, 166, 166, 0.85)";
-					}else{//透明背景
-						mui('#header')[0].style.boxShadow="0 0 0 rgba(175, 166, 166, 0.85)";
-					}
-				});
-			</script>
 			<!--状态栏-->
-			<!--<div id="container">-->
-			
 			<div id="main">
-				
 				<div id="infolistdiv">
 					<!--列表loading-->
 					<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
@@ -147,54 +124,73 @@
 					</div> 
 				</div>
 				<script type="text/html" id="infolist">
+					<!--店铺-->
 					<%if(typename == 1){%>
 						<%if(list.length!=0){%>
 							<% for(var i=0; i<list.length; i++){%>
 								<div class="message msgcmt aClick" onclick="opendetails(<%= list[i].store_id%>,1,<%= list[i].store_id%>)">
-									<%if(list[i].logo){%>
-										<img src="<%=list[i].logo%>" style="width: 0.6rem;"/>
+									<%if(list[i].logo && list[i].logo.includes('http')){%>
+										<img src="../../img/Spinner.svg" class="loadPics" data-src="<%=list[i].logo%>" onerror="this.src = '../../img/market/mollshop1.png'" style="width: 60px !important;height:60px;"/>
 									<%}else{%>
-										<img src="../../img/market/mollshop1.png" style="width: 0.6rem;"/>
-										<%}%>
-									
+										<img src="../../img/market/mollshop1.png" style="width: 60px !important;height:60px;"/>
+									<%}%>
 								 	<div class="msgtxt" style="width: 100%;">
 								 		<h5><%= list[i].store_name%><span><small></small></span></h5>
 								 	</div> 
 							 	</div>
 						 	<% }%>
 						<%}else{%>
-							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;background-color: #f2f1ee;">
+							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;">
 								<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 								<br />
 								没有相关信息
 							</div>
 						<%}%>
-						
+					<%}else if(typename == 2){%>
+						<%if(list.length!=0){%>
+							<% for(var i=0; i<list.length; i++){%>
+								<div class="message messageR msgcmt aClick" onclick="opendetails(<%= list[i].goods_id%>,2,<%= list[i].storeid%>)">
+									<%if(list[i].thumb){%>
+										<img data-src="<%=list[i].thumb%>" class="loadPics" src="../../img/Spinner.svg" style="width: 90px;height:90px"/>
+									<%}else{%>
+										<img src="../../img/zhaoxiangji.svg" style="width: 90px;height:90px"/>
+										<%}%>
+								 	<div class="msgtxt msgtxtR">
+								 		<h5><%=list[i].title%><span><small></small></span></h5>
+								 		<small style="color: red;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">￥<%= list[i].price%> </small>
+								 	</div> 
+							 	</div>
+						 	<% }%>
+					 	<%}else{%>
+							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;">
+								<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+								<br />
+								没有相关信息
+							</div>
+						<%}%>
 					<%}else{%>
 						<%if(list.length!=0){%>
-						<% for(var i=0; i<list.length; i++){%>
-							<div class="message messageR msgcmt aClick" onclick="opendetails(<%= list[i].goods_id%>,2,<%= list[i].storeid%>)">
-								<%if(list[i].thumb){%>
-									<img src="<%=list[i].thumb%>" style="width: 1rem;"/>
-								<%}else{%>
-									<img src="../../img/zhaoxiangji.svg" style="width: 1rem;"/>
-									<%}%>
-							 	<div class="msgtxt msgtxtR">
-							 		<h5><%=list[i].title%><span><small></small></span></h5>
-							 		<small style="color: coral;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">￥<%= list[i].price%> </small>
-							 	</div> 
-						 	</div>
-						 	
-					 	<% }%>
+							<% for(var i=0; i<list.length; i++){%>
+								<div class="message messageR msgcmt aClick" onclick="opendetails(<%= list[i].id%>,3,<%= list[i].userid%>)">
+									<%if(list[i].picSershou){%>
+										<img data-src="<%=list[i].picSershou%>" class="loadPics" src="../../img/Spinner.svg" style="width: 90px;height:90px"/>
+									<%}else{%>
+										<img src="../../img/zhaoxiangji.svg" style="width: 90px;height:90px"/>
+										<%}%>
+								 	<div class="msgtxt msgtxtR">
+								 		<h5><%=list[i].content%><span><small></small></span></h5>
+								 		<small style="color: red;width: 90%; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">￥<%= list[i].price%> </small>
+								 	</div> 
+							 	</div>
+						 	<% }%>
 					 	<%}else{%>
-							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;background-color: #f2f1ee;">
+							<div id="nulldiv" style="text-align:center;padding-top: 40%;font-size: 14px;color: #999;display: block;">
 								<img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
 								<br />
 								没有相关信息
 							</div>
 						<%}%>
-					<%}%>
-					
+					<%}%>	
 				</script>
 			<!--底部导航-->
 		</div>
@@ -218,14 +214,22 @@
 		mui('.titleS')[0].onclick = function(){//商品
 			mui('.titleS')[0].className = 'titleS activeS aClick';
 			mui('.titleS')[1].className = 'titleS aClick';
+			mui('.titleS')[2].className = 'titleS aClick';
 			Loading(2);
 		}
 		mui('.titleS')[1].onclick = function(){//店铺
 			mui('.titleS')[1].className = 'titleS activeS aClick';
 			mui('.titleS')[0].className = 'titleS aClick';
+			mui('.titleS')[2].className = 'titleS aClick';
 			Loading(1);
 		}
-		Loading(2); 
+		mui('.titleS')[2].onclick = function(){//二手
+			mui('.titleS')[2].className = 'titleS activeS aClick';
+			mui('.titleS')[0].className = 'titleS aClick';
+			mui('.titleS')[1].className = 'titleS aClick';
+			Loading(3);
+		}
+		Loading(2);
 		
 		//plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
 		//添加刷新监听
@@ -253,29 +257,46 @@
 				timeout:10000,//超时时间设置为10秒；	
 				headers:{"token":oldToken}, 
 				success:function(data){
+					console.log(typename,data);
 					if(data.errno == 0){ 
 						if(data.data){
 							var dataobj = {};
 							if(typename == 1){
 								dataobj.typename = 1;
 								dataobj.list = data.data.storeCollect;
-							}else{
+							}else if(typename == 2){
 								dataobj.typename = 2;
 								dataobj.list = data.data.goodsCollect;
+							}else{
+								dataobj.typename = 3;
+								dataobj.list = data.data.usedCollect;
 							}
-							
 							mui.each(dataobj.list,function (index,ele) {
 								if(ele.thumb){
-									dataobj.list[index].thumb = serverimgUrl + ele.thumb;
+									if(!ele.thumb.includes('http')){
+										dataobj.list[index].thumb = serverimgUrl + ele.thumb;
+									}
 								}
 								if(ele.logo){
-									dataobj.list[index].logo = serverimgUrl + ele.logo;
+									if(!ele.logo.includes('http')){
+										dataobj.list[index].logo = serverimgUrl + ele.logo;
+									}
+								}
+								if(typename == 3 && ele.pic){
+									if(JSON.parse(ele.pic)[0].picImg.includes('http')){
+										dataobj.list[index].picSershou = JSON.parse(ele.pic)[0].picImg;
+									}else{
+										dataobj.list[index].picSershou = serverimgUrl + JSON.parse(ele.pic)[0].picImg;
+									}
+									var ershouPic = JSON.parse(ele.pic)[0].picImg;
+									
 								}
 								
 							})  
 							//获取并渲染用户信息
 							var html=template("infolist",dataobj);
 							document.getElementById("infolistdiv").innerHTML = html;
+							lazyLoad(true,0);//懒加载
 							mui("#upload")[0].innerHTML = "";
 						}else{
 							mui("#upload")[0].innerHTML = ""; 
@@ -286,10 +307,8 @@
 						mui("#upload")[0].innerHTML = ""; 
 						mui('#nulldiv')[0].style.display = 'block';
 					}
-					closeLoad();//关闭列表loading
 				},
 				error:function(xhr,type,errorThrown){
-					closeLoad();//关闭列表loading
 					mui("#upload")[0].innerHTML = ""; 
 					mui('#nulldiv')[0].style.display = 'block';
 				}
@@ -318,14 +337,21 @@ function opendetails(id,type,storeId){
 			})
 		}
 			
+	}else if(type == 1){
+		openview({
+			view: "../market/shophome.html",
+			extrasobj:{
+				storeId: storeId
+			}
+		}) 
 	}else{
-		 
-			openview({
-				view: "../market/shophome.html",
-				extrasobj:{
-					storeId: storeId
-				}
-			}) 
+		openview({
+			view:'../localLife/FleaInfo.html',
+			extrasobj:{
+				infoid: id,
+				UserId:storeId,
+			}
+		})
 	}
 	
 }

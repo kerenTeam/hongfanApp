@@ -339,6 +339,7 @@
 	
 		//礼物兑换HI豆
 		function exchangeHI(pic,num,price,typeId,id){
+			var price = price*0.8;
 			mui('.unitPrice')[0].innerHTML = price + 'HI豆';
 			mui('.head1')[0].style.background = " url("+pic+") 0 0 no-repeat";
 			mui('.head1')[0].style.backgroundSize = " cover ";
@@ -389,7 +390,7 @@
 		 			cityNum = plus.storage.getItem('cityNum'),
 					myuserid = plus.storage.getItem('userid');
 				mui.ajax(serverUrl+'/api/friends/gift/userId',{
-					data:{"userId":myuserid,'giftId':typeId,'myGiftId':id,'nums':nums},
+					data:{"userId":myuserid,'giftId':id,'nums':nums},
 					type:'put',
 					timeout:8000,
 					headers:{"token":oldToken,"city":cityNum},	              				
@@ -398,6 +399,7 @@
 						if(data.errno == 0){
 							mui.toast(data.data);
 							loadGift(myuserid,oldToken,cityNum);/*刷新*/
+							mui.fire(plus.webview.getWebviewById('center.html'),'refreshGift')
 						}else{
 							mui.toast(data.errmsg);
 						}
@@ -420,6 +422,16 @@
 			ele.previousSibling.previousSibling.style.height = 'auto';
 			ele.style.display = 'none';
 		}
+		/*在他人主人赠送返回刷新*/
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'),
+	 			cityNum = plus.storage.getItem('cityNum'),
+				myuserid = plus.storage.getItem('userid');
+			document.addEventListener('refreshGift', function() {
+				loadGift(myuserid,oldToken,cityNum);/*刷新*/
+			})
+			
+		})
 		//礼物兑换HI豆结束
 		
 		

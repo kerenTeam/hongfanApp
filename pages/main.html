@@ -67,14 +67,17 @@
 		    .listSon .fineB:nth-last-child(2):after{	
 	    		display: none;
 		    } 
-		    .partTitlea{position: relative;}
-		    .partTitlea:after{
+		    .partTitlea, .partTitle{position: relative;}
+		    .partTitlea:after,.partTitle:after{
 		    	position:absolute;
 		    	content: '更多';
 		    	font-size:12px;
 		    	color: #999999;
 		    	right: 10px;
 		    	top: 10px;
+		    }
+		    .partTitle000:after{
+		    	display:none;
 		    }
 		    /*.partTitlea:not(:first-child):after{
 		    	display: none;
@@ -312,7 +315,7 @@
 
 		<!--HI抢购     1     推荐列表-->
 		<div class="sy_recmd">
- 			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 抢购</h3>
+ 			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 抢购</h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 				<div class="manyTJ">
@@ -325,7 +328,7 @@
 		
 		<!--HI货榜     2     推荐列表-->
 		<div class="sy_recmd">
- 			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 货榜</h3>
+ 			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 货榜</h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 				<div class="manyTJ">
@@ -337,8 +340,8 @@
 		</div>
 		
 		<!--HI源头找土货 3      推荐列表-->
-		<div class="sy_recmd">
- 			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 找源头土货 <br/><b>农家直供  新鲜到家</b></h3>
+		<div class="sy_recmd ">
+ 			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 找源头土货 <br/><b>农家直供  新鲜到家</b></h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 				<div class="manyTJ">
@@ -351,7 +354,7 @@
 		
 		<!--HI找海外洋货    4    推荐列表-->
 		<div class="sy_recmd">
- 			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 找海外洋货  <br/><b>保税真品直购  海外直飞代购</b></h3>
+ 			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 找海外洋货  <br/><b>保税真品直购  海外直飞代购</b></h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 				<div class="manyTJ">
@@ -364,7 +367,7 @@
 		
 		<!--HI找地方特色    5    推荐列表-->
 		<div class="sy_recmd ">
- 			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span>找地方特色    <br/><b>私房独家秘制</b></h3>
+ 			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span>找地方特色    <br/><b>私房独家秘制</b></h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 				<div class="manyTJ">
@@ -431,7 +434,7 @@
 		<!--hi推荐  6  推荐列表-->
 		<div class="sy_recmd">
 			<!--推荐列表-->
- 			<h3 class="partTitle" style="margin-top: 8px;"> <img src="../img/mainHtml/hired.png"/> <span></span> 推荐</h3>
+ 			<h3 class="partTitle partTitle000" style="margin-top: 8px;"> <img src="../img/mainHtml/hired.png"/> <span></span> 推荐</h3>
 			<div class="sy_recmd_list_box">
 				<ul> 
 					<div id="moll_recommend"></div>
@@ -899,6 +902,19 @@
 					manyTJFun(3);
 					manyTJFun(4);
 					manyTJFun(5);
+					/*打开更多*/
+					[].forEach.call(mui('.fanrenMore'),function(ele,index){
+						ele.onclick = function(){
+							openview({
+								view:'market/fanrenMore.html',
+								id:'fanrenMore',
+								extrasobj:{
+									idNum:index+1,
+									idStr:'HI'+ele.innerText
+								}
+							})
+						}
+					})
 					function manyTJFun(index){
 						mui.ajax(serverUrl + '/api/index/indexrecomment', {
 							data:{recommentType:index},
@@ -911,7 +927,7 @@
 								if(data.errno == 0){
 									if(data.data.length){
 										var recommendObj = {}
-										if(index == 1){recommendObj.SE = true;}
+										if(index == 1){recommendObj.SE = true;}//这是hi抢购
 										recommendObj.list = data.data;
 										if(recommendObj.list.length > 4){recommendObj.list.length = 4}
 										for(var i=0;i<recommendObj.list.length;i++){
