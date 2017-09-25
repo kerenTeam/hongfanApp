@@ -260,10 +260,7 @@
             	<div class="Scontent" style="bottom: 0px;">
             		<h3 class="h3">礼品</h3>
             		<div class="mui-row" id="SgiftDiv">
-            			<div class="mui-col-sm-3 mui-col-xs-3">
-            				<img src="../../img/share/weixing.png" class="aClick2"><br>微信好友
-            			</div>
-            			
+            			<div id="" style="text-align: center;line-height: 50px;color: #999;">暂无礼物</div>
             		</div>
             		<script type="text/html" id="SgiftDiv2">
 				    	<%for(var i = 0;i<dataList.length;i++){%>
@@ -302,6 +299,17 @@
 	<script src="../../js/artTemplate-native.js"></script>
 
 	<script type="text/javascript">
+		mui('.headRight')[0].onclick = function(){
+			var msg = {
+				title:'分享测试',
+				content:'分享测试内容',
+				href:'http://hiji.hifete.com',
+				thumbs:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg'],
+				pictures:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg']
+				
+			};
+			showSfun1(msg,function(){alert('1')},function(){alert('0')});
+		}
 		//动态详情
 		function DTdetail(id,userid){
 			openview({
@@ -946,7 +954,7 @@
 			mui.plusReady(function(){
 				var oldToken = plus.storage.getItem('oldToken');
 				mui.ajax(serverUrl+'/api/friends/gift/userId',{
-					data:{"userId":userId,'myGiftId':giftId,'acceptPersonId':acceptPersonId,'nums':nums},
+					data:{"userId":userId,'giftId':giftId,'acceptPersonId':acceptPersonId,'nums':nums},
 					type:'post',
 					timeout:8000,
 					headers:{"token":oldToken,"city":1},	              				
@@ -955,6 +963,9 @@
 						if(data.errno == 0){
 							alert('赠送成功');
 							mui.fire(plus.webview.getWebviewById('elsecircleIndex'),'refreshGift')
+							mui.fire(plus.webview.getWebviewById('mycircleIndex'),'refreshGift')
+							mui.fire(plus.webview.getWebviewById('center.html'),'refreshGift')
+							
 						}else{
 							mui.toast(data.errmsg);
 						}

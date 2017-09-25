@@ -184,9 +184,15 @@ mui.plusReady(function(){
 		outSet('获取分享服务列表失败：'+e.message);
 	});
 })
-var shareWrap0 = document.createElement('div');
-	shareWrap0.innerHTML = '<div class="shareWrap"></div>'+
-		'<div class="Scontent">'+
+function showSfun1(msg,fun1,fun0){
+	
+	if(document.getElementById('shareWrap10')){
+		
+	}else{
+		var shareWrap10 = document.createElement('div');
+		shareWrap10.id = 'shareWrap10';
+		shareWrap10.innerHTML = '<div class="shareWrap1"></div>'+
+		'<div class="Scontent1">'+
 			'<h3 class="h3">分享</h3>'+
 			'<div class="mui-row">'+
 				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
@@ -207,14 +213,27 @@ var shareWrap0 = document.createElement('div');
 				'</div>'+
 				
 			'</div>'+
-			'<h3 id="cancelS" class="h4 fineT aClick2">取消</h3>'+
+			'<h3 id="cancelS1" class="h4 fineT aClick2">取消</h3>'+
 		'</div>';
-document.body.appendChild(shareWrap0);
-function showSfun(msg,fun1,fun0){
-	document.getElementsByClassName('shareWrap')[0].style.zIndex = '999';
-	document.getElementsByClassName('shareWrap')[0].style.opacity = '1';
-	document.getElementsByClassName('Scontent')[0].style.opacity = '1';
-	document.getElementsByClassName('Scontent')[0].style.bottom = '0px';
+		document.body.appendChild(shareWrap10);
+	}
+	
+	function hideSfun1(){
+		document.getElementsByClassName('shareWrap1')[0].style.zIndex = '-1';
+		document.getElementsByClassName('shareWrap1')[0].style.opacity = '0';
+		document.getElementsByClassName('Scontent1')[0].style.opacity = '0';
+		document.getElementsByClassName('Scontent1')[0].style.bottom = '-500px';
+	}
+	document.getElementById('cancelS1').onclick = function(){
+		hideSfun1();
+	}
+	document.getElementsByClassName('shareWrap1')[0].onclick = function(){
+		hideSfun1();
+	}
+	document.getElementsByClassName('shareWrap1')[0].style.zIndex = '999';
+	document.getElementsByClassName('shareWrap1')[0].style.opacity = '1';
+	document.getElementsByClassName('Scontent1')[0].style.opacity = '1';
+	document.getElementsByClassName('Scontent1')[0].style.bottom = '0px';
 	function shareAction(sb) {
 		if(!sb||!sb.s){
 			mui.toast('无效的分享服务！');
@@ -233,11 +252,11 @@ function showSfun(msg,fun1,fun0){
 	}
 	function shareMessage(msg, s){
 		s.send(msg, function(){
-			hideSfun();
+			hideSfun1();
 			mui.toast('分享成功');
 			if(fun1){fun1()};
 		}, function(e){//alert('分享到"'+s.description+'"失败: '+JSON.stringify(e))
-			hideSfun();
+			hideSfun1();
 			mui.toast('分享失败');
 			if(fun0){fun0()};
 		});
@@ -262,18 +281,7 @@ function showSfun(msg,fun1,fun0){
 		}
 	})
 }
-function hideSfun(){
-	document.getElementsByClassName('shareWrap')[0].style.zIndex = '-1';
-	document.getElementsByClassName('shareWrap')[0].style.opacity = '0';
-	document.getElementsByClassName('Scontent')[0].style.opacity = '0';
-	document.getElementsByClassName('Scontent')[0].style.bottom = '-500px';
-}
-document.getElementById('cancelS').onclick = function(){
-	hideSfun();
-}
-document.getElementsByClassName('shareWrap')[0].onclick = function(){
-	hideSfun();
-}
+
 	//示例
 	//var msg = {
 	//	title:'分享测试',
@@ -283,7 +291,7 @@ document.getElementsByClassName('shareWrap')[0].onclick = function(){
 	//	pictures:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg']
 	//	
 	//};
-	//showSfun(msg,function(){alert('1')},function(){alert('0')});
+	//showSfun1(msg,function(){alert('1')},function(){alert('0')});
 //分享结束
 
 //点赞 和取消点赞 帖子 

@@ -385,21 +385,35 @@
 			
 			//打开他人主页
 			function openDetail(id){
-				if(plus.storage.getItem('myToken')){
-					openview({
-						view: "elsecircleIndex.html",
-						id:'elsecircleIndex',
-						extrasobj: {
-							userId: id
+				mui.plusReady(function(){
+					var myuserid = plus.storage.getItem('userid');
+					if(plus.storage.getItem('myToken')){
+						if(myuserid == id){
+							openview({
+								view: "mycircleIndex.html",
+								create:true,
+								id:'mycircleIndex',
+								extrasobj: {
+									userId: id
+								}
+							})
+						}else{
+							openview({
+								view: "elsecircleIndex.html",
+								id:'elsecircleIndex',
+								extrasobj: {
+									userId: id
+								}
+							})
 						}
-					})
-				}else{
-					mui.toast('请登录');
-					openview({
-						view:'../login.html'
-					});
-				} 
-				
+						
+					}else{
+						mui.toast('请登录');
+						openview({
+							view:'../login.html'
+						});
+					} 
+				})
 			}
 			$('#header .friendCenter').click(function(){
 				if(plus.storage.getItem('myToken')){

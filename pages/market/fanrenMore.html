@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>天天特价</title>
+		<title>首页烦人的更多</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
@@ -149,7 +149,7 @@
 			.Regional{
 				background-image: none !important; 
 			}
-			#main{padding-top: 39px !important;}
+			/*#main{padding-top: 39px !important;}*/
 			.guess-like{padding-top: 0 !important;}
 			#screendiv{
 				position: fixed;left: 0;top: 50px;height: 400px;width: 100%;background-color: #fff;
@@ -227,12 +227,13 @@
             .schedule div{background-color: #fda19f;height: 100%;border-top-left-radius: 3px;border-bottom-left-radius: 3px;}
             div.screening>ul>li{width: 50%;}
             .mui-bar-nav{box-shadow: none !important;}
+            div.screening{display:none}
        </style> 
 	</head> 
 	<body style="background-color: #fff !important;"> 
         <header class="mui-bar mui-bar-nav fineB" id="header">
             <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-            <h1 class="mui-title" id="headtitle">天天特价</h1>
+            <h1 class="mui-title" id="headtitle"></h1>
         </header>
 		
 		 
@@ -266,20 +267,20 @@
 			</div>
 			<!--列表loading结束-->
         </div>
-        <script type="text/html" id="recommendTpl">
-            <% for(var i=0;i<recommendData.length;i++){%>
-                <div class="special clearfix fineB aClick" onclick="goInfo(<%= recommendData[i].goods_id%>)">
-                    <img data-src="<%= myUrl%><%= recommendData[i].thumb%>" class="loadPics" src=""  onerror="this.src = '../../img/market/tejia.png'"/>
+        <script type="text/html" id="manyTJJS">
+            <% for(var i=0;i<list.length;i++){%>
+                <div class="special clearfix fineB aClick" onclick="goInfoFun(<%=list[i].goods_id%>,<%=list[i].storeid%>)">
+                    <img data-src="<%=list[i].thumb%>" class="loadPics" src="../../img/Spinner.svg">
                     <p class="overTwo">
-                        <%= recommendData[i].title%>
+                        <%=list[i].title%>
                     </p>
                     <div style="color: #999;font-size: 14px;position: absolute;top:60px">
-                    	剩余<%= recommendData[i].amount%> <%= recommendData[i].unit%>
+                    	剩余<%= list[i].amount%> <%= list[i].unit%>
                     </div>
                     <div class="S_bottom"> 
                         <div class="S_bottom1 clearfix">
-                            <span style="font-weight: 400;">￥<%=recommendData[i].price%></span> 
-                            <span style="color: #999;font-size: 12px;font-weight:400;margin-left: 5px;text-decoration: line-through;">￥<%=recommendData[i].originalprice%></span>
+                            <span style="font-weight: 400;">￥<%=list[i].price%></span> 
+                            <span style="color: #999;font-size: 12px;font-weight:400;margin-left: 5px;text-decoration: line-through;">￥<%=list[i].originalprice%></span>
                             <a>立即抢购</a>
                         </div>
                         
@@ -297,88 +298,73 @@
 	</body>
 
 <script type="text/javascript">
-	$('.Sort').click(function(){
-		event.stopPropagation()
-		if(!$('.Sort-eject').hasClass("grade-w-roll")){
-			$('.Sort-eject').addClass("grade-w-roll")
-		}else{
-			$('.Sort-eject').removeClass("grade-w-roll")
+	//商品跳转详情
+	function goInfoFun(goodsId,storeId) {
+		if(storeId == 0) {
+			openview({
+				view: "yphDetail.html",
+				extrasobj: {
+					goodsId: goodsId
+				}
+			})
+		} else {
+			openview({
+				view: "mall-detail.html",
+				extrasobj: {
+					goodsId: goodsId
+				}
+			})
 		}
-	})
- 
-    var Spagenum = 2; //实到页数
-    var Ypagenum = 1; //应到页数 
-    mui.plusReady(function() {
-        var oldToken = plus.storage.getItem('oldToken');
-        window.loadfun = function(order_field,orderby_type){
-        	event.stopPropagation()
-	        //获取天天特价
-	     	document.getElementById("main").innerHTML = loadstr;
-			mui('#nulldiv')[0].style.display = 'none'; 
-	        mui.ajax(serverUrl + '/api/mall/onsale', {
-	          data:{order_field:order_field,orderby_type:orderby_type},
-	            type: 'post',
-	            timeout: 10000,
-	            headers: {"token": oldToken},
-	            success: function(data, type, xhr) {
-	                console.log(data);
-	                if(data.errno == 0) {
-	                    if(data.data.length){
-	                        var findList = {};
-	                            findList.myUrl = serverimgUrlE;
-	                            findList.recommendData = data.data;
-	                        	document.getElementById("main").innerHTML += template("recommendTpl",findList)   
-	                        	lazyLoad(true);//懒加载
-	                    }else{
-	                        document.getElementById("nulldiv").style.display="block";
-	                    }
-	                }
-	                closeLoad();//关闭列表loading 
-	            },
-	            error: function(xhr, type, errorThrown) {
-	               closeLoad();//关闭列表loading
-	            }
-	        }); 
-	        $('.Category-eject').removeClass('grade-w-roll');
-			$('.Sort-eject').removeClass('grade-w-roll');
-			$('.grade-eject').removeClass('grade-w-roll');
-	    }    
-	    loadfun('sort','asc');//初始化 
-        //跳转详情
-        window.goInfo =  function(goodsId){ 
-             openview({
-                view:"mall-detail.html",
-                extrasobj:{goodsId:goodsId} 
-             })
-        }
+
+	}
+	mui.plusReady(function() {
+    	var oldToken = plus.storage.getItem('oldToken'),
+	 		cityNum = plus.storage.getItem('cityNum'),
+	 		idNum = plus.webview.currentWebview().idNum,
+	 		idStr = plus.webview.currentWebview().idStr;
+	 	manyTJFun(idNum);
+	 	mui('#headtitle')[0].innerHTML = idStr;
+       	function manyTJFun(index){
+			mui.ajax(serverUrl + '/api/index/indexrecomment', {
+				data:{recommentType:index},
+				dataType: 'json',
+				type: 'post',
+				timeout: 8000,
+				headers: {"token": oldToken,'city': cityNum},
+				success: function(data, type, xhr) {
+					console.error('烦人的商品推荐榜'+index, data);
+					if(data.errno == 0){
+						if(data.data.length){
+							var recommendObj = {}
+							if(index == 1){recommendObj.SE = true;}//这是hi抢购
+							recommendObj.list = data.data;
+							for(var i=0;i<recommendObj.list.length;i++){
+								if(!recommendObj.list[i].thumb.indexOf('http')<0){
+									recommendObj.list[i].thumb = serverimgUrl + recommendObj.list[i].thumb;
+								}
+							}
+							mui('#main')[0].innerHTML = template("manyTJJS", recommendObj);
+							lazyLoad(false);//懒加载
+						}else{
+							mui('#main')[0].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+						}
+					}else{
+						mui('#main')[0].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui('#loadingdiv')[0].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+					console.error('烦人的商品推荐榜,响应失败');
+				}
+			});
+		}
     })
+
+	
+	
+	
+	
         
 </script>
-<script type="text/javascript">
-    //天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
-    //充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 特色馆 specialBar
-    mui.plusReady(function () {
-        var startTime, endTime, stayTime, flagback = 0;
-        startTime = new Date().getTime();
-        var old_back = mui.back;
-        //改写返回键返回的函数，返回时传页面停留时间 
-        mui.back = function(){
-            endTime = new Date().getTime();//返回时间
-            stayTime = Math.ceil((endTime - startTime) / 1000);   
-            console.log('天天特价'+stayTime); 
-            plus.statistic.eventDuration( "discountGoods", stayTime);
-            //计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-            old_back();
-        }
-        plus.webview.currentWebview().addEventListener( "popGesture", function(){
-            flagback++;
-            if(flagback == 1){
-                endTime = new Date().getTime();
-                stayTime = Math.ceil((endTime - startTime) / 1000); 
-                plus.statistic.eventDuration( "discountGoods", stayTime);
-                //计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-            }
-        }, false );
-    });
-</script>
+
 </html>
