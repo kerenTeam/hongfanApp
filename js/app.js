@@ -183,7 +183,8 @@ mui.plusReady(function(){
 	}, function(e){
 		outSet('获取分享服务列表失败：'+e.message);
 	});
-})
+})	
+
 function showSfun1(msg,fun1,fun0){
 	
 	if(document.getElementById('shareWrap10')){

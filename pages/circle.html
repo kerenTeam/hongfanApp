@@ -8,6 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/common.css"> 
 		<link rel="stylesheet" type="text/css" href="../css/mui.css"/> 
 		<link rel="stylesheet" type="text/css" href="../css/config.css"/> 
+		<script src="../js/mui.min.js"></script>
 		<script src="../js/app.js"></script>
 
 	</head>
@@ -279,7 +280,7 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
-		<script src="../js/mui.min.js"></script>
+		
 		<script src="../js/artTemplate-native.js"></script>
 		<script type="text/javascript">
 //			//打开他人主页
@@ -378,6 +379,8 @@
 		    }
 			/*铺数据*/
 			
+			/*循环加载*/
+			
 			
 			todayHot();
 			shopData(0,0,false);//默认推荐
@@ -416,7 +419,7 @@
 						timeout: 8000,
 						headers: {"token": oldToken,'city': cityNum},
 						success: function(data, type, xhr) {
-							console.log('remen ',data)
+							console.log('hi友圈今日热门 ',data)
 							if(data.errno == 0) { 
 								if(data.data && data.data.length){
 									var dataObj = {};
@@ -489,6 +492,7 @@
 							}
 						},
 						error: function(xhr, type, errorThrown) {
+							todayHot();
 							console.error('交友列表,响应失败');
 							mui.toast('当前网络不好,请重试');
 						}
@@ -591,7 +595,7 @@
 						timeout: 8000,
 						headers: {"token": oldToken,'city': cityNum},
 						success: function(data, type, xhr) {
-							console.error('交友列表'+typeNum, data);
+							console.log('交友列表'+typeNum, data);
 							if(data.errno == 0) {
 								var dataObj = {};
 								var nowArray = data.data.data;
@@ -886,6 +890,7 @@
 							}
 						},
 						error: function(xhr, type, errorThrown) {
+							shopData(0,0,false);//默认推荐
 							console.error('交友列表,响应失败');
 							mui.toast('当前网络不好,请重试');
 						}
