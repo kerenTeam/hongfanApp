@@ -1,7 +1,7 @@
 //var serverUrl= "http://192.168.125.117:7200";
-//var serverUrl= "http://192.168.1.101:7200";
+//var serverUrl= "http://192.168.1.100:7200";
 //var serverUrl='http://hiji.hifete.com';
-var serverUrl='http://abcd.zlzmm.com:7200';
+var serverUrl='http://abcd.zlzmm.com:7200';  
  
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
@@ -14,7 +14,7 @@ var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
 
-//执行alert方法
+//执行alert方法 
 function alertF(content){ //非姐的方法
 	//alert(content)
 }

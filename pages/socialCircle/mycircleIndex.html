@@ -126,7 +126,7 @@
 					<script type="text/html" id="Sdynamic">
 						<%for(var i=0;i<dataList.length;i++){%>
 							<div class="dongItem">
-								<div class="DitemL"> 09	<br /> <span>8月 2017</span> </div>	
+								<div class="DitemL"> <%=dataList[i].create_day%><br /> <span><%=dataList[i].create_month%>月 <%=dataList[i].create_year%></span> </div>	
 								<div class="DitemR">
 									<div class="DitemRin" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
 										<%if(dataList[i].picS){%>
@@ -682,6 +682,10 @@
 									if(!nowArray[j].likes || nowArray[j].likes<0){
 										nowArray[j].likes = 0
 									}
+									var dt = new Date(nowArray[j].create_time);
+									nowArray[j].create_year = dt.getFullYear();
+									nowArray[j].create_month = dt.getMonth()+1;
+									nowArray[j].create_day = dt.getDate();
 								}
 								
 							 	dataObj.dataList = data.data.data;
@@ -731,6 +735,10 @@
 																if(!nowArray[j].likes || nowArray[j].likes<0){
 																	nowArray[j].likes = 0
 																}
+																var dt = new Date(nowArray[j].create_time);
+																nowArray[j].create_year = dt.getFullYear();
+																nowArray[j].create_month = dt.getMonth()+1;
+																nowArray[j].create_day = dt.getDate();
 															}
 															dataObj.dataList = data.data.data;
 															document.getElementById('dynamicList').innerHTML += template("Sdynamic", dataObj);

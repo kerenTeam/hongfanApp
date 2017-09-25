@@ -103,7 +103,7 @@
 						<%if(allLi[i].id){%>
 							<% if(allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
 								<%if(allLi[i].typeid == 5){%>
-								<div onclick="Cdetail(<%= allLi[i].id %>)" class="offerWrap">
+								<div onclick="Cdetail(<%= allLi[i].user_coupon_id %>)" class="offerWrap">
 								<%}else{%>
 									<div class="offerWrap">
 								<%}%>
@@ -149,7 +149,7 @@
 					<% for(var i=0;i<allLi.length;i++){ %> 
 						<% if(allLi[i].id && allLi[i].user_coupon_state == 1){ %>
  							<%if(allLi[i].typeid == 5){%>
-								<div onclick="Cdetail(<%= allLi[i].id %>)" class="offerWrap">
+								<div onclick="Cdetail(<%= allLi[i].user_coupon_id %>)" class="offerWrap">
 								<%}else{%>
 									<div class="offerWrap">
 								<%}%>
@@ -239,7 +239,7 @@
 					headers:{"token": oldToken,'city': cityNum},	 
 					success:function(data,type,xhr){
 						console.log('data',data);
-						if (data.errno == 0) { 
+						if(data.errno == 0) { 
 							if(!data.data.user_coupon.length){   
 									mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 								}else{
@@ -296,10 +296,12 @@
 						mui.toast('响应失败  !');
 					}
 				});
-				if($('.offerWrap').length == 0){
-					mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有优惠券哟！</p></div>';
-				}
+				
 			})();
+			if($('#allC').children().length == 0){ 
+				$('#allC').css('display','block')
+					$('#allC').html('<div class="nothing" style="display:block"><img src="../../img/theList/coupon.png"/><p>你没有优惠券哟！</p></div>')
+				}
 		</script>
 	</body>
 </html>
