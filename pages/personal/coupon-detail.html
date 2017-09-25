@@ -115,23 +115,14 @@
 			<div class="member clearfloat box-s" id="memberList">
 				<div class="list clearfloat fl box-s">
 					<div class="title">
-						
-						<h3 class="h3div">
-							<% if(couponList.typeid == 2){ %>
-								<%= couponList.discountstr %> 折折扣券
-							<% }else if(couponList.typeid == 1){ %>
-								<%= couponList.coupon_amount %>元优惠券
-							<% }else{ %>
-								活动券
-							<% } %>
-						</h3>
+						 
 						<div class="limit">
 							<p>
 								使用条件：
-								<% if(couponList.salerule!=null && couponList.salerule!=''){ %>
-									满<%= couponList.salerule1 %>可使用活动券抵扣<%= couponList.salerule2 %>
+								<% if(couponList.title!=null && couponList.title!=' '){ %>
+									<%= couponList.title %>
 								<% }else{ %>
-									无
+									通用
 								<% } %>
 							</p>
 							有效时间：<%= couponList.begin_date %>到<%= couponList.end_date %>
@@ -144,7 +135,7 @@
 							</div>
 						</div>
 					</div>
-					<% if(couponList.user_coupon_state == 1){ %>
+					<% if(couponList.state == 1){ %>
 						<p class="zhuangtai keyong">可使用</p>
 					<% }else{ %>
 						<p class="shixiao zhuangtai">已失效</p>
@@ -157,52 +148,47 @@
 	<script type="text/javascript" charset="utf-8">
 		mui.plusReady(function(){
 			//获取缓存
-			var oldToken = plus.storage.getItem('oldToken');
-			var myuserid = plus.storage.getItem('userid');
-			var couponId = plus.webview.currentWebview().couponId;
-			var userId = plus.storage.getItem("userid");
-			mui.ajax(serverUrl+'/api/useraccount/mycoupon',{
-				data:{userid : userId,user_coupon_id:couponId},
-				dataType:'json',
-				type:'post',
-				timeout:5000,
-				headers:{"token":oldToken},	 
-				success:function(data,type,xhr){
-					console.log('详情',data);
-					//循环出当前优惠券Id
-					for(var m=0; m < data.data.user_coupon.length; m++){
-						var nowdate = new Date;
-						var endDate = new Date(data.data.user_coupon[m].end_date);
-						if(data.data.user_coupon[m].end_date && endDate<nowdate){//判断时间过期
-							data.data.user_coupon[m].user_coupon_state = 0; 
-						}
-						if(data.data.user_coupon[m].user_coupon_id == couponId){
-							mui.each(data.data.user_coupon,function (index,element) { 
-									element.coupon_amount && (element.discountstr = element.coupon_amount.split(',')[1]*10);
-									element.coupon_amount && (element.discountnum = element.coupon_amount.split(',')[0]);
-							}) 
-//							if(data.data.user_coupon[m].salerule==null || data.data.user_coupon[m].salerule==''){
-//							 	data.data.user_coupon[m].salerule=null;
-//							}else{	
-//								data.data.user_coupon[m].salerule1= eval("("+ data.data.user_coupon[m].salerule +")").overflowValue;
-//								data.data.user_coupon[m].salerule2= eval("("+data.data.user_coupon[m].salerule+")").cutValue;
-//							}
-							var coupon = {};
-							
-							coupon.couponList = data.data.user_coupon[m]; 
-							var html = template('main-detail',coupon);
-							document.getElementById('main').innerHTML = html;
-							mui('#svgdiv')[0].innerHTML = data.data.QrSvg;
-
-						}
-					}   
-
-
-				},
-				error:function(xhr,type,errorThrown){
-					console.log('响应失败  !');
-				}
-			});
+			//铺数据
+			plus.nativeUI.showWaiting();
+			
+			var cityNum = plus.storage.getItem('cityNum'),
+				couponId = plus.webview.currentWebview().couponId,
+				myuserid = plus.storage.getItem('userid'),
+				oldToken = plus.storage.getItem('oldToken');
+			showData();
+			function showData(){
+			 	mui.ajax(serverUrl+'/api/index/couponlist',{
+					data:{userId:myuserid,type:5},
+					dataType:'json',
+					type:'post',
+					timeout:10000,
+					headers: {"token": oldToken,'city': cityNum},	 
+					success:function(data,type,xhr){
+						console.log('列表',data);				
+						var dateObj={}; 
+						if(data.data && data.data.length){
+							for(var i = 0;i < data.data.length;i++){
+								if(data.data[i].id == couponId){
+									var coupon = {};
+									coupon.couponList = data.data[i]; 
+									var html = template('main-detail',coupon);
+									document.getElementById('main').innerHTML = html;
+									mui('#svgdiv')[0].innerHTML = data.data[i].qrcode;
+		
+								}
+							}
+							 
+						} 
+						plus.nativeUI.closeWaiting();
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast('响应失败')
+						console.log('响应失败  !');
+					}
+				});	
+			}
+			 
 		})
     </script>
 </html>

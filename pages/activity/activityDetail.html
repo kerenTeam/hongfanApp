@@ -477,44 +477,7 @@
 								}
 							})
 						}
-						
-						//点击领取优惠券
-						window.getCoupon = function(e,getCouponId,getType){
-							if(plus.storage.getItem('myToken')){
-								plus.nativeUI.showWaiting("加载中...",{width:'100px',height:'80px'});
-								var userId = plus.storage.getItem("userid");
-								mui.ajax(serverUrl+'/api/index/getcoupon',{
-									data:{id:getCouponId,userid:myuserid},
-									dataType:'json',
-									type:'post',
-									timeout:10000,
-									headers:{"token":oldToken,"city":cityNum},	 
-									success:function(data,type,xhr){
-										if(data.errno == 0){ 
-											mui.toast("领取成功！");
-											e.getElementsByClassName('waitGet')[0].style.display = 'none';
-											e.getElementsByClassName('got')[0].style.display = 'block';
-											e.onclick = function(){}
-											//把不能重复领取的优惠卷 存入缓存
-											gotCouponId.push(getCouponId); 
-											//plus.storage.setItem('$gotCoupon', JSON.stringify(gotCouponId)); 
-											plus.nativeUI.closeWaiting();
-										}else{
-											mui.toast("领取失败，请重试！");
-											plus.nativeUI.closeWaiting();
-										}
-									},
-									error:function(xhr,type,errorThrown){
-										console.log('响应失败  !');
-									}
-								});
-							}else{
-								mui.toast('请登录！');
-								openview({
-									view:'../login.html'
-								})
-							}
-						}
+					 
 					
 				},
 				error:function(xhr,type,errorThrown){

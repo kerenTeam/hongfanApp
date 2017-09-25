@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-	<head>
+	<head> 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>商品订单确认 </title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
@@ -962,6 +962,7 @@
 			calculate();
 			function calculate(){
 //				mui.toast('计算开始');
+					plus.nativeUI.showWaiting();
 					var yourSFZ = $('#sfzin').val();
 					//地址 
 					var addressid = $("#addid").attr("data-id");
@@ -1018,6 +1019,14 @@
 												}
 												data.data.Params.goodsData[i].goods_Data[j].price = Math.floor(data.data.Params.goodsData[i].goods_Data[j].price * 100)/100;
 											}
+											
+											for(var j = 0; j < orderSubmitData.length; j++) {
+												if(data.data.Params.goodsData[i].order_type != 0 && orderSubmitData[j].storeid == data.data.Params.goodsData[i].store_id) {
+													if(data.data.Params.goodsData[i].postAge && (data.data.Params.goodsData[i].postAge.maxMoney == 1 || data.data.Params.goodsData[i].postAge.maxNums == 1)){
+														orderSubmitData[j].express_id ='-1' ;
+													}
+												}
+											}
 										}
 									 	dataObj.goodsList = data.data.Params.goodsData;
 									 	dataObj.myurl = serverimgUrlE;
@@ -1025,6 +1034,7 @@
 										var html = template('orderData', dataObj);
 										document.getElementById('orderTpl').innerHTML = html;
 										plus.nativeUI.closeWaiting();
+										
 										//物流选择
 										$('.getwl').on('tap', function() { 
 											var businid = $(this).attr('data-storeid');
@@ -1095,10 +1105,7 @@
 											}
 											$(this).attr('data-id', 1);
 										})
-										
 									}
-
-								
 								},
 								error: function(xhr, type, errorThrown) {
 									//异常处理；

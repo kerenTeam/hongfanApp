@@ -75,7 +75,7 @@
 			</div>
 		</div>  
 		
-		<div id="maskTc" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9999;">
+		<div id="maskTc" style="display: none;position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9999;">
 			<img class="closeTk" style="position: absolute;top: 15px;right:15px;transform: rotate(45deg);z-index: 999999;" src="../../img/market/addtheme.svg"/>
 			<img class="tomypage" style="width: 100%;margin: auto;display: block;" src="../../img/makeFriend/friendT.png"/>
 		</div>
@@ -182,7 +182,7 @@
 				}
 				mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 				mui.plusReady(function(){
-					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken');
+					var cityNum = plus.storage.getItem('cityNum'),oldToken = plus.storage.getItem('oldToken'),myuserid = plus.storage.getItem('userid');
 					mui.ajax(serverUrl + '/api/friends/friendslist', {
 						data:dataJson,
 						dataType: 'json',
@@ -355,6 +355,24 @@
 					});
 					
 					//判断是否上传交友照片
+					mui.ajax(serverUrl+'/api/friends/photography/userId/'+myuserid+'/currentPage/1/numsPerPage/4',{
+						type:'get',
+						timeout:8000,
+						headers:{"token":oldToken,"city":cityNum},	              				
+						success:function(data,type,xhr){
+							console.log('交友照片',data);
+							if(data.errno == 0){ 
+								if(data.data.data && data.data.data.length>0){
+									$('#maskTc').css('display','none')
+								}else{
+									$('#maskTc').css('display','block')
+								}
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							console.error('获取交友照片,响应失败');
+						}
+					});
 				})
 			}
 			
