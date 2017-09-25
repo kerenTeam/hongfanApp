@@ -957,12 +957,13 @@
 					var currentPage = 1,
 						numsPerPage = 6;
 					mui.ajax(serverUrl + '/api/mall/mallgooodslist', {
-						data: {currentPage:currentPage,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:4,storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'},
+						data: {currentPage:currentPage,numsPerPage:numsPerPage,categoryid:"",recommend:1,differentiate:'',storeid:'',brand:'',keyword:'',order_type:'sort',desc:'asc'},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型 
 						timeout: 10000, //超时时间设置为10秒；	
 						headers: {
-							"token": oldToken
+							"token": oldToken,
+							'city':cityNum
 						},
 						success: function(data) {
 							console.log('推荐hihi',data);
@@ -991,20 +992,22 @@
 													currentPage: Spagenum,
 													numsPerPage: numsPerPage,
 													recommend: 1,
-													differentiate: 1,
+													differentiate: '',
 													storeId: '',
 													brand: '',
 													keyword: '',
-													order_type: 'price',
-													desc: ''
+													order_type: 'sort',
+													desc: 'asc'
 												},
 												dataType: 'json', //服务器返回json格式数据
 												type: 'post', //HTTP请求类型 
 												timeout: 10000, //超时时间设置为10秒；	
 												headers: {
-													"token": oldToken
+													"token": oldToken,
+													'city':cityNum
 												},
 												success: function(data) {
+													console.log('推荐续',data)
 													if(data.errno == 0) {
 														var dataobj = data.data.return.data
 														var recommendObj = {}
