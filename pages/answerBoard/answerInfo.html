@@ -57,7 +57,7 @@
 						</div>
 						<div class="activecl f10">悬赏<%=dataList.price%>HI豆</div>
 					</div>
-					<p class="ft14 maincl"><%=dataList.content%></p>
+					<p class="ft14 maincl biaotiF"><%=dataList.content%></p>
 					<%if(dataList.pic && dataList.pic.length){%>
 						<%for(var j = 0 ;j<dataList.pic.length;j++){%>
 							<div class="answerImf" style="padding: 0;">
@@ -235,7 +235,24 @@
 									});
 								}
 								
-							})
+							});
+							/*分享*/
+							mui('.mui-pull-right')[0].onclick = function(){
+								//http://127.0.0.1:5500/pages/answerBoard/answerInfo.html?answerId=237&toUserId=530
+								var thumbs = '';
+								if(data.data.pic){
+									thumbs = data.data.pic[0].picImg
+								}
+								var msg = {
+									title:mui('.biaotiF')[0].innerHTML,
+									content:mui('.biaotiF')[0].innerHTML,
+									href:fxUrl+'answerBoard/answerInfo.html?answerId='+infiId+'&toUserId='+touserid,
+									thumbs:[thumbs],
+									pictures:[thumbs]
+									
+								};
+								showSfun1(msg,function(){},function(){});
+							};
 							if(touserid == myuserid){ 
 								$('.isQter').css('display','none');
 							}

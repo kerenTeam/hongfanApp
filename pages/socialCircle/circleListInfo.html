@@ -105,7 +105,7 @@
 					</div>  
 					
 					<div class="DTcontent">
-						<p class="ft15 maincl"><%=dataList.content%></p>
+						<p class="ft15 maincl leirong"><%=dataList.content%></p>
 						<%if(dataList.picS && dataList.picS.length){%>
 							<%for(var j=0;j<dataList.picS.length;j++){%>
 								<%if(dataList.picS.length == 1){ %>
@@ -232,7 +232,7 @@
 			<div>
 				<img id="doLike" src="../../img/makeFriend/zan.png" alt="" />
 			</div>
-			<div>
+			<div class="shareitBtn">
 				<img src="../../img/makeFriend/share.png" alt="" />
 			</div> 
 		</div>
@@ -458,6 +458,19 @@
 							} 
 				    		
 						})
+						/*分享*/
+						mui('.shareitBtn')[0].onclick = function(){
+							var msg = {
+								title:mui('.leirong')[0].innerHTML,
+								content:mui('.leirong')[0].innerHTML,
+								href:fxUrl+'socialCircle/circleListInfo.html?infoid='+infiId+'&UserId='+newsUserId,
+								thumbs:[nowArray2.length ? nowArray2[0].picImg : ''],
+								pictures:[nowArray2.length ? nowArray2[0].picImg : '']
+								
+							};
+							showSfun1(msg,function(){},function(){});
+						}
+						
 						//判断是否关注
 						mui.ajax(serverUrl+'/api/friends/likeusers',{
 							data:{"userId":myuserid},

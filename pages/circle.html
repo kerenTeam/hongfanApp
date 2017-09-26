@@ -201,7 +201,12 @@
 											 
 											 赞<span><%=dataList[i].likes%></span> </div> 
 										<div class="disablecl ft12" onclick="goInfoCmt(<%=dataList[i].id%>,<%=dataList[i].user_id%>)"> <img src="../img/makeFriend/message.png" alt="" /> 评论 </div>
-										<div class="disablecl ft12"> <img src="../img/makeFriend/share.png"/> 转发 </div>
+										<%if(dataList[i].picS){%>
+											<div class="disablecl ft12" onclick="Forwarding('<%=dataList[i].content%>','<%=dataList[i].id%>','<%=dataList[i].user_id%>','<%= dataList[i].picS[0]%>')"> <img src="../img/makeFriend/share.png"/> 转发 </div>
+										<%}else{%>
+											<div class="disablecl ft12" onclick="Forwarding('<%=dataList[i].content%>','<%=dataList[i].id%>','<%=dataList[i].user_id%>','')"> <img src="../img/makeFriend/share.png"/> 转发 </div>
+										<%}%>
+										
 									</div>
 									
 									<div class="commentsShow" data-id="<%=dataList[i].id%>"></div>
@@ -282,8 +287,19 @@
 		<script src="../js/app.js"></script>
 		<script src="../js/artTemplate-native.js"></script>
 		<script type="text/javascript">
-//			//打开他人主页
-
+			//转发
+			function Forwarding(title,infiId,newsUserId,pic){
+				var msg = {
+					myIsIndex:true,
+					title:title,
+					content:title,
+					href:fxUrl+'socialCircle/circleListInfo.html?infoid='+infiId+'&UserId='+newsUserId,
+					thumbs:[pic],
+					pictures:[pic]
+					
+				};
+				showSfun1(msg);
+			}
 			
 		</script>
 		<script type="text/javascript">
@@ -652,6 +668,19 @@
 										}
 										nowArray[j].picS = picS;
 									}
+									/*整理 换行符*/
+									function TransferString(content)
+									{  
+									    var string = content;  
+									    try{  
+									        string=string.replace(/\r\n/g,"")  
+									        string=string.replace(/\n/g,"");  
+									    }catch(e) { 
+									    	
+									    }  
+									    return string;  
+									}
+									nowArray[j].content = TransferString(nowArray[j].content)
 								}
 								
 								dataObj.dataList = data.data.data;

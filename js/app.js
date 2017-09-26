@@ -8,6 +8,7 @@ var serverimgUrl='http://hiji.hifete.com:6789';
 var serverimgUrlE='';
 //var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://abcd.zlzmm.com:6789';
+var fxUrl = 'http://abcd.zlzmm.com:6789/hongfanWeb/pages/';
 //var propUrl = 'http://211.149.183.181:6789';
 
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
@@ -190,6 +191,10 @@ function showSfun1(msg,fun1,fun0){
 	if(document.getElementById('shareWrap10')){
 		
 	}else{
+		var pathStr = '../';
+		if(msg.myIsIndex){
+			pathStr = '';
+		}
 		var shareWrap10 = document.createElement('div');
 		shareWrap10.id = 'shareWrap10';
 		shareWrap10.innerHTML = '<div class="shareWrap1"></div>'+
@@ -197,19 +202,19 @@ function showSfun1(msg,fun1,fun0){
 			'<h3 class="h3">分享</h3>'+
 			'<div class="mui-row">'+
 				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
-					'<img src="../../img/share/weixing.png" class="aClick2"/>'+
+					'<img src="'+pathStr+'../img/share/weixing.png" class="aClick2"/>'+
 					'<br />微信好友'+
 				'</div>'+
 				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
-					'<img src="../../img/share/pengyouquan.png" class="aClick2"/>'+
+					'<img src="'+pathStr+'../img/share/pengyouquan.png" class="aClick2"/>'+
 					'<br />朋友圈'+
 				'</div>'+
 				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
-					'<img src="../../img/share/QQ.png" class="aClick2"/>'+
+					'<img src="'+pathStr+'../img/share/QQ.png" class="aClick2"/>'+
 					'<br />QQ(空间)'+
 				'</div>'+
 				'<div class="mui-col-sm-3 mui-col-xs-3 shareBtn">'+
-					'<img src="../../img/share/weibo.png" class="aClick2"/>'+
+					'<img src="'+pathStr+'../img/share/weibo.png" class="aClick2"/>'+
 					'<br />新浪微博'+
 				'</div>'+
 				
@@ -243,21 +248,21 @@ function showSfun1(msg,fun1,fun0){
 		msg.extra = {scene:sb.x}//区分微信 还是朋友圈 有效
 		if(sb.s.authenticated){
 			shareMessage(msg, sb.s);
+			hideSfun1();
 		}else{
 			sb.s.authorize(function(){//新浪微博止步于此
 				shareMessage(msg,sb.s);
 			}, function(e){
 				mui.toast('授权失败');
+				hideSfun1();
 			});
 		}
 	}
 	function shareMessage(msg, s){
 		s.send(msg, function(){
-			hideSfun1();
 			mui.toast('分享成功');
 			if(fun1){fun1()};
 		}, function(e){//alert('分享到"'+s.description+'"失败: '+JSON.stringify(e))
-			hideSfun1();
 			mui.toast('分享失败');
 			if(fun0){fun0()};
 		});
@@ -292,7 +297,7 @@ function showSfun1(msg,fun1,fun0){
 	//	pictures:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg']
 	//	
 	//};
-	//showSfun1(msg,function(){alert('1')},function(){alert('0')});
+	//showSfun1(msg,function(){},function(){});
 //分享结束
 
 //点赞 和取消点赞 帖子 

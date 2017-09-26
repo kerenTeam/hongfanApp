@@ -223,12 +223,18 @@
 				}
 				getGeocode();
 				//地图定位初始化结束
-
+				plus.storage.removeItem('oldToken');
 				Sign();
 				var timeSign = null;
 				var loadNum = 0;
 				clearInterval(timeSign);
 				timeSign = setInterval(Sign,5000000);//两小时自动更新一次token
+				var timeSign2  =  setInterval(function(){
+					if(plus.storage.getItem('oldToken')){
+						clearInterval(timeSign2);
+					}
+					Sign();
+				},500)
 				function Sign(){//登录方法
 					//设置默认token
 					if(!plus.storage.getItem('myToken')){//没有用户token
@@ -248,14 +254,8 @@
 								}
 							},
 							error:function(xhr,type,errorThrown){
-								loadNum++;
-								if(loadNum<50){
-									console.error('再次登陆'+loadNum);
-									Sign();//递归请求
-								}else{
-									mui.toast('当前网络不好请重试！');
-									console.log('获取默认token响应失败');
-								}
+								mui.toast('当前网络不好请重试！');
+								console.log('获取默认token响应失败');
 							}
 						});
 					}else{ 
@@ -277,14 +277,8 @@
 								}
 							},
 							error:function(xhr,type,errorThrown){
-								loadNum++;
-								if(loadNum<50){
-									console.error('再次登陆'+loadNum);
-									Sign();//递归请求
-								}else{
-									mui.toast('当前网络不好请重试！');
-									console.log('获取自动登录token响应失败');
-								}
+								mui.toast('当前网络不好请重试！');
+								console.log('获取默认token响应失败');
 							}
 						});
 					}

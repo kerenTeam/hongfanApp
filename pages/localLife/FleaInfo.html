@@ -67,7 +67,7 @@
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
 			<h1 class="mui-title findUser">宝贝详情</h1>
-			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun goanswer"><img src="../../img/makeFriend/share.png"/></a>
+			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun goanswer shareitBtn"><img src="../../img/makeFriend/share.png"/></a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
@@ -88,7 +88,7 @@
 					</div>  
 					
 					<div class="DTcontent">
-						<p class="ft15 maincl"><%=dataList.content%></p>
+						<p class="ft15 maincl leirong"><%=dataList.content%></p>
 						<%if(dataList.picS && dataList.picS.length){%>
 							<%for(var j=0;j<dataList.picS.length;j++){%>
 								<%if(dataList.picS.length == 1){ %>
@@ -330,7 +330,20 @@
 						}else{
 							$('#collt').attr('src','../../img/localLife/uncollt.png');
 						}
-					 
+					 	
+					 	/*分享*/
+						mui('.shareitBtn')[0].onclick = function(){
+							var msg = {
+								title:mui('.leirong')[0].innerHTML,
+								content:mui('.leirong')[0].innerHTML,
+								href:fxUrl+'localLife/FleaInfo.html?infoid='+infiId+'&UserId='+newsUserId,
+								thumbs:[nowArray2.length ? nowArray2[0].picImg : ''],
+								pictures:[nowArray2.length ? nowArray2[0].picImg : '']
+								
+							};
+							showSfun1(msg,function(){},function(){});
+						}
+						
 						lazyLoad(true);//懒加载
 					}else{
 						mui.toast('当前网络不好,请重试');

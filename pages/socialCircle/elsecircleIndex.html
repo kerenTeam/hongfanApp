@@ -299,17 +299,7 @@
 	<script src="../../js/artTemplate-native.js"></script>
 
 	<script type="text/javascript">
-		mui('.headRight')[0].onclick = function(){
-			var msg = {
-				title:'分享测试',
-				content:'分享测试内容',
-				href:'http://hiji.hifete.com',
-				thumbs:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg'],
-				pictures:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg']
-				
-			};
-			showSfun1(msg,function(){alert('1')},function(){alert('0')});
-		}
+		
 		//动态详情
 		function DTdetail(id,userid){
 			openview({
@@ -435,6 +425,17 @@
 							console.log(data.errmsg); 
 						}
 						loadnum++;
+						mui('.headRight')[0].onclick = function(){
+							var msg = {
+								title:mui('#nickname')[0].innerHTML+'的个人主页',
+								content:mui('#nickname')[0].innerHTML+'的个人主页',
+								href:fxUrl+'socialCircle/elsecircleIndex.html?userId='+myuserid,
+								thumbs:[mui('#mypic2')[0].src],
+								pictures:[mui('#mypic2')[0].src]
+								
+							};
+							showSfun1(msg);
+						}
 					},
 					error:function(xhr,type,errorThrown){
 						loadnum++;
@@ -827,7 +828,6 @@
 			/*展示所有礼物*/
 			showGift();
 			function showGift(){
-//				alert('加载礼物');
 				var myuserid0 = plus.storage.getItem('userid');
 				mui.ajax(serverUrl+'/api/friends/gift/userId/'+myuserid0,{
 					type:'get',
@@ -973,7 +973,7 @@
 					success:function(data,type,xhr){
 						console.log('赠送礼物',data);
 						if(data.errno == 0){
-							alert('赠送成功');
+							mui.toast('赠送成功');
 							mui.fire(plus.webview.getWebviewById('elsecircleIndex'),'refreshGift')
 							mui.fire(plus.webview.getWebviewById('mycircleIndex'),'refreshGift')
 							mui.fire(plus.webview.getWebviewById('center.html'),'refreshGift')
