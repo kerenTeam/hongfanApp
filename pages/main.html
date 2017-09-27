@@ -76,9 +76,10 @@
 		    	right: 10px;
 		    	top: 10px;
 		    }
-		    .partTitle000:after{
+		    .partTitle000:after,.partTitleA:after{
 		    	display:none;
 		    }
+		    
 		    /*.partTitlea:not(:first-child):after{
 		    	display: none;
 		    }*/
@@ -258,14 +259,18 @@
 		</div>
 		<script type="text/html" id="hiFriendTpl">
 			<%for(var i=0;i<dataList.length;i++){%>
-				<%if(dataList[i].picS){%>
+				<%if(dataList[i].picS || dataList[i].avatar){%>
 				<div class="mui-col-sm-4 mui-col-xs-4 paddDiv" onclick="openDetail(<%=dataList[i].user_id%>)">
 		            <div class="hiFdW">
-	            		<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
+		            	<%if(dataList[i].picS){%>
+		            		<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].picS[0]%>"/>
+		            	<%}else if(dataList[i].avatar){%>
+		            		<img class="bigPic loadPics picOp" onload="imgHeight(this)" data-src="<%=dataList[i].avatar%>"/>
+		            	<%}%> 
 		            </div>
 		            <p class="footFirend">
 		            	<!--<img class="avaPic loadPics picOp" data-src="<%=dataList[i].avatar%>" src=""/>-->
-		            	<%=dataList[i].nickname%> 
+		            	<span style="display: inline-block;max-width: 80px;font-size: 12px;overflow: hidden;white-space: nowrap;"><%=dataList[i].nickname%></span> 
 		            	<%if(dataList[i].isfriend){%>
 		            		<img class="lovePic" src="../img/mainHtml/yizan.png"/>
 		            	<%}else{%>
@@ -278,7 +283,7 @@
 		</script>
 		<!--HI问答-->
 		<div class="QandA">
-			<h3 class="partTitle" style="margin-bottom: 5px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 答人榜</h3>
+			<h3 class="partTitle partTitleA" style="margin-bottom: 5px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 答人榜</h3>
 			<div class="QAhead">
 				<span class="active aClick">我要问</span>
 				<span class="aClick">我要答</span>
@@ -734,10 +739,19 @@
 					});
 					//交友 
 					mui('.jiaoyou')[0].addEventListener('tap', function() {
-						openview({
-							view: 'hiVip.html',
-							id: "hiVip"
-						});
+						if(!plus.storage.getItem('myToken')){ 
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						}else{
+							openview({
+								view: 'hiVip.html',
+								id: "hiVip"
+							});
+						}
+						
+						
 					});
 					//打开搜索页面
 					mui('.openSearch')[0].addEventListener('tap', function() {
