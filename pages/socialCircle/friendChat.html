@@ -11,8 +11,8 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no"> 
-		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="../../css/app.css" /> 
+		<link href="../../css/mui.min.css" rel="stylesheet" /> 
+		<!--<link rel="stylesheet" type="text/css" href="../../css/app.css" />--> 
 		<link href="../../css/mui.imageviewer.css" rel="stylesheet" />
 		<style>
 			html,
@@ -304,7 +304,7 @@
 	</head>
 
 	<body contextmenu="return false;">
-		 <header class="mui-bar mui-bar-nav" style="z-index: 9999999;">
+		 <header class="mui-bar mui-bar-nav">
             <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: #666;"></a>
             <h1 class="mui-title">私聊</h1>
         </header>
@@ -436,15 +436,16 @@
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/app.js"></script>
-		<script src="../../js/mui.imageViewer.js"></script>
 		<script src="../../js/artTemplate-native.js"></script>
+		<script src="../../js/mui.imageViewer.js"></script>
 		<script type="text/javascript" charset="utf-8">
 		var recordTimeOut = null;
 		var old_back = mui.back;
 			mui.back = function(){
-			 setInterval(recordTimeOut)
+			clearInterval(recordTimeOut);
 			old_back();
 		};
+		
 			(function($, doc) {
 				var MIN_SOUND_TIME = 800;
 				$.init({
@@ -576,9 +577,12 @@
 	                                },100 )
 	                                plus.nativeUI.closeWaiting();
 	  								
+	                            }else{
+	                            	console.log(data)
 	                            }
 	                        },
 	                        error: function(xhr, type, errorThrown) {
+	                        	console.error(type)
 	                            plus.nativeUI.closeWaiting(); //关闭等待框
 	
 	                        }
@@ -609,7 +613,7 @@
 
                         }
                     });
-					},300)
+					},30000)
 					
 					var ui = {
 						body: doc.querySelector('body'),

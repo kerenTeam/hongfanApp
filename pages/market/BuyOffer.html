@@ -13,6 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link rel="stylesheet" href="../../css/Recharge.css">
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
 		<script src="../../js/mui.min.js"></script>
 		<style type="text/css">
 			body{ background-color: #f3f3f3; }
@@ -34,6 +35,10 @@
 			#offerId .offerWrap:first-child{ margin-top: 0; }
 			.answerImf{margin: 1px;width:calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;overflow: hidden;}
 			.anImg{width: 100%!important;opacity: 0;}
+			#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
+			.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:15%;left:7%;width:86%;bottom:15%;padding:15px 5px;border-radius:3px}
+			.closemask{position:absolute;bottom:10px;left:50%;-webkit-transform:translateX(-50%)}
+			.ruleol{padding: 0 15px 0 15px;margin-top: 25px;}
 		</style>
 	</head>
 	<body>
@@ -47,7 +52,7 @@
 			<%for(var i = 0 ;i<objData.length;i++){%>
 				<%if(objData[i].stock && objData[i].stock>0){%>
 					<%if(objData[i].price && objData[i].price!=0){%>
-						<div class="offerWrap">
+						<div class="offerWrap" onclick="Cdetail('<%=objData[i].content%>')">
 							<%if(objData[i].typeid == 5){%>
 								<div style="padding:5px!important;">团购优惠券</div>
 							<%}else{%>
@@ -111,11 +116,33 @@
 			</div>
 		</div>
 		<!--操作表   支付弹窗结束-->
+		
+		<!--详情弹框-->
+		<!--遮罩-->
+		<div id="maskInfo" style="display: none;">
+			<div class="ruleCt" style="padding-bottom: 50px;">
+				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+					<div class="ft16 fttc" style="text-align: center;">优惠券详情</div>
+					<ol class="ft14 disablecl ruleol">
+					</ol>
+				</div>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
+				
+			</div>
+		</div>
+		
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-		 
+	 
+		$('.ruleCt').click(function(){
+			event.stopPropagation()
+		})
+		$('#maskInfo,.closemask').click(function(){
+			event.preventDefault()
+			$('#maskInfo').fadeOut(200);
+		}) 
 		$(".closePay").click(function() {
 			event.stopPropagation();
 			$("#payChoose").removeClass("mui-active");
@@ -195,7 +222,14 @@
 			}, function(e) {
 				plus.nativeUI.alert("支付失败，请重试", null, "提示");
 			});
-
+			//点击进入券的详情
+			window.Cdetail = function(cnt){
+				if(cnt){
+					$('#maskInfo').fadeIn(200);
+					$('.ruleol').html(cnt)
+				}
+				
+			}
 			// 检测是否安装支付服务
 			function checkServices(pc) {
 				if(!pc.serviceReady) {
@@ -214,6 +248,7 @@
 			//系统检测获取支付通道结束
 
 			window.goPay = function(obj,cid,cprice) { 
+				event.stopPropagation();
 				if(cprice && cprice>0){
 				  	$("#payChoose").addClass("mui-active");
 					// 支付方法 
@@ -263,8 +298,9 @@
 												var resultStr = JSON.stringify(result);
 												console.log("----- 支付成功 -----");
 												plus.nativeUI.closeWaiting();
-												//修改订单状态 
+												 
 												mui.toast('领取成功');
+												
 												showData();
 											}, function(e) {
 												console.log("----- 支付失败 -----");
