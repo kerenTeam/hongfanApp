@@ -249,6 +249,7 @@
     			<tr>
     				<td class="aClick myQa"><img src="../img/center/wodewenda.png"/>我的问答</td>
     				<td class="aClick friendShip"><img src="../img/center/jiaoyou.png"/>交友</td>
+    				<td class="aClick yaoqingmaBtn"><img src="../img/center/yaoqingma.svg"/ style="width: 26px;padding-bottom: 8px;position: relative;top: 6px;">邀请码</td>
     				<td class="aClick" id="writeOff1" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/hexiao1.svg"/>核销</td>
     			</tr>
      		</table>
@@ -349,8 +350,47 @@
 												});
 											});
 										}
-										
+										/*邀请码*/
+										mui('.yaoqingmaBtn')[0].onclick = function(){
+											if(plus.storage.getItem('myToken')){  
+												var oldtoken = plus.storage.getItem('oldToken');
+												mui.prompt('null','请输入邀请码','邀请码',['确认','取消'],function(e) {
+													if(e.index == 0) { 
+														if(e.value && e.value!=' '){
+															var commont = e.value;
+											    			mui.ajax(serverUrl + '/api/index/sharecoupon', {
+											    				data:{'userid':myuserid,'invitationCode':commont},
+																dataType: 'json',
+																type: 'post',
+																timeout: 10000,
+																headers: {"token": oldtoken,'city': cityNum},
+																success: function(data, type, xhr) {
+																	console.log('邀请码'+JSON.stringify(data));
+																	if(data.errno == 0){
+																		alert('操作成功');
+																	}else{
+																		alert(data.errmsg)
+																	}
+																},
+																error: function(xhr, type, errorThrown) {
+																	console.log('县志数据,响应失败');
+																}
+															});
+														}else{
+															mui.toast('留言失败')
+														}
+													} 
+												},'')
+											}else{//没登陆直接打开登录页面
+												mui.toast('请登录');
+												openview({
+													view:'login.html'
+												});
+											}
+											
+										}
 									}else{
+										
 										mui.toast('获取用户信息失败'); 
 										console.log(data.errmsg);
 									}

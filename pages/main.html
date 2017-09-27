@@ -149,50 +149,44 @@
 						<!--支持循环，需要重复图片节点-->
 						<div class="mui-slider-item mui-slider-item-duplicate">
 							<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
-							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
-								<!--<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />-->
-								<img src="../img/mainHtml/banner.png"/>
-							</a>	
+								<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
+									<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+								</a>	
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
-								<!--<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />-->
-								<img src="../img/mainHtml/banner.png"/>
-							</a>
+								<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
+									<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+								</a>
 							<% } %>
 						</div>
 						<% for(var i=0;i<bannerList.length;i++){ %>
 						<div class="mui-slider-item">
 							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
-							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
-								<!--<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />-->
-								<img src="../img/mainHtml/banner.png"/>
-							</a>	
+								<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
+									<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+								</a>	
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
-								<!--<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />-->
-								<img src="../img/mainHtml/banner.png"/>
-							</a>
+								<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
+									<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+								</a>
 							<% } %>
 						</div>
 						<% } %>
 						<!--支持循环，需要重复图片节点-->
 						<div class="mui-slider-item mui-slider-item-duplicate">
 							<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
-							<!--<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />-->
-							<img src="../img/mainHtml/banner.png"/>
+								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							<% }else{ %>
-							<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','one')"> 
-								<!--<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />-->
-								<img src="../img/mainHtml/banner.png"/>
-							</a>
+								<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','one')"> 
+									<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+								</a>
 							<% } %>
 						</div>
 					</div>
 					<div class="mui-slider-indicator">
 						<div class="mui-indicator mui-active"></div>
 						<% for(var i=0;i<bannerList.length-1;i++){ %>
-						<div class="mui-indicator"></div>
-						<% } %>
+							<div class="mui-indicator"></div>
+						<%}%>
 					</div>
 				</script>
 			</div>
@@ -473,8 +467,44 @@
 			<div class="upload text-center text-xs gray" id="upload"></div>
 		</div>
 		</div>
+		<style type="text/css">
+			#fenhao{
+				position: fixed;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				/*background-color: rgba(0,0,0,0.2);*/
+				z-index: 1000;
+				padding-top: 60%;
+				text-align: center;
+			}
+			#fenhao img{
+				position: relative;
+				z-index: 1001;
+			}
+			#fenhao span{
+				font-size: 40px;
+				color: #555;
+			}
+		</style>
+		<div id="fenhao" style="display: none;">
+			<span id="fenhaoSpan" onclick="this.parentNode.style.display = 'none'">x</span>
+			<img id="fenhaoPic" src="../img/fenxiangPic.png"/>
+		</div>
+		
 		
 		<script type="text/javascript">  
+			/*显示优惠卷弹窗*/
+//			mui.plusReady(function(){
+//				if(!plus.storage.getItem("youhuijuan")){
+//					mui('#fenhao')[0].style.display = 'block';
+//				}else{
+//					mui('#fenhao')[0].style.display = 'block';
+//				}
+//				
+//			})
+			
 			
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数 
@@ -583,6 +613,58 @@
 					var onsale = document.getElementsByClassName('onsale')[0];
 					var fil = document.getElementsByClassName('fil')[0];
 					var loveBuy = document.getElementsByClassName('loveBuy')[0];
+					/*首页弹框*/
+					mui('#fenhaoPic')[0].onclick = function(){
+						mui.plusReady(function(){
+							if(plus.storage.getItem('myToken')){
+								var myuserid = plus.storage.getItem('userid');
+								var msg = {
+									myIsIndex:true,
+									title:'下载HI集得好礼',
+									content:'下载HI集得好礼',
+									href:'http://hiji.hifete.com:6789/bannerUrl/pages/fenxiang.html',
+									thumbs:[''],
+									pictures:['']
+									
+								};
+								showSfun1(msg,function(){
+									jiazaiyaoqing();
+								},function(){
+									jiazaiyaoqing();
+								});
+								function jiazaiyaoqing(){
+									mui.ajax(serverUrl + '/api/index/sharecoupon', {
+										data:{userid:myuserid,invitationCode:'fx0929'},
+										dataType: 'json',
+										type: 'post',
+										timeout: 10000,
+										headers: {"token": oldToken,'city': cityNum},
+										success: function(data, type, xhr) {
+											console.log('首页弹框'+JSON.stringify(data));
+											if(data.errno == 0){
+												plus.storage.setItem("youhuijuan","1")
+											}else{
+												alert(data.errmsg)
+											}
+											mui('#fenhao')[0].style.display = 'none';
+										},
+										error: function(xhr, type, errorThrown) {
+											console.log('首页弹框,响应失败');
+											mui('#fenhao')[0].style.display = 'none';
+										}
+									});
+								}
+									
+							}else{
+								mui.toast('请登录');
+								openview({
+									view:'login.html'
+								});
+							}
+							
+						})
+						
+					}
 					
 					//本地生活
 					locallife.addEventListener('tap', function() {
@@ -673,7 +755,7 @@
 					};
 					//banner数据
 					mui.ajax(serverUrl + '/api/index/banner', {
-						data: {banner_type: 1 },
+						data: {banner_type: 1},
 						dataType: 'json',
 						type: 'post',
 						timeout: 10000,
@@ -683,7 +765,7 @@
 							bannerObj = {};
 							if(data.data.banner) {
 								bannerObj.bannerList = eval("(" + data.data.banner + ")");
-								bannerObj.url = serverimgUrl;
+								//bannerObj.url = serverimgUrl;
 								var html = template('banner-detail', bannerObj);
 
 								document.getElementById('banner').innerHTML = html;
@@ -825,7 +907,7 @@
 						}else{
 							var dataJson = {
 								'numsPerPage':3,
-								'currentPage':1,
+								'currentPage':3,
 								'orderType':'DESC',
 								'orderField':'create_time',
 								'typeId':2,

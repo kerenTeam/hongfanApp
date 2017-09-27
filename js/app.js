@@ -32,7 +32,7 @@ window.bannerGo = function(url, name, route) {
 			var bannerTplHtml = '../bannerTpl.html';
 		}
 		if(url.indexOf('pro')>-1){//高级功能的h5
-			localStorage.Burlname=url;  
+			localStorage.Burlname=url;
 			openview({
 				view: bannerTplHtml,
 				id: "bannerTpl",
@@ -43,7 +43,7 @@ window.bannerGo = function(url, name, route) {
 				}
 			})	
 		}else{
-			openview({
+			openview({//用于普通页面 (如微信公众号)
 				view: bannerTplHtml,
 				id: "bannerTpl",
 				extrasobj: {
