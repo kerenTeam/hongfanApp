@@ -75,7 +75,7 @@
 									</div>
 								</div>
 							</div> 
-							<div class="butright" data-id="<%=dataList[i].user_id%>">
+							<div class="butright" data-id="<%=dataList[i].user_id%>" data-name = '<%=dataList[i].nickname%>'>
 								<%if(dataList[i].isfriend){%>
 									<div class="diybtn2">聊天</div>
 									<div class="diybtn" style="display: none;">关注</div> 
@@ -254,17 +254,45 @@
 						    	}) 
 						    	
 								$('.diybtn2').click(function(){/*聊天*/
-						    		event.preventDefault();
+						    		event.stopPropagation();
 						    		var chatId = $(this).parent().attr('data-id');
+						    		var nkName = $(this).parent().attr('data-name')
 									if(!plus.storage.getItem('myToken')){ 
 										mui.toast('请登录');
 										openview({
 											view:'login.html'
 										});
 									}else{//没登陆直接打开登录页面
-										openview({
-											view:'friendChat.html' 
-										}); 
+										mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+											data:{"userid":plus.storage.getItem('userid')},
+											type:'post',
+											timeout:10000,
+											headers:{"token":oldToken},	              				
+											success:function(data,type,xhr){
+												console.log('获取用户数据返回',data);
+												if(data.errno == 0){
+													var nowArray = data.data[0];
+													var myavatar;
+                            						//整理头像格式
+													if(nowArray.avatar && nowArray.avatar!='null'){
+														if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
+															myavatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
+														}else{
+															myavatar = JSON.parse(nowArray.avatar)[0].picImg;
+														}
+													}else{
+														myavatar= '../../img/10.png';
+													}
+                            						openview({
+										 				view:'friendChat.html',
+										 				extrasobj:{'toUserId':chatId,'myAvatar':myavatar,'mynickname':nkName}
+										 			})
+												} 
+											},
+											error:function(xhr,type,errorThrown){
+												console.log('获取用户数据,响应失败');
+											}
+										});  
 										
 									}
 								})
