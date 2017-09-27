@@ -388,7 +388,7 @@
 							nowArray.read = parseInt(nowArray.read / 1000) +'K+'
 						}
 						 
-						var dt = new Date(nowArray.create_time).getTime(); 
+						var dt = new Date(nowArray.create_time).getTime();
 						nowArray.create_time = getDateDiff(dt);
 						
 						
@@ -460,15 +460,23 @@
 						})
 						/*分享*/
 						mui('.shareitBtn')[0].onclick = function(){
+							var thumbs = '';
+							if(nowArray2.length){
+								thumbs = nowArray2[0].picImg;
+							}
 							var msg = {
 								title:mui('.leirong')[0].innerHTML,
 								content:mui('.leirong')[0].innerHTML,
 								href:fxUrl+'socialCircle/circleListInfo.html?infoid='+infiId+'&UserId='+newsUserId,
-								thumbs:[nowArray2.length ? nowArray2[0].picImg : ''],
-								pictures:[nowArray2.length ? nowArray2[0].picImg : '']
+								thumbs:[''],
+								pictures:['']
+//								thumbs:['http://lscfriends.zlzmm.com/friends/news/pic/4272a379361693ee03c31e422ba46444'],
 								
 							};
-							showSfun1(msg,function(){},function(){});
+//							var msg = {"title":"看到SHE，你想到的第一首歌是什么？ ​​​​","content":"看到SHE，你想到的第一首歌是什么？ ​​​​","href":"http://abcd.zlzmm.com:6789/hongfanWeb/pages/answerBoard/answerInfo.html?answerId=237&toUserId=530","thumbs":["http://lscfriends.zlzmm.com/friends/news/pic/27b37aed84ceeb2356b77400ffb614f9"],"pictures":["http://lscfriends.zlzmm.com/friends/news/pic/27b37aed84ceeb2356b77400ffb614f9"]};
+//							var msg = {"title":"嘿嘿嘿，嘿","content":"嘿嘿嘿，嘿","href":"http://abcd.zlzmm.com:6789/hongfanWeb/pages/socialCircle/circleListInfo.html?infoid=243&UserId=427","thumbs":["http://lscfriends.zlzmm.com/friends/news/pic/4272a379361693ee03c31e422ba46444"],"pictures":["http://lscfriends.zlzmm.com/friends/news/pic/4272a379361693ee03c31e422ba46444"]}
+							console.error(JSON.stringify(msg))
+							showSfun1(msg);
 						}
 						
 						//判断是否关注
