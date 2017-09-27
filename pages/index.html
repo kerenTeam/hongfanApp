@@ -151,7 +151,6 @@
 			   	var xuanhan = [107.731522,31.361482];/*宣汉*/
 			   	var linshui = [106.937265,30.346808];/*邻水*/
 			   	var nameArray = ['南江','宣汉','邻水'];
-			   	//var wode = [107.022768,32.465928]; 
 			   	var alljingwei = [nanjiang,xuanhan,linshui];
 			   	
 			   	//地图定位初始化
@@ -163,11 +162,11 @@
 					if(Manual){/*手动传值时*/
 						var nowCity = position.address.city;
 					}else{
-						//var wode = [position.coords.longitude,position.coords.latitude];
+						var wode = [position.coords.longitude,position.coords.latitude];
+						
+						plus.storage.setItem("longLat",JSON.stringify(wode));/*经纬度存入缓存*/
 						//定位传入 后台
 						sendLocation(position.coords.longitude,position.coords.latitude);
-						
-						var wode = [106.567489,29.507532];
 						var distanceA = [];
 		   	            alljingwei.forEach(function(ele,index){
 		   	            	distanceA.push(distance(wode[1],wode[0],ele[1],ele[0]))
@@ -187,7 +186,7 @@
 				
 				//定位传入后台
 				function sendLocation(lont,lat){
-					console.log(lont+' '+lat);
+					console.log('首页定位'+ lont+' '+lat);
 					if(plus.storage.getItem('myToken')){
 						var myuserid = plus.storage.getItem('userid'),
 						    cityNum  = plus.storage.getItem('cityNum'),
@@ -259,14 +258,17 @@
 				Sign();
 				var timeSign = null;
 				var loadNum = 0;
+				var loadNum2 = 0;
 				clearInterval(timeSign);
 				timeSign = setInterval(Sign,5000000);//两小时自动更新一次token
 				var timeSign2  =  setInterval(function(){
-					if(plus.storage.getItem('oldToken')){
+					loadNum2++;
+					if(plus.storage.getItem('oldToken') || loadNum2==10){
 						clearInterval(timeSign2);
+					}else{
+						Sign();
 					}
-					Sign();
-				},500)
+				},1000)
 				function Sign(){//登录方法
 					//设置默认token
 					if(!plus.storage.getItem('myToken')){//没有用户token
@@ -280,17 +282,20 @@
 								plus.storage.setItem("oldToken",xhr.getResponseHeader('token'));
 								//app升级方法
 								if(/android/i.test(navigator.userAgent)){
-									checkUpdate(true); 
+									checkUpdate(true);
 								}else{
 									checkUpdateIos();
 								}
 							},
 							error:function(xhr,type,errorThrown){
-								mui.toast('当前网络不好请重试！');
+								loadNum ++;
+								if(loadNum<3){
+									mui.toast('当前网络不好,再次连接');
+								}
 								console.log('获取默认token响应失败');
 							}
 						});
-					}else{ 
+					}else{
 						var Acc_pass = JSON.parse(plus.storage.getItem("Acc_pass"));
 						//根据缓存密码自动登录, 重新获取Token
 						mui.ajax(serverUrl+'/api/useraccount/login',{
@@ -309,7 +314,10 @@
 								}
 							},
 							error:function(xhr,type,errorThrown){
-								mui.toast('当前网络不好请重试！');
+								loadNum ++;
+								if(loadNum<3){
+									mui.toast('当前网络不好,再次连接');
+								}
 								console.log('获取默认token响应失败');
 							}
 						});

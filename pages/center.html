@@ -277,17 +277,34 @@
 			
 			mui.plusReady(function(){
 				var cityNum = plus.storage.getItem('cityNum');
-				 // 等待加载PhoneGap 
+				var oldtoken = plus.storage.getItem('oldToken');
 				//添加刷新监听
 				document.addEventListener('refresh', function() {
 					Refresh();
-					console.log('刷新数据'); 
 				})
 				document.addEventListener('refresh2', function() {
 					Refresh();
 				})
 				
-				Refresh(); 
+				var Timetoken = null;
+				if(plus.storage.getItem('oldToken')){
+					oldToken = plus.storage.getItem('oldToken');
+					console.log('个人中心_存在oldToken');
+					
+					Refresh(); 
+				}else{
+					clearInterval(Timetoken);
+					Timetoken = setInterval(function() { //等待oldToken加载方法
+						console.log('个人中心_循环等待token');
+						if(plus.storage.getItem('oldToken')) {
+							clearInterval(Timetoken);
+							oldToken = plus.storage.getItem('oldToken');
+							
+							Refresh();
+						}
+					}, 200)
+				}
+				
 				function Refresh(){//刷新
 					mui('.ordera')[0].style.display = 'none';
 					mui('.orderb')[0].style.display = 'none';
@@ -295,7 +312,6 @@
 					mui('#writeOff1')[0].style.display = 'none';
 					//获取缓存 
 					var myuserid = plus.storage.getItem('userid');
-					var oldtoken = plus.storage.getItem('oldToken');
 					var cityNum = plus.storage.getItem('cityNum');
 					//取用户数据
 					if(plus.storage.getItem('myToken')){
@@ -373,7 +389,7 @@
 																	}
 																},
 																error: function(xhr, type, errorThrown) {
-																	console.log('县志数据,响应失败');
+																	console.log('邀请码,响应失败');
 																}
 															});
 														}else{
@@ -391,7 +407,7 @@
 										}
 									}else{
 										
-										mui.toast('获取用户信息失败'); 
+										//mui.toast('获取用户信息失败'); 
 										console.log(data.errmsg);
 									}
 								},
@@ -458,7 +474,6 @@
 					}else{//退出登录还原
 						mui('.denluzhuce')[0].innerHTML = '登录\注册';
 						mui('#numjifen')[0].innerHTML = '';
-//						mui('.dao')[0].innerHTML = '签到';
 						mui('#mypic')[0].src =  '../img/morentouxiang.jpg';
 						//mui('#mypic1')[0].src =
 					}
@@ -475,7 +490,6 @@
 							});
 						}
 					});
-					
 				 
 					//领hi豆
 					mui('.hidou')[0].addEventListener('tap',function(){
@@ -488,8 +502,6 @@
 							openview({
 								view:'hiVip.html',
 								id:"hiVip",
-//								view:'receiveHI.html',
-//								id:"receiveHI",
 								extrasobj:{"userid":myuserid}
 							});
 						}
@@ -602,19 +614,6 @@
 							});
 						}
 					});
-					//关于我们
-//					mui('.aboutUs')[0].addEventListener('tap',function(){
-//						if(plus.storage.getItem('myToken')){ 
-//							openview({
-//								view:'end.html' 
-//							});
-//						}else{//没登陆直接打开登录页面
-//							mui.toast('请登录');
-//							openview({
-//								view:'login.html'
-//							});
-//						}
-//					});
 					//设置
 					mui('.shezhi')[0].addEventListener('tap',function(){
 						if(!plus.storage.getItem('myToken')){ 
@@ -676,37 +675,6 @@
 			});
 		</script>
 		
-		<script type="text/javascript">
-			function abcdfun(){
-				var dataA =	[
-	                "http://oqt34bvig.bkt.clouddn.com/img/test/25m/IMG_20160420_014927.jpg",
-	                "http://oqt34bvig.bkt.clouddn.com/img/test/25m/IMG_20160503_133223.jpg",
-	                "http://oqt34bvig.bkt.clouddn.com/img/test/25m/IMG_20160503_133231.jpg",
-	                "http://oqt34bvig.bkt.clouddn.com/img/test/25m/IMG_20160503_133238.jpg",
-	                "http://oqt34bvig.bkt.clouddn.com/img/test/25m/IMG_20160503_133248.jpg",
-	                "http://oqt34bvig.bkt.clouddn.com/img/test/25m/IMG_20160503_133311.jpg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20150407H4401_AwLnY.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20150905232452_d3EZM.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20151002113332_5BTE2.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20160713220051_5fAGK.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20161013185857_rGLau.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170421212329_T3JZj.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170502111658_iMGCZ.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170524103805_mS5vc.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170524103815_TQwMh.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170601162930_zcX3m.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170603081822_JBXCY.thumb.700_0.jpeg",
-	                "http://oqt34bvig.bkt.clouddn.com/pic/test/500k/20170608225226_QL8Mh.jpeg"
-	            ]
-				var dataB = ["imageView2/5/w/400/h/400/format/webp/interlace/1/q/75|imageslim","imageView2/5/w/750/h/200/format/webp/interlace/1/q/75|imageslim","imageView2/0/format/webp/q/75|imageslim"]
-				
-				var src = '';
-				for (var i = 0; i < dataA.length; i++) {
-					src  += '<img src='+dataA[i]+"?imageView2/5/w/400/h/400/format/webp/interlace/1/q/75|imageslim"+' width="500">';
-				}
-				mui('#abcd')[0].innerHTML = src;
-			}
-		</script>
 	</body> 
 
 </html>

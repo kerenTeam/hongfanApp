@@ -468,10 +468,8 @@
 								title:mui('.leirong')[0].innerHTML,
 								content:mui('.leirong')[0].innerHTML,
 								href:fxUrl+'socialCircle/circleListInfo.html?infoid='+infiId+'&UserId='+newsUserId,
-								thumbs:[''],
-								pictures:['']
-//								thumbs:['http://lscfriends.zlzmm.com/friends/news/pic/4272a379361693ee03c31e422ba46444'],
-								
+								thumbs:[thumbs],
+								pictures:[thumbs]
 							};
 //							var msg = {"title":"看到SHE，你想到的第一首歌是什么？ ​​​​","content":"看到SHE，你想到的第一首歌是什么？ ​​​​","href":"http://abcd.zlzmm.com:6789/hongfanWeb/pages/answerBoard/answerInfo.html?answerId=237&toUserId=530","thumbs":["http://lscfriends.zlzmm.com/friends/news/pic/27b37aed84ceeb2356b77400ffb614f9"],"pictures":["http://lscfriends.zlzmm.com/friends/news/pic/27b37aed84ceeb2356b77400ffb614f9"]};
 //							var msg = {"title":"嘿嘿嘿，嘿","content":"嘿嘿嘿，嘿","href":"http://abcd.zlzmm.com:6789/hongfanWeb/pages/socialCircle/circleListInfo.html?infoid=243&UserId=427","thumbs":["http://lscfriends.zlzmm.com/friends/news/pic/4272a379361693ee03c31e422ba46444"],"pictures":["http://lscfriends.zlzmm.com/friends/news/pic/4272a379361693ee03c31e422ba46444"]}
@@ -798,5 +796,32 @@
  		mui.previewImage(); 
 	    
 	</script>
+	<script type="text/javascript">
+		//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
+		//充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 特色馆 specialBar
+		mui.plusReady(function () {
+			var startTime, endTime, stayTime, flagback = 0;
+			startTime = new Date().getTime();
+			var old_back = mui.back;
+			//改写返回键返回的函数，返回时传页面停留时间 
+			mui.back = function(){
+				endTime = new Date().getTime();//返回时间
+				stayTime = Math.ceil((endTime - startTime) / 1000);   
+				console.log('购物中心'+stayTime); 
+				plus.statistic.eventDuration( "HIfeiendDynamic", stayTime);
+				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+				old_back(); 
+			}
+			plus.webview.currentWebview().addEventListener( "popGesture", function(){
+				flagback++;
+				if(flagback == 1){
+					endTime = new Date().getTime();
+					stayTime = Math.ceil((endTime - startTime) / 1000);  
+					plus.statistic.eventDuration( "HIfeiendDynamic", stayTime);
+					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+				}
+			}, false );
+		});
+	</script> 
 
 </html>

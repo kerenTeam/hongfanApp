@@ -53,7 +53,6 @@ function checkUpdate(hide){
 		timeout:5000,
 		headers:{"token":oldtoken},
 		success:function(data,type,xhr){ 
-			console.log('检测更新',data);
 			console.log('检测更新'+JSON.stringify(data));
 			wgtUrl= serverUrl + data.data.android_path_url;
 			var newVer=data.data.versionNum;//远程版本号
@@ -63,7 +62,6 @@ function checkUpdate(hide){
             }else{
             	plus.nativeUI.closeWaiting();  
                 !hide && plus.nativeUI.alert("当前版本为最新版本！"); 
-                console.log('当前版本为最新版本');  
             }
             
 		},

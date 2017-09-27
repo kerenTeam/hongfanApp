@@ -294,8 +294,8 @@
 					title:title,
 					content:title,
 					href:fxUrl+'socialCircle/circleListInfo.html?infoid='+infiId+'&UserId='+newsUserId,
-					thumbs:[''],
-					pictures:['']
+					thumbs:[pic],
+					pictures:[pic]
 					
 				};
 				showSfun1(msg);
@@ -393,10 +393,32 @@
 				})
 		    }
 			/*铺数据*/
+			/*循环加载token*/
+			mui.plusReady(function(){
+				var Timetoken = null;
+				var oldToken = null;
+				if(plus.storage.getItem('oldToken')){
+					oldToken = plus.storage.getItem('oldToken');
+					console.log('hi友圈_存在oldToken');
+					
+					todayHot();
+					shopData(0,0,false);//默认推荐
+				}else{
+					clearInterval(Timetoken);
+					Timetoken = setInterval(function() { //等待oldToken加载方法
+						console.log('hi友圈_循环等待token');
+						if(plus.storage.getItem('oldToken')) {
+							clearInterval(Timetoken);
+							oldToken = plus.storage.getItem('oldToken');
+							
+							todayHot();
+							shopData(0,0,false);//默认推荐
+						}
+					}, 200)
+				}
+			})
 			
 			
-			todayHot();
-			shopData(0,0,false);//默认推荐
 			dyCon[0].style.display = 'block';
 			//今日热门
 			function todayHot(){
@@ -432,7 +454,7 @@
 						timeout: 8000,
 						headers: {"token": oldToken,'city': cityNum},
 						success: function(data, type, xhr) {
-							console.log('remen ',data)
+							console.log('热门 ',data);
 							if(data.errno == 0) { 
 								if(data.data && data.data.length){
 									var dataObj = {};
@@ -515,12 +537,12 @@
 								}
 								 
 							}else{
-								mui.toast('当前网络不好,请重试');
+								
 							}
 						},
 						error: function(xhr, type, errorThrown) {
 							console.error('交友列表,响应失败');
-							mui.toast('当前网络不好,请重试');
+							//mui.toast('当前网络不好,请重试');
 						}
 					});
 				})
@@ -621,7 +643,7 @@
 						timeout: 8000,
 						headers: {"token": oldToken,'city': cityNum},
 						success: function(data, type, xhr) {
-							console.error('交友列表'+typeNum, data);
+							console.log('交友列表'+typeNum, data);
 							if(data.errno == 0) {
 								var dataObj = {};
 								var nowArray = data.data.data;
@@ -733,7 +755,7 @@
 														timeout: 8000,
 														headers: {"token": oldToken,'city': cityNum},
 														success: function(data) {
-															console.error('交友列表续'+typeNum, data);
+															console.log('交友列表续'+typeNum, data);
 															if(data.errno == 0) {
 																var dataObj = {};
 																var nowArray = data.data.data;
@@ -914,12 +936,12 @@
 												
 											 
 											}else{
-												mui.toast('当前网络不好,请重试');
+												//mui.toast('当前网络不好,请重试');
 											}
 										},
 										error: function(xhr, type, errorThrown) {
 											console.error('评论列表,响应失败');
-											mui.toast('当前网络不好,请重试');
+											//mui.toast('当前网络不好,请重试');
 										}
 									});
 								}) 

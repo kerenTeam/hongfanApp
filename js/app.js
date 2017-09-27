@@ -1,7 +1,8 @@
 //var serverUrl= "http://192.168.43.170:7200"; 
 //var serverUrl= "http://192.168.43.170:7200";
 //var serverUrl='http://hiji.hifete.com'; 
-var serverUrl='http://abcd.zlzmm.com:7200';  
+var serverUrl='http://abcd.zlzmm.com:7200';
+//var serverUrl='http://192.168.1.100:7200';
  
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
@@ -189,11 +190,13 @@ mui.plusReady(function(){
 function showSfun1(msg,fun1,fun0){
 	
 	if(document.getElementById('shareWrap10')){
-		
 	}else{
 		var pathStr = '../';
 		if(msg.myIsIndex){
 			pathStr = '';
+		}
+		if(!/android/i.test(navigator.userAgent)){
+			msg.thumbs = msg.pictures = [''];
 		}
 		var shareWrap10 = document.createElement('div');
 		shareWrap10.id = 'shareWrap10';
