@@ -168,8 +168,8 @@
     		#wodedin table{width: 100%;text-align: center;color: #555;table-layout:fixed;}
     		#wodedin table img{display: block;margin: 0 auto;width: 32px;margin-bottom: 5px;}
     		#wodedin table td{padding: 10px 0;}
-    		#wodedin table td span{position: relative;}
-    		#wodedin table td span.mui-badge{ position: absolute; top: -36px;
+    		#wodedin table td span,#column table td span{position: relative;}
+    		#wodedin table td span.mui-badge,#column table td span.mui-badge{ position: absolute; top: -36px;
 				     left: 25px;
 				    background: #f34f47;
 				    border: 1px solid #111!important;
@@ -235,9 +235,9 @@
     	<div id="column">
     		<table border="" cellspacing="" cellpadding="">
 				<tr> 
-    				<td class="aClick wmai-order"><img  src="../img/center/wodekuaidi.png"/>我的快递</td>
+    				<td class="aClick wmai-order"><img  src="../img/center/wodekuaidi.png"/>我的快递</span></td>
     				<td class="aClick wodedizhi"><img  src="../img/center/wodedizhi.png"/>我的地址</td> 
-    				<td class="aClick xiaoxi"><img src="../img/center/wodexiaoxi.png"/>我的消息</td>
+    				<td class="aClick xiaoxi"><span><img src="../img/center/wodexiaoxi.png"/>我的消息<span id="mmsg" class="mui-badge mui-badge-warning" style="display: none;"></span></td>
     				<td class="aClick wodefabu"><img src="../img/center/wodefabu.png"/>我的发布</td>
     			</tr>
     			<tr> 
@@ -250,6 +250,9 @@
     				<td class="aClick myQa"><img src="../img/center/wodewenda.png"/>我的问答</td>
     				<td class="aClick friendShip"><img src="../img/center/jiaoyou.png"/>交友</td>
     				<td class="aClick yaoqingmaBtn"><img src="../img/center/yaoqingma.svg"/ style="width: 26px;padding-bottom: 8px;position: relative;top: 6px;">邀请码</td>
+    				<td class="aClick myAward"><img src="../img/center/awds.png"/ style="width: 26px;padding-bottom: 8px;position: relative;top: 6px;">我的奖品</td>
+    			</tr>
+    			<tr>
     				<td class="aClick" id="writeOff1" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/hexiao1.svg"/>核销</td>
     			</tr>
      		</table>
@@ -453,7 +456,29 @@
 								console.log('响应失败  !');
 							}
 						});
-						
+						//获取消息条数
+						mui.ajax(serverUrl+'/api/index/message',{
+							data:{userid:myuserid},
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldtoken},
+							success:function(data,type,xhr){
+								plus.nativeUI.closeWaiting();
+								console.log('消息',data);
+						       	if(data.errno == 0){
+							       	if(data.data.length){ 
+						     			mui('#mmsg')[0].style.display = 'block';;
+						     			mui('#mmsg')[0].innerHTML = data.data.length;
+									}
+						       	}
+						       	plus.nativeUI.closeWaiting();
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
+								console.log('当前网络不好,请重试');
+							}
+						});
 						
 					}else{//退出登录还原
 						mui('.denluzhuce')[0].innerHTML = '登录\注册';
@@ -491,6 +516,19 @@
 //								view:'receiveHI.html',
 //								id:"receiveHI",
 								extrasobj:{"userid":myuserid}
+							});
+						}
+					})
+					mui('.myAward')[0].addEventListener('tap',function(){
+						if(!plus.storage.getItem('myToken')){
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						}else{
+							openview({
+								view:'personal/myAwards.html',
+								id:"myAwards", 
 							});
 						}
 					})

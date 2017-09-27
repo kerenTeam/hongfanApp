@@ -587,7 +587,7 @@
 													</div>
 
 												<%}else{%>
-												<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount[1]%>">
+												<div class="checkQuan mui-row" data-amount="<%=allLi[i].coupon_amount[0]%>" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount[1]%>">
 													<div class="mui-col-sm-3">
 														<div><big><b><%=allLi[i].coupon_amount[1]*10%></b></big>折</div>
 														<div><small>满<%=allLi[i].coupon_amount[0]%>通用</small></div>
@@ -632,7 +632,7 @@
 					</dl>
 				</form>
 			</div>
-		
+			<input type="hidden" name="hiddenValue" id="hiddenValue" value="" />
 			<!--操作表   支付弹窗--> 
 			<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 				<div class="paycontent">
@@ -874,84 +874,87 @@
 					error: function(xhr, type, errorThrown) {}
 				});
 			}
-//		
-//			//获取优惠券
-//			mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
-//				data: {
-//					userid: myuserid
-//				},
-//				dataType: 'json',
-//				type: 'post',
-//				timeout: 10000,
-//				headers: {
-//					"token": oldtoken
-//				},
-//				success: function(data, type, xhr) {
-//					console.log("抵用券 ",data)
-//					var allC = {}; 
-//					var tpldata = []; 
-//					for(var i = 0; i < data.data.user_coupon.length; i++) {
-//
-//						if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2)) {
-//
-//							if(data.data.user_coupon[i].end_date != null) {
-//								data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
-//							}
-//							if(data.data.user_coupon[i].begin_date != null) {
-//								data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
-//							} 
-//							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
-//								if(data.data.user_coupon[i].typeid == 2){ 
-//									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#submit_order').html())){
-//										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
-//										tpldata.push(data.data.user_coupon[i]).typeid
+	
+			//获取优惠券
+				var d = new Date();
+				var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+				str = formatDate(str, "yyyy.MM.dd");
+			mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
+				data: {
+					userid: myuserid
+				},
+				dataType: 'json',
+				type: 'post',
+				timeout: 10000,
+				headers: {
+					"token": oldtoken
+				},
+				success: function(data, type, xhr) {
+					console.log("抵用券 ",data)
+					var allC = {}; 
+					var tpldata = [];  
+					for(var i = 0; i < data.data.user_coupon.length; i++) {
+	
+						if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2)) {
+	
+							if(data.data.user_coupon[i].end_date != null) {
+								data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
+							}
+							if(data.data.user_coupon[i].begin_date != null) {
+								data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
+							} 
+							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
+								if(data.data.user_coupon[i].typeid == 2){ 
+//									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#hiddenValue').val())){
+										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
+										tpldata.push(data.data.user_coupon[i]).typeid
 //									}
-//								}else{
-//									tpldata.push(data.data.user_coupon[i]).typeid
-//								}
-//								
-//							} 
-//						}
-//					}
-//					allC.allLi = tpldata;
-//					console.log('tpldata',tpldata)
-//					var html = template('quanTpl', allC);
-//					document.getElementById('quanData').innerHTML = html;
-//
-//					plus.nativeUI.closeWaiting();
-//					
-//					//优惠券计算
-//					$(".checkQuan").click(function() {
-//					  
-//						var qid = $(this).attr("data-id");
-//						var qminus = $(this).attr("data-minus");
-//						$(this).siblings().find(".quanc").css("display", "none");
-//						quan = 0;
-//						if($(this).find(".quanc").css("display") == "block") {
-//							$(this).find(".quanc").css("display", "none");
-//							$("#minuMoney").html(0);
-//							$(".minuMoney").css("display", "none");
-//
-//						} else {
-//							$(this).find(".quanc").css("display", "block");
-//							if(qid == 1) {
-//								quan = parseFloat(qminus)
-//							}
-//							if(qid == 2) {
-//								quan = parseFloat(allGroup * (1 - parseFloat(qminus))).toFixed(2);
-//							}
-//							$("#minuMoney").html(quan);
-//							$(".minuMoney").css("display", "inline-block");
-//
-//						};
-//						calculate();
-//					})
-//					
-//				},
-//				error: function(xhr, type, errorThrown) {
-//					mui.toast("网络不好请重试!")
-//				}
-//			});
+								}else{
+									tpldata.push(data.data.user_coupon[i]).typeid
+								}
+								
+							} 
+						}
+					}
+					allC.allLi = tpldata;
+					console.log('tpldata',tpldata)
+					var html = template('quanTpl', allC);
+					document.getElementById('quanData').innerHTML = html;
+	
+					plus.nativeUI.closeWaiting();
+					
+					//优惠券计算
+					$(".checkQuan").click(function() {
+					  
+						var qid = $(this).attr("data-id");
+						var qminus = $(this).attr("data-minus");
+						$(this).siblings().find(".quanc").css("display", "none");
+						quan = 0;
+						if($(this).find(".quanc").css("display") == "block") {
+							$(this).find(".quanc").css("display", "none");
+							$("#minuMoney").html(0);
+							$(".minuMoney").css("display", "none");
+
+						} else {
+							$(this).find(".quanc").css("display", "block");
+							if(qid == 1) {
+								quan = parseFloat(qminus)
+							}
+							if(qid == 2) {
+								quan = parseFloat(allGroup * (1 - parseFloat(qminus))).toFixed(2);
+							}
+							$("#minuMoney").html(quan);
+							$(".minuMoney").css("display", "inline-block");
+
+						};
+						calculate();
+					})
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("网络不好请重试!")
+				}
+			});
    			
 			//积分使用
 			var isIntergal = 0;
@@ -1043,91 +1046,17 @@
 									 		} 
 									 		
 									 	}
-									 	
+									  
 										var html = template('orderData', dataObj);
 										document.getElementById('orderTpl').innerHTML = html;
 										plus.nativeUI.closeWaiting();
 										
-										//获取优惠券
-											var d = new Date();
-											var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-											str = formatDate(str, "yyyy.MM.dd");
-										mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
-											data: {
-												userid: myuserid
-											},
-											dataType: 'json',
-											type: 'post',
-											timeout: 10000,
-											headers: {
-												"token": oldtoken
-											},
-											success: function(data, type, xhr) {
-												console.log("抵用券 ",data)
-												var allC = {}; 
-												var tpldata = []; 
-												for(var i = 0; i < data.data.user_coupon.length; i++) {
-							
-													if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2)) {
-							
-														if(data.data.user_coupon[i].end_date != null) {
-															data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
-														}
-														if(data.data.user_coupon[i].begin_date != null) {
-															data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
-														} 
-														if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
-															if(data.data.user_coupon[i].typeid == 2){ 
-																if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#submit_order').html())){
-																	data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
-																	tpldata.push(data.data.user_coupon[i]).typeid
-																}
-															}else{
-																tpldata.push(data.data.user_coupon[i]).typeid
-															}
-															
-														} 
-													}
-												}
-												allC.allLi = tpldata;
-												console.log('tpldata',tpldata)
-												var html = template('quanTpl', allC);
-												document.getElementById('quanData').innerHTML = html;
-							
-												plus.nativeUI.closeWaiting();
-					
-					//优惠券计算
-					$(".checkQuan").click(function() {
-					  
-						var qid = $(this).attr("data-id");
-						var qminus = $(this).attr("data-minus");
-						$(this).siblings().find(".quanc").css("display", "none");
-						quan = 0;
-						if($(this).find(".quanc").css("display") == "block") {
-							$(this).find(".quanc").css("display", "none");
-							$("#minuMoney").html(0);
-							$(".minuMoney").css("display", "none");
-
-						} else {
-							$(this).find(".quanc").css("display", "block");
-							if(qid == 1) {
-								quan = parseFloat(qminus)
-							}
-							if(qid == 2) {
-								quan = parseFloat(allGroup * (1 - parseFloat(qminus))).toFixed(2);
-							}
-							$("#minuMoney").html(quan);
-							$(".minuMoney").css("display", "inline-block");
-
-						};
-						calculate();
-					})
-					
-				},
-				error: function(xhr, type, errorThrown) {
-					mui.toast("网络不好请重试!")
-				}
-			});
+										$('.checkQuan').each(function(){
+											if($(this).attr('data-id')==2 && $(this).attr('data-amount') > dataObj.PriceCalculValue){
+												$(this).remove();
+											}
+										})
+										
 										//物流选择
 										$('.getwl').on('tap', function() { 
 											var businid = $(this).attr('data-storeid');
@@ -1378,7 +1307,7 @@
 									$("#payChoose").removeClass("mui-active");
 									plus.nativeUI.closeWaiting()  
 									if(data.errno == 1000) {
-										mui.toast("您已超过限购数量不能再买了啦")
+										mui.toast(data.errmsg)
 									}
 									if(data.errno == 0) {
 										//购物车 缓存 
