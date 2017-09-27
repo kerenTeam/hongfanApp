@@ -1,0 +1,479 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>HI商品详情</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/reset.css"> 
+		<link rel="stylesheet" href="../../css/Recharge.css">
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/other.js"></script>
+		<style type="text/css">
+			 
+			/*banner底部导航*/
+			.mui-slider-indicator .mui-indicator{
+				width: 10px;
+				height: 10px;
+				border-radius: 8px;
+				background: black;
+				margin-right: 5px;
+				opacity: 0.3;
+				cursor: pointer;
+				border: none;
+				box-shadow: none;
+			}
+			.mui-slider-indicator .mui-active.mui-indicator{
+				background-color: rgba(245,60,66,0.8);
+				box-shadow: none;
+				opacity: 1;
+				border: none;
+			}
+			/*这一页*/
+			#main{
+				padding-bottom: 60px;
+			}
+			.detail .top .xia .jifen{
+				color: #f53c42;
+				font-size: 0.26rem;
+				line-height: 40px;
+			}
+			.jifen img{
+				width: 0.15rem;
+			}
+			sub{
+				bottom: 0;
+				font-size: 65%;
+			}
+			.detail .top .shang .you p{
+				margin-top: 0.08rem;
+			}
+			.mui-row{
+				margin: 0 10px;
+			}
+			.mui-row p{
+				font-size: 12px;
+				line-height: 15px;
+			}
+			.Mcenter{
+				text-align: center;
+			}
+			.Mright{
+				text-align: right;
+			}
+			.goBack{
+				position: fixed;
+				left: 15px;
+				top: 40px;
+				background-color: rgba(0,0,0,0.5);
+				width: 40px;
+				height: 40px;
+				z-index: 9;
+				border-radius: 50%;
+			}
+			.mui-icon{
+				line-height: 40px;
+				color: #FFF;
+				display: inline-block;
+				width: 40px;
+				text-align: center;
+				font-size: 26px;
+			}
+			/*评论*/
+			.user-head img{
+				width: 80%;
+				margin: 10px 10%;
+			}
+			.Cright{
+				padding: 10px;
+			}
+			.Cright p{
+				line-height: 20px;
+				color: #666 !important;
+				display: block !important;
+				float: left;
+				font-size: 14px;
+			}
+			time{
+				line-height: 20px;
+				color: #999;
+			}
+			.comment{
+				margin: 10px 2px;
+			}
+			.inlineBlock{
+				padding: 2px;
+			}
+			.Cul{
+				margin-top: -10px;
+			}
+			.Cli{
+				border-bottom: 1px solid #eee;
+				margin: 10px;
+			}
+			.Cli:last-child{
+				border-bottom: none;
+			}
+			.zuo{
+				color: #000 !important;
+			}
+			/*修改*/
+			.addBtn{
+				background-color: #ff9100 !important;
+				border: 1px solid #ff9100 !important;
+			}
+			.mui-numbox{
+				width: 100px;
+				height: 30px;
+				padding: 0 30px;
+			}
+			.mui-numbox .mui-btn{
+				width: 30px;
+			}
+			.am-share-sns{
+				height: 100% !important;
+			}
+			.sdetail .top .you{
+				padding-bottom: 15px;
+			}
+			.Mscroll{
+				max-height: 400px;
+				overflow-y: scroll;
+				z-index: -1;
+				padding: 5px 0;
+			}
+			.sdetail{
+				/*height: 490px;*/
+			}
+			.footerone .left{
+				width: 15%;
+			}
+			.footerone .right{
+				width: 85%;
+			}
+			.footerone .left ul li{
+				width: 100%;
+			}
+			
+			.comment{
+				display: block;
+			}
+			.overflow_clear{
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				width: 100%;
+				display: block;
+			}
+			.farm .top, .farm .bottom{
+				border-bottom: 1px solid #EFEFF4;
+			}
+			.farmtc .bt{
+				border-top: 1px solid #EFEFF4;
+			}
+			/*banner图片固定高度比例*/
+			.mui-slider-item a{
+				position: relative;
+				display: inline-block;
+				padding-top: 100%;
+				width: 100%;
+				overflow: hidden;
+			}
+			.goodsImg{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+			}
+			.sdetail .middle{
+				position: relative;
+				border-bottom: 0;
+			}
+			.sdetail .middle:after{
+				visibility: visible;content: '';display: block;height: 1px;-webkit-transform: scaleY(0.5);background-color: rgba(0,0,0,0.1);position: absolute;width: 100%;bottom: 0;left: 0;
+			}
+			#tupianW{
+				width: 100%;height: calc(100vw);
+			}
+			#tupian{
+			    width: 70%;
+			    height: 70%;
+			    margin-top: 15%;
+			    margin-left: 15%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="goBack">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
+		</div>
+		<div id="container">		
+			<div id="main" style="margin-top: 0!important;">
+				<div id="tupianW" >
+					<img id="tupian" src="../../img/Spinner.svg"/>
+				</div>
+				<div class="detail clearfloat">  
+					<div class="top clearfloat box-s">
+						<div class="shang clearfloat">
+							<div class="zuo clearfloat fl" id="mingzi">
+								
+							</div>
+						</div>
+						<div class="xia clearfloat">
+							<p class="jifen fl box-s"> ￥ 0.01 <samp id="jiazhi"></samp></p>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div>
+		<!--footerone star-->
+		<div class="footerone clearfloat">
+			<div class="right clearfloat fl" style="width:100%!important;"> 
+                <a id="goumai" onClick="toshare(2)" class="btn btnone fl cg2" style="width:100%!important;">立即购买</a>
+			</div>
+		</div>
+		<!--footerone end-->
+		<div class="am-share ">
+			<div id="cartBox">
+				<div class="am-share-footer">
+					<span class="share_btn">
+						<img src="../../img/chahao.png">
+					</span>
+				</div>
+				<div class="am-share-sns box-s">
+					<div class="sdetail clearfloat">
+						<div class="Mscroll">
+							<div id="parBox">
+								<div class="middle clearfloat textType">
+									<p>规格</p>
+									<div class="xia clearfloat choose">
+										<ul>
+											<li class="ra3 cur" data-pricestep="0" data-inventory="0">
+												100个
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="bottom clearfloat">
+								<p class="fl">购买数量  <span id="" style="color: red;">x100</span></p>
+								<div class="you clearfloat fr">
+									<div class="mui-numbox margin-top" data-numbox-min="1" data-numbox-max="999">
+										<button class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
+										<input id="test" class="mui-input-numbox" type="number" readonly="" value="">
+										<button id="upup" class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="shop-btn db buyHI" style="background: rgb(245, 60, 66);">确定</a>
+			</div>
+		</div>
+		<!--操作表   支付弹窗--> 
+		<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
+			<div class="paycontent">
+				<ul class="mui-table-view waypay">
+					<p><span>支付方式</span></p>
+					<li class="">
+						<a id="alipay" data-pay="alipay"><img class="aClick2" src="../../img/tickets/zhifubao.png"></a>
+					</li>
+					<li class="">
+						<a id="wxpay" data-pay="wxpay"><img class="aClick2" src="../../img/tickets/weixin.png"> </a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--操作表   支付弹窗结束-->
+		
+	</body>
+	<script src="../../js/mui.min.js"></script> 
+	<script src="../../js/app.js"></script>
+	<script src="../../js/artTemplate-native.js"></script>
+	<script type="text/javascript">
+		$(".closePay").click(function() {
+			event.stopPropagation();
+			$("#payChoose").removeClass("mui-active");
+		});
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'),
+	 			cityNum = plus.storage.getItem('cityNum'),
+				myuserid = plus.storage.getItem('userid');
+			var picS = plus.webview.currentWebview().picS;
+			var title = plus.webview.currentWebview().title;
+			var price = plus.webview.currentWebview().price;
+			mui('#mingzi')[0].innerHTML = title;
+			mui('#tupian')[0].src = picS;
+			
+			
+			var pays = {};
+			//系统检测获取支付通道
+			plus.payment.getChannels(function(channels) {
+				console.log("channel " + JSON.stringify(channels));
+				for(var i in channels) {
+					var channel = channels[i];
+					// 过滤掉不支持的支付通道：暂不支持360相关支付
+					if(channel.id == 'qhpay' || channel.id == 'qihoo') {
+						continue;
+					}
+					pays[channel.id] = channel;
+					if(channel.id == 'alipay') { //添加支付事件
+						document.getElementById('alipay').setAttribute('onclick', 'payfun("alipay")');
+					}
+					if(channel.id == 'wxpay') {
+						document.getElementById('wxpay').setAttribute('onclick', 'payfun("wxpay")');
+
+					}
+					checkServices(channel);
+				}
+			}, function(e) {
+				plus.nativeUI.alert("支付失败，请重试", null, "提示");
+			});
+
+			// 检测是否安装支付服务
+			function checkServices(pc) {
+				if(!pc.serviceReady) {
+					var txt = null;
+					switch(pc.id) {
+						case "alipay":
+							txt = "检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？";
+							break;
+						default:
+							txt = "系统未安装“" + pc.description + "”服务，无法完成支付，是否立即安装？";
+							break;
+					}
+				 
+				}
+			}
+			//系统检测获取支付通道结束
+			mui('.buyHI')[0].onclick = function(){
+				$("#payChoose").addClass("mui-active");
+					// 支付方法 
+					window.payfun = function(id) {
+						var varpay; 
+						if(id == 'alipay' || id == 'wxpay') {
+							//调用支付功能
+							plus.nativeUI.showWaiting();
+								gopay(id); 
+						} else {
+							plus.nativeUI.alert("当前环境不支持此支付通道！", null, "提示");
+							return;
+						}
+
+						function gopay(id) {
+
+							mui.ajax(serverUrl + '/api/index/payforhibeans', {
+								data:{
+									userid:myuserid,
+									payType:id, 
+									hi:mui('#test')[0].value*100,
+								},
+								dataType:'json',
+								type: 'post', //HTTP请求类型
+								headers: {"token": oldToken,'city': cityNum},
+								timeout: 10000, //超时时间设置为10秒；
+								success: function(data) {
+									console.error('支付返回',data);
+									plus.nativeUI.closeWaiting()  
+									if(data.errno == 0) {
+										var varpay;
+										if(id == 'wxpay') {
+											varpay = {
+												"appid":data.data.appid,
+												"noncestr":data.data.noncestr,
+												"package":"Sign=WXPay",
+												"partnerid":data.data.partnerid,
+												"prepayid":data.data.prepayid,
+												"timestamp":parseInt(data.data.timestamp),
+												"sign":data.data.sign
+											};
+											//微信
+											 plus.payment.request(pays[id], varpay, function(result) {
+												var resultStr = JSON.stringify(result);
+												console.log("----- 支付成功 -----");
+												plus.nativeUI.closeWaiting();
+												//修改订单状态 
+												mui.toast('购买成功');
+
+											}, function(e) {
+												console.log("----- 支付失败 -----");
+												console.log("[" + e.code + "]：" + e.message);
+												plus.nativeUI.alert("支付失败");
+											});
+										} else {
+											//支付宝 
+											varpay = data.data;
+											plus.payment.request(pays[id], varpay, function(result) {
+												var resultStr = JSON.stringify(result);
+												console.log("----- 支付成功 -----", JSON.stringify(result));
+												plus.nativeUI.closeWaiting();
+												var oldtoken = plus.storage.getItem('oldToken');
+												//修改订单状态
+												mui.toast('领取成功');
+
+											}, function(e) {
+												console.log("----- 支付失败 -----");
+												console.log("[" + e.code + "]：" + e.message);
+												//					console.log("["+e.code+"]："+e.message);
+												plus.nativeUI.closeWaiting();
+												plus.nativeUI.alert("支付失败");
+											});
+										}
+										 
+									}else{
+										alert(data.errmsg);
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									//异常处理；
+									console.log(type);
+									console.log("----- 请求订单失败 -----");
+									console.log(xhr.status);
+									plus.nativeUI.closeWaiting();
+									plus.nativeUI.alert("获取订单信息失败！");
+								}
+							});
+
+						}
+
+					}
+			}
+			
+			function buyHI(){
+				mui.ajax(serverUrl+'/api/friends/payforgift',{
+					data:{
+						userId:myuserid,
+						giftId:idNum,
+						nums:1
+					},
+					type:'post',
+					timeout:8000,
+					headers:{"token":oldToken,"city":1},
+					success: function(data) {
+						console.error('购买礼物', data);
+						if(data.errno == 0) {
+							alert('购买成功,快去赠送给好友吧!');
+							mui.fire(plus.webview.getWebviewById('elsecircleIndex'),'refreshGift');
+							mui.fire(plus.webview.getWebviewById('center.html'),'refreshGift');
+						}else{
+							alert(data.errmsg);
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+					}
+				});
+			}
+		})
+	</script>
+
+</html> 
