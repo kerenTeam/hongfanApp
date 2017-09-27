@@ -78,6 +78,10 @@
 				border-radius: 50%;
 				width: 100%;
 			}
+			#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
+			.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:15%;left:7%;width:86%;bottom:15%;padding:15px 5px;border-radius:3px}
+			.closemask{position:absolute;bottom:10px;left:50%;-webkit-transform:translateX(-50%)}
+			.ruleol{padding: 0 15px 0 15px;margin-top: 25px;}
 		</style>
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/awardRotate.js"></script>
@@ -209,6 +213,7 @@
                             						plus.nativeUI.closeWaiting();
 													//判断是否填写号码
 					                            	if(data.data[0].phone){ 
+					                            		var myPhone = data.data[0].phone;
 					                            		$('.pointer').unbind('click')
 														$('#wheelcanvas').rotate({
 															angle:0,
@@ -218,19 +223,19 @@
 																 
 															}
 														});
-					                            		
+					                            		var imei = plus.device.imei;
 						                            	mui.ajax(serverUrl + '/api/index/iswining', {
 							                                data: {
-							                                	userId:'932',
-																phone:'18661834369',//$('#userPhone').val()
-																macID:'hbfo9gg78eety58ffucccy2r432r32r4g5erhbsvAEBNeH56H',
+							                                	userId:myuserid,
+																phone:myPhone,//$('#userPhone').val()
+																macID:imei,
 																gameId:2
 							                                },
 							                                type: 'post',
 							                                timeout: 10000,
 							                                headers: { "token": oldtoken ,'city':cityNum},
 							                                success: function(data, type, xhr) {
-							                                    console.log("中奖 ",data) 
+							                                    console.log("中奖 ",JSON.stringify(data)) 
 							                                    if(data.errno == 0){
 							                                    	if(data.data.orderIndex && data.data.title){
 							                                    		plus.nativeUI.closeWaiting();
@@ -375,8 +380,9 @@
 				</div>
 			</div>
 			<!--活动规则-->
-			<div class="ft12 maincl" style="padding: 10px;color: whitesmoke;">
-				活动规则：10月1号-10月7号每天可以抽一次奖！
+			<div class="ft14 maincl" style="padding: 10px;color: whitesmoke;">
+				HI集上线豪礼大派送抽奖活动：9.29-10.8号每天可以抽一次奖！ 
+				<div class="Info" style="text-align: center;font-weight: 600;">点击查看详情</div>
 			</div>
 			<!--抽奖记录-->
 			<div style="padding: 10px 10px;color: white;">中奖纪录</div>
@@ -400,174 +406,32 @@
 							</div>
 						</div>
 					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/d516c40a14878c1473d6c4cb3f8ceb4e067890094e5a-3GKCA6_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/bf7836fb8467641f8fc8c9a9c8bf06a2ca37976b13303-JpIVGz_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/bf7836fb8467641f8fc8c9a9c8bf06a2ca37976b13303-JpIVGz_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/d516c40a14878c1473d6c4cb3f8ceb4e067890094e5a-3GKCA6_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
-					<li class="flexx">
-						<div class="avtar">
-							<img src="https://hbimg.b0.upaiyun.com/99df6df4fee330ea8b75411ceb52c9f87e965a978b11-QynMbx_sq320" alt="" />
-						</div>
-						<div style="flex-grow: 1;">
-							<div class="flexx" style="justify-content: space-between;">
-								<div class="ft14 maincl">
-									恭喜用户 <span class="activecl">夏目</span>
-								</div>
-								<div class="disablecl ft12">
-									4分钟前
-								</div>
-							</div>
-							<div class="ft14">
-								抽取500HI豆
-							</div>
-						</div>
-					</li>
+					   
 				</ul>
 			</div>
 
 		
 		</div>
-		
+		<!--遮罩-->
+		<div id="maskInfo" style="display: none;">
+			<div class="ruleCt" style="padding-bottom: 50px;">
+				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+					<div class="ft18 fttc" style="text-align: center;margin-top: 25px;">HI集上线豪礼大派送抽奖活动</div>
+					<ol class="ft14 disablecl ruleol">
+						<div class="activecl">活动时间：9.29-10.8号。</div>
+						<div class="maincl">活动规则：期间每个用户每天限抽一次，抽中奖品会记录在HI集‘我的’-‘奖品’功能里。对应的奖品会发送至用户的HI集卡包以及直接累加到用户的HI豆数量上。如果您幸运的中得大奖，请至‘奖品’里查看记录并联系我方工作人员核实信息并发送奖品！</div>  
+						<div class="maincl">奖品类别：本次活动提供各种丰富的奖品，包含：</div>
+						<div class="maincl">（1）IPhone8</div>
+						<div class="maincl">（2）1、5、10元现金红包（可活动结束7个工作日后到‘奖品’功能里提现至支付宝或微信）</div>
+						<div class="maincl">（3）5元现金券</div>
+						<div class="maincl">（4）50、100HI豆</div>
+
+					</ol>
+				</div>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
+				
+			</div>
+		</div>
 		<script type="text/javascript">
 			(function($) {
 				$.fn.myScroll = function(options) {
@@ -619,6 +483,53 @@
 			});
 		</script>
 		<script type="text/javascript">
+			
+			$('.ruleCt').click(function(){
+				event.stopPropagation()
+			})
+			$('#maskInfo,.closemask').click(function(){
+				event.preventDefault()
+				$('#maskInfo').fadeOut(200);
+			}) 
+			$('.Info').click(function(){
+				$('#maskInfo').fadeIn(200);
+			})
+			
+			
+			
+		//发布时间判断 
+		var minute = 1000 * 60;
+		var hour = minute * 60;
+		var day = hour * 24;
+		var halfamonth = day * 15;
+		var month = day * 30;
+		function getDateDiff(dateTimeStamp){ 
+			var now = new Date().getTime(); 
+			var diffValue = now - dateTimeStamp; 
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+			 result=parseInt(monthC) + "月前";
+			 }
+			 else if(weekC>=1){
+			 result=parseInt(weekC) + "周前";
+			 }
+			 else if(dayC>=1){
+			 result=parseInt(dayC) +"天前";
+			 }
+			 else if(hourC>=1){
+			 result=parseInt(hourC) +"小时前";
+			 }
+			 else if(minC>=1){
+			 result=parseInt(minC) +"分钟前";
+			 }else{ 
+			 result="刚刚";
+			 }
+			return result;
+		}
 			//滚动监听
 			$(window).scroll(function() {
 				var navBarHeight = 50;

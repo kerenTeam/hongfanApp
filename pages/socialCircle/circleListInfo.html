@@ -89,9 +89,9 @@
 				<div class="follow">
 					<div class="fchidl">
 						<div>
-							<img src="<%=dataList.avatar%>" onclick="goCircleIndex(<%=dataList.userid%>)" class="userAvator mr25"/>
+							<img src="<%=dataList.avatar%>" id="Myavator" onclick="goCircleIndex(<%=dataList.userid%>)" class="userAvator mr25"/>
 							<div>
-								<%=dataList.nickname%> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
+								<span id="myNickename"><%=dataList.nickname%></span> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
 							</div>
 						</div> 
 						<div class="butright isFollow">
@@ -510,12 +510,45 @@
 										}
 										//聊天
 										$('.diybtn2').click(function(){
-										 	openview({
-										 		view:'friendChat.html',
-										 		id:'friendChat',
-										 		extrasobj:{fromId:myuserid,toId:newsUserId}
-										 	})
-								    		
+											if(plus.storage.getItem('myToken')){
+												mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+													data:{"userid":plus.storage.getItem('userid')},
+													type:'post',
+													timeout:10000,
+													headers:{"token":oldToken},	              				
+													success:function(data,type,xhr){
+														console.log('获取用户数据返回',data);
+														if(data.errno == 0){
+															var nowArray = data.data[0];
+															var myavatar;
+		                            						//整理头像格式
+															if(nowArray.avatar && nowArray.avatar!='null'){
+																if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
+																	myavatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
+																}else{
+																	myavatar = JSON.parse(nowArray.avatar)[0].picImg;
+																}
+															}else{
+																myavatar= '../../img/10.png';
+															}
+		                            						openview({
+												 				view:'friendChat.html',
+												 				extrasobj:{'toUserId':newsUserId,'myAvatar':myavatar,'mynickname':$('#myNickename').html()}
+												 			})
+														} 
+													},
+													error:function(xhr,type,errorThrown){
+														console.log('获取用户数据,响应失败');
+													}
+												}); 
+												
+											}else{
+												mui.toast('请登录');
+												openview({
+													view:'../login.html'
+												});
+											} 
+											 
 								    	})
 										
 									}else{
@@ -762,11 +795,6 @@
 	</script>
 	<script type="text/javascript">
       
-		$('.diybtn2').click(function(){
-    		event.preventDefault()
-//			alert('聊天')
-		})
-		
  		mui.previewImage(); 
 	    
 	</script>

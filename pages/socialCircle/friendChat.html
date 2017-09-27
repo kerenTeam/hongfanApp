@@ -299,14 +299,16 @@
 			.cancel {
 				background-color: darkred;
 			}
-			 
+			.mui-imageviewer{
+				z-index: 9999!important;
+			}
 		</style>
 	</head>
 
 	<body contextmenu="return false;">
-		 <header class="mui-bar mui-bar-nav">
+		 <header class="mui-bar mui-bar-nav" style="background-color: white;">
             <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: #666;"></a>
-            <h1 class="mui-title">私聊</h1>
+            <h1 class="mui-title" id='chatName'></h1>
         </header>
 
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
@@ -315,7 +317,7 @@
 			<% for(var i in record){ var item=record[i];%>
 				<div class="msg-item <%= (item.sender=='self'?' msg-item-self':'') %>" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'>
 					<% if(item.sender=='self' ) { %>
-                    <img class="msg-user" src="<%=(item.avatar)%>" alt="" />
+                    <img class="msg-user selfImg" src="" alt="" />
 						
 						<!--<i class="msg-user mui-icon mui-icon-person"></i>-->
 					<% } else { %>
@@ -468,8 +470,18 @@
                     var myuserid = plus.storage.getItem('userid');
                     var touserid = plus.webview.currentWebview().toUserId;
                     var cityNum = plus.storage.getItem('cityNum');
-                    var fromAvater = plus.webview.currentWebview().toAvatar;
-                    var myavatar = plus.webview.currentWebview().myavatar;
+                    var myavatar = plus.webview.currentWebview().myAvatar;
+                    var myNick = plus.webview.currentWebview().mynickname;
+                    
+                    if(myNick && myNick !='null'){
+						if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(myNick)){
+							myNick = myNick.substring(0,3)+"****"+myNick.substring(7,11)
+						}
+					}else{
+						myNick = '匿名'
+					}
+                    $('#chatName')[0].innerHTML=myNick;
+                    
 					var time1 = null;
 					plus.webview.currentWebview().setStyle({
 						softinputMode: "adjustResize"
@@ -613,7 +625,7 @@
 
                         }
                     });
-					},30000)
+					},1000)
 					
 					var ui = {
 						body: doc.querySelector('body'),
@@ -658,6 +670,10 @@
 						});*/
 						ui.areaMsgList.innerHTML = template('msg-template', {
 							"record": record
+						});
+						var selfImg = ui.areaMsgList.querySelectorAll('.selfImg');
+						[].forEach.call(selfImg, function(item, index) {
+							item.src = myavatar;
 						});
 						var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
 						[].forEach.call(msgItems, function(item, index) {
