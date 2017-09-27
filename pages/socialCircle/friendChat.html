@@ -315,7 +315,7 @@
 		<pre id='h'></pre>
 		<script id='msg-template' type="text/template">
 			<% for(var i in record){ var item=record[i];%>
-				<div class="msg-item <%= (item.sender=='self'?' msg-item-self':'') %>" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'>
+				<div class="muiChat msg-item <%= (item.sender=='self'?' msg-item-self':'') %>" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'>
 					<% if(item.sender=='self' ) { %>
                     <img class="msg-user selfImg" src="" alt="" />
 						
@@ -603,7 +603,7 @@
                    }
 					
 					recordTimeOut = setInterval(function(){
-
+								
 					//请求 对话数据
                     $.ajax(serverUrl + '/api/friends/getfriendmeg/userId/'+myuserid+'/toUserId/'+touserid, {
                         dataType: 'json',
@@ -615,6 +615,10 @@
                             console.log('聊天记录2',data);
                               if(data.data && data.data.length){
                               	if(data.data.length > doc.querySelectorAll('.msg-item').length){
+                              		var muiChats =  doc.querySelectorAll('.muiChat');
+                              		[].forEach.call(muiChats, function(item, index) {
+										item.innerHTML = '';
+									});
 						 			showRecode();
                               	}
                               }
@@ -625,7 +629,7 @@
 
                         }
                     });
-					},1000)
+					},500)
 					
 					var ui = {
 						body: doc.querySelector('body'),

@@ -31,6 +31,8 @@
  
 			//获取奖品
 	 		getAwd(); 
+            turnplate.restaraunts = ["1HI豆", "3个棒棒糖", "5HI豆", "1朵鲜花", "1辆机车", "1个皇冠 ", "下次加油", "10HI豆"];
+	 		
 			var rotateTimeOut = function (){
 				$('#wheelcanvas').rotate({
 					angle:0,
@@ -57,7 +59,7 @@
 					duration:8000,
 					callback:function (){
 						if(txt.indexOf('加油')<0){
-							alert('恭喜你抽的'+txt)
+							alert('恭喜你抽中'+txt)
 						}else{
 							alert(txt);
 						}
@@ -84,16 +86,9 @@
                             			$('#wheelcanvas').attr('src',JSON.parse(data.data.game.PrizeGI)[0].picImg)
                             		} 
                             	}
-                            	if(data.data.game_prize){
-                            		for(var i = 0 ; i <data.data.game_prize.length;i++){
-                            			if(data.data.game_prize[i].title){
-                            				turnplate.restaraunts.push(data.data.game_prize[i].title)
-                            			}
-                            		}
-                            	}
+                            	turnplate.restaraunts = ["1HI豆", "3个棒棒糖", "5HI豆", "1朵鲜花", "1辆机车", "1个皇冠 ", "下次加油", "10HI豆"];
                             	//点击抽奖
                             	$('.turnBtn').click(function(){
-									//获取Mac
 									
                             		//判断是否填写号码
 	                            	if($('#userPhone').val()){ 
@@ -111,6 +106,9 @@
 	                            	 var imei = plus.device.imei;
 		                            	mui.ajax(serverUrl + '/api/index/iswining', {
 			                                data: {
+//			                                	userId:'858',
+//												phone:'15812657772',
+//												macID:'imeifffedfgkkkgh4ase453565yhghh6535',
 			                                	userId:myuserid,
 												phone:$('#userPhone').val(),
 												macID:imei,
@@ -125,7 +123,7 @@
 			                                    	if(data.data.orderIndex && data.data.title){
 			                                    		plus.nativeUI.closeWaiting();
                             							$('.turnAw').css({'left':'19.6%','top':'13.1%'})
-			                                    		rotateFn(data.data.orderIndex, turnplate.restaraunts[data.data.orderIndex-1]);
+			                                    		rotateFn(data.data.orderIndex, data.data.title);
 			                                    	}
 			                                    	
 			                                    }else if(data.errno == 1000){
@@ -138,6 +136,7 @@
 			                                },
 			                                error: function(xhr, type, errorThrown) {
 			                                    console.log('响应失败');
+			                                    console.error(type)
 			                                   	plus.nativeUI.closeWaiting();
 			                                }
 			                            });
@@ -221,7 +220,7 @@
 			<div class="clearfloat box-s box-ss" id="userBox">
 				<div class="flexr vipTop">
 					<div class="touxiang" style="background-color: #f3f3f3;background-size: cover;width: calc(100vw / 5.5);height: calc(100vw / 5.5);border-radius: 50%;">
-						<img src="" id="mypic" style="width: 100%;border-radius:50%" alt="" />
+						<img src="" id="mypic" style="width: 100%;height: 100%;border-radius:50%" alt="" />
 					</div> 
 					<div class="vipInfo">
 						<div class="ft16 flexr">

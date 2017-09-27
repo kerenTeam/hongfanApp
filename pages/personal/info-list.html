@@ -160,14 +160,27 @@
 						<%}%>
 							<div class="qtop flexr">
 								<div class="ft14 activecl">
-									<%=list[i].nickname%>
+									<%if(list[i].title.indexOf('充值')>0){%>
+										HI豆充值
+									<%}else if(list[i].title.indexOf('举报')>0){%>
+										举报通知 &nbsp;&nbsp;&nbsp;&nbsp;<%=list[i].nickname%> <br />
+									<%}else if(list[i].title.indexOf('打赏')>0){%>
+										打赏通知 &nbsp;&nbsp;&nbsp;&nbsp; <%=list[i].nickname%><br />
+									<%}else{%>
+										<%=list[i].nickname%>
+									<%}%>
 								</div>
 								<div class="">
 									<span class="disablecl"><%=list[i].create_time%></span>
 								</div>
 							</div>
 							<div class="qbot ft14">
-								<%=list[i].title%><br />
+								<%if(list[i].title.indexOf('充值')!=-1 && list[i].state == 1){%>
+									<%=list[i].title%><br />
+								<%}else if(list[i].title.indexOf('充值')== -1){%>
+									<%=list[i].title%><br />
+								<%}%>
+									
 								<%if(list[i].title.indexOf('打赏')>0 && list[i].content){%>
 									留言：<%=list[i].content%>
 								<%}%>
@@ -342,13 +355,14 @@
 										if(nowArray[j].title.indexOf('举报')>0){
 											nowArray[j].content = JSON.parse(nowArray[j].content);
 										}
-										if(nowArray[j].content.pic && nowArray[j].content.pic!='null'){
+										if(nowArray[j].content && nowArray[j].content.pic && nowArray[j].content.pic!='null'){
 											nowArray[j].content.pic = JSON.parse(nowArray[j].content.pic);
+											//格式化时间
+											var dt = new Date(nowArray[j].content.create_time);
+											var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 
+											nowArray[j].content.create_time = date;
 										}
-										//格式化时间
-										var dt = new Date(nowArray[j].content.create_time);
-										var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 
-										nowArray[j].content.create_time = date;
+										
 					     			}
 					     			dataobj.url = serverimgUrl;
 					     			dataobj.list = data.data;
