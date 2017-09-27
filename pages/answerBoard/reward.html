@@ -89,6 +89,7 @@
 					if($('textarea').val()){
 						text = $('textarea').val();
 					} 
+					plus.nativeUI.showWaiting();
 					mui.ajax(serverUrl + '/api/friends/newsinfo', {
 						data:{newsId:infiId,userid:myuserid,acceptPersonId:acceptid,price:hidou,notice:text},
 						dataType: 'json',
@@ -98,6 +99,7 @@
 						success: function(data, type, xhr) {
 							console.log('sang',data)
 							if(data.errno == 0) { 
+								plus.nativeUI.closeWaiting();
 								mui.toast('打赏成功哦'); 
 								setTimeout(function(){
 									plus.webview.currentWebview().close();

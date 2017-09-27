@@ -77,11 +77,42 @@
 //					view: 'guide.html',
 //					id: 'guide',
 //				});
+
+				var cityNum  = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken');
 				//转盘抽奖
-//				openview({ 
-//					view: 'lottery.html', 
-//					id: 'lottery',
-//				});
+				mui.ajax(serverUrl + '/api/index/gamedata', {
+                    data: { gameId:2},
+                    type: 'post',
+                    timeout: 10000,
+                    headers: { "token": oldToken ,'city':cityNum},
+                    success: function(data, type, xhr) {
+                        console.log("游戏数据 ",data)
+                        if(data.errno == 0){
+                        	if(data.data.game){
+                        		var ele =data.data.game;
+                        		if(ele.beginTime && ele.endTime){
+                        			var nowdate = Date.now();
+//                      			alert(nowdate)
+//                      			if(nowdate >= ele.beginTime && nowdate<ele.endTime){
+                        				openview({
+											view: 'lottery.html',
+											id: 'lottery',
+										});
+//                      			}
+									 
+                        		}
+                        		
+                        	}
+                       
+                        }
+                        
+                    },
+                    error: function(xhr, type, errorThrown) {
+                        console.log('响应失败');
+                    }
+                });
+				
 				
 			   	//切换定位, 通过更改缓存 实现 切换地区
 			   	var cityNum = plus.storage.getItem('cityNum');

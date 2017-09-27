@@ -12,6 +12,9 @@
 		<meta name="format-detection" content="address=no">
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/config.css" />
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/artTemplate-native.js"></script>
 		<style type="text/css">
 			.clear {
 				clear: both;
@@ -86,14 +89,13 @@
 				outsideRadius: 192, //大转盘外圆的半径
 				textRadius: 155, //大转盘奖品位置距离圆心的距离
 				insideRadius: 68, //大转盘内圆的半径
-				startAngle: 0, //开始角度
+				startAngle: -0.032, //开始角度
 				bRotate: false //false:停止;ture:旋转
 			};
-
-			$(document).ready(function() {
+ 
 				//动态添加大转盘的奖品与奖品区域背景颜色
-				turnplate.restaraunts = ["50元现金红包", "10HI豆", "谢谢参与", "5HI豆", "10元优惠券", "20元现金红包", "20HI豆 ", "30元优惠券", "100元现金红包", "2HI豆"];
-				turnplate.colors = ["#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF"];
+//				turnplate.restaraunts = ["50元现金红包", "10HI豆", "谢谢参与", "5HI豆", "10元优惠券", "20元现金红包", "20HI豆 ", "30元优惠券", "100元现金红包", "2HI豆"];
+				turnplate.colors = ["#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF"];
 
 				var rotateTimeOut = function() {
 					$('#wheelcanvas').rotate({
@@ -107,55 +109,173 @@
 				};
 
 				//旋转转盘 item:奖品位置; txt：提示语;
-				var rotateFn = function(item, txt) {
-					var angles =  item * (360 / turnplate.restaraunts.length) - (360 / (turnplate.restaraunts.length*2));
-					if(angles < 270) {
-						angles = 270 - angles;
-					} else {
+				var rotateFn = function (item, txt){
+					var angles = item * (360 / turnplate.restaraunts.length) - (360 / (turnplate.restaraunts.length*2));
+					if(angles<270){
+						angles = 270 - angles; 
+					}else{
 						angles = 360 - angles + 270;
 					}
 					$('#wheelcanvas').stopRotate();
 					$('#wheelcanvas').rotate({
-						angle: 0,
-						animateTo: angles + 1800,
-						duration: 8000,
-						callback: function() {
-							alert(txt);
+						angle:0,
+						animateTo:angles+(360-75)/8 * 10,
+						duration:8000,
+						callback:function (){
+							if(txt.indexOf('加油')<0){
+								alert('恭喜你抽的'+txt)
+							}else{
+								alert(txt);
+							}
 							turnplate.bRotate = !turnplate.bRotate;
 						}
 					});
 				};
 
-				$('.pointer').click(function() {
-					if(!plus.storage.getItem('myToken')){ 
-						mui.toast('请登录');
-						openview({
-							view:'login.html'
-						});
-					}else{//抽奖
-						if(turnplate.bRotate) return;
-						turnplate.bRotate = !turnplate.bRotate;
-						//获取随机数(奖品个数范围内)
-						var item = rnd(1, turnplate.restaraunts.length);
-						//奖品数量等于10,指针落在对应奖品区域的中心角度[252, 216, 180, 144, 108, 72, 36, 360, 324, 288]
-						rotateFn(item, turnplate.restaraunts[item - 1]);
-					 
-						console.log(item);
-					}
-					
-				});
-			});
+			getAwd()
+			//获取奖品
+			function getAwd(){
+		 		mui.plusReady(function(){
+		 			var myuserid = plus.storage.getItem('userid');
+					var oldtoken = plus.storage.getItem('oldToken');
+					var cityNum = plus.storage.getItem('cityNum');
+					plus.nativeUI.showWaiting();
+		 			mui.ajax(serverUrl + '/api/index/gamedata', {
+                        data: { gameId:2},
+                        type: 'post',
+                        timeout: 10000,
+                        headers: { "token": oldtoken ,'city':cityNum},
+                        success: function(data, type, xhr) {
+                            console.log("游戏数据 ",data)
+                            if(data.errno == 0){
+                            	if(data.data.game){
+                            		var ele =data.data.game;
+                            		if(ele.beginTime){
+                            			var date = new Date(ele.beginTime);
+											Y = date.getFullYear() + '-';
+											M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+											D = date.getDate() + ' ';
+											h = date.getHours()-8;
+											if(h<0){
+												h = h+24
+											}
+											h = h + ':';
+											m = date.getMinutes();
+											s = date.getSeconds(); 
+											ele.beginTime = Y+M+D+h+m;
+                            		}
+                            		if(ele.endTime){
+                            			var date = new Date(ele.endTime);
+											Y = date.getFullYear() + '-';
+											M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+											D = date.getDate() + ' ';
+											h = date.getHours()-8;
+											if(h<0){
+												h = h+24
+											}
+											h = h + ':';
+											m = date.getMinutes();
+											s = date.getSeconds(); 
+											ele.endTime = Y+M+D+h+m;
+                            		}
+                            	}
+                            	if(data.data.game_prize){
+                            		for(var i = 0 ; i <data.data.game_prize.length;i++){
+                            			if(data.data.game_prize[i].title){
+                            				turnplate.restaraunts.push(data.data.game_prize[i].title)
+                            			}
+                            		}
+                            		console.log('奖品',turnplate.restaraunts)
+                            		drawRouletteWheel();
 
-			function rnd(n, m) {
-				var random = Math.floor(Math.random() * (m - n + 1) + n);
-				return random;
-
-			}
+                            	}
+                            	//点击抽奖
+                            	$('.pointer').click(function(){
+									if(!plus.storage.getItem('myToken')){ 
+											mui.toast('请登录');
+											openview({
+												view:'login.html'
+											});
+										}else{//抽奖
+											plus.nativeUI.showWaiting();
+											mui.ajax(serverUrl+'/api/useraccount/userinfo',{
+											data:{"userid":myuserid},
+											type:'post',
+											timeout:10000,
+											headers:{"token":oldtoken},	              				
+											success:function(data,type,xhr){
+												console.log('获取用户数据返回',data);
+												if(data.errno == 0){
+                            						plus.nativeUI.closeWaiting();
+													//判断是否填写号码
+					                            	if(data.data[0].phone){ 
+					                            		$('.pointer').unbind('click')
+														$('#wheelcanvas').rotate({
+															angle:0,
+															animateTo:360+(360)/8 * 55,
+															duration:10000,
+															callback:function (){
+																 
+															}
+														});
+					                            		
+						                            	mui.ajax(serverUrl + '/api/index/iswining', {
+							                                data: {
+							                                	userId:'932',
+																phone:'18661834369',//$('#userPhone').val()
+																macID:'hbfo9gg78eety58ffucccy2r432r32r4g5erhbsvAEBNeH56H',
+																gameId:2
+							                                },
+							                                type: 'post',
+							                                timeout: 10000,
+							                                headers: { "token": oldtoken ,'city':cityNum},
+							                                success: function(data, type, xhr) {
+							                                    console.log("中奖 ",data) 
+							                                    if(data.errno == 0){
+							                                    	if(data.data.orderIndex && data.data.title){
+							                                    		plus.nativeUI.closeWaiting();
+//							                                    		alert('恭喜你抽得第 '+data.data.orderIndex+'个奖品'+data.data.title);
+				//			                                    		rotateFn(item + 1, turnplate.restaraunts[item]);
+							                                    		rotateFn(data.data.orderIndex, turnplate.restaraunts[data.data.orderIndex-1]);
+							                                    	}
+							                                    	
+							                                    }else if(data.errno == 1000){
+							                                    	plus.nativeUI.closeWaiting();
+						                                    		mui.toast(data.errmsg)
+						                                    	}
+							                                         
+							                                },
+							                                error: function(xhr, type, errorThrown) {
+							                                    console.log('响应失败');
+							                                   	plus.nativeUI.closeWaiting();
+							                                }
+							                            });
+					                            	}else{
+					                            		plus.nativeUI.alert('请先填写电话号码哦')
+					                            	}
+												} 
+											},
+											error:function(xhr,type,errorThrown){
+												console.log('获取用户数据,响应失败');
+											}
+										});
+										
+										
+										} 
+	                            })	 
+                            }
+                            
+                        },
+                        error: function(xhr, type, errorThrown) {
+                            console.log('响应失败');
+                        }
+                    });
+		 		})
+		 	}
+		
 
 			//页面所有元素加载完毕后执行drawRouletteWheel()方法对转盘进行渲染
-			window.onload = function() {
-				drawRouletteWheel();
-			};
+			 
 
 			function drawRouletteWheel() {
 				var canvas = document.getElementById("wheelcanvas");
@@ -231,6 +351,8 @@
 						//把当前画布返回（调整）到上一个save()状态之前 
 						ctx.restore();
 						//----绘制奖品结束----
+					plus.nativeUI.closeWaiting();
+						
 					}
 				}
 			}
@@ -241,7 +363,7 @@
 		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
 			<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 id="centertitle" class="mui-title">抽奖活动</h1>
-			
+			<span id="rightbtn" class="mui-action-back mui-pull-right" style="margin-top: 10px;">跳过</span>
 		</header>
 		<div style="margin-top: 80px">
 			<img src="../img/center/1.png" id="shan-img" style="display:none;" />
@@ -445,9 +567,7 @@
 
 		
 		</div>
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/app.js"></script>
-		<script src="../js/artTemplate-native.js"></script>
+		
 		<script type="text/javascript">
 			(function($) {
 				$.fn.myScroll = function(options) {
@@ -508,7 +628,7 @@
 					$(targetID).css({
 						//"background-image": "url(../img/header.png)","background-size":"100%"
 					});
-					$('#leftbtn').css({
+					$('#leftbtn,#rightbtn').css({
 						'color': '#666'
 					});
 					$('#centertitle').css({
@@ -519,7 +639,7 @@
 					$(targetID).css({
 						"background-image": "none"
 					});
-					$('#leftbtn').css({
+					$('#leftbtn,#rightbtn').css({
 						'color': '#fff'
 					});
 					$('#centertitle').css({
