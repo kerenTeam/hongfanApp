@@ -172,7 +172,7 @@
 										//判断是否填写号码
 		                            	if(data.data[0].phone){ 
 		                            		var myPhone = data.data[0].phone;
-//		                            		$('.pointer').unbind('click')
+		                            		$('.pointer').unbind('click');
 											$('#wheelcanvas').rotate({
 												angle:0,
 												animateTo:360+(360)/8 * 55,
@@ -208,9 +208,11 @@
 				                                    	
 				                                    }else if(data.errno == 1000){
 				                                    	plus.nativeUI.closeWaiting();
-			                                    		mui.toast(data.errmsg)
+			                                    		mui.toast(data.errmsg);
+			                                    		var date = new Date().getDate();
+				                                    	plus.storage.setItem("$gameTime",JSON.stringify({gameData:date}));
+			                                    		
 			                                    	}
-				                                         
 				                                },
 				                                error: function(xhr, type, errorThrown) {
 				                                    console.log('响应失败');
