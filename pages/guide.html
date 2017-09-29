@@ -351,7 +351,11 @@
 									var  oCanvas = document.createElement('canvas'),
 						            oCtx = oCanvas.getContext("2d"),
 						            oImg = new Image();
-						            oImg.src = serverimgUrl + element.pic;
+						            if(element.pic.includes('http')){
+						            	oImg.src = element.pic;
+						            }else{
+						            	oImg.src = serverimgUrl + element.pic;
+						            }
 						            var picNnameA = element.pic.split('/'),
 										picNname = picNnameA[picNnameA.length-1];
 						            oImg.onload = function() {
@@ -382,6 +386,8 @@
 								picCacheFun();
 							}
 							//缓存处理结束
+							
+							console.log("缓存",plus.storage.getItem('$picCache'))
 							
 							//倒计时 
 							var jumptime = data.data.Start_time;
