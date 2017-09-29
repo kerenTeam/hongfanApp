@@ -39,9 +39,13 @@
 			width: 50px;
 			height: 50px;
 		}
-		.tixian{
-			float: right;color: white;background-color: #F63D42;padding:2px 5px;font-size: 12px;border-radius: 3px;
+		.tixian,.lookInfo{
+			text-align: center;width:70px;float: right;color: white;background-color: #F63D42;padding:2px 5px;font-size: 12px;border-radius: 3px;
 		}
+		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
+		.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:50%;left:7%;width:86%;-webkit-transform: translateY(-50%);padding:15px 5px;border-radius:3px}
+		.closemask{position:absolute;bottom:10px;left:50%;-webkit-transform:translateX(-50%)}
+		.ruleol{padding: 0 15px 0 15px;margin-top: 25px;}
 	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav" id="header">
@@ -73,19 +77,29 @@
 									<img src="../../img/center/redpack.png" style="width: 15px;vertical-align: middle;"/>
 								<%}%>
 								<%= list[i].title%>
+								<%if(list[i].couponId && list[i].coupon){%>
+									<div class="lookInfo" onclick="lookInfo('<%= list[i].coupon.content%>','<%= list[i].coupon.begin_date%>','<%= list[i].coupon.end_date%>')" style="background-color: darkgray;margin-left: 5px;">
+										详情说明	
+									</div>
+								<%}%>
+								<%if(list[i].giftId && list[i].gift){%>
+									<div class="lookInfo" onclick="lookInfo2('<%= list[i].gift.content%>')" style="background-color: darkgray;margin-left: 5px;">
+										详情说明	
+									</div>
+								<%}%>
 								<%if(list[i].redPocket && !list[i].withsrawls){%>
 									<div class="tixian" onclick="tixian(this,<%= list[i].gameId%>,<%= list[i].prizeId%>,<%= list[i].userId%>,'<%= list[i].phone%>','<%= list[i].macID%>','<%= list[i].createTime%>')">
 										申请提现	
 									</div>
 									<div class="tixian" style="background-color: #F0AD4E;display: none;">
-										已申请提现	
+										已申请	
 									</div>
 								<%}else if(list[i].redPocket && list[i].withsrawls == 1){%>
 									<div class="tixian" style="background-color: #F0AD4E;">
 										已申请提现	
 									</div>
 								<%}%>
-								 <!--'<%= list[i].gameId%>','<%= list[i].prizeId%>','<%= list[i].userId%>','<%= list[i].phone%>','<%= list[i].macID%>','<%= list[i].createTime%>'-->
+								
 								
 							</div>
 						</div>
@@ -93,6 +107,18 @@
 				<%}%>
 					
 			</script>
+			<!--遮罩-->
+			<div id="maskInfo" style="display: none;">
+				<div class="ruleCt" style="padding-bottom: 1px;">
+					<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+						<div class="ft16 fttc" style="text-align: center;">详情说明</div>
+						<ol class="ft14 disablecl ruleol">
+						</ol>
+					</div>
+					<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
+					
+				</div>
+			</div>
 		</div>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
@@ -127,7 +153,9 @@
 										data.data[i].nickname = data.data[i].nickname.substring(0,3)+"****"+data.data[i].nickname.substring(7,11)
 									}
 								}
-                                
+                                if(data.data[i].gift && data.data[i].gift.content){
+                                	data.data[i].gift.content = TransferString(data.data[i].gift.content)
+                                } 
                                 if(data.data[i].avatar && data.data[i].avatar!='null'){
                                     if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http') == -1){
                                         data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
@@ -192,6 +220,23 @@
             });
         }
         
+        //查看详情1
+        function lookInfo(tit,startT,startE){
+        	$('#maskInfo').fadeIn(200);
+        	$('.ruleol').html('<div style="text-align: center;font-size: 16px;">'+tit+'</div><div style="text-align: center;font-size: 12px;color:#F34141;margin-top: 10px;">有效时间:'+startT+'~'+startE+'</div>')
+        }
+        //查看详情2
+        function lookInfo2(cont){
+        	$('#maskInfo').fadeIn(200);
+        	$('.ruleol').html('<div style="text-align: center;font-size: 16px;">'+cont+'</div>')
+        }
+        $('.ruleCt').click(function(){
+			event.stopPropagation()
+		})
+		$('#maskInfo,.closemask').click(function(){
+			event.preventDefault()
+			$('#maskInfo').fadeOut(200);
+		}) 
 		//发布时间判断 
 		var minute = 1000 * 60;
 		var hour = minute * 60;
@@ -225,5 +270,18 @@
 			 }
 			return result;
 		}
+		
+		//处理换行
+		function TransferString(content){  
+		    var string = content;  
+		    try{  
+		        string=string.replace(/\r\n/g,"")  
+		        string=string.replace(/\n/g,"");  
+		    }catch(e) { 
+		    	
+		    }  
+		    return string;  
+		}
+		
 	</script>
 </html>
