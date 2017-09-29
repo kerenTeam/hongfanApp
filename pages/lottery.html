@@ -213,12 +213,18 @@
 				                                    	
 				                                    }else if(data.errno == 1000){
 				                                    	plus.nativeUI.closeWaiting();
-		                                    			plus.nativeUI.alert(data.errmsg)
+				                                    	//抽奖缓存
+			                                    		var date = new Date().getDate();
+			                                    		plus.storage.setItem("$gameTime",JSON.stringify({gameData:date}));
+			                                    		 
+														$('#wheelcanvas').stopRotate();
+		                                    			plus.nativeUI.alert(data.errmsg);
 			                                    	}
 				                                },
 				                                error: function(xhr, type, errorThrown) {
 				                                    console.log('响应失败');
 				                                   	plus.nativeUI.closeWaiting();
+				                                   	
 				                                }
 				                            });
 		                            	}else{
