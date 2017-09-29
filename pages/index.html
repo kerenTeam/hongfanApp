@@ -74,47 +74,52 @@
 			mui.plusReady(function() {
 				
 				//显示   广告导航页面
-				openview({
-					view: 'guide.html',
-					id: 'guide',
-				});
+//				openview({
+//					view: 'guide.html',
+//					id: 'guide',
+//				});
 
 //				plus.storage.removeItem("$gameTime"); 
+				console.log('抽奖缓存',plus.storage.removeItem("$gameTime"))
+				
+				function doGame(){
 					//转盘抽奖
 					if(!JSON.parse(plus.storage.getItem("$gameTime")) || (JSON.parse(plus.storage.getItem("$gameTime")).gameData != new Date().getDate())){
 						var cityNum  = plus.storage.getItem('cityNum'),
 						oldToken = plus.storage.getItem('oldToken');
 						mui.ajax(serverUrl + '/api/index/gamedata', { 
-	                    data: { gameId:2},
-	                    type: 'post',
-	                    timeout: 10000,
-	                    headers: { "token": oldToken ,'city':cityNum},
-	                    success: function(data, type, xhr) {
-	                        console.log("游戏数据 ",JSON.stringify(data));
-	                        if(data.errno == 0){
-	                        	if(data.data.game){
-	                        		var ele =data.data.game;
-	                        		if(ele.beginTime && ele.endTime){
-	                        			var nowdate = Date.now();
-	                        			if(nowdate >= ele.beginTime && nowdate<ele.endTime){
-	                        				openview({
-												view: 'lottery.html',
-												id: 'lottery',
-											});
-	                        			}
-										 
-	                        		}
-	                        		
-	                        	}
-	                       
-	                        }
-	                        
-	                    },
-	                    error: function(xhr, type, errorThrown) {
-	                        console.log('响应失败');
-	                    }
-	                });
+		                    data: { gameId:2},
+		                    type: 'post',
+		                    timeout: 10000,
+		                    headers: { "token": oldToken ,'city':cityNum},
+		                    success: function(data, type, xhr) {
+		                        console.log("游戏数据 ",data)
+		                        if(data.errno == 0){
+		                        	if(data.data.game){
+		                        		var ele =data.data.game;
+		                        		if(ele.beginTime && ele.endTime){
+		                        			var nowdate = Date.now();
+		                        			if(nowdate >= ele.beginTime && nowdate<ele.endTime){
+		                        				openview({
+													view: 'lottery.html',
+													id: 'lottery',
+												});
+		                        			}
+											 
+		                        		}
+		                        		
+		                        	}
+		                       
+		                        }
+		                        
+		                    },
+		                    error: function(xhr, type, errorThrown) {
+		                        console.log('响应失败');
+		                    }
+		                });
+					}
 				}
+				
 				
 				
 				
@@ -267,6 +272,7 @@
 				var timeSign2  =  setInterval(function(){
 					loadNum2++;
 					if(plus.storage.getItem('oldToken') || loadNum2==10){
+						doGame();
 						clearInterval(timeSign2);
 					}else{
 						Sign();
