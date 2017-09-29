@@ -101,9 +101,14 @@
 													 
 												}
 										});
-	                            	 var imei = plus.device.imei;
+	                            	 var imei = plus.device.UUID;
+	                            	 	plus.nativeUI.showWaiting();
 		                            	mui.ajax(serverUrl + '/api/index/iswining', {
 			                                data: {
+//			                                	userId:'428',
+//												phone:'13455983657',
+//												macID:'dsrfggtyryhgbfsrertytuyjr',
+//												gameId:1
 			                                	userId:myuserid,
 												phone:$('#userPhone').val(),
 												macID:imei,
@@ -123,7 +128,7 @@
 			                                    	
 			                                    }else if(data.errno == 1000){
 			                                    	plus.nativeUI.closeWaiting();
-		                                    		mui.toast(data.errmsg)
+		                                    		plus.nativeUI.alert(data.errmsg)
 		                                    	}else{
 		                                    		console.log(data)
 		                                    	}
