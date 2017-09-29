@@ -321,27 +321,29 @@
 				<!--轮播图结束-->
 				<!--banner数据渲染-->
 				<script type="text/html" id="banner-detail">
-					<div class="mui-slider-group mui-slider-loop">
-					    <!--支持循环，需要重复图片节点-->
-					    <div class="mui-slider-item mui-slider-item-duplicate"  onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','two')">
-					    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
-					    </div>
-						<% for(var i=0;i<bannerList.length;i++){ %> 
-					    	<div class="mui-slider-item"  onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','two')">
-					    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
-					    	</div>
-					     <% } %>
-					    <!--支持循环，需要重复图片节点-->
-					    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','two')">
-					    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
-					    </div>
-					</div>
-					<div class="mui-slider-indicator">
-						<div class="mui-indicator mui-active"></div>
-						<% for(var i=0;i<bannerList.length-1;i++){ %>
-					    	<div class="mui-indicator"></div>
-					    <% } %>
-		            </div> 
+					<%if(bannerList.length){%>
+						<div class="mui-slider-group mui-slider-loop">
+						    <!--支持循环，需要重复图片节点-->
+						    <div class="mui-slider-item mui-slider-item-duplicate"  onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','two')">
+						    	<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						    </div>
+							<% for(var i=0;i<bannerList.length;i++){ %> 
+						    	<div class="mui-slider-item"  onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','two')">
+						    		<img src="<%= url %><%=bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						    	</div>
+						     <% } %>
+						    <!--支持循环，需要重复图片节点-->
+						    <div class="mui-slider-item mui-slider-item-duplicate" onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','two')">
+						    	<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
+						    </div>
+						</div>
+						<div class="mui-slider-indicator">
+							<div class="mui-indicator mui-active"></div>
+							<% for(var i=0;i<bannerList.length-1;i++){ %>
+						    	<div class="mui-indicator"></div>
+						    <% } %>
+			            </div> 
+					<%}%>
 				</script>
 			
 			 
@@ -559,13 +561,14 @@
 			});
 			
 			var token=plus.storage.getItem("oldToken");//获取token
+			var cityNum=plus.storage.getItem("cityNum");//获取token
 			//banner
 			mui.ajax(serverUrl + '/api/index/banner', {
 				data:{banner_type:6},
 				dataType:'json',
 				type:'post',
 				timeout:10000,
-				headers:{"token":token},	 
+				headers:{"token":token,city:0},
 				success:function(data,type,xhr){
 					console.log('banner',data);
 					bannerObj={};
