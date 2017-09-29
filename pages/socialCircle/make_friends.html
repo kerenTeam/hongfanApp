@@ -66,7 +66,7 @@
 									
 								</div>
 								
-								<div class="circleName"><%=dataList[i].username%> <a style="float: right;"><img style="width: 15px;vertical-align:middle;margin-right: 3px;" src="../../img/mainHtml/yizan.png"/><%=dataList[i].likes%></a><br /> <span><%=dataList[i].age%></span> </div>
+								<div class="circleName"><%=dataList[i].nickname%> <a style="float: right;"><img style="width: 15px;vertical-align:middle;margin-right: 3px;" src="../../img/mainHtml/yizan.png"/><%=dataList[i].likes%></a><br /> <span><%=dataList[i].age%></span> </div>
 							</div>
 						<%}%>	
 					</script>
@@ -232,9 +232,18 @@
 										if(!data.data.data[i].likes || data.data.data[i].likes=='null'){
 											data.data.data[i].likes = 0;
 										}
-										if(!data.data.data[i].username ||data.data.data[i].username == 'null'){
-											data.data.data[i].username = '匿名'
+										if(data.data.data[i].username){
+											data.data.data[i].nickname = data.data.data[i].username;
+										}else{
+											if(data.data.data[i].nickname && data.data.data[i].nickname !='null'){
+												if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.data[i].nickname)){
+													data.data.data[i].nickname = data.data.data[i].nickname.substring(0,3)+"****"+data.data.data[i].nickname.substring(7,11)
+												}
+											}else{
+												data.data.data[i].nickname = '匿名'
+											}
 										}
+										
 										if(!data.data.data[i].age || data.data.data[i].age == 'null'|| data.data.data[i].age==' '){
 											data.data.data[i].age = '年龄保密'
 										}else{
