@@ -174,10 +174,10 @@
 			</div>
 			
 		</div>
-		<!--<div id="maskTc" style="display: ;position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9999;">
+		<div id="maskTc" style="display: ;position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9999;">
 			<img class="closeTk" style="position: absolute;top: 15px;right:15px;transform: rotate(45deg);z-index: 999999;" src="../../img/market/addtheme.svg"/>
 			<img class="tomypage" style="width: 100%;margin: auto;display: block;" src="../../img/makeFriend/answerT.png"/>
-		</div>-->
+		</div>
 		
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
 	<script src="../../js/mui.min.js"></script>
@@ -189,13 +189,38 @@
 			$('#maskTc').css('display','none')	
 		})
 		$('.tomypage').click(function(){
-			if(plus.storage.getItem('myToken')){
 				event.stopPropagation();
-				$('#maskTc').css('display','none')	
-//				openview({
-//					view:'mycircleIndex.html',
-//					id:'mycircleIndex',
-//				})
+			if(plus.storage.getItem('myToken')){
+				mui.plusReady(function(){
+					//产生随机问题
+					mui.ajax(serverUrl + '/api/friends/israndom', {
+		                type: 'post',
+		                timeout: 10000,
+		                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+		                success: function(data, type, xhr) { 
+		                   	plus.nativeUI.closeWaiting();
+		                	console.log('问题',data);    
+		                	if(data.data && data.data.length){
+		                		var length = data.data.length;
+			                	var nid = data.data[Math.floor(Math.random()*length)].id;
+			                	console.log(Math.floor(Math.random()*length)+' '+nid)
+								$('#maskTc').css('display','none');
+								openview({
+									view:'answerInfo.html',
+									id:'answerInfo',
+									extrasobj:{answerId:nid}
+								})
+		                	}else{
+								$('#maskTc').css('display','none');
+		                	}
+		                	
+		                },
+		                error: function(xhr, type, errorThrown) {
+		                    console.log('响应失败');
+		                   	plus.nativeUI.closeWaiting();
+		                }
+		            });
+				})  
 			}else{
 				mui.toast('请登录');
 				openview({

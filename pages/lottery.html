@@ -216,15 +216,20 @@
 				                                    	//抽奖缓存
 			                                    		var date = new Date().getDate();
 			                                    		plus.storage.setItem("$gameTime",JSON.stringify({gameData:date}));
-			                                    		 
 														$('#wheelcanvas').stopRotate();
 		                                    			plus.nativeUI.alert(data.errmsg);
+
+			                                    	}else{
+			                                    		$('#wheelcanvas').stopRotate();
+					                                   	plus.nativeUI.closeWaiting();
+														mui.toast('网络不好，请重试')
 			                                    	}
 				                                },
 				                                error: function(xhr, type, errorThrown) {
 				                                    console.log('响应失败');
+													$('#wheelcanvas').stopRotate();
 				                                   	plus.nativeUI.closeWaiting();
-				                                   	
+													mui.toast('网络不好，请重试')
 				                                }
 				                            });
 		                            	}else{

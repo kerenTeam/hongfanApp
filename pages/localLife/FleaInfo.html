@@ -270,10 +270,13 @@
 						}else{
 							nowArray.avatar = '../../img/10.png'
 						}
-						
-						if(!nowArray.nickname){
+						if(nowArray.nickname && nowArray.nickname !='null'){
+							if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray.nickname)){
+								nowArray.nickname = nowArray.nickname.substring(0,3)+"****"+nowArray.nickname.substring(7,11)
+							}
+						}else{
 							nowArray.nickname = '匿名'
-						}
+						} 
 						if(!nowArray.read){
 							nowArray.read = 0
 						}else if((nowArray.read / 1000)>1){
@@ -371,10 +374,14 @@
 							if(cmtArray && cmtArray.length>0){
 								 
 									for(var i = 0;i<cmtArray.length;i++){
-										if(!cmtArray[i].nickname){ 
-											cmtArray[i].nickname =  '匿名'
+									 
+										if(cmtArray[i].nickname && cmtArray[i].nickname !='null'){
+											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+												cmtArray[i].nickname = cmtArray[i].nickname.substring(0,3)+"****"+cmtArray[i].nickname.substring(7,11)
+											}
+										}else{
+											cmtArray[i].nickname = '匿名'
 										}
-										
 										if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
 											if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
 												cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
