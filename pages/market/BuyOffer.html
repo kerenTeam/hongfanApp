@@ -249,127 +249,135 @@
 
 			window.goPay = function(obj,cid,cprice) { 
 				event.stopPropagation();
-				if(cprice && cprice>0){
-				  	$("#payChoose").addClass("mui-active");
-					// 支付方法 
-					window.payfun = function(id) {
-						var varpay; 
-						if(id == 'alipay' || id == 'wxpay') {
-							//调用支付功能
-							plus.nativeUI.showWaiting();
-								gopay(id); 
-						} else {
-							plus.nativeUI.alert("当前环境不支持此支付通道！", null, "提示");
-							return;
-						}
-
-						function gopay(id) {
-							mui.ajax(serverUrl + '/api/index/getcoupon', {
-								data:{
-									userId:myuserid,
-									payType:id, 
-									id:cid,
-								},
-								dataType:'json',
-								type: 'post', //HTTP请求类型
-								headers: {"token": oldToken,'city': cityNum},
-								timeout: 10000, //超时时间设置为10秒；
-								success: function(data) {
-									console.error('支付返回',data);
-									plus.nativeUI.closeWaiting()  
-									if(data.errno == 1000) {
-										mui.toast('已领完') 
-									} 
-									if(data.errno == 0) {
-										
-										var varpay;
-										if(id == 'wxpay') {
-											varpay = {
-												"appid":data.data.appid,
-												"noncestr":data.data.noncestr,
-												"package":"Sign=WXPay",
-												"partnerid":data.data.partnerid,
-												"prepayid":data.data.prepayid,
-												"timestamp":parseInt(data.data.timestamp),
-												"sign":data.data.sign
-											};
-											//微信
-											 plus.payment.request(pays[id], varpay, function(result) {
-												var resultStr = JSON.stringify(result);
-												console.log("----- 支付成功 -----");
-												plus.nativeUI.closeWaiting();
-												 
-												mui.toast('领取成功');
-												
-												showData();
-											}, function(e) {
-												console.log("----- 支付失败 -----");
-												console.log("[" + e.code + "]：" + e.message);
-												plus.nativeUI.alert("支付失败");
-											});
-										} else {
-											//支付宝 
-											varpay = data.data;
-											plus.payment.request(pays[id], varpay, function(result) {
-												var resultStr = JSON.stringify(result);
-												console.log("----- 支付成功 -----", JSON.stringify(result));
-												plus.nativeUI.closeWaiting();
-												var oldtoken = plus.storage.getItem('oldToken');
-												//修改订单状态
-												mui.toast('领取成功');
-	  											showData();
-											}, function(e) {
-												console.log("----- 支付失败 -----");
-												console.log("[" + e.code + "]：" + e.message);
-												//					console.log("["+e.code+"]："+e.message);
-												plus.nativeUI.closeWaiting();
-												plus.nativeUI.alert("支付失败");
-											});
-										}
-										 
-									}
-								},
-								error: function(xhr, type, errorThrown) {
-									//异常处理；
-									console.log(type);
-									console.log("----- 请求订单失败 -----");
-									console.log(xhr.status);
-									plus.nativeUI.closeWaiting();
-									plus.nativeUI.alert("获取订单信息失败！");
-								}
-							});
-
-						}
-
-					}	
-				}
-				if(cprice == 0){
-					mui.ajax(serverUrl + '/api/index/getcoupon', {
-						data:{
-							userId:plus.storage.getItem('userid'),
-							id:cid,
-						},
-						dataType:'json',
-						type: 'post', //HTTP请求类型
-						headers: {"token": oldToken,'city': cityNum},
-						timeout: 10000, //超时时间设置为10秒；
-						success: function(data) {
-							console.error('领取返回',data);
-							plus.nativeUI.closeWaiting()  
-							if(data.errno == 1000) {
-								mui.toast('已领完') 
-							} 
-							if(data.errno == 0) { 
-								mui.toast('领取成功') ;
-								showData();
+				if(plus.storage.getItem('myToken')){
+					if(cprice && cprice>0){
+					  	$("#payChoose").addClass("mui-active");
+						// 支付方法 
+						window.payfun = function(id) {
+							var varpay; 
+							if(id == 'alipay' || id == 'wxpay') {
+								//调用支付功能
+								plus.nativeUI.showWaiting();
+									gopay(id); 
+							} else {
+								plus.nativeUI.alert("当前环境不支持此支付通道！", null, "提示");
+								return;
 							}
-						},
-						error: function(xhr, type, errorThrown) {
-							//异常处理；
-							console.log(type); 
-							console.log(xhr.status);
-							plus.nativeUI.closeWaiting(); 
-						}
+	
+							function gopay(id) {
+								mui.ajax(serverUrl + '/api/index/getcoupon', {
+									data:{
+										userId:myuserid,
+										payType:id, 
+										id:cid,
+									},
+									dataType:'json',
+									type: 'post', //HTTP请求类型
+									headers: {"token": oldToken,'city': cityNum},
+									timeout: 10000, //超时时间设置为10秒；
+									success: function(data) {
+										console.error('支付返回',data);
+										plus.nativeUI.closeWaiting()  
+										if(data.errno == 1000) {
+											mui.toast('已领完') 
+										} 
+										if(data.errno == 0) {
+											
+											var varpay;
+											if(id == 'wxpay') {
+												varpay = {
+													"appid":data.data.appid,
+													"noncestr":data.data.noncestr,
+													"package":"Sign=WXPay",
+													"partnerid":data.data.partnerid,
+													"prepayid":data.data.prepayid,
+													"timestamp":parseInt(data.data.timestamp),
+													"sign":data.data.sign
+												};
+												//微信
+												 plus.payment.request(pays[id], varpay, function(result) {
+													var resultStr = JSON.stringify(result);
+													console.log("----- 支付成功 -----");
+													plus.nativeUI.closeWaiting();
+													 
+													mui.toast('领取成功');
+													
+													showData();
+												}, function(e) {
+													console.log("----- 支付失败 -----");
+													console.log("[" + e.code + "]：" + e.message);
+													plus.nativeUI.alert("支付失败");
+												});
+											} else {
+												//支付宝 
+												varpay = data.data;
+												plus.payment.request(pays[id], varpay, function(result) {
+													var resultStr = JSON.stringify(result);
+													console.log("----- 支付成功 -----", JSON.stringify(result));
+													plus.nativeUI.closeWaiting();
+													var oldtoken = plus.storage.getItem('oldToken');
+													//修改订单状态
+													mui.toast('领取成功');
+		  											showData();
+												}, function(e) {
+													console.log("----- 支付失败 -----");
+													console.log("[" + e.code + "]：" + e.message);
+													//					console.log("["+e.code+"]："+e.message);
+													plus.nativeUI.closeWaiting();
+													plus.nativeUI.alert("支付失败");
+												});
+											}
+											 
+										}
+									},
+									error: function(xhr, type, errorThrown) {
+										//异常处理；
+										console.log(type);
+										console.log("----- 请求订单失败 -----");
+										console.log(xhr.status);
+										plus.nativeUI.closeWaiting();
+										plus.nativeUI.alert("获取订单信息失败！");
+									}
+								});
+	
+							}
+	
+						}	
+					}
+					if(cprice == 0){
+						mui.ajax(serverUrl + '/api/index/getcoupon', {
+							data:{
+								userId:plus.storage.getItem('userid'),
+								id:cid,
+							},
+							dataType:'json',
+							type: 'post', //HTTP请求类型
+							headers: {"token": oldToken,'city': cityNum},
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+								console.error('领取返回',data);
+								plus.nativeUI.closeWaiting()  
+								if(data.errno == 1000) {
+									mui.toast('已领完') 
+								} 
+								if(data.errno == 0) { 
+									mui.toast('领取成功') ;
+									showData();
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								//异常处理；
+								console.log(type); 
+								console.log(xhr.status);
+								plus.nativeUI.closeWaiting(); 
+							}
+						});
+					}
+					
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
 					});
 				}
 				 
