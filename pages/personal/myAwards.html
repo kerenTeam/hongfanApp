@@ -43,6 +43,9 @@
 			width: 50px;
 			height: 50px;
 		}
+		.tixian{
+			float: right;color: white;background-color: #F63D42;padding:2px 5px;font-size: 12px;border-radius: 3px;
+		}
 	</style>
 	<body>
 		<header class="mui-bar mui-bar-nav" id="header">
@@ -63,14 +66,31 @@
 						<div style="flex-grow: 1;">
 							<div class="flexx" style="justify-content: space-between;">
 								<div class="ft14 maincl">
-									恭喜你
+									恭喜你，抽得
 								</div>
 								<div class="disablecl ft12">
-									<%= list[i].createTime%>
+									<%= list[i].createTime2%>
 								</div>
 							</div>
-							<div class="ft14">
-								抽得<%= list[i].title%>
+							<div class="ft14" style="margin-top: 8px;">
+								<%if(list[i].redPocket){%>
+									<img src="../../img/center/redpack.png" style="width: 15px;vertical-align: middle;"/>
+								<%}%>
+								<%= list[i].title%>
+								<%if(list[i].redPocket && !list[i].withsrawls){%>
+									<div class="tixian" onclick="tixian(this,<%= list[i].gameId%>,<%= list[i].prizeId%>,<%= list[i].userId%>,'<%= list[i].phone%>','<%= list[i].macID%>','<%= list[i].createTime%>')">
+										申请提现	
+									</div>
+									<div class="tixian" style="background-color: #F0AD4E;display: none;">
+										已申请提现	
+									</div>
+								<%}else if(list[i].redPocket && list[i].withsrawls == 1){%>
+									<div class="tixian" style="background-color: #F0AD4E;">
+										已申请提现	
+									</div>
+								<%}%>
+								 <!--'<%= list[i].gameId%>','<%= list[i].prizeId%>','<%= list[i].userId%>','<%= list[i].phone%>','<%= list[i].macID%>','<%= list[i].createTime%>'-->
+								
 							</div>
 						</div>
 					</li>
@@ -121,7 +141,7 @@
                                 }else{
                                     data.data[i].avatar = '../img/10.png'
                                 }
-                               		data.data[i].createTime = getDateDiff(data.data[i].createTime); 
+                               		data.data[i].createTime2 = getDateDiff(data.data[i].createTime); 
                     		}
                     		
                     		$('#recordList').html(template('recordTpl',{list:data.data}));
@@ -139,9 +159,44 @@
                     console.log('响应失败');
                    	plus.nativeUI.closeWaiting();
                 }
-            });
+            }); 
 		})
 		
+			
+		//提现 
+        function tixian(obj,gameid,prizeid,userid,phone,macid,createtime){
+			if(!macid){
+				macid = 'undefined'
+			}
+			var cur = $(obj);
+        	plus.nativeUI.showWaiting();
+        	mui.ajax(serverUrl + '/api/index/withdrawals', {
+				data:{'gameId':gameid,'prizeId':prizeid,'userId':userid,'phone':phone,'macid':macid,'createTime':createtime},
+                type: 'post',
+                timeout: 10000,
+                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+                success: function(data, type, xhr) { 
+                   	plus.nativeUI.closeWaiting();
+                	console.log('提现',data);
+                	if(data.errno == 0){
+                		if(data.data ==1 ){
+	                		mui.toast('申请成功');
+	                		cur.css('display','none');
+	                		cur.next().css('display','block')
+	                	}else{
+	                		mui.toast(data.errmsg)
+	                	}
+                	}
+                	
+                 
+                },
+                error: function(xhr, type, errorThrown) {
+                    console.log('响应失败');
+                   	plus.nativeUI.closeWaiting();
+                }
+            });
+        }
+        
 		//发布时间判断 
 		var minute = 1000 * 60;
 		var hour = minute * 60;
