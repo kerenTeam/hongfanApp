@@ -191,33 +191,60 @@
 			if(!macid){
 				macid = 'undefined'
 			}
-			var cur = $(obj);
-        	plus.nativeUI.showWaiting();
-        	mui.ajax(serverUrl + '/api/index/withdrawals', {
-				data:{'gameId':gameid,'prizeId':prizeid,'userId':userid,'phone':phone,'macid':macid,'createTime':createtime},
-                type: 'post',
-                timeout: 10000,
-                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
-                success: function(data, type, xhr) { 
-                   	plus.nativeUI.closeWaiting();
-                	console.log('提现',data);
-                	if(data.errno == 0){
-                		if(data.data ==1 ){
-	                		mui.toast('申请成功');
-	                		cur.css('display','none');
-	                		cur.next().css('display','block')
-	                	}else{
-	                		mui.toast(data.errmsg)
+			mui.confirm('选择你的提现账户类型?', '提示', ['支付宝', '微信'], function(e) {
+	            if (e.index == 1) {
+	            	Mprompt('微信');
+	            }else{
+	            	Mprompt('支付宝');	
+	            }
+	        })
+			function Mprompt(val){
+				mui.prompt('null',val+'账号','请输入提现账户?',['确认','取消'],function(e) {
+					if(e.index == 0) {
+						if(e.value && e.value!=' '){
+							var commont = e.value;
+			    			if(val == '支付宝'){
+			    				withdrawalsFun(commont,' ');
+			    			}else{
+			    				withdrawalsFun(' ',commont);
+			    			}
+						}else{
+							mui.toast('留言失败')
+						}
+					} 
+				},'')
+			}
+			
+			function withdrawalsFun(aliPay,wxpay){
+				var cur = $(obj);
+	        	plus.nativeUI.showWaiting();
+	        	mui.ajax(serverUrl + '/api/index/withdrawals', {
+					data:{'gameId':gameid,'prizeId':prizeid,'userId':userid,'phone':phone,'macid':macid,'createTime':createtime,'aliPay':aliPay,'wxpay':wxpay},
+	                type: 'post',
+	                timeout: 10000,
+	                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+	                success: function(data, type, xhr) { 
+	                   	plus.nativeUI.closeWaiting();
+	                	console.log('提现',data);
+	                	if(data.errno == 0){
+	                		if(data.data ==1 ){
+		                		mui.toast('申请成功');
+		                		cur.css('display','none');
+		                		cur.next().css('display','block')
+		                	}else{
+		                		mui.toast(data.errmsg)
+		                	}
 	                	}
-                	}
-                	
-                 
-                },
-                error: function(xhr, type, errorThrown) {
-                    console.log('响应失败');
-                   	plus.nativeUI.closeWaiting();
-                }
-            });
+	                	
+	                 
+	                },
+	                error: function(xhr, type, errorThrown) {
+	                    console.log('响应失败');
+	                   	plus.nativeUI.closeWaiting();
+	                }
+	            });
+			}
+			
         }
         
         //查看详情1

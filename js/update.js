@@ -75,8 +75,8 @@ function checkUpdate(hide){
 
 function downWgt(hide,downurl){ 
 	!hide && plus.nativeUI.showWaiting('正在下载...',{width:'130px',height:'110px'});
-    console.log(serverimgUrl+"/"+downurl); 
-    plus.downloader.createDownload(serverimgUrl+"/"+downurl, {filename:"_doc/update/"}, function(d,status){
+    console.log('下载地址'+ propUrl+"/"+downurl);
+    plus.downloader.createDownload(propUrl+"/"+downurl, {filename:"_doc/update/"}, function(d,status){
     	console.log('下载状态',status);
         if ( status == 200 ) { 
             console.log("下载wgt成功："+d.filename); 
@@ -104,11 +104,11 @@ function installWgt(path,hide){
     plus.runtime.install(path,{},function(){
         plus.nativeUI.closeWaiting();
         console.log("安装wgt文件成功！");
-        if (!hide) {
-        	plus.nativeUI.alert("更新完成， 重启完成升级！",function(){ 
+        //if (!hide) {
+        	plus.nativeUI.alert("软件更新完成， 重启完成升级！",function(){ 
 	            plus.runtime.restart();
 	        });
-        }
+        //}
         
     },function(e){
         plus.nativeUI.closeWaiting();

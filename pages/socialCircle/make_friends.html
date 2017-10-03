@@ -124,7 +124,7 @@
 			var listSon = document.getElementsByClassName('listSon'); /*内容盒子*/
 			[].forEach.call(listCon,function(ele,index){/*点击切换tab*/
 				ele.onclick = function(){//点击tab切换
-					if(!ele.className.includes('active')){
+					if(!ele.className.indexOf('active')>-1){
 						[].forEach.call(listCon,function(ele2){
 							ele2.className = '';
 						})
@@ -177,7 +177,7 @@
 				}else if(typeNum == 1){
 					flag1++;
 					var dataJson = {
-							'recommend':suggest, 
+							'recommend':suggest,
 							'gender':2,
 							'numsPerPage':numsPerPage,
 							'currentPage':currentPage,
@@ -187,7 +187,7 @@
 				}else if(typeNum == 2){
 					flag2++;
 					var dataJson = {
-							'recommend':suggest, 
+							'recommend':suggest,
 							'gender':1,
 							'numsPerPage':numsPerPage,
 							'currentPage':currentPage,
@@ -336,8 +336,16 @@
 																		if(!data.data.data[i].likes || data.data.data[i].likes=='null'){
 																			data.data.data[i].likes = 0;
 																		}
-																		if(!data.data.data[i].username || data.data.data[i].username == 'null'){
-																			data.data.data[i].username = '匿名'
+																		if(data.data.data[i].username){
+																			data.data.data[i].nickname = data.data.data[i].username;
+																		}else{
+																			if(data.data.data[i].nickname && data.data.data[i].nickname !='null'){
+																				if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.data[i].nickname)){
+																					data.data.data[i].nickname = data.data.data[i].nickname.substring(0,3)+"****"+data.data.data[i].nickname.substring(7,11)
+																				}
+																			}else{
+																				data.data.data[i].nickname = '匿名'
+																			}
 																		}
 																		if(!data.data.data[i].age || data.data.data[i].age == 'null'|| data.data.data[i].age==' '){
 																			data.data.data[i].age = '年龄保密'

@@ -199,11 +199,10 @@
 		                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
 		                success: function(data, type, xhr) { 
 		                   	plus.nativeUI.closeWaiting();
-		                	console.log('问题',data);    
+		                	console.log('问题'+JSON.stringify(data));    
 		                	if(data.data && data.data.length){
-		                		var length = data.data.length;
-			                	var nid = data.data[Math.floor(Math.random()*length)].id;
-			                	console.log(Math.floor(Math.random()*length)+' '+nid)
+		                		var items = data.data;
+			                	var nid = items[Math.floor(Math.random()*items.length)];
 								$('#maskTc').css('display','none');
 								openview({
 									view:'answerInfo.html',
@@ -312,7 +311,7 @@
 		
 		[].forEach.call(listCon,function(ele,index){
 			ele.onclick = function(){
-				if(!ele.className.includes('active')){
+				if(!ele.className.indexOf('active')>-1){
 					[].forEach.call(listCon,function(ele2,index2){
 						ele2.className = '';
 					})

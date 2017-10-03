@@ -179,7 +179,7 @@
 					console.log('获取用户数据返回',data);
 					if(data.errno == 0){
 						if(data.data[0].avatar){ //显示头像
-							if(JSON.parse(data.data[0].avatar)[0].picImg.includes('http')){
+							if(JSON.parse(data.data[0].avatar)[0].picImg.indexOf('http')>-1){
 								var imgurl = JSON.parse(data.data[0].avatar)[0].picImg;
 							}else{
 								var imgurl = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
@@ -239,7 +239,7 @@
 						quality:30
 					},
 					function(obj) {
-						if(!obj.target.includes("file://")){obj.target="file://"+obj.target;}
+						if(!obj.target.indexOf("file://")>-1){obj.target="file://"+obj.target;}
 						Apic = obj.target
 						mui('#imghead')[0].src = obj.target;
 					},function(error) {
@@ -248,7 +248,6 @@
 		    	}
 		    }, function ( e ) {  
 		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
-				//plus.nativeUI.alert('只能选择1张图片');
 		    }});
 		}
 		

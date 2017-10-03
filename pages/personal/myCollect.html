@@ -129,7 +129,7 @@
 						<%if(list.length!=0){%>
 							<% for(var i=0; i<list.length; i++){%>
 								<div class="message msgcmt aClick" onclick="opendetails(<%= list[i].store_id%>,1,<%= list[i].store_id%>)">
-									<%if(list[i].logo && list[i].logo.includes('http')){%>
+									<%if(list[i].logo && list[i].logo.indexOf('http')>-1){%>
 										<img src="../../img/Spinner.svg" class="loadPics" data-src="<%=list[i].logo%>" onerror="this.src = '../../img/market/mollshop1.png'" style="width: 60px !important;height:60px;"/>
 									<%}else{%>
 										<img src="../../img/market/mollshop1.png" style="width: 60px !important;height:60px;"/>
@@ -273,17 +273,17 @@
 							}
 							mui.each(dataobj.list,function (index,ele) {
 								if(ele.thumb){
-									if(!ele.thumb.includes('http')){
+									if(!ele.thumb.indexOf('http')>-1){
 										dataobj.list[index].thumb = serverimgUrl + ele.thumb;
 									}
 								}
 								if(ele.logo){
-									if(!ele.logo.includes('http')){
+									if(!ele.logo.indexOf('http')>-1){
 										dataobj.list[index].logo = serverimgUrl + ele.logo;
 									}
 								}
 								if(typename == 3 && ele.pic){
-									if(JSON.parse(ele.pic)[0].picImg.includes('http')){
+									if(JSON.parse(ele.pic)[0].picImg.indexOf('http')>-1){
 										dataobj.list[index].picSershou = JSON.parse(ele.pic)[0].picImg;
 									}else{
 										dataobj.list[index].picSershou = serverimgUrl + JSON.parse(ele.pic)[0].picImg;

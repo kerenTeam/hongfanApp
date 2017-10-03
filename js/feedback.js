@@ -24,7 +24,6 @@
 	mui.plusReady(function() {
 		myuserid = plus.storage.getItem('userid');
 		oldtoken = plus.storage.getItem('oldToken');
-//		alert(oldtoken)
 		//设备信息，无需修改
 		feedback.deviceInfo = {
 			appid: plus.runtime.appid, 
@@ -62,7 +61,6 @@
 		return [].slice.call(feedback.imageList.querySelectorAll('.file'));
 	};
 	feedback.addFile = function(path) {
-		//alert(path)
 		feedback.files.push({name:"images"+index,path:path});
 		index++;
 	};
@@ -202,7 +200,6 @@
 ////		});
 ////		//开始上传任务
 ////		feedback.uploader.start();
-////		mui.alert("感谢反馈，点击确定关闭","问题反馈","确定",function () {
 ////			feedback.clearForm();
 ////			mui.back();
 ////		});

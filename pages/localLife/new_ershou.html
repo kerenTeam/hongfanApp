@@ -446,7 +446,7 @@
 						quality:30
 					},
 					function(obj) {
-						if(!obj.target.includes("file://")){obj.target="file://"+obj.target;}
+						if(obj.target.indexOf("file://")== -1){obj.target="file://"+obj.target;}
 						Apic.push(obj.target);
 						showImg(endpic,indexNum);
 					},function(error) {
@@ -455,7 +455,7 @@
 		    		indexNum ++;
 		    		
 		    	},1000)
-		    }, function ( e ) {  
+		    }, function ( e ) {
 		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
     		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
 				plus.nativeUI.alert('最多上传9张图片');
@@ -640,7 +640,7 @@
 								function(back,status){
 									if(status == 200){
 										console.log(back.responseText);
-										if(back.responseText.includes('errno')){
+										if(back.responseText.indexOf('errno')>-1){
 											var dataobj = JSON.parse(back.responseText);
 											if(dataobj.errno == 0){ 
 												mui.fire(plus.webview.getWebviewById('2edMarket'),'refresh');

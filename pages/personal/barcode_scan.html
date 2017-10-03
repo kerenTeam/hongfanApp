@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8"/>
 		<link rel="stylesheet" href="../../css/mui.min.css" type="text/css" charset="utf-8"/>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/common.js"></script>  
+		<script type="text/javascript" src="../../js/commonjian.js"></script>
 		<script type="text/javascript" src="../../js/app.js"></script>  
 
 		<script type="text/javascript">
@@ -29,6 +29,7 @@
 				    scan.start({conserve:true,filename:"_doc/barcode/"});
 				    //scan.innerHTML = "<div class="goBack" onclick="back();"><a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a></div>"
 				});
+				ws.show('pop-in');
 			}
 			if(window.plus){
 				plusReady();
@@ -61,6 +62,7 @@
 			   	//alert(result);
 			    //console.log(JSON.parse(result));
 			    var statestr1 = plus.webview.currentWebview().statestr;
+			    console.error(statestr1);
 			    if(!statestr1){//商户扫码
 			    	if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
 				    	var dataobj = JSON.parse(result);
@@ -83,15 +85,15 @@
 					    	}
 				    	}else{
 				    		console.error('没有typeid，核销失败！');
-				    		alert('核销失败，请重试！');
+				    		alert('核销失败！');
 				    	}
 				    }else{
 				    	console.error('没有typeid，核销失败！');
-				    	alert('核销失败，请重试！'); 
+				    	alert('核销失败！'); 
 				    }
-			    }else if(statestr1 == 'HIdou'){
+			    }else if(statestr1 == 'HIdou'){/*用户领HI豆*/
 			    	updatafun('',result,'','');
-			    }else if(statestr1 == 'open'){
+			    }else if(statestr1 == 'open'){/*用户扫码打开商品*/
 			    	var dataobj = JSON.parse(result);
 			    	goInfo(dataobj.goods_id,dataobj.storeid);
 			    	var time1 = null;
@@ -134,9 +136,9 @@
 						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
 						if(!statestr1){ //商户扫码上传数据
 							mui.ajax(serverUrl + '/api/mall/couponverify',{
-								data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'currentStoreId':currentStoreId},//qruserid:qr拥有者  
+								data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'currentStoreId':currentStoreId,'businessID':myuserid},//qruserid:qr拥有者  
 								type:'post',
-								timeout:10000,
+								timeout:60000,
 								headers:{"token":oldtoken},
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting();
@@ -145,13 +147,13 @@
 									if(data.errno == 0){
 										mui.alert('核销成功');
 									}else{
-										mui.alert('核销失败');
+										mui.alert(data.errmsg);
 									}
 									mui.back();							
 								},
 								error:function(xhr,type,errorThrown){
 									plus.nativeUI.closeWaiting();
-									mui.toast('核销失败'); 
+									mui.alert('网络不好,请求超时,请重试'); 
 									mui.back();	
 								}
 							});
@@ -159,7 +161,7 @@
 							mui.ajax(serverUrl + '/api/index/verificationthemachinesmallbillticket',{
 								data:{"qrcode":result,userid:myuserid},//qruserid:qr拥有者  
 								type:'post',
-								timeout:10000,
+								timeout:60000,
 								headers:{"token":oldtoken},
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting();
@@ -168,13 +170,13 @@
 										mui.alert('获取积分成功');
 										mui.fire(plus.webview.getWebviewById('receiveHI'),'refresh');
 									}else{
-										mui.alert('无效二维码');
+										mui.alert(data.errmsg);
 									}
 									//mui.back();							
 								},
 								error:function(xhr,type,errorThrown){
 									plus.nativeUI.closeWaiting();
-									mui.toast('无效二维码');
+									mui.alert('网络不好,请重试');
 									mui.back();	
 								}
 							});
@@ -239,8 +241,6 @@
 			}
 		</style>
 	</head>
-	<script type="text/javascript" src="../../js/common.js"></script>  
-	<!--<script type="text/javascript" src="../../js/mui.min.js"></script>-->
 	<body style="background-color: #000000;">
 		<div class="goBack" onclick="backFun();"> 
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>

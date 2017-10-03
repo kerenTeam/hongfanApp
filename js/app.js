@@ -1,7 +1,7 @@
 
 //var serverUrl='http://hiji.hifete.com'; 
 var serverUrl='http://abcd.zlzmm.com:7200';
-//var serverUrl='http://192.168.199.191:7200';
+//var serverUrl='http://192.168.31.148:7200';
  
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
@@ -327,7 +327,7 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
     			}
     			
 			}else{
-				mui.toast('操作失败'); 
+				mui.toast(data.errmsg);
 			}
 		},
 		error: function(xhr, type, errorThrown) { 
