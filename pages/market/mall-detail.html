@@ -465,6 +465,21 @@
 				font-size: 10px;
 				margin-left: 20px;
 			}
+			.fenaing{
+				position: fixed;
+			    right: 15px;
+			    top: 40px;
+			    background-color: rgba(0, 0, 0, 0.5);
+			    width: 36px;
+			    height: 36px;
+			    z-index: 9;
+			    border-radius: 4px;
+			}
+			.fenaing img{
+				width: 20px;
+			    margin-top: 8px;
+			    margin-left: 8px;
+			}
 		</style>
 	</head>
 
@@ -472,6 +487,7 @@
 		<div class="goBack">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize fl fanhui"></a>
 		</div>
+		<div class="fenaing"> <img src="../../img/makeFriend/sharebaise.png"/> </div>
 		<div id="container">
 			<div id="main" style="margin-top: 0!important;">
 				<div class="warp warptwo clearfloat">
@@ -931,6 +947,19 @@
 						chooseO.choose = data.data.goodsInfo; 
 						chooseO.myUrl = serverimgUrlE;
 						document.getElementById("cartBox").innerHTML = template("boxTpl", chooseO);
+						
+						/*点击分享*/
+						mui('.fenaing')[0].onclick = function(){
+							var msg = {
+								title:$.trim(mui('.zuo')[0].innerHTML),
+								content:$.trim(mui('.zuo')[0].innerHTML),
+								href:fxUrl+'market/mall-detail.html?goodsId='+data.data.goodsInfo.goods_id,
+								thumbs:[dataobj[0].bannerPic ? dataobj[0].bannerPic : ''],
+								pictures:[dataobj[0].bannerPic ? dataobj[0].bannerPic : '']
+							};
+							showSfun1(msg);
+						}
+						
 						
 						mui(".mui-numbox").numbox();
 						//属性 

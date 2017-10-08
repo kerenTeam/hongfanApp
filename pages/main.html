@@ -609,6 +609,8 @@
 				}
 				//反复加载方法 
 				function againfun() {
+					var oldToken = plus.storage.getItem('oldToken');
+					
 					var locallife = document.getElementsByClassName('locallife')[0];
 					var darenbang = document.getElementsByClassName('darenbang')[0];
 					var ticket = document.getElementsByClassName('ticket')[0];
@@ -761,7 +763,7 @@
 					});
 					//打开消息
 					mui('#xiaoxi')[0].onclick = function() {
-						openview({ 
+						openview({
 							view:'personal/barcode_scan.html',
 							extrasobj:{statestr:'open'},
 							create:true
@@ -873,7 +875,7 @@
 									 		var nowArray2 = data.data.data[i].photo;
 									 		var picS = [];
 									 		for(var k = 0 ;k<nowArray2.length;k++){
-									 			if(nowArray2[k].picImg.includes('picImg')){
+									 			if(nowArray2[k].picImg.indexOf('picImg')>-1){
 									 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
 									 			}
 											}
@@ -978,7 +980,7 @@
 								clearInterval(listOldDivH);
 								[].forEach.call(listCon,function(ele,index){/*点击方法*/
 									ele.onclick = function(){
-										if(!ele.className.includes('active')){
+										if(!ele.className.indexOf('active')>-1){
 											[].forEach.call(listCon,function(ele2){
 												ele2.className = '';
 											})

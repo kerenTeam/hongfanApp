@@ -313,7 +313,7 @@
 			var dyCon = document.getElementsByClassName('dyCon'); /*内容盒子*/
 			[].forEach.call(listCon,function(ele,index){
 				ele.onclick = function(){
-					if(!ele.className.includes('active')){
+					if(!ele.className.indexOf('active')>-1){
 						[].forEach.call(listCon,function(ele2){
 							ele2.className = '';
 						})
@@ -425,8 +425,8 @@
 			//今日热门
 			function todayHot(){
 				mui.plusReady(function(){
-					var cityNum = plus.storage.getItem('cityNum'),
-					oldToken = plus.storage.getItem('oldToken');
+					var cityNum = plus.storage.getItem('cityNum');
+					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
 					window.elseCircleIndex = function(id){
 						if(plus.storage.getItem('myToken')){
@@ -472,7 +472,7 @@
 											}
 											if(data.data[i].avatar){//整理头像格式
 												if(data.data[i].avatar.indexOf("[")>-1){
-													if(data.data[i].avatar.includes('http')){
+													if(data.data[i].avatar.indexOf('http')>-1){
 														data.data[i].avatar =  JSON.parse(data.data[i].avatar)[0].picImg;
 													}else{
 														data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
@@ -486,7 +486,7 @@
 										 		var nowArray2 = data.data[i].photo;
 										 		var picS = [];
 										 		for(var k = 0 ;k<nowArray2.length;k++){
-										 			if(nowArray2[k].picImg.includes('picImg')){
+										 			if(nowArray2[k].picImg.indexOf('picImg')>-1){
 										 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
 										 			}
 												}
@@ -505,7 +505,7 @@
 											}
 											if(data.data[i].avatar){//整理头像格式
 												if(data.data[i].avatar.indexOf("[")>-1){
-													if(data.data[i].avatar.includes('http')){
+													if(data.data[i].avatar.indexOf('http')>-1){
 														data.data[i].avatar =  JSON.parse(data.data[i].avatar)[0].picImg;
 													}else{
 														data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
@@ -519,7 +519,7 @@
 										 		var nowArray2 = data.data[i].photo;
 										 		var picS = [];
 										 		for(var k = 0 ;k<nowArray2.length;k++){
-										 			if(nowArray2[k].picImg.includes('picImg')){
+										 			if(nowArray2[k].picImg.indexOf('picImg')>-1){
 										 				picS.push(JSON.parse(nowArray2[k].picImg)[0].picImg);
 										 			}
 												}
