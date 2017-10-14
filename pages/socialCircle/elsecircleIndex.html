@@ -625,9 +625,15 @@
 							if(data.data.LikeMeUsers && data.data.LikeMeUsers.length){
 								for(var i = 0 ;i<data.data.LikeMeUsers.length;i++){
 									$('#followers').text(data.data.LikeMeUsers.length)
-									if(!data.data.LikeMeUsers[i].username || data.data.LikeMeUsers[i].username==null) {
-										data.data.LikeMeUsers[i].username = '匿名'
+								 
+									if(!data.data.LikeMeUsers[i].nickname){ 
+                                        data.data.LikeMeUsers[i].nickname =  '匿名'
+                                    }else{
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.LikeMeUsers[i].nickname)){
+											data.data.LikeMeUsers[i].nickname = data.data.LikeMeUsers[i].nickname.substring(0,3)+"****"+data.data.LikeMeUsers[i].nickname.substring(7,11)
+										}
 									}
+ 					
 									if(data.data.LikeMeUsers[i].avatar && data.data.LikeMeUsers[i].avatar!='null'){
 										if(JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg.indexOf('http') == -1){
 											data.data.LikeMeUsers[i].avatar = serverimgUrl + JSON.parse(data.data.LikeMeUsers[i].avatar)[0].picImg;
