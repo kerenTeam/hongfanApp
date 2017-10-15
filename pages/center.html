@@ -290,6 +290,7 @@
 					Refresh();
 				})
 				
+				
 				var Timetoken = null;
 				if(plus.storage.getItem('oldToken')){
 					var oldToken = plus.storage.getItem('oldToken');
@@ -425,7 +426,9 @@
 								}
 							});
 						}
-						
+						document.addEventListener('refresh3', function() {
+							mui('#mmsg')[0].style.display = 'none';
+						})
 						
 						//获取各类订单的条数
 						mui.ajax(serverUrl+'/api/mall/orderlist',{
@@ -703,7 +706,7 @@
 					});
 					//我的问答
 					mui('.myQa')[0].addEventListener('tap',function(){
-						if(!plus.storage.getItem('myToken')){ 
+						if(!plus.storage.getItem('myToken')){
 							mui.toast('请登录');
 							openview({
 								view:'login.html'
