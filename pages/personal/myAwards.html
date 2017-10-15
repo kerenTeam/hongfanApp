@@ -98,7 +98,11 @@
 									<div class="tixian" style="background-color: #F0AD4E;">
 										已申请提现	
 									</div>
-								<%}%>
+								<%}else if(list[i].redPocket && list[i].withsrawls == 2){%>
+									<div class="tixian" style="background-color: #F0AD4E;">
+										提现成功
+									</div>
+									<%}%>
 								
 								
 							</div>
@@ -145,7 +149,9 @@
                     console.log("中奖记录 ",data) 
                     if(data.errno == 0){
                     	if(data.data && data.data.length){
+                    		
                     		for(var i = 0; i<data.data.length;i++){
+                    		
                     			if(!data.data[i].nickname){ 
                                     data.data[i].nickname =  '匿名'
                                 }else{
@@ -167,6 +173,8 @@
                                 }
                                		data.data[i].createTime2 = getDateDiff(data.data[i].createTime); 
                     		} 
+                    		
+                    		console.log('ddd',data)
                     		$('#recordList').html(template('recordTpl',{list:data.data}));
                     		plus.nativeUI.closeWaiting();
                     		
