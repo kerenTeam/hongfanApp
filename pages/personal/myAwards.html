@@ -5,35 +5,35 @@
 	<meta charset="UTF-8">
 	<title>中奖纪录</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-	<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+	<link rel="stylesheet" type="text/css" href="../../css/common.css">
 	<link href="../../css/mui.min.css" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
-</head> 
+	<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+</head>
 	<style type="text/css">
-		 
+
 		.list_lh ul {
 			padding: 10px 10px 0 10px;
 		}
-		
+
 		.list_lh ul li {
 			padding: 10px;
 			margin-bottom: 5px;
 			border-radius: 3px;
 		}
-		
+
 		.flexx {
 			display: flex;
 			align-items: center;
 			background-color: white;
 		}
-		
+
 		.avtar {
 			width: 50px;
 			height: 50px;
 			margin-right: 10px;
 			overflow: hidden;
 		}
-		
+
 		.avtar img {
 			border-radius: 50%;
 			width: 50px;
@@ -50,7 +50,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">中奖纪录</h1> 
+			<h1 class="mui-title">中奖纪录</h1>
 			<!--<img src="../../img/makeFriend/userCenter.png" class="mui-pull-right circleCenter" style="width:20px;margin-top: 15px; margin-right: 6px;"/>-->
 		</header>
 		<div id="main">
@@ -79,37 +79,37 @@
 								<%= list[i].title%>
 								<%if(list[i].couponId && list[i].coupon){%>
 									<div class="lookInfo" onclick="lookInfo('<%= list[i].coupon.content%>','<%= list[i].coupon.begin_date%>','<%= list[i].coupon.end_date%>')" style="background-color: darkgray;margin-left: 5px;">
-										详情说明	
+										详情说明
 									</div>
 								<%}%>
 								<%if(list[i].giftId && list[i].gift){%>
 									<div class="lookInfo" onclick="lookInfo2('<%= list[i].gift.content%>')" style="background-color: darkgray;margin-left: 5px;">
-										详情说明	
+										详情说明
 									</div>
 								<%}%>
 								<%if(list[i].redPocket && !list[i].withsrawls){%>
 									<div class="tixian" onclick="tixian(this,<%= list[i].gameId%>,<%= list[i].prizeId%>,<%= list[i].userId%>,'<%= list[i].phone%>','<%= list[i].macID%>','<%= list[i].createTime%>')">
-										申请提现	
+										申请提现
 									</div>
 									<div class="tixian" style="background-color: #F0AD4E;display: none;">
-										已申请	
+										已申请提现
 									</div>
 								<%}else if(list[i].redPocket && list[i].withsrawls == 1){%>
 									<div class="tixian" style="background-color: #F0AD4E;">
-										已申请提现	
+										已申请提现
 									</div>
 								<%}else if(list[i].redPocket && list[i].withsrawls == 2){%>
 									<div class="tixian" style="background-color: #F0AD4E;">
 										提现成功
 									</div>
 									<%}%>
-								
-								
+
+
 							</div>
 						</div>
 					</li>
 				<%}%>
-					
+
 			</script>
 			<!--遮罩-->
 			<div id="maskInfo" style="display: none;">
@@ -120,7 +120,7 @@
 						</ol>
 					</div>
 					<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
-					
+
 				</div>
 			</div>
 		</div>
@@ -146,13 +146,13 @@
                 timeout: 10000,
                 headers: { "token": oldtoken ,'city':cityNum},
                 success: function(data, type, xhr) {
-                    console.log("中奖记录 ",data) 
+                    console.log("中奖记录 ",data)
                     if(data.errno == 0){
                     	if(data.data && data.data.length){
-                    		
+
                     		for(var i = 0; i<data.data.length;i++){
-                    		
-                    			if(!data.data[i].nickname){ 
+
+                    			if(!data.data[i].nickname){
                                     data.data[i].nickname =  '匿名'
                                 }else{
 									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)){
@@ -161,7 +161,7 @@
 								}
                                 if(data.data[i].gift && data.data[i].gift.content){
                                 	data.data[i].gift.content = TransferString(data.data[i].gift.content)
-                                } 
+                                }
                                 if(data.data[i].avatar && data.data[i].avatar!='null'){
                                     if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http') == -1){
                                         data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
@@ -171,30 +171,30 @@
                                 }else{
                                     data.data[i].avatar = '../img/10.png'
                                 }
-                               		data.data[i].createTime2 = getDateDiff(data.data[i].createTime); 
-                    		} 
-                    		
+                               		data.data[i].createTime2 = getDateDiff(data.data[i].createTime);
+                    		}
+
                     		console.log('ddd',data)
                     		$('#recordList').html(template('recordTpl',{list:data.data}));
                     		plus.nativeUI.closeWaiting();
-                    		
+
                     	}else{
                     		plus.nativeUI.closeWaiting();
                     		$('#recordList').html('<div style="text-align: center;padding: 50px;">暂无记录</div>');
                     		$('#crTit').css('display','none')
                     	}
-                    	
-                    }      
+
+                    }
                 },
                 error: function(xhr, type, errorThrown) {
                     console.log('响应失败');
                    	plus.nativeUI.closeWaiting();
                 }
-            }); 
+            });
 		})
-		
-			
-		//提现 
+
+
+		//提现
         function tixian(obj,gameid,prizeid,userid,phone,macid,createtime){
 			if(!macid){
 				macid = 'undefined'
@@ -203,7 +203,7 @@
 	            if (e.index == 1) {
 	            	Mprompt('微信');
 	            }else{
-	            	Mprompt('支付宝');	
+	            	Mprompt('支付宝');
 	            }
 	        })
 			function Mprompt(val){
@@ -219,10 +219,10 @@
 						}else{
 							mui.toast('留言失败')
 						}
-					} 
+					}
 				},'')
 			}
-			
+
 			function withdrawalsFun(aliPay,wxpay){
 				var cur = $(obj);
 	        	plus.nativeUI.showWaiting();
@@ -231,7 +231,7 @@
 	                type: 'post',
 	                timeout: 10000,
 	                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
-	                success: function(data, type, xhr) { 
+	                success: function(data, type, xhr) {
 	                   	plus.nativeUI.closeWaiting();
 	                	console.log('提现'+JSON.stringify(data));
 	                	if(data.errno == 0){
@@ -243,8 +243,8 @@
 		                		mui.toast(data.errmsg)
 		                	}
 	                	}
-	                	
-	                 
+
+
 	                },
 	                error: function(xhr, type, errorThrown) {
 	                    console.log('响应失败');
@@ -252,9 +252,9 @@
 	                }
 	            });
 			}
-			
+
         }
-        
+
         //查看详情1
         function lookInfo(tit,startT,startE){
         	$('#maskInfo').fadeIn(200);
@@ -271,16 +271,16 @@
 		$('#maskInfo,.closemask').click(function(){
 			event.preventDefault()
 			$('#maskInfo').fadeOut(200);
-		}) 
-		//发布时间判断 
+		})
+		//发布时间判断
 		var minute = 1000 * 60;
 		var hour = minute * 60;
 		var day = hour * 24;
 		var halfamonth = day * 15;
 		var month = day * 30;
-		function getDateDiff(dateTimeStamp){ 
-			var now = new Date().getTime(); 
-			var diffValue = now - dateTimeStamp; 
+		function getDateDiff(dateTimeStamp){
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
 			var monthC =diffValue/month;
 			var weekC =diffValue/(7*day);
 			var dayC =diffValue/day;
@@ -300,23 +300,23 @@
 			 }
 			 else if(minC>=1){
 			 result=parseInt(minC) +"分钟前";
-			 }else{ 
+			 }else{
 			 result="刚刚";
 			 }
 			return result;
 		}
-		
+
 		//处理换行
-		function TransferString(content){  
-		    var string = content;  
-		    try{  
-		        string=string.replace(/\r\n/g,"")  
-		        string=string.replace(/\n/g,"");  
-		    }catch(e) { 
-		    	
-		    }  
-		    return string;  
+		function TransferString(content){
+		    var string = content;
+		    try{
+		        string=string.replace(/\r\n/g,"")
+		        string=string.replace(/\n/g,"");
+		    }catch(e) {
+
+		    }
+		    return string;
 		}
-		
+
 	</script>
 </html>

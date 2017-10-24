@@ -1,8 +1,8 @@
 
-//var serverUrl='http://hiji.hifete.com'; 
+//var serverUrl='http://hiji.hifete.com';
 var serverUrl='http://abcd.zlzmm.com:7200';
-//var serverUrl='http://192.168.31.148:7200';
- 
+//var serverUrl='http://192.168.199.191:7200';
+
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
 var serverimgUrlE='';
@@ -15,7 +15,7 @@ var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 var WXPAYSERVER='http://hiji.hifete.com:7200/api/wechatpay/unified';
 //var WXPAYSERVER='http://192.168.199.191:7200/api/wechatpay/unified';
 
-//执行alert方法 
+//执行alert方法
 function alertF(content){ //非姐的方法
 	//alert(content)
 }
@@ -26,8 +26,8 @@ function alertY(content){ //向前的方法
 //banner跳转
 window.bannerGo = function(url, name, route) {
 	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
-		if(route == 'one'){//层级 
-			var bannerTplHtml = 'bannerTpl.html'; 
+		if(route == 'one'){//层级
+			var bannerTplHtml = 'bannerTpl.html';
 		}else{
 			var bannerTplHtml = '../bannerTpl.html';
 		}
@@ -41,7 +41,7 @@ window.bannerGo = function(url, name, route) {
 					bannerName: name,
 					type:'pro'
 				}
-			})	
+			})
 		}else{
 			openview({//用于普通页面 (如微信公众号)
 				view: bannerTplHtml,
@@ -59,16 +59,16 @@ window.bannerGo = function(url, name, route) {
 			create: true,
 			extrasobj: {
 				storeId:localId,//商铺主页
-				goodcatId:localId,//特色馆分类 
+				goodcatId:localId,//特色馆分类
 				goodsId:localId,//商品主页
-				activityId:localId,//活动主页 
+				activityId:localId,//活动主页
 				storeCouponId:localId,//优惠主页
 				newsId:localId,//帖子详情： 帖子id
-				userId:localUId,//帖子详情： 帖子userId 
+				userId:localUId,//帖子详情： 帖子userId
 			}
 		})
 	}
-	
+
 }
 //懒加载方法
 window.lazyLoad = function(init,limit){
@@ -92,7 +92,7 @@ window.lazyLoad = function(init,limit){
 	             	}
 	         	}
 	        })
-		}    
+		}
 	}
 	window.onscroll();
 	function getTop(e){//获取元素距离顶部高度方法
@@ -101,7 +101,7 @@ window.lazyLoad = function(init,limit){
 	        T += e.offsetTop
 		}
 	    return T
-	} 
+	}
 }
 
 /*图片高宽处理*/
@@ -127,8 +127,8 @@ function followBack(thisobj,likerId,curType){
 	event.stopPropagation();
 	function Success(){
 		event.stopPropagation();
-		thisobj.css('display','none'); 
-		thisobj.siblings().css('display','block'); 
+		thisobj.css('display','none');
+		thisobj.siblings().css('display','block');
 	}
 	Success();
  	mui.plusReady(function(){
@@ -184,10 +184,10 @@ mui.plusReady(function(){
 	}, function(e){
 		outSet('获取分享服务列表失败：'+e.message);
 	});
-})	
+})
 
 function showSfun1(msg,fun1,fun0){
-	
+
 	if(document.getElementById('shareWrap10')){
 	}else{
 		var pathStr = '../';
@@ -219,13 +219,13 @@ function showSfun1(msg,fun1,fun0){
 					'<img src="'+pathStr+'../img/share/weibo.png" class="aClick2"/>'+
 					'<br />新浪微博'+
 				'</div>'+
-				
+
 			'</div>'+
 			'<h3 id="cancelS1" class="h4 fineT aClick2">取消</h3>'+
 		'</div>';
 		document.body.appendChild(shareWrap10);
 	}
-	
+
 	function hideSfun1(){
 		document.getElementsByClassName('shareWrap1')[0].style.zIndex = '-1';
 		document.getElementsByClassName('shareWrap1')[0].style.opacity = '0';
@@ -297,13 +297,13 @@ function showSfun1(msg,fun1,fun0){
 	//	href:'http://hiji.hifete.com',
 	//	thumbs:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg'],
 	//	pictures:['https://b-ssl.duitang.com/uploads/item/201709/08/20170908120614_mN5TE.thumb.224_0.jpeg']
-	//	
+	//
 	//};
 	//showSfun1(msg,function(){},function(){});
 //分享结束
 
-//点赞 和取消点赞 帖子 
-function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
+//点赞 和取消点赞 帖子
+function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){
 	mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+newsId+'/userid/'+myuserid, {
 		data:{'referenceUserId':referenceUserId},
 		dataType: 'json',
@@ -312,7 +312,7 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
 		headers: {"token": oldtoken,'city': cityNum},
 		success: function(data, type, xhr) {
 			console.log('点赞返回',data)
-			if(data.errno == 0) {  
+			if(data.errno == 0) {
     			thisobj.attr('src',imgSrc);
     			var likes = parseInt(thisobj.siblings('span').html());
     			if(curType == 'POST'){
@@ -325,20 +325,20 @@ function likeThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curTy
     				}
     				thisobj.siblings('span').html(likes);
     			}
-    			
+
 			}else{
 				mui.toast(data.errmsg);
 			}
 		},
-		error: function(xhr, type, errorThrown) { 
+		error: function(xhr, type, errorThrown) {
 			console.error('点赞,响应失败');
 			mui.toast('当前网络不好,请重试');
 		}
-	}); 
+	});
 }
 
-//收藏和取消收藏  
-function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){ 
+//收藏和取消收藏
+function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curType,imgSrc){
 	mui.ajax(serverUrl + '/api/friends/collector', {
 		data:{'userId':myuserid,'newsId':newsId,'newsUserId':referenceUserId},
 		dataType: 'json',
@@ -355,21 +355,21 @@ function colltThis(thisobj,newsId,referenceUserId,cityNum,myuserid,oldtoken,curT
 				if(data.data && data.data==1){
 					mui.toast('取消成功')
     				thisobj.attr('src',imgSrc);
-				} 
+				}
 			}else{
-				mui.toast('操作失败'); 
+				mui.toast('操作失败');
 			}
 		},
 		error: function(xhr, type, errorThrown) {
 			console.error('收藏,响应失败');
 			mui.toast('当前网络不好,请重试');
 		}
-	}); 
+	});
 }
 
 function jubao(junsid,jbuid,myuserid,cityNum,oldToken){
 	if(jbuid == myuserid){
-		mui.toast('不能举报自己的帖子哦'); 
+		mui.toast('不能举报自己的帖子哦');
 		$('#maskInfo').fadeOut(200);
 	}else{
 		mui.ajax(serverUrl + '/api/friends/report', {
@@ -380,18 +380,18 @@ function jubao(junsid,jbuid,myuserid,cityNum,oldToken){
 			headers: {"token": oldToken,'city': cityNum},
 			success: function(data, type, xhr) {
 				console.log('点赞返回',data);
-				if(data.errno == 0){  
+				if(data.errno == 0){
 					mui.toast('举报成功');
-					
-				}else if(data.errno == 1000) {  
+
+				}else if(data.errno == 1000) {
 	    			mui.toast('审核处理中');
 				}else{
-					mui.toast('操作失败'); 
+					mui.toast('操作失败');
 				}
-				
+
 				$('#maskInfo').fadeOut(200);
 			},
-			error: function(xhr, type, errorThrown) { 
+			error: function(xhr, type, errorThrown) {
 				console.error('举报,响应失败');
 				mui.toast('当前网络不好,请重试');
 			}
@@ -400,17 +400,17 @@ function jubao(junsid,jbuid,myuserid,cityNum,oldToken){
 
 }
 
- 
+
 //config ===== 判断网络
 function internetF(){
-	var types = {}; 
-	types[plus.networkinfo.CONNECTION_UNKNOW] = "Unknown"; 
-	types[plus.networkinfo.CONNECTION_NONE] = "None"; 
-	types[plus.networkinfo.CONNECTION_ETHERNET] = "Ethernet"; 
-	types[plus.networkinfo.CONNECTION_WIFI] = "WiFi"; 
-	types[plus.networkinfo.CONNECTION_CELL2G] = "2G"; 
-	types[plus.networkinfo.CONNECTION_CELL3G] = "3G"; 
-	types[plus.networkinfo.CONNECTION_CELL4G] = "4G"; 
+	var types = {};
+	types[plus.networkinfo.CONNECTION_UNKNOW] = "Unknown";
+	types[plus.networkinfo.CONNECTION_NONE] = "None";
+	types[plus.networkinfo.CONNECTION_ETHERNET] = "Ethernet";
+	types[plus.networkinfo.CONNECTION_WIFI] = "WiFi";
+	types[plus.networkinfo.CONNECTION_CELL2G] = "2G";
+	types[plus.networkinfo.CONNECTION_CELL3G] = "3G";
+	types[plus.networkinfo.CONNECTION_CELL4G] = "4G";
 	return(types[plus.networkinfo.getCurrentType()]);
 }
 //var IType = 'WiFi';
