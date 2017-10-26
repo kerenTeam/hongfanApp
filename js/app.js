@@ -1,6 +1,7 @@
 
 //var serverUrl='http://hiji.hifete.com';
-var serverUrl='http://abcd.zlzmm.com:7200';
+//var serverUrl='http://abcd.zlzmm.com:7200';
+var serverUrl='http://hijiv2.zlzmm.com';
 //var serverUrl='http://192.168.199.191:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
@@ -53,20 +54,52 @@ window.bannerGo = function(url, name, route) {
 			})
 		}
 	}else if(url.indexOf('&')>-1 ){//本地
-		var localId = url.split('&')[1],localUrl = url.split('&')[0],localUId = url.split('&')[2] || -1;
-		openview({
-			view: localUrl,
-			create: true,
-			extrasobj: {
-				storeId:localId,//商铺主页
-				goodcatId:localId,//特色馆分类
-				goodsId:localId,//商品主页
-				activityId:localId,//活动主页
-				storeCouponId:localId,//优惠主页
-				newsId:localId,//帖子详情： 帖子id
-				userId:localUId,//帖子详情： 帖子userId
+		var localId = url.split('&')[1],
+			localUrl = url.split('&')[0],
+			localUId = url.split('&')[2] || -1;
+		if (url.indexOf('tickets')>-1) {/*充话费*/
+			if(plus.storage.getItem('myToken')){
+				 openview({
+					view: localUrl,
+					create: true,
+					extrasobj: {
+						storeId:localId,//商铺主页
+						goodcatId:localId,//特色馆分类
+						goodsId:localId,//商品主页
+						activityId:localId,//活动主页
+						storeCouponId:localId,//优惠主页
+						newsId:localId,//帖子详情： 帖子id
+						userId:localUId,//帖子详情： 帖子userId
+						Bcity:localId//优惠卷
+					}
+				})
+			}else{//没登陆直接打开登录页面
+				mui.toast('请登录');
+				openview({
+					view:'login.html'
+				});
 			}
-		})
+		}else{
+			openview({
+				view: localUrl,
+				create: true,
+				extrasobj: {
+					storeId:localId,//商铺主页
+					goodcatId:localId,//特色馆分类
+					goodsId:localId,//商品主页
+					activityId:localId,//活动主页
+					storeCouponId:localId,//优惠主页
+					newsId:localId,//帖子详情： 帖子id
+					userId:localUId,//帖子详情： 帖子userId
+					shopId:localUId,//爱购商品详情
+					Bcity:localId//优惠卷
+
+				}
+			})
+		}
+
+
+
 	}
 
 }
