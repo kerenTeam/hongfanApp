@@ -9,11 +9,11 @@
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="address=no">  
-		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/> 
-		<link rel="stylesheet" type="text/css" href="../../css/config.css"/> 
-		 
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+
 	</head>
 	<style type="text/css">
 		.baocun{text-align:right;}
@@ -39,7 +39,7 @@
   		.diybtn2{background: url(../../img/makeFriend/unfollw.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 4px 22px;}
 		.yhm{width:calc((100vw - 50px)/3);width:-webkit-calc((100vw - 50px)/3);width:-moz-calc((100vw - 50px)/3);height: calc((100vw - 20px)/3);height: -webkit-calc((100vw - 20px)/3);height: -moz-calc((100vw - 20px)/3);margin-left: 5px;margin-top:10px ;}
 		.giveBk{background: url(../../img/makeFriend/give.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 6px 25px;color: white;}
-		.fchidl2{display: flex;align-items:;}
+		.fchidl2{display: flex;}
 		.fchidl2 .butright{flex-grow: 1;}
 		.fchidl2 .btop{display: flex;justify-content: space-between;align-items: center;}
 		.fchidl3 .btop{display: flex;justify-content: flex-start!important;align-items: center;}
@@ -58,7 +58,7 @@
 		.dynamicPic2{width: 50%;padding-top: 48%;}
 		.dynamicPic3{width: 33%;padding-top: 31%;}
 		.dynamicPic img{width: 100%;}
-		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}	
+		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
 		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
 	</style>
 
@@ -71,7 +71,7 @@
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
-		 
+
     		<div class="listCon" id="listInfoS"></div><!--内容-->
 			<script type="text/html" id="listDataS">
 				<div class="follow" id="curUser" data-id="<%=dataList.userid%>">
@@ -81,12 +81,12 @@
 							<div>
 								<%=dataList.nickname%> <div class="disablecl ft12"> <%=dataList.create_time%>  <span style="color: #5d86b2;"><%=dataList.read%></span>阅读 </div>
 							</div>
-						</div> 
+						</div>
 						<div class="butright isFollow activecl">
 								￥<%=dataList.price%>
-			           </div> 
-					</div>  
-					
+			           </div>
+					</div>
+
 					<div class="DTcontent">
 						<p class="ft15 maincl leirong"><%=dataList.content%></p>
 						<%if(dataList.picS && dataList.picS.length){%>
@@ -94,7 +94,7 @@
 								<%if(dataList.picS.length == 1){ %>
 									<div class="dynamicPic dynamicPic1">
 										<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
-									</div> 
+									</div>
 								<%}else if(dataList.picS.length == 2){%>
 									<div class="dynamicPic dynamicPic2">
 										<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
@@ -103,80 +103,80 @@
 									<div class="dynamicPic dynamicPic3">
 										<span><img onload="imgHeight(this)" class="loadPics picOp" data-src="<%=dataList.picS[j]%>" data-preview-src="" data-preview-group="1"/></span>
 									</div>
-								<%}%>	
+								<%}%>
 							<%}%>
 						<%}%>
 					</div>
-					 
+
 				</div>
 			</script>
-		 	<!--留言--> 
+		 	<!--留言-->
 			<div class="follow cmtflex">
-				<div style="text-align: center;line-height: 0.8;"> 
-					<div class="ft14">留言</div> 
+				<div style="text-align: center;line-height: 0.8;">
+					<div class="ft14">留言</div>
 					<img style="width: 30px;margin: 0;" src="../../img/makeFriend/cmt.png"/>
 				</div>
 			</div>
 			<div id="curShow"></div>
 		 	<script type="text/html" id="cmtTpl">
-		 		
+
 		 		<%for(var i=0;i<list.length;i++){%>
 					<%if(!list[i].commontid){%>
-						<div class="follow ft12"> 
+						<div class="follow ft12">
 							<div class="fchidl2">
 								<div class="ctc">
 									<img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
-								</div> 
+								</div>
 								<div class="butright">
 									<div class="ft12 btop">
 					            		<b class="ft14"><%=list[i].nickname%></b> <span class="disablecl"><%=list[i].create_time%></span>
 					            	</div>
 					            	<div class="maincl ft14" data-toName="<%=list[i].nickname%>" data-userId="<%=list[i].userid%>" data-cmtId="<%=list[i].id%>"><%=list[i].commont%></div>
-					           </div> 
+					           </div>
 							</div>
 						</div>
 						<%}else{%>
-							 
-							<div class="follow ft12"> 
+
+							<div class="follow ft12">
 	                            <div class="fchidl2">
 	                                <div class="ctc">
 	                                    <img src="<%=list[i].avatar%>" class="userAvator loadPics"/>
-	                                </div> 
+	                                </div>
 	                                <div class="butright">
 	                                    <div class="ft12 btop">
 	                                        <b class="ft14"><%=list[i].nickname%></b> <span class="disablecl"><%=list[i].create_time%></span>
 	                                    </div>
 	                                    <div class="maincl ft14" data-toName="<%=list[i].nickname%>" data-userId="<%=list[i].userid%>" data-cmtId="<%=list[i].id%>"><%=list[i].commont%></div>
 	                                    <div class="cmtChild" data-toUserId="<%=list[i].touserid%>" data-toCmtId="<%=list[i].commontid%>"></div>
-	                               </div> 
+	                               </div>
 	                            </div>
 	                        </div>
-							 
-							<%}%> 
+
+							<%}%>
 					<%}%>
-		 	</script> 
+		 	</script>
 			 <!--子留言-->
             <script type="text/html" id="cmtChildTpl">
-                
-                <%for(var i=0;i<list.length;i++){%> 
-                         
+
+                <%for(var i=0;i<list.length;i++){%>
+
                         <div class="fchidl2 fchidl3">
                             <div class="ctc">
                                 <img src="<%=list[i].avatar%>" class="userAvator3 loadPics"/>
-                            </div> 
+                            </div>
                             <div class="butright">
                                 <div class="ft12 btop">
                                     <b><%=list[i].nickname%></b>
                                 </div>
                                 <div class="maincl ft12"><%=list[i].commont%></div>
-                           </div> 
+                           </div>
                         </div>
                     <%}%>
- 
+
             </script>
-			  
+
 		</div>
-		 
+
 		<!--底部-->
 		<div class="opbot maincl ft14">
 			<div class="opbf">
@@ -192,7 +192,7 @@
 			</div>
 			<a href="" class="opbb">
 				我想要
-			</a> 
+			</a>
 		</div>
 	 </body>
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
@@ -208,7 +208,7 @@
 //				obj.style.width = 'auto';
 //			}
 //		}
-		
+
 	</script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
@@ -219,8 +219,8 @@
 				toCmt = plus.webview.currentWebview().isCmt,
 				newsUserId = plus.webview.currentWebview().UserId,
 				commontid = '',touserid='';
-			if(toCmt){ 
-				window.document.body.scrollTop = document.body.scrollHeight; 
+			if(toCmt){
+				window.document.body.scrollTop = document.body.scrollHeight;
 				//自动弹出输入法
 				var nativeWebview, imm, InputMethodManager;
 				var initNativeObjects = function() {
@@ -250,7 +250,7 @@
 				showSoftInput();
 
 			}
-		  
+
 			mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId+'/userid/'+myuserid, {
 				dataType: 'json',
 				type: 'get',
@@ -260,7 +260,7 @@
 					console.error('动态详情', data);
 					if(data.errno == 0) {
 						var dataObj = {}, nowArray = data.data;
-						
+
 						if(nowArray.avatar && nowArray.avatar!='null'){
 							if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
 								nowArray.avatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
@@ -276,7 +276,7 @@
 							}
 						}else{
 							nowArray.nickname = '匿名'
-						} 
+						}
 						if(!nowArray.read){
 							nowArray.read = 0
 						}else if((nowArray.read / 1000)>1){
@@ -288,11 +288,11 @@
 							$('.opbb').html('无联系方式')
 //							$('.opbb').attr('href','tel:15708434450');
 						}
-						
-						var dt = new Date(nowArray.create_time).getTime(); 
+
+						var dt = new Date(nowArray.create_time).getTime();
 						nowArray.create_time = getDateDiff(dt);
-						
-						
+
+
 						//整理内容图片
 						var nowArray2 = JSON.parse(nowArray.pic);
 						if(nowArray2.length){
@@ -301,16 +301,16 @@
 								picS.push(nowArray2[k].picImg);
 							}
 							nowArray.picS = picS;
-						} 
+						}
 						if(nowArray.likes && nowArray.likes>0){
 							$('#allzan').html(nowArray.likes)
 						}
-						
+
 						dataObj.dataList = data.data;
-						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
-						$('.diybtn').click(function(){  
+						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj);
+						$('.diybtn').click(function(){
 							var curL = $(this);
-				    		//关注 
+				    		//关注
 				    		if(plus.storage.getItem('myToken')){
 								followBack(curL,newsUserId,'put');
 							}else{
@@ -318,22 +318,22 @@
 								openview({
 									view:'../login.html'
 								});
-							} 
-				    		 
+							}
+
 				    	})
-						
+
 						 //判断是否点赞
 						if(data.errmsg && data.errmsg.isLike==1){
 							$('#doLike').attr('src','../../img/localLife/zan.png');
 						}else{
 							$('#doLike').attr('src','../../img/localLife/weizan.png');
 						}
-						if(data.errmsg && data.errmsg.isCollect==1){ 
+						if(data.errmsg && data.errmsg.isCollect==1){
 							$('#collt').attr('src','../../img/localLife/collt.png');
 						}else{
 							$('#collt').attr('src','../../img/localLife/uncollt.png');
 						}
-					 	
+
 					 	/*分享*/
 						mui('.shareitBtn')[0].onclick = function(){
 							var msg = {
@@ -342,11 +342,11 @@
 								href:fxUrl+'localLife/FleaInfo.html?infoid='+infiId+'&UserId='+newsUserId,
 								thumbs:[nowArray2.length ? nowArray2[0].picImg : ''],
 								pictures:[nowArray2.length ? nowArray2[0].picImg : '']
-								
+
 							};
 							showSfun1(msg,function(){},function(){});
 						}
-						
+
 						lazyLoad(true);//懒加载
 					}else{
 						mui.toast('当前网络不好,请重试');
@@ -357,7 +357,7 @@
 					mui.toast('当前网络不好,请重试');
 				}
 			});
-			
+
 			//留言
 			getCmt();
 			function getCmt(){
@@ -368,15 +368,15 @@
 					headers: {"token": oldToken,'city': cityNum},
 					success: function(data, type, xhr) {
 						console.error('留言详情', data);
-						 
-						if(data.errno == 0) { 
-							var cmtArray = data.data; 
+
+						if(data.errno == 0) {
+							var cmtArray = data.data;
 							if(cmtArray && cmtArray.length>0){
-								 
+
 									for(var i = 0;i<cmtArray.length;i++){
-									 
+
 										if(cmtArray[i].nickname && cmtArray[i].nickname !='null'){
-											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+											if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(cmtArray[i].nickname)){
 												cmtArray[i].nickname = cmtArray[i].nickname.substring(0,3)+"****"+cmtArray[i].nickname.substring(7,11)
 											}
 										}else{
@@ -391,17 +391,17 @@
 										}else{
 											cmtArray[i].avatar = '../../img/10.png'
 										}
-										
-										var dt = new Date(cmtArray[i].create_time).getTime(); 
-										cmtArray[i].create_time = getDateDiff(dt); 
-									}   
+
+										var dt = new Date(cmtArray[i].create_time).getTime();
+										cmtArray[i].create_time = getDateDiff(dt);
+									}
 									$('#curShow').html(template('cmtTpl',{list:cmtArray}));
-									 
+
  									 //子留言
                                     $('.cmtChild').each(function(){
                                         var curCmt = $(this);
                                         var curUserId = curCmt.attr('data-toUserId');
-                                        var curCmtId = curCmt.attr('data-toCmtId');  
+                                        var curCmtId = curCmt.attr('data-toCmtId');
                                         mui.ajax(serverUrl + '/api/friends/newscomment/newsId/'+infiId, {
                                             dataType: 'json',
                                             type: 'get',
@@ -409,16 +409,16 @@
                                             headers: {"token": oldToken,'city': cityNum},
                                             success: function(data, type, xhr) {
                                                 console.error('留言详情', data);
-                                                 
+
                                                 if(data.errno == 0) {
-                                                    var cmtArray = data.data; 
+                                                    var cmtArray = data.data;
                                                     var childArray = [];
                                                     if(cmtArray && cmtArray.length>0){
                                                         for(var i = 0;i<cmtArray.length;i++){
-                                                            if(!cmtArray[i].nickname){ 
+                                                            if(!cmtArray[i].nickname){
                                                                 cmtArray[i].nickname =  '匿名'
                                                             }
-                                                            
+
                                                             if(cmtArray[i].avatar && cmtArray[i].avatar!='null'){
                                                                 if(JSON.parse(cmtArray[i].avatar)[0].picImg.indexOf('http') == -1){
                                                                     cmtArray[i].avatar = serverimgUrl + JSON.parse(cmtArray[i].avatar)[0].picImg;
@@ -428,17 +428,17 @@
                                                             }else{
                                                                 cmtArray[i].avatar = '../../img/10.png'
                                                             }
-                                                            
-                                                            var dt = new Date(cmtArray[i].create_time).getTime(); 
-                                                            cmtArray[i].create_time = getDateDiff(dt); 
+
+                                                            var dt = new Date(cmtArray[i].create_time).getTime();
+                                                            cmtArray[i].create_time = getDateDiff(dt);
                                                             if(cmtArray[i].id == curCmtId && curUserId == cmtArray[i].userid){
                                                                 childArray.push(cmtArray[i])
                                                             }
-                                                        }   
+                                                        }
                                                         console.log('子留言',childArray)
                                                         curCmt.html(template('cmtChildTpl',{list:childArray}));
                                                      }
-                                                 
+
                                                 }else{
                                                     mui.toast('当前网络不好,请重试');
                                                 }
@@ -449,11 +449,11 @@
                                             }
                                         });
                                     })
-									
+
 							}else{
 								$('#curShow').html('<img src="../../img/nocmt.png" style="width: 100px;display: block;margin: auto;"/><br/><div class="maincl" style="text-align: center;padding: 10px;font-size:13px;color: #888;">快来抢沙发</div>');
 							}
-							
+
 						}else{
 							mui.toast('当前网络不好,请重试');
 						}
@@ -463,13 +463,13 @@
 						mui.toast('当前网络不好,请重试');
 					}
 				});
-			} 
+			}
 			$('#cmtedup').click(function(){
 				if(plus.storage.getItem('myToken')){
 					mui.prompt('null','请输入留言','留言',['确认','取消'],function(e) {
-						if(e.index == 0) { 
+						if(e.index == 0) {
 							if(e.value && e.value!=' '){
-								var commont = e.value; 
+								var commont = e.value;
 				    			mui.ajax(serverUrl + '/api/friends/newscomment', {
 				    				data:{newsId:infiId,userid:myuserid,commont:commont},
 									dataType: 'json',
@@ -478,9 +478,9 @@
 									headers: {"token": oldToken,'city': cityNum},
 									success: function(data, type, xhr) {
 										console.error('留言详情', data);
-										 
-										if(data.errno == 0) { 
-							    			mui.toast('留言成功'); 
+
+										if(data.errno == 0) {
+							    			mui.toast('留言成功');
 							    			getCmt();
 										}else{
 											mui.toast('当前网络不好,请重试');
@@ -494,7 +494,7 @@
 							}else{
 								mui.toast('留言失败')
 							}
-						} 
+						}
 					},'')
 				}else{
 					mui.toast('请登录');
@@ -502,54 +502,54 @@
 						view:'../login.html'
 					});
 				}
-	    		
-	    		
+
+
 	    	})
 	    	//收藏
 	    	$('#collt').click(function(){
 	    		if(plus.storage.getItem('myToken')){
 					var curThis = $(this);
-					if(curThis.attr('src') == '../../img/localLife/uncollt.png'){ 
-						colltThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/collt.png')  
+					if(curThis.attr('src') == '../../img/localLife/uncollt.png'){
+						colltThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/collt.png')
 					}else{
-						colltThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/uncollt.png') 
+						colltThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/uncollt.png')
 					}
 				}else{
 					mui.toast('请登录');
 					openview({
 						view:'../login.html'
 					});
-				} 
+				}
 	    	})
-	    
+
 			//点赞
 			$('#doLike').click(function(){
 				if(plus.storage.getItem('myToken')){
 					var curThis = $(this);
-					if(curThis.attr('src') == '../../img/localLife/weizan.png'){ 
-						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/zan.png')  
+					if(curThis.attr('src') == '../../img/localLife/weizan.png'){
+						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'POST','../../img/localLife/zan.png')
 					}else{
-						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'DELETE','../../img/localLife/weizan.png') 
+						likeThis(curThis,infiId,newsUserId,cityNum,myuserid,oldToken,'DELETE','../../img/localLife/weizan.png')
 					}
 				}else{
 					mui.toast('请登录');
 					openview({
 						view:'../login.html'
 					});
-				} 
+				}
 			})
-	    	 
-		}) 
-		
-		//发布时间判断 
+
+		})
+
+		//发布时间判断
 		var minute = 1000 * 60;
 		var hour = minute * 60;
 		var day = hour * 24;
 		var halfamonth = day * 15;
 		var month = day * 30;
-		function getDateDiff(dateTimeStamp){ 
-			var now = new Date().getTime(); 
-			var diffValue = now - dateTimeStamp; 
+		function getDateDiff(dateTimeStamp){
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
 			var monthC =diffValue/month;
 			var weekC =diffValue/(7*day);
 			var dayC =diffValue/day;
@@ -569,19 +569,19 @@
 			 }
 			 else if(minC>=1){
 			 result=parseInt(minC) +"分钟前";
-			 }else{ 
+			 }else{
 			 result="刚刚";
 			 }
 			return result;
 		}
-		
-		
+
+
 	</script>
 	<script type="text/javascript">
-       
-		
- 		mui.previewImage(); 
-	    
+
+
+ 		mui.previewImage();
+
 	</script>
 
 </html>
