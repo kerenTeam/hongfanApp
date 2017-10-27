@@ -15,8 +15,8 @@
 		<link rel="stylesheet" href="../../css/reset.css">
 		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
-		
-		<style type="text/css"> 
+
+		<style type="text/css">
 			.dealcard .brand {
 			    overflow: hidden;
 			    text-overflow: ellipsis;
@@ -44,13 +44,13 @@
 				background-color: #f53c42;
 				color: #fff;
 				border-radius: 50%;
-				box-shadow: 0 0 10px #555; 
+				box-shadow: 0 0 10px #555;
 			}
 			.dealcard dd{margin-bottom: 0;padding: 10px 15px;padding-bottom: 0;}
 			.dealcard dd{border: none;}
 			.dealcard dd:last-child:after{
 				height: 0px;
-			} 
+			}
 			.dealcard dd:after{
 				content: '';
 				display: block;
@@ -69,23 +69,23 @@
 			    font-weight: 100;
 			    float: right !important;
 			    display: inline-block;
-			    margin-top: 4px; 
-			    
+			    margin-top: 4px;
+
 			}
 			.dealcard-img>img{ background-image: url(../../img/bannerback.svg);background-position: 50% 50%;background-repeat: no-repeat; background-size: 35%;}
-			
+
 			@keyframes fadeIn {
-				from{opacity: 0;} 
-			  	to  {opacity: 1;} 
+				from{opacity: 0;}
+			  	to  {opacity: 1;}
 			}
 			.fade-in {
-	  			animation: fadeIn .8s; 
+	  			animation: fadeIn .8s;
 			}
-			.is-paused { 
+			.is-paused {
 				-webkit-animation-play-state: paused;
 		  		animation-play-state: paused;
 			}
-			
+
 		</style>
 	</head>
 	<body>
@@ -93,36 +93,36 @@
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 		    <h1 class="mui-title" id="headtitle"></h1>
 			<a class="fr mui-icon" id="thePlus2">发布</a>
-		</header>	
+		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 			<div id="main">
-				
+
 				<!--列表loading-->
 				<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
-					line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+					line-height: 30px;color: #666;-webkit-transition: all .3s;">
 					<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
 				</div>
 				<!--列表loading结束-->
-				
+
 				<section class="dealcard-waimai">
-					
+
 					<dl class="dealcard" id="infolistdiv">
-						
+
 					</dl>
 					<script type="text/html" id="infolist">
 						<% for(var i=list.length - 1; i>=0; i--){%>
 							<dd class="page-link aClick" onclick="opendetails(<%= list[i].id%>)">
 							<a href="javascript:;">
-								<div class="dealcard-img imgbox"> <img class="loadPics" src="" data-src="<%= list[i].logo%>" alt=""> </div> 
+								<div class="dealcard-img imgbox"> <img class="loadPics" src="" data-src="<%= list[i].logo%>" alt=""> </div>
 								<div class="dealcard-block-right">
 									<div class="brand"><%= list[i].name%></div>
 									<div class="title ">
 										<span>服务时间: <%= list[i].open_time%></span>
-										
+
 									</div>
-									<div class="price"> 
+									<div class="price">
 										<span> <%= list[i].address%></span>
-										<% if(list[i].isbusiness == 1){%> 
+										<% if(list[i].isbusiness == 1){%>
 											<b class="typespan" style="float: right" id="">商家 </b>
 										<% }else{%>
 											<b class="typespan" style="float: right" id="">个人</b>
@@ -131,8 +131,8 @@
 								</div>
 							</a>
 						</dd>
-						<%}%>	
-					</script> 
+						<%}%>
+					</script>
 				</section>
 				<div class="upload text-center text-xs gray" id="upload"></div>
 				<div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
@@ -146,11 +146,11 @@
 	</body>
 <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
-<script src="../../js/app.js"></script>	
-<script src="../../js/jquery.min.js"></script>	
+<script src="../../js/app.js"></script>
+<script src="../../js/jquery.min.js"></script>
 <script type="text/javascript">
 	var Spagenum = 2;//实到页数
-	var Ypagenum = 1;//应到页数 
+	var Ypagenum = 1;//应到页数
 	mui.plusReady(function(){
 		//获取上个页面传值
 		var nowwebname = plus.webview.currentWebview().name;//当前webview对象name属性
@@ -166,8 +166,8 @@
 		reload();
 		function reload(){
 			switch(nowwebname){
-				case 'Repair'://维修数据 
-				headtitle.innerHTML = '维修列表'; 
+				case 'Repair'://维修数据
+				headtitle.innerHTML = '维修列表';
 				Loading(1,1,40);//加载数据,包括上滑加载
 				break;
 				case 'Clean'://保洁数据
@@ -184,17 +184,17 @@
 				break;
 			}
 		}
-		
+
 		//加载方法
 		function Loading(Ctype_name,CcurrentPage,CnumsPerPage){
 			document.getElementById("infolistdiv").innerHTML = '';
 			mui('#nulldiv')[0].style.display = 'none';
 			mui.ajax(serverUrl+'/api/localservice/localservice',{
-				data:{type_name:Ctype_name,currentPage:CcurrentPage,numsPerPage:CnumsPerPage}, 
+				data:{type_name:Ctype_name,currentPage:CcurrentPage,numsPerPage:CnumsPerPage},
 				dataType:'json',//服务器返回json格式数据
-				type:'post',//HTTP请求类型 
-				timeout:10000,//超时时间设置为10秒；	
-				headers:{"token":oldtoken,'city':cityNum}, 
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒；
+				headers:{"token":oldtoken,'city':cityNum},
 				success:function(data){
 					if(data.errno == 0){
 						//console.log('列表返回'+JSON.stringify(data));
@@ -204,23 +204,23 @@
 							mui.each(data.data.data,function (index,ele) {
 								data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
 							})
-							dataobj.list = data.data.data; 
-							
+							dataobj.list = data.data.data;
+
 							//获取并渲染用户信息
 							var html=template("infolist",dataobj);
 							document.getElementById("infolistdiv").innerHTML += html;
 							mui("#upload")[0].innerHTML = "";
-							
+
 							//懒加载开始
 //							var loadPics = mui('.loadPics'),
 //							H = window.innerHeight;//可视窗口高度
-//							window.onscroll = function(){   
+//							window.onscroll = function(){
 //							    if(loadPics.length){
 //							    	var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
 //								    [].forEach.call(loadPics,function(img,k){
 //								         if(!img.getAttribute('data-src')){return}
 //								         if(H + S > getTop(img)){
-//								         	console.log('加载'); 
+//								         	console.log('加载');
 //								             //img.src=img.getAttribute("data-src");
 //							             	var oCanvas = document.createElement('canvas'),
 //										        oCtx = oCanvas.getContext("2d"),
@@ -230,13 +230,13 @@
 //										    oImg.onload = function() {
 //										        oCanvas.width  = oImg.width;
 //										        oCanvas.height = oImg.height;
-//										        oCtx.drawImage(oImg, 0, 0); 
+//										        oCtx.drawImage(oImg, 0, 0);
 //										        if(oImg.width>2000 || oImg.height>2000){
 //										        	console.error('load');
 //										        	img.src = oCanvas.toDataURL("image/jpeg",0.1);
 //										        }else if(oImg.width>300 || oImg.height>300){
 //										        	console.error('load');
-//										        	img.src = oCanvas.toDataURL("image/jpeg",0.2); 
+//										        	img.src = oCanvas.toDataURL("image/jpeg",0.2);
 //										        }else{
 //										        	console.error('load');
 //										        	img.src = oCanvas.toDataURL("image/jpeg");
@@ -245,17 +245,17 @@
 //											img.removeAttribute("data-src");
 //											 img.style.backgroundImage = 'url()';
 //								             img.classList.add('fade-in');//开始动画
-//								             if(img.classList.contains('loadPics')){ 
+//								             if(img.classList.contains('loadPics')){
 //								             	img.classList.remove('loadPics');
 //								             }
-//								             
-//								             
-//								         }  
+//
+//
+//								         }
 //							        })
-//								}    
+//								}
 //							}
 //							window.onscroll();//先默认显示
-//							function getTop(e){//获取元素距离顶部高度方法。  
+//							function getTop(e){//获取元素距离顶部高度方法。
 //							    var T = e.offsetTop;
 //							    while(e = e.offsetParent ){
 //							        T += e.offsetTop
@@ -263,11 +263,11 @@
 //							    return T
 //							}
 							//懒加载开始结束
-							
-							//懒加载开始  
+
+							//懒加载开始
 							var loadPics = mui('.loadPics'),
 							H = window.innerHeight;//可视窗口高度
-							window.onscroll = function(){ 
+							window.onscroll = function(){
 								if(loadPics.length){
 								    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
 								    [].forEach.call(loadPics,function(img){
@@ -277,30 +277,30 @@
 								             img.removeAttribute("data-src");
 								             img.style.backgroundImage = 'url()';
 								             img.classList.add('fade-in');//开始动画
-								             if(img.classList.contains('loadPics')){ 
+								             if(img.classList.contains('loadPics')){
 								             	img.classList.remove('loadPics');
 								             }
 								         }
 							        })
-								}    
+								}
 							}
 							window.onscroll();//先默认显示
-							function getTop(e){//获取元素距离顶部高度方法。  
+							function getTop(e){//获取元素距离顶部高度方法。
 							    var T = e.offsetTop;
 							    while(e = e.offsetParent ){
 							        T += e.offsetTop
 								}
 							    return T
-							} 
+							}
 							//懒加载开始结束
-							
-							
-							
+
+
+
 						}else{
-							mui("#upload")[0].innerHTML = ""; 
+							mui("#upload")[0].innerHTML = "";
 							mui('#nulldiv')[0].style.display = 'block';
 						}
-						
+
 						//滚动到底部加载
 						$(window).scroll(function(){
 						　　var scrollTop = $(this).scrollTop();
@@ -314,17 +314,17 @@
 										ele.classList.contains('fade-in')&&(ele.classList.remove('fade-in'));
 									})
 									//避免闪动结束
-									
+
 									mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 									Ypagenum++;//满足加载情况,应到页数+1
-									console.log('发起请求,实到'+Spagenum+'页');									
+									console.log('发起请求,实到'+Spagenum+'页');
 									console.log('发起请求,应到'+Ypagenum+'页');
-									mui.ajax(serverUrl+'/api/localservice/localservice',{ 									
-										data:{type_name:Ctype_name,currentPage:Spagenum,numsPerPage:CnumsPerPage}, 
+									mui.ajax(serverUrl+'/api/localservice/localservice',{
+										data:{type_name:Ctype_name,currentPage:Spagenum,numsPerPage:CnumsPerPage},
 										dataType:'json',//服务器返回json格式数据
-										type:'post',//HTTP请求类型 
-										timeout:10000,//超时时间设置为10秒；	
-										headers:{"token":oldtoken,'city':cityNum}, 
+										type:'post',//HTTP请求类型
+										timeout:10000,//超时时间设置为10秒；
+										headers:{"token":oldtoken,'city':cityNum},
 										success:function(data){
 											if(data.errno == 0){
 												var dataobj = {};
@@ -332,15 +332,15 @@
 													//console.log('地址'+ eval("("+ele.logo+")")[0].picImg);
 													data.data.data[index].logo = serverimgUrl + eval("("+ele.logo+")")[0].picImg;
 												})
-												dataobj.list = data.data.data; 
+												dataobj.list = data.data.data;
 												//获取并渲染用户信息
 												var html=template("infolist",dataobj);
 												document.getElementById("infolistdiv").innerHTML += html;
-												
-												//懒加载开始 
+
+												//懒加载开始
 												var loadPics = mui('.loadPics'),
 												H = window.innerHeight;//可视窗口高度
-												window.onscroll = function(){ 
+												window.onscroll = function(){
 													if(loadPics.length){
 													    var S = document.documentElement.scrollTop||document.body.scrollTop;   //滚动条滚过高度
 													    [].forEach.call(loadPics,function(img){
@@ -350,21 +350,21 @@
 													             img.removeAttribute("data-src");
 													             img.style.backgroundImage = 'url()';
 													             img.classList.add('fade-in');//开始动画
-													             if(img.classList.contains('loadPics')){ 
+													             if(img.classList.contains('loadPics')){
 													             	img.classList.remove('loadPics');
 													             }
 													         }
 												        })
-													}    
+													}
 												}
 												//window.onscroll();//先默认显示
-												function getTop(e){//获取元素距离顶部高度方法。  
+												function getTop(e){//获取元素距离顶部高度方法。
 												    var T = e.offsetTop;
 												    while(e = e.offsetParent ){
 												        T += e.offsetTop
 													}
 												    return T
-												} 
+												}
 												//懒加载开始结束
 											}
 											mui("#upload")[0].innerHTML = " ";
@@ -384,21 +384,21 @@
 						　　  }
 						});//加载下一部分结束
 					}else{
-						mui("#upload")[0].innerHTML = ""; 
+						mui("#upload")[0].innerHTML = "";
 						mui('#nulldiv')[0].style.display = 'block';
 					}
 					closeLoad();//关闭列表loading
 				},
 				error:function(xhr,type,errorThrown){
 					closeLoad();//关闭列表loading
-					mui("#upload")[0].innerHTML = ""; 
+					mui("#upload")[0].innerHTML = "";
 					mui('#nulldiv')[0].style.display = 'block';
 				}
 			});
 		}
 		//发布按钮
 		mui('#thePlus2')[0].onclick = function(){
-			if(plus.storage.getItem('myToken')){ 
+			if(plus.storage.getItem('myToken')){
 				openview({
 					view:'new_service.html',
 					extrasobj:{name:nowwebname}
@@ -409,8 +409,8 @@
 					view:'../login.html'
 				});
 			}
-		} 
-	
+		}
+
 	});//plusReady
 
 //跳转详情
@@ -428,24 +428,24 @@ function opendetails(id){
 			var startTime, endTime, stayTime, flagback = 0;
 			startTime = new Date().getTime();
 			var old_back = mui.back;
-			//改写返回键返回的函数，返回时传页面停留时间 
+			//改写返回键返回的函数，返回时传页面停留时间
 			mui.back = function(){
 				endTime = new Date().getTime();//返回时间
-				stayTime = Math.ceil((endTime - startTime) / 1000);   
-				console.log('购物中心'+stayTime); 
+				stayTime = Math.ceil((endTime - startTime) / 1000);
+				console.log('购物中心'+stayTime);
 				plus.statistic.eventDuration( "localLifeService", stayTime);
 				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-				old_back(); 
+				old_back();
 			}
 			plus.webview.currentWebview().addEventListener( "popGesture", function(){
 				flagback++;
 				if(flagback == 1){
 					endTime = new Date().getTime();
-					stayTime = Math.ceil((endTime - startTime) / 1000);  
+					stayTime = Math.ceil((endTime - startTime) / 1000);
 					plus.statistic.eventDuration( "localLifeService", stayTime);
 					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 				}
 			}, false );
 		});
-	</script> 
+	</script>
 </html>
