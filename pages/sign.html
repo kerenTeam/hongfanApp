@@ -14,8 +14,95 @@
 			    width: 100%;
 			    height: 600px;
 			}
+			.formCon{margin-top: 60px;padding: 20px 10px;}
+			.formItem, .formItem2{
+				display: -webkit-flex;
+	      		-webkit-flex-direction: row;
+		      	display: flex;
+	     		flex-direction: row;
+			}
+			.formItem span, .formItem2 span.span0{
+				display: inline-flex;
+				height:45px;
+				line-height: 45px;
+				width: 80px;
+				font-size: 15px;
+				color: #666;
+			}
+			.formItem input, .FItem2R input{
+				 flex:1;
+				 font-size: 15px;
+				 border: none;
+				 /*background: url(../../img/answer/ask/hiunchecked.png) 0 0 no-repeat ;*/
+				 /*background-size: 100% 100%;*/
+		     	border: 1px rgba(204, 204, 204, 0.59) solid;
+				border-radius: 0;
+				height:45px;
+				line-height: 45px;
+				padding: 10px 15px;
+				color: #555;
+			}
+			.FItem2R{
+				flex:1;
+				position: relative;
+			}
+			.FItem2R div.img{
+		        position: absolute;
+			    right: 0px;
+			    top: 0px;
+			    height: 45px;
+			    width: 50px;
+		        line-height: 45px;
+			    text-align: right;
+			    padding-right: 10px;
+			}
+			.FItem2R div.img img{
+				width: 20px;
+    			vertical-align: middle;
+			}
+			.dropdown{
+				width: 200px;
+				position: absolute;
+				z-index: 100;
+				background-color: #fff;
+				top: 46px;
+				right: 1px;
+				box-shadow: 0px 0 2px rgba(175, 166, 166, 0.85);
+			}
+			.dropdown li{
+				font-size: 15px;
+				color: #666;
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+			}
+			.mui-btn-block{
+				color: #fff;
+			    background-color: #fc3833;
+			    border: none;
+			    font-size: 16px;
+			    width: 90%;
+			    margin: 0 auto;
+			    padding: 12px 0;
+			    margin-top: 45px;
+			}
 		</style>
-	</head> 
+		<script type="text/javascript">
+			function dropdownDiv(obj){
+				var dropUl = obj.nextSibling.nextSibling;
+				if(dropUl.style.display == 'none'){
+					dropUl.style.display = 'block';
+				}else{
+					dropUl.style.display = 'none';
+				}
+			}
+			function dropdownLi(obj){
+				var dropInput = obj.parentNode.previousSibling.previousSibling.previousSibling.previousSibling;
+				dropInput.value = obj.innerText;
+				obj.parentNode.style.display = 'none';
+			}
+		</script>
+	</head>
 	<body onload="document.body.scrollTop = document.body.scrollHeight">
 		<header class="mui-bar mui-bar-nav">
 		    <a class="headbar mui-action-back mui-icon mui-icon-left-nav mui-pull-left normalSize"></a>
@@ -23,8 +110,8 @@
 			<span class="mui-pull-right fenlei"><!--<img src="../img/localLife/fenlei.svg"/>--></span>
 		</header>
 		<script src="../js/statusBar.js"></script><!--状态栏-->
-		
-		<div class="loginwrap">
+
+		<div class="" style="margin-top: 70px;">
 		    <div class="logincell">
 		        <div class="loginCon">
 		        	<div class="loginNum clearfix">
@@ -42,6 +129,21 @@
 		        		</div>
 		        		<b class="Veb" style="display: none;">验证码错误</b>
 		        	</div>
+		        	<div class="formItem2">
+
+					<div class="FItem2R">
+						<input id="cityNum" value="" type="text" class="aClick air" disabled="" style="border: none;background: url(../img/loginHtml/biankuangL.png) bottom left no-repeat;padding-left: 0 !important;" placeholder="选择当前城市">
+						<div class="img" onclick="dropdownDiv(this)">
+							<img src="../img/market/xialajiantou.png">
+						</div>
+						<ul class="dropdown" style="display: none;">
+							<li onclick="dropdownLi(this)" class="fineB aClick">南江</li>
+							<li onclick="dropdownLi(this)" class="fineB aClick">宣汉</li>
+							<li onclick="dropdownLi(this)" class="fineB aClick">邻水</li>
+							<li onclick="dropdownLi(this)" class="fineB aClick">其他</li>
+						</ul>
+					</div>
+				</div>
 		        	<div class="loginNum clearfix">
 		        		<div class="yonghuPicW">
 		        			<img class="yonghuPic" src="../img/loginHtml/mima.png"/>
@@ -54,8 +156,9 @@
 		        		</div>
 						<input id='passwordagain' type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码">
 		        	</div>
+
 		        	<div class="mui-input-row mui-checkbox agreement1 mui-left xieyilogin" >
-        				<input name="checkbox1" value="Item 1" type="checkbox" checked id="hook"> 
+        				<input name="checkbox1" value="Item 1" type="checkbox" checked id="hook">
 				  		<span>我同意勾选<span style="color: #f53c42;" onclick="openAgreement()">宏帆app用户许可协议</span></span>
 					</div>
 		        	<button id='confirmbtn' class=" mui-btn-block denlu cannotbtn">注册</button>
@@ -66,31 +169,33 @@
 <script src="../js/mui.min.js"></script>
 <script src="../js/app.js"></script>
 <script type="text/javascript">
-function openAgreement(){
+	function openAgreement(){
 		openview({
 			view:'agreement.html'
 		})
 	}
+
 (function(){
-	
+
 	var account = document.getElementById('account');
 	var password = document.getElementById('password'),
 	passwordagain = document.getElementById('passwordagain'),
+	cityNum = document.getElementById('cityNum'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 	reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
-	var VerCode = 'you'; 
-	var codeflag = false;//验证码是错误标杆 
+	var VerCode = 'you';
+	var codeflag = false;//验证码是错误标杆
 	//点击发送验证码
 	//var code = '';//验证码
 	mui('#VeCodenum')[0].addEventListener('tap',codefun);
-	function codefun(){ 
+	function codefun(){
 		if(this.className.indexOf('unable') == -1){//可点
-			if(reg_phone.test(account.value)){ 
+			if(reg_phone.test(account.value)){
 				//产生验证码 ,弃用
-//		        for (var i = 0; i < 6; i++) {  
-//		            code += parseInt(Math.random() * 9).toString();   
+//		        for (var i = 0; i < 6; i++) {
+//		            code += parseInt(Math.random() * 9).toString();
 //		        }
-				//发送验证码 
+				//发送验证码
 				mui.ajax(serverUrl+'/api/useraccount/smscode',{
 					data:{phone:account.value},
 					dataType:'json',
@@ -100,23 +205,23 @@ function openAgreement(){
 						console.log('发送验证码返回'+JSON.stringify(data));
 						mui.toast('验证码已发送');
 						VerCode = data.data;
-					}, 
+					},
 					error:function(xhr,type,errorThrown){
 						mui.toast('发送验证码失败');
 					}
 				});
 				this.className += 'unable';
 				var that = this;
-				var i = 60; 
+				var i = 60;
 				this.style.color = 'red';
 				this.innerHTML = '60秒后重试';
 				var timeyan = setInterval(function(){
 					i--;
 					that.innerHTML = i+'秒后重试';
-					if(i==0){ 
+					if(i==0){
 						clearInterval(timeyan);
 						that.innerHTML = '获取验证码';
-						that.style.color = '#000'; 
+						that.style.color = '#000';
 						that.className = that.className.replace('unable','');
 					}
 				},1000)
@@ -137,7 +242,7 @@ function openAgreement(){
 	//验证验证码
 	mui('#VeCode')[0].onchange = function(){
 		if(reg_phone.test(account.value)){
-			if(mui('#VeCode')[0].value == VerCode){ 
+			if(mui('#VeCode')[0].value == VerCode){
 				mui('.Veb')[0].style.display = 'none';
 				codeflag = true;
 			}else{
@@ -145,31 +250,35 @@ function openAgreement(){
 				codeflag = false;
 			}
 		}
-		 
+
 	}
 	//提交接口
 	mui('#confirmbtn')[0].addEventListener('click',function(){
+
 		if(!reg_phone.test(account.value)){
 			account.focus();
 			mui.toast('请输入正确的手机号码 ');
 		}else if(mui('#VeCode')[0].value == ''){
 			mui.toast('请输入验证码 ');
 			mui('#VeCode')[0].focus();
+		}else if(!cityNum.value){
+			mui.toast('选择当前城市');
 		}else if(!reg_pass.test(password.value)){
 			mui.toast('请输入6-12位数字和字母组合密码 ');
 			password.focus();
 		}else if(password.value != passwordagain.value){
 			mui.toast('两次密码不相同');
 			passwordagain.focus();
-		}else if(!mui('#hook')[0].checked){  
+		}else if(!mui('#hook')[0].checked){
 			mui.toast('你还没有勾选协议 ');
 		}else if(!codeflag){
 			mui.toast('请输入正确的验证码 ');
 			mui('#VeCode')[0].focus();
 		}else{
+			var cityNumshu =  [2,3,4][['南江','宣汉','邻水'].indexOf(cityNum.value)];
 			plus.nativeUI.showWaiting();
 			mui.ajax(serverUrl+'/api/useraccount/register',{//注册
-					data:{"phone":account.value,"password":password.value,smsCode:mui('#VeCode')[0].value},
+					data:{"phone":account.value,"password":password.value,'smsCode':mui('#VeCode')[0].value,'city':cityNumshu},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -178,7 +287,7 @@ function openAgreement(){
 						if(data.errno==0){//注册成功直接登录
 							//统计
 							plus.statistic.eventDuration( "signUp", 1);
-							
+
 							plus.storage.setItem("$IsReg","1")
 							mui.ajax(serverUrl+'/api/useraccount/login',{
 								data:{"phone":account.value,"password":password.value},
@@ -223,7 +332,7 @@ function openAgreement(){
 							plus.nativeUI.closeWaiting();
 							switch(data.errmsg){//注册提示
 								case 'Already exists this account!':
-								mui.toast('此号码已经注册 '); 
+								mui.toast('此号码已经注册 ');
 								break;
 							}
 						}
@@ -234,7 +343,7 @@ function openAgreement(){
 				}
 			});
 		}
-		
+
 	})
 	//打开登录页面
 	var goLogin=document.getElementById('goLogin');

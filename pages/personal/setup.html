@@ -6,7 +6,7 @@
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-touch-fullscreen" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
@@ -99,11 +99,11 @@
 	<body>
 		<header class="mui-bar mui-bar-nav fineB">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">编辑资料</h1>  
+		    <h1 class="mui-title">编辑资料</h1>
 		    <a href="javascript:;" style="line-height: 50px;color:white;" class="fr baocun" id="Preservation">保存</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div id="main"> 
+		<div id="main">
 	    	<div class="plist clearfloat data" id="userMessContainer">
 				<ul>
 					<li class="clearfloat touxiang">
@@ -126,13 +126,13 @@
 							<input type="text" class="fr shuru" name="" id="mynickname" placeholder="点击编辑" />
 						</a>
 					</li>
-				
+
 					<li class="clearfloat">
 						<a href="#">
 							<p class="fl">性别</p>
 			    			<select class="mui-btn mui-btn-block selectbtn" id="Nextbtn" dir="rtl">
 								<option value="item-1">保密</option>
-								<option value="item-2">男</option> 
+								<option value="item-2">男</option>
 								<option value="item-2">女</option>
 							</select>
 						</a>
@@ -166,7 +166,7 @@
 	<script type="text/javascript">
 		var idnum = 0;
 		mui.plusReady(function(){
-			
+
 			var myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
 			//显示既有信息
@@ -174,7 +174,7 @@
 				data:{"userid":myuserid},
 				type:'post',
 				timeout:10000,
-				headers:{"token":oldtoken},	              				
+				headers:{"token":oldtoken},
 				success:function(data){
 					console.log('获取用户数据返回',data);
 					if(data.errno == 0){
@@ -187,9 +187,9 @@
 							mui('#imghead')[0].src = imgurl;
 						}
 						//显示昵称
-						if(data.data[0].nickname){  
+						if(data.data[0].nickname){
 							if(data.data[0].nickname.indexOf('null') == -1){
-								mui('#mynickname')[0].value =data.data[0].nickname; 
+								mui('#mynickname')[0].value =data.data[0].nickname;
 							}
 						}
 						//显示ID
@@ -221,42 +221,71 @@
 				}
 			});
 		})
-		var filepic = {};
-		
-		var Apic ='';
+
+		/*选择图片*/
+		var Apic = [];//图片存放数组
+		var lfs=null;// 保留上次选择图片列表
+		var time1 = null;
 		function galleryImgsSelected(){//从相册中选择图片
-		    plus.gallery.pick( function(e){
-		    	for(var i in e.files){
-		    		if(0!=e.files[i].indexOf("file://")){
-						e.files[i]="file://"+e.files[i];
-					} 
-		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-		    		var endpic = e.files[i].split('.')[0]+"/"+nowpic;
-		    		plus.zip.compressImage({//压缩操作
-						src:e.files[i],
-						dst:endpic,
-						overwrite:true,
-						quality:30
-					},
-					function(obj) {
-						if(!obj.target.indexOf("file://")>-1){obj.target="file://"+obj.target;}
-						Apic = obj.target
-						mui('#imghead')[0].src = obj.target;
-					},function(error) {
-						mui.toast('图片获取错误，请重试');  
-					});
-		    	}
-		    }, function ( e ) {  
-		    },{filter:"image",multiple:true,maximum:1,system:false,onmaxed:function(){
-		    }});
+			mui.plusReady(function(){
+			    plus.gallery.pick( function(e){
+			    	Apic = [];
+			    	lfs=e.files;
+			    	clearInterval(time1);
+			    	var indexNum = 0;
+			    	var indexMax = e.files.length - 1;
+			    	e.files.forEach(function(){
+			    		mui('#imghead')[0].src  = '../../img/Spinner.svg';
+			    	})
+			    	time1 = setInterval(function(){
+			    		console.log(time1);
+			    		if(0!=e.files[indexNum].indexOf("file://")){
+							e.files[indexNum]="file://"+e.files[indexNum];//图片地址
+						}
+			    		if(indexNum == indexMax){//全部压缩完毕
+			    			clearInterval(time1);
+							time1 = null;
+			    		}
+			    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
+			    		var endpic = e.files[indexNum].split('.')[0]+"/" +nowpic;
+			    		//压缩方法
+		    			plus.zip.compressImage({
+							src:e.files[indexNum],
+							dst:endpic,
+							overwrite:true,
+							quality:30
+						},
+						function(obj) {
+							console.log(obj)
+							Apic.push(endpic);
+							showImg(endpic,indexNum);
+						},function(error) {
+							mui.toast('图片获取错误，请重试');
+						});
+			    		indexNum ++;
+
+			    	},800)
+			    }, function ( e ) {
+			    },{filter:"image",multiple:true,maximum:1,selected:lfs,system:false,onmaxed:function(){//保存选择记录
+			    }});
+				function showImg(url,indexNum){//显示图片
+					if(0!=url.indexOf("file://")){
+						url="file://"+url;
+					}
+					mui('#imghead')[0].src  = url;
+
+				}
+			})
 		}
-		
+		//从相册中选择图片结束
+
+
 		//保存数据
-		mui('#Preservation')[0].addEventListener('tap',function(){ 
+		mui('#Preservation')[0].addEventListener('tap',function(){
 			plus.nativeUI.showWaiting('保存中 ...',{width:'100px',height:'80px'});
 			var mynickname = mui('#mynickname')[0].value || null;
 			var Nextbtnval = document.getElementById("Nextbtn").options[window.document.getElementById("Nextbtn").selectedIndex].text;
-			
+
 			mui.plusReady(function(){
 				var myuserid = plus.storage.getItem('userid');
 				var oldtoken = plus.storage.getItem('oldToken');
@@ -266,7 +295,7 @@
 				}else{
 					var IDnum = mui('#IDcard')[0].value;
 				}
-					
+
 				var reg_ID = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
 				if(IDnum == ''){
 					releaseData();
@@ -278,23 +307,23 @@
 						mui.toast('请输入合法证件号');
 					}
 				}
-				
+
 				//发送数据
 			 	function releaseData(){
-					var task = plus.uploader.createUpload(serverUrl+'/api/useraccount/updateuserdata', 
+					var task = plus.uploader.createUpload(serverUrl+'/api/useraccount/updateuserdata',
 						{ method:"POST"},
 						function(back,status){
 							if(status == 200){
 								console.log(back.responseText);
 								var dataobj = JSON.parse(back.responseText);
 								if(dataobj.errno == 0){
-									mui.toast('修改成功');	 
+									mui.toast('修改成功');
 	    							//触发跳转页面刷新
 									mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
-									if(plus.webview.getWebviewById('market-order')){ 
+									if(plus.webview.getWebviewById('market-order')){
 										mui.fire(plus.webview.getWebviewById('market-order'),'refresh2');
 									}
-									if(plus.webview.getWebviewById('center')){ 
+									if(plus.webview.getWebviewById('center')){
 										mui.fire(plus.webview.getWebviewById('center'),'refresh2');
 									}
 									var time2 = setTimeout(function(){
@@ -307,36 +336,36 @@
 	    						}
 							}else{
 								plus.nativeUI.closeWaiting();//关闭等待框
-								mui.toast('当前网络不好，请重试！');	
+								mui.toast('当前网络不好，请重试！');
 							}
-							
+
 						}
 					);
 					var hanziX = ['男','女','密'];
 					var shuziX = [1,2,4];
 					task.setRequestHeader('token',oldtoken);
 					task.setRequestHeader('city',cityNum);
-					
-					if(Apic){task.addFile(Apic, {key:'avatar'})}
-					
-					task.addData('userid',myuserid);  		
-			        task.addData('nickname',mynickname);  		
-			        task.addData('gender',shuziX[hanziX.indexOf(Nextbtnval[Nextbtnval.length-1])].toString());  		
+
+					if(Apic.length){task.addFile(Apic[0], {key:'avatar'})}
+
+					task.addData('userid',myuserid);
+			        task.addData('nickname',mynickname);
+			        task.addData('gender',shuziX[hanziX.indexOf(Nextbtnval[Nextbtnval.length-1])].toString());
 			        task.addData('IDCard',IDnum);
-					
+
 					task.start();
-					
+
 			 	}
 			 	//发送数据结束
-				
+
 			})
 		})
 		//新的图片上传方法
-		
-		
-		
+
+
+
 
 	</script>
-	
-	
+
+
 </html>
