@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-	<head> 
+	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>商品订单确认 </title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
@@ -21,7 +21,7 @@
 				height: 50px;
 				box-shadow: 0px 1px #eee!important;
 			}
-			 
+			
 			.mui-title,
 			.mui-icon {
 				line-height: 50px;
@@ -83,7 +83,6 @@
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				overflow: hidden;
-				width: ;
 			}
 			
 			.middle-icon {
@@ -329,7 +328,6 @@
 				padding: 0;
 				text-align: right;
 				background: none;
-				console.log: none;
 				height: auto;
 				margin: 0;
 				line-height: 12px;
@@ -353,6 +351,7 @@
 			.mui-radio input[type=radio] {
 				top: -20px;
 			}
+			
 			.charge {
 				color: coral;
 			}
@@ -399,7 +398,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-			<h1 class="mui-title">订单</h1> 
+			<h1 class="mui-title">订单</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script>
 		<!--状态栏-->
@@ -469,19 +468,20 @@
 									</p>
 									<p class="goodsDetail">
 										<%if(goodsList[i].goods_Data[j].differentiate != 0){%>
-											<%for(var k = 0 ;k<4;k++){%>
-												<%if(goodsList[i].goods_Data[j].stend+k){%>
-													<%=goodsList[i].goods_Data[j].stend+k%>:<%=goodsList[i].goods_Data[j].value+k%>;
-												<%}%>
-											<%}%>
+										<%for(var k = 0 ;k<4;k++){%>
+										<%if(goodsList[i].goods_Data[j].stend+k){%>
+										<%=goodsList[i].goods_Data[j].stend+k%>:
+										<%=goodsList[i].goods_Data[j].value+k%>;
+										<%}%>
+										<%}%>
 
-											 
 										<%}%>
 									</p>
 									<p class="price"><sub>￥</sub>
-										<span class="pricemoney"><%=goodsList[i].goods_Data[j].price%></span> <span class="num">x<span class="numint"><%=goodsList[i].goods_Data[j].nums%></span></span></p>
+										<span class="pricemoney"><%=goodsList[i].goods_Data[j].price%></span> <span class="num">x<span class="numint"><%=goodsList[i].goods_Data[j].nums%></span></span>
+									</p>
 									<%if(goodsList[i].order_type!=0 && goodsList[i].GoodsFavourablePrice && goodsList[i].GoodsFavourablePrice[j].favourablePrice){%>
-										<small style="color: coral;font-size: 0.12rem;" class="goodrd">商品优惠<sub>-￥</sub> <%=goodsList[i].GoodsFavourablePrice[j].favourablePrice%></small>
+									<small style="color: coral;font-size: 0.12rem;" class="goodrd">商品优惠<sub>-￥</sub> <%=goodsList[i].GoodsFavourablePrice[j].favourablePrice%></small>
 									<%}%>
 
 									<%if(goodsList[i].order_type == 0){%>
@@ -500,50 +500,73 @@
 								</div>
 							</dd>
 							<%}%>
-							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0) || goodsList[i].postAge.maxNums == 1 || goodsList[i].postAge.maxMoney == 1){%>
-							<dd class="dd-padding kv-line-r postfeeWrap ddwl">
-								<h6>配送方式</h6>
-								<p class="jifen">包邮</p>
+							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0) || ((goodsList[i].postAge.maxNums == 1 || goodsList[i].postAge.maxMoney == 1) && goodsList[i].postAge.express_id != -2)){%>
+								<dd class="dd-padding kv-line-r postfeeWrap ddwl">
+									<h6>配送方式</h6>
+									<p class="jifen">包邮</p>
 								<%}else{%>
-									<%if(goodsList[i].order_type==0){%>
-									 	<dd class="dd-padding kv-line-r postfeeWrap ddwl">
-										<h6>配送方式</h6>
-										<p class="jifen">EMS ￥<%=goodsList[i].postAge.postage%></p>
+								<%if(goodsList[i].order_type==0){%>
+								<dd class="dd-padding kv-line-r postfeeWrap ddwl">
+									<h6>配送方式</h6>
+									<p class="jifen">EMS ￥
+										<%=goodsList[i].postAge.postage%>
+									</p>
 									<%}else{%>
 									<dd class="dd-padding kv-line-r postfeeWrap ddwl" style="padding: 0.1rem 0.15rem;">
 										<li class="mui-table-view-cell mui-collapse choosewl">
 											<a class="mui-navigate-right getwl" data-id='0' data-weight='<%=goodsList[i].total_goods_weight%>' data-storeid="<%=goodsList[i].store_id%>" data-igetShopId="<%=goodsList[i].order_type%>" href="#">
 												<%if(goodsList[i].postAge.postage){%>
 													<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">运费 ￥<%=goodsList[i].postAge.postage%></span></a>
+												<%}else if(goodsList[i].postAge.express_id == -2){%>
+													<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">自提</span></a>
 												<%}else{%>
 													<h6 style="display: inline-block;font-size: 13px;">配送方式</h6><span class="fr wlway jifen">选择物流</span></a>
 												<%}%>
 
-											<div class="mui-collapse-content dlc" data-shopmoney = "<%=goodsList[i].actualPrice%>">
+											<div class="mui-collapse-content dlc" data-shopmoney="<%=goodsList[i].actualPrice%>">
 											</div>
 										</li>
 										<%}%>
-									<%}%>
-								
+										<%}%>
+
 									</dd>
-								<%if(goodsList[i].order_type==0 ){%>
+									<%if(goodsList[i].order_type==0 ){%>
 									<dd class="dd-padding kv-line-r postfeeWrap">
 										<h6>购买即同意<span onclick="gosearule()" style="color: orangered;"> 《跨境电商购物协议》</span></h6>
 									</dd>
-								<%}%>
-							 
-								<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=goodsList[i].store_id%>">
-									<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">备注：</h6>
-									<div class="clearfloat fr mui-col-sm-10 mui-col-xs-10 goods">
-										<input type="text" id="" value="" placeholder="选填（对本次交易的说明）" class="tips" style="bottom: 1px;" />
-									</div>
-								</dd>
-								<dd class="kv-line-r dd-padding priceWrap">
-									<p>
-										小计:<b style="color: #ff5f32;">￥</b></sub>
-										<span class="J_total-price groupMoney" data-id="0"><%=goodsList[i].actualPrice%></span>
-									</p>
-								</dd>
+									<%}%>
+									<%if(goodsList[i].order_type!=0){%>
+									<dd class="dd-padding kv-line-r mui-row ztWrap" data-id="<%=goodsList[i].store_id%>">
+										<input type="hidden" class="isziti" value="0" data-id='' />
+										<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">是否自提</h6>
+										<%%>
+										<div class="clearfloat fr mui-col-sm-9 mui-col-xs-9 goods">
+										<%if(goodsList[i].postAge.express_id == -2){%>	
+											<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=goodsList[i].store_id%>" data-postfee="0" class="groupCheck" type="checkbox" checked="" style="right: 5px;"></div>
+										<%}else{%>
+											<div class="mui-checkbox ddRadio"><input name="checkbox<%=i%>" data-shopId="<%=goodsList[i].store_id%>" data-postfee="0" class="groupCheck" type="checkbox" style="right: 5px;"></div>
+										<%}%>
+										</div>
+									</dd>
+									<%if(shopaddress[i] && goodsList[i].postAge.express_id == -2){%>
+									<dd class="dd-padding kv-line-r mui-row ztWrap ztaddress">
+										<h6 class="addTitle mui-col-sm-3 mui-col-xs-3">自提地址：<%=shopaddress[i]%></h6>
+									</dd>
+									<%}%>
+
+									<%}%>
+									<dd class="dd-padding kv-line-r mui-row tipsWrap" data-id="<%=goodsList[i].store_id%>">
+										<h6 class="addTitle mui-col-sm-2 mui-col-xs-2">备注：</h6>
+										<div class="clearfloat fr mui-col-sm-10 mui-col-xs-10 goods">
+											<input type="text" id="" value="" placeholder="选填（对本次交易的说明）" class="tips" style="bottom: 1px;" />
+										</div>
+									</dd>
+									<dd class="kv-line-r dd-padding priceWrap">
+										<p>
+											小计:<b style="color: #ff5f32;">￥</b></sub>
+											<span class="J_total-price groupMoney" data-id="0"><%=goodsList[i].actualPrice%></span>
+										</p>
+									</dd>
 						</dl>
 
 						<%}%>
@@ -571,14 +594,14 @@
 											<div class="mui-collapse-content">
 												<% for(var i=0;i<allLi.length;i++){ %>
 												<%if(allLi[i].typeid==1){%>
-											 
-													<div class="checkQuan mui-row" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount%>">
+
+													<div class="checkQuan mui-row" data-cid="<%=allLi[i].user_coupon_id%>" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount%>">
 														<div class="mui-col-sm-3">
 															<div>￥<big><b><%=allLi[i].coupon_amount%></b></big></div>
 															<div><small>全场通用</small></div>
 														</div>
 														<div class="mui-col-sm-9">
-															<div class="cred"><big><%=allLi[i].name%></big> 全场通用减<span><%=allLi[i].coupon_amount%></span></div>
+															<div class="cred"><big><%=allLi[i].name%></big> 全场通用抵扣<span><%=allLi[i].coupon_amount%></span></div>
 															<div class="dateLimit">
 																<%=allLi[i].begin_date%> ~
 																<%=allLi[i].end_date%>内有效</div>
@@ -586,20 +609,34 @@
 														<div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
 													</div>
 
+												<%}if(allLi[i].typeid==3){%>
+													<div class="checkQuan mui-row" data-cid="<%=allLi[i].user_coupon_id%>" data-amount="<%=allLi[i].coupon_amount[0]%>" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount[1]%>">
+														<div class="mui-col-sm-3">
+															<div>￥<big><b><%=allLi[i].coupon_amount[1]%></b></big></div>
+															<div><small>全场通用</small></div>
+														</div>
+														<div class="mui-col-sm-9">
+															<div class="cred"><big><%=allLi[i].name%></big> 全场满¥<%=allLi[i].coupon_amount[0]%>减<span>¥<%=allLi[i].coupon_amount[1]%></span></div>
+															<div class="dateLimit">
+																<%=allLi[i].begin_date%> ~
+																<%=allLi[i].end_date%>内有效</div>
+														</div>
+														<div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
+													</div>
 												<%}else{%>
-												<div class="checkQuan mui-row" data-amount="<%=allLi[i].coupon_amount[0]%>" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount[1]%>">
-													<div class="mui-col-sm-3">
-														<div><big><b><%=allLi[i].coupon_amount[1]*10%></b></big>折</div>
-														<div><small>满<%=allLi[i].coupon_amount[0]%>通用</small></div>
+													<div class="checkQuan mui-row" data-cid="<%=allLi[i].user_coupon_id%>" data-amount="<%=allLi[i].coupon_amount[0]%>" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount[1]%>">
+														<div class="mui-col-sm-3">
+															<div><big><b><%=allLi[i].coupon_amount[1]*10%></b></big>折</div>
+															<div><small>满<%=allLi[i].coupon_amount[0]%>通用</small></div>
+														</div>
+														<div class="mui-col-sm-9">
+															<div class="cred"><big><%=allLi[i].name%></big> <span><%=allLi[i].coupon_amount[1]*10%></span>折</div>
+															<div class="dateLimit">
+																<%=allLi[i].begin_date%> ~
+																<%=allLi[i].end_date%>内有效</div>
+														</div>
+														<div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
 													</div>
-													<div class="mui-col-sm-9">
-														<div class="cred"><big><%=allLi[i].name%></big> <span><%=allLi[i].coupon_amount[1]*10%></span>折</div>
-														<div class="dateLimit">
-															<%=allLi[i].begin_date%> ~
-															<%=allLi[i].end_date%>内有效</div>
-													</div>
-													<div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
-												</div>
 												<%}%>
 												<%}%>
 											</div>
@@ -633,7 +670,9 @@
 				</form>
 			</div>
 			<input type="hidden" name="hiddenValue" id="hiddenValue" value="" />
-			<!--操作表   支付弹窗--> 
+			<input type="hidden" name="hiddenValue" id="hiddencouponid" value="" />
+			<input type="hidden" name="hiddenValue" id="hiddencuoponValue" value="" />
+			<!--操作表   支付弹窗-->
 			<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 				<div class="paycontent">
 					<ul class="mui-table-view waypay">
@@ -701,12 +740,13 @@
 				plus.webview.currentWebview().reload()
 			});
 			//订单缓存
-			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]'); 
+			var orderStorage = JSON.parse(plus.storage.getItem('$orderStorage') || '[]');
 			//获取缓存
 			myuserid = plus.storage.getItem('userid');
 			var oldtoken = plus.storage.getItem('oldToken');
 			//获取收货地址
-			orderAdd(); 
+			orderAdd();
+
 			function orderAdd() {
 				mui.ajax(serverUrl + '/api/useraccount/addresslist', {
 					data: {
@@ -738,65 +778,68 @@
 					}
 				});
 			}
-			
+
 			//订单数据模板
 			var data = {};
-//			data.goodsList = orderStorage;
+			//			data.goodsList = orderStorage;
 
 			for(var i = 0; i < orderStorage.length; i++) {
-				orderStorage[i].goodsDelivery = Math.floor(parseFloat(orderStorage[i].goodsDelivery*orderStorage[i].goodsnum)*100)/100;
-				
+				orderStorage[i].goodsDelivery = Math.floor(parseFloat(orderStorage[i].goodsDelivery * orderStorage[i].goodsnum) * 100) / 100;
+
 			}
 
-			for(var i = 0; i < orderStorage.length; i++) { 
-				shopID.push(orderStorage[i].shopId); 
+			for(var i = 0; i < orderStorage.length; i++) {
+				shopID.push(orderStorage[i].shopId);
 				arr.push(orderStorage[i].shopName);
 				shopaddress.push(orderStorage[i].goodsaddress)
-			} 
+			}
 			shopID = shopID.unique1();
 
 			for(var i = 0; i < shopID.length; i++) {
 				//分组 金额 和 数量  分组商品优惠小计
-				var igetShopIdNum='',
+				var igetShopIdNum = '',
 					groupWeight = 0,
 					groupMoneynoreduce = 0;
 				for(var j = 0; j < orderStorage.length; j++) {
 					if(shopID[i] == orderStorage[j].shopId) {
-						if(orderStorage[j].igetShopId == '0'){
-							igetShopIdNum = 0; 
-						}else{
+						if(orderStorage[j].igetShopId == '0') {
+							igetShopIdNum = 0;
+						} else {
 
-							igetShopIdNum = 1; 
+							igetShopIdNum = 1;
 						}
 						if(!orderStorage[j].goodweight || orderStorage[j].goodweight == ' ') {
 							orderStorage[j].goodweight = 0;
 						}
-						deliveryFee = parseFloat(orderStorage[j].goodsDelivery); 
-						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum)+deliveryFee;
+						deliveryFee = parseFloat(orderStorage[j].goodsDelivery);
+						groupMoneynoreduce += parseFloat(orderStorage[j].goodsPrice) * parseFloat(orderStorage[j].goodsnum) + deliveryFee;
 						groupWeight += parseFloat(orderStorage[j].goodweight) * parseFloat(orderStorage[j].goodsnum);
-						
-					} 
+
+					}
 				}
-				
+
 				igetShopId.push(igetShopIdNum);
 				shopMoney.push({
 					id: shopID[i],
 					money: parseFloat(groupMoneynoreduce).toFixed(2)
 				})
-				storeWeight.push({shopid:shopID[i],weight:parseFloat(groupWeight).toFixed(2)})
-				 
-			} 
+				storeWeight.push({
+					shopid: shopID[i],
+					weight: parseFloat(groupWeight).toFixed(2)
+				})
+
+			}
 			//分商店  订单数据 小计
 			for(var i = 0; i < shopID.length; i++) {
 				var orderList = {};
 				orderList.storeid = shopID[i];
-				
+
 				orderList.express_id = '';
 				orderList.goodsData = [];
-				for(var j = 0; j < orderStorage.length; j++) {	
-					
+				for(var j = 0; j < orderStorage.length; j++) {
+
 					if(orderStorage[j].shopId == shopID[i]) {
-						 
+
 						var newgoodobj = {};
 						newgoodobj.goodsid = orderStorage[j].goodsId;
 						newgoodobj.goods_property = orderStorage[j].goods_property;
@@ -807,27 +850,26 @@
 
 				}
 				orderSubmitData.push(orderList);
-			} 
-		   
-		  	//商品重量为0 包邮  爱购88包邮  
-			for(var j = 0; j < igetShopId.length; j++) { 
+			}
+
+			//商品重量为0 包邮  爱购88包邮  
+			for(var j = 0; j < igetShopId.length; j++) {
 				if(igetShopId[j] == '0') {
 					if(shopMoney[j].money >= 88) {
 						orderSubmitData[j].express_id = '-1';
-					}else{
+					} else {
 						orderSubmitData[j].express_id = '0';
 					}
-				} else {   
-					if(storeWeight[j].weight == 0) { 
-						orderSubmitData[j].express_id = '-1'; 
+				} else {
+					if(storeWeight[j].weight == 0) {
+						orderSubmitData[j].express_id = '-1';
 					}
 				}
 			}
 			
- 
-
 			//获取积分  和 身份证
 			getInfo();
+
 			function getInfo() {
 				mui.ajax(serverUrl + '/api/useraccount/userinfo', {
 					data: {
@@ -843,20 +885,18 @@
 						//					console.log('获取用户数据返回'+JSON.stringify(data));
 						if(data.errno == 0) {
 							intergral = data.data[0].intergral;
-//							intergral = 0; 暂时关闭积分抵扣
+							//							intergral = 0; 暂时关闭积分抵扣
 							id_card = data.data[0].id_card;
 
 							if(intergral == null) {
 								intergral = 0;
 							}
-							 
+
 							document.getElementById("coupon").innerHTML = template('couponTpl', {
 								intergral: intergral,
-								intergralreduce:''
+								intergralreduce: ''
 							});
-							$('#changeJf').click(function(){
-								calculate();
-				   			})
+							
 						} else {
 							mui.toast('获取用户信息失败');
 							console.log(data.errmsg);
@@ -864,286 +904,445 @@
 						$("#coupon .mui-checkbox").click(function() {
 
 							if($(this).find("input").prop('checked') == true) {
-								jf = parseFloat(intergral/100);
+								jf = parseFloat(intergral / 100);
 							} else {
 								jf = 0;
 							}
-							
+
 						})
 					},
 					error: function(xhr, type, errorThrown) {}
 				});
 			}
-	
+
 			//获取优惠券
-				var d = new Date();
-				var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-				str = formatDate(str, "yyyy.MM.dd");
-			mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
-				data: {
-					userid: myuserid
-				},
-				dataType: 'json',
-				type: 'post',
-				timeout: 10000,
-				headers: {
-					"token": oldtoken
-				},
-				success: function(data, type, xhr) {
-					console.log("抵用券 ",data)
-					var allC = {}; 
-					var tpldata = [];  
-					for(var i = 0; i < data.data.user_coupon.length; i++) {
-	
-						if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2)) {
-	
-							if(data.data.user_coupon[i].end_date != null) {
-								data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
-							}
-							if(data.data.user_coupon[i].begin_date != null) {
-								data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
-							} 
-							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
-								if(data.data.user_coupon[i].typeid == 2){ 
+//			var d = new Date();
+//			var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+//			str = formatDate(str, "yyyy.MM.dd");
+//			mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
+//				data: {
+//					userid: myuserid
+//				},
+//				dataType: 'json',
+//				type: 'post',
+//				timeout: 10000,
+//				headers: {
+//					"token": oldtoken
+//				},
+//				success: function(data, type, xhr) {
+//					console.log("抵用券 ", data)
+//					var allC = {};
+//					var tpldata = [];
+//					for(var i = 0; i < data.data.user_coupon.length; i++) {
+//
+//						if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3)) {
+//
+//							if(data.data.user_coupon[i].end_date != null) {
+//								data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
+//							}
+//							if(data.data.user_coupon[i].begin_date != null) {
+//								data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
+//							}
+//							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
+//								if(data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) {
 //									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#hiddenValue').val())){
-										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0],data.data.user_coupon[i].coupon_amount.split(",")[1]]
-										tpldata.push(data.data.user_coupon[i]).typeid
+//										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0], data.data.user_coupon[i].coupon_amount.split(",")[1]]
+//										tpldata.push(data.data.user_coupon[i]).typeid
 //									}
-								}else{
-									tpldata.push(data.data.user_coupon[i]).typeid
-								}
-								
-							} 
-						}
-					}
-					allC.allLi = tpldata;
-					console.log('tpldata',tpldata)
-					var html = template('quanTpl', allC);
-					document.getElementById('quanData').innerHTML = html;
-	
-					plus.nativeUI.closeWaiting();
-					
-					//优惠券计算
-					$(".checkQuan").click(function() {
-					  
-						var qid = $(this).attr("data-id");
-						var qminus = $(this).attr("data-minus");
-						$(this).siblings().find(".quanc").css("display", "none");
-						quan = 0;
-						if($(this).find(".quanc").css("display") == "block") {
-							$(this).find(".quanc").css("display", "none");
-							$("#minuMoney").html(0);
-							$(".minuMoney").css("display", "none");
+//								}else {
+//									tpldata.push(data.data.user_coupon[i]).typeid
+//								}
+//
+//							}
+//						}
+//					}
+//					allC.allLi = tpldata;
+//					console.log('tpldata', tpldata)
+//					var html = template('quanTpl', allC);
+//					document.getElementById('quanData').innerHTML = html;
+//
+//					plus.nativeUI.closeWaiting();
+//
+//					//优惠券计算
+//					$(".checkQuan").click(function() {
+//
+//						var qid = $(this).attr("data-id");
+//						var qminus = $(this).attr("data-minus");
+//						$(this).siblings().find(".quanc").css("display", "none");
+//						quan = 0;
+//						if($(this).find(".quanc").css("display") == "block") {
+//							$(this).find(".quanc").css("display", "none");
+//							$("#minuMoney").html(0);
+//							$(".minuMoney").css("display", "none");
+//
+//						} else {
+//							$(this).find(".quanc").css("display", "block");
+//							if(qid == 1) {
+//								quan = parseFloat(qminus)
+//							}
+//							if(qid == 2) {
+//								quan = parseFloat($('#hiddenValue').val() * (1 - parseFloat(qminus))).toFixed(2);
+//							}
+//							if(qid == 3) {
+//								quan =parseFloat(qminus);
+//							}
+//							$("#minuMoney").html(quan);
+//							$(".minuMoney").css("display", "inline-block");
+//
+//						};
+//						calculate();
+//					})
+//
+//				},
+//				error: function(xhr, type, errorThrown) {
+//					mui.toast("网络不好请重试!")
+//				}
+//			});
 
-						} else {
-							$(this).find(".quanc").css("display", "block");
-							if(qid == 1) {
-								quan = parseFloat(qminus)
-							}
-							if(qid == 2) {
-								quan = parseFloat(allGroup * (1 - parseFloat(qminus))).toFixed(2);
-							}
-							$("#minuMoney").html(quan);
-							$(".minuMoney").css("display", "inline-block");
-
-						};
-						calculate();
-					})
-					
-				},
-				error: function(xhr, type, errorThrown) {
-					mui.toast("网络不好请重试!")
-				}
-			});
-   			
 			//积分使用
 			var isIntergal = 0;
 			calculate();
-			function calculate(){
-//				mui.toast('计算开始');
-					plus.nativeUI.showWaiting();
-					var yourSFZ = $('#sfzin').val();
-					//地址 
-					var addressid = $("#addid").attr("data-id");
-					//买家留言
-					var noticeData = []; 
-					//优惠券id
-					var coupon_id = '';  
-					$(".quanc").each(function() {
-						if($(this).css("display") == "block") {
-							coupon_id = $(this).attr("data-id");
-						}
-					})
-					if($("#coupon").find("input[type='checkbox']:checked").length == 1) {
-						isIntergal = 1
-					} else {
-						isIntergal = 0;
-					} 
-//					alert(isIntergal)
-					var goodsdata = JSON.stringify(orderSubmitData);
-					var notice = JSON.stringify(noticeData);
-					 
-				 	gopay(); 
-						function gopay() {
-							console.log('goodsdata',JSON.parse(goodsdata))
-//							console.log(myuserid + id + addressid + goodsdata + coupon_id + isIntergal)
-							mui.ajax(serverUrl + '/api/mall/neworder', {
-								data: {
-									userid: myuserid, 
-									address_id: 1, 
-									payType: 'alipay',
-									storeData: goodsdata,
-									coupon_id: coupon_id,
-									isIntergal: isIntergal,
-									isCalculation:1
-								},
-								type: 'post', //HTTP请求类型
-								headers: {
-									"token": oldtoken
-								},
-								timeout: 300000, //超时时间设置为10秒；
-								success: function(data) {
-									console.error('计算返回',data);
-									if(data.errno == 0){
-										var dataObj = {};
-										for(var i = 0 ;i<data.data.Params.goodsData.length;i++){
-											data.data.Params.goodsData[i].actualPrice = Math.floor(data.data.Params.goodsData[i].actualPrice * 100) / 100;
-//											if(data.data.Params.goodsData[i].postAge){
-//												data.data.Params.goodsData[i].postAge = JSON.parse(data.data.Params.goodsData[i].postAge);
+
+			function calculate() {
+				//				mui.toast('计算开始');
+				plus.nativeUI.showWaiting();
+				var yourSFZ = $('#sfzin').val();
+				//地址 
+				var addressid = $("#addid").attr("data-id");
+				//买家留言
+				var noticeData = [];
+				//优惠券id
+				var coupon_id = '';
+				
+				$(".quanc").each(function() {
+					if($(this).css("display") == "block") {
+						coupon_id = $(this).attr("data-id");
+					}
+				})
+				if($("#coupon").find("input[type='checkbox']:checked").length == 1) {
+					isIntergal = 1
+				} else {
+					isIntergal = 0;
+				}
+				//					alert(isIntergal)
+				var goodsdata = JSON.stringify(orderSubmitData);
+				var notice = JSON.stringify(noticeData);
+
+				gopay();
+
+				function gopay() {
+					console.log('goodsdata', JSON.parse(goodsdata))
+					//							console.log(myuserid + id + addressid + goodsdata + coupon_id + isIntergal)
+					mui.ajax(serverUrl + '/api/mall/neworder', {
+						data: {
+							userid: myuserid,
+							address_id: 1,
+							payType: 'alipay',
+							storeData: goodsdata,
+							coupon_id: coupon_id,
+							isIntergal: isIntergal,
+							isCalculation: 1
+						},
+						type: 'post', //HTTP请求类型
+						headers: {
+							"token": oldtoken
+						},
+						timeout: 300000, //超时时间设置为10秒；
+						success: function(data) {
+							console.error('计算返回', data);
+							if(data.errno == 0) {
+								var dataObj = {};
+								for(var i = 0; i < data.data.Params.goodsData.length; i++) {
+									data.data.Params.goodsData[i].actualPrice = Math.floor(data.data.Params.goodsData[i].actualPrice * 100) / 100;
+									//											if(data.data.Params.goodsData[i].postAge){
+									//												data.data.Params.goodsData[i].postAge = JSON.parse(data.data.Params.goodsData[i].postAge);
+									//											}
+									if(!data.data.Params.goodsData[i].postAge.postage) {
+										data.data.Params.goodsData[i].postAge.postage = 0;
+									}
+									for(var j = 0; j < data.data.Params.goodsData[i].goods_Data.length; j++) {
+										if(data.data.Params.goodsData[i].goods_Data[j].youpin) {
+											data.data.Params.goodsData[i].goods_Data[j].youpin = JSON.parse(data.data.Params.goodsData[i].goods_Data[j].youpin);
+										}
+										if(data.data.Params.goodsData[i].goods_Data[j].tax_rate) {
+											data.data.Params.goodsData[i].goods_Data[j].tax = Math.floor(data.data.Params.goodsData[i].goods_Data[j].tax_rate * (data.data.Params.goodsData[i].goods_Data[j].price * data.data.Params.goodsData[i].goods_Data[j].nums + data.data.Params.goodsData[i].postAge.postage) * 100) / 100;
+										}
+										data.data.Params.goodsData[i].goods_Data[j].price = Math.floor(data.data.Params.goodsData[i].goods_Data[j].price * 100) / 100;
+									}
+
+//									for(var j = 0; j < orderSubmitData.length; j++) {
+//										if(data.data.Params.goodsData[i].order_type != 0 && orderSubmitData[j].storeid == data.data.Params.goodsData[i].store_id) {
+//											if(data.data.Params.goodsData[i].postAge && (data.data.Params.goodsData[i].postAge.maxMoney == 1 || data.data.Params.goodsData[i].postAge.maxNums == 1) && data.data.Params.goodsData[i].postAge!=-2) {
+//												orderSubmitData[j].express_id = '-1';
 //											}
-											if(!data.data.Params.goodsData[i].postAge.postage){
-												data.data.Params.goodsData[i].postAge.postage = 0;
-											}
-											for(var j = 0 ;j<data.data.Params.goodsData[i].goods_Data.length;j++){
-												if(data.data.Params.goodsData[i].goods_Data[j].youpin){
-													data.data.Params.goodsData[i].goods_Data[j].youpin = JSON.parse(data.data.Params.goodsData[i].goods_Data[j].youpin);
+//											if()
+//										}
+//									}
+								}
+								dataObj.shopaddress = shopaddress;
+								dataObj.goodsList = data.data.Params.goodsData;
+								dataObj.myurl = serverimgUrlE;
+								dataObj.PriceCalculValue = Math.floor(data.data.PriceCalculValue * 100) / 100;
+								if($('#hiddenValue').val() == ''){
+									$('#hiddenValue').val(dataObj.PriceCalculValue)
+								}
+//								
+								//获取优惠券
+								var d = new Date();
+								var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+								str = formatDate(str, "yyyy.MM.dd");
+								mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
+									data: {
+										userid: myuserid
+									},
+									dataType: 'json',
+									type: 'post',
+									timeout: 10000,
+									headers: {
+										"token": oldtoken
+									},
+									success: function(data, type, xhr) {
+										console.log("抵用券 ", data)
+										var allC = {};
+										var tpldata = [];
+										for(var i = 0; i < data.data.user_coupon.length; i++) {
+					
+											if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3)) {
+					
+												if(data.data.user_coupon[i].end_date != null) {
+													data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
 												}
-												if(data.data.Params.goodsData[i].goods_Data[j].tax_rate){
-													data.data.Params.goodsData[i].goods_Data[j].tax = Math.floor(data.data.Params.goodsData[i].goods_Data[j].tax_rate * (data.data.Params.goodsData[i].goods_Data[j].price * data.data.Params.goodsData[i].goods_Data[j].nums + data.data.Params.goodsData[i].postAge.postage)* 100) / 100;
+												if(data.data.user_coupon[i].begin_date != null) {
+													data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
 												}
-												data.data.Params.goodsData[i].goods_Data[j].price = Math.floor(data.data.Params.goodsData[i].goods_Data[j].price * 100)/100;
-											}
-											
-											for(var j = 0; j < orderSubmitData.length; j++) {
-												if(data.data.Params.goodsData[i].order_type != 0 && orderSubmitData[j].storeid == data.data.Params.goodsData[i].store_id) {
-													if(data.data.Params.goodsData[i].postAge && (data.data.Params.goodsData[i].postAge.maxMoney == 1 || data.data.Params.goodsData[i].postAge.maxNums == 1)){
-														orderSubmitData[j].express_id ='-1' ;
+												if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
+													if(data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) {
+														if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#hiddenValue').val())){
+															data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0], data.data.user_coupon[i].coupon_amount.split(",")[1]]
+															tpldata.push(data.data.user_coupon[i]).typeid
+														}
+													}else {
+														tpldata.push(data.data.user_coupon[i]).typeid
 													}
+					
 												}
 											}
 										}
-									 	dataObj.goodsList = data.data.Params.goodsData;
-									 	dataObj.myurl = serverimgUrlE;
-									 	dataObj.PriceCalculValue = Math.floor(data.data.PriceCalculValue * 100) / 100;
-									 	var totalJfen = parseInt($('#totalJfen').html());
-									 	if((totalJfen/100) >= Math.floor(data.data.PriceCalculValue * 100) / 100){
-									 		if(!$("#coupon").find("input[type='checkbox']:checked").length == 1){
-									 			$('#itMinus').html((Math.floor(data.data.PriceCalculValue * 100 - 0.01) / 100 ) + '元')
-									 		} 
-									 	}else{
-									 		if(!$("#coupon").find("input[type='checkbox']:checked").length == 1){
-									 			$('#itMinus').html(totalJfen/100 + '元')
-									 		} 
-									 		
-									 	}
-									  
-										var html = template('orderData', dataObj);
-										document.getElementById('orderTpl').innerHTML = html;
-										plus.nativeUI.closeWaiting();
-										
+										allC.allLi = tpldata;
+										console.log('tpldata', tpldata)
+										var html = template('quanTpl', allC);
+										document.getElementById('quanData').innerHTML = html;
 										$('.checkQuan').each(function(){
-											if($(this).attr('data-id')==2 && $(this).attr('data-amount') > dataObj.PriceCalculValue){
-												$(this).remove();
+											if($(this).attr("data-cid") == $('#hiddencouponid').val()){
+												$(this).find(".quanc").css("display", "block");
+												$(".minuMoney").css("display", "");
+												$("#minuMoney").html($('#hiddencuoponValue').val());
 											}
+										})
+										plus.nativeUI.closeWaiting();
+					
+										//优惠券计算
+										$(".checkQuan").click(function() {
+					
+											var qid = $(this).attr("data-id");
+											var qminus = $(this).attr("data-minus");
+											$(this).siblings().find(".quanc").css("display", "none");
+											quan = 0;
+											if($(this).find(".quanc").css("display") == "block") {
+												$(this).find(".quanc").css("display", "none");
+												$("#minuMoney").html(0);
+												$(".minuMoney").css("display", "none");
+												$('#hiddencouponid').val('');
+												$('#hiddencuoponValue').val('');
+											} else {
+												$(this).find(".quanc").css("display", "block");
+												if(qid == 1) {
+													quan = parseFloat(qminus)
+												}
+												if(qid == 2) {
+													quan = parseFloat($('#hiddenValue').val() * (1 - parseFloat(qminus))).toFixed(2);
+												}
+												if(qid == 3) {
+													quan =parseFloat(qminus);
+												}
+												$('#hiddencouponid').val($(this).attr("data-cid"));
+												$('#hiddencuoponValue').val(quan);
+												$("#minuMoney").html(quan);
+												$(".minuMoney").css("display", "inline-block");
+					
+											};
+											calculate();
+												
 										})
 										
-										//物流选择
-										$('.getwl').on('tap', function() { 
-											var businid = $(this).attr('data-storeid');
-											var storeWeight = $(this).attr('data-weight');
-											var shopmoney =  $(this).parentsUntil("#orderTpl").find('.groupMoney').html();
-											console.log(businid+' '+storeWeight+' '+shopmoney);
-											if($(this).attr('data-id') == 0) {
-												var wlct = $(this).next();  
-													mui.ajax(serverUrl + '/api/mall/expresslist', {
-														data: {
-															businid: businid
-														},
-														dataType: 'json',
-														type: 'post',
-														headers: {
-															token: oldtoken
-														},
-														timeout: 10000,
-														success: function(data, type, xhr) {
-															console.log("物流",data); 
-															var wlhtml = '';
-							//								console.log("youhuo "+JSON.stringify(data.data))
-															for(var i = 0; i < data.data.length; i++) {
-																var countpostfee = parseInt(data.data[i].basicsPrice);
-																if(data.data[i].beyondKg == 0){
-																	data.data[i].beyondKg =1;
-																}
-																var overWeight =(parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg);
-																if(overWeight > 0) {
-																	overWeight = Math.ceil(overWeight);
-																	countpostfee = parseInt(data.data[i].basicsPrice) + overWeight * parseInt(data.data[i].beyondPrice)
-																}
-							
-																wlhtml += '<div data-charge="' + countpostfee + '" data-epid="' + data.data[i].express_id + '" data-id="0">' + data.data[i].expressName + '<span class="charge fr">￥' + countpostfee + '</span></div>'
-															}
-															if(!wlhtml){
-																wlhtml="商家暂未填写物流"
-															}
-															wlct.html(wlhtml);
-															$(".dlc div").click(function() {
-							//									alert($(this).attr("data-id"))
-							
-																if($(this).attr("data-id") == 0) {
-																	 
-																	$(this).parent().prev().find(".wlway").html($(this).html());
-																	//									alert(parseFloat($(this).attr('data-charge')));
-							
-																	for(var i = 0; i < orderSubmitData.length; i++) {
-																		if(orderSubmitData[i].storeid == businid) {
-																			orderSubmitData[i].express_id = $(this).attr('data-epid');
-							
-																		}
-																	}
-																}
-																$(this).siblings().attr("data-id", 0);
-																$(this).attr("data-id", 1);
-																$(".choosewl").removeClass("mui-active");
-																calculate();
-															})
-														},
-														error: function(xhr, type, errorThrown) {
-															plus.nativeUI.closeWaiting();
-															mui.toast("网络不好请重试")
-														}
-													})
-											 
-							
-											}
-											$(this).attr('data-id', 1);
-										})
-									 
+					
+									},
+									error: function(xhr, type, errorThrown) {
+										mui.toast("网络不好请重试!")
 									}
-								},
-								error: function(xhr, type, errorThrown) {
-									//异常处理；
-									console.log(type);
-									console.log("----- 请求订单失败 -----");
-									console.log(xhr.status);
-									plus.nativeUI.closeWaiting();
-									plus.nativeUI.alert("获取订单信息失败！");
-								}
-							});
+								});
+								var totalJfen = parseInt($('#totalJfen').html());
+								if((totalJfen / 100) >= Math.floor(data.data.PriceCalculValue * 100) / 100) {
+									if(!$("#coupon").find("input[type='checkbox']:checked").length == 1) {
+										$('#itMinus').html((Math.floor(data.data.PriceCalculValue * 100 - 0.01) / 100) + '元')
+									}
+								} else {
+									if(!$("#coupon").find("input[type='checkbox']:checked").length == 1) {
+										$('#itMinus').html(totalJfen / 100 + '元')
+									}
 
-						}  
+								}
+
+								var html = template('orderData', dataObj);
+								document.getElementById('orderTpl').innerHTML = html;
+								plus.nativeUI.closeWaiting();
+
+								$('.checkQuan').each(function() {
+									if($(this).attr('data-id') == 2 && $(this).attr('data-amount') > dataObj.PriceCalculValue) {
+										$(this).remove();
+									}
+								})
+								
+								
+								
+								
+								//物流选择
+								$('.getwl').on('tap', function() {
+									var businid = $(this).attr('data-storeid');
+									var storeWeight = $(this).attr('data-weight');
+									var shopmoney = $(this).parentsUntil("#orderTpl").find('.groupMoney').html();
+									console.log(businid + ' ' + storeWeight + ' ' + shopmoney);
+									if($(this).attr('data-id') == 0) {
+										var wlct = $(this).next();
+										mui.ajax(serverUrl + '/api/mall/expresslist', {
+											data: {
+												businid: businid
+											},
+											dataType: 'json',
+											type: 'post',
+											headers: {
+												token: oldtoken
+											},
+											timeout: 10000,
+											success: function(data, type, xhr) {
+												console.log("物流", data);
+												var wlhtml = '';
+												//								console.log("youhuo "+JSON.stringify(data.data))
+												for(var i = 0; i < data.data.length; i++) {
+													var countpostfee = parseInt(data.data[i].basicsPrice);
+													if(data.data[i].beyondKg == 0) {
+														data.data[i].beyondKg = 1;
+													}
+													var overWeight = (parseFloat(storeWeight) - parseFloat(data.data[i].basicsKg)) / parseInt(data.data[i].beyondKg);
+													if(overWeight > 0) {
+														overWeight = Math.ceil(overWeight);
+														countpostfee = parseInt(data.data[i].basicsPrice) + overWeight * parseInt(data.data[i].beyondPrice)
+													}
+
+													wlhtml += '<div data-charge="' + countpostfee + '" data-epid="' + data.data[i].express_id + '" data-id="0">' + data.data[i].expressName + '<span class="charge fr">￥' + countpostfee + '</span></div>'
+												}
+												if(!wlhtml) {
+													wlhtml = "商家暂未填写物流"
+												}
+												wlct.html(wlhtml);
+												$(".dlc div").click(function() {
+
+													if($(this).attr("data-id") == 0) {
+														if($(this).parent().prev().find(".wlway").html() == "自提") {
+															$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
+														}
+														$(this).parent().prev().find(".wlway").html($(this).html());
+														//									alert(parseFloat($(this).attr('data-charge')));
+
+														for(var i = 0; i < orderSubmitData.length; i++) {
+															if(orderSubmitData[i].storeid == businid) {
+																orderSubmitData[i].express_id = $(this).attr('data-epid');
+
+															}
+														}
+													}
+													$(this).siblings().attr("data-id", 0);
+													$(this).attr("data-id", 1);
+													$(".choosewl").removeClass("mui-active");
+													calculate();
+												})
+											},
+											error: function(xhr, type, errorThrown) {
+												plus.nativeUI.closeWaiting();
+												mui.toast("网络不好请重试")
+											}
+										})
+
+									}
+									$(this).attr('data-id', 1);
+								})
+								
+								//自提 or 配送  更新 邮费 和 分组价格 和 总价 
+								$("dd .ddRadio").each(function() { 
+									$(this).find("input[type='checkbox']").click(function() { 
+									
+										var dataPostfee = parseFloat($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val()); 
+										var shopid = $(this).attr('data-shopId'); 
+										//alert($(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id'))
+										if($(this).prop('checked') == true) { 
+											var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
+											$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost - dataPostfee).toFixed(2));
+											$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('自提'); 
+											$(this).parentsUntil("#orderTpl").find("dd.ztaddress").css("display","")
+											for(var i = 0; i < orderSubmitData.length; i++) {
+												if(orderSubmitData[i].storeid == shopid) {
+													orderSubmitData[i].express_id = '-2';
+													break;
+												}
+											} 
+											calculate();
+											$(this).parentsUntil("#orderTpl").find('.dlc div').attr("data-id",0);
+											$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0)
+										} else {
+											var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html()); 
+											$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost + dataPostfee).toFixed(2));
+											
+											for(var i = 0; i < orderSubmitData.length; i++) {
+												if(orderSubmitData[i].storeid == shopid) {
+													
+													if(storeWeight[i].weight == 0){
+														$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('包邮');
+														orderSubmitData[i].express_id = '-1';
+														$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id', '-1');
+													}else{
+														$(this).parentsUntil("#orderTpl").find("dd.postfeeWrap .jifen").html('选择物流');
+														orderSubmitData[i].express_id = '';
+														$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").attr('data-id', '');
+													}
+													break;
+												}
+											}
+											$(this).parentsUntil("#orderTpl").find("dd.ztaddress").css("display","none")
+											calculate();
+											$(this).parentsUntil("#orderTpl").find('.dlc div').attr("data-id",0);
+											$(this).parentsUntil("#orderTpl").find("dd.ztWrap input[type='hidden']").val(0);
+										}
+					
+									})
+								})
+								$('#changeJf').click(function() {
+									calculate();
+								})
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							console.log(type);
+							console.log("----- 请求订单失败 -----");
+							console.log(xhr.status);
+							plus.nativeUI.closeWaiting();
+							plus.nativeUI.alert("获取订单信息失败！");
+						}
+					});
+
+				}
 			}
 
-			 
 			//系统检测获取支付通道
 			plus.payment.getChannels(function(channels) {
 				console.log("channel " + JSON.stringify(channels));
@@ -1228,7 +1427,7 @@
 						isIntergal = 0;
 					}
 					var goodsdata = JSON.stringify(orderSubmitData);
-					console.log("goodsdata 445" ,goodsdata)
+					console.log("goodsdata 445", goodsdata)
 					var notice = JSON.stringify(noticeData);
 					//获取总价
 					var payTotal = parseFloat($("#submit_order").html()).toFixed(2);
@@ -1256,7 +1455,7 @@
 
 					function tijiao() {
 						var flag = 0;
-						console.log('orderSubmitData',orderSubmitData)
+						console.log('orderSubmitData', orderSubmitData)
 						for(var i = 0; i < orderSubmitData.length; i++) {
 							if(orderSubmitData[i].express_id == '') {
 								mui.toast("还有商品未选择配送方式哦");
@@ -1264,7 +1463,7 @@
 							}
 						}
 						if(!flag) {
-							$("#payChoose").addClass("mui-active"); 
+							$("#payChoose").addClass("mui-active");
 						}
 					}
 					// 支付方法 
@@ -1286,13 +1485,13 @@
 						}
 
 						function gopay(id) {
-							console.log('goodsdata',JSON.parse(goodsdata))
+							console.log('goodsdata', JSON.parse(goodsdata))
 							console.log(myuserid + id + addressid + goodsdata + coupon_id + isIntergal)
 							mui.ajax(serverUrl + '/api/mall/neworder', {
 								data: {
 									userid: myuserid,
 									payType: id,
-									address_id: addressid, 
+									address_id: addressid,
 									storeData: goodsdata,
 									coupon_id: coupon_id,
 									isIntergal: isIntergal
@@ -1303,9 +1502,9 @@
 								},
 								timeout: 300000, //超时时间设置为10秒；
 								success: function(data) {
-									console.error('支付返回',data);
+									console.error('支付返回', data);
 									$("#payChoose").removeClass("mui-active");
-									plus.nativeUI.closeWaiting()  
+									plus.nativeUI.closeWaiting()
 									if(data.errno == 1000) {
 										mui.toast(data.errmsg)
 									}
@@ -1329,13 +1528,13 @@
 									var varpay;
 									if(id == 'wxpay') {
 										varpay = {
-											"appid":data.data.payData.appid,
-											"noncestr":data.data.payData.noncestr,
-											"package":"Sign=WXPay",
-											"partnerid":data.data.payData.partnerid,
-											"prepayid":data.data.payData.prepayid,
-											"timestamp":parseInt(data.data.payData.timestamp),
-											"sign":data.data.payData.sign
+											"appid": data.data.payData.appid,
+											"noncestr": data.data.payData.noncestr,
+											"package": "Sign=WXPay",
+											"partnerid": data.data.payData.partnerid,
+											"prepayid": data.data.payData.prepayid,
+											"timestamp": parseInt(data.data.payData.timestamp),
+											"sign": data.data.payData.sign
 										};
 										//微信
 										//alert(JSON.stringify(varpay));
@@ -1347,33 +1546,37 @@
 											//修改订单状态
 											//alert(JSON.stringify({id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid}));
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid},
+												data: {
+													id: data.data.AccessToken,
+													appPayValue: resultStr,
+													userid: myuserid
+												},
 												type: 'post', //HTTP请求类型
 												headers: {
 													"token": oldtoken
 												},
 												timeout: 10000, //超时时间设置为10秒；
-												success: function(data) { 
+												success: function(data) {
 													//alert(JSON.stringify(data)); 
 													mui.toast('支付成功');
 													console.log("修改状态成功");
 													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
-													
-		//											关闭 订单页  
+
+													//											关闭 订单页  
 													openview({
-														view:"../personal/sc-order.html",
-														id:"sc-order"
+														view: "../personal/sc-order.html",
+														id: "sc-order"
 													})
-													setTimeout(function(){
+													setTimeout(function() {
 														if(plus.webview.getWebviewById("market-order")) {
 															plus.webview.getWebviewById("market-order").close();
 														}
-													},2000)
+													}, 2000)
 												},
 												error: function(xhr, type, errorThrown) {
 													mui.toast('支付失败');
 												}
-											}); 
+											});
 
 										}, function(e) {
 											console.log("----- 支付失败 -----");
@@ -1387,13 +1590,17 @@
 											var resultStr = JSON.stringify(result);
 											console.log("----- 支付成功 -----", JSON.stringify(result));
 											plus.nativeUI.closeWaiting();
-//											plus.nativeUI.alert("支付成功");
-//											alert("id "+data.data.AccessToken+"varpay "+JSON.stringify(varpay)+myuserid+" "+addressid)
+											//											plus.nativeUI.alert("支付成功");
+											//											alert("id "+data.data.AccessToken+"varpay "+JSON.stringify(varpay)+myuserid+" "+addressid)
 											var oldtoken = plus.storage.getItem('oldToken');
 											//修改订单状态
 											mui.ajax(serverUrl + '/api/mall/confirmpurchase', {
-												data: {id:data.data.AccessToken,appPayValue:resultStr,userid:myuserid},
-												dataType:'json',
+												data: {
+													id: data.data.AccessToken,
+													appPayValue: resultStr,
+													userid: myuserid
+												},
+												dataType: 'json',
 												type: 'post', //HTTP请求类型
 												headers: {
 													"token": oldtoken
@@ -1403,25 +1610,25 @@
 													mui.toast('支付成功');
 													console.log("修改状态成功");
 													mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
-													
-		//											关闭 订单页  
+
+													//											关闭 订单页  
 													openview({
-														view:"../personal/sc-order.html",
-														id:"sc-order"
+														view: "../personal/sc-order.html",
+														id: "sc-order"
 													})
-													setTimeout(function(){
+													setTimeout(function() {
 														if(plus.webview.getWebviewById("market-order")) {
 															plus.webview.getWebviewById("market-order").close();
 														}
-													},2000)
-													
+													}, 2000)
+
 												},
 												error: function(xhr, type, errorThrown) {
 													console.log("修改状态失败")
 													mui.toast('支付失败');
 												}
 											});
-  
+
 										}, function(e) {
 											console.log("----- 支付失败 -----");
 											console.log("[" + e.code + "]：" + e.message);
