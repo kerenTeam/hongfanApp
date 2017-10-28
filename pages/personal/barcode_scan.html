@@ -59,7 +59,7 @@
 			    }
 			    //result = result.replace(/\n/g, '');
 			   	console.log(result);
-			   	//alert(result);
+//			   	alert(result);
 			    //console.log(JSON.parse(result));
 			    var statestr1 = plus.webview.currentWebview().statestr;
 			    console.error(statestr1);
@@ -133,13 +133,15 @@
 				    	var myuserid = plus.storage.getItem('userid');
 						var oldtoken = plus.storage.getItem('oldToken');
 						var currentStoreId = plus.storage.getItem('currentStoreId');
+						var cityNum = plus.storage.getItem('cityNum');
+						
 						plus.nativeUI.showWaiting('核销中 ...',{width:'100px',height:'80px'});
 						if(!statestr1){ //商户扫码上传数据
 							mui.ajax(serverUrl + '/api/mall/couponverify',{
 								data:{"couponid":codeid,'qrcode':result,'qruserid':uesrid,'currentStoreId':currentStoreId,'businessID':myuserid},//qruserid:qr拥有者  
 								type:'post',
 								timeout:60000,
-								headers:{"token":oldtoken},
+								headers:{"token":oldtoken,'city':cityNum},
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting();
 									//alert('上传核销返回'+JSON.stringify(data));
@@ -162,7 +164,7 @@
 								data:{"qrcode":result,userid:myuserid},//qruserid:qr拥有者  
 								type:'post',
 								timeout:60000,
-								headers:{"token":oldtoken},
+								headers:{"token":oldtoken,'city':cityNum},
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting();
 									console.log('上传核销返回',data);

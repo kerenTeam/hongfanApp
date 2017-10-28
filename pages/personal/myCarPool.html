@@ -1,0 +1,398 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的拼车</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />   
+		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/> 
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+	</head>
+	<style type="text/css">
+		 
+		.tabPs{
+			border-bottom: 1px solid #EEEEEE;
+			position: relative; 
+			/*height: calc(31px + 0.13rem);*/
+			z-index: 1;
+		}
+		.tab{ 
+			background: white;
+			font-size: 0px; 
+		}
+	  
+		.tab div { 
+			padding: 15px 0; 
+			font-size: 0.8rem;
+			display: inline-block;
+			width: 50%;
+			text-align: center; 
+		} 
+		.tabActive {  
+			color: #F53C42;
+			/*border-bottom: 2px solid #F53C42;*/
+		}
+		.border{
+			position: absolute;
+			z-index: 99;
+			bottom: 0;
+			left: 0;
+			height: 2px;
+			background-color: #F53C42;
+			-webkit-transition: all 0.5s ease;
+		}
+		.tabcontent {
+			position: relative;
+			display: none;
+		}
+		.taactive{
+			display: block;
+		}
+		.startEnd{
+			background-color: #f3f3f3;
+			padding: 5px 10px;
+		}
+		.startEnd ul{
+			background: white;
+			border-radius: 3px;
+			padding: 5px 0;
+		}
+		.startEnd ul li{
+			padding:10px 25px;
+			position: relative;
+		}
+		.startEnd ul li input{
+			border: none;
+			margin: 0; 
+			padding: 5px 0;
+			font-size: 14px;
+		} 
+		.startEnd ul li:before{
+			content: '.';
+			position: absolute;
+			font-size: 50px; 
+			color: #999;
+			left: 5px;
+			top:5px;
+			right: 5px; 
+		}
+		.startEnd ul li:last-child:before{
+			content: '';
+		}
+		.startEnd ul li:after{
+			content: '';
+			height: 1px;
+			position: absolute;
+			bottom: 0;
+			left: 10px;
+			right: 10px;
+			-webkit-transform: scaleY(0.5);
+			background-color: #eee;
+		}
+		.startEnd ul li:last-child:after{height: 0px;}
+		.follow{position:relative;background-color:#fff;padding:18px 15px 15px;}
+		.flexsb{display: flex;justify-content:space-between;align-items: center;}
+		.follow:after{position:absolute;content:'';height:1px;left:10px;right:10px;-webkit-transform:scaleY(.3);background:#CACACA;bottom:0}
+		.follow:last-child:after{height:0}
+		.fchidl{display:flex;align-items:center;justify-content:space-between}
+		.Avator{width:2rem;height:2rem;margin-right:15px}
+		.userAvator{width:2rem;height:2rem;border-radius:50%;margin-right:15px}
+		.fchidl>div{vertical-align:middle;display:flex;font-size:15px;text-align:left;align-items:center}
+		.text{color:#999}
+		.listCon p{padding:10px 0 0 0}
+ 		.flexrr{display: flex;justify-content: flex-end;}
+		.bottomop{display:flex;align-items:center}
+		.bottomop img{width:20px}
+		.diyButton{background:url(../../img/localLife/carFind.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;padding:6px 5px;color: #5495f1;margin-right: 10px;width: 60px;white-space: nowrap;}
+		.diyButton2{background:url(../../img/localLife/findpep.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;padding:6px 5px;color: #f63d42;margin-right: 10px;width: 60px;white-space: nowrap;}
+		.felsr{display: flex;justify-content: space-around;align-items: center;background-color: white;padding: 5px 20px;position: fixed;bottom: 0;left: 0;right: 0;text-align: center;box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);}
+		.felsr img{width: 20px;display: block;margin: auto;}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+		    <h1 class="mui-title">我的拼车</h1>
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		
+		<div id="main">	
+		</div>
+		<div id="tab">
+			<div class="tabPs" id="tabPs">
+				<div class="tab">
+					<div class="tabActive" data-type='2'><span>我要找车</span></div>
+					<div data-type='1'><span>我要找人</span></div> 
+				</div>
+				<div class="border"></div>
+			</div>
+			<div class="tabcontent tc1 taactive" id="tc1"></div>
+			<script type="text/html" id="tc1Tpl">
+				<div class="listCon">
+					<div class="follow"> 
+						<div class="fchidl">
+							<div>全部信息</div> 
+							<div class="butright">
+				            	<span class="disablecl ft14">共<%=list.length%>条信息</span>
+				           </div> 
+						</div> 
+					</div> 
+					
+					<%for(var i = 0;i<list.length;i++){%>
+						<div class="follow flexsb"> 
+							<div>
+								<div class="fchidl">
+									<div> 
+										<div class="diyButton2 activecl goanswer">
+						            		人找车	
+						            	</div>
+						            	<div>
+						            		<%=list[i].startPlace%> --- <%=list[i].endPlace%>
+						            		<%if(list[i].pathLocation){%>
+						            			(经<%=list[i].pathLocation%>)
+						            		<%}%>
+						            	</div>
+									</div> 
+									 
+								</div>  
+								<p class="ft14 maincl">
+									<span style="margin-right: 10px;">
+										<%=list[i].persons%>空位
+									</span>
+									车主<br />
+									时间：<%=list[i].goTime%>出发<br />
+									<!--<span class="activecl">
+										价格：￥<%=list[i].price%>
+									</span>-->
+								</p> 
+								
+							 	<div class="bottomop flexr">
+							 		<div class="disablecl ft14">
+							 			发布时间：
+							 		</div>
+									<div class="flexrr">
+										<div class="disablecl ft14">
+											<%=list[i].createTime%>
+										</div>
+									</div>
+							 	</div> 
+								<div class="ft12">
+									备注：<%=list[i].other%>
+								</div>
+							</div>
+							<div>
+								<button class="mui-btn-danger" onclick="toEdit(2,<%=list[i].id%>)">编辑</button>
+							</div>
+						</div> 
+					<%}%>
+					 
+			 		
+			  
+				</div>	
+			</script>
+			<div class="tabcontent tc2" id="tc2"></div>
+			<script type="text/html" id="tc2Tpl">
+				<div class="listCon">
+					<div class="follow"> 
+						<div class="fchidl">
+							<div>
+								全部信息 
+							</div> 
+							<div class="butright">
+				            	<span class="disablecl ft14">共<%=list.length%>条信息</span> 
+				            			 
+				           </div> 
+						</div> 
+					</div>
+					<%for(var i = 0;i<list.length;i++){%>
+						<div class="follow flexsb"> 
+							<div>
+								<div class="fchidl">
+									<div>
+										<div class="diyButton activecl goanswer">
+						            		车找人	
+						            	</div>
+						            	<div>
+						            		<%=list[i].startPlace%> --- <%=list[i].endPlace%>
+						            		<%if(list[i].pathLocation){%>
+						            			(经<%=list[i].pathLocation%>)
+						            		<%}%>
+						            	</div>
+									</div> 
+									 
+								</div>  
+								<p class="ft14 maincl">
+									<span style="margin-right: 10px;">
+										需要<%=list[i].persons%>个座位
+									</span>
+									乘客<br />
+									时间：<%=list[i].goTime%> 出发
+								</p> 
+								
+							 	<div class="bottomop flexr">
+							 		<div class="disablecl ft14">
+							 			发布时间：
+							 		</div>
+									<div class="flexrr">
+										<div class="disablecl ft14">
+											<%=list[i].createTime%>
+										</div>
+									</div>
+							 	</div> 
+								<div class="ft12">
+									备注：<%=list[i].other%>
+								</div>
+							</div>
+							<div>
+								<button class="mui-btn-danger" onclick="toEdit(1,<%=list[i].id%>)">编辑</button>
+							</div>
+						</div> 
+		 			<%}%>
+				</div> 	
+			</script>
+		</div>
+	
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			$('.goPublish').click(function(){ 
+				openview({
+					view:'goPublish.html'
+				})
+		   	}) 
+		   	function toEdit(type,id){
+		   		openview({
+					view:'../personal/editcCarPool.html',
+					id:'editcCarPool',
+					extrasobj:{ctype:type,cid:id}
+				})
+		   	}
+			//找车 找人 
+			var widthF = $(".tab div").eq(0).width()
+		    $('.border').css({"left":0+"px","width":widthF+"px"});
+		    
+		    $(".tab div").click(function() {
+				var i = $(this).index(); 
+		 	    //设置底边框的left 
+		 	    var width = $(this).width();
+		 		var leftSlider = width*i; 
+              	$('.border').css({"left":leftSlider+"px","width":width+"px"});
+				$(".tab div").removeClass("tabActive")
+				$(this).addClass("tabActive");
+				if(!$(".tabcontent").eq(i).hasClass("taactive")) {
+					$(".tabcontent").removeClass("taactive");
+					$(".tabcontent").eq(i).addClass("taactive");
+				} 
+				startSearch('get'); 
+			})
+		    window.addEventListener('refreash',function(event){
+				startSearch('get');  
+			});
+		   	startSearch('get'); 
+		
+		    function startSearch(dataT){
+				var fromwhere = $('#fromwhere input').val();
+				var gowhere = $('#gowhere input').val();  
+				mui.plusReady(function(){
+					var oldToken = plus.storage.getItem('oldToken');
+					var cityNum = plus.storage.getItem('cityNum');
+					var	myuserid = plus.storage.getItem('userid');
+					var ctype = $('.tabActive').attr('data-type'); 
+					console.log(fromwhere+'to '+gowhere+' '+dataT)
+					plus.nativeUI.showWaiting();
+					mui.ajax(serverUrl+'/api/localservice/transport/type/'+ctype+'/userId/'+myuserid,{
+						type:dataT,
+						timeout:8000,
+						headers:{"token":oldToken,"city":cityNum},	              				
+						success:function(data,type,xhr){
+							console.log('获取数据返回',data);
+							plus.nativeUI.closeWaiting();
+							if(data.errno == 0){
+								if(data.data && data.data.length){
+									[].forEach.call(data.data,function(ele){
+										ele.goTime = ele.goTime.replace('T',' ');
+										var date = new Date(ele.goTime/1000 *1000);
+											Y = date.getFullYear() + '-';
+											M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+											D = date.getDate() + ' ';
+											h = date.getHours()-8;
+											if(h<0){
+												h = h+24
+											}
+											h = h + ':';
+											m = date.getMinutes();
+											s = date.getSeconds(); 
+											console.log(Y+M+D+h+m+s); //呀麻碟
+											ele.goTime = Y+M+D+h+m;
+
+										var dt2 = new Date(ele.createTime);
+										var date2 = [
+										  [dt2.getFullYear(), dt2.getMonth() + 1, dt2.getDate()].join('-'),
+										  [dt2.getHours(), dt2.getMinutes(), dt2.getSeconds()].join(':')
+										].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+										ele.createTime = date2;
+									}) 
+									var carObj = {}
+									carObj.list = data.data; 
+									if(ctype == 1){
+										var html = template('tc2Tpl', carObj); 
+										document.getElementById('tc2').innerHTML = html;	
+									}else{
+										var html = template('tc1Tpl', carObj); 
+										document.getElementById('tc1').innerHTML = html;
+									}
+								  
+								}else{
+									if(ctype == 1){ 
+										document.getElementById('tc2').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
+									}else{ 
+										document.getElementById('tc1').innerHTML = "<div style='text-align: center;padding: 30px;font-size: 14px;'>暂无拼车信息</div>";
+									}
+
+								}
+							}else{
+								console.log(data.errmsg); 
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							console.log('获取数据,响应失败');
+						}
+					});
+				}) 
+			}
+			
+		</script>
+		<script type="text/javascript">
+		//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
+		//充值缴费   payment,  为民服务  serveForPeople,  购物中心 shopCenter, 注册  signUp, 特色馆 specialBar
+		mui.plusReady(function () {
+			var startTime, endTime, stayTime, flagback = 0;
+			startTime = new Date().getTime();
+			var old_back = mui.back;
+			//改写返回键返回的函数，返回时传页面停留时间 
+			mui.back = function(){
+				endTime = new Date().getTime();//返回时间
+				stayTime = Math.ceil((endTime - startTime) / 1000);   
+				console.log('购物中心'+stayTime); 
+				plus.statistic.eventDuration( "localLifeCar", stayTime);
+				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+				old_back(); 
+			}
+			plus.webview.currentWebview().addEventListener( "popGesture", function(){
+				flagback++;
+				if(flagback == 1){
+					endTime = new Date().getTime();
+					stayTime = Math.ceil((endTime - startTime) / 1000);  
+					plus.statistic.eventDuration( "localLifeCar", stayTime);
+					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
+				}
+			}, false );
+		});
+	</script> 
+	</body>
+
+</html>
