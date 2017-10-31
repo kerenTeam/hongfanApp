@@ -609,7 +609,7 @@
 														<div class="mui-checkbox"><img src="../../img/market/xuanze.png" class="quanc" data-id="<%=allLi[i].user_coupon_id%>" alt="" /></div>
 													</div>
 
-												<%}if(allLi[i].typeid==3){%>
+												<%}else if(allLi[i].typeid==3){%>
 													<div class="checkQuan mui-row" data-cid="<%=allLi[i].user_coupon_id%>" data-amount="<%=allLi[i].coupon_amount[0]%>" data-id="<%=allLi[i].typeid%>" data-minus="<%=allLi[i].coupon_amount[1]%>">
 														<div class="mui-col-sm-3">
 															<div>￥<big><b><%=allLi[i].coupon_amount[1]%></b></big></div>
@@ -915,90 +915,6 @@
 				});
 			}
 
-			//获取优惠券
-//			var d = new Date();
-//			var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-//			str = formatDate(str, "yyyy.MM.dd");
-//			mui.ajax(serverUrl + '/api/useraccount/mycoupon', {
-//				data: {
-//					userid: myuserid
-//				},
-//				dataType: 'json',
-//				type: 'post',
-//				timeout: 10000,
-//				headers: {
-//					"token": oldtoken
-//				},
-//				success: function(data, type, xhr) {
-//					console.log("抵用券 ", data)
-//					var allC = {};
-//					var tpldata = [];
-//					for(var i = 0; i < data.data.user_coupon.length; i++) {
-//
-//						if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3)) {
-//
-//							if(data.data.user_coupon[i].end_date != null) {
-//								data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
-//							}
-//							if(data.data.user_coupon[i].begin_date != null) {
-//								data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
-//							}
-//							if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
-//								if(data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) {
-//									if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#hiddenValue').val())){
-//										data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0], data.data.user_coupon[i].coupon_amount.split(",")[1]]
-//										tpldata.push(data.data.user_coupon[i]).typeid
-//									}
-//								}else {
-//									tpldata.push(data.data.user_coupon[i]).typeid
-//								}
-//
-//							}
-//						}
-//					}
-//					allC.allLi = tpldata;
-//					console.log('tpldata', tpldata)
-//					var html = template('quanTpl', allC);
-//					document.getElementById('quanData').innerHTML = html;
-//
-//					plus.nativeUI.closeWaiting();
-//
-//					//优惠券计算
-//					$(".checkQuan").click(function() {
-//
-//						var qid = $(this).attr("data-id");
-//						var qminus = $(this).attr("data-minus");
-//						$(this).siblings().find(".quanc").css("display", "none");
-//						quan = 0;
-//						if($(this).find(".quanc").css("display") == "block") {
-//							$(this).find(".quanc").css("display", "none");
-//							$("#minuMoney").html(0);
-//							$(".minuMoney").css("display", "none");
-//
-//						} else {
-//							$(this).find(".quanc").css("display", "block");
-//							if(qid == 1) {
-//								quan = parseFloat(qminus)
-//							}
-//							if(qid == 2) {
-//								quan = parseFloat($('#hiddenValue').val() * (1 - parseFloat(qminus))).toFixed(2);
-//							}
-//							if(qid == 3) {
-//								quan =parseFloat(qminus);
-//							}
-//							$("#minuMoney").html(quan);
-//							$(".minuMoney").css("display", "inline-block");
-//
-//						};
-//						calculate();
-//					})
-//
-//				},
-//				error: function(xhr, type, errorThrown) {
-//					mui.toast("网络不好请重试!")
-//				}
-//			});
-
 			//积分使用
 			var isIntergal = 0;
 			calculate();
@@ -1083,6 +999,10 @@
 								dataObj.goodsList = data.data.Params.goodsData;
 								dataObj.myurl = serverimgUrlE;
 								dataObj.PriceCalculValue = Math.floor(data.data.PriceCalculValue * 100) / 100;
+								var recommentType = dataObj.goodsList[0].goods_Data[0].recommentType;
+								if(dataObj.goodsList[0].goods_Data[0].youpin){
+									var igo = 1
+								}
 								if($('#hiddenValue').val() == ''){
 									$('#hiddenValue').val(dataObj.PriceCalculValue)
 								}
@@ -1105,9 +1025,10 @@
 										console.log("抵用券 ", data)
 										var allC = {};
 										var tpldata = [];
+										
 										for(var i = 0; i < data.data.user_coupon.length; i++) {
 					
-											if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3)) {
+											if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) && !data.data.user_coupon[i].applicableType) {
 					
 												if(data.data.user_coupon[i].end_date != null) {
 													data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
@@ -1126,8 +1047,51 @@
 													}
 					
 												}
+												
 											}
-										}
+											if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) && data.data.user_coupon[i].applicableType && recommentType !=1 && recommentType == data.data.user_coupon[i].applicableType) {
+					
+												if(data.data.user_coupon[i].end_date != null) {
+													data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
+												}
+												if(data.data.user_coupon[i].begin_date != null) {
+													data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
+												}
+												if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
+													if(data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) {
+														if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#hiddenValue').val())){
+															data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0], data.data.user_coupon[i].coupon_amount.split(",")[1]]
+															tpldata.push(data.data.user_coupon[i]).typeid
+														}
+													}else {
+														tpldata.push(data.data.user_coupon[i]).typeid
+													}
+					
+												}
+												
+											}
+											if(data.data.user_coupon[i].user_coupon_state == 1 && (data.data.user_coupon[i].typeid == 1 || data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) && data.data.user_coupon[i].applicableType && igo ==1 && data.data.user_coupon[i].applicableType == 1) {
+					
+												if(data.data.user_coupon[i].end_date != null) {
+													data.data.user_coupon[i].end_date = formatDate(data.data.user_coupon[i].end_date, "yyyy.MM.dd");
+												}
+												if(data.data.user_coupon[i].begin_date != null) {
+													data.data.user_coupon[i].begin_date = formatDate(data.data.user_coupon[i].begin_date, "yyyy.MM.dd");
+												}
+												if(data.data.user_coupon[i].begin_date <= str && str <= data.data.user_coupon[i].end_date) {
+													if(data.data.user_coupon[i].typeid == 2 || data.data.user_coupon[i].typeid == 3) {
+														if(data.data.user_coupon[i].coupon_amount.split(",")[0]<=parseFloat($('#hiddenValue').val())){
+															data.data.user_coupon[i].coupon_amount = [data.data.user_coupon[i].coupon_amount.split(",")[0], data.data.user_coupon[i].coupon_amount.split(",")[1]]
+															tpldata.push(data.data.user_coupon[i]).typeid
+														}
+													}else {
+														tpldata.push(data.data.user_coupon[i]).typeid
+													}
+					
+												}
+												
+											}
+										} 
 										allC.allLi = tpldata;
 										console.log('tpldata', tpldata)
 										var html = template('quanTpl', allC);
@@ -1328,6 +1292,9 @@
 								$('#changeJf').click(function() {
 									calculate();
 								})
+							}else{
+								plus.nativeUI.closeWaiting();
+								mui.toast(data.errmsg)
 							}
 						},
 						error: function(xhr, type, errorThrown) {

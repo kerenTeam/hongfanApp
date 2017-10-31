@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/index.css">
 		<link rel="stylesheet" href="../css/reset.css"> 
 		<link rel="stylesheet" type="text/css" href="../css/cart.css" />
-		
+		<link rel="stylesheet" type="text/css" href="../css/config.css"/>
 	</head>
 
 	<body>
@@ -61,7 +61,18 @@
 								<%=goodsList[j].goodText%>
 							</div>
 							<strong>￥<span class="price"><%=goodsList[j].goodsPrice%></span></strong>
-
+							<%if(goodsList[j].goodsrecommentType == 2){%>
+								<div class="mui-pull-right ft14 rtype" style="color: #D11250;"><img src="../img/center/typeFlag.svg" alt="" /> HI货榜</div>
+							<%}else if(goodsList[j].goodsrecommentType == 3){%>
+								<div class="mui-pull-right ft14 rtype" style="color: #DB5800;"><img src="../img/center/typeFlag.svg" alt="" /> HI土货</div>
+							<%}else if(goodsList[j].goodsrecommentType == 4){%>
+								<div class="mui-pull-right ft14 rtype" style="color: #006899;"><img src="../img/center/typeFlag.svg" alt="" /> HI洋货</div>
+							<%}else if(goodsList[j].goodsrecommentType == 5){%>
+								<div class="mui-pull-right ft14 rtype" style="color: #008F68;"><img src="../img/center/typeFlag.svg" alt="" /> HI特色</div>
+							<%}else if(goodsList[j].igetShopId == 0){%>
+								<div class="mui-pull-right ft14 rtype" style="color: #003366;"><img src="../img/center/typeFlag.svg" alt="" />跨境优品</div>
+							<%}%>
+							
 						</div>
 						<div class="numberWidget">
 							<div class="mui-numbox" data-numbox-min='1'>
@@ -125,7 +136,7 @@
         var cartStorage =JSON.parse(plus.storage.getItem('$cartStorage')||'[]');  
        //订单缓存
         var orderStorage =JSON.parse(plus.storage.getItem('$orderStorage')||'[]');  
-
+console.log('cartStorage',cartStorage)
         	var data = {};
 			data.goodsList = cartStorage; 
 			var arr = [];
@@ -409,6 +420,7 @@
 								for(var i=0;i<cartStorage.length;i++){
 									if(orderObj.goodsId == cartStorage[i].goodsId && orderObj.goodText==cartStorage[i].goodText){
 										orderObj.goodProp = cartStorage[i].goodProp;
+										orderObj.goodsrecommentType = cartStorage[i].goodsrecommentType;
 										orderObj.goodsreduce = cartStorage[i].goodsreduce;
 									 	orderObj.goods_property = cartStorage[i].goods_property;
 									}
@@ -435,33 +447,31 @@
 								
 								
 							})
-							plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage)); 
-//							//优品汇 和 普通商家商品分开提交
-//							var flag=0;
-//							for(var t=0;t<orderStorage.length;t++){
-//								if(orderStorage[t].shopId == 0 && orderStorage.length!=1){
-//									flag=1;
-//									break;
-//								}else{
-//									flag=0;
-//								}
-//							}  
-//							 
-//							if(flag == 1){
-//								mui.toast("您选中了" + ALLcheckLength + "件商品");
-//								return 
-//								openview({
-//									view: "market/market-orderY.html",
-//									id:"market-orderY"
-//								})
-//							}else{
+							plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
+							
+							var flag = [];
+							console.log('orderStorage'+JSON.stringify(orderStorage))
+							for(var i  = 0; i<orderStorage.length; i++){
+								if(orderStorage[i].goodsrecommentType && orderStorage[i].goodsrecommentType !=1 && orderStorage[i].goodsrecommentType !=6 ){
+									flag.push(orderStorage[i].goodsrecommentType)
+								}else if(!orderStorage[i].goodsrecommentType){
+									flag.push(0)
+								}
+							  
+							}
+							
+							flag = flag.unique1();
+							if(flag.length>1){
+								mui.toast('不能多类型商品提交购买')
+							}else{
 								mui.toast("您选中了" + ALLcheckLength + "件商品") 
 								openview({
 									view: "market/market-order.html",
-									id:"market-order"
+									id:"market-order",
+									extrasobj:{iscart:1}
 								})
-//							}
-							
+							}
+							 
 						}else{//没登陆直接打开登录页面
 							mui.toast('请登录');
 							openview({

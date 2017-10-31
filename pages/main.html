@@ -481,14 +481,15 @@
 		</div>
 		<!--遮罩1-->
 		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;">
-			<img src="../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+			<img src="../img/mainHtml/mclose.svg" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
+				<img src="../img/mainHtml/mask1.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCoupon()'/>
+				<!--<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
 					<div class="ft16 fttc" style="text-align: center;">首页弹窗1</div>
 					<ol class="ft14 disablecl ruleol">
 					</ol>
 				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>-->
 				
 			</div>
 		</div>
@@ -523,15 +524,6 @@
 
 		</div>
 		<script type="text/javascript">
-			/*显示优惠卷弹窗*/
-			mui.plusReady(function(){
-				if(!plus.storage.getItem("youhuijuan")){
-					mui('#fenhao')[0].style.display = 'block';
-				}else{
-					mui('#fenhao')[0].style.display = 'block';
-				}
-			
-			})
 			$('.ruleCt').click(function(){
 				event.stopPropagation()
 			})
@@ -548,6 +540,7 @@
 				$('#maskInfo3').fadeOut(200);
 			}) 
 			$('.closeMs').click(function(){
+				event.stopPropagation();
 				$(this).parent().fadeOut(200);
 			})
 			
@@ -569,6 +562,14 @@
 				openview({
 					view:'answerBoard/answerIndex.html',
 					id:"answerIndex",
+				});
+			}
+			function goCoupon(){/*优惠券*/
+				event.stopPropagation();
+				$('#maskInfo1').fadeOut(200);
+				openview({
+					view:'market/BuyOffer.html',
+					id:"BuyOffer",
 				});
 			}
 			//打开他人主页
@@ -662,57 +663,6 @@
 					var fil = document.getElementsByClassName('fil')[0];
 					var loveBuy = document.getElementsByClassName('loveBuy')[0];
 					/*首页弹框*/
-//					mui('#fenhaoPic')[0].onclick = function(){
-//						mui.plusReady(function(){
-//							if(plus.storage.getItem('myToken')){
-//								var myuserid = plus.storage.getItem('userid');
-//								var msg = {
-//									myIsIndex:true,
-//									title:'下载HI集得好礼',
-//									content:'下载HI集得好礼',
-//									href:'http://hiji.hifete.com:6789/bannerUrl/pages/fenxiang.html',
-//									thumbs:[''],
-//									pictures:['']
-//
-//								};
-//								showSfun1(msg,function(){
-//									jiazaiyaoqing();
-//								},function(){
-//									jiazaiyaoqing();
-//								});
-//								function jiazaiyaoqing(){
-//									mui.ajax(serverUrl + '/api/index/sharecoupon', {
-//										data:{userid:myuserid,invitationCode:'fx0929'},
-//										dataType: 'json',
-//										type: 'post',
-//										timeout: 10000,
-//										headers: {"token": oldToken,'city': cityNum},
-//										success: function(data, type, xhr) {
-//											console.log('首页弹框'+JSON.stringify(data));
-//											if(data.errno == 0){
-//												plus.storage.setItem("youhuijuan","1")
-//											}else{
-//												alert(data.errmsg)
-//											}
-//											mui('#fenhao')[0].style.display = 'none';
-//										},
-//										error: function(xhr, type, errorThrown) {
-//											console.log('首页弹框,响应失败');
-//											mui('#fenhao')[0].style.display = 'none';
-//										}
-//									});
-//								}
-//
-//							}else{
-//								mui.toast('请登录');
-//								openview({
-//									view:'login.html'
-//								});
-//							}
-//
-//						})
-//
-//					}
 					mui.ajax(serverUrl + '/api/index/showmodal', {
 		                type: 'post',
 		                timeout: 10000,
@@ -733,6 +683,7 @@
 		                		}
 		                },
 		                error: function(xhr, type, errorThrown) {
+		                		console.log('首页弹窗',type)
 		                    console.log('响应失败');
 		                   	plus.nativeUI.closeWaiting();
 		                }
