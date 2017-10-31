@@ -444,19 +444,34 @@ console.log('cartStorage',cartStorage)
 							plus.storage.setItem("$orderStorage",JSON.stringify(orderStorage));
 							
 							var flag = [];
-							console.log('orderStorage'+JSON.stringify(orderStorage))
+							console.log('orderStorage',orderStorage)
 							for(var i  = 0; i<orderStorage.length; i++){
-								if(orderStorage[i].goodsrecommentType == 1 ){
+								if(orderStorage[i].goodsrecommentType || orderStorage[i].goodsrecommentType == 0){
 									flag.push(orderStorage[i].goodsrecommentType)
-								}else if(!orderStorage[i].goodsrecommentType){
-									flag.push(0)
+								}else if(orderStorage[i].igetShopId == 0){
+									flag.push(-1)
 								}
 							  
 							}
 							
 							flag = flag.unique1();
 							if(flag[0] !=null && flag.length>1){
-								mui.toast('不能多类型商品提交购买')
+								var fflag = 0;
+								for(var i = 0; i<flag.length;i++){
+									if(flag[i] == 1 || flag[i] == -1 && orderStorage.length > 1){
+										fflag++;
+										mui.toast('跨境优品和抢购商品请单独购买');
+										break;
+									}
+								}
+								if(fflag<1){
+									mui.toast("您选中了" + ALLcheckLength + "件商品") 
+									openview({
+										view: "market/market-order.html",
+										id:"market-order",
+										extrasobj:{iscart:1}
+									})
+								}
 							}else{
 								mui.toast("您选中了" + ALLcheckLength + "件商品") 
 								openview({
