@@ -61,14 +61,8 @@
 								<%=goodsList[j].goodText%>
 							</div>
 							<strong>￥<span class="price"><%=goodsList[j].goodsPrice%></span></strong>
-							<%if(goodsList[j].goodsrecommentType == 2){%>
-								<div class="mui-pull-right ft14 rtype" style="color: #D11250;"><img src="../img/center/typeFlag.svg" alt="" /> HI货榜</div>
-							<%}else if(goodsList[j].goodsrecommentType == 3){%>
-								<div class="mui-pull-right ft14 rtype" style="color: #DB5800;"><img src="../img/center/typeFlag.svg" alt="" /> HI土货</div>
-							<%}else if(goodsList[j].goodsrecommentType == 4){%>
-								<div class="mui-pull-right ft14 rtype" style="color: #006899;"><img src="../img/center/typeFlag.svg" alt="" /> HI洋货</div>
-							<%}else if(goodsList[j].goodsrecommentType == 5){%>
-								<div class="mui-pull-right ft14 rtype" style="color: #008F68;"><img src="../img/center/typeFlag.svg" alt="" /> HI特色</div>
+							<%if(goodsList[j].goodsrecommentType == 1){%>
+								<div class="mui-pull-right ft14 rtype" style="color: #D11250;"><img src="../img/center/typeFlag.svg" alt="" /> HI抢购</div>
 							<%}else if(goodsList[j].igetShopId == 0){%>
 								<div class="mui-pull-right ft14 rtype" style="color: #003366;"><img src="../img/center/typeFlag.svg" alt="" />跨境优品</div>
 							<%}%>
@@ -452,7 +446,7 @@ console.log('cartStorage',cartStorage)
 							var flag = [];
 							console.log('orderStorage'+JSON.stringify(orderStorage))
 							for(var i  = 0; i<orderStorage.length; i++){
-								if(orderStorage[i].goodsrecommentType && orderStorage[i].goodsrecommentType !=1 && orderStorage[i].goodsrecommentType !=6 ){
+								if(orderStorage[i].goodsrecommentType == 1 ){
 									flag.push(orderStorage[i].goodsrecommentType)
 								}else if(!orderStorage[i].goodsrecommentType){
 									flag.push(0)
@@ -461,7 +455,7 @@ console.log('cartStorage',cartStorage)
 							}
 							
 							flag = flag.unique1();
-							if(flag.length>1){
+							if(flag[0] !=null && flag.length>1){
 								mui.toast('不能多类型商品提交购买')
 							}else{
 								mui.toast("您选中了" + ALLcheckLength + "件商品") 
