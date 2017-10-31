@@ -9,6 +9,7 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
+
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/common.css">
 		<link rel="stylesheet" href="../../css/reset.css">
@@ -45,8 +46,9 @@
 		<header class="mui-bar mui-bar-nav" style="padding-left: 20px;">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
 			<h1 class="mui-title">优惠券</h1>
-		</header>	
-		<script src="../../js/statusBar.js"></script><!--状态栏--> 
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+
 		<div id="offerId"></div>
 		<script type="text/html" id="Alist-detail">
 			<%for(var i = 0 ;i<objData.length;i++){%>
@@ -71,9 +73,9 @@
 							<div class="offerFoot">
 								<%if(objData[i].pic && objData[i].pic.length){%>
 									<img class="anImg loadPics picOp" onerror="this.src='../../img/market/nodata.svg'" onload="imgHeight(this)" src="<%=objData[i].pic[0].picImg%>" alt="" />
-								<%}%> 
+								<%}%>
 							</div>
-						</div> 
+						</div>
 					<%}else{%>
 						<div class="offerWrap offerWrap2">
 							<%if(objData[i].typeid == 5){%>
@@ -94,14 +96,14 @@
 							<div class="offerFoot">
 								<%if(objData[i].pic && objData[i].pic.length){%>
 									<img class="anImg loadPics picOp" onerror="this.src='../../img/market/nodata.svg'" onload="imgHeight(this)" src="<%=objData[i].pic[0].picImg%>" data-preview-src="" data-preview-group="<%=i%>" alt="" />
-								<%}%> 
+								<%}%>
 							</div>
-						</div>	
+						</div>
 					<%}%>
-				<%}%> 
+				<%}%>
 			<%}%>
 		</script>
-		<!--操作表   支付弹窗--> 
+		<!--操作表   支付弹窗-->
 		<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 			<div class="paycontent">
 				<ul class="mui-table-view waypay">
@@ -116,7 +118,7 @@
 			</div>
 		</div>
 		<!--操作表   支付弹窗结束-->
-		
+
 		<!--详情弹框-->
 		<!--遮罩-->
 		<div id="maskInfo" style="display: none;">
@@ -127,27 +129,27 @@
 					</ol>
 				</div>
 				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >我知道了</button>
-				
+
 			</div>
 		</div>
-		
+
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-	 
+
 		$('.ruleCt').click(function(){
 			event.stopPropagation()
 		})
 		$('#maskInfo,.closemask').click(function(){
 			event.preventDefault()
 			$('#maskInfo').fadeOut(200);
-		}) 
+		})
 		$(".closePay").click(function() {
 			event.stopPropagation();
 			$("#payChoose").removeClass("mui-active");
 		});
-		
+
 		var pays = {};
 		mui.plusReady(function(){
 			//铺数据
@@ -165,10 +167,10 @@
 					dataType:'json',
 					type:'post',
 					timeout:10000,
-					headers: {"token": oldToken,'city': cityNum},	 
+					headers: {"token": oldToken,'city': cityNum},
 					success:function(data,type,xhr){
-						console.log('列表',data);				
-						var dateObj={}; 
+						console.log('列表',data);
+						var dateObj={};
 						if(data.data && data.data.length){
 							for(var i = 0;i < data.data.length;i++){
 								if(data.data[i].receive_limit){
@@ -182,7 +184,7 @@
 										}
 									}
 							 	}
-	//							 
+	//
 							}
 							dateObj.objData=data.data;
 							dateObj.url=serverimgUrl;
@@ -197,10 +199,10 @@
 						mui.toast('响应失败')
 						console.log('响应失败  !');
 					}
-				});	
+				});
 			}
-			
-			
+
+
 			//goPay
 			//系统检测获取支付通道
 			plus.payment.getChannels(function(channels) {
@@ -230,7 +232,7 @@
 					$('#maskInfo').fadeIn(200);
 					$('.ruleol').html(cnt)
 				}
-				
+
 			}
 			// 检测是否安装支付服务
 			function checkServices(pc) {
@@ -244,33 +246,33 @@
 							txt = "系统未安装“" + pc.description + "”服务，无法完成支付，是否立即安装？";
 							break;
 					}
-				 
+
 				}
 			}
 			//系统检测获取支付通道结束
 
-			window.goPay = function(obj,cid,cprice) { 
+			window.goPay = function(obj,cid,cprice) {
 				event.stopPropagation();
 				if(plus.storage.getItem('myToken')){
 					if(cprice && cprice>0){
 					  	$("#payChoose").addClass("mui-active");
-						// 支付方法 
+						// 支付方法
 						window.payfun = function(id) {
-							var varpay; 
+							var varpay;
 							if(id == 'alipay' || id == 'wxpay') {
 								//调用支付功能
 								plus.nativeUI.showWaiting();
-									gopay(id); 
+									gopay(id);
 							} else {
 								plus.nativeUI.alert("当前环境不支持此支付通道！", null, "提示");
 								return;
 							}
-	
+
 							function gopay(id) {
 								mui.ajax(serverUrl + '/api/index/getcoupon', {
 									data:{
 										userId:myuserid,
-										payType:id, 
+										payType:id,
 										id:cid,
 									},
 									dataType:'json',
@@ -279,12 +281,12 @@
 									timeout: 10000, //超时时间设置为10秒；
 									success: function(data) {
 										console.error('支付返回',data);
-										plus.nativeUI.closeWaiting()  
+										plus.nativeUI.closeWaiting()
 										if(data.errno == 1000) {
-											mui.toast('已领完') 
-										} 
+											mui.toast('已领完')
+										}
 										if(data.errno == 0) {
-											
+
 											var varpay;
 											if(id == 'wxpay') {
 												varpay = {
@@ -301,9 +303,9 @@
 													var resultStr = JSON.stringify(result);
 													console.log("----- 支付成功 -----");
 													plus.nativeUI.closeWaiting();
-													 
+
 													mui.toast('领取成功');
-													
+
 													showData();
 												}, function(e) {
 													console.log("----- 支付失败 -----");
@@ -311,7 +313,7 @@
 													plus.nativeUI.alert("支付失败");
 												});
 											} else {
-												//支付宝 
+												//支付宝
 												varpay = data.data;
 												plus.payment.request(pays[id], varpay, function(result) {
 													var resultStr = JSON.stringify(result);
@@ -329,7 +331,7 @@
 													plus.nativeUI.alert("支付失败");
 												});
 											}
-											 
+
 										}
 									},
 									error: function(xhr, type, errorThrown) {
@@ -341,10 +343,10 @@
 										plus.nativeUI.alert("获取订单信息失败！");
 									}
 								});
-	
+
 							}
-	
-						}	
+
+						}
 					}
 					if(cprice == 0){
 						mui.ajax(serverUrl + '/api/index/getcoupon', {
@@ -358,34 +360,34 @@
 							timeout: 10000, //超时时间设置为10秒；
 							success: function(data) {
 								console.error('领取返回',data);
-								plus.nativeUI.closeWaiting()  
+								plus.nativeUI.closeWaiting()
 								if(data.errno == 1000) {
-									mui.toast('已领完') 
-								} 
-								if(data.errno == 0) { 
+									mui.toast('已领完')
+								}
+								if(data.errno == 0) {
 									mui.toast('领取成功') ;
 									showData();
 								}
 							},
 							error: function(xhr, type, errorThrown) {
 								//异常处理；
-								console.log(type); 
+								console.log(type);
 								console.log(xhr.status);
-								plus.nativeUI.closeWaiting(); 
+								plus.nativeUI.closeWaiting();
 							}
 						});
 					}
-					
+
 				}else{
 					mui.toast('请登录');
 					openview({
 						view:'../login.html'
 					});
 				}
-				 
+
 			}
 		});
-		
+
 		</script>
 		<script type="text/javascript">
 			//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
@@ -394,26 +396,26 @@
 				var startTime, endTime, stayTime, flagback = 0;
 				startTime = new Date().getTime();
 				var old_back = mui.back;
-				//改写返回键返回的函数，返回时传页面停留时间 
+				//改写返回键返回的函数，返回时传页面停留时间
 				mui.back = function(){
 					endTime = new Date().getTime();//返回时间
-					stayTime = Math.ceil((endTime - startTime) / 1000);   
-					console.log('购物中心- 优惠'+stayTime); 
+					stayTime = Math.ceil((endTime - startTime) / 1000);
+					console.log('购物中心- 优惠'+stayTime);
 					plus.statistic.eventDuration( "shopCenterOffer", stayTime);
 					//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-					old_back(); 
+					old_back();
 				}
 				plus.webview.currentWebview().addEventListener( "popGesture", function(){
 					flagback++;
 					if(flagback == 1){
 						endTime = new Date().getTime();
-						stayTime = Math.ceil((endTime - startTime) / 1000);  
+						stayTime = Math.ceil((endTime - startTime) / 1000);
 						plus.statistic.eventDuration( "shopCenterOffer", stayTime);
 						//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 					}
 				}, false );
 			});
-		</script> 
+		</script>
 	</body>
-	
+
 </html>
