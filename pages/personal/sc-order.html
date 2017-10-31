@@ -429,6 +429,13 @@
 				</ul>
 			</div>
 		</div>
+		<!--分享弹窗-->
+		<div id="maskInfo123" class="maskInfo" style="display: none;z-index:999;">
+			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
+				<img src="../../img/mainHtml/shareGift.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCouponFun()'/>
+			</div>
+		</div>
 	</body>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
@@ -440,11 +447,65 @@
 			event.stopPropagation();
 			$("#payChoose").removeClass("mui-active");
 		})
+		//分享弹窗
+		$('.ruleCt').click(function(){
+			event.stopPropagation()
+		})
+		$('#maskInfo1').click(function(){
+			event.preventDefault()
+			$('#maskInfo1').fadeOut(200);
+		})
+		$('.closeMs').click(function(){
+			event.stopPropagation();
+			$(this).parent().fadeOut(200);
+		})
+		function goCouponFun(){
+			var thumbs = '../../img/logomifeng.png';
+			var msg = {
+				title:'快来下载HI集吧，优惠、好礼等着你！',
+				content:'快来下载HI集吧，优惠、好礼等着你！',
+				href:'http://hiji.hifete.com/',
+				thumbs:[thumbs],
+				pictures:[thumbs]
+			};
+			showSfun1(msg,function(){
+				//成功领劵
+				mui.plusReady(function(){
+					var oldToken = plus.storage.getItem('oldToken');
+					var myuserid = plus.storage.getItem('userid');
+					var cityNum = plus.storage.getItem('cityNum');
+					var invitationCode = JSON.parse(plus.storage.getItem('shareInfo')).invitationCode;
+
+					plus.nativeUI.showWaiting();
+					mui.ajax(serverUrl+'/api/index/sharegetcoupon',{
+						data:{"userId":myuserid,'invitationCode':invitationCode},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers: {"token": oldToken,'city': cityNum},
+						success:function(data,type,xhr){
+							plus.nativeUI.closeWaiting();
+							$('#maskInfo123').css('display','none');
+							console.log('分享获劵'+data);
+							if(data.errno == 0){
+								alert('领劵成功，快去我的优惠卷查看吧');
+							}else{
+								alert(data.errmsg);
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							$('#maskInfo123').css('display','none');
+							console.error('分享获劵  ---- 失败');
+						}
+					});
+				})
+			});
+		}
 
 		var pays={}
 
 		mui.plusReady(function(){
-
 			//获取上一个页面 穿的 订单类型
 			var toOrder_status = plus.webview.currentWebview().status;
 			if(plus.webview.getWebviewById("pay")){
@@ -453,6 +514,21 @@
 			window.addEventListener('refresh',function(event){
 				load();
 			})
+			//判断是否显示分享有礼
+			function isShowShare(isnow){
+				var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
+				shareInfo.begin_date = '2017-10-10';
+				var nowdate = new Date;
+			    	var newbeginDate = new Date(shareInfo.begin_date);
+			    	var newendDate = new Date(shareInfo.end_date);
+			    	var showShare = isnow || plus.webview.currentWebview().showShare;
+			    	if(showShare && nowdate > newbeginDate && nowdate < newendDate){
+			    		plus.nativeUI.closeWaiting();
+			    		$('#maskInfo123').css('display','block');
+			    	}
+			}
+			isShowShare();
+			//判断是否显示分享有礼	结束
 
 			var oldToken = plus.storage.getItem('oldToken');
 			var myuserid = plus.storage.getItem('userid');
@@ -986,6 +1062,8 @@
 
 		//											关闭 订单页
 													load();
+													isShowShare(true);//分享得礼
+
 												},
 												error: function(xhr, type, errorThrown) {
 												}
@@ -1021,6 +1099,7 @@
 
 		//											关闭 订单页
 													load();
+													isShowShare(true);//分享得礼
 												},
 												error: function(xhr, type, errorThrown) {
 													console.log("修改状态失败")
