@@ -1,12 +1,9 @@
 
-//var serverUrl='http://hiji.hifete.com';
-var serverUrl='http://abcd.zlzmm.com:7200';
+//var serverUrl='http://abcd.zlzmm.com:7200';
 //var serverUrl='http://hijiv2.zlzmm.com';
-//var serverUrl='http://192.168.199.191:7200';
-
+var serverUrl='http://192.168.199.191:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
-var urlLocal='http://192.168.199.191:7200';
 var serverimgUrl='http://hiji.hifete.com:6789';
 var serverimgUrlE='';
 //var propUrl = 'http://192.168.0.128:6789';
