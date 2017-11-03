@@ -413,10 +413,9 @@ function jubao(junsid,jbuid,myuserid,cityNum,oldToken){
 			success: function(data, type, xhr) {
 				console.log('点赞返回',data);
 				if(data.errno == 0){
-					mui.toast('举报成功');
-
+					mui.toast('举报成功，管理员将在12小时内审核处理');
 				}else if(data.errno == 1000) {
-	    			mui.toast('审核处理中');
+	    				mui.toast('审核处理中，管理员将在12小时内审核处理');
 				}else{
 					mui.toast('操作失败');
 				}

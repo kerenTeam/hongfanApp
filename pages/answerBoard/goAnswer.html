@@ -3,15 +3,15 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>发布发现</title>
+		<title>回答</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-touch-fullscreen" content="yes"> 
+		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />  
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 	</head>
 	<style type="text/css">
 	 	.baocun img{width:20px}
@@ -34,11 +34,11 @@
 
 		<header class="mui-bar mui-bar-nav" id="header">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
-			<h1 class="mui-title findUser">发布</h1>
+			<h1 class="mui-title findUser">回答</h1>
 			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun"><img src="../../img/answer/goanswer/up.png"/></a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		
+
 		<script type="text/html" id="listDataS">
 				<div class="followA"><!--问题-->
 					<div class="fchidl">
@@ -53,37 +53,51 @@
 							<div class="answerImf" style="padding: 0;">
 								<img class="anImg picOp loadPics" onload="imgHeight(this)" src="<%=dataList.pic[j].picImg%>" data-preview-src="" data-preview-group="1" alt="" />
 					 		</div>
-					 	<%}%> 
-					<%}%> 
-				</div> 
-		 
-		</script>	
+					 	<%}%>
+					<%}%>
+				</div>
+
+		</script>
 		<div id="main">
 			<div id="listInfoS"> </div>
-			 
-			<div class="publishf">   
-					<textarea id="textCon" class="disbg ft14" rows="4" placeholder="请添加你的回答..."></textarea>
+
+			<div class="publishf">
+				<textarea id="textCon" class="disbg ft14" rows="4" placeholder="请添加你的回答..."></textarea>
 			</div>
-			 
+
 			<div id="mainpic" class="biaoqian">
-			 
+
 			</div>
-			 
-			<div class="uppics clearfix" id="uppics2"> 
+
+			<div class="uppics clearfix" id="uppics2">
 		        <div class="onepic">
 		            <img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">
 		            <p>添加照片</p>
-		        </div> 
-		    </div> 
-		   
-			 
+		        </div>
+		    </div>
+			<style type="text/css">
+		    		.disclaimer p{color: red;padding-left: 15px;}
+		    		.disclaimer p span{color: #555;}
+		    </style>
+		   <div class="disclaimer">
+				<p class="fl" onclick="disclaimer()"><span class="gray">发布即同意</span>免责申明</p>
+			</div>
+			<script type="text/javascript">
+				//点击免责申明
+				function disclaimer(){
+					openview({
+						view:'../localLife/disclaimer.html'
+					})
+				}
+			</script>
+
 		</div>
-		 
-			 
+
+
 	</body>
 <script type="text/javascript" src="../../js/jquery.min.js"></script>
 <script src="../../js/mui.min.js"></script>
-<script src="../../js/app.js"></script> 
+<script src="../../js/app.js"></script>
 <script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/image-new.js" type="text/javascript" charset="utf-8"></script>
 <!--引入模板引擎-->
@@ -99,7 +113,7 @@
 		var cityNum  = plus.storage.getItem('cityNum'),
 		    oldToken = plus.storage.getItem('oldToken'),
 			myuserid = plus.storage.getItem('userid'),
-			infiId = plus.webview.currentWebview().questionId; 
+			infiId = plus.webview.currentWebview().questionId;
 		mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId, {
 			dataType: 'json',
 			type: 'get',
@@ -109,7 +123,7 @@
 				console.error('问答详情', data);
 				if(data.errno == 0) {
 					var dataObj = {}, nowArray = data.data;
-					
+
 					if(nowArray.avatar && nowArray.avatar!='null'){
 						if(JSON.parse(nowArray.avatar)[0].picImg.indexOf('http') == -1){
 							nowArray.avatar = serverimgUrl + JSON.parse(nowArray.avatar)[0].picImg;
@@ -119,10 +133,10 @@
 					}else{
 						nowArray.avatar = '../../img/10.png'
 					}
-					
+
 					if(!nowArray.nickname){
 						nowArray.nickname = '匿名'
-					} 
+					}
 					if(!nowArray.answerNums){
 						nowArray.answerNums = 0
 					}else if((nowArray.answerNums / 1000)>1){
@@ -130,7 +144,7 @@
 					}
 					if(!nowArray.likes){
 						nowArray.likes = 0
-					} 
+					}
 					if(nowArray.pic && nowArray.pic!='null'){
 						nowArray.pic = JSON.parse(nowArray.pic);
 						for(var k = 0; k<nowArray.pic.length;k++){
@@ -140,7 +154,7 @@
 						}
 					}
 					dataObj.dataList = data.data;
-					document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
+					document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj);
 					lazyLoad(true);//懒加载
 				}else{
 					mui.toast('当前网络不好,请重试');
@@ -151,9 +165,9 @@
 				mui.toast('当前网络不好,请重试');
 			}
 		});
-	}); 
-	
-	var Apic = [];//图片存放数组 
+	});
+
+	var Apic = [];//图片存放数组
 	var lfs=null;// 保留上次选择图片列表
 	var time1 = null;
 	function galleryImgsSelected(){//从相册中选择图片
@@ -186,19 +200,19 @@
 	    			plus.zip.compressImage({
 						src:e.files[indexNum],
 						dst:endpic,
-						overwrite:true, 
+						overwrite:true,
 						quality:30
 					},
 					function() {
 						Apic.push(endpic);
 						showImg(endpic,indexNum);
 					},function(error) {
-						mui.toast('图片获取错误，请重试');  
+						mui.toast('图片获取错误，请重试');
 					});
 		    		indexNum ++;
-		    		
+
 		    	},1000)
-		    }, function ( e ) {  
+		    }, function ( e ) {
 		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
     		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
 				plus.nativeUI.alert('最多上传9张图片');
@@ -210,18 +224,18 @@
 				document.getElementsByClassName('onepic')[0].getElementsByTagName('img')[indexNum-1].src = url;
 				$('.onepic p').css('display','none');
 			}
-		})	
+		})
 	}//从相册中选择图片结束
-	
+
 	//发送 发布
-	mui('.baocun')[0].addEventListener('tap',function(){ 
+	mui('.baocun')[0].addEventListener('tap',function(){
 		var cityNum  = plus.storage.getItem('cityNum'),
 	        expertId= plus.webview.currentWebview().expertid,
 			oldToken = plus.storage.getItem('oldToken'),
 		 	myuserid = plus.storage.getItem('userid');
 			infiId = plus.webview.currentWebview().questionId;
 		 	questionUserId = plus.webview.currentWebview().questionUserId;
-	 	var textCon = mui('#textCon')[0];  
+	 	var textCon = mui('#textCon')[0];
 	 	if(Apic.length){//要传图片
 		 	if(time1 == null){//必须要图片全部处理完毕  才行    (开始发布)
 		 		plus.nativeUI.showWaiting();
@@ -241,16 +255,16 @@
 		 		releaseData();
 		 	}
 	 	}
-	 	
+
 	 	//发送数据
 	 	function releaseData(){
-			var task = plus.uploader.createUpload(serverUrl+'/api/friends/newscomment', 
+			var task = plus.uploader.createUpload(serverUrl+'/api/friends/newscomment',
 				{ method:"POST"},
 				function(back,status){
 					if(status == 200){
 						console.log(back);
 						var dataobj = JSON.parse(back.responseText);
-						if(dataobj.errno == 0){ 
+						if(dataobj.errno == 0){
 							plus.nativeUI.closeWaiting();
 							mui.toast('回答成功');
 							mui.fire(plus.webview.getWebviewById('answerInfo'),'refresh');
@@ -262,19 +276,19 @@
 						}
 					}else{
 						plus.nativeUI.closeWaiting();//关闭等待框
-						mui.toast('当前网络不好，请重试！');	
+						mui.toast('当前网络不好，请重试！');
 					}
-					
+
 				}
 			);
 			console.log(myuserid,infiId,questionUserId,content)
 			task.setRequestHeader('token',oldToken);
 			task.setRequestHeader('city',cityNum);
-			task.addData("userid",myuserid); 
-			task.addData("newsId",infiId.toString()); 
+			task.addData("userid",myuserid);
+			task.addData("newsId",infiId.toString());
 			task.addData("touserid",questionUserId.toString());
 			task.addData("commont",content);
-			if(Apic.length){ 
+			if(Apic.length){
 				console.log(Apic);
 				[].forEach.call(Apic,function(ele,index){
 					task.addFile(ele, {key:index.toString()});
@@ -282,16 +296,16 @@
 						task.start();
 					}
 				})
-				
+
 			}else{
 				task.start();
 			}
-			
+
 	 	}
-	 	//发送数据结束 
+	 	//发送数据结束
 	})
 
-	 
+
 </script>
 
 </html>

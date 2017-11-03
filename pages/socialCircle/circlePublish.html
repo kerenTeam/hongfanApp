@@ -6,12 +6,12 @@
 		<title>发布动态</title>
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-touch-fullscreen" content="yes"> 
+		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/common.css"> 
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />  
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
 	</head>
 	<style type="text/css">
@@ -28,31 +28,45 @@
 			<a href="javascript:;" style="line-height: 50px;" class="mui-pull-right baocun ft14">发表</a>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		
+
 		<div id="main">
-			<div class="publishf">  
+			<div class="publishf">
 				<div class="apsan"></div>
 				<textarea id="textCon" maxlength="150" class="disbg ft14" rows="4" placeholder="发布的信息如果违反规定，将被管理员删帖"></textarea>
 			</div>
 			<div id="mainpic" class="biaoqian">
-			 
+
 			</div>
-			 
-			<div class="uppics clearfix" id="uppics2"> 
+
+			<div class="uppics clearfix" id="uppics2">
 		        <div class="onepic">
 		            <img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">
 		            <p>添加照片</p>
-		        </div> 
-		    </div> 
-		   
-			 
+		        </div>
+		    </div>
+		    <style type="text/css">
+		    		.disclaimer p{color: red;padding-left: 15px;}
+		    		.disclaimer p span{color: #555;}
+		    </style>
+		   <div class="disclaimer">
+				<p class="fl" onclick="disclaimer()"><span class="gray">发布即同意</span>免责申明</p>
+			</div>
+			<script type="text/javascript">
+				//点击免责申明
+				function disclaimer(){
+					openview({
+						view:'../localLife/disclaimer.html'
+					})
+				}
+			</script>
+
 		</div>
-		 
-		<div id='container' style="display:none"></div>	 
+
+		<div id='container' style="display:none"></div>
 	</body>
 <script type="text/javascript" src="../../js/jquery.min.js"></script>
 <script src="../../js/mui.min.js"></script>
-<script src="../../js/app.js"></script> 
+<script src="../../js/app.js"></script>
 <script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/image-new.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
@@ -62,12 +76,12 @@
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
 	var Latitude='',Longitude='';
-	//获取地理位置  
+	//获取地理位置
 	 var map, geolocation;
     //加载地图，调用浏览器定位服务
     map = new AMap.Map('container', {
         resizeEnable: false
-    });   
+    });
     map.plugin('AMap.Geolocation', function() {
         geolocation = new AMap.Geolocation({
             enableHighAccuracy: true,//是否使用高精度定位，默认:true
@@ -82,16 +96,16 @@
         AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
     });
     //解析定位结果
-    function onComplete(data) { 
+    function onComplete(data) {
     	Latitude = data.position.getLat();//纬度
     	Longitude = data.position.getLng();//经度
-//  	alert('经度 '+Longitude+'纬度 '+Latitude) 
-    } 
+//  	alert('经度 '+Longitude+'纬度 '+Latitude)
+    }
 	function onError(data) {
     	console.error('定位失败')
    	}
-	
-	var Apic = [];//图片存放数组 
+
+	var Apic = [];//图片存放数组
 	var lfs=null;// 保留上次选择图片列表
 	var time1 = null;
 	function galleryImgsSelected(){//从相册中选择图片
@@ -123,7 +137,7 @@
 	    			plus.zip.compressImage({
 						src:e.files[indexNum],
 						dst:endpic,
-						overwrite:true, 
+						overwrite:true,
 						quality:30
 					},
 					function(obj) {
@@ -131,12 +145,12 @@
 						Apic.push(endpic);
 						showImg(endpic,indexNum);
 					},function(error) {
-						mui.toast('图片获取错误，请重试');  
+						mui.toast('图片获取错误，请重试');
 					});
 		    		indexNum ++;
-		    		
+
 		    	},1000)
-		    }, function ( e ) {  
+		    }, function ( e ) {
 		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
     		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
 				plus.nativeUI.alert('最多上传9张图片');
@@ -148,9 +162,9 @@
 				document.getElementsByClassName('onepic')[0].getElementsByTagName('img')[indexNum-1].src = url;
 				$('.onepic p').css('display','none');
 			}
-		})	
+		})
 	}//从相册中选择图片结束
-	
+
 	//发送 发布
 	mui('.baocun')[0].addEventListener('tap',function(){
 		mui.plusReady(function(){
@@ -176,10 +190,10 @@
 			 		releaseData();
 			 	}
 		 	}
-		 	
+
 		 	//发送数据
 		 	function releaseData(){
-				var task = plus.uploader.createUpload(serverUrl+'/api/friends/addnews', 
+				var task = plus.uploader.createUpload(serverUrl+'/api/friends/addnews',
 					{ method:"POST"},
 					function(back,status){
 						if(status == 200){
@@ -201,41 +215,41 @@
     						}
 						}else{
 							plus.nativeUI.closeWaiting();//关闭等待框
-							mui.toast('当前网络不好，请重试！');	
+							mui.toast('当前网络不好，请重试！');
 						}
-						
+
 					}
-				); 
-				
+				);
+
 				//转换因子
-				var city={}; 
+				var city={};
 				city.longitude=Longitude;
 				city.latitude=Latitude;
-				
+
 				//地球半径
-				var R = 6371.393; 
-				
+				var R = 6371.393;
+
 				var girthY = R * 2 * Math.PI;
-				
+
 				var girthX = Math.cos(city.latitude / 180 * Math.PI) * girthY ;
 				//x轴转换因子
 				city.xFactor = girthX / 360;
-				 
+
 				//y轴转换因子
 				city.yFactor = girthY / 360;
-				
+
 				task.setRequestHeader('token',oldToken);
 				task.setRequestHeader('city',cityNum);
-				task.addData("userId",myuserid); 
+				task.addData("userId",myuserid);
 				task.addData("location",JSON.stringify(city));
-				
+
 				if(circleId){
 					task.addData("spaceType",circleId.toString());
 					task.addData("typeid",'3');
 				}else{
 					task.addData("typeid",'1');
 				}
-				
+
 				task.addData("content",content);
 				if(Apic.length){
 					console.log(Apic);
@@ -245,16 +259,16 @@
 							task.start();
 						}
 					})
-					
+
 				}else{
 					task.start();
 				}
-				
+
 		 	}
 		 	//发送数据结束
 		})
 	})
-	
+
 
 </script>
 
@@ -278,12 +292,12 @@
 	function getImage(){//拍照并保存(暂时搁置)
 		var cmr = plus.camera.getCamera();
 		cmr.captureImage( function ( path ) {
-			plus.io.resolveLocalFileSystemURL(path,function(entry){ 
+			plus.io.resolveLocalFileSystemURL(path,function(entry){
 				//把拍摄图片的路径转化成 本地文件url
 				path = plus.io.convertLocalFileSystemURL(path);
 				if(0!=path.indexOf("file://")){
 					path="file://"+path;
-				} 
+				}
 	    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
 	    		var endpic = path.split('.')[0]+"/"+nowpic;
 				plus.zip.compressImage({//压缩方法
@@ -292,15 +306,15 @@
 					overwrite:true,
 					quality:30
 				},
-				function() { 
+				function() {
 					showImg(endpic);
 					Apic = [];
-					Apic.push(endpic); 
+					Apic.push(endpic);
 				},function(error) {
 					mui.toast('图片获取错误，请重试');
-				}); 
+				});
 			});
-		}, function ( e ) { 
+		}, function ( e ) {
 		}, {filename:"_doc/gallery/",index:1} );
 	}
 

@@ -169,8 +169,8 @@
 											</div>
 										</div>
 										<div class="butright">
-											<div class="goanswer" data-id="<%=dataList[i].id%>" data-userId="<%=dataList[i].user_id%>"> <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
-							           </div>
+											<div class="goanswer" style="font-size: 13px;color: #666;" data-id="<%=dataList[i].id%>" data-userId="<%=dataList[i].user_id%>"> 举报 <img src="../img/makeFriend/down.png" style="width:15px;"/> </div>
+							            </div>
 									</div>
 									<div class="DTcontent" onclick="DTdetail(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
 										<p  class="ft14 maincl overTwo"><%=dataList[i].content%> </p><!--文字内容-->
@@ -804,17 +804,20 @@
 																document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
 																lazyLoad(false,10);//懒加载
 																//操作表
-																var jbuid='',junsid;
+																var jbuid='',junsid,nowThis = null;
 																$('.goanswer').click(function(){
 																	junsid = $(this).attr('data-id');
 																	jbuid = $(this).attr('data-useRId');
+																	nowThis = $(this);
 																	event.stopPropagation();
 																	$('#maskInfo').fadeIn(200);
 
 																})
 																window.doJubao= function(){
 																	if(plus.storage.getItem('myToken')){
-																		jubao(junsid,jbuid,myuserid,cityNum,oldToken)
+																		jubao(junsid,jbuid,myuserid,cityNum,oldToken);
+																		//console.log('nowThis' , nowThis);
+																		nowThis.parent().parent().parent().parent().css('display','none');
 																	}else{
 																		mui.toast('请登录');
 																		openview({
@@ -850,17 +853,20 @@
 								});
 
 								//操作表
-								var jbuid='',junsid;
+								var jbuid='',junsid,nowThis = null;
 								$('.goanswer').click(function(){
 									junsid = $(this).attr('data-id');
 									jbuid = $(this).attr('data-useRId');
+									nowThis = $(this);
 									event.stopPropagation();
 									$('#maskInfo').fadeIn(200);
 
 								})
 								window.doJubao= function(){
 									if(plus.storage.getItem('myToken')){
-										jubao(junsid,jbuid,myuserid,cityNum,oldToken)
+										jubao(junsid,jbuid,myuserid,cityNum,oldToken);
+										//console.log('nowThis' , nowThis);
+										nowThis.parent().parent().parent().parent().css('display','none');
 									}else{
 										mui.toast('请登录');
 										openview({
