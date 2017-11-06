@@ -1,6 +1,7 @@
 
 //var serverUrl='http://abcd.zlzmm.com:7200';
 var serverUrl='http://api.zlzmm.com';
+
 //var serverUrl='http://hijiv2.zlzmm.com';
 //var serverUrl='http://192.168.199.191:7200';
 
@@ -497,4 +498,30 @@ function formatDate(v, format) {
     }
     return format;
 };
+
+//获取分享有礼 时间区间 和邀请码
+function sharecode(){
+	var myuserid = plus.storage.getItem('userid'),
+	    cityNum  = plus.storage.getItem('cityNum'),
+		oldToken = plus.storage.getItem('oldToken');
+
+	mui.ajax(serverUrl+'/api/index/sharecode',{
+		data:{"userId":myuserid},
+		dataType:'json',
+		type:'post',
+		timeout:10000,
+		headers: {"token": oldToken,'city': cityNum},
+		success:function(data,type,xhr){
+			console.log('获取分享有礼 时间区间 和邀请码'+data);
+			var shareInfo ={};
+			shareInfo.begin_date = data.data.begin_date;
+			shareInfo.end_date = data.data.end_date;
+			shareInfo.invitationCode = data.errmsg;
+			plus.storage.setItem("shareInfo",JSON.stringify(shareInfo));
+		},
+		error:function(xhr,type,errorThrown){
+			console.error('获取分享有礼 时间区间 和邀请码  ---- 失败');
+		}
+	});
+}
 
