@@ -460,22 +460,22 @@
 			$(this).parent().fadeOut(200);
 		})
 		function goCouponFun(){
-			var thumbs = '../../img/logomifeng.png';
-			var msg = {
-				title:'快来下载HI集吧，优惠、好礼等着你！',
-				content:'快来下载HI集吧，优惠、好礼等着你！',
-				href:'http://hiji.hifete.com/',
-				thumbs:[thumbs],
-				pictures:[thumbs]
-			};
-			showSfun1(msg,function(){
-				//成功领劵
-				mui.plusReady(function(){
-					var oldToken = plus.storage.getItem('oldToken');
-					var myuserid = plus.storage.getItem('userid');
-					var cityNum = plus.storage.getItem('cityNum');
-					var invitationCode = JSON.parse(plus.storage.getItem('shareInfo')).invitationCode;
+			mui.plusReady(function(){
+				var oldToken = plus.storage.getItem('oldToken');
+				var myuserid = plus.storage.getItem('userid');
+				var cityNum = plus.storage.getItem('cityNum');
+				var invitationCode = JSON.parse(plus.storage.getItem('shareInfo')).invitationCode;
 
+				var thumbs = '../../img/logomifeng.png';
+				var msg = {
+					title:'快来下载HI集吧，优惠、好礼等着你！',
+					content:'快来下载HI集吧，优惠、好礼等着你！',
+					href:fxUrl+'login.html?code='+invitationCode,
+					thumbs:[thumbs],
+					pictures:[thumbs]
+				};
+				showSfun1(msg,function(){
+					//成功领劵
 					plus.nativeUI.showWaiting();
 					mui.ajax(serverUrl+'/api/index/sharegetcoupon',{
 						data:{"userId":myuserid,'invitationCode':invitationCode},
@@ -488,7 +488,7 @@
 							$('#maskInfo123').css('display','none');
 							console.log('分享获劵'+data);
 							if(data.errno == 0){
-								alert('领劵成功，快去我的优惠卷查看吧');
+								alert(data.errmsg || '操作成功');
 							}else{
 								alert(data.errmsg);
 							}
@@ -499,7 +499,7 @@
 							console.error('分享获劵  ---- 失败');
 						}
 					});
-				})
+				});
 			});
 		}
 
@@ -1009,6 +1009,7 @@
 
 							var oldToken = plus.storage.getItem('oldToken');
 							var myuserid = plus.storage.getItem('userid');
+							var version = plus.storage.getItem('version');
 							mui.ajax(serverUrl+'/api/mall/repayment', {
 								data: {
 									order_UUID:uuid,
@@ -1016,7 +1017,8 @@
 									userId:parseInt(myuserid),
 									seller:'',
 									rePayID:parseInt(repayid),
-									payType:id
+									payType:id,
+									version:version
 								},
 								type: 'post', //HTTP请求类型
 								headers: {
