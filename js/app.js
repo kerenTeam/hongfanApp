@@ -1,6 +1,6 @@
 
-var serverUrl='http://abcd.zlzmm.com:7200';
-//var serverUrl='http://api.zlzmm.com';
+//var serverUrl='http://abcd.zlzmm.com:7200';
+var serverUrl='http://api.zlzmm.com';
 //var serverUrl='http://hijiv2.zlzmm.com';
 //var serverUrl='http://192.168.199.191:7200';
 
