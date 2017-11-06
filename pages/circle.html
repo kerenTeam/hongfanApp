@@ -283,17 +283,17 @@
 			<div id="fabu" class="fabu1">
 				<img src="../img/makeFriend/fabu.svg"/>
 			</div>
-
+			
 			<!--遮罩1-->
 			<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;">
 				<img src="../img/mainHtml/mclose.svg" class="closeMs"/>
 				<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
-					<img src="../img/mainHtml/mask8.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCoupon()'/>
-
+					<img src="../img/mainHtml/mask7.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCoupon()'/>
+	
 				</div>
 			</div>
 			<!--遮罩2-->
-
+	
 			<div id="maskInfo2" class="maskInfo" style="display: none;z-index:9998;">
 				<img src="../img/chahao.png" class="closeMs"/>
 				<div class="ruleCt" style="padding-bottom: 50px;">
@@ -303,11 +303,11 @@
 						</ol>
 					</div>
 					<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
+	
 				</div>
 			</div>
 			<!--遮罩3-->
-
+	
 			<div id="maskInfo3" class="maskInfo" style="display: none;z-index:9997;">
 				<img src="../img/chahao.png" class="closeMs"/>
 				<div class="ruleCt" style="padding-bottom: 50px;">
@@ -317,10 +317,10 @@
 						</ol>
 					</div>
 					<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
+	
 				</div>
 			</div>
-
+		
 		</div>
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
 		<script src="../js/mui.min.js"></script>
@@ -340,13 +340,13 @@
 				};
 				showSfun1(msg);
 			}
-			function goCoupon(){/*优惠券*/
+			function goCoupon(){/*发帖*/
 				event.stopPropagation();
-				$('#maskInfo1').fadeOut(200);
 				if(plus.storage.getItem('myToken')){
+					$('#maskInfo1').fadeOut(200);
 					openview({
-						view:'socialCircle/friendSet.html',
-						id:"friendSet",
+						view:'socialCircle/circlePublish.html',
+						id:"circlePublish",
 					});
 				}else{
 					mui.toast('请登录');
@@ -354,7 +354,7 @@
 						view:'login.html'
 					});
 				}
-
+				
 			}
 		</script>
 		<script type="text/javascript">
@@ -380,33 +380,33 @@
 			mui.plusReady(function(){
 				/*弹框*/
 				mui.ajax(serverUrl + '/api/index/showmodal', {
-	                type: 'post',
-	                timeout: 10000,
-	                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
-	                success: function(data, type, xhr) {
-	                   	plus.nativeUI.closeWaiting();
-	                		console.log('首页弹窗',data)
-	                		if(data.errno == 0){
-	                			if(data.data.friendIndex && data.data.friendIndex.length){
-	                				mui.each(data.data.friendIndex,function(index,item){
-                            			 if(item == 1){
-                            			 	$('#maskInfo'+(index+1)).show()
-                            			 }else{
-                            			 	$('#maskInfo'+(index+1)).hide()
-                            			 }
-                            		})
-	                			}
-	                		}
-	                },
-	                error: function(xhr, type, errorThrown) {
-	                		console.log('首页弹窗',type)
-	                    console.log('响应失败');
-	                   	plus.nativeUI.closeWaiting();
-	                }
-	            });
+		            type: 'post',
+		            timeout: 10000,
+		            headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+		            success: function(data, type, xhr) {
+		               	plus.nativeUI.closeWaiting();
+		            		console.log('弹窗',data)
+		            		if(data.errno == 0){
+		            			if(data.data.postNews && data.data.postNews.length){
+		            				mui.each(data.data.postNews,function(index,item){
+		                    			 if(item == 1){
+		                    			 	$('#maskInfo'+(index+1)).show()
+		                    			 }else{
+		                    			 	$('#maskInfo'+(index+1)).hide()
+		                    			 }
+		                    		})
+		            			}
+		            		}
+		            },
+		            error: function(xhr, type, errorThrown) {
+		            		console.log('首页弹窗',type)
+		                console.log('响应失败');
+		               	plus.nativeUI.closeWaiting();
+		            }
+		        });
 			})
-
-
+			
+			
 			/*动态tab切换*/
 			var flag0 = 0,flag1 = 0,//是否   第一次点击
 		     	SH0 = 0,SH1  = 0;/*保存的状态栏高度*/
