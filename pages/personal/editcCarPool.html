@@ -205,7 +205,7 @@
 						<li class="clearfloat">
 							<a class="afterI timetip">
 								<p class="fl">出发时间</p>
-								<input type="text" class="fr shuru" id="goTime" value="" placeholder="选择出发时间" />
+								<input type="text" class="fr shuru" id="goTime" data-time = '' value="" placeholder="选择出发时间" />
 							</a>
 						</li>
 						<li class="clearfloat">
@@ -294,6 +294,7 @@ function disclaimer(){
 					if(data.errno == 0){
 						if(data.data && data.data.length){
 							[].forEach.call(data.data,function(ele,index){
+								var gotime = ele.goTime;
 								ele.goTime = ele.goTime.replace('T',' ');
 								var date = new Date(ele.goTime/1000 *1000);
 									Y = date.getFullYear() + '/';
@@ -322,6 +323,7 @@ function disclaimer(){
 										$('#cityResult4').html('人找车')
 									}
 									$('#goTime').val(ele.goTime);
+									$('#goTime').attr('data-time',gotime);
 									if(ele.timeSupplement){
 										$('#Bname').val(ele.timeSupplement)
 									}
@@ -389,7 +391,13 @@ function disclaimer(){
 				}else{
 					typeId = 2;
 				}  
-				goTime = $('#goTime').val(); 
+				if($('#goTime').attr('type') == 'text'){
+					goTime = $('#goTime').attr('data-time'); 
+				}else{
+					var ltime = $('#goTime').val();
+					goTime = new Date(ltime).getTime()
+				}
+
 //				alert(goTime)
 //				alert('shijian '+(new Date(goTime).getTime())/1000);
 				timeSupplement = $('#Bname').val();
@@ -413,7 +421,7 @@ function disclaimer(){
 						id:cid,
 						type:typeId,
 						userId:myuserid,
-						goTime:new Date(goTime).getTime(),
+						goTime:goTime,
 						timeSupplement:timeSupplement,
 						phoneNumber:phoneNumber,
 						startPlace:startPlace,
