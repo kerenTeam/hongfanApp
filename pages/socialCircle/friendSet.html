@@ -254,6 +254,7 @@
 			var title7 = '恭喜完成所有任务，您一共收获 600Hi豆！快去参加购物狂欢吧!';
 //			plus.storage.removeItem('$steptit')
 //			plus.storage.removeItem('$step')
+//			plus.storage.removeItem('tipEnd')
             var curli = 0 ;
 			var latest = plus.storage.getItem('$steptit') || 'title1';
 
@@ -558,7 +559,8 @@
 								//	                				mui.each(data.data.saveProfile,function(index,item){
 								if(data.data.saveProfile[0] == 1) {
 									if(lateststep == 7) {
-										var btn = ['完成']
+										var btn = ['完成'];
+										plus.storage.setItem('tipEnd','1');
 									} else {
 										var btn = ['开始', '取消']
 									}
@@ -634,18 +636,13 @@
 										plus.storage.setItem('$step', lateststep.toString());
 										plus.storage.setItem('$steptit', 'title' + lateststep);
 										$('li.clearfloat').eq(curli).removeClass('hidestep')
-										//									var time2 = setTimeout(function(){
 										plus.nativeUI.closeWaiting(); //关闭等待框
-										//										plus.webview.currentWebview().close();
-										mui.toast('修改成功,恭喜你获得100HI豆');
-//										if(($('li.clearfloat').eq(curli).find('input').length > 0 && !$('li.clearfloat').eq(curli).find('input').val()) || ($('li.clearfloat').eq(curli).find('select').length > 0 && !$('li.clearfloat').eq(curli).find('select').val())) {
-//											stepConfirm(eval(plus.storage.getItem('$steptit')));
-//											stepConfirm(eval(latest));
-//										} else if($('li.clearfloat').eq(curli).find('#preview').length > 0 && $('li.clearfloat').eq(curli).find('#preview img').attr('src') == '../../img/answer/editset.png') {
-//											stepConfirm(eval(plus.storage.getItem('$steptit')));
-//										}
-																					stepConfirm(eval(plus.storage.getItem('$steptit')));
-										//									},500)
+									
+										if(!plus.storage.getItem('tipEnd')){
+											mui.toast('修改成功,恭喜你获得100HI豆');
+											stepConfirm(eval(plus.storage.getItem('$steptit')));
+										}
+										 
 									} else {
 										plus.nativeUI.closeWaiting(); //关闭等待框
 										mui.toast('修改失败，请重试！');
