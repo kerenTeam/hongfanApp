@@ -332,7 +332,7 @@
 								<div class="offerTop">
 									<h4> <b class="b2"></b><span class="span1"><%=objData[i].name%></span> <span class="span2"><%=objData[i].begin_date%> ~ <%=objData[i].end_date%></span></h4>
 									<p><%=objData[i].title%>
-										<%if(objData[i].myCouponCounts >= objData[i].receive_limit){%>
+										<%if(objData[i].cantBuy == 1){%>
 											<span class="span3">已领取</span>
 										<%}else{%>
 											<span data-mcts="<%=objData[i].myCouponCounts%>" data-rcls="<%=objData[i].receive_limit%>" onclick="goPay(this,'<%=objData[i].id%>','<%=objData[i].price%>')" class="span3">付<%=objData[i].price%>元购买</span>
@@ -355,7 +355,7 @@
 								<div class="offerTop">
 									<h4> <b class="b2"></b><span class="span1"><%=objData[i].title%></span> <span class="span2"><%=objData[i].begin_date%> ~ <%=objData[i].end_date%></span></h4>
 									<p><%=objData[i].name%>
-										<%if(objData[i].myCouponCounts >= objData[i].receive_limit){%>
+										<%if(objData[i].cantBuy == 1){%>
 											<span class="span3">已领取</span>
 										<%}else{%>
 											<span data-mcts="<%=objData[i].myCouponCounts%>" data-rcls="<%=objData[i].receive_limit%>" onclick="goPay(this,'<%=objData[i].id%>','<%=objData[i].price%>')" class="span3">免费领取</span>
@@ -646,6 +646,15 @@
 								var dateObj={};
 								if(data.data && data.data.length){
 									for(var i = 0;i < data.data.length;i++){
+										if(data.data[i].myCouponCounts && data.data[i].myCouponCounts.standardTime){
+											var startTime = new Date(data.data[i].myCouponCounts.standardTime).getTime();     
+										    var endTime = new Date().getTime();     
+										    var dates = Math.abs((startTime - endTime))/(1000*60*60*24);   
+										  	if((data.data[i].frequency || data.data[i].frequency == 0) && dates < data.data[i].frequency){
+										  		data.data[i].cantBuy = 1;
+										  	}
+										}
+										
 										if(data.data[i].receive_limit){
 											data.data[i].receive_limit = parseInt(data.data[i].receive_limit)
 										}
@@ -757,7 +766,7 @@
 												console.error('支付返回',data);
 												plus.nativeUI.closeWaiting()
 												if(data.errno == 1000) {
-													mui.toast('已领完')
+													mui.toast(data.errmsg)
 												}
 												if(data.errno == 0) {
 
@@ -837,7 +846,7 @@
 										console.error('领取返回',data);
 										plus.nativeUI.closeWaiting()
 										if(data.errno == 1000) {
-											mui.toast('已领完')
+											mui.toast(data.errmsg)
 										}
 										if(data.errno == 0) {
 											mui.toast('领取成功') ;

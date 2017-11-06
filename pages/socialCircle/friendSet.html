@@ -558,6 +558,7 @@
 							if(data.data.saveProfile && data.data.saveProfile.length) {
 								//	                				mui.each(data.data.saveProfile,function(index,item){
 								if(data.data.saveProfile[0] == 1) {
+									plus.storage.setItem('open','1')
 									if(lateststep == 7) {
 										var btn = ['完成'];
 										plus.storage.setItem('tipEnd','1');
@@ -568,6 +569,8 @@
 
 									}, '')
 								} else {
+									plus.storage.removeItem('open')
+									
 									$('li.clearfloat').removeClass('hidestep')
 
 								}
@@ -639,7 +642,9 @@
 										plus.nativeUI.closeWaiting(); //关闭等待框
 									
 										if(!plus.storage.getItem('tipEnd')){
-											mui.toast('修改成功,恭喜你获得100HI豆');
+											if(plus.storage.getItem('open') == 1){
+												mui.toast('修改成功,恭喜你获得100HI豆');
+											}
 											stepConfirm(eval(plus.storage.getItem('$steptit')));
 										}
 										 
