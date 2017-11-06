@@ -74,31 +74,63 @@
 				</div>
 			</div>
 		</div>  
-		
-		<div id="maskTc" style="display: none;position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9999;">
-			<img class="closeTk" style="position: absolute;top: 15px;right:15px;transform: rotate(45deg);z-index: 999999;" src="../../img/market/addtheme.svg"/>
-			<img class="tomypage" style="width: 100%;margin: auto;display: block;" src="../../img/makeFriend/friendT.png"/>
+		<!--遮罩1-->
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;">
+			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
+				<img src="../../img/mainHtml/mask8.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCoupon()'/>
+
+			</div>
+		</div>
+		<!--遮罩2-->
+
+		<div id="maskInfo2" class="maskInfo" style="display: none;z-index:9998;">
+			<img src="../../img/chahao.png" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;">
+				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+					<div class="ft16 fttc" style="text-align: center;">首页弹窗2</div>
+					<ol class="ft14 disablecl ruleol">
+					</ol>
+				</div>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
+
+			</div>
+		</div>
+		<!--遮罩3-->
+
+		<div id="maskInfo3" class="maskInfo" style="display: none;z-index:9997;">
+			<img src="../../img/chahao.png" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;">
+				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+					<div class="ft16 fttc" style="text-align: center;">首页弹窗3</div>
+					<ol class="ft14 disablecl ruleol">
+					</ol>
+				</div>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
+
+			</div>
 		</div>
 		
+		
 		<script type="text/javascript">
-			$('.closeTk').click(function(){
-				event.stopPropagation();
-				$('#maskTc').css('display','none')	
+			$('.ruleCt').click(function(){
+				event.stopPropagation()
 			})
-			$('.tomypage').click(function(){
-				if(plus.storage.getItem('myToken')){
-					event.stopPropagation();
-					openview({
-						view:'mycircleIndex.html',
-						id:'mycircleIndex',
-					})
-				}else{
-					mui.toast('请登录');
-					openview({
-						view:'../login.html'
-					});
-				} 
-				 
+			$('#maskInfo1,.closemm').click(function(){
+				event.preventDefault()
+				$('#maskInfo1').fadeOut(200);
+			})
+			$('#maskInfo2').click(function(){
+				event.preventDefault()
+				$('#maskInfo2').fadeOut(200);
+			})
+			$('#maskInfo3').click(function(){
+				event.preventDefault()
+				$('#maskInfo3').fadeOut(200);
+			})
+			$('.closeMs').click(function(){
+				event.stopPropagation();
+				$(this).parent().fadeOut(200);
 			})
 			
 			$('.friendCenter').click(function(){
@@ -114,6 +146,51 @@
 					});
 				} 
 			
+			})
+			function goCoupon(){/**/
+				event.stopPropagation();
+				
+				if(plus.storage.getItem('myToken')){
+					$('#maskInfo1').fadeOut(200);
+					openview({
+						view:'friendSet.html',
+						id:"friendSet",
+					});
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
+				
+			}
+			mui.plusReady(function(){
+					/*弹框*/
+					mui.ajax(serverUrl + '/api/index/showmodal', {
+		                type: 'post',
+		                timeout: 10000,
+		                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+		                success: function(data, type, xhr) {
+		                   	plus.nativeUI.closeWaiting();
+		                		console.log('首页弹窗',data)
+		                		if(data.errno == 0){
+		                			if(data.data.friendIndex && data.data.friendIndex.length){
+		                				mui.each(data.data.friendIndex,function(index,item){
+	                            			 if(item == 1){
+	                            			 	$('#maskInfo'+(index+1)).show()
+	                            			 }else{
+	                            			 	$('#maskInfo'+(index+1)).hide()
+	                            			 }
+	                            		})
+		                			}
+		                		}
+		                },
+		                error: function(xhr, type, errorThrown) {
+		                		console.log('首页弹窗',type)
+		                    console.log('响应失败');
+		                   	plus.nativeUI.closeWaiting();
+		                }
+		            });
 			})
 		</script>
 		<script type="text/javascript">
