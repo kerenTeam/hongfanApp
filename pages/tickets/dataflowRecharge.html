@@ -25,15 +25,15 @@
 			<!--<a href="setup.html" class="fr shoucang sousuo mui-icon"><i class="iconfont icon-fenxiang"></i></a>-->
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
-		<div class="farm clearfloat" id="main"> 
+		<div class="farm clearfloat" id="main">
 		    <div class="mui-input-row">
 		        <input type="number" class="mui-input-clear" placeholder="请输入手机号码" id="mobileNo">
 		    	<span class="mui-icon mui-icon-contact contact-icon"></span>
 		    	<!--<span class="tips">默认号码（四川移动)</span>-->
-		    </div> 
+		    </div>
 		</div>
 		<div class="farm clearfloat rechargeOut">
-			<div class="rechargeWrap"> 
+			<div class="rechargeWrap">
 				<br /><br />
 				<p class="rechargeTitle">充流量</p>
 				<div class="mui-content">
@@ -44,20 +44,20 @@
 				            	<p class="rechargeTiny">1.00元</p>
 				        	</div>
 				        </div>-->
-				        
+
 				    </div>
 				</div>
-				 
+
 			</div>
-			 
+
 		</div>
 		<div class="rechargeFoot" onclick="phoneRe()">
 			<p style="display: none;">我的充值记录</p>
 		</div>
 		<style type="text/css">
-			
+
 		</style>
-		<!--操作表   支付弹窗--> 
+		<!--操作表   支付弹窗-->
 		<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 			<div class="paycontent">
 				<ul class="mui-table-view waypay">
@@ -134,8 +134,9 @@
 			var cityNum = plus.storage.getItem('cityNum');
 			var oldToken = plus.storage.getItem('oldToken');
 			var myuserid = plus.storage.getItem('userid');
+			var version = plus.storage.getItem('version');
 			var randomstr;
-			
+
 			/*显示列表*/
 			mui.ajax(serverUrl+'/api/banma/getrechargelist',{
 				data:{ typeId:2 },
@@ -165,11 +166,11 @@
 				error:function(xhr,type,errorThrown){
 				}
 			});
-			
+
 			phoneInput.oninput = function(){
 					var mobileNo = this.value;
 				$(".mui-icon-clear").css("display","block")
-					if(reg_phone.test(mobileNo)){ 
+					if(reg_phone.test(mobileNo)){
 						$(".mui-icon-clear").css("display","none")
 						$(".rechargeItem").addClass("rechargeItemActive");
 						$(".rechargeItemActive").click(function(){
@@ -188,27 +189,28 @@
 									indexNum = 0;
 									payfunfun('wxpay');
 								}
-								
+
 								function payfunfun(payType,useScope){
 									var useScope = useScope || 'p';
 									plus.nativeUI.showWaiting();
-									mui.ajax(serverUrl+'/api/banma/mobileflowitemslist',{//生成本地系统支付订单    
+									mui.ajax(serverUrl+'/api/banma/mobileflowitemslist',{//生成本地系统支付订单
 										data:{
 											id:idNum,
 											userid:myuserid,
 											mobileNo:mobileNo,
-											payType: payType,  
+											payType: payType,
 											flow:rechargeAmount,
-											useScope:useScope
+											useScope:useScope,
+											version:version
 										},
 										dataType:'json',//服务器返回json格式数据
 										type:'post',//HTTP请求类型
 										timeout:10000,//超时时间设置为10秒；
-										headers:{"token":oldToken}, 
+										headers:{"token":oldToken},
 										success:function(data){
 											console.log('本地支付数据',data);
 											if(data.errno == 0){
-												//调用系统支付  
+												//调用系统支付
 												plus.payment.request(pays[payType], data.data, function(result) {
 													//openview({//跳转记录 =>> 弃用
 //														view:"../market/paysecond.html",
@@ -216,7 +218,7 @@
 //														extrasobj:{aliPayURL:aliPayURL,new_qianmi_order_id:newOrderID,billId:billId,orderCost:orderCost,saleAmount:saleAmount,pageid:"phoneRecharge",body:data.data.body,subject:subject}
 //													})
 													mui.alert('充值成功');
-												}, function(e) { 
+												}, function(e) {
 													plus.nativeUI.closeWaiting();
 													mui.alert('购买失败，请重试');
 												});
@@ -232,20 +234,20 @@
 											}
 										},
 										error:function(xhr,type,errorThrown){
-											
+
 										}
 									});
 								}
-									
+
 							}
 						})
 					}else{
-						$(".rechargeItem").removeClass("rechargeItemActive"); 
+						$(".rechargeItem").removeClass("rechargeItemActive");
 					}
 				}
 		})
-		
-	 
+
+
 
 </script>
 <script type="text/javascript">
@@ -255,24 +257,24 @@
 			var startTime, endTime, stayTime, flagback = 0;
 			startTime = new Date().getTime();
 			var old_back = mui.back;
-			//改写返回键返回的函数，返回时传页面停留时间 
+			//改写返回键返回的函数，返回时传页面停留时间
 			mui.back = function(){
 				endTime = new Date().getTime();//返回时间
-				stayTime = Math.ceil((endTime - startTime) / 1000);   
-				console.log('购物中心'+stayTime); 
+				stayTime = Math.ceil((endTime - startTime) / 1000);
+				console.log('购物中心'+stayTime);
 				plus.statistic.eventDuration( "paymentFlow", stayTime);
 				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-				old_back(); 
+				old_back();
 			}
 			plus.webview.currentWebview().addEventListener( "popGesture", function(){
 				flagback++;
 				if(flagback == 1){
 					endTime = new Date().getTime();
-					stayTime = Math.ceil((endTime - startTime) / 1000);  
+					stayTime = Math.ceil((endTime - startTime) / 1000);
 					plus.statistic.eventDuration( "paymentFlow", stayTime);
 					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 				}
 			}, false );
 		});
-	</script> 
+	</script>
 </html>

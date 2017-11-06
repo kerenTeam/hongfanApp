@@ -39,7 +39,7 @@
 			</div>
 		</div>
 		<div class="recording" style="display: none;"><!--记录-->
-			
+
 		</div>
 		<div class="farm clearfloat rechargeOut">
 			<div class="rechargeWrap">
@@ -55,7 +55,7 @@
 			<p>我的充值记录</p>
 		</div>
 
-		<!--操作表   支付弹窗--> 
+		<!--操作表   支付弹窗-->
 		<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 			<div class="paycontent">
 				<ul class="mui-table-view waypay">
@@ -78,7 +78,7 @@
 			var Recording = JSON.parse(plus.storage.getItem('Recording')) || [];
 			console.log(Recording);
 			if(Recording.length){
-				var divStr = ''; 
+				var divStr = '';
 				mui.each(Recording,function (index,element) {
 					if(index == 3){
 						return false;
@@ -101,7 +101,7 @@
 			}
 	})
 		//充值记录
-		
+
 		$(".paycontent").click(function() {
 			event.stopImmediatePropagation()
 		})
@@ -110,7 +110,7 @@
 			$("#payChoose").removeClass("mui-active");
 		})
 
-		
+
 
 		function gamepay() {
 			//游戏充值
@@ -134,10 +134,11 @@
 					var cityNum = plus.storage.getItem('cityNum');
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
-					
+					var version = plus.storage.getItem('version');
+
 					/*显示列表*/
 					mui.ajax(serverUrl+'/api/banma/getrechargelist',{
-						data:{ typeId:1 }, 
+						data:{ typeId:1 },
 						dataType:'json',//服务器返回json格式数据
 						type:'post',//HTTP请求类型
 						timeout:10000,//超时时间设置为10秒；
@@ -164,8 +165,8 @@
 						error:function(xhr,type,errorThrown){
 						}
 					});
-					
-					window.phoneRe = function() { 
+
+					window.phoneRe = function() {
 						if(plus.storage.getItem('myToken')){
 							openview({
 								view: 'phone-record.html'
@@ -177,7 +178,7 @@
 							});
 						}
 					}
-					
+
 					phoneInput.oninput = function() {
 						if (mui('#mobileNo')[0].value.toString().length>3 || mui('#mobileNo')[0].value.toString().length==0) {
 							mui('.recording')[0].style.display = 'none';
@@ -227,7 +228,7 @@
 								//						},pc.description);
 							}
 						}
-						//系统检测获取支付通道结束	
+						//系统检测获取支付通道结束
 
 						var mobileNo = this.value;
 						$(".mui-icon-clear").css("display", "block")
@@ -243,14 +244,14 @@
 										var idNum = this.id;
 										//充话费接口
 										console.log("mobileNo " + mobileNo + "rechargeAmount " + rechargeAmount + "userid " + myuserid)
-										// 支付方法 
+										// 支付方法
 										window.payfun = function(id) {
 											var varpay;
 											if(id == 'alipay' || id == 'wxpay') {
 												//调用支付功能
 												plus.nativeUI.showWaiting();
 												if(id == 'alipay') {
-													//获取后台返回数据 
+													//获取后台返回数据
 													gopay(id);
 
 												} else if(id == 'wxpay') { //微信
@@ -261,14 +262,15 @@
 												return;
 											}
 
-											function gopay(id) { 
+											function gopay(id) {
 												mui.ajax(serverUrl + '/api/banma/rechargemobilegetiteminfo', {
 														data: {
 																id:idNum,
 																mobileNo: mobileNo,
 																rechargeAmount: rechargeAmount,
 																userid: myuserid,
-																payType: id
+																payType: id,
+																version:version
 															},
 															type: 'post', //HTTP请求类型
 															headers: {
@@ -303,7 +305,7 @@
 //																var saleAmount = data.data.BillData.data.saleAmount;//实际价格
 //																var subject = data.data.BillData.data.itemName;//名称
 //																var billId = data.data.BillData.data.billId;//订单号
-//																var newOrderID = data.data.new_qianmi_order_id; 
+//																var newOrderID = data.data.new_qianmi_order_id;
 
 //																console.log("new_qianmi_order_id "+newOrderID+"billId "+billId+"noiftyData "+JSON.stringify(data.data.PaymentData))
 																var varpay;
@@ -331,14 +333,14 @@
 																		console.log("----- 支付成功 -----");
 																		$("#payChoose").removeClass("mui-active");
 																		var result = JSON.stringify(result)
-																		//修改状态  
+																		//修改状态
 //																		mui.ajax(serverUrl+'/api/qianmi/paybill',{
-//																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},	
+//																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},
 //																			dataType:'json',//服务器返回json格式数据
-//																			type:'post',//HTTP请求类型 
+//																			type:'post',//HTTP请求类型
 //																			timeout:10000,//超时时间设置为10秒；
-//																			headers:{"token":oldToken},	
-//																			success:function(data){ 
+//																			headers:{"token":oldToken},
+//																			success:function(data){
 //																				plus.nativeUI.closeWaiting()
 //																				 plus.nativeUI.alert("支付成功");
 //																				  setTimeout(function(){
@@ -368,14 +370,14 @@
 																		plus.nativeUI.alert("支付成功");
 																		$("#payChoose").removeClass("mui-active");
 																		var result = JSON.stringify(result)
-//																		//修改状态  
+//																		//修改状态
 //																		mui.ajax(serverUrl+'/api/qianmi/paybill',{
-//																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},	
+//																			data:{new_qianmi_order_id:newOrderID,billId:billId,userid:myuserid,noiftyData:result},
 //																			dataType:'json',//服务器返回json格式数据
-//																			type:'post',//HTTP请求类型 
+//																			type:'post',//HTTP请求类型
 //																			timeout:10000,//超时时间设置为10秒；
-//																			headers:{"token":oldToken},	
-//																			success:function(data){ 
+//																			headers:{"token":oldToken},
+//																			success:function(data){
 //																				plus.nativeUI.closeWaiting()
 //																				 plus.nativeUI.alert("支付成功");
 //																				  setTimeout(function(){
@@ -438,25 +440,25 @@
 			var startTime, endTime, stayTime, flagback = 0;
 			startTime = new Date().getTime();
 			var old_back = mui.back;
-			//改写返回键返回的函数，返回时传页面停留时间 
+			//改写返回键返回的函数，返回时传页面停留时间
 			mui.back = function(){
 				endTime = new Date().getTime();//返回时间
-				stayTime = Math.ceil((endTime - startTime) / 1000);   
-				console.log('购物中心'+stayTime); 
+				stayTime = Math.ceil((endTime - startTime) / 1000);
+				console.log('购物中心'+stayTime);
 				plus.statistic.eventDuration( "paymentBill", stayTime);
 				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-				old_back(); 
+				old_back();
 			}
 			plus.webview.currentWebview().addEventListener( "popGesture", function(){
 				flagback++;
 				if(flagback == 1){
 					endTime = new Date().getTime();
-					stayTime = Math.ceil((endTime - startTime) / 1000);  
+					stayTime = Math.ceil((endTime - startTime) / 1000);
 					plus.statistic.eventDuration( "paymentBill", stayTime);
 					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 				}
 			}, false );
 		});
-	</script> 
+	</script>
 
 </html>
