@@ -514,6 +514,7 @@
 			var oldToken = plus.storage.getItem('oldToken');
 			var cityNum = plus.storage.getItem('cityNum');
 			var version = plus.storage.getItem('version');
+			var platform  = plus.storage.getItem('platform');
 			/*弹框*/
 			mui.ajax(serverUrl + '/api/index/showmodal', {
 	            type: 'post',
@@ -647,14 +648,14 @@
 								if(data.data && data.data.length){
 									for(var i = 0;i < data.data.length;i++){
 										if(data.data[i].myCouponCounts && data.data[i].myCouponCounts.standardTime){
-											var startTime = new Date(data.data[i].myCouponCounts.standardTime).getTime();     
-										    var endTime = new Date().getTime();     
-										    var dates = Math.abs((startTime - endTime))/(1000*60*60*24);   
+											var startTime = new Date(data.data[i].myCouponCounts.standardTime).getTime();
+										    var endTime = new Date().getTime();
+										    var dates = Math.abs((startTime - endTime))/(1000*60*60*24);
 										  	if((data.data[i].frequency || data.data[i].frequency == 0) && dates < data.data[i].frequency){
 										  		data.data[i].cantBuy = 1;
 										  	}
 										}
-										
+
 										if(data.data[i].receive_limit){
 											data.data[i].receive_limit = parseInt(data.data[i].receive_limit)
 										}
@@ -756,7 +757,8 @@
 												userId:myuserid,
 												payType:id,
 												id:cid,
-												version:version
+												version:version,
+												platform:platform
 											},
 											dataType:'json',
 											type: 'post', //HTTP请求类型
@@ -836,7 +838,8 @@
 									data:{
 										userId:plus.storage.getItem('userid'),
 										id:cid,
-										version:version
+										version:version,
+										platform:platform
 									},
 									dataType:'json',
 									type: 'post', //HTTP请求类型

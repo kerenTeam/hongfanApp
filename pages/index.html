@@ -77,10 +77,16 @@
 					view: 'guide.html',
 					id: 'guide',
 				});
-				//获取 当前版本号
+				//版本控制
 				plus.runtime.getProperty(plus.runtime.appid,function(inf){
 		        		 plus.storage.setItem("version",inf.version);
 			    });
+			    if(/android/i.test(navigator.userAgent)){
+					plus.storage.setItem("platform",'andriod');
+				}else{
+					plus.storage.setItem("platform",'apple');
+				}
+			    //版本控制结束
 
 //              plus.storage.removeItem("$gameTime");
 				function doGame(){
