@@ -605,7 +605,11 @@
 							var dataobj = JSON.parse(back.responseText);
 							if(dataobj.errno == 0){
 								plus.nativeUI.closeWaiting();
-								mui.toast('提问成功');
+								if(dataobj.errmsg){
+									mui.toast(dataobj.errmsg);
+								}else{
+									mui.toast('提问成功');
+								} 
 								plus.nativeUI.closeWaiting();
 								setTimeout(function(){
 									var page = plus.webview.getWebviewById('questionInfo');
@@ -614,7 +618,12 @@
 								},500)
 							}else{
 								plus.nativeUI.closeWaiting();//关闭等待框
-								mui.toast('发布失败，请重试！');
+								if(dataobj.errmsg){
+									mui.toast(dataobj.errmsg);
+								}else{
+									mui.toast('提问失败，请重试！');
+								} 
+								
 								plus.nativeUI.closeWaiting();
 							}
 						}else{
@@ -643,7 +652,7 @@
 				console.error('groupId '+groupId,'onlyExpert '+onlyExpert,'expertId' +expertId,'myuserid '+myuserid,'content '+content)
 				task.setRequestHeader('token',oldToken);
 				task.setRequestHeader('city',cityNum);
-				task.addData("userId",myuserid);
+				task.addData("userId",myuserid.toString());
 				task.addData("typeid",'2');
 				task.addData("faqsType",groupId.toString());
 				task.addData("price",price);
