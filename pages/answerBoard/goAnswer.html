@@ -264,14 +264,26 @@
 					if(status == 200){
 						console.log(back);
 						var dataobj = JSON.parse(back.responseText);
+						console.log('回答',dataobj);
+						
 						if(dataobj.errno == 0){
 							plus.nativeUI.closeWaiting();
-							mui.toast('回答成功');
+							if(dataobj.errmsg){
+								mui.toast(dataobj.errmsg);
+							}else{
+								mui.toast('回答成功');
+							}
+							
 							mui.fire(plus.webview.getWebviewById('answerInfo'),'refresh');
 							plus.webview.currentWebview().close();
 						}else{
 							plus.nativeUI.closeWaiting();//关闭等待框
-							mui.toast('发布失败，请重试！');
+							if(dataobj.errmsg){
+								mui.toast(dataobj.errmsg);
+							}else{
+								mui.toast('发布失败，请重试！');
+							}
+							
 							plus.nativeUI.closeWaiting();
 						}
 					}else{
