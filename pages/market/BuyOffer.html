@@ -316,8 +316,11 @@
 													var resultStr = JSON.stringify(result);
 													console.log("----- 支付成功 -----");
 													plus.nativeUI.closeWaiting();
-
-													mui.toast('领取成功');
+													if(data.errmsg){
+														mui.toast(data.errmsg)
+													}else{
+														mui.toast('领取成功') ;
+													}
 
 													showData();
 												}, function(e) {
@@ -334,7 +337,11 @@
 													plus.nativeUI.closeWaiting();
 													var oldtoken = plus.storage.getItem('oldToken');
 													//修改订单状态
-													mui.toast('领取成功');
+													if(data.errmsg){
+														mui.toast(data.errmsg)
+													}else{
+														mui.toast('领取成功') ;
+													}
 		  											showData();
 												}, function(e) {
 													console.log("----- 支付失败 -----");
@@ -381,7 +388,12 @@
 									mui.toast(data.errmsg)
 								}
 								if(data.errno == 0) {
-									mui.toast('领取成功') ;
+									if(data.errmsg){
+										mui.toast(data.errmsg)
+									}else{
+										mui.toast('领取成功') ;
+									}
+
 									showData();
 								}
 							},
