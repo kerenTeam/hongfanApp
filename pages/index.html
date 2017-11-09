@@ -49,7 +49,7 @@
 				<b id="Bgouwu" class="Bicon gouwuB"></b>
 				<span class="mui-tab-label">购物车</span>
 			</a>
-			<a id="circle" class="mui-tab-item" href="circle.html" style="position: relative !important;top: 2px !important;">
+			<a id="circle" class="mui-tab-item" href="circle.html" style="position: relative !important;top: 2px !important;display: none;">
 				<b id="Byou" class="Bicon youB"></b>
 				<span class="mui-tab-label">HI友圈</span>
 			</a>
@@ -87,7 +87,36 @@
 					plus.storage.setItem("platform",'apple');
 				}
 			    //版本控制结束
+			    function friendOpen(){
+			    		if(/android/i.test(navigator.userAgent)){
+			    			mui('#circle')[0].style.display = '';
+						mui.fire(plus.webview.getWebviewById('center.html'),'openf');	
+						mui.fire(plus.webview.getWebviewById('main.html'),'openf');	
+			    		}else{
+			    			var cityNum  = plus.storage.getItem('cityNum'),
+						oldToken = plus.storage.getItem('oldToken');
+			    			mui.ajax(serverUrl + '/api/index/ishowelement', {
+		                    data: { 'platform':'ios','version':plus.storage.getItem("version")},
+		                    type: 'post',
+		                    timeout: 10000, 
+		                    headers: { "token": oldToken ,'city':cityNum},
+		                    success: function(data, type, xhr) {
+		                        console.log("是否打开HI友圈",data)
+		                        if(data.errno == 0 && data.data.ishow == 1){
+		                        		mui('#circle')[0].style.display = '';
+									mui.fire(plus.webview.getWebviewById('center.html'),'openf');	
+									mui.fire(plus.webview.getWebviewById('main.html'),'openf');	
+		                        }else{
+		                       	 	mui('#circle')[0].style.display = 'none';
+		                        }
 
+		                    },
+		                    error: function(xhr, type, errorThrown) {
+		                        console.log('响应失败');
+		                    }
+		                });
+			    		}
+			    }
 //              plus.storage.removeItem("$gameTime");
 				function doGame(){
 					//转盘抽奖
@@ -276,6 +305,7 @@
 					loadNum2++;
 					if(plus.storage.getItem('oldToken') || loadNum2==10){
 						doGame();//转盘抽奖
+						friendOpen()//是否是否调起交友圈模块
 						//sharecode();//获取分享有礼 时间区间 和邀请码
 						clearInterval(timeSign2);
 					}else{
