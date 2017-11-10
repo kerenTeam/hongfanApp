@@ -248,14 +248,13 @@
 					</dl>
 				</div>
 			</div>
-		</div>
 		<!--模板渲染数据-->
 		<script id="goodsList-detail" type="text/html">
 			<%if(list.length==0){%>
 			<%}else{%>
 				<% for(var i=0;i<list.length;i++){ %>
 					
-					<%if(list[i].num>30){%>
+					<%if(list[i].num>=10){%>
 						<dd class="goodsItem">
 							<a class="react" onclick="goInfo(<%= list[i].open_iid%>,'<%=list[i].bussinesno%>',3,'<%= list[i].thumb%>')">
 								<div class="dealcard">
@@ -309,7 +308,8 @@
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken'); 
 		 		plus.nativeUI.showWaiting('加载中 ...',{width:'100px',height:'80px'});//显示等待框
-			
+			var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数
 			//切换分类
 			var pid = 0;
 			$(".brand").on("tap",function(){ 
@@ -418,8 +418,7 @@
 				}
 			})
 			var category = plus.webview.currentWebview().pid;
-	 		getsecid(category);
-	 		
+	 		getsecid(category); 
 			//获取二级分类
 			function getsecid(pid){
 				mui.ajax(serverUrl+'/api/mall/igocategory',{
@@ -469,13 +468,14 @@
 			}
 			var curid;
 			function getList(category_id,alllist){
-				curid = category_id
+				curid = category_id;
 				//数据渲染
-				var currentPage =1, numsPerPage=10;
+				var currentPage =1, numsPerPage = 50;
 				mui.ajax(serverUrl+'/api/mall/igogoodslist', {
 					data: {
 						categoryid: category_id,
 						currentPage: currentPage,
+						numsPerPage: numsPerPage
 					},
 					dataType:'json',
 					type:'post',
@@ -509,12 +509,17 @@
 									　　var scrollHeight = $(document).height();
 									　　var windowHeight = $(this).height();
 									　　if(scrollTop + windowHeight == scrollHeight){ 
+											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
+										
 											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";  
-											currentPage++;
+											Ypagenum++; //满足加载情况,应到页数+1
+											console.log('发起请求,实到' + Spagenum + '页');
+											console.log('发起请求,应到' + Ypagenum + '页');
 											mui.ajax(serverUrl+'/api/mall/igogoodslist', {
 												data: {
 													categoryid: category_id,
-													currentPage: currentPage,
+													currentPage: Spagenum,
+													numsPerPage:numsPerPage
 												},
 												dataType:'json',//服务器返回json格式数据
 												type:'post',//HTTP请求类型 
@@ -535,12 +540,19 @@
 														document.getElementById("goodsList").innerHTML+=html;
 													}
 													mui("#upload")[0].innerHTML = " "; 
+													Spagenum++; //加载成功,当前页+1
+													console.log('成功+1,实到' + Spagenum);
+													console.log('成功+1,应到' + Spagenum);
 												},
 												error:function(xhr,type,errorThrown){ 
+													Ypagenum--; //失败是应到-1
+													mui.toast("当前网络不好请重试");
 													mui("#upload")[0].innerHTML = "";
 												}
 											});
-									 
+									 	} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+											mui("#upload")[0].innerHTML = "到底了";
+										}
 									  }
 									});//加载下一部分结束
 							 

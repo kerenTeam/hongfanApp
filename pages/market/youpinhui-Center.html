@@ -294,6 +294,12 @@
 			.loadPics{visibility: hidden;}
 			.rcdPadding{background: url(../../img/bannerback.svg) 50% 50% no-repeat;background-size: 30%;}
 			.jiazai{text-align: center;font-size: 14px;color: #888;padding-bottom: 10px !important;}
+			.baocun img {
+				width: 0.2rem;
+				vertical-align: middle;
+				margin-top: 5px;
+				margin-right: 5px;
+			}
 		</style>
 	</head>
 
@@ -301,6 +307,7 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize" style="padding-left: 16px;"></a>
 			<h1 class="mui-title">跨境优品</h1>
+			<a href="javascript:;" style="line-height: 50px;top: 0;" class="fr baocun" onclick="gosearch()"><img src="../../img/sousuo.svg" alt="" /></a>
 		</header>
 		<script src="../../js/statusBar.js"></script>
 		<!--状态栏-->
@@ -540,6 +547,13 @@
 					}
 				})
 			}
+			//跳转搜索
+			function gosearch(){
+				openview({
+					view: '../localLife/theSearch.html',
+					extrasobj:{searchcnt:"tsmall"}
+				});
+			}
 			function goCoupon(){/*优惠券*/
 				event.stopPropagation();
 				$('#maskInfo1').fadeOut(200);
@@ -553,6 +567,8 @@
 			gallery.slider({
 				interval: 5000 //自动轮播周期
 			});
+			var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数
 			mui.plusReady(function() {
 				var oldToken = plus.storage.getItem('oldToken');
 				 /*弹框*/
@@ -717,12 +733,13 @@
 					catgid = catid;
 					//推荐数据渲染
 					var currentPage = 1,
-						numsPerPage = 4;
+						numsPerPage = 30;
 					//热门推荐 数据渲染  
 					mui.ajax(serverUrl+'/api/mall/igogoodslist', {
 						data: {
 							categoryid: catgid,
 							currentPage: currentPage,
+							numsPerPage: numsPerPage
 						},
 						dataType: 'json', //服务器返回json格式数据
 						type: 'post', //HTTP请求类型 
@@ -754,15 +771,15 @@
 									var scrollHeight = $(document).height();　　
 									var windowHeight = $(this).height();　　
 									if(scrollTop + windowHeight == scrollHeight) {
-
-										if(scrollTop + windowHeight == scrollHeight) {
+											if(Spagenum <= data.data.totalPages && Spagenum == Ypagenum + 1) { //当前页小于等于总页数时请求下一页
 											mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
-											currentPage++;
+											Ypagenum++; //满足加载情况,应到页数+1
 											var requestfun = function() {
 												mui.ajax(serverUrl+'/api/mall/igogoodslist', {
 													data: {
-														categoryid: catgid,
-														currentPage: currentPage,
+														categoryid: category_id,
+														currentPage: Spagenum,
+														numsPerPage:numsPerPage
 													},
 													dataType: 'json', //服务器返回json格式数据
 													type: 'post', //HTTP请求类型 
@@ -786,10 +803,14 @@
 															document.getElementById("moll_recommend").innerHTML += html;
 														}
 														mui("#upload")[0].innerHTML = " ";
+														Spagenum++; //加载成功,当前页+1
+														console.log('成功+1,实到' + Spagenum);
+														console.log('成功+1,应到' + Spagenum);
 														lazyLoad();//懒加载
 													},
 													error: function(xhr, type, errorThrown) {
 														//Ypagenum;//失败是应到-1
+														Ypagenum--; //失败是应到-1
 														console.log("当前网络不好请重试");
 														requestfun(); //失败继续加载
 														mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
@@ -798,7 +819,7 @@
 											}
 											requestfun();
 
-										} else if(Spagenum == data.data.return.totalPages + 1) { //当前页不小于等于总页数时请求下一页
+										} else if(Spagenum == data.data.totalPages + 1) { //当前页不小于等于总页数时请求下一页
 											mui("#upload")[0].innerHTML = "到底了";
 										}
 									}
