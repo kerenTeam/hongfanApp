@@ -516,15 +516,18 @@
 			})
 			//判断是否显示分享有礼
 			function isShowShare(isnow){
-				var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
-				var nowdate = new Date;
-			    	var newbeginDate = new Date(shareInfo.begin_date);
-			    	var newendDate = new Date(shareInfo.end_date);
-			    	var showShare = isnow || plus.webview.currentWebview().showShare;
-			    	if(showShare && nowdate > newbeginDate && nowdate < newendDate){
-			    		plus.nativeUI.closeWaiting();
-			    		$('#maskInfo123').css('display','block');
-			    	}
+				if(plus.storage.getItem('shareInfo')){
+					var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
+					var nowdate = new Date;
+				    	var newbeginDate = new Date(shareInfo.begin_date);
+				    	var newendDate = new Date(shareInfo.end_date);
+				    	var showShare = isnow || plus.webview.currentWebview().showShare;
+				    	if(showShare && nowdate > newbeginDate && nowdate < newendDate){
+				    		plus.nativeUI.closeWaiting();
+				    		$('#maskInfo123').css('display','block');
+				    	}
+				}
+
 			}
 			isShowShare();
 			//判断是否显示分享有礼	结束
