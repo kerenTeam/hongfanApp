@@ -91,23 +91,23 @@
 			    		if(/android/i.test(navigator.userAgent)){
 			    			doGame();//转盘抽奖
 			    			mui('#circle')[0].style.display = '';
-						mui.fire(plus.webview.getWebviewById('center.html'),'openf');	
-						mui.fire(plus.webview.getWebviewById('main.html'),'openf');	
+						mui.fire(plus.webview.getWebviewById('center.html'),'openf');
+						mui.fire(plus.webview.getWebviewById('main.html'),'openf');
 			    		}else{
 			    			var cityNum  = plus.storage.getItem('cityNum'),
 						oldToken = plus.storage.getItem('oldToken');
 			    			mui.ajax(serverUrl + '/api/index/ishowelement', {
 		                    data: { 'platform':'ios','version':plus.storage.getItem("version")},
 		                    type: 'post',
-		                    timeout: 10000, 
+		                    timeout: 10000,
 		                    headers: { "token": oldToken ,'city':cityNum},
 		                    success: function(data, type, xhr) {
-		                        console.log("是否打开HI友圈",data)
+		                        console.log("是否打开HI友圈",JSON.stringify(data));
 		                        if(data.errno == 0 && data.data.ishow == 1){
 		                        		doGame();//转盘抽奖
 		                        		mui('#circle')[0].style.display = '';
-									mui.fire(plus.webview.getWebviewById('center.html'),'openf');	
-									mui.fire(plus.webview.getWebviewById('main.html'),'openf');	
+									mui.fire(plus.webview.getWebviewById('center.html'),'openf');
+									mui.fire(plus.webview.getWebviewById('main.html'),'openf');
 		                        }else{
 		                       	 	mui('#circle')[0].style.display = 'none';
 		                        }
