@@ -626,6 +626,7 @@
 			function showOffer(){
 				var pays = {};
 				mui.plusReady(function(){
+					var imei = plus.device.uuid; 
 					//铺数据
 					plus.nativeUI.showWaiting();
 					var cityNum = plus.webview.currentWebview().Bcity || plus.storage.getItem('cityNum'),/*兼容 banner 跳转*/
@@ -752,15 +753,16 @@
 									}
 
 									function gopay(id) {
-										alert(myuserid)
 										plus.nativeUI.showWaiting();
+										
 										mui.ajax(serverUrl + '/api/index/getcoupon', {
 											data:{
 												userId:plus.storage.getItem('userid'),
 												payType:id,
 												id:cid,
 												version:version,
-												platform:platform
+												platform:platform,
+												macId:imei
 											},
 											dataType:'json',
 											type: 'post', //HTTP请求类型
@@ -837,12 +839,14 @@
 							}
 							if(cprice == 0){
 								plus.nativeUI.showWaiting();
+								
 								mui.ajax(serverUrl + '/api/index/getcoupon', {
 									data:{
 										userId:plus.storage.getItem('userid'),
 										id:cid,
 										version:version,
-										platform:platform
+										platform:platform,
+										macId:imei
 									},
 									dataType:'json',
 									type: 'post', //HTTP请求类型
