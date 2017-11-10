@@ -296,8 +296,14 @@
 			<ul>
 				<%if(searchType == 'goods'){%>
 					<%for(var i=0;i < searchData.length;i++){%>
-					<li onclick="opendetails3('<%=searchData[i].goods_id%>','<%=searchData[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
-						<%=searchData[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+						<%if(searchData[i].open_iid){%>
+							<li onclick="opendetailsy('<%=searchData[i].open_iid%>','<%=searchData[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+							<%=searchData[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+						<%}else{%>
+							<li onclick="opendetails3('<%=searchData[i].goods_id%>','<%=searchData[i].differentiate%>')" class="link-url"><span class="mui-icon mui-icon-search"></span>
+							<%=searchData[i].title%><span class="mui-icon mui-icon-arrowright fr"></span></li>
+						<%}%>
+					
 					<%}%>
 				<%}else if(searchType == 'store'){%>
 					<%for(var i=0;i < searchData.shop_store.length;i++){%>
@@ -564,15 +570,16 @@
 					}
 				})
 			}
-//			if(did == 2) {
-//				openview({
-//					view: '../market/jifen-detail.html',
-//					extrasobj: {
-//						goodsId: id
-//					}
-//				})
-//			}
-
+			
+		}
+		//跳转 爱购商品详情
+		function opendetailsy(id, did){
+			openview({
+				view: '../market/yphDetail.html',
+				extrasobj: {
+					goodsId: id
+				}
+			})
 		}
 		//跳转 跳蚤市场
 		function opendetails4(id) {
