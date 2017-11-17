@@ -232,13 +232,19 @@
 						//系统检测获取支付通道结束
 
 						var mobileNo = this.value;
-						$(".mui-icon-clear").css("display", "block")
+
+						$(".mui-icon-clear").css("display", "block");
 						if(reg_phone.test(mobileNo) || flag1) {
-							$(".mui-icon-clear").css("display", "none")
-							$(".rechargeItem").addClass("rechargeItemActive");
-							$(".rechargeItemActive").click(function() {
+
+								$(".mui-icon-clear").css("display", "none")
+								$(".rechargeItem").addClass("rechargeItemActive");
+								$(".rechargeItemActive").unbind('click');
+								$(".rechargeItemActive").click(function() {
 									var mobileNo = $("#mobileNo").val();
-									if(reg_phone.test(mobileNo)) {
+									var qianSan = mobileNo.substring(0, 3);
+									if(qianSan.indexOf(17)>-1){
+										alert('您的号码为虚拟营运商号段，本平台暂没开通此充值业务。');
+									}else if(reg_phone.test(mobileNo)) {
 										$("#payChoose").addClass("mui-active");
 										var rechargeAmount = parseFloat($(this).find("p").html());
 										$("#totalPayCash").html("￥"+rechargeAmount);
@@ -419,6 +425,8 @@
 										}
 
 									})
+
+
 							}
 							else {
 								$(".rechargeItem").removeClass("rechargeItemActive");
