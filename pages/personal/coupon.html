@@ -121,23 +121,20 @@
 											<%}%>
 										</p>
 									</div>
-									<!--<div class="offerFoot">
-										<%if(allLi[i].pic){%>
-											<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic%>" alt="" />
-										<%}%>
-									</div>-->
 								</div>
-							<% }else{ %><!--不可用状态-->
+							<% }else if(allLi[i].user_coupon_state == 0){ %><!--已使用状态-->
 								<div class="offerWrap offerWrap3"> 	
 									<div class="offerTop">
 											<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
-											<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已失效</span></p>
-										</div>
-									<!--<div class="offerFoot">
-										<%if(allLi[i].pic){%>
-											<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic%>" alt="" />
-										<%}%>
-									</div>-->
+											<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已使用</span></p>
+									</div>
+								</div>
+							<% }else{ %><!--已作废状态-->
+								<div class="offerWrap offerWrap3"> 	
+									<div class="offerTop">
+											<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+											<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已作废</span></p>
+									</div>
 								</div>
 							<% } %>
 						<%}%>
@@ -167,11 +164,7 @@
 											<%}%>
 										</p>
 									</div>
-								<!--<div class="offerFoot">
-									<%if(allLi[i].pic){%>
-										<img class="anImg loadPics picOp" onload="imgHeight(this)" src="<%=allLi[i].pic%>" alt="" />
-									<%}%>
-								</div>-->
+								
 							</div>
 						<% } %>
 					<% } %>
@@ -180,46 +173,6 @@
 			</div>
 		</div>
 		
-		<!--<div id="offerId" style="display: none;">
-			<div class="offerWrap">
-				<div class="offerTop">
-					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-					<p>宏帆XX商家抵用卷 <span class="span3">付10元购买</span></p>
-				</div>
-				<div class="offerFoot">
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-				</div>
-			</div>
-			<div class="offerWrap offerWrap2">
-				<div class="offerTop">
-					<h4> <b class="b1">¥</b> <b class="b2">100</b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-					<p>宏帆XX商家抵用卷 <span class="span3">免费领取</span></p>
-				</div>
-				<div class="offerFoot">
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-				</div>
-			</div>
-			<div class="offerWrap offerWrap3">
-				<div class="offerTop">
-					<h4><b class="b2"></b><span class="span1">满199元减100元</span> <span class="span2">还剩40天到期</span></h4>
-					<p>宏帆XX商家抵用卷 <span class="span3">已失效</span></p>
-				</div>
-				<div class="offerFoot">
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-					<img src="../../img/market/chanpingkuang.png"/>
-				</div>
-			</div>
-		</div>
-		
-		-->
 		<script src="../../js/jquery.SuperSlide.2.1.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			jQuery(".notice").slide({ titCell:".tab-hd li", mainCell:".tab-bd",delayTime:0 });//tab切换
@@ -243,20 +196,20 @@
 							if(!data.data.user_coupon.length){   
 									mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
 								}else{
-									for(var i = 0;i < data.data.user_coupon.length;i++){
-//										 
-									} 
+								
 									var allC = {}; 
 									allC.allLi = data.data.user_coupon;
 									if(allC.allLi.length > 0){
 										//可用的优惠券
 										for(var i=0;i<allC.allLi.length;i++){
-				    						var d = new Date();
+				    							var d = new Date();
 											var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 											var nowdate = formatDate(str, "yyyy.MM.dd");
-				    						var endDate = formatDate(allC.allLi[i].end_date, "yyyy.MM.dd");
+											
+				    						    var endDate = formatDate(allC.allLi[i].end_date, "yyyy.MM.dd");
+				    						  	
 											if(allC.allLi[i].end_date && endDate<nowdate){//判断时间过期
-												allC.allLi[i].user_coupon_state = 0;
+												allC.allLi[i].user_coupon_state = 2;
 											}
 											var html = template('allC-detail',allC);
 											document.getElementById('allC').innerHTML = html;//铺全部

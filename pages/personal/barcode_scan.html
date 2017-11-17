@@ -67,9 +67,11 @@
 			    	if(result.indexOf('begin_date')>-1){ //判断数据是否可用 
 				    	var dataobj = JSON.parse(result);
 				    	if(dataobj.begin_date && dataobj.end_date){
-				    		var nowdate = new Date;
-					    	var beginDate = new Date(dataobj.begin_date); 
-					    	var endDate = new Date(dataobj.end_date);
+				    		var d = new Date();
+						var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						var nowdate = formatDate(str, "yyyy.MM.dd");
+					    	var beginDate = formatDate(dataobj.begin_date, "yyyy.MM.dd");
+						var endDate = formatDate(dataobj.end_date, "yyyy.MM.dd");
 					    	console.log('核销数据',dataobj);
 					    	if(dataobj.user_coupon_state == 0){//判断是否已经使用
 					    		alert('该核销卷已经使用');
@@ -102,7 +104,7 @@
 			    		if(plus.webview.getWebviewById('mall-detail') || plus.webview.getWebviewById('yphDetail')){
 			    			plus.webview.currentWebview().hide();
 			    			var time2 = setTimeout(function(){
-			    				plus.webview.currentWebview().close();
+//			    				plus.webview.currentWebview().close();
 			    			},5000)
 			    		}
 			    	},100)
@@ -144,7 +146,7 @@
 								headers:{"token":oldtoken,'city':cityNum},
 								success:function(data,type,xhr){
 									plus.nativeUI.closeWaiting();
-									//alert('上传核销返回'+JSON.stringify(data));
+//									alert('上传核销返回'+JSON.stringify(data));
 									console.log('上传核销返回',data);
 									if(data.errno == 0){
 										mui.alert('核销成功');
