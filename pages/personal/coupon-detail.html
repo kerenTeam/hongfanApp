@@ -337,8 +337,10 @@
 					console.log('详情',data);
 					//循环出当前优惠券Id
 					for(var m=0; m < data.data.user_coupon.length; m++){
-						var nowdate = new Date;
-						var endDate = new Date(data.data.user_coupon[m].end_date);
+						var d = new Date();
+						var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						var nowdate = formatDate(str, "yyyy.MM.dd");
+						var endDate = formatDate(data.data.user_coupon[m].end_date, "yyyy.MM.dd");
 						if(data.data.user_coupon[m].end_date && endDate<nowdate){//判断时间过期
 							data.data.user_coupon[m].user_coupon_state = 0; 
 						}
