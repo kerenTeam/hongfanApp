@@ -10,7 +10,7 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		
+
 		<link rel="stylesheet" type="text/css" href="../css/common.css">
 		<link rel="stylesheet" type="text/css" href="../css/index.css">
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
@@ -206,36 +206,46 @@
 			<table>
 				<tbody>
 					<tr>
-						<td class="market"><img src="../img/mainHtml/hongfan.png" /><br/>
+						<!--<td class="market"><img src="../img/mainHtml/hongfan.png" /><br/>-->
+						<td class="market"><img src="../img/answer/editset.png" /><br/>
 							<p>宏帆广场</p>
 						</td>
-						<td class="locallife"><img src="../img/mainHtml/bendi.png" /><br />
+						<td class="locallife"><img src="../img/answer/editset.png" /><br/>
+<!--						<td class="locallife"><img src="../img/mainHtml/bendi.png" /><br />-->
 							<p id="locallifePP">邻水生活</p>
 						</td>
-						<td class="ticket"><img src="../img/mainHtml/chongzhi.png" /><br />
+						<td class="ticket"><img src="../img/answer/editset.png" /><br/>
+<!--						<td class="ticket"><img src="../img/mainHtml/chongzhi.png" /><br />-->
 							<p>充值缴费</p>
 						</td>
-						<td class="darenbang"><img src="../img/mainHtml/daren.png" /><br />
+						<!--<td class="darenbang"><img src="../img/mainHtml/daren.png" /><br />-->
+						<td class="darenbang"><img src="../img/answer/editset.png" /><br/>
 							<p>答人榜</p>
 						</td>
-						<td class="jiaoyou"><img src="../img/mainHtml/rchi.png" /><br/>
+						<!--<td class="jiaoyou"><img src="../img/mainHtml/rchi.png" /><br/>-->
+						<td class="jiaoyou"><img src="../img/answer/editset.png" /><br/>
 							<p>领HI豆</p>
 						</td>
 					</tr>
 					<tr>
-						<td class="loveBuy"><img src="../img/mainHtml/kuajin.png" /><br />
+						<!--<td class="loveBuy"><img src="../img/mainHtml/kuajin.png" /><br />-->
+						<td class="loveBuy"><img src="../img/answer/editset.png" /><br/>
 							<p>跨境优品</p>
 						</td>
-						<td class="teseguan"><img src="../img/mainHtml/tese.png" /><br/>
+						<!--<td class="teseguan"><img src="../img/mainHtml/tese.png" /><br/>-->
+						<td class="teseguan"><img src="../img/answer/editset.png" /><br/>
 							<p>特色馆</p>
 						</td>
-						<td class="chaoshiyou"><img src="../img/mainHtml/chaoshi.png" /><br/>
+						<!--<td class="chaoshiyou"><img src="../img/mainHtml/chaoshi.png" /><br/>-->
+						<td class="chaoshiyou"><img src="../img/answer/editset.png" /><br/>
 							<p>超市优选</p>
 						</td>
-						<td class="onsale"><img src="../img/mainHtml/tiantian.png" /><br/>
+						<!--<td class="onsale"><img src="../img/mainHtml/tiantian.png" /><br/>-->
+						<td class="onsale"><img src="../img/answer/editset.png" /><br/>
 							<p>天天特价</p>
 						</td>
-						<td class="fil"><img src="../img/mainHtml/kandianying.png" /><br/>
+						<!--<td class="fil"><img src="../img/mainHtml/kandianying.png" /><br/>-->
+						<td class="fil"><img src="../img/answer/editset.png" /><br/>
 							<p>看电影</p>
 						</td>
 					</tr>
@@ -630,7 +640,7 @@
 				window.addEventListener('reload',function(event){
 					plus.webview.currentWebview().reload();
 				});
-				
+
 				var Timetoken = null;
 				var oldToken = null;
 				if(plus.storage.getItem('oldToken')){
@@ -809,6 +819,26 @@
 						},
 						error: function(xhr, type, errorThrown) {
 							console.log('首页banner,响应失败');
+						}
+					});
+
+					// icon
+					mui.ajax(serverUrl + '/api/index/iconcontroll', {
+						data: {iconType: 1},
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						headers: { "token": oldToken, 'city': cityNum },
+						success: function(data, type, xhr) {
+							console.log('icon', data);
+							if(data.errno == 0 && data.data.index.length){
+								data.data.index.forEach(function(ele,index){
+									$('.onetable img').eq(index).attr('src',ele);
+								})
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log('icon,响应失败');
 						}
 					});
 					//男神 女神 列表
