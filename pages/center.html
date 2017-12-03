@@ -264,6 +264,50 @@
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			document.addEventListener( "plusready", function(){
+				function createLocalPushMsg(){
+				    var options = {cover:false};
+				    var str = '';
+				    str += ": 欢迎使用Html5 Plus创建本地消息！";
+				    plus.push.createMessage( str, "LocalMSG", options );
+
+
+				    if(plus.os.name=="iOS"){
+				        outLine('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
+			    		}
+				}
+//			    createLocalPushMsg();
+//			    message = document.getElementById("message");
+			    // 监听点击消息事件
+			    plus.push.addEventListener( "click", function( msg ) {
+			        // 判断是从本地创建还是离线推送的消息
+			        switch( msg.payload ) {
+			            case "LocalMSG":
+			                alert( "点击本地创建消息启动：" );
+			            break;
+			            default:
+			                alert( "点击离线推送消息启动：");
+			            break;
+			        }
+			        // 提示点击的内容
+			        plus.ui.alert( msg.content );
+			        // 处理其它数据
+			        //logoutPushMsg( msg );
+			    }, false );
+			    // 监听在线消息事件
+			    plus.push.addEventListener( "receive", function( msg ) {
+			    		alert(1);
+			    		console.error('正在接收推送消息');
+			        if ( msg.aps ) {  // Apple APNS message
+			            alert( "接收到在线APNS消息：" );
+			        } else {
+			            alert( "接收到在线透传消息：" );
+			        }
+			        //logoutPushMsg( msg );
+			    }, false );
+			}, false );
+		</script>
+		<script type="text/javascript">
 			//分类订单
 			function typeOrder(type){
 				if(plus.storage.getItem('myToken')){
