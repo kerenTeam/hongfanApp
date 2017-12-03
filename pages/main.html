@@ -103,6 +103,7 @@
 					<div class="fineB aClick citysBtn" onclick="citysBtn('宣汉')">宣汉</div>
 					<div class="fineB aClick citysBtn" onclick="citysBtn('南江')">南江</div>
 					<div class="fineB aClick citysBtn" onclick="citysBtn('邻水')">邻水</div>
+					<div class="fineB aClick citysBtn" onclick="citysBtn('重庆')">重庆</div>
 				</div>
 			</div>
 			<div id="" class="searchBox">
@@ -208,7 +209,7 @@
 					<tr>
 						<!--<td class="market"><img src="../img/mainHtml/hongfan.png" /><br/>-->
 						<td class="market"><img src="../img/answer/editset.png" /><br/>
-							<p>宏帆广场</p>
+							<p id="hfsq">宏帆广场</p>
 						</td>
 						<td class="locallife"><img src="../img/answer/editset.png" /><br/>
 <!--						<td class="locallife"><img src="../img/mainHtml/bendi.png" /><br />-->
@@ -258,6 +259,35 @@
  		<div id="xianzhiWrap" style="margin-bottom: 2px;">
  			<img id="xianzhi" src="../img/mainHtml/yingxiang.png"/>
  		</div>
+ 		<!--HI问答-->
+		<div class="QandA">
+			<h3 class="partTitle partTitleA" style="margin-bottom: 5px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 答人榜</h3>
+			<div class="QAhead">
+				<span class="active aClick">我要问</span>
+				<span class="aClick">我要答</span>
+				<span class="aClick">精选</span>
+			</div>
+			<div id="listOldDiv">
+				<div id="listConW1" class="middleI listSon"></div><!--我要问 盒子1-->
+				<div id="listConW2" class="leftT listSon"></div><!--我要问盒子2-->
+				<div id="listConW3" class="leftT listSon"></div><!--我要问盒子3-->
+				<script type="text/html" id="listDataS">
+					<%for(var i=0;i<dataList.length;i++){%>
+						<div class="listCon aClick fineB" onclick="openDetailA(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
+							<h4 class="listHead">
+								<img data-src="<%=dataList[i].avatar%>" src="" class="loadPics" />
+								<%=dataList[i].nickname%>
+								<%if(dataList[i].price){%>
+									<span><%=dataList[i].price%> HI豆</span><b>悬赏</b>
+								<%}%>
+							</h4>
+							<p class=""><%=dataList[i].content%> </p>
+						</div>
+					<%}%>
+					<div class="moreCon fineB aClick" onclick="darenbang()" ><span>更多 </span></div>
+				</script>
+			</div>
+		</div>
 		<!--HI友圈-->
 		<div class="mui-content hiFriend" style="display: none;">
 			<h3 class="partTitle partTitlea"> <img src="../img/mainHtml/hired.png"/> <span></span> 友圈</h3>
@@ -300,35 +330,7 @@
  				<%}%>
 			<%}%>
 		</script>
-		<!--HI问答-->
-		<div class="QandA">
-			<h3 class="partTitle partTitleA" style="margin-bottom: 5px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 答人榜</h3>
-			<div class="QAhead">
-				<span class="active aClick">我要问</span>
-				<span class="aClick">我要答</span>
-				<span class="aClick">精选</span>
-			</div>
-			<div id="listOldDiv">
-				<div id="listConW1" class="middleI listSon"></div><!--我要问 盒子1-->
-				<div id="listConW2" class="leftT listSon"></div><!--我要问盒子2-->
-				<div id="listConW3" class="leftT listSon"></div><!--我要问盒子3-->
-				<script type="text/html" id="listDataS">
-					<%for(var i=0;i<dataList.length;i++){%>
-						<div class="listCon aClick fineB" onclick="openDetailA(<%=dataList[i].id%>,<%=dataList[i].user_id%>)">
-							<h4 class="listHead">
-								<img data-src="<%=dataList[i].avatar%>" src="" class="loadPics" />
-								<%=dataList[i].nickname%>
-								<%if(dataList[i].price){%>
-									<span><%=dataList[i].price%> HI豆</span><b>悬赏</b>
-								<%}%>
-							</h4>
-							<p class=""><%=dataList[i].content%> </p>
-						</div>
-					<%}%>
-					<div class="moreCon fineB aClick" onclick="darenbang()" ><span>更多 </span></div>
-				</script>
-			</div>
-		</div>
+		
 		<img id='hbrain' src="../img/center/bgs.png" style="position: fixed;right: 0px;bottom: 20px;width: 80px;z-index: 999999;display: none;"/>
 
 		<!--HI抢购     1     推荐列表-->
@@ -612,13 +614,17 @@
 				//城市切换
 				var cityNum = plus.storage.getItem('cityNum');
 				//所属城市 1重庆 2南江 3宣汉  4邻水
-				var cityA = ['宣汉','南江','邻水'],
-					citySA = ['宣汉生活','南江生活','邻水生活'],
+				var cityA = ['宣汉','南江','邻水','重庆'],
+					citySA = ['宣汉生活','南江生活','邻水生活','本地生活'],
 					cityX = ['../img/mainHtml/xianzhi (2).png','../img/mainHtml/xianzhi (3).png','../img/mainHtml/yingxiang.png'],
-					cityN = ['3','2','4'];
+					cityN = ['3','2','4','1'];
 				mui('.nowCity')[0].innerHTML = cityA[cityN.indexOf(cityNum)] || '邻水';
 				mui('#locallifePP')[0].innerHTML = citySA[cityN.indexOf(cityNum)] || '邻水生活';
-
+				if(cityNum == 1){
+					mui('#hfsq')[0].innerHTML = '凤凰湾'
+				}else{
+					mui('#hfsq')[0].innerHTML = '宏帆广场'
+				}
 				[].forEach.call(mui('.citysBtn'),function(ele){/*隐藏当前城市*/
 					if(ele.innerHTML == mui('.nowCity')[0].innerHTML){
 						ele.style.display = 'none';
@@ -723,7 +729,10 @@
 					market.addEventListener('tap', function() {
 						openview({
 							view: 'market/market.html',
-							id: "market"
+							id: "market",
+							extrasobj: {
+								titleName:mui('#hfsq')[0].innerHTML
+							}
 						});
 					});
 					//特色馆

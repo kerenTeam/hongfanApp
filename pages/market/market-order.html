@@ -654,7 +654,7 @@
 						<script type="text/html" id="couponTpl">
 							<%if(intergral!=0){%>
 							<dd class="dd-padding kv-line-r">
-								<h6>总HI豆<span id="totalJfen" style="color: #F14A43;" id="totalJfen"><%=intergral%></span>个,本次交易最多抵用<span id="itMinus" style="color: #ff5f32;"><span>￥</span></span></h6>
+								<h6>总HI豆<span id="totalJfen" style="color: #F14A43;" id="totalJfen"><%=intergral%></span>个<span id="itMinus" style="color: #ff5f32;display: none;"></span></h6>
 								<div id="changeJf" class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
 							</dd>
 							<%}else{%>
@@ -906,8 +906,10 @@
 						$("#coupon .mui-checkbox").click(function() {
 
 							if($(this).find("input").prop('checked') == true) {
+								$('#itMinus').show();
 								jf = parseFloat(intergral / 100);
 							} else {
+								$('#itMinus').hide();
 								jf = 0;
 							}
 
@@ -949,7 +951,7 @@
 				gopay();
 
 				function gopay() {
-					console.log('goodsdata', JSON.parse(goodsdata))
+					console.log('goodsdata',goodsdata)
 					//							console.log(myuserid + id + addressid + goodsdata + coupon_id + isIntergal)
 					mui.ajax(serverUrl + '/api/mall/neworder', {
 						data: {
@@ -971,7 +973,7 @@
 							if(data.errno == 0) {
 								var dataObj = {};
 								if(data.data.nowIntergal && data.data.nowIntergal.intergral){
-										$('#itMinus').html(data.data.nowIntergal.intergral + '元')
+										$('#itMinus').html('本次交易最多抵用'+data.data.nowIntergal.intergral + '元')
 								}
 								for(var i = 0; i < data.data.Params.goodsData.length; i++) {
 									data.data.Params.goodsData[i].actualPrice = Math.floor(data.data.Params.goodsData[i].actualPrice * 100) / 100;
@@ -1126,16 +1128,16 @@
 									}
 								});
 								var totalJfen = parseInt($('#totalJfen').html());
-								if((totalJfen / 100) >= Math.floor(data.data.PriceCalculValue * 100) / 100) {
-									if(!$("#coupon").find("input[type='checkbox']:checked").length == 1) {
-										$('#itMinus').html((Math.floor(data.data.PriceCalculValue * 100 - 0.01) / 100) + '元')
-									}
-								} else {
-									if(!$("#coupon").find("input[type='checkbox']:checked").length == 1) {
-										$('#itMinus').html(totalJfen / 100 + '元')
-									}
-
-								}
+//								if((totalJfen / 100) >= Math.floor(data.data.PriceCalculValue * 100) / 100) {
+//									if(!$("#coupon").find("input[type='checkbox']:checked").length == 1) {
+//										$('#itMinus').html((Math.floor(data.data.PriceCalculValue * 100 - 0.01) / 100) + '元')
+//									}
+//								} else {
+//									if(!$("#coupon").find("input[type='checkbox']:checked").length == 1) {
+//										$('#itMinus').html(totalJfen / 100 + '元')
+//									}
+//
+//								}
 
 								var html = template('orderData', dataObj);
 								document.getElementById('orderTpl').innerHTML = html;
