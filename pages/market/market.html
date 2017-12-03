@@ -253,7 +253,7 @@
 				<div class="onetable" style="margin-bottom: 0.05rem;">
 					<table>
 						<tbody>
-							<tr>
+							<tr id='ohtercity' style="display: none;">
 								<td class="youhui">
 										<img src="../../img/market/youhuiicon.png"/>
 									<br/>
@@ -264,7 +264,7 @@
 									<br/>
 									<p>活动</p>
 								</td>
-								<td class=" findstore">
+								<td class="findstore">
 										<img src="../../img/market/zhaodianicon.png"/>
 									<br/>
 									<p>找店</p>
@@ -277,7 +277,30 @@
 								</td>
 
 							</tr>
+							<tr id="cqcity" style="display: none;">
+								<td class="distribution ccqq">
+										<img src="../../img/market/youhuiicon.png"/>
+									<br/>
+									<p>社区配送</p>
+								</td>
+								<td  class="property ccqq">
+										<img src="../../img/market/huodongicon.png"/>
+									<br/>
+									<p>物业缴费</p>
+								</td>
+								<td class="report ccqq">
+										<img src="../../img/market/zhaodianicon.png"/>
+									<br/>
+									<p>报事报修</p>
+								</td>
 
+								<td class="Housekeeping ccqq">
+										<img src="../../img/market/zhaoshangicon.png"/>
+									<br/>
+									<p>家政服务</p>
+								</td>
+
+							</tr>
 						</tbody>
 					</table>
 
@@ -500,6 +523,9 @@
 				event.stopPropagation();
 				$(this).parent().fadeOut(200);
 			})
+			$('.ccqq').click(function(){
+				mui.alert('即将开放，敬请期待')
+			})
 		})();
 		function goCoupon(){/*优惠券*/
 			event.stopPropagation();
@@ -515,6 +541,17 @@
 			var cityNum = plus.storage.getItem('cityNum');
 			var version = plus.storage.getItem('version');
 			var platform  = plus.storage.getItem('platform');
+			var titleName = plus.webview.currentWebview().titleName;
+			
+			if(cityNum == 1){
+				$('#ohtercity').hide();
+				$('#cqcity').show();
+				mui('.mui-title')[0].innerHTML = titleName+'社区';
+			}else{
+				$('#ohtercity').show();
+				$('#cqcity').hide();
+				mui('.mui-title')[0].innerHTML = titleName;
+			}
 			/*弹框*/
 			mui.ajax(serverUrl + '/api/index/showmodal', {
 	            type: 'post',
