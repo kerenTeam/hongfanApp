@@ -25,7 +25,6 @@ function alertF(content){ //非姐的方法
 function alertY(content){ //向前的方法
 //	alert(content)
 }
-
 //banner跳转
 window.bannerGo = function(id,url, name, route) {
 	//点击量统计
