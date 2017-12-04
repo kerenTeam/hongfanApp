@@ -258,7 +258,7 @@
 			}
 		}
 
-	}
+	} 
 	//提交接口
 	mui('#confirmbtn')[0].addEventListener('click',function(){
 
@@ -287,8 +287,10 @@
 		}else{
 			var cityNumshu =  [2,3,4,1][['南江','宣汉','邻水','重庆'].indexOf(cityNum.value)];
 			plus.nativeUI.showWaiting();
+			var newVersion = plus.storage.getItem("version");
+			mui.plusReady(function(){
 			mui.ajax(serverUrl+'/api/useraccount/register',{//注册
-					data:{"phone":account.value,"nickName":mui('#nickname')[0].value,"password":password.value,'smsCode':mui('#VeCode')[0].value,'city':cityNumshu},
+					data:{"phone":account.value,"nickName":mui('#nickname')[0].value,"password":password.value,'smsCode':mui('#VeCode')[0].value,'city':cityNumshu,"newVersion":newVersion},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -308,7 +310,7 @@
 									console.log('登录返回'+JSON.stringify(data));
 									if(data.errno==0){
 										var mytoken = xhr.getResponseHeader('token');//替换默认token存入缓存
-										mui.plusReady(function(){
+										
 											//登录成功
 											plus.storage.setItem("myToken",mytoken);
 											plus.storage.setItem("oldToken",mytoken);
@@ -327,7 +329,7 @@
 												plus.nativeUI.closeWaiting();
 												mui.toast('登录成功 ');
 											},500)
-										})
+										 
 									}else{
 										plus.nativeUI.closeWaiting();
 										mui.toast(data.errmsg);//登录提示
@@ -352,6 +354,7 @@
 						console.log('注册响应失败');
 				}
 			});
+		})	
 		}
 
 	})
