@@ -129,8 +129,13 @@
 		        		</div>
 		        		<b class="Veb" style="display: none;">验证码错误</b>
 		        	</div>
+		        	<div class="loginNum clearfix">
+		        		<div class="yonghuPicW">
+		        			<img class="yonghuPic" src="../img/mainHtml/nc.svg"/>
+		        		</div>
+						<input id='nickname' type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
+		        	</div>
 		        	<div class="formItem2">
-
 					<div class="FItem2R">
 						<input id="cityNum" value="" type="text" class="aClick air" disabled="" style="border: none;background: url(../img/loginHtml/biankuangL.png) bottom left no-repeat;padding-left: 0 !important;" placeholder="选择当前城市">
 						<div class="img" onclick="dropdownDiv(this)">
@@ -140,6 +145,7 @@
 							<li onclick="dropdownLi(this)" class="fineB aClick">南江</li>
 							<li onclick="dropdownLi(this)" class="fineB aClick">宣汉</li>
 							<li onclick="dropdownLi(this)" class="fineB aClick">邻水</li>
+							<li onclick="dropdownLi(this)" class="fineB aClick">重庆</li>
 							<li onclick="dropdownLi(this)" class="fineB aClick">其他</li>
 						</ul>
 					</div>
@@ -179,6 +185,7 @@
 
 	var account = document.getElementById('account');
 	var password = document.getElementById('password'),
+	nickname = document.getElementById('nickname'),
 	passwordagain = document.getElementById('passwordagain'),
 	cityNum = document.getElementById('cityNum'),
 	reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
@@ -261,6 +268,9 @@
 		}else if(mui('#VeCode')[0].value == ''){
 			mui.toast('请输入验证码 ');
 			mui('#VeCode')[0].focus();
+		}else if(mui('#nickname')[0].value == ''){
+			mui.toast('请输入昵称 ');
+			mui('#nickname')[0].focus();
 		}else if(!cityNum.value){
 			mui.toast('选择当前城市');
 		}else if(!reg_pass.test(password.value)){
@@ -275,10 +285,10 @@
 			mui.toast('请输入正确的验证码 ');
 			mui('#VeCode')[0].focus();
 		}else{
-			var cityNumshu =  [2,3,4][['南江','宣汉','邻水'].indexOf(cityNum.value)];
+			var cityNumshu =  [2,3,4,1][['南江','宣汉','邻水','重庆'].indexOf(cityNum.value)];
 			plus.nativeUI.showWaiting();
 			mui.ajax(serverUrl+'/api/useraccount/register',{//注册
-					data:{"phone":account.value,"password":password.value,'smsCode':mui('#VeCode')[0].value,'city':cityNumshu},
+					data:{"phone":account.value,"nickName":mui('#nickname')[0].value,"password":password.value,'smsCode':mui('#VeCode')[0].value,'city':cityNumshu},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
@@ -331,8 +341,8 @@
 						}else{
 							plus.nativeUI.closeWaiting();
 							switch(data.errmsg){//注册提示
-								case 'Already exists this account!':
-								mui.toast('此号码已经注册 ');
+								case 'Already exists this account or nickName!':
+								mui.toast('此号码或者昵称已经注册 ');
 								break;
 							}
 						}

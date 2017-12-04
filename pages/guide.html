@@ -276,14 +276,14 @@
 						if(index == picCache.length - 1) {
 							allstr += '<div class="mui-slider-item">' +
 								'<div class="item-logo" style="background-color: white">' +
-								'<img id="guide1" src="' + element.dataUrl + '"/>' +
+								'<img id="guide1" onclick="countClick('+element.id+')" src="' + element.dataUrl + '"/>' +
 								'<span id="jump">跳过<small></small></span></div>' +
 								'</div>';
 							return false;
 						} else {
 							allstr += '<div class="mui-slider-item">' +
 								'<div class="item-logo" style="background-color: white">' +
-								'<img id="guide1" src="' + element.dataUrl + '"/>' +
+								'<img id="guide1" onclick="countClick('+element.id+')" src="' + element.dataUrl + '"/>' +
 								'</div>' +
 								'</div>';
 						}
@@ -342,12 +342,13 @@
 						success: function(data) {
 							console.log('引导banner ',data)
 							var dataobj = JSON.parse(data.data.banner);
+							
 							//缓存处理
 							console.log("dataobj ",dataobj);
 							function picCacheFun(){
 
 								mui.each(dataobj,function (index,element) {
-
+									console.log('element222 ',element)
 									var  oCanvas = document.createElement('canvas'),
 						            oCtx = oCanvas.getContext("2d"),
 						            oImg = new Image();
@@ -364,15 +365,15 @@
 						                oCtx.drawImage(oImg, 0, 0);
 						                if(oImg.width>2000 || oImg.height>2000){
 						                    console.log('缓存引导 图片尺寸 load>2000');
-						                    picCache.push({sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
+						                    picCache.push({id:element.id,sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
                    							plus.storage.setItem("$picCache",JSON.stringify(picCache));
 						                }else if(oImg.width>300 || oImg.height>300){
 						                    console.log('缓存引导 图片尺寸 load>300');
-						                    picCache.push({sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
+						                    picCache.push({id:element.id,sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
                    							plus.storage.setItem("$picCache",JSON.stringify(picCache));
 						                }else{
 						                    console.log('缓存引导 图片尺寸 load>else');
-						                    picCache.push({sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
+						                    picCache.push({id:element.id,sort:element.sort,name:picNname,dataUrl:oCanvas.toDataURL("image/jpeg")});
                    							plus.storage.setItem("$picCache",JSON.stringify(picCache));
 						                }
 						            };
@@ -386,9 +387,52 @@
 								picCacheFun();
 							}
 							//缓存处理结束
-
+							var countClickStorage = [];
+							window.countClick = function(id){
+								if(id){
+									var oldToken = plus.storage.getItem('oldToken');
+									var cityNum = plus.storage.getItem('cityNum');
+									var	myuserid = plus.storage.getItem('userid');
+									mui.ajax(serverUrl+'/api/mall/clicks',{
+										data:{'adID':id,'clickstype':'广告','fromType':'APP','userid':myuserid},
+										dataType:'json',
+										type:'post',
+										timeout:8000,
+										headers:{"token":oldToken,"city":cityNum},
+										success:function(data,type,xhr){
+											console.log('广告点击'+JSON.stringify(data));
+											if(data.errno==0){
+												console.log('广告点击次数'+data.data)
+											}else{
+												mui.toast('当前网络不好，请重试');
+											}
+										},
+										error:function(xhr,type,errorThrown){
+											mui.toast('当前网络不好，请重试');
+											console.error('响应失败');
+										}
+									});
+								}
+								
+							}
 							console.log("缓存",plus.storage.getItem('$picCache'))
-
+							//数组去重
+							Array.prototype.unique1 = function() {
+								var res = [this[0]];
+								for(var i = 1; i < this.length; i++) {
+									var repeat = false;
+									for(var j = 0; j < res.length; j++) {
+										if(this[i] == res[j]) {
+											repeat = true;
+											break;
+										}
+									}
+									if(!repeat) {
+										res.push(this[i]);
+									}
+								}
+								return res;
+							}
 							//倒计时
 							var jumptime = data.data.Start_time;
 								if(!jumptime){
@@ -442,6 +486,7 @@
 				}
 				plus.navigator.closeSplashscreen();
 			});
+			
 		</script>
 	</body>
 
