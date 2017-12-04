@@ -1,0 +1,366 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>首页烦人的更多</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/index.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js" type="text/javascript" ></script>
+		<script src="../../js/artTemplate-native.js" type="text/javascript" ></script>
+		<style type="text/css">
+			.mui-bar-nav.mui-bar .mui-icon{margin-left: 0;}
+			/*这一页*/
+			.grade-eject, .Category-eject, .Sort-eject{
+				height: 120px;
+			}
+			div.screening>ul{padding: 2px 50px;}
+			div.screening>ul>li{
+				border-left: none!important;
+			}
+			div.screening>ul{
+				border-bottom:0.5px solid #eee; 
+			}
+			dl.list dt, dl.list dd,dl.list{
+				border-bottom: 0;
+				margin: 0 5px;
+				position: relative;
+			}
+			dl.list dt:not(:last-child):after, dl.list dd:not(:last-child):after,dl.list:not(:last-child):after{
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				display: block;
+				height: 1px;
+				background-color: rgba(0,0,0,0.1);
+				-webkit-transform: scaleY(0.5);
+			}
+			.dealcard .dealcard-block-right:after{
+				content: '';
+				position: absolute;
+				bottom: 0;
+				display: none;
+				height: 1px;
+				background-color: rgba(0,0,0,0.1);
+				-webkit-transform: scaleY(0.5);
+			}
+			.dealcard .title, .cinemacard .title{
+				color: #999;
+				font-size: 12px !important;
+			}
+			.dealcard .strong, .dealcard .strong{
+				color: #999;
+				font-size: 20px !important;
+				line-height: 30px;
+			}
+			.dealcard .title, .dealcard .price{
+				height: 30px;
+				margin: 5px 0;
+			}
+			.right{
+				text-align: right;
+			}
+			.middle{
+				text-align: center;
+			}
+			.strong-color{
+				color: #f53c42 !important;
+			}
+			.Lgray{
+				font-size: 12px !important;
+				color: #999 !important;
+				margin-top: 14px;
+			}
+			.mui-badge-blue, .mui-badge-primary{
+				background-color: #fff;
+				border: 1px solid #999;
+				color: #999 !important;
+			}
+			.dealcard .title span{
+				top: 0;
+				left: 0;
+				position: relative;
+			}
+			.bage{
+				width: 100%;
+			}
+			dl.list .dd-padding, dl.list dt, dl.list dd>.react {
+				padding: 10px;
+				margin: 10px 0;
+			}
+			.dealcard .dealcard-brand, .cinemacard .cinemacard-brand{
+				font-size: 16px;
+			}
+			.dealcard .dealcard-brand{
+				width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				display: block;
+			}
+			.dealcard .title span, .dealcard .price span {
+				font-size: .12rem;
+			}
+			.dealcard .dealcard-img{
+				width: 30%;
+				height: auto !important;
+				max-height: 106px !important;
+				margin-top: -10px;
+				border-radius: 0 !important;
+			}
+			.dealcard .dealcard-block-right {
+				padding-left: 10px;
+				float: right;
+				width: 70%;
+				max-height: 106px;
+				overflow: hidden;
+			}
+			.imgbox{
+				background-image: none;
+			}
+			.dealcard-img img {
+				max-width: 100%;
+				max-height: 106px;
+			}
+			.moreone{
+				line-height: 50px;
+			}
+			dl.list .db>.react{
+				padding: 0;
+				margin: 0;
+			}
+			dl.list .db{
+				height: 50px;
+			}
+			.grade-eject>ul>li, .Category-eject>ul>li, .Sort-eject>ul>li{
+				line-height: 40px;
+			}
+			.Regional{
+				background-image: none !important; 
+			}
+			/*#main{padding-top: 39px !important;}*/
+			.guess-like{padding-top: 0 !important;}
+			#screendiv{
+				position: fixed;left: 0;top: 50px;height: 400px;width: 100%;background-color: #fff;
+				z-index: 30;color: #555;overflow-y: scroll;padding-bottom: 50px;
+			}
+			.mui-bar{z-index: 40 !important;}
+			#Maskdiv{position: fixed;left: 0px;top: 50px;height: 100%;width: 100%;background-color: rgba(0,0,0,0.4);
+				z-index: 20;}
+			.badyhide{position: fixed;height: 100%;width:100%; top: 0;left: 0;overflow: hidden;}
+			.screenin{padding: 10px;}
+			.screenin h4{    font-size: 14px;
+			    padding-left: 3px;
+			    margin: 4px 1px;}
+			.screenla{display: inline-block;position: relative;margin: 5px 2px;}
+			.screenla label, .screenla span{
+			    display: inline-block;
+			    text-align: center;
+			    padding: 7px 10px;
+			    margin: 2px;
+			}
+			.screenla span{border: 1px solid #d2cece;
+			    border-radius: 3px;
+			    box-sizing: border-box;}
+			.screenla label{position: absolute; width: 100%;height: 100%;border: none;box-shadow: none;}
+			.screenla input{position: absolute; width: 0; height: 0;border: none;}
+			.screenla input:checked~span{
+				background-color: rgba(230, 31, 31, 0.82);
+				color: #fff;
+				border: 1px solid rgba(230, 31, 31, 0.82);
+			}
+			.screenin:after{
+				content: '';
+				display: block;
+				height: 1px;
+				background-color: #eee;
+				-webkit-transform: scaleY(.5);
+			}
+			.screenfoot{position:fixed;z-index:31;top: 406px;left: 0; width:100%;height: 45px;line-height: 45px;background-color: #eee;font-size: 14px;}
+			.screenfoot span{float: right;padding: 0 15px;}
+			#upload{min-height: 30px;line-height: 10px;}
+			#upload img{width: 40px;margin-top: -10px;padding: 4px !important;}
+			.goodsItem{background-color: #fff};
+			
+			/*新下拉框*/
+			.Sort-height{position: relative;background: none;top:98px!important;}
+			#Sort-Sort{position: absolute;margin-top:8px;height: auto;}
+			.grade-eject>ul>li, .Category-eject>ul>li, .Sort-eject>ul>li{border-bottom: none!important;position: relative;}
+			.grade-eject>ul>li:after, .Category-eject>ul>li:after, .Sort-eject>ul>li:after{content: '';
+				display: block;
+				height: 1px;
+				background-color: #eee;
+				-webkit-transform: scaleY(.5);right: 5px;}
+			div.screening>ul>li{
+				background: url(../../img/localLife/xiala.png) no-repeat 68% 43%;
+    			background-size: 12%;
+    			font-size: 14px;
+    			color: #666;
+			}
+			.borNone{border: none;}
+		</style>
+		<style type="text/css">
+            .special{padding: 15px 5px 15px 35%;padding-left: 32%;position: relative;background-color: #fff;overflow: hidden;min-height: 125px;}
+            .special p{font-size: 15px; color: #555; line-height: 1.3;}
+            .special p span{font-size: 12px;color: #ef2b2b;}
+            .special img{width: calc(100vw * 0.25);height: calc(100vw * 0.25);width: -webkit-calc(100vw * 0.25);height: -webkit-calc(100vw * 0.25);width: -moz-calc(100vw * 0.25);height: -moz-calc(100vw * 0.25);float: left;margin-left: -44%;border-radius: 2px;}
+            .S_bottom{position: absolute;left: 32%;bottom: 12px;width: 66%;} 
+            .S_bottom1{margin-bottom: 5px;} 
+            .S_bottom1 span{font-size: 17px; color: #ef2b2b;position: relative;top: 9px;left: -2px;font-weight: 800;letter-spacing: .5px;}
+            .S_bottom1 span b{font-size: 13px; color: #999;text-decoration: line-through;font-weight: 500;}
+            .S_bottom1 a{padding: 7px 9px;  color: #fff; font-size: 14px;background-color: #ef2b2b;float: right; border-radius: 2px;position: relative;top: -3px;margin-right: 3px;}
+            .S_bottom2 span{text-decoration: line-through;margin-left: 1px;}
+            .S_bottom2 span, .S_bottom2 a{font-size: 13px; color: #999;}
+            .S_bottom2 a{float: right;font-size: 12px;}
+            .schedule{display: inline-block;width: 74px;height:10px;float: right;border: 1px solid #f58e90;border-radius: 30px;position: relative;top: 1.5px; margin-left: 5px;}
+            .schedule div{background-color: #fda19f;height: 100%;border-top-left-radius: 3px;border-bottom-left-radius: 3px;}
+            div.screening>ul>li{width: 50%;}
+            .mui-bar-nav{box-shadow: none !important;}
+            div.screening{display:none}
+            .moreCon{padding: 20px;text-align: center;font-weight: 100!important;font-size: 14px;}
+       </style> 
+	</head> 
+	<body style="background-color: #fff !important;"> 
+        <header class="mui-bar mui-bar-nav fineB" id="header">
+            <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+            <h1 class="mui-title" id="headtitle">HI邀请有礼</h1>
+        </header>
+		
+		 
+	 	<div class="screening" id="screeningdiv" style="top: 50px;">
+		    <ul class="borNone fineB">
+		        <!--<li class="Brand">综合</li>-->
+		        <li class="Regional" id="Salesvolume" onclick="loadfun('sales','desc');">销量</li>
+		        <li class="Sort" id="goodsprice">价格  &nbsp;&nbsp;</li>
+		    </ul>
+		</div>
+		
+		<div class="Category-eject">
+		    <ul class="Category-w" id="Categorytw">
+		        <li id="Newping">新品</li>
+		        <li id="evaluate">评价</li>
+		    </ul>
+		</div>
+		<div class="Sort-eject Sort-height">
+		    <ul class="Sort-Sort" id="Sort-Sort">
+		        <li id="Hightolow" onclick="loadfun('price','desc');">从高到低</li>
+		        <li id="lowtoHigh" onclick="loadfun('price','asc');">从低到高</li>
+		    </ul>
+		</div>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		
+		 <div id="main"> 
+		 	<!--列表loading-->
+			<div id="loadingdiv" style="text-align: center;font-size: 14px;height:30px;background-color: #f2f1ee;
+				line-height: 30px;color: #666;-webkit-transition: all .3s;">  
+				<img style="width: 25px;margin-top: -3px;" src="../../img/loading2.svg"/> 拼命加载中...
+			</div>
+			<!--列表loading结束-->
+        </div>
+        <script type="text/html" id="manyTJJS">
+            <% for(var i=0;i<list.length;i++){%>
+                <div class="special clearfix fineB aClick" onclick="goInfoFun(<%=list[i].goods_id%>,<%=list[i].storeid%>)">
+                    <img data-src="<%=list[i].thumb%>" class="loadPics" src="../../img/Spinner.svg">
+                    <p class="overTwo">
+                        <%=list[i].title%>
+                    </p>
+                    <div style="color: #999;font-size: 14px;position: absolute;top:60px">
+                    	剩余<%= list[i].amount%> <%= list[i].unit%>
+                    </div>
+                    <div class="S_bottom"> 
+                        <div class="S_bottom1 clearfix">
+                            <span style="font-weight: 400;">￥<%=list[i].price%></span> 
+                            <span style="color: #999;font-size: 12px;font-weight:400;margin-left: 5px;text-decoration: line-through;">￥<%=list[i].originalprice%></span>
+                            <a>立即抢购</a>
+                        </div>
+                        
+                    </div>
+                </div>
+            <% }%>  
+        </script>
+        <div class="upload text-center text-xs gray" id="upload"></div>
+        <div id="nulldiv" style="text-align:center;margin-top: 40%;font-size: 14px;color: #999;display: none;">
+            <img style="width: 30%;margin-bottom: 5%; " src="../../img/unllfabu.svg"/>
+            <br />
+            没有相关信息
+        </div>
+		
+	</body>
+
+<script type="text/javascript">
+	//商品跳转详情
+	function goInfoFun(goodsId,storeId) {
+		if(storeId == 0) {
+			openview({
+				view: "yphDetail.html",
+				extrasobj: {
+					goodsId: goodsId
+				}
+			})
+		} else {
+			openview({
+				view: "mall-detail.html",
+				extrasobj: {
+					goodsId: goodsId
+				}
+			})
+		}
+
+	}
+	mui.plusReady(function() {
+    	var oldToken = plus.storage.getItem('oldToken'),
+	 		cityNum = plus.storage.getItem('cityNum'),
+	 		idNum = plus.webview.currentWebview().idNum,
+	 		idStr = plus.webview.currentWebview().idStr;
+	   
+			mui.ajax(serverUrl + '/api/mall/recommendingcourtesy', { 
+				dataType: 'json',
+				type: 'post',
+				timeout: 8000,
+				headers: {"token": oldToken,'city': cityNum},
+				success: function(data, type, xhr) {
+					console.error('hi专享', data);
+					if(data.errno == 0){
+						if(data.data.goodsList && data.data.goodsList.length){
+							var recommendObj = {}
+							recommendObj.list = data.data.goodsList;
+							for(var i=0;i<recommendObj.list.length;i++){
+								if(!recommendObj.list[i].thumb.indexOf('http')<0){
+									recommendObj.list[i].thumb = serverimgUrl + recommendObj.list[i].thumb;
+								}
+							}
+							mui('#main')[0].innerHTML = template("manyTJJS", recommendObj);
+							lazyLoad(false);//懒加载
+						}else{
+							mui('#main')[0].innerHTML = '<div class="moreCon aClick">没有信息</div>';
+						}
+					}else{
+						mui('#main')[0].innerHTML = '<div class="moreCon aClick">没有信息</div>';
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui('#loadingdiv')[0].innerHTML = '<div class="moreCon aClick">没有信息</div>';
+					console.error('烦人的商品推荐榜,响应失败');
+				}
+			}); 
+    })
+
+	
+	
+	
+	
+        
+</script>
+
+</html>

@@ -1,9 +1,9 @@
 
 //var serverUrl='http://abcd.zlzmm.com:7200';
-//var serverUrl='http://api.zlzmm.com';
+var serverUrl='http://api.zlzmm.com';
 
 //var serverUrl='http://hijiv2.zlzmm.com';
-var serverUrl='http://192.168.199.191:7200';
+//var serverUrl='http://192.168.199.191:7200';
 //var serverUrl='http://192.168.0.12:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
@@ -27,7 +27,11 @@ function alertY(content){ //向前的方法
 }
 
 //banner跳转
-window.bannerGo = function(url, name, route) {
+window.bannerGo = function(id,url, name, route) {
+	//点击量统计
+	if(id){
+		countClick(id);
+	}
 	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
 		if(route == 'one'){//层级
 			var bannerTplHtml = 'bannerTpl.html';
@@ -104,6 +108,32 @@ window.bannerGo = function(url, name, route) {
 
 	}
 
+}
+function countClick(bnid){
+	mui.plusReady(function(){
+		var oldToken = plus.storage.getItem('oldToken');
+		var cityNum = plus.storage.getItem('cityNum');
+		var	myuserid = plus.storage.getItem('userid');
+		mui.ajax(serverUrl+'/api/mall/clicks',{
+			data:{'adID':bnid,'clickstype':'banner','fromType':'APP','userid':myuserid},
+			dataType:'json',
+			type:'post',
+			timeout:8000,
+			headers:{"token":oldToken,"city":cityNum},
+			success:function(data,type,xhr){
+				console.log('banner点击'+JSON.stringify(data));
+				if(data.errno==0){
+					console.log('点击次数'+data.data)
+				}else{
+					mui.toast('当前网络不好，请重试');
+				}
+			},
+			error:function(xhr,type,errorThrown){
+				mui.toast('当前网络不好，请重试');
+				console.error('响应失败');
+			}
+		});
+	})
 }
 //懒加载方法
 window.lazyLoad = function(init,limit){

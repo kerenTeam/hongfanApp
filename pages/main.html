@@ -160,11 +160,11 @@
 						<!--支持循环，需要重复图片节点-->
 						<div class="mui-slider-item mui-slider-item-duplicate">
 							<% if(bannerList[bannerList.length-1].url==null || bannerList[bannerList.length-1].url=='') { %>
-								<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
+								<a onclick="bannerGo('<%=bannerList[bannerList.length-1].id%>','<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
 									<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 								</a>
 							<% }else{ %>
-								<a onclick="bannerGo('<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
+								<a onclick="bannerGo('<%=bannerList[bannerList.length-1].id%>','<%=bannerList[bannerList.length-1].url%>','<%=bannerList[bannerList.length-1].name%>','one')">
 									<img src="<%= url %><%= bannerList[bannerList.length-1].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 								</a>
 							<% } %>
@@ -172,11 +172,11 @@
 						<% for(var i=0;i<bannerList.length;i++){ %>
 						<div class="mui-slider-item">
 							<% if(bannerList[i].url==null || bannerList[i].url=='') { %>
-								<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
+								<a onclick="bannerGo('<%=bannerList[i].id%>','<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
 									<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 								</a>
 							<% }else{ %>
-								<a onclick="bannerGo('<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
+								<a onclick="bannerGo('<%=bannerList[i].id%>','<%=bannerList[i].url%>','<%=bannerList[i].name%>','one')">
 									<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 								</a>
 							<% } %>
@@ -187,7 +187,7 @@
 							<% if(bannerList[0].url==null || bannerList[0].url=='') { %>
 								<img src="<%= url %><%= bannerList[i].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 							<% }else{ %>
-								<a onclick="bannerGo('<%=bannerList[0].url%>','<%=bannerList[0].name%>','one')">
+								<a onclick="bannerGo('<%=bannerList[0].id%>','<%=bannerList[0].url%>','<%=bannerList[0].name%>','one')">
 									<img src="<%= url %><%= bannerList[0].bannerPic %>" onerror="javascript:this.src='../img/market/nodata.svg';" />
 								</a>
 							<% } %>
@@ -332,7 +332,7 @@
 		</script>
 		
 		<img id='hbrain' src="../img/center/bgs.png" style="position: fixed;right: 0px;bottom: 20px;width: 80px;z-index: 999999;display: none;"/>
-
+		
 		<!--HI抢购     1     推荐列表-->
 		<div class="sy_recmd">
  			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hicheng.png"/> <span></span> 抢购</h3>
@@ -345,7 +345,47 @@
 				<div class="clear"></div>
 			</div>
 		</div>
+		<!--HI专享     1-2    推荐列表-->
+		<div class="sy_recmd" id="onlySpecial" style="display: none;">
+ 			<h3 class="partTitle fanrenMore specialMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hired.png"/> <span></span> 邀请有礼</h3>
+			<div class="sy_recmd_list_box">
+				<ul>
+				<div class="onlySpecial">
 
+				</div>
+				</ul>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<script type="text/html" id="specialTpl">
+			<%for(var i=0;i< list.length;i++){%>
+				<li class="sy_recmd_list" onclick="goInfo(<%=list[i].goods_id%>,<%=list[i].storeid%>)">
+					<div class="box" style="margin-bottom: 5px;">
+						<div class="pub_img">
+							<a class="rcdPadding" >
+								<img onload="imgHeight(this)" data-src="<%=list[i].thumb%>" src="" width="145" height="145" class="hotImg loadPics picOp">
+							</a>
+						</div>
+						<div class="pub_wz">
+							<h3 class="overflow_clear"><a><%=list[i].title%></a></h3>
+							<div class="nr_box mui-row">
+								<div class="mui-col-sm-5 mui-col-xs-5 ">
+									<p class="fl fontcl2">￥<%=list[i].price%><small style="font-size: 0.12rem;color: gray;text-decoration: line-through;white-space: nowrap;margin-left: 5px;">原价￥ <%=list[i].originalprice%> </small>
+									</p>
+								</div>
+								<div class="mui-col-sm-7 mui-col-xs-7 saled">
+								<p></p>
+								</div>
+							</div>
+							<div class="hiLimit">
+								<span>限时抢购</span>
+								<img src="../img/mainHtml/addCart.png" alt="" />
+							</div>
+						</div>
+					</div>
+				</li>
+			<%}%>
+		</script>
 		<!--HI货榜     2     推荐列表-->
 		<div class="sy_recmd">
  			<h3 class="partTitle fanrenMore" style="margin-top: 8px;"> <img src="../img/mainHtml/hiblue.png"/> <span></span> 货榜</h3>
@@ -1071,14 +1111,23 @@
 					/*打开更多*/
 					[].forEach.call(mui('.fanrenMore'),function(ele,index){
 						ele.onclick = function(){
-							openview({
-								view:'market/fanrenMore.html',
-								id:'fanrenMore',
-								extrasobj:{
-									idNum:index+1,
-									idStr:'HI'+ele.innerText
-								}
-							})
+							var cur = $(ele)
+							if(cur.hasClass('specialMore')){
+								openview({
+									view:'market/specialMore.html',
+									id:'specialMore'
+								})
+							}else{
+								openview({
+									view:'market/fanrenMore.html',
+									id:'fanrenMore',
+									extrasobj:{
+										idNum:index+1,
+										idStr:'HI'+ele.innerText
+									}
+								})
+							}
+							
 						}
 					})
 					function manyTJFun(index){
@@ -1118,7 +1167,48 @@
 						});
 					}
 					/*很烦的多模块推荐结束*/
-
+					
+					/*hi专享*/
+					mui.ajax(serverUrl + '/api/mall/recommendingcourtesy', { 
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							"token": oldToken,
+							'city':cityNum
+						},
+						success: function(data) {
+							console.log('hi专享',data)
+							if(data.errno == 0){
+								if(data.data.isShow){
+									$('#onlySpecial').show();
+									if(data.data.goodsList && data.data.goodsList.length){
+										var recommendObj = {}; 
+										recommendObj.list = data.data.goodsList;
+										if(recommendObj.list.length > 4){recommendObj.list.length = 4}
+										for(var i=0;i<recommendObj.list.length;i++){
+	
+											if(!recommendObj.list[i].thumb.indexOf('http')<0){
+												recommendObj.list[i].thumb = serverimgUrl + recommendObj.list[i].thumb;
+											}
+										}
+										mui('.onlySpecial')[0].innerHTML = template("specialTpl", recommendObj);
+										lazyLoad(false);//懒加载
+									}else{
+										mui('.onlySpecial')[0].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+									}
+								}else{
+									$('#onlySpecial').hide()
+								}
+								
+							}else{
+								mui('.onlySpecial')[0].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
+							} 
+						},
+						error: function(xhr, type, errorThrown) { 
+							mui.toast("当前网络不好请重试"); 
+						}
+					});
 					//热门推荐 数据渲染
 					var currentPage = 1,
 						numsPerPage = 6;
