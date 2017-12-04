@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>邀请好友</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/config.css"/>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
+
+	</head>
+	<style type="text/css">
+		.follow{position:relative;}
+		.follow{background-color:#fff;padding:15px 10px;}
+		.follow:after{position:absolute;right:10px;bottom:0;left:10px;height:1px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
+		.fchidl{display:flex;align-items:center;justify-content:space-between;}
+		.userAvator{margin-right:15px;width:3rem;height:3rem;border-radius:50%;}
+		.fchidl>div{display:flex;vertical-align:middle;text-align:left;font-size:15px;align-items:center;}
+		.text{color:#999;}
+		.diybtn{background: url(../../img/makeFriend/follow.png) no-repeat;background-size: 100% 100%;background-position: left top;color: white;padding: 4px 0px;width: 75px;text-align: center;}
+  		.diybtn2{background: url(../../img/makeFriend/unfollw.png) no-repeat;background-size: 100% 100%;background-position: left top;color: #31c58b;padding: 4px 0px;width: 75px;text-align: center;}
+		.yhm{width:calc((100vw - 50px)/3);width:-webkit-calc((100vw - 50px)/3);width:-moz-calc((100vw - 50px)/3);height: calc((100vw - 20px)/3);height: -webkit-calc((100vw - 20px)/3);height: -moz-calc((100vw - 20px)/3);margin-left: 5px;margin-top:10px ;}
+		#yaoqingma11{text-align: center;color: #777;padding: 15px;font-size: 18px;background-color: rgb(243, 243, 243);}
+		#likeMe .h301{font-size: 16px;padding: 10px 10px;}
+	</style>
+
+	<body style="background-color: #fff;">
+
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize back"></a>
+			<h1 class="mui-title findUser">邀请好友</h1>
+			<a href="javascript:;" style="line-height: 50px;" id="addCircle" class="mui-pull-right baocun ft14">立即邀请</a>
+		</header>
+		<script src="../../js/statusBar.js"></script><!--状态栏-->
+		<div id="main">
+			<div id="yaoqingma11">
+				你的邀请码：----
+			</div>
+			 <div id="likeMe">
+
+			 </div>
+			 <script type="text/html" id="likeMeTpl">
+				<h3 class="h301 fineB">邀请记录</h3>
+			 	<div class="listCon">
+			 		<%for(var i = 0;i<list.length;i++){%>
+			 			<%if(list[i].userid && list[i].userid!=null){%>
+			 				<div class="follow">
+								<div class="fchidl">
+									<div>
+										<%if(list[i].avatar){%>
+											<img src="<%= list[i].avatar%>" class="userAvator mr25"/>
+											<%}else{%>
+												<img src="../../img/10.png" class="userAvator mr25"/>
+											<%}%>
+
+										<div>
+											<%= list[i].nickname%>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+						<%}%>
+					<%}%>
+
+				</div>
+
+
+			 </script>
+
+		</div>
+	</body>
+
+	<script type="text/javascript">
+// 		var old_back = mui.back;
+//		mui.back = function(){
+//			var parentPage =plus.webview.getWebviewById('mycircleIndex');
+//			mui.fire(parentPage,'refreshf');
+//			old_back();
+//		};
+ 		function goOtherIndex(id){
+ 			openview({
+		    		view:'elsecircleIndex.html',
+		    		id:'elsecircleIndex',
+		    		extrasobj:{userId:id}
+		    	})
+ 		}
+ 		goCouponFun();
+ 		mui('#addCircle')[0].onclick = function(){
+ 			goCouponFun();
+ 		}
+ 		function goCouponFun(){
+			mui.plusReady(function(){
+				var oldToken = plus.storage.getItem('oldToken');
+				var myuserid = plus.storage.getItem('userid');
+				var cityNum = plus.storage.getItem('cityNum');
+				var invitationCode = JSON.parse(plus.storage.getItem('Acc_pass'))[0];//手机号
+				var thumbs = '../img/logomifeng.png';
+				var msg = {
+					title:'快来下载HI集吧，优惠、好礼等着你！',
+					content:'快来下载HI集吧，优惠、好礼等着你！',
+					href:fxUrl+'login.html?code='+invitationCode,
+					thumbs:[thumbs],
+					pictures:[thumbs]
+				};
+				showSfun1(msg);
+			});
+		}
+
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
+			var cityNum = plus.storage.getItem('cityNum');
+			var	myuserid = plus.storage.getItem('userid');
+			var	ownPhone = JSON.parse(plus.storage.getItem('Acc_pass'))[0];
+			mui('#yaoqingma11')[0].innerHTML = '你的邀请码：'+ownPhone;
+			mui.ajax(serverUrl+'/api/index/inviteelist',{
+				data:{"userId":myuserid,'userPhone':ownPhone},
+				type:'post',
+				timeout:8000,
+				headers:{"token":oldToken,"city":cityNum},
+				success:function(data,type,xhr){
+					console.log('获取数据返回',data);
+					if(data.errno == 0){
+						if(data.data && data.data.length){
+							for(var i = 0 ;i<data.data.length;i++){
+								if(!data.data[i].nickname){
+									data.data[i].nickname = '匿名'
+								}else{
+									if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)){
+										data.data[i].nickname = data.data[i].nickname.substring(0,3)+"****"+data.data[i].nickname.substring(7,11);
+									}
+								}
+								if(data.data[i].avatar && data.data[i].avatar!='null'){
+									if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http')== -1){
+										data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+									}else{
+										data.data[i].avatar = JSON.parse(data.data[i].avatar)[0].picImg;
+									}
+								}else{
+									data.data[i].avatar = '../../img/10.png'
+								}
+
+							}
+							document.getElementById('likeMe').innerHTML = template('likeMeTpl', {list:data.data,url:serverimgUrl});
+
+						}else{
+							document.getElementById('likeMe').innerHTML = "<div style='text-align: center;padding: 30px;color:#666;font-size: 14px;'>没有被邀请的人</div>";
+						}
+					}else{
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取数据,响应失败');
+				}
+			});
+
+		})
+
+
+	</script>
+
+</html>
