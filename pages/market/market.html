@@ -685,15 +685,18 @@
 								var dateObj={};
 								if(data.data && data.data.length){
 									for(var i = 0;i < data.data.length;i++){
-										if(data.data[i].myCouponCounts && data.data[i].myCouponCounts.standardTime){
-											var startTime = new Date(data.data[i].myCouponCounts.standardTime).getTime();
-										    var endTime = new Date().getTime();
-										    var dates = Math.abs((startTime - endTime))/(1000*60*60*24);
-										  	if((data.data[i].frequency || data.data[i].frequency == 0) && dates < data.data[i].frequency){
-										  		data.data[i].cantBuy = 1;
-										  	}
+										if(data.data[i]. receiveNum != 1){
+											data.data[i].cantBuy = 0;
+										}else{
+											if(data.data[i].myCouponCounts && data.data[i].myCouponCounts.standardTime){
+												var startTime = new Date(data.data[i].myCouponCounts.standardTime).getTime();
+											    var endTime = new Date().getTime();
+											    var dates = Math.abs((startTime - endTime))/(1000*60*60*24);
+											  	if((data.data[i].frequency > 0 && dates < data.data[i].frequency) ||  data.data[i].frequency == 0){
+											  		data.data[i].cantBuy = 1;
+											  	}
+											}
 										}
-
 										if(data.data[i].receive_limit){
 											data.data[i].receive_limit = parseInt(data.data[i].receive_limit)
 										}
