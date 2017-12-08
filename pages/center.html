@@ -260,48 +260,40 @@
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			//推送
 			document.addEventListener( "plusready", function(){
-				function createLocalPushMsg(){
-				    var options = {cover:false};
-				    var str = '';
-				    str += ": 欢迎使用Html5 Plus创建本地消息！";
-				    plus.push.createMessage( str, "LocalMSG", options );
+//				function createLocalPushMsg(){
+//				    plus.push.createMessage( "欢迎使用Plus创建本地消息！", "LocalMSG", {cover:false} );
+//				    if(plus.os.name=="iOS"){
+//				        console.error('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
+//			    		}
+//				}
+    				//createLocalPushMsg();
 
-
-				    if(plus.os.name=="iOS"){
-				        outLine('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
-			    		}
-				}
-//			    createLocalPushMsg();
-//			    message = document.getElementById("message");
 			    // 监听点击消息事件
-			    plus.push.addEventListener( "click", function( msg ) {
-			        // 判断是从本地创建还是离线推送的消息
-			        switch( msg.payload ) {
-			            case "LocalMSG":
-			                alert( "点击本地创建消息启动：" );
-			            break;
-			            default:
-			                alert( "点击离线推送消息启动：");
-			            break;
-			        }
-			        // 提示点击的内容
-			        plus.ui.alert( msg.content );
-			        // 处理其它数据
-			        //logoutPushMsg( msg );
-			    }, false );
+//			    plus.push.addEventListener( "click", function( msg ) {
+//			    		console.log('监听click消息' + JSON.stringify(msg));
+//			        switch( msg.payload ) {
+//			            case "LocalMSG":
+//			                alert( "点击本地创建消息启动" );
+//			            break;
+//			            default:
+//			                alert( "点击离线推送消息启动");
+//			            break;
+//			        }
+//			    }, false );
+
 			    // 监听在线消息事件
-			    plus.push.addEventListener( "receive", function( msg ) {
-			    		alert(1);
-			    		console.error('正在接收推送消息');
-			        if ( msg.aps ) {  // Apple APNS message
-			            alert( "接收到在线APNS消息：" );
-			        } else {
-			            alert( "接收到在线透传消息：" );
-			        }
-			        //logoutPushMsg( msg );
-			    }, false );
+//			    plus.push.addEventListener( "receive", function( msg ) {
+//			    		console.log('监听receive消息' + JSON.stringify(msg));
+//			        if ( msg.aps ) {  // Apple APNS message
+//			            alert( "接收到在线APNS消息：" );
+//			        } else {
+//			            alert( "接收到在线透传消息：" );
+//			        }
+//			    }, false );
 			}, false );
+
 		</script>
 		<script type="text/javascript">
 			//分类订单
@@ -424,29 +416,66 @@
 										mui('.yaoqingmaBtn')[0].onclick = function(){
 											if(plus.storage.getItem('myToken')){
 												var oldToken = plus.storage.getItem('oldToken');
+												var ownPhone = JSON.parse(plus.storage.getItem('Acc_pass'))[0];
+												var cityNum = plus.storage.getItem('cityNum');
 												mui.prompt('null','请输入邀请码','邀请码',['确认','取消'],function(e) {
 													if(e.index == 0) {
 														if(e.value && e.value!=' '){
 															var commont = e.value;
 															var imei = plus.device.uuid;
-											    			mui.ajax(serverUrl + '/api/index/sharecoupon', {
-											    				data:{'userid':myuserid,'invitationCode':commont,macId:imei},
-																dataType: 'json',
-																type: 'post',
-																timeout: 10000,
-																headers: {"token": oldToken,'city': cityNum},
-																success: function(data, type, xhr) {
-																	console.log('邀请码'+JSON.stringify(data));
-																	if(data.errno == 0){
-																		alert('操作成功');
-																	}else{
-																		alert(data.errmsg);
+															var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/;//手机号正则
+															if(reg_phone.test(commont)){
+																//邀请好友 分享码输入功能（判断标准：为手机号码）
+																mui.ajax(serverUrl+'/api/index/sharegetcoupon',{
+																	data:{
+																		"userId":myuserid,
+																		'invitationCode':commont,//(别人的手机号)
+																		'fromType':1,
+																		'phone':ownPhone,//(自己的手机号)
+																		'isAddUser':1
+																	},
+																	dataType:'json',
+																	type:'post',
+																	timeout:10000,
+																	headers: {"token": oldToken,'city': cityNum},
+																	success:function(data,type,xhr){
+																		console.log('分享获劵',data);
+																		if(data.errno == 0){
+																			alert(data.errmsg || '操作成功');
+																		}else{
+																			alert(data.errmsg);
+																		}
+																	},
+																	error:function(xhr,type,errorThrown){
+																		console.error('分享获劵  ---- 失败');
 																	}
-																},
-																error: function(xhr, type, errorThrown) {
-																	console.log('邀请码,响应失败');
-																}
-															});
+																});
+															}else{
+																//老的邀请码
+												    				mui.ajax(serverUrl + '/api/index/sharecoupon', {
+												    					data:{'userid':myuserid,'invitationCode':commont,macId:imei},
+																	dataType: 'json',
+																	type: 'post',
+																	timeout: 10000,
+																	headers: {"token": oldToken,'city': cityNum},
+																	success: function(data, type, xhr) {
+																		console.log('邀请码'+JSON.stringify(data));
+																		if(data.errno == 0){
+																			alert('操作成功');
+																		}else{
+																			alert(data.errmsg);
+																		}
+																	},
+																	error: function(xhr, type, errorThrown) {
+																		console.log('邀请码,响应失败');
+																	}
+																});
+															}
+
+
+
+
+
 														}else{
 															mui.toast('留言失败')
 														}
@@ -603,6 +632,15 @@
 							openview({
 								view:'personal/myAwards.html',
 								id:"myAwards",
+							});
+						}
+					})
+					//邀请码判断登录
+					mui('.yaoqingmaBtn')[0].addEventListener('tap',function(){
+						if(!plus.storage.getItem('myToken')){
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
 							});
 						}
 					})

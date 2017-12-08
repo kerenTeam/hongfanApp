@@ -69,7 +69,6 @@ function checkUpdate(hide,ios){
             		plus.nativeUI.closeWaiting();
                 !hide && plus.nativeUI.alert("当前版本为最新版本！");
             }
-
 		},
 		error:function(xhr,type,errorThrown){
 			console.error('操作响应失败');
@@ -80,8 +79,12 @@ function checkUpdate(hide,ios){
 
 function downWgt(hide,downurl,ios){
 	!hide && plus.nativeUI.showWaiting('正在下载...',{width:'130px',height:'110px'});
-    console.log('下载地址'+ propUrl+"/"+downurl);
-    plus.downloader.createDownload(propUrl+"/"+downurl, {filename:"_doc/update/"}, function(d,status){
+    console.log('下载地址全'+ propUrl+"/"+downurl);
+    console.log('下载地址半' +downurl);
+    if(downurl.indexOf('http') == -1){
+    		downurl = propUrl+"/"+downurl;
+    }
+    plus.downloader.createDownload(downurl, {filename:"_doc/update/"}, function(d,status){
     		console.log('下载状态',status);
         if ( status == 200 ) {
             console.log("下载wgt成功："+d.filename);

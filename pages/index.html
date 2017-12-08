@@ -92,6 +92,7 @@
 				}
 			    //版本控制结束
 			    function friendOpen(){
+
 			    		if(/android/i.test(navigator.userAgent)){
 			    			doGame();//转盘抽奖
 			    			mui('#circle')[0].style.display = '';
@@ -167,7 +168,7 @@
 				if(cityNum == null){plus.storage.setItem("cityNum",'4');}
 			   	document.addEventListener('switchCity', function(obj) {
 					geoInf({'address':{'city':obj.detail.name}},true);
-					
+
 				})
 
 			   	function distance(lat,lng,goalLat,goalLng){  //经度:lng,106.844003
@@ -283,18 +284,21 @@
 				function switchFun(city,num,Manual){
 					if(Manual){//手动
 						plus.storage.setItem("cityNum",num);
-		            	Preloading();
-		            	mui.toast('切换成功');
+		            		Preloading();//重新载入底部webview
+		            		mui.toast('切换成功');
 					}else{//自动
 						mui.confirm('您离'+city+'最近,是否切换至'+city+'市 !', '提示', ['取消', '确定'], function(e) {
 				            if (e.index == 1) {
-				            	plus.storage.setItem("cityNum",num);
-				            	Preloading();
-				            	mui.toast('切换成功');
+					            	plus.storage.setItem("cityNum",num);
+					            	Preloading();
+					            	mui.toast('切换成功');
 				            }
 				        })
 					}
-					friendOpen();
+					clearInterval(friendOpenTime);
+					var friendOpenTime = setTimeout(function(){
+						friendOpen();
+					},1000)
 				}
 				function getGeocode() {/*定位取经纬度*/
 					plus.geolocation.getCurrentPosition(geoInf, function(e) {
