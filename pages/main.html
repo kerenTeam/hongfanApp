@@ -89,7 +89,7 @@
 
 		.maskInfo{position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
 		.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:15%;left:7%;width:86%;bottom:15%;padding:15px 5px;border-radius:3px}
-		.closeMs{position: absolute;top:16%;width: 20px;height: 20px;right: 9%;background: red;z-index: 99999;}
+		.closeMs{position: absolute;top:16%;width: 20px;height: 20px;right: 9%;z-index: 99999;}
 		.closemask{position:absolute;bottom:10px;left:50%;-webkit-transform:translateX(-50%)}
 		.ruleol{padding: 0 15px 0 15px;}
 		</style>
@@ -612,13 +612,20 @@
 					id:"answerIndex",
 				});
 			}
-			function goCoupon(){/*优惠券*/
+			function goCoupon(){
 				event.stopPropagation();
-				$('#maskInfo1').fadeOut(200);
-				openview({
-					view:'market/BuyOffer.html',
-					id:"BuyOffer",
-				});
+				if(plus.storage.getItem('myToken')){
+					$('#maskInfo1').fadeOut(200);
+					openview({
+						view:'socialCircle/circlePublish.html',
+						id:"circlePublish",
+					});
+				}else{
+					mui.toast('请登录');
+					openview({
+						view:'login.html'
+					});
+				} 
 			}
 			document.addEventListener('openf', function() {
 				mui('.hiFriend')[0].style.display = '';
