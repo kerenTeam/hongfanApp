@@ -158,7 +158,7 @@
 			}
 			
 			.hidestep {
-				display: none;
+				/*display: none;*/
 			}
 		</style>
 	</head>
@@ -233,7 +233,17 @@
 				</ul>
 			</div>
 		</div>
-
+		<!--遮罩1-->
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
+		<script type="text/html" id="maskTpl">
+			
+			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
+			<%if(popdata.modelContent){%>
+			<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','second')"/>
+			<%}%> 
+			</div>
+		</script>
 	</body>
 	<script src="../../js/mui.min.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -263,7 +273,46 @@
 			if(lateststep != 7){
 				stepConfirm(eval(latest))
 			}
-			
+			var version = plus.storage.getItem('version');
+			var platform  = plus.storage.getItem('platform');
+			/*弹框*/
+			mui.ajax(serverUrl + '/api/index/showmodal', {
+				data:{version:version,platform:platform},
+	            type: 'post',
+	            timeout: 10000,
+	            headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+	            success: function(data, type, xhr) {
+	               	plus.nativeUI.closeWaiting();
+	            		console.log('弹窗',data)
+	            		if(data.errno == 0){
+	            			if(data.data && data.data.length){
+	            				mui.each(data.data,function(index,item){
+	                				if(item.typeName == 'saveProfile'){
+	                					if(item.modelState == 1){ 
+	                        			 	$('#maskInfo1').show();
+	                        			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
+	                        			 	$('#maskInfo1').click(function(){
+											event.preventDefault()
+											$('#maskInfo1').fadeOut(200);
+										})
+										$('.closeMs').click(function(){
+											event.stopPropagation();
+											$(this).parent().fadeOut(200);
+										}) 
+	                        			}else{ 
+	                        			 	$('#maskInfo1').hide()
+	                        			}
+	                				}
+	                    		})
+	            			}
+	            		}
+	            },
+	            error: function(xhr, type, errorThrown) {
+	            		console.log('弹窗',type)
+	                console.log('响应失败');
+	               	plus.nativeUI.closeWaiting();
+	            }
+	        });
 			//显示既有信息
 			mui.ajax(serverUrl + '/api/friends/friendhome/userId/' + myuserid, {
 				type: 'get',
@@ -275,8 +324,8 @@
 				success: function(data, type, xhr) {
 					console.log('交友编辑资料 显示既有信息', data);
 					if(data.errno == 0) {
-						if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.username)) {
-							data.data.username = data.data.username.substring(0, 3) + "****" + data.data.username.substring(7, 11)
+						if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data.nickname)) {
+							data.data.nickname = data.data.nickname.substring(0, 3) + "****" + data.data.nickname.substring(7, 11)
 						}
 
 						if(data.data.bgImg && JSON.parse(data.data.bgImg).length > 0) {
@@ -293,9 +342,9 @@
 						if(data.data.horoscope && data.data.horoscope != 'null') {
 							$('#horoscope').val(data.data.horoscope)
 						}
-						//						显示昵称
-						if(data.data.username && data.data.username != ' ') {
-							$('#nkname').val(data.data.username)
+						//显示昵称
+						if(data.data.nickname && data.data.nickname != ' ') {
+							$('#nkname').val(data.data.nickname)
 						}
 						//显示性别
 						switch(data.data.gender) { //Nextbtn
@@ -543,47 +592,47 @@
 				var oldToken = plus.storage.getItem('oldToken'),
 					cityNum = plus.storage.getItem('cityNum'),
 					myuserid = plus.storage.getItem('userid');
-				/*弹框*/
-				mui.ajax(serverUrl + '/api/index/showmodal', {
-					type: 'post',
-					timeout: 10000,
-					headers: {
-						"token": plus.storage.getItem('oldToken'),
-						'city': plus.storage.getItem('cityNum')
-					},
-					success: function(data, type, xhr) {
-						plus.nativeUI.closeWaiting();
-						console.log('弹窗', data)
-						if(data.errno == 0) {
-							if(data.data.saveProfile && data.data.saveProfile.length) {
-								//	                				mui.each(data.data.saveProfile,function(index,item){
-								if(data.data.saveProfile[0] == 1) {
-									plus.storage.setItem('open','1')
-									if(lateststep == 7) {
-										var btn = ['完成'];
-										plus.storage.setItem('tipEnd','1');
-									} else {
-										var btn = ['开始', '取消']
-									}
-									mui.confirm(title, '任务提示', btn, function(e) {
-
-									}, '')
-								} else {
-									plus.storage.removeItem('open')
-									
-									$('li.clearfloat').removeClass('hidestep')
-
-								}
-								//                          		})
-							}
-						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log('首页弹窗', type)
-						console.log('响应失败');
-						plus.nativeUI.closeWaiting();
-					}
-				});
+//				/*弹框*/
+//				mui.ajax(serverUrl + '/api/index/showmodal', {
+//					type: 'post',
+//					timeout: 10000,
+//					headers: {
+//						"token": plus.storage.getItem('oldToken'),
+//						'city': plus.storage.getItem('cityNum')
+//					},
+//					success: function(data, type, xhr) {
+//						plus.nativeUI.closeWaiting();
+//						console.log('弹窗', data)
+//						if(data.errno == 0) {
+//							if(data.data.saveProfile && data.data.saveProfile.length) {
+//								//	                				mui.each(data.data.saveProfile,function(index,item){
+//								if(data.data.saveProfile[0] == 1) {
+//									plus.storage.setItem('open','1')
+//									if(lateststep == 7) {
+//										var btn = ['完成'];
+//										plus.storage.setItem('tipEnd','1');
+//									} else {
+//										var btn = ['开始', '取消']
+//									}
+//									mui.confirm(title, '任务提示', btn, function(e) {
+//
+//									}, '')
+//								} else {
+//									plus.storage.removeItem('open')
+//									
+//									$('li.clearfloat').removeClass('hidestep')
+//
+//								}
+//								//                          		})
+//							}
+//						}
+//					},
+//					error: function(xhr, type, errorThrown) {
+//						console.log('首页弹窗', type)
+//						console.log('响应失败');
+//						plus.nativeUI.closeWaiting();
+//					}
+//				});
 
 			}
 
@@ -640,6 +689,10 @@
 										plus.storage.setItem('$steptit', 'title' + lateststep);
 										$('li.clearfloat').eq(curli).removeClass('hidestep')
 										plus.nativeUI.closeWaiting(); //关闭等待框
+										
+										mui.toast('修改成功');
+										plus.webview.currentWebview().close();
+										
 									
 										if(!plus.storage.getItem('tipEnd')){
 											if(plus.storage.getItem('open') == 1){

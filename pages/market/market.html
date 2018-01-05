@@ -425,48 +425,18 @@
 				</div>
 			</div>
 		<!--优惠内容结束-->
+		
 		<!--遮罩1-->
-		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;">
-			<img src="../../img/chahao.png" class="closeMs"/>
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
+		<script type="text/html" id="maskTpl">
+			
+			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
-				<img src="../../img/mainHtml/mask5.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCoupon()'/>
-				<!--<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗1</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>-->
-
+			<%if(popdata.modelContent){%>
+			<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','second')"/>
+			<%}%> 
 			</div>
-		</div>
-		<!--遮罩2-->
-
-		<div id="maskInfo2" class="maskInfo" style="display: none;z-index:9998;">
-			<img src="../../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗2</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
-			</div>
-		</div>
-		<!--遮罩3-->
-
-		<div id="maskInfo3" class="maskInfo" style="display: none;z-index:9997;">
-			<img src="../../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗3</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
-			</div>
-		</div>
+		</script>
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
 	<script type="text/javascript" src="../../js/artTemplate-native.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
@@ -507,34 +477,11 @@
 			$('.ruleCt').click(function(){
 				event.stopPropagation()
 			})
-			$('#maskInfo1').click(function(){
-				event.preventDefault()
-				$('#maskInfo1').fadeOut(200);
-			})
-			$('#maskInfo2').click(function(){
-				event.preventDefault()
-				$('#maskInfo2').fadeOut(200);
-			})
-			$('#maskInfo3').click(function(){
-				event.preventDefault()
-				$('#maskInfo3').fadeOut(200);
-			})
-			$('.closeMs').click(function(){
-				event.stopPropagation();
-				$(this).parent().fadeOut(200);
-			})
+			
 			$('.ccqq').click(function(){
 				mui.alert('即将开放，敬请期待')
 			})
 		})();
-		function goCoupon(){/*优惠券*/
-			event.stopPropagation();
-			$('#maskInfo1').fadeOut(200);
-			openview({
-				view:'BuyOffer.html',
-				id:"BuyOffer",
-			});
-		}
 		mui.plusReady(function(){
 			//获取缓存
 			var oldToken = plus.storage.getItem('oldToken');
@@ -554,26 +501,38 @@
 			}
 			/*弹框*/
 			mui.ajax(serverUrl + '/api/index/showmodal', {
+				data:{version:version,platform:platform},
 	            type: 'post',
 	            timeout: 10000,
-	            headers: { "token": oldToken,'city':cityNum},
+	            headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
 	            success: function(data, type, xhr) {
 	               	plus.nativeUI.closeWaiting();
 	            		console.log('弹窗',data)
 	            		if(data.errno == 0){
-	            			if(data.data.localSquare && data.data.dailySpecials.length){
-	            				mui.each(data.data.localSquare,function(index,item){
-	                    			 if(item == 1){
-	                    			 	$('#maskInfo'+(index+1)).show()
-	                    			 }else{
-	                    			 	$('#maskInfo'+(index+1)).hide()
-	                    			 }
+	            			if(data.data && data.data.length){
+	            				mui.each(data.data,function(index,item){
+	                				if(item.typeName == 'localSquare'){
+	                					if(item.modelState == 1){ 
+	                        			 	$('#maskInfo1').show();
+	                        			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
+	                        			 	$('#maskInfo1').click(function(){
+											event.preventDefault()
+											$('#maskInfo1').fadeOut(200);
+										})
+										$('.closeMs').click(function(){
+											event.stopPropagation();
+											$(this).parent().fadeOut(200);
+										}) 
+	                        			}else{ 
+	                        			 	$('#maskInfo1').hide()
+	                        			}
+	                				}
 	                    		})
 	            			}
 	            		}
 	            },
 	            error: function(xhr, type, errorThrown) {
-	            		console.log('首页弹窗',type)
+	            		console.log('弹窗',type)
 	                console.log('响应失败');
 	               	plus.nativeUI.closeWaiting();
 	            }

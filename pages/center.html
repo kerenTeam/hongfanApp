@@ -330,8 +330,9 @@
 				document.addEventListener('refresh2', function() {
 					Refresh();
 				})
-
+				
 				var Timetoken = null;
+				
 				if(plus.storage.getItem('oldToken')){
 					var oldToken = plus.storage.getItem('oldToken');
 					console.log('个人中心_存在oldToken');
@@ -351,14 +352,23 @@
 
 					mui('.ordera')[0].style.display = 'none';
 					mui('.orderb')[0].style.display = 'none';
-					mui('.orderc')[0].style.display = 'none';
-					mui('#writeOff1')[0].style.display = 'none';
-					mui('#writeOff2')[0].style.display = 'none';
+					mui('.orderc')[0].style.display = 'none'; 
 					mui('#mmsg')[0].style.display = 'none';
+					
 					//获取缓存
 					var myuserid = plus.storage.getItem('userid');
 					var cityNum = plus.storage.getItem('cityNum');
 					var oldToken = plus.storage.getItem('oldToken');
+					if(plus.storage.getItem('canCheckUp') == 'yes'){
+						mui('#writeOff1')[0].style.display = 'table-cell';
+					}else{
+						mui('#writeOff1')[0].style.display = 'none';
+					}
+					if(plus.storage.getItem('canReviewCheckUp') == 'yes'){
+						mui('#writeOff2')[0].style.display = 'table-cell';
+					}else{
+						mui('#writeOff2')[0].style.display = 'none';
+					}
 					//取用户数据
 					if(plus.storage.getItem('myToken')){
 						document.addEventListener('refreshGift', function() {
@@ -381,9 +391,11 @@
 											}else{
 												mui('#mypic')[0].src = serverimgUrl + JSON.parse(data.data[0].avatar)[0].picImg;
 											}
+											plus.storage.setItem("loginPic",mui('#mypic')[0].src)
 										}
 										//显示昵称
 										if(data.data[0].nickname){
+											plus.storage.setItem("loginName",data.data[0].nickname)
 											if(data.data[0].nickname.indexOf('null') == -1){
 												mui('.denluzhuce')[0].innerHTML = data.data[0].nickname;
 											}else{
@@ -400,11 +412,8 @@
 										}
 										//显示关注
 
-
 										//显示核销
-										if(data.data[0].gid == 2 || myuserid == 4){
-											mui('#writeOff1')[0].style.display = 'table-cell';
-											mui('#writeOff2')[0].style.display = 'table-cell';
+										if(data.data[0].gid == 2 || myuserid == 4){ 
 											mui('#writeOff1')[0].addEventListener('tap',function(){
 												openview({
 													view:'personal/barcode_scan.html'
@@ -563,7 +572,7 @@
 						function showMessage(){
 							//显示消息条数
 							mui.ajax(serverUrl+'/api/index/message',{
-								data:{userid:myuserid},
+								data:{userid:myuserid,msgType:1},
 								dataType:'json',
 								type:'post',
 								timeout:10000,

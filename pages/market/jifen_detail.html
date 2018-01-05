@@ -241,9 +241,9 @@
 		<!--footerone end-->
 		
 	</body>
+	<script src="../../js/mui.min.js"></script> 
 	<script src="../../js/app.js"></script>
 	<script src="../../js/artTemplate-native.js"></script>
-	<script src="../../js/mui.min.js"></script> 
 	<script type="text/javascript">
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken'),
@@ -277,7 +277,8 @@
 					success: function(data) {
 						console.error('购买礼物', data);
 						if(data.errno == 0) {
-							alert('购买成功,快去赠送给好友吧!');
+							mui.toast('购买成功,快去赠送给好友吧!');
+							plus.webview.currentWebview().close(); 
 							mui.fire(plus.webview.getWebviewById('elsecircleIndex'),'refreshGift');
 							mui.fire(plus.webview.getWebviewById('center.html'),'refreshGift');
 						}else{

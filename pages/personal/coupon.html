@@ -27,7 +27,7 @@
 			.nothing img{ display: block; margin: 20px auto; width: 80px; }
 			.nothing p{ text-align: center; }
 			.notice .tab-bd{ padding-top: 0; }
-			.notice .tab-hd li{width: 50%;}
+			.notice .tab-hd li{width: 25%;}
 			.coupons .list{border-radius: 2px;}
 			/*新的优惠卷*/
 			body{ background-color: #f3f3f3; }
@@ -76,73 +76,33 @@
 		<div class="notice" style="margin:50px auto;">
 			<div class="tab-hd">
 				<ul class="tab-nav">
-				  <li>全部</li>
-				  <li>可用</li>
+				  <li>待使用</li>
+				  <li>已使用</li>
+				  <li>已过期</li>
+				  <li>已作废</li>
 				</ul>
 			</div>
 			<div class="tab-bd">
 				<div class="tab-pal">
-					<div class="coupons clearfloat box-s" id="allC"></div>
+					<div class="coupons clearfloat box-s" id="allc"></div>
 				</div>
 				
 				<div class="tab-pal">
-					<div class="coupons clearfloat box-s" id="ableC"></div>
+					<div class="coupons clearfloat box-s" id="allc2"></div>
 				</div>	
-				
 				<div class="tab-pal">
-					<div class="coupons clearfloat box-s" id="disableC">
+					<div class="coupons clearfloat box-s" id="allc3"></div>
+				</div>
+				<div class="tab-pal">
+					<div class="coupons clearfloat box-s" id="allc4">
 						<div class="nothing">
 							<img src="../../img/theList/coupon.png"/>
 							<p>你没有已使用的优惠券哟！</p>
 						</div>
 					</div>
 				</div>
-				<!--全部--> 
-				<script type="text/html" id="allC-detail">
-					<% for(var i=0;i<allLi.length;i++){ %> 
-						<%if(allLi[i].id){%>
-							<% if(allLi[i].user_coupon_state == 1){ %> <!--可用状态--> 
-								<%if(allLi[i].typeid == 5){%>
-								<div onclick="Cdetail(<%= allLi[i].user_coupon_id %>)" class="offerWrap">
-								<%}else{%>
-									<div class="offerWrap">
-								<%}%>
-								 	<%if(allLi[i].typeid == 5){%>
-										<div style="padding:5px!important;">团购优惠券</div>
-									<%}else{%>
-										<div style="padding:5px!important;">电商优惠券</div>
-									<%}%>
-									<div class="offerTop">
-										<h4><b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
-										<p><%= allLi[i].title %><span style="visibility: hidden;">wu</span>
-											<%if(allLi[i].typeid == 5){%>
-												<span class="span3">立即使用</span>
-											<%}else{%>
-											<%}%>
-										</p>
-									</div>
-								</div>
-							<% }else if(allLi[i].user_coupon_state == 0){ %><!--已使用状态-->
-								<div class="offerWrap offerWrap3"> 	
-									<div class="offerTop">
-											<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
-											<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已使用</span></p>
-									</div>
-								</div>
-							<% }else{ %><!--已作废状态-->
-								<div class="offerWrap offerWrap3"> 	
-									<div class="offerTop">
-											<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
-											<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已作废</span></p>
-									</div>
-								</div>
-							<% } %>
-						<%}%>
-						 
-					<% } %>
-				</script>
-				<!--可用-->
-				<script type="text/html" id="ableC-detail">
+				<!--待使用--> 
+				<script type="text/html" id="allcTpl">
 					<% for(var i=0;i<allLi.length;i++){ %> 
 						<% if(allLi[i].id && allLi[i].user_coupon_state == 1){ %>
  							<%if(allLi[i].typeid == 5){%>
@@ -167,7 +127,49 @@
 								
 							</div>
 						<% } %>
-					<% } %>
+					<% } %> 
+				</script>
+				<!--已使用状态-->
+				<script type="text/html" id="allc2Tpl">
+					<% for(var i=0;i<allLi.length;i++){ %> 
+						<%if(allLi[i].id){%>
+							<div class="offerWrap offerWrap3"> 	
+								<div class="offerTop">
+										<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+										<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已使用</span></p>
+								</div>
+							</div>
+						<%}%>
+						 
+					<% } %>  
+				</script>
+				<!--已过期状态-->
+				<script type="text/html" id="allc3Tpl">
+					<% for(var i=0;i<allLi.length;i++){ %> 
+						<%if(allLi[i].id){%>
+							<div class="offerWrap offerWrap3"> 	
+								<div class="offerTop">
+										<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+										<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已过期</span></p>
+								</div>
+							</div>
+						<%}%>
+						 
+					<% } %>  
+				</script>
+				<!--已作废状态-->
+				<script type="text/html" id="allc4Tpl">
+					<% for(var i=0;i<allLi.length;i++){ %> 
+						<%if(allLi[i].id){%>
+							<div class="offerWrap offerWrap3"> 	
+								<div class="offerTop">
+										<h4> <b class="b2"></b><span class="span1"><%= allLi[i].name %></span> <span class="span2"><%= allLi[i].begin_date %> ~ <%= allLi[i].end_date %></span></h4>
+										<p><%= allLi[i].title %> <span style="visibility: hidden;">wu</span> <span class="span3">已作废</span></p>
+								</div>
+							</div>
+						<%}%>
+						 
+					<% } %>  
 				</script>
 				
 			</div>
@@ -193,42 +195,74 @@
 					success:function(data,type,xhr){
 						console.log('data',data);
 						if(data.errno == 0) { 
-							if(!data.data.user_coupon.length){   
-									mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
-								}else{
+							if(!data.data.user_coupon || data.data.user_coupon.length == 0){   
+								mui('.notice')[0].innerHTML='<div class="nothing" style="margin-top:40%"><img src="../../img/theList/coupon.png"/><p>你没有优惠券哟！</p></div>';
+//								mui('#allC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
+//								mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
+//								mui('#disableC-detail')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有已使用的优惠券哟！</p></div>';
+							}else{
 								
-									var allC = {},allc2={};
-									allC.allLi = data.data.user_coupon;
-									allc2.allLi = [];
-									if(allC.allLi.length > 0){
+									var allc = {},allc2={},allc3={},allc4={};
+									var allcoupon = data.data.user_coupon;
+									allc.allLi = [],allc2.allLi = [],allc3.allLi = [],allc4.allLi = [];
+//									if(allC.allLi.length > 0){
 										//可用的优惠券
-										for(var i=0;i<allC.allLi.length;i++){
+										for(var i=0;i<allcoupon.length;i++){
 				    							var d = new Date();
 											var str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 											var nowdate = formatDate(str, "yyyy.MM.dd");
-				    						    var endDate = formatDate(allC.allLi[i].end_date, "yyyy.MM.dd"); 
-											if(allC.allLi[i].end_date && endDate<nowdate){//判断时间过期
-												allC.allLi[i].user_coupon_state = 2;
-											}
-											var html = template('allC-detail',allC);
-											document.getElementById('allC').innerHTML = html;//铺全部
-											if(allC.allLi[i].user_coupon_state == 1){
-												allc2.allLi.push(allC.allLi[i])
-												
+				    						    var endDate = formatDate(allcoupon[i].end_date, "yyyy.MM.dd"); 
+											if(allcoupon[i].user_coupon_state == 1 && allcoupon[i].end_date && endDate<nowdate){//判断时间过期
+												allcoupon[i].user_coupon_state = 3;
 											} 
-											if(allc2.allLi.length == 0){
-												mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
-											}else{
-												console.log('可用',allc2);
-												var html2 = template('ableC-detail',allc2);
-												document.getElementById('ableC').innerHTML = html2;//铺可用
+											if(allcoupon[i].user_coupon_state == 1){
+												allc.allLi.push(allcoupon[i])
+											} 
+											if(allcoupon[i].user_coupon_state == 0){
+												allc2.allLi.push(allcoupon[i])
+												
 											}
+											if(allcoupon[i].user_coupon_state == 3){
+												allc3.allLi.push(allcoupon[i])
+												
+											}
+											if(allcoupon[i].user_coupon_state != 1 && allcoupon[i].user_coupon_state != 0 && allcoupon[i].user_coupon_state != 3){
+												allc4.allLi.push(allcoupon[i])
+												
+											}
+											
 										}
-									}else{
-										mui('#allC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
-										mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有未使用的优惠券哟！</p></div>';
-										mui('#disableC-detail')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有已使用的优惠券哟！</p></div>';
-									}
+										if(allc.allLi.length == 0){
+											mui('#allc')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有可使用的优惠券哟！</p></div>';
+										}else{
+											console.log('可用',allc);
+											var html2 = template('allcTpl',allc);
+											document.getElementById('allc').innerHTML = html2;//铺可用
+										}
+										if(allc2.allLi.length == 0){
+											mui('#allc2')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有已使用的优惠券哟！</p></div>';
+										}else{
+											console.log('已使用',allc2);
+											var html2 = template('allc2Tpl',allc2);
+											document.getElementById('allc2').innerHTML = html2;//铺可用
+										}
+										if(allc3.allLi.length == 0){
+											mui('#allc3')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有过期的优惠券哟！</p></div>';
+										}else{
+											console.log('过期',allc3);
+											var html2 = template('allc3Tpl',allc3);
+											document.getElementById('allc3').innerHTML = html2;//铺可用
+										}
+										if(allc4.allLi.length == 0){
+											mui('#allc4')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有作废的优惠券哟！</p></div>';
+										}else{
+											console.log('作废',allc4);
+											var html2 = template('allc4Tpl',allc4);
+											document.getElementById('allc4').innerHTML = html2;//铺可用
+										}
+//									}else{
+//										
+//									}
 									if(!$('.offerWrap')){
 										mui('#ableC')[0].innerHTML='<div class="nothing"><img src="../../img/theList/coupon.png"/><p>你没有优惠券哟！</p></div>';
 									}

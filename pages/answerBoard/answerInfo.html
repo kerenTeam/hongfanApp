@@ -57,7 +57,7 @@
 						</div>
 						<div class="activecl f10">悬赏<%=dataList.price%>HI豆</div>
 					</div>
-					<p class="ft14 maincl biaotiF"><%=dataList.content%></p>
+					<p class="ft14 maincl biaotiF" style="-webkit-user-select: text;"><%=dataList.content%></p>
 					<%if(dataList.pic && dataList.pic.length){%>
 						<%for(var j = 0 ;j<dataList.pic.length;j++){%>
 							<div class="answerImf" style="padding: 0;">
@@ -99,7 +99,7 @@
 						<%}%>
 						
 					</div>  
-					<p class="ft14 disablecl"><%=list[i].commont%></p> 
+					<p class="ft14 disablecl" style="-webkit-user-select: text;"><%=list[i].commont%></p> 
 					<%if(list[i].pics && list[i].pics.length){%>
 						<%for(var j = 0 ;j<list[i].pics.length;j++){%>
 							<div class="answerImf">
@@ -327,6 +327,20 @@
 				});
 			}
 			
+		})
+		document.addEventListener("tap",function(event){
+			var name = event.target.innerText;
+			var urlRegExp = new RegExp("((https|http|ftp|rtsp|mms|www)?:\/*\/*)[^\u4E00-\u9FA5]+");
+			if(urlRegExp.exec(name) != null){
+				var pipeiurl = urlRegExp.exec(name);
+				openview({
+					view:'../socialCircle/linkurl.html',
+					id: "linkurl",
+					extrasobj: {
+						bannerUrl: pipeiurl[0]
+					}
+				}) 
+			}
 		})
 	</script>
 	<script type="text/javascript">

@@ -113,6 +113,8 @@
 			var oldToken = plus.storage.getItem('oldToken');
 			var cityNum = plus.storage.getItem('cityNum');
 			var	myuserid = plus.storage.getItem('userid');
+			var fmsg = plus.webview.currentWebview().page;
+			
 			mui.ajax(serverUrl+'/api/friends/likeusers',{
 				data:{"userId":myuserid},
 				type:'post',
@@ -155,6 +157,9 @@
 							likeMeObj.url = serverimgUrl;
 							var html = template('meLikeTpl', likeMeObj); 
 							document.getElementById('meLike').innerHTML = html;	
+							if(fmsg == 'fmsg'){
+								$('.disablecl').hide();
+							}
 							$('.diybtn').click(function(){ 
 								var curL = $(this);
 					    		var likerId = $(this).parent().attr('data-id');

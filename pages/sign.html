@@ -329,8 +329,20 @@
 											console.log(JSON.parse(plus.storage.getItem("Acc_pass")));
 											//触发跳转页面刷新
 											mui.fire(plus.webview.getWebviewById('lottery'),'refresh');//触发跳转页面刷新=》抽奖页面
+											if(data.data.store && data.data.store.canCheckUp == 1){
+												plus.storage.setItem('canCheckUp','yes')
+											}else{
+												plus.storage.setItem('canCheckUp','no')
+											}
+											if(data.data.store && data.data.store.canReviewCheckUp == 1){
+												plus.storage.setItem('canReviewCheckUp','yes')
+											}else{
+												plus.storage.setItem('canReviewCheckUp','no')
+											}
 											mui.fire(plus.webview.getWebviewById('center.html'),'refresh');
+											mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
 											plus.webview.getWebviewById('login.html').close();
+											
 											var time2 = setTimeout(function(){
 												plus.webview.currentWebview().close();
 												var index = plus.webview.getLaunchWebview();

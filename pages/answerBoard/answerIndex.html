@@ -89,7 +89,7 @@
 			</script> 
 		</div>
 		<div class="QandA"> 
-			<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;">
+			<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 9;display: block;width: 100%;">
 				<span class="active aClick">最新</span>
 				<span class="aClick">已解答</span> 
 			</div>
@@ -111,12 +111,13 @@
 									<%}%>
 
 								</div>  
-								<p class="ft15 maincl"><%=dataList[i].content%></p>
+								<p class="ft15 maincl" style="-webkit-user-select: text;"><%=dataList[i].content%></p>
 								
 								<%if(dataList[i].pic && dataList[i].pic.length){%>
 									<div class="answerImf" style="padding: 0;">
 										<%for(var j = 0 ;j<dataList[i].pic.length;j++){%>
-											<div class="anImg loadPics" style="background: url(<%=dataList[i].pic[j].picImg%>) no-repeat;background-size: cover;"></div>
+											<img class="anImg loadPics" src="<%=dataList[i].pic[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>"/>
+											<!--<div class="anImg loadPics" style="background: url(<%=dataList[i].pic[j].picImg%>) no-repeat;background-size: cover;" data-preview-src="<%=dataList[i].pic[j].picImg%>" data-preview-group="<%=i%>"></div>-->
 										<%}%> 
 								 	</div>
 								<%}%> 
@@ -156,12 +157,13 @@
 									<div class="disablecl"> <%=list[i].nickname%> </div>
 								</div> 
 							</div>  
-							<p class="ft14 disablecl"><%=list[i].commont%></p> 
+							<p class="ft14 disablecl" style="-webkit-user-select: text;"><%=list[i].commont%></p> 
 						</div>
 						<%if(list[i].pics && list[i].pics.length){%>
 							<div class="answerImf">
 								<%for(var j = 0 ;j<list[i].pics.length;j++){%>
-									<div class="anImg loadPics" style="background: url(<%=list[i].pics[j].picImg%>) no-repeat;background-size: cover;"></div>
+									<img class="anImg loadPics" src="<%=list[i].pics[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>"/>
+									<!--<div class="anImg loadPics" style="background: url(<%=list[i].pics[j].picImg%>) no-repeat;background-size: cover;"></div>-->
 								<%}%> 
 						 	</div>
 						<%}%>  
@@ -175,44 +177,20 @@
 			
 		</div>
 		<!--遮罩1-->
-		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;">
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
+		<script type="text/html" id="maskTpl">
+			
 			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
-				<img src="../../img/mainHtml/mask6.png" style="border-radius: 3px;width: 100%;height: 100%;" class="closemm"/>
-
+			<%if(popdata.modelContent){%>
+			<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','second')"/>
+			<%}%> 
 			</div>
-		</div>
-		<!--遮罩2-->
-
-		<div id="maskInfo2" class="maskInfo" style="display: none;z-index:9998;">
-			<img src="../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗2</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
-			</div>
-		</div>
-		<!--遮罩3-->
-
-		<div id="maskInfo3" class="maskInfo" style="display: none;z-index:9997;">
-			<img src="../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗3</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
-			</div>
-		</div>
-		
+		</script>
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
 	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" charset="utf-8"></script>
 	<script type="text/javascript">
@@ -233,53 +211,52 @@
 		$('.ruleCt').click(function(){
 			event.stopPropagation()
 		})
-		$('#maskInfo1,.closemm').click(function(){
-			event.preventDefault()
-			$('#maskInfo1').fadeOut(200);
-		})
-		$('#maskInfo2').click(function(){
-			event.preventDefault()
-			$('#maskInfo2').fadeOut(200);
-		})
-		$('#maskInfo3').click(function(){
-			event.preventDefault()
-			$('#maskInfo3').fadeOut(200);
-		})
-		$('.closeMs').click(function(){
-			event.stopPropagation();
-			$(this).parent().fadeOut(200);
-		})
+		
 		//获取问答分类
 		mui.plusReady(function(){
 			var oldToken = plus.storage.getItem('oldToken'),
 		 		cityNum = plus.storage.getItem('cityNum'),
 		 		myuserid = plus.storage.getItem('userid');
-		 		/*弹框*/
-				mui.ajax(serverUrl + '/api/index/showmodal', {
-	                type: 'post',
-	                timeout: 10000,
-	                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
-	                success: function(data, type, xhr) {
-	                   	plus.nativeUI.closeWaiting();
-	                		console.log('弹窗',data)
-	                		if(data.errno == 0){
-	                			if(data.data.questionsAndAnswers && data.data.questionsAndAnswers.length){
-	                				mui.each(data.data.questionsAndAnswers,function(index,item){
-                            			 if(item == 1){
-                            			 	$('#maskInfo'+(index+1)).show()
-                            			 }else{
-                            			 	$('#maskInfo'+(index+1)).hide()
-                            			 }
-                            		})
-	                			}
-	                		}
-	                },
-	                error: function(xhr, type, errorThrown) {
-	                		console.log('首页弹窗',type)
-	                    console.log('响应失败');
-	                   	plus.nativeUI.closeWaiting();
-	                }
-	            });
+	 		var version = plus.storage.getItem('version');
+			var platform  = plus.storage.getItem('platform');
+			/*弹框*/
+			mui.ajax(serverUrl + '/api/index/showmodal', {
+				data:{version:version,platform:platform},
+	            type: 'post',
+	            timeout: 10000,
+	            headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+	            success: function(data, type, xhr) {
+	               	plus.nativeUI.closeWaiting();
+	            		console.log('弹窗',data)
+	            		if(data.errno == 0){
+	            			if(data.data && data.data.length){
+	            				mui.each(data.data,function(index,item){
+	                				if(item.typeName == 'questionsAndAnswers'){
+	                					if(item.modelState == 1){ 
+	                        			 	$('#maskInfo1').show();
+	                        			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
+	                        			 	$('#maskInfo1').click(function(){
+											event.preventDefault()
+											$('#maskInfo1').fadeOut(200);
+										})
+										$('.closeMs').click(function(){
+											event.stopPropagation();
+											$(this).parent().fadeOut(200);
+										}) 
+	                        			}else{ 
+	                        			 	$('#maskInfo1').hide()
+	                        			}
+	                				}
+	                    		})
+	            			}
+	            		}
+	            },
+	            error: function(xhr, type, errorThrown) {
+	            		console.log('弹窗',type)
+	                console.log('响应失败');
+	               	plus.nativeUI.closeWaiting();
+	            }
+	        });
 	 		window.goZan = function(obj,id,userid){
 		 			event.stopPropagation()
 	 			if(plus.storage.getItem('myToken')){ 
@@ -336,6 +313,12 @@
 	 
 	</script>
 	<script type="text/javascript">
+		function refreshFun(){
+			shopData(0,0,false);//默认推荐
+		}
+		mui.plusReady(function(){
+			downRe(refreshFun);
+		})	
 		/*tab切换*/
 		var flag0 = 0,flag1 = 0,//是否   第一次点击
 	     	SH0 = 0,SH1  = 0;/*保存的状态栏高度*/
@@ -534,7 +517,7 @@
 																		nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
 																	}
 																}else{
-																	nowArray[j].avatar = '../img/10.png'
+																	nowArray[j].avatar = '../../img/10.png'
 																}
 																
 																if(!nowArray[j].answerNums){
@@ -755,6 +738,8 @@
 				extrasobj:{answerId:id,toUserId:userId}
 			})
 		}
+		mui.previewImage();
+		
 	</script>
 	<script type="text/javascript">
 		//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,
@@ -782,6 +767,7 @@
 				}
 			}, false );
 		});
+		
 	</script> 
 		
 	</body>

@@ -139,7 +139,7 @@
 											<div class="DitemRin1" style="width: 0;">
 											</div>
 										<%}%>	
-										<h3 class="overTwo"><%=dataList[i].content%></h3> <p><%=dataList[i].read%>阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> <%=dataList[i].likes%></p>
+										<h3 class="overTwo" style="-webkit-user-select: text;"><%=dataList[i].content%></h3> <p><%=dataList[i].read%>阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> <%=dataList[i].likes%></p>
 									</div>						
 								</div>
 							</div>
@@ -417,8 +417,8 @@
 								$('#horoscope').text('未填写')
 							}
 							//显示昵称
-							if(data.data.username && data.data.username != ' '){  
-									mui('#nickname')[0].innerHTML = data.data.username; 
+							if(data.data.nickname && data.data.nickname != ' '){  
+									mui('#nickname')[0].innerHTML = data.data.nickname; 
 							} 
 							
 						}else{
@@ -800,8 +800,6 @@
 							 	
 							 	//聊天
 							 	$('.smend').click(function(){
-							 		if($('.isLiked').html().indexOf('关注')<0){
-							 			
 							 			mui.ajax(serverUrl+'/api/useraccount/userinfo',{
 											data:{"userid":plus.storage.getItem('userid')},
 											type:'post',
@@ -831,10 +829,7 @@
 											error:function(xhr,type,errorThrown){
 												console.log('获取用户数据,响应失败');
 											}
-										}); 
-							 		}else{
-							 			mui.toast('加好友才能聊天哦')
-							 		}
+										});
 							 	})
 							}
 						}else{
@@ -944,7 +939,7 @@
 	    		
 
 	    	}else{
-	    		hideSfun();
+//	    		hideSfun();
 	    		mui.confirm('你没有该礼物,立即购买?', '提示', ['取消', '确定'], function(e) {
 		            if (e.index == 1) {
 						openview({

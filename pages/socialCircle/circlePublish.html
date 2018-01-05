@@ -16,9 +16,31 @@
 	</head>
 	<style type="text/css">
 		.disbg{border:none}
-		.uppics{padding:15px}
-		.uppics div.onepic img{width:4.5rem;height:4.5rem;display:inline-block;margin:0 5px;}
-		.uppics div.onepic input{width:0;height:0;position:absolute;outline:0}
+		/*选择图片*/
+		.newActionWrap{overflow: hidden;position: relative;
+		    left: -2%;}
+		.newAction, .newAction2{    display: inline-block;
+		    width: 33%;
+		    height: calc(100vw * 0.33);
+		    float: left;
+		    position: relative;}
+		.newAction img, .newAction2 img{
+			width: 93%;
+		    height: 93%;
+		    display: inline-block;
+		    margin-top: 11%;
+		    margin-left: 11%;}
+		 .newAction span{
+		 	position: absolute;
+		    right: -4%;
+		    top: 11%;
+		    font-size: 32px;
+		    background-color: rgba(0, 0, 0, 0.4);
+		    color: #fff;
+		    font-weight: 500;
+		    z-index: 9999;
+		 }
+		 /*选择图片结束*/
 	</style>
 
 	<body style="background-color: white;">
@@ -37,13 +59,11 @@
 			<div id="mainpic" class="biaoqian">
 
 			</div>
-
 			<div class="uppics clearfix" id="uppics2">
-		        <div class="onepic">
-		            <img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">
-		            <p>添加照片</p>
+		        <div class="onepic newActionWrap">
+		        		<a class="newAction2"><img id="nowpic" style="width: 90%;height: 89%;margin-left: 12%;" onclick="showAction()" src="../../img/answer/goanswer/addpic.png"></a>
 		        </div>
-		    </div>
+		   	</div>
 		    <style type="text/css">
 		    		.disclaimer p{color: red;padding-left: 15px;}
 		    		.disclaimer p span{color: #555;}
@@ -63,7 +83,17 @@
 		</div>
 
 		<div id='container' style="display:none"></div>
-
+		<!--遮罩1-->
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
+		<script type="text/html" id="maskTpl">
+			
+			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
+			<%if(popdata.modelContent){%>
+			<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','second')"/>
+			<%}%> 
+			</div>
+		</script>
 	</body>
 <script type="text/javascript" src="../../js/jquery.min.js"></script>
 <script src="../../js/mui.min.js"></script>
@@ -76,13 +106,50 @@
 <!--引入模板引擎-->
 <script src="../../js/artTemplate-native.js"></script>
 <script type="text/javascript">
-
-
 	mui.plusReady(function(){
 		var oldToken = plus.storage.getItem('oldToken'),
  		cityNum = plus.storage.getItem('cityNum'),
  		myuserid = plus.storage.getItem('userid');
-
+		var version = plus.storage.getItem('version');
+		var platform  = plus.storage.getItem('platform');
+		/*弹框*/
+		mui.ajax(serverUrl + '/api/index/showmodal', {
+			data:{version:version,platform:platform},
+            type: 'post',
+            timeout: 10000,
+            headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
+            success: function(data, type, xhr) {
+               	plus.nativeUI.closeWaiting();
+            		console.log('弹窗',data)
+            		if(data.errno == 0){
+            			if(data.data && data.data.length){
+            				mui.each(data.data,function(index,item){
+                				if(item.typeName == 'postNews'){
+                					if(item.modelState == 1){ 
+                        			 	$('#maskInfo1').show();
+                        			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
+                        			 	$('#maskInfo1').click(function(){
+										event.preventDefault()
+										$('#maskInfo1').fadeOut(200);
+									})
+									$('.closeMs').click(function(){
+										event.stopPropagation();
+										$(this).parent().fadeOut(200);
+									}) 
+                        			}else{ 
+                        			 	$('#maskInfo1').hide()
+                        			}
+                				}
+                    		})
+            			}
+            		}
+            },
+            error: function(xhr, type, errorThrown) {
+            		console.log('弹窗',type)
+                console.log('响应失败');
+               	plus.nativeUI.closeWaiting();
+            }
+        });
 	})
 
 	var Latitude='',Longitude='';
@@ -115,65 +182,108 @@
     	console.error('定位失败')
    	}
 
-	var Apic = [];//图片存放数组
-	var lfs=null;// 保留上次选择图片列表
-	var time1 = null;
+	//从相册中选择图片 开始
+	var Apic = [],time1 = null,maxNum = 5;
+	function getImage(){//拍照并保存
+		var cmr = plus.camera.getCamera();
+		cmr.captureImage( function ( path ) {
+			plus.io.resolveLocalFileSystemURL(path,function(entry){
+				path = plus.io.convertLocalFileSystemURL(path);
+				if(0!=path.indexOf("file://")){path="file://"+path;}
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+		    		var endpic = path.split('.')[0]+"/"+nowpic;
+				plus.zip.compressImage({//压缩方法
+					src:path,
+					dst:endpic,
+					overwrite:true,
+					quality:30
+				},
+				function(obj) {
+					showImg(obj.target);
+					Apic.push(obj.target);
+				},function(error) {
+					mui.toast('图片获取错误，请重试');
+				});
+			});
+		}, function ( e ) {
+		}, {filename:"_doc/gallery/",index:1} );
+	}
+
 	function galleryImgsSelected(){//从相册中选择图片
 		mui.plusReady(function(){
 		    plus.gallery.pick( function(e){
-		    	//初始化
-		    	mui('.onepic')[0].innerHTML = '<img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">';
-		    	Apic = [];
-		    	//初始化结束
-		    	lfs=e.files;
-		    	clearInterval(time1);
-		    	var indexNum = 0;
-		    	var indexMax = e.files.length - 1;
-		    	e.files.forEach(function(){
-		    		$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="../../img/Spinner.svg"/>')
-		    	})
-		    	time1 = setInterval(function(){
-		    		console.log(time1);
-		    		if(0!=e.files[indexNum].indexOf("file://")){
-						e.files[indexNum]="file://"+e.files[indexNum];//图片地址
-					}
-		    		if(indexNum == indexMax){//全部压缩完毕
-		    			clearInterval(time1);
-						time1 = null;
-		    		}
-		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
-		    		var endpic = e.files[indexNum].split('.')[0]+"/" +nowpic;
-		    		//压缩方法
-	    			plus.zip.compressImage({
+			    	clearInterval(time1);
+			    	var indexNum = 0;
+			    	var indexMax = e.files.length - 1;
+			    	time1 = setInterval(function(){
+			    		if(0!=e.files[indexNum].indexOf("file://")){e.files[indexNum]="file://"+e.files[indexNum];}
+			    		if(indexNum == indexMax){//全部压缩完毕
+			    			clearInterval(time1),time1 = null;
+			    		}
+			    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
+			    		var endpic = e.files[indexNum].split('.')[0]+"/" +nowpic;
+		    			plus.zip.compressImage({
 						src:e.files[indexNum],
 						dst:endpic,
 						overwrite:true,
 						quality:30
 					},
 					function(obj) {
-						console.log(obj)
-						Apic.push(endpic);
-						showImg(endpic,indexNum);
+						Apic.push(obj.target);
+						showImg(obj.target,indexNum);
 					},function(error) {
 						mui.toast('图片获取错误，请重试');
 					});
-		    		indexNum ++;
-
-		    	},1000)
+			    		indexNum ++;
+			    	},500)
 		    }, function ( e ) {
-		    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
-    		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
-				plus.nativeUI.alert('最多上传9张图片');
+		    },{filter:"image",multiple:true,maximum:maxNum-Apic.length,system:false,onmaxed:function(){//保存选择记录
+		    		mui.alert('最多选择'+maxNum+'张图片！');
 		    }});
-			function showImg(url,indexNum){//显示图片
-				if(0!=url.indexOf("file://")){
-					url="file://"+url;
-				}
-				document.getElementsByClassName('onepic')[0].getElementsByTagName('img')[indexNum-1].src = url;
-				$('.onepic p').css('display','none');
-			}
 		})
-	}//从相册中选择图片结束
+	}
+	function showImg(url,indexNum){//显示图片
+		if(0!=url.indexOf("file://")){url="file://"+url;}
+		if($('.newAction').length){
+			$('.newAction').eq($('.newAction').length-1).after('<a class="newAction"><img data-preview-src="" data-preview-group="1" src="'+url+'"/><span onclick="closePic(this)" class="mui-icon mui-icon-closeempty"></span></a>');
+		}else{
+			$('.onepic').prepend('<a class="newAction"><img data-preview-src="" data-preview-group="1" src="'+url+'"/><span onclick="closePic(this)" class="mui-icon mui-icon-closeempty"></span></a>');
+		}
+	}
+	function closePic(obj){
+		var nowPic = $(obj).parentsUntil('.newActionWrap').find('img').attr('src');
+		console.log($(obj).parent().html())
+		$(obj).parent().remove();
+		if(Apic.indexOf(nowPic)>-1){
+			Apic.splice($.inArray(nowPic,Apic),1);
+		}
+	}
+	function showAction(){
+		if(Apic.length  < maxNum){
+			mui.plusReady(function(){
+				plus.nativeUI.actionSheet({
+					cancel: "取消",
+					buttons: [{
+						title: "相册选择"
+					}, {
+						title: '拍照'
+					}]
+				},
+				function(e) {
+					if (e.index == 1) { //点击从相册选择
+						galleryImgsSelected();
+					} else if (e.index == 2) {
+						getImage();
+					}
+				})
+
+			})
+		}else{
+			mui.alert('最多选择'+maxNum+'张图片！');
+		}
+
+	}
+	//从相册中选择图片结束
 
 	//发送 发布
 	mui('.baocun')[0].onclick = function(){
@@ -184,6 +294,7 @@
 			 	myuserid = plus.storage.getItem('userid');
 		 	var textCon = mui('#textCon')[0];
 		 	var fromGo = plus.webview.currentWebview().fromGo;//双旦
+
 		 	if(Apic.length){//要传图片
 			 	if(time1 == null){//必须要图片全部处理完毕  才行    (开始发布)
 			 		plus.nativeUI.showWaiting();
@@ -269,6 +380,7 @@
 				}
 
 				task.addData("content",content);
+				 
 				if(Apic.length){
 					console.log(Apic);
 					[].forEach.call(Apic,function(ele,index){
@@ -281,58 +393,10 @@
 				}else{
 					task.start();
 				}
-
+				task.start();
 		 	}
 		 	//发送数据结束
 		})
-	}
-
-</script>
-
-<!--弃用js(还有参考价值)-->
-<script type="text/javascript">
-	//plus.nativeUI.actionSheet({
-	//	cancel: "取消",
-	//	buttons: [{
-	//		title: "相册选择"
-	//	}, {
-	//		title: '拍照'
-	//	}]
-	//},
-	//function(e) {
-	//	if (e.index == 1) { //点击从相册选择
-	//		galleryImgsSelected();
-	//	} else if (e.index == 2) {
-	//		getImage();
-	//	}
-	//})
-	function getImage(){//拍照并保存(暂时搁置)
-		var cmr = plus.camera.getCamera();
-		cmr.captureImage( function ( path ) {
-			plus.io.resolveLocalFileSystemURL(path,function(entry){
-				//把拍摄图片的路径转化成 本地文件url
-				path = plus.io.convertLocalFileSystemURL(path);
-				if(0!=path.indexOf("file://")){
-					path="file://"+path;
-				}
-	    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
-	    		var endpic = path.split('.')[0]+"/"+nowpic;
-				plus.zip.compressImage({//压缩方法
-					src:path,
-					dst:endpic,
-					overwrite:true,
-					quality:30
-				},
-				function() {
-					showImg(endpic);
-					Apic = [];
-					Apic.push(endpic);
-				},function(error) {
-					mui.toast('图片获取错误，请重试');
-				});
-			});
-		}, function ( e ) {
-		}, {filename:"_doc/gallery/",index:1} );
 	}
 
 </script>

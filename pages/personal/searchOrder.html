@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>搜索</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/reset.css">
+		<link rel="stylesheet" type="text/css" href="../../css/config.css" />
+		<link rel="stylesheet" href="../../css/Recharge.css">
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<!--引入模板引擎-->
+		<script src="../../js/artTemplate-native.js"></script>
+	</head>
+	<style type="text/css">
+		header {
+			height: 50px!important;
+		}
+		
+		.searchFind {
+			position: relative;
+		}
+		
+		.sint {
+			right: 0;
+			top: 5px;
+			left: 0;
+			position: absolute;
+			display: flex;
+			align-items: center;
+		}
+		
+		.sint .back {
+			font-size: 0.14rem;
+			color: #F53C42;
+			flex-basis: 40px;
+			margin-left: 10px;
+			text-align: center;
+		}
+		
+		.fsearch {
+			border-radius: 20px!important;
+			background-color: #f9f9f9!important;
+			border: 1px solid #dfdfdf!important;
+			font-size: 0.12rem!important;
+			padding-left: 30px!important;
+		}
+		
+		.fsearch::-webkit-input-placeholder {
+			color: gray!important;
+			text-align: left;
+			font-size: 0.12rem;
+		}
+		
+		.mui-icon-search {
+			position: absolute;
+			left: 5px;
+			top: 3px;
+			color: gray;
+		}
+		
+		form {
+			width: 100%;
+		}
+		
+		.tabPs {
+			border-bottom: 1px solid #EEEEEE;
+			position: fixed;
+			top: 50px;
+			left: 0;
+			right: 0;
+			height: calc(31px + 0.13rem);
+			height: -webkit-calc(31px + 0.13rem);
+			height: -moz-calc(31px + 0.13rem);
+			z-index: 99;
+		}
+		
+		.tab {
+			/*padding: 0 15px;*/
+			background: white;
+			font-size: 0px;
+			/*display: flex;
+			justify-content: space-around;*/
+		}
+		
+		.tab div {
+			padding: 15px 0;
+			font-size: 0.13rem;
+			display: inline-block;
+			width: 50%;
+			text-align: center;
+		}
+		
+		.tabActive {
+			color: #F53C42;
+			/*border-bottom: 2px solid #F53C42;*/
+		}
+		
+		.border {
+			position: absolute;
+			z-index: 99;
+			bottom: 0;
+			left: 0;
+			height: 2px;
+			background-color: #F53C42;
+			-webkit-transition: all 0.5s ease;
+		}
+		
+		.tabcontent {
+			position: relative;
+			top: 0;
+			display: none;
+		}
+		
+		.taactive {
+			display: block;
+		}
+		
+		.cAvator {
+			width: 0.4rem;
+			height: 0.4rem;
+			margin-right: 10px;
+		}
+		
+		.userAvator {
+			width: 0.4rem;
+			height: 0.4rem;
+			border-radius: 50%;
+			margin-right: 10px;
+		}
+		
+		.follow {
+			top: 50px;
+			position: relative;
+			background-color: white;
+			padding: 15px 15px;
+			line-height: 1.5;
+		}
+		
+		.follow:after {
+			position: absolute;
+			content: '';
+			height: 1px;
+			left: 10px;
+			right: 10px;
+			-webkit-transform: scaleY(.05);
+			/*-webkit-transform-origin: 0 bottom;
+				transform-origin: 0 bottom;*/
+			background: #000;
+			bottom: 0;
+		}
+		
+		.fchidl span {
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		
+		.fchidl>div {
+			color: darkgray;
+		}
+		
+		#tab {
+			display: none;
+		}
+		
+		.history {
+			position: relative;
+			top: 50px;
+			padding: 15px;
+			background-color: white;
+		}
+		
+		.history span {
+			vertical-align: middle;
+		}
+		
+		.history img {
+			float: right;
+			width: 0.18rem;
+		}
+		
+		.hisList {
+			margin-top: 15px;
+		}
+		
+		.hisList span {
+			display: inline-block;
+			padding: 10px;
+			background: rgba(0, 0, 0, .1);
+			margin: 5px;
+			border-radius: 3px;
+			color: gray;
+		}
+		
+		.notice .tab-hd,
+		.orderbh,
+		dl.list dt,
+		dl.list dd,
+		dl.list {
+			box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			overflow-y: hidden;
+		}
+		
+		.notice .tab-bd .tab-pal {
+			border-top: 1px solid #eee;
+		}
+		
+		.notice .tab-bd .tab-pal dl {
+			background-color: #f3f3f3;
+		}
+		
+		.notice .tab-bd {
+			padding-top: 44px;
+		}
+		
+		.notice li.active {
+			border-bottom: 2px solid #f63d41;
+			box-sizing: border-box;
+			color: #f63d41;
+		}
+		
+		dl.list dt,
+		dl.list dd,
+		dl.list {
+			margin-bottom: 10px;
+			background-color: #fff;
+			border: none!important;
+		}
+		
+		dl.listtwo dd>.react {
+			padding: 18px .12rem 10px .15rem;
+		}
+		
+		dl.listtwo dd {
+			padding: 0;
+		}
+		
+		.order-bottom {
+			margin: 12px 0px 6px;
+		}
+		
+		.order-bottom a {
+			background-color: #fff;
+			color: #666;
+			border: 1px solid #ccc;
+			-webkit-border-radius: 3px;
+			margin-left: 2%;
+			width: 25%;
+			font-size: 12px;
+			line-height: 27px;
+			padding: 0 2px !important;
+			border-radius: 2px;
+		}
+		
+		.confirm {
+			color: #f63d41 !important;
+			border: 1px solid #f63d41 !important;
+		}
+		
+		.poi-name {
+			width: 70%;
+			overflow: hidden;
+			display: inline-block;
+			line-height: 20px;
+			color: #555;
+		}
+		
+		.pricetwo {
+			position: absolute !important;
+			top: 0;
+			right: 0;
+			width: 30% !important;
+			display: inline-block !important;
+			text-align: right;
+			line-height: 20px;
+		}
+		
+		.pricetwo span {
+			color: #333 !important;
+		}
+		
+		.react {
+			height: 112px !important;
+			margin-bottom: 2px;
+		}
+		
+		.react:last-child {
+			margin-bottom: 0;
+		}
+		
+		.dealcard .dealcard-img {
+			overflow: hidden;
+		}
+		
+		.dealcard-img img {
+			height: 100%!important;
+		}
+		
+		.dealcard .dealcard-brand,
+		.cinemacard .cinemacard-brandP,
+		.dealcard .title span,
+		.dealcard .price span {
+			font-size: 14px;
+		}
+		
+		.dealcard .dealcard-brand {
+			height: 90px;
+		}
+		
+		.dealcard .price {
+			height: inherit;
+			line-height: 30px;
+		}
+		
+		.dealcard .price p {
+			color: #333;
+		}
+		
+		.dealcard .price .num {
+			color: #666;
+			font-size: 12px;
+		}
+		
+		.state {
+			color: #f63d41 !important;
+			font-size: 12px !important;
+		}
+		
+		.tip {
+			text-align: right;
+		}
+		
+		.tip p {
+			color: #333;
+			position: relative;
+			top: 3px;
+		}
+		
+		.tab-nav {
+			overflow-x: scroll !important;
+			width: 120%;
+			white-space: nowrap;
+		}
+		
+		.tab-hd {
+			height: 45px !important;
+			border-bottom: 1px solid #EFEFF4 !important;
+		}
+		
+		.tab-nav li {
+			height: 45px !important;
+		}
+		
+		.tab-hdtwo {
+			overflow-x: scroll;
+			white-space: nowrap;
+			background: none;
+		}
+		
+		.notice .tab-hdtwo li {
+			float: none!important;
+			width: 16%;
+			display: inline-block;
+			white-space: nowrap;
+			height: auto;
+			line-height: 45px !important;
+		}
+		
+		 ::-webkit-scrollbar {
+			width: 0!important;
+			opacity: 1!important;
+		}
+		
+		.poi-name {
+			word-break: break-all;
+			white-space: normal;
+			font-size: 14px;
+		}
+		
+		.fineB:after {
+			bottom: 1px;
+		}
+		
+		.fineB1:after {
+			bottom: 0px;
+		}
+		
+		body {
+			background-color: #f3f3f3;
+		}
+		
+		.orderbh span {
+			font-size: 12px;
+			color: #333;
+		}
+		
+		.shopImg {
+			width: 22px;
+			vertical-align: middle;
+			margin-top: -3px;
+		}
+		
+		.mui-bar-nav {
+			box-shadow: none !important;
+		}
+		
+		header.mui-bar {
+			z-index: 200;
+		}
+		
+		#tabLink {
+			position: fixed;
+			width: 100%;
+			z-index: 100;
+			border: none !important;
+			box-shadow: 0 0 2px rgba(175, 166, 166, 0.85) !important;
+		}
+	</style>
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color: white;">
+			<div class="searchFind">
+				<span class="mui-icon mui-icon-search" onclick="submitTest();"></span>
+				<div class="sint">
+					<form onsubmit="submitTest();return false;" id="searchf">
+						<!--onsubmit="submitTest();return false;" -->
+						<input type="search" class="fsearch" placeholder="输入商品名/店名">
+					</form>
+					<span class="mui-action-back back">取消</span>
+				</div>
+
+			</div>
+		</header>
+		<script src="../../js/statusBar.js" type="text/javascript" charset="utf-8"></script>
+
+		<div id="record">暂无搜索记录</div>
+		<script id="recordTpt" type="text/html">
+			<%if(data.length==0){%>
+			<div class="searchRecord">
+				&nbsp;&nbsp;搜索记录:无
+			</div>
+			<%}else{%>
+			<div class="history latest">
+				<span>最近搜索</span> <img src="../../img/delet.svg" class="clearStr" alt="" />
+				<div class="clear"></div>
+				<div class="hisList">
+					<%for(var i=data.length-1;i>=0;i--){%>
+					<span><%=data[i]%></span>
+					<%}%>
+				</div>
+			</div>
+
+			<%}%>
+		</script>
+
+		<!--tab-->
+		<div id="tab">
+
+			<div id="orderData"></div>
+
+			<script type="text/html" id="orderTpl">
+
+				<div class="tabcontent tc1 taactive">
+					
+					<div class="notice">
+					 
+						<div class="tab-bd">
+							<div class="tab-pal">
+								<dl class="list listtwo list-in">
+									<%if(oduuid && oduuid.length){%>
+									<%for(var m = 0; m<oduuid.length;m++){%>
+									<div class="waitpay" style="margin-bottom: 10px!important;background: white;padding-bottom: 5px;">
+										<div class="orderbh box-s fineB" style="background-color: white;border-bottom: 1px solid coral;">
+
+											<span class="fr state">等待买家付款</span>
+										</div>
+										<%for(var i =0;i<orderData.length;i++){%>
+										<%if(orderData[i].order_status == 1 && orderData[i].order_UUID == oduuid[m]){%>
+										<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>" style="margin-bottom: 0;">
+											<div class="orderbh box-s fineB">
+												<%if(orderData[i].order_type == 0){ %>
+												<span>
+															<img class="shopImg" src="../../img/market/shop.png" style="width: 0.2rem;vertical-align: middle;" />
+															跨境优品
+														<%}else{%>
+															<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
+															<img src="../../img/market/shop.png" class="shopImg" style="width: 0.2rem;vertical-align: middle;" />
+															<%=orderData[i].goods_data.stores.store_name%>
+															<%}%>
+															<span style="font-size: 0.10rem;"><%=orderData[i].create_time%></span>
+												</span>
+											</div>
+											<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
+											<a href="#" class="react fineB" onclick="orderInfo('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.store_id%>')">
+												<div class="dealcard dealcardtwo clearfloat">
+													<div class="dealcard-img imgbox">
+														<% if(orderData[i].order_type == 0){ %>
+														<% if(orderData[i].goods_data.goods_Data[j].youpin){ %>
+														<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<%}else{%>
+														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<%}%>
+														<% }else{ %>
+														<img src="<%=myUrl%><%=orderData[i].goods_data.goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% } %>
+													</div>
+													<div class="dealcard-block-right dealcard-block-righttwo">
+														<div class="dealcard-brand dealcard-brandtwo single-line">
+															<span class="poi-name icon-count-3"><%=orderData[i].goods_data.goods_Data[j].title%></span>
+															<div class="price pricetwo">
+																<p>¥
+																	<%=orderData[i].goods_data.goods_Data[j].price%>
+																</p>
+																<p class="num">x
+																	<%=orderData[i].goods_data.goods_Data[j].nums%>
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</a>
+											<%}%>
+
+										</dd>
+										<%}%>
+
+										<%}%>
+										<div class="order-bottom clearfloat box-s tip" style="background-color: white;margin: 0;">
+											<p>
+												<%if(oduuid[m] == ordermoney[m].order_UUID){%> 合计:￥
+												</sub>
+												<%=ordermoney[m].PriceCalculValue%><sub>
+														<%}%>
+													</sub></p>
+
+										</div>
+									 
+									</div>
+									<%}%>
+									<%}%>
+									<%for(var i =0;i<orderData.length;i++){%>
+									<%if(orderData[i].order_status != 1){%>
+									<dd id="<%=orderData[i].order_id%>" data-id="<%=orderData[i].order_status%>" data-type="<%=orderData[i].order_type%>">
+										<div class="orderbh box-s fineB">
+											<%if(orderData[i].order_type == 0){ %>
+											<span>
+													<img src="../../img/market/shop.png" class="shopImg" style="width: 0.2rem;vertical-align: middle;" />
+													跨境优品
+												<%}else{%>
+													<span onclick="goShop('<%=orderData[i].goods_data.store_id%>')">
+													<img src="../../img/market/shop.png" class="shopImg" style="width: 0.2rem;vertical-align: middle;" />
+													<%=orderData[i].goods_data.stores.store_name%>
+													<%}%>
+													<span style="font-size: 0.10rem;"><%=orderData[i].create_time%></span>
+											</span>
+											<span class="fr state"><%=state[orderData[i].order_status]%></span>
+										</div>
+										<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
+										<a href="#" class="react" onclick="orderInfo('<%=orderData[i].order_id%>','<%=orderData[i].goods_data.store_id%>')">
+											<div class="dealcard dealcardtwo clearfloat">
+												<div class="dealcard-img imgbox">
+													<% if(orderData[i].order_type == 0){ %>
+													<% if(orderData[i].goods_data.goods_Data[j].youpin){ %>
+													<img src="<%=orderData[i].goods_data.goods_Data[j].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+													<%}else{%>
+													<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
+													<%}%>
+													<% }else{ %>
+													<img src="<%=myUrl%><%=orderData[i].goods_data.goods_Data[j].thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+													<% } %>
+												</div>
+												<div class="dealcard-block-right dealcard-block-righttwo">
+													<div class="dealcard-brand dealcard-brandtwo single-line">
+														<span class="poi-name icon-count-3"><%=orderData[i].goods_data.goods_Data[j].title%></span>
+														<div class="price pricetwo">
+															<p>¥
+																<%=orderData[i].goods_data.goods_Data[j].price%>
+															</p>
+															<p class="num">x
+																<%=orderData[i].goods_data.goods_Data[j].nums%>
+															</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<%}%>
+
+										<div class="order-bottom clearfloat box-s tip">
+											<p>
+												<!--<sub>共<%=orderData[i].goods_data.totalNum%>件商品&nbsp;-->
+												<%if(orderData[i].userPostData){%> 合计:￥
+												</sub>
+												<%=orderData[i].amount%><sub>
+														<%if(orderData[i].userPostData.express_id == -1){%>
+															(不含运费)
+															<%}else if(orderData[i].userPostData.express_id == -2){%>
+															(自提)
+																<%}else{%>
+																(含运费)
+																<%}%>
+																<%}%>
+														</sub></p>
+										</div>
+										<%if(orderData[i].refuse_refund){%>
+										<div style="line-height: .3rem;padding-left: 15px;">商家拒绝退款：
+											<%=orderData[i].refuse_refund%>
+										</div>
+										<%}%>
+									</dd>
+									<%}%>
+									<%}%>
+									<div id="noOrder" style="display: none;">
+										<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" />
+										<span style="display:block;text-align: center;padding: 20px;color: #777;">您还没有相关的订单</span>
+									</div>
+								</dl>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</script>
+		</div>
+
+		<script type="text/javascript">
+			var immersed = 0;
+
+			var ms = (/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(navigator.userAgent);
+			if(ms && ms.length >= 3) { // 当前环境为沉浸式状态栏模式
+				immersed = parseFloat(ms[2]); // 获取状态栏的高度
+			}
+			$(".tabPs").css("top", immersed + 50 + "px");
+			$(".tabcontent").css("top", "calc(31px + 0.13rem + " + immersed + "px)")
+		</script>
+
+	</body>
+	<script type="text/javascript">
+		mui.plusReady(function() {
+			//自动弹出输入法
+			var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+				if(mui.os.android) {
+					var main = plus.android.runtimeMainActivity();
+					var Context = plus.android.importClass("android.content.Context");
+					InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+					imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				} else {
+					nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+				}
+			};
+			var showSoftInput = function() {
+				if(mui.os.android) {
+					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+				} else {
+					nativeWebview.plusCallMethod({
+						"setKeyboardDisplayRequiresUserAction": false
+					});
+				}
+				//此处可写具体逻辑设置获取焦点的input
+				setTimeout(function() {
+					var inputElem = document.getElementsByClassName('fsearch')[0];
+					inputElem.focus();
+				}, 0);
+			};
+			initNativeObjects();
+			showSoftInput();
+
+			//缓存记录
+			var searchorder = JSON.parse(plus.storage.getItem("$searchorder") || '[]');
+			var myuserid = plus.storage.getItem('userid');
+			//缓存记录 渲染
+			var recordObj = {};
+			recordObj.data = searchorder;
+			if(searchorder.length) {
+				var htmlrecord = template('recordTpt', recordObj);
+				document.getElementById('record').innerHTML = htmlrecord;
+			}
+
+			//清除记录
+			$('.clearStr').click(function() {
+				plus.storage.removeItem("$searchorder");
+				$('.latest').css("display", "none");
+				document.getElementById('record').innerHTML = "暂无搜索记录";
+			})
+			//搜索某一条 缓存 
+			$('.hisList span').click(function(e) {
+				e.preventDefault();
+				$("#container").css("display", "none");
+				$(".searchOut").css("display", "block");
+				$("input").val($(this).text());
+				doSearch($.trim($(this).text()))
+			})
+
+			//搜索方法
+			$("input").focus(function() {
+				$(".latest").css("display", "block");
+				$("#tab").css("display", "none");
+			})
+			window.submitTest = function() {
+				var searchorder = JSON.parse(plus.storage.getItem("$searchorder") || '[]');
+				if($("input").val() != '') {
+					var words = $("input").val();
+					if(searchorder.length != 0) {
+						var flag = false;
+						for(var i = 0; i < searchorder.length; i++) {
+							if(searchorder[i] == words) {
+								searchorder[i] = words;
+								flag = false;
+								break;
+							} else {
+								flag = true;
+							}
+						}
+						if(flag) {
+							searchorder.push(words);
+						}
+					} else {
+						searchorder.push(words);
+
+					}
+					plus.storage.setItem('$searchorder', JSON.stringify(searchorder));
+					$(".latest").css("display", "none");
+					$("#tab").css("display", "block");
+					//执行搜索
+					doSearch(words);
+				} else {
+					mui.toast("请输入搜索内容！");
+					$(".latest").css("display", "block");
+					$("#tab").css("display", "none");
+				}
+			}
+
+			function doSearch(words) {
+				$(".history").css("display", "none");
+				$("#tab").css("display", "block");
+				$("input").blur();
+				plus.nativeUI.showWaiting();
+				var cityNum = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken');
+				mui.ajax(serverUrl + '/api/mall/searchorder', {
+					data: {
+						goodsName: words,
+						buyer: myuserid
+					},
+					dataType: 'json',
+					type: 'post',
+					timeout: 8000,
+					headers: {
+						"token": oldToken,
+						'city': cityNum
+					},
+					success: function(data, type, xhr) {
+						plus.nativeUI.closeWaiting();
+						if(data.errno == 0) {
+							if(data.data.length != 0) {
+								var orderuuid = [],
+									repayid = [],
+									ordermoney = [];
+								for(var i = 0; i < data.data.length; i++) {
+									data.data[i].PriceCalculation = eval("(" + data.data[i].PriceCalculation + ")");
+									data.data[i].PriceCalculation.PriceCalculValue = parseFloat(data.data[i].PriceCalculation.PriceCalculValue).toFixed(2)
+
+									//未付款的订单  提取uuid
+									if(data.data[i].order_status == 1 && data.data[i].order_UUID) {
+										orderuuid.push(data.data[i].order_UUID);
+										repayid.push(data.data[i].rePayID);
+										if(data.data[i].fee) {
+											data.data[i].PriceCalculation.PriceCalculValue = parseFloat(parseFloat(data.data[i].PriceCalculation.PriceCalculValue) + parseFloat(data.data[i].fee)).toFixed(2);
+
+											if(data.data[i].fee > 0) {
+												data.data[i].fee = "+￥" + data.data[i].fee;
+											} else {
+												data.data[i].fee = "-￥" + data.data[i].fee * (-1);
+											}
+										}
+										//									ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue)
+
+									}
+									if(data.data[i].goods_data) {
+										data.data[i].goods_data = eval("(" + data.data[i].goods_data + ")");
+									}
+									if(data.data[i].order_type == 0) {
+										for(var j = 0; j < data.data[i].goods_data.goods_Data.length; j++) {
+											if(data.data[i].goods_data.goods_Data[j].youpin) {
+												data.data[i].goods_data.goods_Data[j].youpin = eval("(" + data.data[i].goods_data.goods_Data[j].youpin + ")");
+											}
+										}
+
+									}
+									var dt = new Date(data.data[i].create_time);
+									var date = [
+										[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'), [dt.getHours(), dt.getMinutes()].join(':')
+									].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+									data.data[i].create_time = date;
+									for(var j = 0; j < data.data[i].goods_data.goods_Data.length; j++) {
+										data.data[i].goods_data.goods_Data[j].price = parseFloat(data.data[i].goods_data.goods_Data[j].price).toFixed(2);
+									}
+									if(data.data[i].userPostData) {
+										data.data[i].userPostData = eval("(" + data.data[i].userPostData + ")");
+									}
+									data.data[i].goods_data.totalMoney = data.data[i].goods_data.PriceCalculValue;
+
+								}
+								if(orderuuid.length != 0) {
+									orderuuid = orderuuid.unique1(); //去重
+								}
+
+								for(var i = 0; i < orderuuid.length; i++) {
+									for(var j = 0; j < data.data.length; j++) {
+										if(orderuuid[i] == data.data[j].order_UUID) {
+											var mobj = {
+												order_UUID: data.data[j].order_UUID,
+												PriceCalculValue: data.data[j].PriceCalculation.PriceCalculValue
+											};
+											ordermoney.push(mobj)
+
+										}
+									}
+								}
+
+								//json 数组去重
+								var arr = [];
+								var list = ordermoney;
+								for(var i = 0; i < list.length; i++) {
+									if(i == 0) arr.push(list[i]);
+									var b = false;
+									if(arr.length > 0 && i > 0) {
+										for(var j = 0; j < arr.length; j++) {
+											if(arr[j].order_UUID == list[i].order_UUID) {
+												b = true;
+												//break;
+											}
+										}
+										if(!b) {
+											arr.push(list[i]);
+										}
+									}
+								}
+								ordermoney = arr;
+								repayid = repayid.unique1();
+
+								console.log("对对对 ", data)
+								var obj = {};
+								obj.orderData = data.data;
+								console.log('啦啦啦', obj.orderData)
+								obj.myUrl = serverimgUrlE;
+								obj.oduuid = orderuuid;
+								console.log('orderuuid', JSON.stringify(orderuuid))
+
+								obj.repayid = repayid;
+								obj.ordermoney = ordermoney;
+								obj.state = ['', '等待买家付款', '买家已付款', '卖家已发货', '', '已评价', '等待卖家同意退货', '退款中', '退款成功', '', '等待卖家同意退款'];
+								document.getElementById("orderData").innerHTML = template("orderTpl", obj);
+							
+								} else {
+
+								document.getElementById("orderData").innerHTML = '<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" /><span style="display:block;text-align: center;padding: 20px;color: #777;">您还没有相关的订单</span>';
+							}
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting()
+						console.log('响应失败  !');
+					}
+				});
+			}
+				window.orderInfo = function(orderId, storeid) {
+				openview({
+					view: 'orderDetail.html',
+					id: 'orderDetail',
+					extrasobj: {
+						orderId: orderId,
+						storeId: storeid
+					}
+				})
+			}
+		})
+		//数组去重
+		Array.prototype.unique1 = function() {
+			var res = [this[0]];
+			for(var i = 1; i < this.length; i++) {
+				var repeat = false;
+				for(var j = 0; j < res.length; j++) {
+					if(this[i] == res[j]) {
+						repeat = true;
+						break;
+					}
+				}
+				if(!repeat) {
+					res.push(this[i]);
+				}
+			}
+			return res;
+		}
+	</script>
+
+</html>
