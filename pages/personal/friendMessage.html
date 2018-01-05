@@ -185,7 +185,7 @@
 								<div class="qbot ft14 flexa" onclick="DTdetail('<%=list[i].content.newsId%>','<%=list[i].content.userid%>')" style="justify-content: space-around;">
 									<div class="flexa">
 										<div class="rsImg">
-											<img src="<%=list[i].avatar%>" onclick="elseCircleIndex(<%=list[i].sender%>)" />
+											<img src="<%=list[i].avatar%>"/>
 										</div>
 										<div>
 											<div class="maincl ft14"><%=list[i].nickname%></div>
@@ -208,7 +208,10 @@
 										<div>
 											<div class="maincl ft14"><%=list[i].nickname%></div>
 											<div class="maincl ft14" style="margin-top: 5px;">
-												<%=list[i].content.commont%>
+												<%=list[i].content.content%>
+											</div>
+											<div class="maincl ft14" style="margin-top: 5px;">
+												<img src="<%=list[i].content.pic[0].picImg%>" style="width: 45px;"/>
 											</div>
 										</div>
 									</div>
@@ -238,7 +241,7 @@
 								</div> <!--toUserId myAvatar mynickname-->
 								<div class="qbot ft14 flexa" onclick="chat(<%=list[i].sender%>,'<%=list[i].nickname%>','<%=list[i].loginPic%>')" style="justify-content: space-around;">
 									<div class="flexa">
-										<div class="rsImg">
+										<div class="rsImg"  onclick="elseCircleIndex(<%=list[i].sender%>)" >
 											<img src="<%=list[i].avatar%>" />
 										</div>
 										<div>
@@ -457,6 +460,23 @@
 										if(nowArray[j].title.indexOf('举报')>0){
 											nowArray[j].content = JSON.parse(nowArray[j].content);
 										}
+										
+										if(nowArray[j].messageType == 5 || nowArray[j].messageType == 8 || nowArray[j].messageType == 6 || nowArray[j].messageType == 7 || nowArray[j].messageType == 9){
+					     					if(nowArray[j].messageType == 7){
+												var aaa = JSON.parse(nowArray[j].content);
+					     						if(!aaa.id){ 
+					     							nowArray[j].content =  JSON.parse(JSON.parse(nowArray[j].content));
+					     						}else{
+					     							nowArray[j].content =  JSON.parse(nowArray[j].content);
+					     						}
+					     					}else{
+					     						nowArray[j].content =  JSON.parse(nowArray[j].content);
+					     					}
+					     					
+					     					if(nowArray[j].content.data && nowArray[j].content.data.gift){
+					     						nowArray[j].content.data.gift[0].picImg = JSON.parse(nowArray[j].content.data.gift[0].picImg)
+					     					}
+					     				}
 										if(nowArray[j].content && nowArray[j].content.pic && nowArray[j].content.pic!='null'){
 											nowArray[j].content.pic = JSON.parse(nowArray[j].content.pic);
 											//格式化时间
@@ -464,12 +484,6 @@
 											var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
 											nowArray[j].content.create_time = date;
 										}
-										if(nowArray[j].messageType == 5 || nowArray[j].messageType == 8 || nowArray[j].messageType == 6 || nowArray[j].messageType == 7 || nowArray[j].messageType == 9){
-					     					nowArray[j].content =  JSON.parse(nowArray[j].content)
-					     					if(nowArray[j].content.data && nowArray[j].content.data.gift){
-					     						nowArray[j].content.data.gift[0].picImg = JSON.parse(nowArray[j].content.data.gift[0].picImg)
-					     					}
-					     				}
 
 					     			}
 					     			dataobj.url = serverimgUrl;
