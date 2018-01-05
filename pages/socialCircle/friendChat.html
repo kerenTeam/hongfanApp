@@ -608,84 +608,87 @@
 								},
 								success: function(data, type, xhr) {
 									if(data.errno == 0) {
-										console.log('聊天记录', data);
-
-										var allDailog = [];
-										for(var i = 0; i < data.data.length; i++) {
-
-											data.data[i].curUser = myuserid;
-											//整理头像格式
-											if(data.data[i].avatar && data.data[i].avatar != 'null') {
-												if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http') == -1) {
-													data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+										if(data.data.length){
+											console.log('聊天记录', data);
+											var allDailog = [];
+											for(var i = 0; i < data.data.length; i++) {
+	
+												data.data[i].curUser = myuserid;
+												//整理头像格式
+												if(data.data[i].avatar && data.data[i].avatar != 'null') {
+													if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http') == -1) {
+														data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+													} else {
+														data.data[i].avatar = JSON.parse(data.data[i].avatar)[0].picImg
+													}
 												} else {
-													data.data[i].avatar = JSON.parse(data.data[i].avatar)[0].picImg
+													data.data[i].avatar = '../img/10.png'
 												}
-											} else {
-												data.data[i].avatar = '../img/10.png'
-											}
-											if(data.data[i].TO_user_avatar && data.data[i].TO_user_avatar != 'null') {
-												if(JSON.parse(data.data[i].TO_user_avatar)[0].picImg.indexOf('http') == -1) {
-													data.data[i].TO_user_avatar = serverimgUrl + JSON.parse(data.data[i].TO_user_avatar)[0].picImg;
+												if(data.data[i].TO_user_avatar && data.data[i].TO_user_avatar != 'null') {
+													if(JSON.parse(data.data[i].TO_user_avatar)[0].picImg.indexOf('http') == -1) {
+														data.data[i].TO_user_avatar = serverimgUrl + JSON.parse(data.data[i].TO_user_avatar)[0].picImg;
+													} else {
+														data.data[i].TO_user_avatar = JSON.parse(data.data[i].TO_user_avatar)[0].picImg
+													}
 												} else {
-													data.data[i].TO_user_avatar = JSON.parse(data.data[i].TO_user_avatar)[0].picImg
+													data.data[i].TO_user_avatar = '../img/10.png'
 												}
-											} else {
-												data.data[i].TO_user_avatar = '../img/10.png'
-											}
-											if(data.data[i].userId == myuserid) {
-												myavatar = data.data[i].avatar;
-											}
-
-											//昵称
-											if(data.data[i].nickname && data.data[i].nickname != 'null') {
-												if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)) {
-													data.data[i].nickname = data.data[i].nickname.substring(0, 3) + "****" + data.data[i].nickname.substring(7, 11)
+												if(data.data[i].userId == myuserid) {
+													myavatar = data.data[i].avatar;
 												}
-											} else {
-												data.data[i].nickname = '匿名'
-											}
-
-											if(data.data[i].TO_nickname && data.data[i].TO_nickname != 'null') {
-												if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].TO_nickname)) {
-													data.data[i].TO_nickname = data.data[i].TO_nickname.substring(0, 3) + "****" + data.data[i].TO_nickname.substring(7, 11)
+	
+												//昵称
+												if(data.data[i].nickname && data.data[i].nickname != 'null') {
+													if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)) {
+														data.data[i].nickname = data.data[i].nickname.substring(0, 3) + "****" + data.data[i].nickname.substring(7, 11)
+													}
+												} else {
+													data.data[i].nickname = '匿名'
 												}
-											} else {
-												data.data[i].TO_nickname = '匿名'
+	
+												if(data.data[i].TO_nickname && data.data[i].TO_nickname != 'null') {
+													if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].TO_nickname)) {
+														data.data[i].TO_nickname = data.data[i].TO_nickname.substring(0, 3) + "****" + data.data[i].TO_nickname.substring(7, 11)
+													}
+												} else {
+													data.data[i].TO_nickname = '匿名'
+												}
+	
+												var dt = new Date(data.data[i].createTime);
+												var date = [
+													[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'), [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+												].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
+												data.data[i].createTime = date;
+	
+												if(data.data[i].content && data.data[i].content.indexOf('picImg') > 0) {
+													data.data[i].pic = JSON.parse(data.data[i].content)[0].picImg;
+												}
+												//	                              
+												//	                                    
+												allDailog.push(data.data[i])
 											}
-
-											var dt = new Date(data.data[i].createTime);
-											var date = [
-												[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'), [dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
-											].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
-											data.data[i].createTime = date;
-
-											if(data.data[i].content && data.data[i].content.indexOf('picImg') > 0) {
-												data.data[i].pic = JSON.parse(data.data[i].content)[0].picImg;
-											}
-											//	                              
-											//	                                    
-											allDailog.push(data.data[i])
+											document.getElementById("allDailog").innerHTML = template("allDailogTPL", {
+												allDailog: allDailog
+											})
+											var msgItems = $('.msg-item');
+											[].forEach.call(msgItems, function(item, index) {
+												item.addEventListener('tap', function(event) {
+													msgItemTap(item, event);
+												}, false);
+											});
+											imageViewer.findAllImage();
+											//	                                doc.querySelector('#allDailog').scrollTop = doc.querySelector('#allDailog').scrollHeight + doc.querySelector('#allDailog').offsetHeight;
+											var time2 = setTimeout(function() {
+	//											document.getElementById("allDailog").style.paddingBottom = "60px"
+												var itemsDiv = document.getElementById("allDailog").getElementsByClassName('msg-item');
+												itemsDiv[itemsDiv.length - 1].scrollIntoView(true);
+												//									document.getElementById("allDailog").style.paddingBottom = ""
+											}, 100)
+											plus.nativeUI.closeWaiting();
+										}else{
+											plus.nativeUI.closeWaiting();
+											document.getElementById("allDailog").innerHTML ='<div style="font-size: 14px;padding: 20px;text-align: center;color: #343434;">暂无会话</div>'
 										}
-										document.getElementById("allDailog").innerHTML = template("allDailogTPL", {
-											allDailog: allDailog
-										})
-										var msgItems = $('.msg-item');
-										[].forEach.call(msgItems, function(item, index) {
-											item.addEventListener('tap', function(event) {
-												msgItemTap(item, event);
-											}, false);
-										});
-										imageViewer.findAllImage();
-										//	                                doc.querySelector('#allDailog').scrollTop = doc.querySelector('#allDailog').scrollHeight + doc.querySelector('#allDailog').offsetHeight;
-										var time2 = setTimeout(function() {
-//											document.getElementById("allDailog").style.paddingBottom = "60px"
-											var itemsDiv = document.getElementById("allDailog").getElementsByClassName('msg-item');
-											itemsDiv[itemsDiv.length - 1].scrollIntoView(true);
-											//									document.getElementById("allDailog").style.paddingBottom = ""
-										}, 100)
-										plus.nativeUI.closeWaiting();
-
 									} else {
 										console.log(data)
 									}
@@ -823,6 +826,10 @@
 									success: function(data, type, xhr) {
 										console.log("发送 " + info + " " + JSON.stringify(data))
 										if(data.errno == 0) {
+											if(document.getElementById("allDailog").innerHTML == '<div style="font-size: 14px;padding: 20px;text-align: center;color: #343434;">暂无会话</div>'){
+												document.getElementById("allDailog").innerHTML ='';
+											}
+											
 											var time3 = setTimeout(function() {
 												document.getElementById("allDailog").style.paddingBottom = "60px"
 												var itemsDiv = document.getElementById("allDailog").getElementsByClassName('msg-item');
@@ -851,6 +858,9 @@
 											var dataobj = JSON.parse(back.responseText);
 											console.log('发送音频', dataobj)
 											if(dataobj.errno == 0) {
+												if(document.getElementById("allDailog").innerHTML == '<div style="font-size: 14px;padding: 20px;text-align: center;color: #343434;">暂无会话</div>'){
+													document.getElementById("allDailog").innerHTML ='';
+												}
 												var time2 = setTimeout(function() {
 													var itemsDiv = mui('#allDailog')[0].getElementsByClassName('msg-item');
 													itemsDiv[itemsDiv.length - 1].scrollIntoView();
@@ -1116,6 +1126,9 @@
 											var dataobj = JSON.parse(back.responseText);
 											console.log('发送图片', dataobj)
 											if(dataobj.errno == 0) {
+												if(document.getElementById("allDailog").innerHTML == '<div style="font-size: 14px;padding: 20px;text-align: center;color: #343434;">暂无会话</div>'){
+													document.getElementById("allDailog").innerHTML ='';
+												}
 												var time2 = null;
 												var time2 = setTimeout(function() {
 													document.getElementById("allDailog").style.paddingBottom = "60px"
@@ -1207,6 +1220,9 @@
 										var dataobj = JSON.parse(back.responseText);
 										console.log('发送视频', dataobj)
 										if(dataobj.errno == 0) {
+											if(document.getElementById("allDailog").innerHTML == '<div style="font-size: 14px;padding: 20px;text-align: center;color: #343434;">暂无会话</div>'){
+												document.getElementById("allDailog").innerHTML ='';
+											}
 											var time2 = null;
 											var time2 = setTimeout(function() {
 												document.getElementById("allDailog").style.paddingBottom = "60px"

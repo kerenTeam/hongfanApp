@@ -73,7 +73,7 @@
 						<img class="mr20 unlike" id="doLike" src="../../img/answer/unlike.png"/>
 						赞:<span class="ft14 whitecl"><%=dataList.likes%></span>
 				</div> 
-				<div class="ft14 whitecl isQter" style="border-left:1px solid #f3f3f3" onclick="goAnswer('<%=dataList.onlyExpert%>','<%=dataList.assignedExpert%>',<%=dataList.userid%>)">
+				<div class="ft14 whitecl isQter" style="border-left:1px solid #f3f3f3" onclick="goAnswers('<%=dataList.onlyExpert%>','<%=dataList.assignedExpert%>',<%=dataList.userid%>)">
 				 
 					<img src="../../img/answer/goanswer/answer.png" class="mr20" alt="" /> 回答:<%=dataList.answerNums%>
 				</div>
@@ -99,7 +99,7 @@
 						<%}%>
 						
 					</div>  
-					<p class="ft14 disablecl" style="-webkit-user-select: text;"><%=list[i].commont%></p> 
+					<p class="ft14 disablecl answFa" style="-webkit-user-select: text;"><%=list[i].commont%></p> 
 					<%if(list[i].pics && list[i].pics.length){%>
 						<%for(var j = 0 ;j<list[i].pics.length;j++){%>
 							<div class="answerImf">
@@ -131,11 +131,10 @@
 			var cityNum  = plus.storage.getItem('cityNum'),
 			    oldToken = plus.storage.getItem('oldToken'),
 				myuserid = plus.storage.getItem('userid'),
-				infiId = plus.webview.currentWebview().answerId;
+				infiId = plus.webview.currentWebview().answerId,
 				touserid = plus.webview.currentWebview().toUserId;
 			
-			window.goAnswer = function(isExpert,expertId,qusid){
-				console.error(isExpert);
+			window.goAnswers = function(isExpert,expertId,qusid){
 				if(plus.storage.getItem('myToken')){
 					if(isExpert == 1){
 						if(expertId == myuserid){ 
@@ -158,7 +157,8 @@
 				}else{
 					mui.toast('请登录');
 					openview({
-						view:'../login.html'
+						view:'../login.html',
+						id:'login'
 					});
 				} 
 			}
@@ -214,7 +214,20 @@
 							}
 							dataObj.dataList = data.data;
 							document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj); 
-							 
+							document.getElementsByClassName("biaotiF")[0].addEventListener("tap",function(event){
+								var name = event.target.innerText;
+								var urlRegExp = new RegExp("((https|http|ftp|rtsp|mms|www)?:\/*\/*)[^\u4E00-\u9FA5]+");
+								if(urlRegExp.exec(name) != null){
+									var pipeiurl = urlRegExp.exec(name);
+									openview({
+										view:'../socialCircle/linkurl.html',
+										id: "linkurl",
+										extrasobj: {
+											bannerUrl: pipeiurl[0]
+										}
+									}) 
+								}
+							})
 							//判断是否点赞
 							if(data.errmsg && data.errmsg.isLike==1){
 								$('#doLike').attr('src','../../img/answer/liked.png');
@@ -222,7 +235,7 @@
 								$('#doLike').attr('src','../../img/answer/unlike.png');
 							}
 							//点赞
-							$('#doLike').click(function(){
+							$('#doLike').unbind('click').click(function(){
 								if(plus.storage.getItem('myToken')){
 									var curThis = $(this);
 									if(curThis.attr('src') == '../../img/answer/unlike.png'){ 
@@ -301,7 +314,6 @@
 											
 											$('.commentsShow').html(template('cmtTpl',{list:cmtArray}));
 											lazyLoad();
-											
 										} 
 										
 									 
@@ -328,20 +340,8 @@
 			}
 			
 		})
-		document.addEventListener("tap",function(event){
-			var name = event.target.innerText;
-			var urlRegExp = new RegExp("((https|http|ftp|rtsp|mms|www)?:\/*\/*)[^\u4E00-\u9FA5]+");
-			if(urlRegExp.exec(name) != null){
-				var pipeiurl = urlRegExp.exec(name);
-				openview({
-					view:'../socialCircle/linkurl.html',
-					id: "linkurl",
-					extrasobj: {
-						bannerUrl: pipeiurl[0]
-					}
-				}) 
-			}
-		})
+//		mui('.biaotiF')[0]
+		
 	</script>
 	<script type="text/javascript">
 		mui.previewImage(); 
