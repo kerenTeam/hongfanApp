@@ -243,7 +243,7 @@
 						</td>
 						<!--<td class="teseguan"><img src="../img/mainHtml/tese.png" /><br/>-->
 						<td class="teseguan"><img src="../img/answer/editset.png" /><br/>
-							<p>特色馆</p>
+							<p>地方特产</p>
 						</td>
 						<!--<td class="chaoshiyou"><img src="../img/mainHtml/chaoshi.png" /><br/>-->
 						<td class="chaoshiyou"><img src="../img/answer/editset.png" /><br/>
@@ -549,7 +549,7 @@
 		<!--遮罩1-->
 		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
 		<script type="text/html" id="maskTpl">
-			
+
 			<img src="../img/mainHtml/mclose.svg" class="closeMs"/>
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
 			<%if(popdata.modelContent){%>
@@ -557,7 +557,7 @@
 			<%}else{%>
 				<img src="../img/mainHtml/mask1.png" />
 			<%}%>
-				
+
 
 			</div>
 		</script>
@@ -571,14 +571,14 @@
 		</div>
 		<script src="../js/shuangdan.js"></script>
 		<!--双旦活动结束-->
-		
+
 
 		</div>
 		<script type="text/javascript">
 			$('.ruleCt').click(function(){
 				event.stopPropagation()
 			})
-			
+
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数
 			function citysBtn(name){//手动城市切换
@@ -599,7 +599,7 @@
 				});
 			}
 
-		
+
 
 			document.addEventListener('openf', function() {
 				mui('.hiFriend')[0].style.display = '';
@@ -713,7 +713,7 @@
 		                			if(data.data && data.data.length){
 		                				mui.each(data.data,function(index,item){
 			                				if(item.typeName == 'homeIndex'){
-			                					if(item.modelState == 1){ 
+			                					if(item.modelState == 1){
 		                            			 	$('#maskInfo1').show();
 		                            			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
 		                            			 	$('#maskInfo1').click(function(){
@@ -723,7 +723,7 @@
 												$('.closeMs').click(function(){
 													event.stopPropagation();
 													$(this).parent().fadeOut(200);
-												}) 
+												})
 		                            			}else{
 		                            			 	$('#maskInfo1').hide()
 		                            			}
@@ -770,7 +770,7 @@
 							}
 						});
 					});
-					//特色馆
+					//地方特产
 					teseguan.addEventListener('tap', function(){
 						openview({
 							view:'market/tsmall.html',
@@ -1141,7 +1141,7 @@
 										if(recommendObj.list.length > 4){recommendObj.list.length = 4}
 										for(var i=0;i<recommendObj.list.length;i++){
 											if(index == 1){
-												if(recommendObj.list[i].countDown){ 
+												if(recommendObj.list[i].countDown){
 													var endTime = new Date(recommendObj.list[i].countDown).getTime();
 										    			var startTime = new Date().getTime();
 										    			var allseconds = (endTime - startTime)/1000;
@@ -1156,10 +1156,10 @@
 											    			recommendObj.list[i].seconds = 0;
 											    			recommendObj.list[i].countDown = '抢购结束';
 										    			}
-										    			
+
 												}
 											}
-											
+
 											if(!recommendObj.list[i].thumb.indexOf('http')<0){
 												recommendObj.list[i].thumb = serverimgUrl + recommendObj.list[i].thumb;
 											}
@@ -1175,7 +1175,7 @@
 												}
 											})
 										}
-										
+
 									}else{
 										mui('.manyTJ')[index-1].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
 									}
@@ -1189,25 +1189,25 @@
 							}
 						});
 					}
-					
+
 					function timeCountDown(cur,sec){
 						var timem = null;
 						var allsec = sec;
 						timem = setInterval(function(){
-			    				
+
 							if(allsec > 0) {
 								allsec--;
 								if(allsec > 0){
 									var day = Math.floor(allsec/(60*60*24));
-					    				var hour = Math.floor((allsec/(60*60*24) - day)*24);  
-					    				var minute = Math.floor((((allsec/(60*60*24) - day)*24)-hour)*60) 
-									var seconds = Math.floor(((((allsec/(60*60*24) - day)*24)-hour)*60-minute)*60) 
+					    				var hour = Math.floor((allsec/(60*60*24) - day)*24);
+					    				var minute = Math.floor((((allsec/(60*60*24) - day)*24)-hour)*60)
+									var seconds = Math.floor(((((allsec/(60*60*24) - day)*24)-hour)*60-minute)*60)
 									cur.html(day+'天'+hour+'小时'+minute+'分钟'+seconds+'秒')
 								}else{
 									cur.html('抢购结束');
-								} 
-							} else { 
-								cur.html('抢购结束') 
+								}
+							} else {
+								cur.html('抢购结束')
 								clearInterval(timem)
 								timem = null;
 							}
