@@ -70,7 +70,7 @@
 		</div>
 	</div>
 	<div class="QandA"> 
-		<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 99;display: block;width: 100%;">
+		<div class="QAhead" style="position: -webkit-sticky; position:sticky; top: 70px;z-index: 9;display: block;width: 100%;">
 			<span class="active aClick">最新</span>
 			<span class="aClick">已解答</span> 
 		</div>
@@ -91,11 +91,12 @@
 									<div class="butright"><div class="diyButton activecl goanswer">抢答</div> </div> 
 								<%}%>
 							</div>  
-							<p class="ft15 maincl"><%=dataList[i].content%></p> 
+							<p class="ft15 maincl" style="-webkit-user-select: text;"><%=dataList[i].content%></p> 
 							<%if(dataList[i].pic && dataList[i].pic.length){%>
 								<div class="answerImf" style="padding: 0;">
 									<%for(var j = 0 ;j<dataList[i].pic.length;j++){%>
-										<div class="anImg loadPics" style="background: url(<%=dataList[i].pic[j].picImg%>) no-repeat;background-size: cover;"></div>
+										<img class="anImg loadPics" src="<%=dataList[i].pic[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>"/>
+										<!--<div class="anImg loadPics" style="background: url(<%=dataList[i].pic[j].picImg%>) no-repeat;background-size: cover;"></div>-->
 									<%}%> 
 							 	</div>
 							<%}%> 
@@ -134,12 +135,13 @@
 								<div class="disablecl"> <%=list[i].nickname%> </div>
 							</div> 
 						</div>  
-						<p class="ft14 disablecl"><%=list[i].commont%></p> 
+						<p class="ft14 disablecl" style="-webkit-user-select: text;"><%=list[i].commont%></p> 
 					</div>
 					<%if(list[i].pics && list[i].pics.length){%>
 						<div class="answerImf">
 							<%for(var j = 0 ;j<list[i].pics.length;j++){%>
-								<div class="anImg loadPics" style="background: url(<%=list[i].pics[j].picImg%>) no-repeat;background-size: cover;"></div>
+								<img class="anImg loadPics" src="<%=list[i].pics[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>"/>
+								<!--<div class="anImg loadPics" style="background: url(<%=list[i].pics[j].picImg%>) no-repeat;background-size: cover;"></div>-->
 							<%}%> 
 					 	</div>
 					<%}%>  
@@ -153,9 +155,17 @@
 	
 	<script type="text/javascript" src="../../js/jquery.min.js"></script>
 	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+		function refreshFun(){
+			shopData(0,0,false);//默认推荐
+		}
+		mui.plusReady(function(){
+			downRe(refreshFun);
+		})	
 		/*tab切换*/
 		var flag0 = 0,flag1 = 0,//是否   第一次点击
 	     	SH0 = 0,SH1  = 0;/*保存的状态栏高度*/
@@ -620,6 +630,7 @@
 				view:'answerInfo.html'
 			})
 		})
+		mui.previewImage();
 	</script>
 	<script type="text/javascript">
 		//天天特价  discountGoods, 领嗨豆  getHIdou, 团购  groupBuying, 本地生活 localLife, 跨境优品   loveToGogoods, 电影 movie,

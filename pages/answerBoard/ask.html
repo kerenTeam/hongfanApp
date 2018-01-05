@@ -18,17 +18,38 @@
 	<style type="text/css">
 		.baocun img{width:20px}
 		.disbg{border:none;}
-		.uppics{padding:15px}
-		.onepic{margin-top:20px}
-		.uppics div.onepic img{width:4.5rem;height:4.5rem;display:inline-block;margin:0 5px;border-radius:3px}
-		.uppics div.onepic input{width:0;height:0;position:absolute;outline:0}
+		.onepic{margin-top:20px;margin-left: 5px;}
 		.picimg1{width:25px;position:absolute;right:0;top:2px}
 		.followA{text-align:center;padding:10px 15px;background-color:#f3f3f3}
 		#maskInfo{z-index:99999;position:fixed;top:0;left:0;width:100%;bottom:0;background-color:rgba(0,0,0,.5)}
 		.ruleCt{position:absolute;padding-right:15px;background-color:#fff;top:15%;left:7%;width:86%;bottom:15%;padding:15px 5px;border-radius:3px}
 		.closemask{position:absolute;bottom:10px;left:50%;-webkit-transform:translateX(-50%)}
 		.ruleol{padding: 0 15px 0 15px;}
-
+		/*选择图片*/
+		.newActionWrap{overflow: hidden;position: relative;
+		    left: -2%;}
+		.newAction, .newAction2{    display: inline-block;
+		    width: 33%;
+		    height: calc(100vw * 0.33);
+		    float: left;
+		    position: relative;}
+		.newAction img, .newAction2 img{
+			width: 80%;
+		    height: 80%;
+		    display: inline-block;
+		    margin-top: 11%;
+		    margin-left: 11%;}
+		 .newAction span{
+		 	position: absolute;
+		    right: 9%;
+		    top: 11%;
+		    font-size: 32px;
+		    background-color: rgba(0, 0, 0, 0.4);
+		    color: #fff;
+		    font-weight: 500;
+		    z-index: 9999;
+		 }
+		 /*选择图片结束*/
 	</style>
 
 	<body style="background-color: white;">
@@ -50,13 +71,17 @@
 			</div>
 
 			<div class="uppics clearfix" id="uppics2">
-				<button type="button" class="mui-btn mui-btn-danger mar10 hipay" >悬赏</button>
+				<button type="button" class="mui-btn mui-btn-danger hipay" style="margin-left: 10px;">悬赏</button>
 				<div class="activecl zhidou ft14" data-id='0' style="display: none;"></div>
-		        <div class="onepic">
-		            <img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">
-		            <p>添加照片</p>
+		        <div class="onepic newActionWrap">
+		            <a class="newAction2"><img id="nowpic" onclick="showAction()" src="../../img/answer/goanswer/addpic.png"></a>
 		        </div>
 		    </div>
+		    <!--<div class="uppics clearfix" id="uppics2">
+		        <div class="onepic newActionWrap">
+		        		<a class="newAction2"><img id="nowpic" style="width: 90%;height: 89%;margin-left: 12%;" onclick="showAction()" src="../../img/answer/goanswer/addpic.png"></a>
+		        </div>
+		   	</div>-->
 		   <style type="text/css">
 		    		.disclaimer p{color: red;padding-left: 15px;}
 		    		.disclaimer p span{color: #555;}
@@ -498,65 +523,108 @@
 		})
 	});
 
-		var Apic = [];//图片存放数组
-		var lfs=null;// 保留上次选择图片列表
-		var time1 = null;
-		function galleryImgsSelected(){//从相册中选择图片
-			mui.plusReady(function(){
-			    plus.gallery.pick( function(e){
-			    	//初始化
-			    	mui('.onepic')[0].innerHTML = '<img id="nowpic" onclick="galleryImgsSelected()" src="../../img/answer/goanswer/addpic.png">';
-			    	Apic = [];
-			    	//初始化结束
-			    	lfs=e.files;
+	//从相册中选择图片 开始
+	var Apic = [],time1 = null,maxNum = 5;
+	function getImage(){//拍照并保存
+		var cmr = plus.camera.getCamera();
+		cmr.captureImage( function ( path ) {
+			plus.io.resolveLocalFileSystemURL(path,function(entry){
+				path = plus.io.convertLocalFileSystemURL(path);
+				if(0!=path.indexOf("file://")){path="file://"+path;}
+		    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';
+		    		var endpic = path.split('.')[0]+"/"+nowpic;
+				plus.zip.compressImage({//压缩方法
+					src:path,
+					dst:endpic,
+					overwrite:true,
+					quality:30
+				},
+				function(obj) {
+					showImg(obj.target);
+					Apic.push(obj.target);
+				},function(error) {
+					mui.toast('图片获取错误，请重试');
+				});
+			});
+		}, function ( e ) {
+		}, {filename:"_doc/gallery/",index:1} );
+	}
+
+	function galleryImgsSelected(){//从相册中选择图片
+		mui.plusReady(function(){
+		    plus.gallery.pick( function(e){
 			    	clearInterval(time1);
 			    	var indexNum = 0;
 			    	var indexMax = e.files.length - 1;
-			    	/*显示占位图片*/
-			    	e.files.forEach(function(){
-			    		$('.onepic').prepend('<img onclick="galleryImgsSelected()" style="width：4.5rem;height:4.5rem;display:inline" src="../../img/Spinner.svg"/>')
-			    	})
 			    	time1 = setInterval(function(){
-			    		console.log(time1);
-			    		if(0!=e.files[indexNum].indexOf("file://")){
-							e.files[indexNum]="file://"+e.files[indexNum];//图片地址
-						}
+			    		if(0!=e.files[indexNum].indexOf("file://")){e.files[indexNum]="file://"+e.files[indexNum];}
 			    		if(indexNum == indexMax){//全部压缩完毕
-			    			clearInterval(time1);
-							time1 = null;
+			    			clearInterval(time1),time1 = null;
 			    		}
 			    		var nowpic = Math.random().toString(36).substr(2) + '.jpg';//随机字符串
 			    		var endpic = e.files[indexNum].split('.')[0]+"/" +nowpic;
-			    		//压缩方法
 		    			plus.zip.compressImage({
-							src:e.files[indexNum],
-							dst:endpic,
-							overwrite:true,
-							quality:30
-						},
-						function() {
-							Apic.push(endpic);
-							showImg(endpic,indexNum);
-						},function(error) {
-							mui.toast('图片获取错误，请重试');
-						});
+						src:e.files[indexNum],
+						dst:endpic,
+						overwrite:true,
+						quality:30
+					},
+					function(obj) {
+						Apic.push(obj.target);
+						showImg(obj.target,indexNum);
+					},function(error) {
+						mui.toast('图片获取错误，请重试');
+					});
 			    		indexNum ++;
-
-			    	},1000)
-			    }, function ( e ) {
-			    },{filter:"image",multiple:true,maximum:9,selected:lfs,system:false,onmaxed:function(){//保存选择记录
-	    		//},{filter:"image",multiple:true,maximum:10,system:false,onmaxed:function(){
-					plus.nativeUI.alert('最多上传9张图片');
-			    }});
-				function showImg(url,indexNum){//显示图片
-					if(0!=url.indexOf("file://")){
-						url="file://"+url;
+			    	},500)
+		    }, function ( e ) {
+		    },{filter:"image",multiple:true,maximum:maxNum-Apic.length,system:false,onmaxed:function(){//保存选择记录
+		    		mui.alert('最多选择'+maxNum+'张图片！');
+		    }});
+		})
+	}
+	function showImg(url,indexNum){//显示图片
+		if(0!=url.indexOf("file://")){url="file://"+url;}
+		if($('.newAction').length){
+			$('.newAction').eq($('.newAction').length-1).after('<a class="newAction"><img data-preview-src="" data-preview-group="1" src="'+url+'"/><span onclick="closePic(this)" class="mui-icon mui-icon-closeempty"></span></a>');
+		}else{
+			$('.onepic').prepend('<a class="newAction"><img data-preview-src="" data-preview-group="1" src="'+url+'"/><span onclick="closePic(this)" class="mui-icon mui-icon-closeempty"></span></a>');
+		}
+	}
+	function closePic(obj){
+		var nowPic = $(obj).parentsUntil('.newActionWrap').find('img').attr('src');
+		console.log($(obj).parent().html())
+		$(obj).parent().remove();
+		if(Apic.indexOf(nowPic)>-1){
+			Apic.splice($.inArray(nowPic,Apic),1);
+		}
+	}
+	function showAction(){
+		if(Apic.length  < maxNum){
+			mui.plusReady(function(){
+				plus.nativeUI.actionSheet({
+					cancel: "取消",
+					buttons: [{
+						title: "相册选择"
+					}, {
+						title: '拍照'
+					}]
+				},
+				function(e) {
+					if (e.index == 1) { //点击从相册选择
+						galleryImgsSelected();
+					} else if (e.index == 2) {
+						getImage();
 					}
-					document.getElementsByClassName('onepic')[0].getElementsByTagName('img')[indexNum-1].src = url;
-					$('.onepic p').css('display','none');
-				}
+				})
+
 			})
-		}//从相册中选择图片结束
+		}else{
+			mui.alert('最多选择'+maxNum+'张图片！');
+		}
+
+	}
+	//从相册中选择图片结束
 
 		//发送 发布
 		mui('.baocun')[0].addEventListener('tap',function(){

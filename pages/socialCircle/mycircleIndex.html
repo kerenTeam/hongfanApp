@@ -66,7 +66,9 @@
 		.giftRecord p span{float: right;}
 		.giftItem{}
 		#giftDiv, #giftDiv2{padding-bottom: 20px;}
-		
+		.hisFlex{display: flex;justify-content: space-between;padding: 10px;align-items: center;}
+		.hisFlex .userAvatorh{width: 25px;height: 25px;border-radius: 50%;display: inline-block;}
+		.giftImg img{width: 50px;}
 	</style>
 	<body style="background-color: white;">
 		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
@@ -137,7 +139,7 @@
 											<div class="DitemRin1" style="width: 0;">
 											</div>
 										<%}%>	
-										<h3 class="overTwo" ><%=dataList[i].content%></h3> <p><%=dataList[i].read%>阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> <%=dataList[i].likes%></p>
+										<h3 class="overTwo" style="-webkit-user-select: text;"><%=dataList[i].content%></h3> <p><%=dataList[i].read%>阅读   <img src="../../img/mainHtml/yizan.png" alt="" /> <%=dataList[i].likes%></p>
 									</div>
 								</div>
 							</div>
@@ -291,11 +293,56 @@
 					<!--礼物记录-->
 					<div id="" class="giftItem">
 						<h4>礼物记录</h4>
-				 		<div class="mui-row giftRecord">
-				 			<p class="fineB">暂无记录</p>
-				 			<!--<p class="fineB">我送给飞姐一年法拉利 <span id="">2017-04-20/13:09</span></p>-->
+				 		<div class="mui-row giftRecord" id="giftRecord">
 					    </div>
-					    
+					    <script type="text/html" id="giftHisTpl">
+							<%for(var i = 0 ;i<dataList.length;i++){%>
+								<div class="hisFlex afterBorder">
+									<div>
+										<div class=" class="hisFlex"">
+											
+					 						<%if(dataList[i].userId != dataList[i].curUserId){%>
+					 							<div onclick="goOtherIndex(<%=dataList[i].userId%>)" style="display: inline-block;">
+					 								<img src="<%=dataList[i].avatar[0].picImg%>" class="userAvatorh"/>
+						 							<span class="activecl">
+														<%=dataList[i].nickname%>
+													</span>
+					 							</div>
+					 							
+					 						<%}else{%>
+					 							<span>
+													<%=dataList[i].nickname%>
+												</span>
+					 						<%}%>
+					 						
+					 						赠送给
+					 						
+					 						<%if(dataList[i].touserId != dataList[i].curUserId){%>
+					 							<div onclick="goOtherIndex(<%=dataList[i].touserId%>)" style="display: inline-block;">
+					 								<img src="<%=dataList[i].TO_user_avatar[0].picImg%>" class="userAvatorh" onerror="../../img/10.png"/>
+						 							<span class="activecl">
+														<%=dataList[i].TO_nickname%>
+													</span>
+					 							</div>
+					 						<%}else{%>
+					 							<span>
+													<%=dataList[i].TO_nickname%>
+												</span>
+					 						<%}%>
+										</div>
+				 						<br />
+				 						<div class="giftImg">
+					 						<img src="<%=dataList[i].hasing[0].picImg[0].picImg%>"/>
+										</div>
+									</div>
+									
+									<div id="">
+										<%=dataList[i].createTime%>
+									</div>
+								</div>
+								
+							<%}%>					    	
+					    </script>
 					</div>
 				</div>
 				
@@ -434,7 +481,13 @@
 		})
 		//礼物兑换HI豆结束
 		
-		
+		function goOtherIndex(id){
+			openview({
+		    		view:'elsecircleIndex.html',
+		    		id:'elsecircleIndex',
+		    		extrasobj:{userId:id}
+		    	})
+ 		}
 		/*加载礼物方法-----剔出来的(为了里面都能调用)*/
 		function loadGift(myuserid,oldToken,cityNum){
 			Fload3++;
@@ -476,13 +529,13 @@
 					}
 				},
 				error:function(xhr,type,errorThrown){
-					console.error('我的礼物数据,响应失败');
+					console.error('我的礼物数据1,响应失败');
 					Fload3 = 0;
 				}
 			});
 			mui.ajax(serverUrl+'/api/friends/gift/userId/'+myuserid,{
 				type:'get',
-				timeout:8000,
+				timeout:20000,
 				headers:{"token":oldToken,"city":cityNum},           				
 				success:function(data,type,xhr){
 					console.log('我的礼物数据2',data);
@@ -495,7 +548,6 @@
 										data.data.isGave[j].picS = nowArray2[0].picImg;
 									}
 								}
-								
 							}
 							var dataObj = {};
 						 	dataObj.dataList = data.data.isGave;
@@ -512,14 +564,47 @@
 						}else{//没有礼物
 							document.getElementById('giftDiv2').innerHTML = '<img src="../../img/unllfabu.svg" style="display: block;margin:23px auto 0px;width: 76px;"/><div style="text-align: center;">暂无礼物</div>'
 						}
-						
+						if(data.data && data.data.isHistory){
+							var toUser = data.data.isHistory.allToUserHistory;
+							var userTo = data.data.isHistory.allMyHistory;
+							data.data.isHistory = toUser.concat(userTo);
+							for(var j = 0 ;j<data.data.isHistory.length;j++){//整理内容图片
+								if(data.data.isHistory[j].userId == myuserid){
+									data.data.isHistory[j].nickname = '我';
+								}
+								if(data.data.isHistory[j].touserId == myuserid){
+									data.data.isHistory[j].TO_nickname = '我'
+								}
+								data.data.isHistory[j].curUserId = myuserid;
+								
+								if(data.data.isHistory[j].avatar){
+									data.data.isHistory[j].avatar = JSON.parse(data.data.isHistory[j].avatar)
+								}
+								if(data.data.isHistory[j].TO_user_avatar){
+									data.data.isHistory[j].TO_user_avatar = JSON.parse(data.data.isHistory[j].TO_user_avatar)
+								}
+								if(data.data.isHistory[j].hasing && data.data.isHistory[j].hasing.length){
+									data.data.isHistory[j].hasing[0].picImg = JSON.parse(data.data.isHistory[j].hasing[0].picImg)
+								}
+								var dt = new Date(data.data.isHistory[j].createTime).getTime();
+									data.data.isHistory[j].createTime = getDateDiff(dt);
+							}
+							var dataObj = {};
+						 	dataObj.dataList = data.data.isHistory;
+							document.getElementById('giftRecord').innerHTML = template("giftHisTpl", dataObj);
+							lazyLoad(true,50);//懒加载
+//							/*隐藏更多*/
+						}else{
+							document.getElementById('giftRecord').innerHTML = '<p class="fineB">暂无记录</p>';
+							
+						}
 						
 					}else{
 						console.log(data.errmsg); 
 					}
 				},
 				error:function(xhr,type,errorThrown){
-					console.error('我的礼物数据,响应失败');
+					console.error('我的礼物数据2,响应失败');
 					Fload3 = 0;
 				}
 			});
@@ -632,8 +717,8 @@
 								$('#horoscope').text('未填写')
 							}
 							//显示昵称
-							if(data.data.username && data.data.username != ' '){  
-									mui('#nickname')[0].innerHTML = data.data.username; 
+							if(data.data.nickname && data.data.nickname != ' '){  
+									mui('#nickname')[0].innerHTML = data.data.nickname; 
 							} 
 							
 						}else{
@@ -1015,7 +1100,39 @@
 	    	
 	    })
 	    
-   	  	
+   	  	//发布时间判断
+		var minute = 1000 * 60;
+		var hour = minute * 60;
+		var day = hour * 24;
+		var halfamonth = day * 15;
+		var month = day * 30;
+		function getDateDiff(dateTimeStamp){
+			var now = new Date().getTime();
+			var diffValue = now - dateTimeStamp;
+			var monthC =diffValue/month;
+			var weekC =diffValue/(7*day);
+			var dayC =diffValue/day;
+			var hourC =diffValue/hour;
+			var minC =diffValue/minute;
+			if(monthC>=1){
+			 result=parseInt(monthC) + "月前";
+			 }
+			 else if(weekC>=1){
+			 result=parseInt(weekC) + "周前";
+			 }
+			 else if(dayC>=1){
+			 result=parseInt(dayC) +"天前";
+			 }
+			 else if(hourC>=1){
+			 result=parseInt(hourC) +"小时前";
+			 }
+			 else if(minC>=1){
+			 result=parseInt(minC) +"分钟前";
+			 }else{
+			 result="刚刚";
+			 }
+			return result;
+		}
    	  	
    	  	
    	  	

@@ -94,12 +94,24 @@
 							plus.storage.setItem("userid",JSON.stringify(data.data.return.user_id));
 							plus.storage.setItem("currentStoreId",JSON.stringify(data.data.store.store_id));
 							mui.fire(plus.webview.getWebviewById('lottery'),'refresh');//触发跳转页面刷新=》抽奖页面
+							if(data.data.store && data.data.store.canCheckUp == 1){
+								plus.storage.setItem('canCheckUp','yes')
+							}else{
+								plus.storage.setItem('canCheckUp','no')
+							}
+							if(data.data.store && data.data.store.canReviewCheckUp == 1){
+								plus.storage.setItem('canReviewCheckUp','yes')
+							}else{
+								plus.storage.setItem('canReviewCheckUp','no')
+							}
 							mui.fire(plus.webview.getWebviewById('center.html'),'refresh');//触发跳转页面刷新=》个人中心
+							mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
 							plus.webview.getWebviewById('activityDetail') && (mui.fire(plus.webview.getWebviewById('activityDetail'),'refresh'));//触发跳转页面刷新=》活动详情
 
 							if(plus.webview.getWebviewById('sign.html')){
 								plus.webview.getWebviewById('sign.html').close();
 							}
+							
 							var time2 = setTimeout(function(){
 								plus.webview.currentWebview().close();
 //								var index = plus.webview.getLaunchWebview();

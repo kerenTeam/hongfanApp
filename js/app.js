@@ -1,10 +1,10 @@
 
 //var serverUrl='http://abcd.zlzmm.com:7200';
-//var serverUrl='http://api.zlzmm.com';
+var serverUrl='http://api.zlzmm.com';
 
-var serverUrl='http://hijiv2.zlzmm.com';
+//var serverUrl='http://hijiv2.zlzmm.com';
 //var serverUrl='http://192.168.199.191:7200';
-//var serverUrl='http://192.168.0.12:7200';
+//var serverUrl='http://192.168.0.8:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
@@ -28,8 +28,6 @@ function alertY(content){ //向前的方法
 
 //banner跳转
 window.bannerGo = function(id,url, name, route) {
-
-
 	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
 		if(route == 'one'){//层级
 			var bannerTplHtml = 'bannerTpl.html';
@@ -109,7 +107,70 @@ window.bannerGo = function(id,url, name, route) {
 	if(id){
 		countClick(id);
 	}
+}
 
+//弹窗跳转
+window.popGo = function(id,url, name, route) {
+	event.stopPropagation();
+	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
+		if(route == 'one'){//层级
+			var bannerTplHtml = 'popTpl.html';
+		}else{
+			var bannerTplHtml = '../popTpl.html';
+		}
+		if(url.indexOf('pro')>-1){//高级功能的h5
+			localStorage.Burlname=url;
+			openview({
+				view: bannerTplHtml,
+				id: "bannerTpl",
+				extrasobj: {
+					bannerUrl: url,
+					bannerName: name,
+					type:'pro'
+				}
+			})
+		}else{
+			openview({//用于普通页面 (如微信公众号)
+				view: bannerTplHtml,
+				id: "bannerTpl",
+				extrasobj: {
+					bannerUrl: url,
+					bannerName: name
+				}
+			})
+		}
+	}else if(url.indexOf('&')>-1 ){//本地
+		var localId = url.split('&')[1],
+			localUrl = url.split('&')[0], 
+			localUId = url.split('&')[2] || -1; 
+			if(plus.storage.getItem('myToken')){
+				 openview({
+					view: localUrl,
+					create: true,
+					extrasobj: {
+						storeId:localId,//商铺主页
+						goodcatId:localId,//特色馆分类
+						goodsId:localId,//商品主页
+						activityId:localId,//活动主页
+						storeCouponId:localId,//优惠主页
+						newsId:localId,//帖子详情： 帖子id
+						userId:localUId,//帖子详情： 帖子userId
+						shopId:localUId,//爱购商品详情
+						Bcity:localId//优惠卷
+					}
+				})
+			}else{//没登陆直接打开登录页面
+				mui.toast('请登录');
+				openview({
+					view:'login.html'
+				});
+			}
+
+	}
+	//点击量统计
+//	if(id){
+//		countClick(id);
+//	}
 }
 //banner点击统计量
 function countClick(bnid){
@@ -561,3 +622,77 @@ function sharecode(){
 	});
 }
 
+
+/**
+ * 加载到外部URL的文件，用于下载图片；
+ */
+/**
+ * 打开长按事件
+ * http://dev.dcloud.net.cn/mui/event/#gesture
+ */
+mui.init({
+	gestureConfig: {
+		longtap: true
+	}
+});
+mui.plusReady(function() { 
+	document.addEventListener("longtap", function(event) {
+		/**
+		 * 获取目标节点的tagName
+		 */
+		var name = event.target.tagName;
+		name = name.toLowerCase();
+		var className = event.target.className;
+		/**
+		 * 如果是图片，则弹出选择框决定是否下载；
+		 */
+		if(name === "img" && (className.indexOf('picOp')>-1 || className.indexOf('anImg')>-1 || className.indexOf('mui-zoom')>-1)) {
+			var imgUrl = event.target.src;
+			console.log('图片地址：' + imgUrl);
+			var filename = imgUrl.substring(imgUrl.lastIndexOf("/") + 1, imgUrl.length);
+			var relativePath = "_downloads/" + filename;
+			/**
+			 * http://dev.dcloud.net.cn/mui/ui/#dialog
+			 */
+			mui.confirm("是否下载此图片", "确认下载？", ["下载", "取消"], function(event) {
+				/**
+				 * index从0开始
+				 */
+				var index = event.index;
+				if(index == 0) {
+					var dtask = plus.downloader.createDownload(imgUrl, {}, function(d, status) {
+						if(status == 200) {
+							//下载成功
+							var fileName = d.filename;
+							plus.gallery.save(fileName, function() {
+								mui.toast('保存成功');
+							}, function() {
+								mui.toast('保存失败，请重试！');
+							});
+							console.log("下载成功=" + relativePath);
+						} else {
+							//下载失败,需删除本地临时文件,否则下次进来时会检查到图片已存在
+							console.log("下载失败=" + status + "==" + relativePath);
+							//dtask.abort();//文档描述:取消下载,删除临时文件;(但经测试临时文件没有删除,故使用delFile()方法删除);
+							if(relativePath != null)
+								delFile(relativePath);
+						}
+					});
+					//启动下载任务
+					dtask.start();
+
+				}
+				/*删除指定文件*/
+				function delFile(relativePath) {
+					plus.io.resolveLocalFileSystemURL(relativePath, function(entry) {
+						entry.remove(function(entry) {
+							console.log("文件删除成功==" + relativePath);
+						}, function(e) {
+							console.log("文件删除失败=" + relativePath);
+						});
+					});
+				}
+			});
+		}
+	});
+});

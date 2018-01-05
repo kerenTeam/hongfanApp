@@ -461,7 +461,12 @@
 								</div>
 							</div>
 							<div class="hiLimit">
-								<span>限时抢购</span>
+								<%if(list[i].countDown){%>
+									<span class="countDown" style="font-size: 12px;" data-id="<%=list[i].seconds%>"><%=list[i].countDown%></span>
+								<%}else{%>
+									<span style="font-size: 12px;">抢购结束</span>
+								<%}%>
+
 								<img src="../img/mainHtml/addCart.png" alt="" />
 							</div>
 						</div>
@@ -534,65 +539,27 @@
 		</div>
 		</div>
 		<!--遮罩1-->
-		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;">
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
+		<script type="text/html" id="maskTpl">
+			
 			<img src="../img/mainHtml/mclose.svg" class="closeMs"/>
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
-				<img src="../img/mainHtml/mask1.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCoupon()'/>
+			<%if(popdata.modelContent){%>
+				<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','one')"/>
+			<%}else{%>
+				<img src="../img/mainHtml/mask1.png" />
+			<%}%>
+				
 
 			</div>
-		</div>
-		<!--遮罩2-->
-
-		<div id="maskInfo2" class="maskInfo" style="display: none;z-index:9998;">
-			<img src="../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗2</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
-			</div>
-		</div>
-		<!--遮罩3-->
-
-		<div id="maskInfo3" class="maskInfo" style="display: none;z-index:9997;">
-			<img src="../img/chahao.png" class="closeMs"/>
-			<div class="ruleCt" style="padding-bottom: 50px;">
-				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
-					<div class="ft16 fttc" style="text-align: center;">首页弹窗3</div>
-					<ol class="ft14 disablecl ruleol">
-					</ol>
-				</div>
-				<button type="button" class="mui-btn mui-btn-danger mar10 closemask" >查看</button>
-
-			</div>
-		</div>
-
+		</script>
+		
 		</div>
 		<script type="text/javascript">
 			$('.ruleCt').click(function(){
 				event.stopPropagation()
 			})
-			$('#maskInfo1').click(function(){
-				event.preventDefault()
-				$('#maskInfo1').fadeOut(200);
-			})
-			$('#maskInfo2').click(function(){
-				event.preventDefault()
-				$('#maskInfo2').fadeOut(200);
-			})
-			$('#maskInfo3').click(function(){
-				event.preventDefault()
-				$('#maskInfo3').fadeOut(200);
-			})
-			$('.closeMs').click(function(){
-				event.stopPropagation();
-				$(this).parent().fadeOut(200);
-			})
-
-
+			
 			var Spagenum = 2; //实到页数
 			var Ypagenum = 1; //应到页数
 			function citysBtn(name){//手动城市切换
@@ -612,21 +579,8 @@
 					id:"answerIndex",
 				});
 			}
-			function goCoupon(){
-				event.stopPropagation();
-				if(plus.storage.getItem('myToken')){
-					$('#maskInfo1').fadeOut(200);
-					openview({
-						view:'socialCircle/circlePublish.html',
-						id:"circlePublish",
-					});
-				}else{
-					mui.toast('请登录');
-					openview({
-						view:'login.html'
-					});
-				} 
-			}
+			
+
 			document.addEventListener('openf', function() {
 				mui('.hiFriend')[0].style.display = '';
 			})
@@ -724,8 +678,11 @@
 					var onsale = document.getElementsByClassName('onsale')[0];
 					var fil = document.getElementsByClassName('fil')[0];
 					var loveBuy = document.getElementsByClassName('loveBuy')[0];
+					var version = plus.storage.getItem('version');
+					var platform  = plus.storage.getItem('platform');
 					/*首页弹框*/
 					mui.ajax(serverUrl + '/api/index/showmodal', {
+						data:{version:version,platform:platform},
 		                type: 'post',
 		                timeout: 10000,
 		                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
@@ -733,13 +690,24 @@
 		                   	plus.nativeUI.closeWaiting();
 		                		console.log('首页弹窗',data)
 		                		if(data.errno == 0){
-		                			if(data.data.homeIndex && data.data.homeIndex.length){
-		                				mui.each(data.data.homeIndex,function(index,item){
-	                            			 if(item == 1){
-	                            			 	$('#maskInfo'+(index+1)).show()
-	                            			 }else{
-	                            			 	$('#maskInfo'+(index+1)).hide()
-	                            			 }
+		                			if(data.data && data.data.length){
+		                				mui.each(data.data,function(index,item){
+			                				if(item.typeName == 'homeIndex'){
+			                					if(item.modelState == 1){ 
+		                            			 	$('#maskInfo1').show();
+		                            			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
+		                            			 	$('#maskInfo1').click(function(){
+													event.preventDefault()
+													$('#maskInfo1').fadeOut(200);
+												})
+												$('.closeMs').click(function(){
+													event.stopPropagation();
+													$(this).parent().fadeOut(200);
+												}) 
+		                            			}else{
+		                            			 	$('#maskInfo1').hide()
+		                            			}
+			                				}
 	                            		})
 		                			}
 		                		}
@@ -1152,13 +1120,42 @@
 										recommendObj.list = data.data;
 										if(recommendObj.list.length > 4){recommendObj.list.length = 4}
 										for(var i=0;i<recommendObj.list.length;i++){
-
+											if(index == 1){
+												if(recommendObj.list[i].countDown){ 
+													var endTime = new Date(recommendObj.list[i].countDown).getTime();
+										    			var startTime = new Date().getTime();
+										    			var allseconds = (endTime - startTime)/1000;
+										    			if(allseconds > 0 ){
+										    				var day = Math.floor(allseconds/(60*60*24));
+										    				var hour = Math.floor((allseconds/(60*60*24) - day)*24);
+										    				var minute = Math.floor((((allseconds/(60*60*24) - day)*24)-hour)*60)
+														var seconds = Math.floor(((((allseconds/(60*60*24) - day)*24)-hour)*60-minute)*60)
+											    			recommendObj.list[i].seconds = allseconds;
+											    			recommendObj.list[i].countDown = day+'天'+hour+'小时'+minute+'分钟'+seconds+'秒';
+										    			}else{
+											    			recommendObj.list[i].seconds = 0;
+											    			recommendObj.list[i].countDown = '抢购结束';
+										    			}
+										    			
+												}
+											}
+											
 											if(!recommendObj.list[i].thumb.indexOf('http')<0){
 												recommendObj.list[i].thumb = serverimgUrl + recommendObj.list[i].thumb;
 											}
 										}
 										mui('.manyTJ')[index-1].innerHTML = template("manyTJJS", recommendObj);
 										lazyLoad(false);//懒加载
+										if(index == 1){
+											$('.countDown').each(function(){
+												var cur = $(this);
+												var secondscur = $(this).attr('data-id');
+												if(secondscur){
+													timeCountDown(cur,secondscur);
+												}
+											})
+										}
+										
 									}else{
 										mui('.manyTJ')[index-1].innerHTML = '<div class="moreCon fineB aClick"><b>没有信息 </b></div>';
 									}
@@ -1171,6 +1168,30 @@
 								console.error('烦人的商品推荐榜,响应失败');
 							}
 						});
+					}
+					
+					function timeCountDown(cur,sec){
+						var timem = null;
+						var allsec = sec;
+						timem = setInterval(function(){
+			    				
+							if(allsec > 0) {
+								allsec--;
+								if(allsec > 0){
+									var day = Math.floor(allsec/(60*60*24));
+					    				var hour = Math.floor((allsec/(60*60*24) - day)*24);  
+					    				var minute = Math.floor((((allsec/(60*60*24) - day)*24)-hour)*60) 
+									var seconds = Math.floor(((((allsec/(60*60*24) - day)*24)-hour)*60-minute)*60) 
+									cur.html(day+'天'+hour+'小时'+minute+'分钟'+seconds+'秒')
+								}else{
+									cur.html('抢购结束');
+								} 
+							} else { 
+								cur.html('抢购结束') 
+								clearInterval(timem)
+								timem = null;
+							}
+						},1000)
 					}
 					/*很烦的多模块推荐结束*/
 					
