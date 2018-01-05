@@ -197,7 +197,7 @@
     		<div class="content clearfloat fl mui-row white">
 			    <div class="mui-col-sm-4 mui-col-xs-4" style="padding-top: 18px;position: relative;left: 3px;"><img src="../img/morentouxiang.jpg" class="myInfo" id="mypic"/></div>
 			    <div class="mui-col-sm-8 mui-col-xs-8 writing">
-			    	<p class="centop">
+			    	<p class="centop" style="-user-select: text;">
 			    		<span class="denlu denluzhuce" style="z-index: 99;">登录/注册</span> <br />
 			    		<b class="denlu denluzhuce" style="display: inline-block;min-height: 20px;" id="numjifen"> </b>
 			    	</p>
@@ -256,42 +256,69 @@
 		<div class="aClick" id="writeOff2" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/center/heixaojilu.svg"/>核销记录</div>
     	</div>
 
+
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			//推送
 			document.addEventListener( "plusready", function(){
+
+//				var pushInfo = {__UUID__: "androidPushMsg159805990", title: "通知标题", appid: "H55E3990F", content: "通知内容", payload: '{"banner":"market/BuyOffer.html&null","info":"推送跳转页面"}'};
+//				mui('.centop')[0].onclick = function(){
+//					console.log(JSON.parse(pushInfo.payload));
+//					var pushMsg = JSON.parse(pushInfo.payload);
+//					//bannerGo('',pushMsg.banner,pushMsg.info,'one');
+//					//createLocalPushMsg();
+//					console.log(typeof pushInfo.payload);
+//				}
 //				function createLocalPushMsg(){
-//				    plus.push.createMessage( "欢迎使用Plus创建本地消息！", "LocalMSG", {cover:false} );
+//					var payloadLocal1 = JSON.parse(pushInfo.payload);
+//					payloadLocal1.type = 'local';
+//					var payloadLocal2 = JSON.stringify(payloadLocal1)
+//				    plus.push.createMessage( "内容！", payloadLocal2, {cover:false} );
 //				    if(plus.os.name=="iOS"){
 //				        console.error('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
 //			    		}
 //				}
-    				//createLocalPushMsg();
+
+
+
+//				console.log(JSON.stringify(plus.push.getClientInfo()));
+//				console.error(plus.push.getClientInfo().token);
 
 			    // 监听点击消息事件
-//			    plus.push.addEventListener( "click", function( msg ) {
-//			    		console.log('监听click消息' + JSON.stringify(msg));
-//			        switch( msg.payload ) {
-//			            case "LocalMSG":
-//			                alert( "点击本地创建消息启动" );
-//			            break;
-//			            default:
-//			                alert( "点击离线推送消息启动");
-//			            break;
-//			        }
-//			    }, false );
+			    plus.push.addEventListener( "click", function( pushInfo ) {
+			    		console.log('监听click消息' , pushInfo);
+			        switch( pushInfo.payload ) {
+			            case "LocalMSG":
+			                //alert( "点击本地创建消息启动" );
+			            break;
+			            default:
+			                var pushMsg = JSON.parse(pushInfo.payload);
+							bannerGo('',pushMsg.banner,pushMsg.info,'one');
+			            break;
+			        }
+			    }, false );
 
 			    // 监听在线消息事件
-//			    plus.push.addEventListener( "receive", function( msg ) {
-//			    		console.log('监听receive消息' + JSON.stringify(msg));
-//			        if ( msg.aps ) {  // Apple APNS message
-//			            alert( "接收到在线APNS消息：" );
-//			        } else {
-//			            alert( "接收到在线透传消息：" );
-//			        }
-//			    }, false );
+			    plus.push.addEventListener( "receive", function( pushInfo ) {
+			    		//IOS : receive => 创建本地消息 => 点击友执行上面监听的click事件
+			    		console.log('监听receive消息' + JSON.stringify(pushInfo));
+			    		//3. IOS平台本地创建本地消息会触发“receive”事件，如何和服务器发送的消息进行区分。
+					//答： 用户在创建IOS本地消息是可以在“payload”节点添加特殊标记对消息进行区分
+			    		if(JSON.parse(pushInfo.payload).type != 'local'){
+			    			if ( pushInfo.aps ) {
+			            		//alert( "receive模式接收到在线APNS消息" );
+				        } else {
+				        		var payloadLocal1 = JSON.parse(pushInfo.payload);
+							payloadLocal1.type = 'local';
+							var payloadLocal2 = JSON.stringify(payloadLocal1);
+				        		plus.push.createMessage( pushInfo.content, payloadLocal2, {cover:false} );
+				        }
+			    		}
+
+			    }, false );
 			}, false );
 
 		</script>

@@ -258,7 +258,7 @@
 			}
 		}
 
-	} 
+	}
 	//提交接口
 	mui('#confirmbtn')[0].addEventListener('click',function(){
 
@@ -300,9 +300,10 @@
 							//统计
 							plus.statistic.eventDuration( "signUp", 1);
 
-							plus.storage.setItem("$IsReg","1")
+							plus.storage.setItem("$IsReg","1");
+							var clientid =  plus.push.getClientInfo().clientid;
 							mui.ajax(serverUrl+'/api/useraccount/login',{
-								data:{"phone":account.value,"password":password.value},
+								data:{"phone":account.value,"password":password.value,'clientID':clientid},
 								dataType:'json',
 								type:'post',
 								timeout:10000,
@@ -310,7 +311,7 @@
 									console.log('登录返回'+JSON.stringify(data));
 									if(data.errno==0){
 										var mytoken = xhr.getResponseHeader('token');//替换默认token存入缓存
-										
+
 											//登录成功
 											plus.storage.setItem("myToken",mytoken);
 											plus.storage.setItem("oldToken",mytoken);
@@ -341,7 +342,7 @@
 												plus.nativeUI.closeWaiting();
 												mui.toast('登录成功 ');
 											},500)
-										 
+
 									}else{
 										plus.nativeUI.closeWaiting();
 										mui.toast(data.errmsg);//登录提示
@@ -366,7 +367,7 @@
 						console.log('注册响应失败');
 				}
 			});
-		})	
+		})
 		}
 
 	})
