@@ -112,11 +112,17 @@ function installWgt(path,hide,ios){
     plus.runtime.install(path,{},function(){
         plus.nativeUI.closeWaiting();
         console.log("安装wgt文件成功！");
-      	if (!ios) {
-	        	plus.nativeUI.alert("软件更新完成， 重启完成升级！",function(){
-	            plus.runtime.restart();
-	        });
-      	}
+        if(hide){//静默更新
+	        	if(path.indexOf('apk')>-1){
+	        		plus.nativeUI.alert("软件更新包已通过wifi预加载下载成功， 请安装新版HI集软件！",function(){
+		            plus.runtime.quit();
+		        });
+	        }else{
+	    			plus.nativeUI.alert("软件已通过wifi预加载优化完成， 重启完成操作！",function(){
+	            		plus.runtime.restart();
+		        });
+	        }
+        }
 
     },function(e){
         plus.nativeUI.closeWaiting();

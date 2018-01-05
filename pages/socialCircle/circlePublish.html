@@ -183,6 +183,7 @@
 				circleId = plus.webview.currentWebview().circleId,
 			 	myuserid = plus.storage.getItem('userid');
 		 	var textCon = mui('#textCon')[0];
+		 	var fromGo = plus.webview.currentWebview().fromGo;//双旦
 		 	if(Apic.length){//要传图片
 			 	if(time1 == null){//必须要图片全部处理完毕  才行    (开始发布)
 			 		plus.nativeUI.showWaiting();
@@ -213,6 +214,13 @@
 								mui.fire(plus.webview.getWebviewById('circle.html'),'refresh');
 								mui.fire(plus.webview.getWebviewById('circleInfo'),'refresh');
 								mui.fire(plus.webview.getWebviewById('mycircleIndex'),'refreshcl');
+								if(fromGo == 'shuangdan'){
+									openview({
+										view:'../shuangdan/shuangdan.html',
+										id:"shuangdan",
+										extrasobj:{newId:dataobj.data}
+									});
+								}
 								var time2 = setTimeout(function(){
 									mui.toast(dataobj.errmsg || '发布成功');
 									plus.nativeUI.closeWaiting();

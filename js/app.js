@@ -1,14 +1,16 @@
 
 //var serverUrl='http://abcd.zlzmm.com:7200';
-//var serverUrl='http://api.zlzmm.com';
+//var serverUrl='http://hijiv2.zlzmm.com';
+var serverUrl='http://api.zlzmm.com';
 
-var serverUrl='http://hijiv2.zlzmm.com';
+
 //var serverUrl='http://192.168.199.191:7200';
-//var serverUrl='http://192.168.0.92:7200';
+//var serverUrl='http://192.168.0.12:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
 var serverimgUrl='http://hiji.hifete.com:6789';
 var serverimgUrlE='';
+
 //var propUrl = 'http://192.168.0.128:6789';
 var propUrl = 'http://abcd.zlzmm.com:6789';
 var fxUrl = 'http://abcd.zlzmm.com:6789/hongfanWeb/pages/';
@@ -28,7 +30,6 @@ function alertY(content){ //向前的方法
 
 //banner跳转
 window.bannerGo = function(id,url, name, route) {
-
 	if(url.indexOf('http')>-1 || url.indexOf('HTTP')>-1){//远程
 		if(route == 'one'){//层级
 			var bannerTplHtml = 'bannerTpl.html';

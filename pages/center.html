@@ -256,70 +256,47 @@
 		<div class="aClick" id="writeOff2" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/center/heixaojilu.svg"/>核销记录</div>
     	</div>
 
-
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			//推送
 			document.addEventListener( "plusready", function(){
-
-//				var pushInfo = {__UUID__: "androidPushMsg159805990", title: "通知标题", appid: "H55E3990F", content: "通知内容", payload: '{"banner":"market/BuyOffer.html&null","info":"推送跳转页面"}'};
-//				mui('.centop')[0].onclick = function(){
-//					console.log(JSON.parse(pushInfo.payload));
-//					var pushMsg = JSON.parse(pushInfo.payload);
-//					//bannerGo('',pushMsg.banner,pushMsg.info,'one');
-//					//createLocalPushMsg();
-//					console.log(typeof pushInfo.payload);
-//				}
-//				function createLocalPushMsg(){
-//					var payloadLocal1 = JSON.parse(pushInfo.payload);
-//					payloadLocal1.type = 'local';
-//					var payloadLocal2 = JSON.stringify(payloadLocal1)
-//				    plus.push.createMessage( "内容！", payloadLocal2, {cover:false} );
-//				    if(plus.os.name=="iOS"){
-//				        console.error('*如果无法创建消息，请到"设置"->"通知"中配置应用在通知中心显示!');
-//			    		}
-//				}
-
-
-
-//				console.log(JSON.stringify(plus.push.getClientInfo()));
-//				console.error(plus.push.getClientInfo().token);
-
 			    // 监听点击消息事件
 			    plus.push.addEventListener( "click", function( pushInfo ) {
 			    		console.log('监听click消息' , pushInfo);
-			        switch( pushInfo.payload ) {
-			            case "LocalMSG":
-			                //alert( "点击本地创建消息启动" );
-			            break;
-			            default:
-			                var pushMsg = JSON.parse(pushInfo.payload);
-							bannerGo('',pushMsg.banner,pushMsg.info,'one');
-			            break;
-			        }
+			    		if(JSON.stringify(pushInfo).indexOf('body')==-1){
+			    			//安卓点击，ios receive消息的本地点击
+			    			var pushMsg = JSON.parse(pushInfo.payload);
+						bannerGo('',pushMsg.banner,pushMsg.info,'one');
+			    		}else{
+			    			//ios后台对应的 点击
+						var pushMsg = pushInfo.payload.payload;
+						bannerGo('',pushMsg.banner,pushMsg.info,'one');
+			    		}
 			    }, false );
 
-			    // 监听在线消息事件
+			    // 监听在线消息事件（ios）
 			    plus.push.addEventListener( "receive", function( pushInfo ) {
 			    		//IOS : receive => 创建本地消息 => 点击友执行上面监听的click事件
 			    		console.log('监听receive消息' + JSON.stringify(pushInfo));
-			    		//3. IOS平台本地创建本地消息会触发“receive”事件，如何和服务器发送的消息进行区分。
-					//答： 用户在创建IOS本地消息是可以在“payload”节点添加特殊标记对消息进行区分
-			    		if(JSON.parse(pushInfo.payload).type != 'local'){
-			    			if ( pushInfo.aps ) {
-			            		//alert( "receive模式接收到在线APNS消息" );
+			    		//3. IOS平台本地创建本地消息会触发“receive”事件，如何和服务器发送的消息进行区分.
+			    		//答： 用户在创建IOS本地消息是可以在“payload”节点添加特殊标记对消息进行区分
+			    		if(JSON.stringify(pushInfo).indexOf('localIos') == -1){
+			    			if (pushInfo.aps == null || pushInfo.aps == 'null' || !pushInfo.aps) {//receive模式接收到在线APNS消息
+				        		pushInfo.payload.type = 'localIos';
+							var payloadLocal = JSON.stringify(pushInfo.payload);
+				        		plus.push.createMessage( pushInfo.title, payloadLocal, {cover:false} );
 				        } else {
-				        		var payloadLocal1 = JSON.parse(pushInfo.payload);
-							payloadLocal1.type = 'local';
-							var payloadLocal2 = JSON.stringify(payloadLocal1);
-				        		plus.push.createMessage( pushInfo.content, payloadLocal2, {cover:false} );
+				        		pushInfo.payload.payload.type = 'localIos';
+							var payloadLocal = JSON.stringify(pushInfo.payload.payload);
+				        		plus.push.createMessage( pushInfo.payload.title, payloadLocal, {cover:false} );
 				        }
 			    		}
-
 			    }, false );
+
 			}, false );
+			//推送结束
 
 		</script>
 		<script type="text/javascript">

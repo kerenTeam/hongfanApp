@@ -15,7 +15,7 @@
 			.loginNum input{height: 50px;border-radius: 0;padding-top: 12px;}
 			.mui-btn-block{width: 92%; margin: 0 auto;}
 		</style>
-	</head> 
+	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -44,7 +44,7 @@
 					<img class="yonghuPic" src="../img/loginHtml/yonghu.png"/>
 				</div>
 				<input id='account' type="number" class="mui-input-clear mui-input" placeholder="请输入账号">
-				
+
 			</div>
 			<button id='' class="btn1 mui-btn-block denlu cannotbtn">下一步</button>
 		</div>
@@ -73,8 +73,8 @@
 			</div>
 			<button id='' class="btn3 mui-btn-block denlu cannotbtn">下一步</button>
 		</div>
-		
-		
+
+
 		<div class="mui-content mui-grid-view" style="margin-top: 10px;display: none;">
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
@@ -87,7 +87,7 @@
 					<input id='VeCode' type="number" class="mui-input-clear mui-input" placeholder="请输入验证码">
 					<b class="Veb" style="display: none;">验证码错误</b>
 				</div>
-				
+
 				<div class="mui-input-row mui-block">
 					<label>新密码</label>
 					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入6-12位数字和字母组合密码">
@@ -97,9 +97,9 @@
 					<input style="width: 68%;" id='passwordagain' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
 				</div>
 			</form>
-			<div class="mui-input-row mui-checkbox agreement1 mui-left" style="display: none;"> 
+			<div class="mui-input-row mui-checkbox agreement1 mui-left" style="display: none;">
 			  <span>我同意勾选宏帆app<span  onclick="openAgreement()" style="color: #f53c42;">用户许可协议</span></span>
-			  <input name="checkbox1" value="Item 1" type="checkbox" checked id="hook"> 
+			  <input name="checkbox1" value="Item 1" type="checkbox" checked id="hook">
 			</div>
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id='confirmbtn' class="mui-btn-block mui-btn-primary denlu cannotbtn">确定</button>
@@ -113,7 +113,7 @@
 <script type="text/javascript">
 
 (function(){
-	var flagSign = false;//是否是由登陆跳转二来 
+	var flagSign = false;//是否是由登陆跳转二来
 	mui.plusReady(function(){
 		var type = plus.webview.currentWebview().type;//'忘记密码'
 		if (type) {
@@ -121,33 +121,33 @@
 			mui('#xiugaimima')[0].innerHTML = '忘记密码';
 			flagSign = true;
 		} else{
-			
+
 		}
-		
+
 		var account = document.getElementById('account');
 		var password = document.getElementById('password'),
 		reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/,//手机号正则
 		reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/;
-		var VerCode = 'you'; 
-		var codeflag = false;//验证码是错误标杆 
-		
+		var VerCode = 'you';
+		var codeflag = true;//验证码是错误标杆
+
 		//输入验证按钮状态
 		mui('#VeCode')[0].oninput = password.oninput = account.oninput = verification;
 		function verification(){
 			if(reg_phone.test(account.value)){
 				mui('.btn1')[0].className = mui('.btn1')[0].className.replace(' cannotbtn','');//验证通过
 			}else if(mui('.btn1')[0].className.indexOf('cannotbtn') == -1){
-				mui('.btn1')[0].className += ' cannotbtn'; 
+				mui('.btn1')[0].className += ' cannotbtn';
 			}
 			if(mui('#VeCode')[0].value){
 				mui('.btn2')[0].className = mui('.btn2')[0].className.replace(' cannotbtn','');//验证通过
 			}else if(mui('.btn2')[0].className.indexOf('cannotbtn') == -1){
-				mui('.btn2')[0].className += ' cannotbtn'; 
+				mui('.btn2')[0].className += ' cannotbtn';
 			}
 			if(reg_pass.test(password.value)){
 				mui('.btn3')[0].className = mui('.btn3')[0].className.replace(' cannotbtn','');//验证通过
 			}else if(mui('.btn3')[0].className.indexOf('cannotbtn') == -1){
-				mui('.btn3')[0].className += ' cannotbtn'; 
+				mui('.btn3')[0].className += ' cannotbtn';
 			}
 		}
 
@@ -159,17 +159,21 @@
 				mui('.zhanghao')[0].innerHTML = mui('.zhanghao')[1].innerHTML = account.value;
 				mui('#div1')[0].style.display = 'none';
 				mui('#div2')[0].style.display = 'block';
-				//发送验证码 
+				//发送验证码
 				mui.ajax(serverUrl+'/api/useraccount/seccode',{
-					data:{phoneNum:account.value}, 
+					data:{phoneNum:account.value},
 					dataType:'json',
 					type:'post',
 					timeout:10000,
 					success:function(data){
 						console.log('发送验证码返回'+JSON.stringify(data));
-						mui.toast('验证码已发送');
 						VerCode = data.data;
-					}, 
+						if(data.errno == 0){
+							mui.toast(data.errmsg || '验证码已发送');
+						}else{
+							mui.toast(data.errmsg || '验证码发送失败，请重试！');
+						}
+					},
 					error:function(xhr,type,errorThrown){
 						mui.toast('发送验证码失败');
 					}
@@ -177,13 +181,13 @@
 			}
 		})
 		mui('.btn2')[0].addEventListener('tap',function(){
-			if(mui('#VeCode')[0].value == VerCode){ 
+			if(mui('#VeCode')[0].value){
 				mui('#div2')[0].style.display = 'none';
 				mui('#div3')[0].style.display = 'block';
 			}else{
 				mui.toast('请输入正确的验证码');
 			}
-			
+
 		})
 		mui('.btn3')[0].addEventListener('tap',function(){
 			if(reg_pass.test(password.value)){
@@ -240,15 +244,11 @@
 									}
 								});
 							}else{//修改密码
-								mui.toast('密码已修改'); 
+								mui.toast('密码已修改');
 							}
 						}else{
 							plus.nativeUI.closeWaiting();
-							switch(data.errmsg){//注册提示
-								case 'Already exists this account!':
-								mui.toast('此号码已经注册 '); 
-								break;
-							}
+							mui.toast(data.errmsg);
 						}
 					},
 					error:function(xhr,type,errorThrown){
@@ -259,7 +259,7 @@
 			}else{
 				mui.toast('请输入6-12位数字和字母组合密码');
 			}
-			
+
 		})
 	})
 	//huahua

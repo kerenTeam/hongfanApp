@@ -17,3 +17,77 @@ version 控制：
    Sc-order : api/mall/repayment
    dataflowRecharge : api/banma/mobileflowitemslist
    PhoneRecharge : api/banma/rechargemobilegetiteminfo
+
+
+
+权限：
+
+APIs Requiring Usage Descriptions
+https://developer.apple.com/library/content/qa/qa1937/_index.html
+
+"plus": {
+    "distribute": {
+      "apple": {
+        "plistcmds": [
+          "Set :NSContactsUsageDescription 说明读取用户通讯录的原因",
+          "Set :NSMicrophoneUsageDescription 说明使用麦克风的原因",
+          "Set :NSPhotoLibraryUsageDescription 说明读取用户相册的原因",
+          "Set :NSCameraUsageDescription 说明使用用户相机的原因",
+          "Set :NSPhotoLibraryAddUsageDescription 说明向用户相册添加图片的原因",
+          "Set :NSLocationAlwaysUsageDescription 说明持续获取用户地理位置的原因",
+          "Set :NSLocationWhenInUseUsageDescription 说明使用用户地理位置的原因"
+        ]
+      }
+    }
+  }
+
+"permissions":{
+    "NSLocationWhenInUseUsageDescription": {
+          "description": "我们将使用你的位置为你提供就近咨询和信息服务"
+    }
+}
+
+通讯录 NSContactsUsageDescription
+麦克风 NSMicrophoneUsageDescription
+相册 NSPhotoLibraryUsageDescription
+相机 NSCameraUsageDescription
+持续获取地理位置 NSLocationAlwaysUsageDescription
+使用时获取地理位置 NSLocationWhenInUseUsageDescription
+蓝牙 NSBluetoothPeripheralUsageDescription
+语音转文字 NSSpeechRecognitionUsageDescription
+日历 NSCalendarsUsageDescription
+
+
+老推送
+//			    // 监听点击消息事件
+//			    plus.push.addEventListener( "click", function( pushInfo ) {
+//			    		console.log('监听click消息' , pushInfo);
+//			        switch( pushInfo.payload ) {
+//			            case "LocalMSG":
+//			                //alert( "点击本地创建消息启动" );
+//			            break;
+//			            default:
+//			                var pushMsg = JSON.parse(pushInfo.payload);
+//							bannerGo('',pushMsg.banner,pushMsg.info,'one');
+//			            break;
+//			        }
+//			    }, false );
+//
+//			    // 监听在线消息事件
+//			    plus.push.addEventListener( "receive", function( pushInfo ) {
+//			    		//IOS : receive => 创建本地消息 => 点击友执行上面监听的click事件
+//			    		console.log('监听receive消息' + JSON.stringify(pushInfo));
+//			    		//3. IOS平台本地创建本地消息会触发“receive”事件，如何和服务器发送的消息进行区分。
+//					//答： 用户在创建IOS本地消息是可以在“payload”节点添加特殊标记对消息进行区分
+//			    		if(JSON.parse(pushInfo.payload).type != 'local'){
+//			    			if ( pushInfo.aps ) {
+//			            		//alert( "receive模式接收到在线APNS消息" );
+//				        } else {
+//				        		var payloadLocal1 = JSON.parse(pushInfo.payload);
+//							payloadLocal1.type = 'local';
+//							var payloadLocal2 = JSON.stringify(payloadLocal1);
+//				        		plus.push.createMessage( pushInfo.content, payloadLocal2, {cover:false} );
+//				        }
+//			    		}
+//
+//			    }, false );
