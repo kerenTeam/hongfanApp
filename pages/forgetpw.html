@@ -190,6 +190,7 @@
 
 		})
 		mui('.btn3')[0].addEventListener('tap',function(){
+			plus.nativeUI.showWaiting();
 			if(reg_pass.test(password.value)){
 				mui.ajax(serverUrl+'/api/useraccount/savepwd',{//改密
 					data:{"phoneNum":account.value,"newPwd":password.value,'secCode':mui('#VeCode')[0].value},
@@ -244,7 +245,9 @@
 									}
 								});
 							}else{//修改密码
-								mui.toast('密码已修改');
+								mui.toast('密码修改成功');
+								plus.webview.currentWebview().close();
+								plus.nativeUI.closeWaiting();
 							}
 						}else{
 							plus.nativeUI.closeWaiting();
@@ -253,6 +256,7 @@
 					},
 					error:function(xhr,type,errorThrown){
 						plus.nativeUI.closeWaiting();
+						mui.toast('当前网络不好，请重试！');
 						console.log('修改密码响应失败');
 					}
 				});

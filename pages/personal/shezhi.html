@@ -32,7 +32,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav fineB">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
-		    <h1 class="mui-title">设置</h1>
+		    <h1 class="mui-title" id="sheZhiUrl">设置</h1>
 		</header>
 		<script src="../../js/statusBar.js"></script><!--状态栏-->
 		<div id="main">
@@ -58,6 +58,34 @@
 	<script src="../../js/update.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		mui.plusReady(function(){
+			//调试接口输入
+			mui('#sheZhiUrl')[0].addEventListener('swipeleft',function(){
+				mui('#sheZhiUrl')[0].addEventListener('swiperight',function(){
+					mui.prompt('null','请输入暗号','内部测试功能',['确认','取消'],function(e) {
+						if(e.index == 0) {
+							if(e.value.indexOf('http')>-1){
+								plus.storage.setItem('SURL',e.value);
+								plus.nativeUI.alert("新的ip地址设置成功，重启qpp生效！",function(){
+					            		plus.runtime.restart();
+						        });
+							}else{
+								mui.toast('请输入有效内容');
+							}
+						}
+					},'')
+				})
+			})
+			mui('#sheZhiUrl')[0].addEventListener('longtap',function(){
+				if(plus.storage.getItem('SURL')){
+					plus.storage.removeItem('SURL');
+					plus.nativeUI.alert("重置ip地址成功，重启qpp生效！",function(){
+		            		plus.runtime.restart();
+			        });
+				}
+
+			})
+			//调试接口输入结束
+
 			//检测设备信息
 			!function(){
 				plus.runtime.getProperty(plus.runtime.appid,function(inf){//显示当前版本号
@@ -119,8 +147,8 @@
 						plus.storage.removeItem('PletterH');
 						plus.storage.removeItem("$gameTime");
 						plus.storage.removeItem('$steptit');
-						plus.storage.removeItem('$step')	
-						plus.storage.removeItem('tipEnd')	
+						plus.storage.removeItem('$step')
+						plus.storage.removeItem('tipEnd')
 						plus.storage.removeItem('canCheckUp')
 						plus.storage.removeItem('canReviewCheckUp')
 						plus.storage.removeItem('hiInfoNums')

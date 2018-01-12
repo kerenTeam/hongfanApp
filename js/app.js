@@ -1,6 +1,11 @@
 
 //var serverUrl='http://abcd.zlzmm.com:7200';
 var serverUrl='http://api.zlzmm.com';
+mui.plusReady(function(){
+	if(plus.storage.getItem('SURL')){
+		serverUrl = plus.storage.getItem('SURL');
+	}
+})
 
 //var serverUrl='http://hijiv2.zlzmm.com';
 //var serverUrl='http://192.168.199.191:7200';
@@ -141,8 +146,8 @@ window.popGo = function(id,url, name, route) {
 		}
 	}else if(url.indexOf('&')>-1 ){//本地
 		var localId = url.split('&')[1],
-			localUrl = url.split('&')[0], 
-			localUId = url.split('&')[2] || -1; 
+			localUrl = url.split('&')[0],
+			localUId = url.split('&')[2] || -1;
 			if(plus.storage.getItem('myToken')){
 				 openview({
 					view: localUrl,
@@ -635,7 +640,7 @@ mui.init({
 		longtap: true
 	}
 });
-mui.plusReady(function() { 
+mui.plusReady(function() {
 	document.addEventListener("longtap", function(event) {
 		/**
 		 * 获取目标节点的tagName
