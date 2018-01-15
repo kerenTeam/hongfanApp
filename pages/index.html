@@ -56,7 +56,7 @@
 			</a>
 			<a id="circle" class="mui-tab-item" href="circle.html" style="position: relative !important;top: 2px !important;display: none;">
 				<b id="Byou" class="Bicon youB"></b>
-				<em class="mui-badge infoNum2 mui-badge-danger">12</em>
+				<em id="mmsg" class="mui-badge infoNum2 mui-badge-danger" style="display: none;"></em>
 				<span class="mui-tab-label">HI友圈</span>
 			</a>
 			<a id="qq" class="mui-tab-item" href="qq.html" style="position: relative !important;top: 2px !important;">
@@ -79,6 +79,9 @@
 			var aniShow = {};
 			//创建子页面，首个选项卡页面显示，其它均隐藏;
 			mui.plusReady(function() {
+				document.addEventListener('refresh3', function() {
+					showMessage();
+				})
 				//显示   广告导航页面
 				openview({
 					view: 'guide.html',
@@ -172,7 +175,7 @@
 					geoInf({'address':{'city':obj.detail.name}},true);
 
 				})
-
+				
 			   	function distance(lat,lng,goalLat,goalLng){  //经度:lng,106.844003
 	                var EARTH_RADIUS = 6378.137;//地球赤道半径
 	                if(lat != '' && lng != '' && goalLat != '' && goalLng != ''){
@@ -317,11 +320,13 @@
 				//地图定位初始化结束
 				plus.storage.removeItem('oldToken');
 				Sign();
-				var timeSign = null;
+				var timeSign = null,timeMsg = null;
 				var loadNum = 0;
 				var loadNum2 = 0;
 				clearInterval(timeSign);
+				clearInterval(timeMsg);
 				timeSign = setInterval(Sign,5000000);//两小时自动更新一次token
+				timeMsg = setInterval(showMessage,3000);//两小时自动更新一次token
 				var timeSign2  =  setInterval(function(){
 					loadNum2++;
 					if(plus.storage.getItem('oldToken') || loadNum2==10){
@@ -387,6 +392,7 @@
 									//checkUpdateIos();
 									checkUpdate(true,true);
 								}
+								 
 							},
 							error:function(xhr,type,errorThrown){
 								loadNum ++;
@@ -398,7 +404,42 @@
 						});
 					}
 				}//登录方法结束
-
+				
+				//消息通知
+				function showMessage(){
+					mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
+					mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
+					var oldToken = plus.storage.getItem('oldToken');
+					var myuserid = plus.storage.getItem('userid');
+					//显示消息条数
+					mui.ajax(serverUrl+'/api/index/message',{
+						data:{userid:myuserid,msgType:1},
+						dataType:'json',
+						type:'post',
+						timeout:10000,
+						headers:{"token":oldToken},
+						success:function(data,type,xhr){
+							plus.nativeUI.closeWaiting();
+							console.log('消息hi'+JSON.stringify(data));
+					       	if(data.errno == 0){
+						       	if(data.data.length){
+						       		var hiInfoNums = plus.storage.getItem('hiInfoNums');
+						       		if(data.data.length - hiInfoNums > 0){
+						       			mui('#mmsg')[0].style.display = 'block';
+					     				mui('#mmsg')[0].innerHTML = data.data.length - hiInfoNums;
+						       		}else{
+						       			mui('#mmsg')[0].style.display = 'none';
+						       		}
+								}
+					       	}
+					       	plus.nativeUI.closeWaiting();
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+						}
+					});
+				}
+				
 				//首页webview预加载
 				function Preloading(){
 					var self = plus.webview.currentWebview();

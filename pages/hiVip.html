@@ -31,7 +31,7 @@
  
 			//获取奖品
 	 		getAwd(); 
-            turnplate.restaraunts = ["1HI豆", "3个棒棒糖", "5HI豆", "1朵鲜花", "1辆机车", "1个皇冠 ", "下次加油", "10HI豆"];
+//          turnplate.restaraunts = ["1HI豆", "3个棒棒糖", "5HI豆", "1朵鲜花", "1辆机车", "1个皇冠 ", "下次加油", "10HI豆"];
 	 		
 			var rotateTimeOut = function (){
 				$('#wheelcanvas').rotate({
@@ -85,8 +85,28 @@
                             		if(data.data.game.PrizeGI){
                             			$('#wheelcanvas').attr('src',JSON.parse(data.data.game.PrizeGI)[0].picImg)
                             		} 
+//                          		if(data.data.game.FEI){
+//                          			$('.pointer').attr('src',JSON.parse(data.data.game.FEI)[0].picImg)
+//                          		}
+//                          		if(data.data.game.BGI){
+//                          			var s=".turnplate{ background-image:url(\""+JSON.parse(data.data.game.BGI)[0].picImg+"\")!important;background-size:100% 100%;}";
+// 									$("style").append(s);
+////                          			$('.turnplate').css('background-image','url('+JSON.parse(data.data.game.FEI)[0].picImg+')')
+//                          		}
                             	}
-                            	turnplate.restaraunts = ["1HI豆", "3个棒棒糖", "5HI豆", "1朵鲜花", "1辆机车", "1个皇冠 ", "下次加油", "10HI豆"];
+                            	if(data.data.game_prize && data.data.game_prize.length){
+                            		turnplate.restaraunts = [],turnplate.colors = [];
+                            		mui.each(data.data.game_prize,function(index,item){
+                            			turnplate.restaraunts.push(item.title);
+                            			if(index%2 == 0 ){
+                            				turnplate.colors.push('#FFF4D6')
+                            			}else{
+                            				turnplate.colors.push('#FFFFFF')
+                            			}
+                            		})
+
+                            	}
+//                          	turnplate.restaraunts = ["1HI豆", "3个棒棒糖", "5HI豆", "1朵鲜花", "1辆机车", "1个皇冠 ", "下次加油", "10HI豆"];
                             	//点击抽奖
                             	$('.turnBtn').click(function(){
                             		//判断是否填写号码
@@ -104,11 +124,7 @@
 	                            	 	plus.nativeUI.showWaiting();
 		                            	mui.ajax(serverUrl + '/api/index/iswining', {
 			                                data: {
-//			                                  	userId:'428',
-//												phone:'13455983657',
-//												macID:'dsrfggtyryhgbfsrertytuyjr',
-//												gameId:1
-			                                	userId:myuserid,
+			                                		userId:myuserid,
 												phone:$('#userPhone').val(),
 												macID:imei,
 												gameId:1
