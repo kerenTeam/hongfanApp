@@ -479,16 +479,16 @@
 					},
 					dataType:'json',
 					type:'post',
-					timeout:10000,
+					timeout:15000,
 					headers:{"token":oldToken},	 
 					success:function(data,type,xhr){
 						console.log("列表数据",data)
 						plus.nativeUI.closeWaiting() 
 						if(data.errno == 0) {
-
+//							if(data.data && data.data.length){
 								var bannerArray = data.data.data; //{img1:dd,img2:aa,img3,cc}   
 								for(var i in bannerArray) { 
-									bannerArray[i].price = Math.floor(bannerArray[i].price*(1+0.05)*100)/100;
+									bannerArray[i].price = Math.floor(bannerArray[i].price*100)/100;
 										if(bannerArray[i].thumb.indexOf('net.') > -1) {
 											bannerArray[i].thumb = bannerArray[i].thumb.replace(/net./g, 'net')
 										} 
@@ -523,13 +523,13 @@
 												},
 												dataType:'json',//服务器返回json格式数据
 												type:'post',//HTTP请求类型 
-												timeout:10000,//超时时间设置为10秒；	
+												timeout:15000,//超时时间设置为10秒；	
 												headers:{"token":oldToken}, 
 												success:function(data){
 													if(data.errno == 0) { 
 														var bannerArray = data.data.data; //{img1:dd,img2:aa,img3,cc}   
 														for(var i in bannerArray) { 
-																bannerArray[i].price = Math.floor(bannerArray[i].price*(1+0.05)*100)/100;
+																bannerArray[i].price = Math.floor(bannerArray[i].price*100)/100;
 																if(bannerArray[i].thumb.indexOf('net.') > -1) {
 																	bannerArray[i].thumb = bannerArray[i].thumb.replace(/net./g, 'net')
 																} 
@@ -555,6 +555,10 @@
 										}
 									  }
 									});//加载下一部分结束
+//									}
+									if($('#goodsList dd').length == 0){
+										document.getElementById("goodsList").innerHTML='<div style="padding: 30px;text-align: center;font-size: 14px">暂无商品</div>';
+									}
 							 
 						}
 					},

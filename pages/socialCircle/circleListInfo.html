@@ -72,6 +72,7 @@
 		.jubao li a{padding: 18px;line-height: 15px;text-align: center;border-bottom: 1px solid #EEEEEE;display: block;color: black;}
 		.jubao li:last-child a{color: rgb(153,153,153);}
 		.dynamicPic span{display: inline-block;position: absolute;top: 2%;left: 2%;width: 96%;height: 96%;background-color: #F3F3F3;overflow: hidden;}
+		i:active{color: red;}
 	</style>
 
 	<body style="background-color: white;">
@@ -362,7 +363,7 @@
 				timeout: 8000,
 				headers: {"token": oldToken,'city': cityNum},
 				success: function(data, type, xhr) {
-					console.error('动态详情', data);
+					console.log('动态详情', data);
 					if(data.errno == 0) {
 						var dataObj = {}, nowArray = data.data;
 
@@ -412,17 +413,25 @@
 						document.getElementById("listInfoS").innerHTML = template("listDataS", dataObj);
 						$('.diybtn').click(function(){
 							var curL = $(this);
-				    		//关注
-				    		if(plus.storage.getItem('myToken')){
-								followBack(curL,newsUserId,'put');
+					    		//关注
+					    		if(plus.storage.getItem('myToken')){
+									followBack(curL,newsUserId,'put');
 							}else{
 								mui.toast('请登录');
 								openview({
 									view:'../login.html'
 								});
 							}
-
-				    	})
+					    	})
+						//显示链接颜色
+						var textCon = document.getElementsByClassName('leirong')[0].innerHTML;
+						var urlRegExp = new RegExp("((https|http|ftp|rtsp|mms|www)?:\/*\/*)[^\u4E00-\u9FA5]+");
+						if(urlRegExp.exec(textCon) != null){
+							var urlReplace = urlRegExp.exec(textCon)[0];
+							var endUrl = '<i style="color:#aa4848;text-decoration:underline;">'+urlReplace+'(点击打开链接)</i>';
+							textCon = textCon.replace(urlReplace,endUrl);
+							document.getElementsByClassName('leirong')[0].innerHTML = textCon;
+						}
 
 						if(newsUserId == myuserid){
 							$('.isFollow').css('display','none')
@@ -579,7 +588,7 @@
 					timeout: 8000,
 					headers: {"token": oldToken,'city': cityNum},
 					success: function(data, type, xhr) {
-						console.error('评论详情', data);
+						console.log('评论详情', data);
 
 						if(data.errno == 0) {
 							var cmtArray = data.data;
@@ -801,7 +810,7 @@
 					extrasobj: {
 						bannerUrl: pipeiurl[0]
 					}
-				}) 
+				})
 			}
 		})
 
@@ -825,7 +834,7 @@
 				console.log('购物中心'+stayTime);
 				plus.statistic.eventDuration( "HIfeiendDynamic", stayTime);
 				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-				old_back(); 
+				old_back();
 			}
 			plus.webview.currentWebview().addEventListener( "popGesture", function(){
 				flagback++;

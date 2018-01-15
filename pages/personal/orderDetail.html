@@ -225,8 +225,8 @@
 													<div class="dealcard-img imgbox">
 														<span></span>
 														<%if(data.order_type == 0){%>
-														<% if(data.goods_data.goods_Data[0].youpin){ %>
-														<img src="<%=data.goods_data.goods_Data[0].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
+														<% if(data.goods_data.goods_Data[i].youpin){ %>
+														<img src="<%=data.goods_data.goods_Data[i].youpin.thumb%>" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}else{%>
 														<img src="../../img/market/nodata.svg" onerror="javascript:this.src='../../img/market/nodata.svg';">
 														<%}%>
@@ -525,10 +525,13 @@
 							}
 
 							data.data[0].goods_data = eval("(" + data.data[0].goods_data + ")");
-							if(data.data[0].goods_data.goods_Data[0].youpin) {
-//									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
-									data.data[0].goods_data.goods_Data[0].youpin = JSON.parse(data.data[0].goods_data.goods_Data[0].youpin);
+							for(var i in data.data[0].goods_data.goods_Data){
+								if(data.data[0].goods_data.goods_Data[i].youpin) {
+	//									data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin = eval("(" + data.data[0].PriceCalculation.Params.goodsData[0].goods_Data[i].youpin + ")")
+									data.data[0].goods_data.goods_Data[i].youpin = JSON.parse(data.data[0].goods_data.goods_Data[i].youpin);
 								}
+							}
+							
 							data.data[0].goods_data.total_goods_prices = parseFloat(data.data[0].goods_data.total_goods_prices).toFixed(2)
 
 							if(data.data[0].fee) { 

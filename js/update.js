@@ -72,6 +72,8 @@ function checkUpdate(hide,ios){
 		},
 		error:function(xhr,type,errorThrown){
 			console.error('操作响应失败');
+			plus.nativeUI.closeWaiting();
+			mui('当前网络不好，请重试！');
 		}
 	});
 }

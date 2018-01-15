@@ -41,6 +41,7 @@
 				padding-top: 20px;
 				padding-top: constant(safe-area-inset-top)!important;
 			}
+			.infoNum2{ position: absolute; top: 0; right: 8px;font-size: 11px;padding: 2px 5px 2px 4px; }
 		</style>
 	</head>
 	<body>
@@ -55,6 +56,7 @@
 			</a>
 			<a id="circle" class="mui-tab-item" href="circle.html" style="position: relative !important;top: 2px !important;display: none;">
 				<b id="Byou" class="Bicon youB"></b>
+				<em class="mui-badge infoNum2 mui-badge-danger">12</em>
 				<span class="mui-tab-label">HI友圈</span>
 			</a>
 			<a id="qq" class="mui-tab-item" href="qq.html" style="position: relative !important;top: 2px !important;">
@@ -93,7 +95,6 @@
 				}
 			    //版本控制结束
 			    function friendOpen(){
-
 			    		if(/android/i.test(navigator.userAgent)){
 			    			doGame();//转盘抽奖
 			    			mui('#circle')[0].style.display = '';
@@ -287,19 +288,23 @@
 						plus.storage.setItem("cityNum",num);
 		            		Preloading();//重新载入底部webview
 		            		mui.toast('切换成功');
+		            		clearInterval(friendOpenTime);
+						var friendOpenTime = setTimeout(function(){
+							friendOpen();
+						},1000)
 					}else{//自动
 						mui.confirm('您离'+city+'最近,是否切换至'+city+'市 !', '提示', ['取消', '确定'], function(e) {
 				            if (e.index == 1) {
 					            	plus.storage.setItem("cityNum",num);
 					            	Preloading();
 					            	mui.toast('切换成功');
+					            	clearInterval(friendOpenTime);
+								var friendOpenTime = setTimeout(function(){
+									friendOpen();
+								},1000)
 				            }
 				        })
 					}
-					clearInterval(friendOpenTime);
-					var friendOpenTime = setTimeout(function(){
-						friendOpen();
-					},1000)
 				}
 				function getGeocode() {/*定位取经纬度*/
 					plus.geolocation.getCurrentPosition(geoInf, function(e) {

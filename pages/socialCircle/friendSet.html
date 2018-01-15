@@ -19,15 +19,15 @@
 			#userMessContainer {
 				margin-top: 50px;
 			}
-			
+
 			i {
 				ont-style: normal;
 			}
-			
+
 			i.container {
 				position: relative;
 			}
-			
+
 			i.imgContainer .upload {
 				position: absolute;
 				top: 0;
@@ -36,26 +36,26 @@
 				right: 0;
 				z-index: 999;
 			}
-			
+
 			#main {
 				margin-bottom: 100px;
 			}
-			
+
 			select {
 				display: inline-block !important;
 				float: right !important;
 				font-size: 14px !important;
 				margin-top: 10px;
 			}
-			
+
 			input {
 				border: none !important;
 			}
-			
+
 			.box-s {
 				padding-left: 5%;
 			}
-			
+
 			.muibackdrop {
 				width: 80%;
 				height: 100px;
@@ -67,37 +67,37 @@
 				border: 1px solid #F53C42;
 				background: #ffffff;
 			}
-			
+
 			.saveMessage {
 				color: #FFFFFF;
 				margin-right: 20px;
 				line-height: 50px;
 				font-size: 14px;
 			}
-			
+
 			.muibackdrop {
 				display: none;
 			}
-			
+
 			.selectbtn {
 				float: right !important;
 				width: 17%;
 				margin: 0;
 			}
-			
+
 			.data ul li .shuru {
 				margin-bottom: 0;
 			}
-			
+
 			.data ul li img {
 				width: 100px;
 				max-height: none;
 			}
-			
+
 			.wx_type_img {
 				position: relative;
 			}
-			
+
 			.wx_type_img input#imgUpload {
 				margin: 0;
 				cursor: pointer;
@@ -109,28 +109,28 @@
 				opacity: 0;
 				filter: alpha(opacity=0);
 			}
-			
+
 			#imgUpload {
 				display: none;
 			}
-			
+
 			.plist ul li {
 				border-bottom: none;
 				border-bottom: 10px solid #F3F3F3;
 			}
-			
+
 			.renting-footer {
 				height: 50px;
 			}
-			
+
 			.data ul li .shuru {
 				line-height: 14px;
 			}
-			
+
 			.data ul li .shuru::placeholder {
 				padding-top: 4px;
 			}
-			
+
 			.diybut {
 				color: #999;
 				background: url(../../img/makeFriend/cc.png) no-repeat;
@@ -143,7 +143,7 @@
 				margin-right: 5px;
 				margin-bottom: 5px;
 			}
-			
+
 			.diybuted {
 				background: url(../../img/makeFriend/dd.png) no-repeat;
 				color: white;
@@ -156,10 +156,11 @@
 				margin-right: 5px;
 				margin-bottom: 5px;
 			}
-			
+
 			.hidestep {
 				/*display: none;*/
 			}
+			#imghead{width: 50px;height: 50px;border-radius: 50%;}
 		</style>
 	</head>
 
@@ -174,6 +175,16 @@
 		<div id="main">
 			<div class="plist clearfloat data" id="userMessContainer">
 				<ul>
+					<li class="clearfloat touxiang">
+						<a>
+							<p class="fl">头像</p>
+							<label>
+								<span class="fr">
+									<div class="text-center gray" id="preview"><img id="imghead" class="avatar" onclick="galleryImgsSelected('avatar')" src="../../img/answer/editset.png" width="50" height="50"></div>
+								</span>
+							</label>
+						</a>
+					</li>
 					<li class="clearfloat hidestep">
 						<a href="#">
 							<p class="fl">昵称</p>
@@ -236,12 +247,12 @@
 		<!--遮罩1-->
 		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
 		<script type="text/html" id="maskTpl">
-			
+
 			<img src="../../img/mainHtml/mclose.svg" class="closeMs"/>
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
 			<%if(popdata.modelContent){%>
 			<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','second')"/>
-			<%}%> 
+			<%}%>
 			</div>
 		</script>
 	</body>
@@ -254,7 +265,7 @@
 			var myuserid = plus.storage.getItem('userid');
 			var cityNum = plus.storage.getItem('cityNum');
 			var oldToken = plus.storage.getItem('oldToken');
-			//任务提示   
+			//任务提示
 			var title1 = '编辑炫酷昵称，完成即可获取:100Hi豆';
 			var title2 = '完成你的个性签名，即可获取:100Hi豆';
 			var title3 = '填写自己的性别，即可获取:100Hi豆';
@@ -288,7 +299,7 @@
 	            			if(data.data && data.data.length){
 	            				mui.each(data.data,function(index,item){
 	                				if(item.typeName == 'saveProfile'){
-	                					if(item.modelState == 1){ 
+	                					if(item.modelState == 1){
 	                        			 	$('#maskInfo1').show();
 	                        			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
 	                        			 	$('#maskInfo1').click(function(){
@@ -298,8 +309,8 @@
 										$('.closeMs').click(function(){
 											event.stopPropagation();
 											$(this).parent().fadeOut(200);
-										}) 
-	                        			}else{ 
+										})
+	                        			}else{
 	                        			 	$('#maskInfo1').hide()
 	                        			}
 	                				}
@@ -330,6 +341,9 @@
 
 						if(data.data.bgImg && JSON.parse(data.data.bgImg).length > 0) {
 							$('#mypic1').attr('src', JSON.parse(data.data.bgImg)[0].picImg)
+						}
+						if(data.data.avatar && JSON.parse(data.data.avatar).length > 0) {
+							$('#imghead').attr('src', JSON.parse(data.data.avatar)[0].picImg)
 						}
 
 						if(data.data.userExplain && data.data.userExplain != 'null') {
@@ -619,7 +633,7 @@
 //									}, '')
 //								} else {
 //									plus.storage.removeItem('open')
-//									
+//
 //									$('li.clearfloat').removeClass('hidestep')
 //
 //								}
@@ -689,18 +703,18 @@
 										plus.storage.setItem('$steptit', 'title' + lateststep);
 										$('li.clearfloat').eq(curli).removeClass('hidestep')
 										plus.nativeUI.closeWaiting(); //关闭等待框
-										
+
 										mui.toast('修改成功');
 										plus.webview.currentWebview().close();
-										
-									
+
+
 										if(!plus.storage.getItem('tipEnd')){
 											if(plus.storage.getItem('open') == 1){
 												mui.toast('修改成功,恭喜你获得100HI豆');
 											}
 											stepConfirm(eval(plus.storage.getItem('$steptit')));
 										}
-										 
+
 									} else {
 										plus.nativeUI.closeWaiting(); //关闭等待框
 										mui.toast('修改失败，请重试！');
@@ -717,10 +731,16 @@
 						var shuziX = [1, 2, 4];
 						task.setRequestHeader('token', oldToken);
 						task.setRequestHeader('city', cityNum);
-
 						if(Apic.length) {
+							console.log(Apic[0]);
 							task.addFile(Apic[0], {
 								key: 'bgImg'
+							})
+						}
+						if(Apic2.length) {
+							console.log(Apic2[0]);
+							task.addFile(Apic2[0], {
+								key: 'avatar'
 							})
 						}
 						task.addData('age', age);
@@ -770,21 +790,31 @@
 		//		}
 
 		/*选择图片*/
-		var Apic = []; //图片存放数组
+		var Apic = [],Apic2 = []; //图片存放数组
 		var lfs = null; // 保留上次选择图片列表
 		var time1 = null;
 
-		function galleryImgsSelected() { //从相册中选择图片
+		function galleryImgsSelected(type) { //从相册中选择图片
 			mui.plusReady(function() {
 				plus.gallery.pick(function(e) {
-					Apic = [];
+					if(type){
+						Apic2 = [];
+					}else{
+						Apic = [];
+					}
 					lfs = e.files;
 					clearInterval(time1);
 					var indexNum = 0;
 					var indexMax = e.files.length - 1;
-					e.files.forEach(function() {
-						mui('#mypic1')[0].src = '../../img/Spinner.svg';
-					})
+					if(type){
+						e.files.forEach(function() {
+							mui('#imghead')[0].src = '../../img/Spinner.svg';
+						})
+					}else{
+						e.files.forEach(function() {
+							mui('#mypic1')[0].src = '../../img/Spinner.svg';
+						})
+					}
 					time1 = setInterval(function() {
 						console.log(time1);
 						if(0 != e.files[indexNum].indexOf("file://")) {
@@ -805,8 +835,12 @@
 							},
 							function(obj) {
 								console.log(obj)
-								Apic.push(endpic);
-								showImg(endpic, indexNum);
+								if(type){
+									Apic2.push(endpic);
+								}else{
+									Apic.push(endpic);
+								}
+								showImg(endpic, indexNum, type);
 							},
 							function(error) {
 								mui.toast('图片获取错误，请重试');
@@ -824,11 +858,16 @@
 					}
 				});
 
-				function showImg(url, indexNum) { //显示图片
+				function showImg(url, indexNum, type) { //显示图片
 					if(0 != url.indexOf("file://")) {
 						url = "file://" + url;
 					}
-					mui('#mypic1')[0].src = url;
+					if(type){
+						mui('#imghead')[0].src = url;
+					}else{
+						mui('#mypic1')[0].src = url;
+					}
+
 				}
 			})
 		}

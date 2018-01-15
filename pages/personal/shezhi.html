@@ -42,7 +42,7 @@
 				<li class="aClick" id="appupgrade" style="display: none;">检查更新</li>
 				<li class="aClick liafter" id="tucao" style="margin-top: 12px;">反馈<span class="mui-icon mui-icon-arrowright"></span></li>
 				<li class="aClick" id="aboutme">关于<span class="mui-icon mui-icon-arrowright"></span></li>
-				<li class="aClick" id="Signout" style="margin-top: 20px;text-align: center;padding: 0;color: #e21919;;">退出登录</li>
+				<li class="aClick" id="Signout" style="margin-top: 20px;text-align: center;padding: 0;color: #e21919;display: none;">退出登录</li>
 			</ul>
 			<div id="xieyi">
 				HI集用户协议
@@ -57,9 +57,15 @@
 	<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/update.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+
 		mui.plusReady(function(){
+
+			if(plus.storage.getItem('myToken')){
+				mui('#Signout')[0].style.display = 'block';
+			}
 			//调试接口输入
 			mui('#sheZhiUrl')[0].addEventListener('swipeleft',function(){
+
 				mui('#sheZhiUrl')[0].addEventListener('swiperight',function(){
 					mui.prompt('null','请输入暗号','内部测试功能',['确认','取消'],function(e) {
 						if(e.index == 0) {
@@ -99,15 +105,22 @@
 					})
 				}
 			}();
-			//吐槽
+			//吐槽反馈
 			mui('#tucao')[0].onclick = function(){
-				openview({
-					view: "../teasing.html",
-					id: "teasing",
-					extrasobj: {
-						page:"hidou"
-					}
-				})
+				if(!plus.storage.getItem('myToken')){
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}else{//没登陆直接打开登录页面
+					openview({
+						view: "../teasing.html",
+						id: "teasing",
+						extrasobj: {
+							page:"hidou"
+						}
+					})
+				}
 			}
 			//关于
 			mui('#aboutme')[0].addEventListener('tap',function(){
@@ -123,16 +136,30 @@
 			})
 			//编辑资料
 			mui('#editdata')[0].addEventListener('tap',function(){
-				openview({
-					view:'setup.html'
-				});
+				if(!plus.storage.getItem('myToken')){
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}else{//没登陆直接打开登录页面
+					openview({
+						view:'setup.html'
+					});
+				}
 			})
 			//修改密码
 			mui('#editpw')[0].addEventListener('tap',function(){
-				openview({
-					view:'../forgetpw.html',
-					id:'forgetpw'
-				});
+				if(!plus.storage.getItem('myToken')){
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}else{//没登陆直接打开登录页面
+					openview({
+						view:'../forgetpw.html',
+						id:'forgetpw'
+					});
+				}
 			})
 			//退出登录
 			mui('#Signout')[0].addEventListener('tap',function(){
