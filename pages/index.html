@@ -406,37 +406,41 @@
 
 				//消息通知
 				function showMessage(){
-					mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
-					mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
+					
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
 					//显示消息条数
-					mui.ajax(serverUrl+'/api/index/message',{
-						data:{userid:myuserid,msgType:1},
-						dataType:'json',
-						type:'post',
-						timeout:10000,
-						headers:{"token":oldToken},
-						success:function(data,type,xhr){
-							plus.nativeUI.closeWaiting();
-							console.log('消息hi',data);
-					       	if(data.errno == 0){
-						       	if(data.data.length){
-						       		var hiInfoNums = plus.storage.getItem('hiInfoNums');
-						       		if(data.data.length - hiInfoNums > 0){
-						       			mui('#mmsg')[0].style.display = 'block';
-					     				mui('#mmsg')[0].innerHTML = data.data.length - hiInfoNums;
-						       		}else{
-						       			mui('#mmsg')[0].style.display = 'none';
-						       		}
-								}
-					       	}
-					       	plus.nativeUI.closeWaiting();
-						},
-						error:function(xhr,type,errorThrown){
-							plus.nativeUI.closeWaiting();
-						}
-					});
+					if(plus.storage.getItem('myToken')){
+						mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
+						mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
+						mui.ajax(serverUrl+'/api/index/message',{
+							data:{userid:myuserid,msgType:2},
+							dataType:'json',
+							type:'post',
+							timeout:10000,
+							headers:{"token":oldToken},
+							success:function(data,type,xhr){
+								plus.nativeUI.closeWaiting();
+								console.log('消息hi'+JSON.stringify(data));
+						       	if(data.errno == 0){
+							       	if(data.data.length){
+							       		var hiInfoNums = plus.storage.getItem('hiInfoNums');
+							       		if(data.data.length - hiInfoNums > 0){
+							       			mui('#mmsg')[0].style.display = 'block';
+						     				mui('#mmsg')[0].innerHTML = data.data.length - hiInfoNums;
+							       		}else{
+							       			mui('#mmsg')[0].style.display = 'none';
+							       		}
+									}
+						       	}
+						       	plus.nativeUI.closeWaiting();
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
+							}
+						});
+					}
+					 
 				}
 
 				//首页webview预加载

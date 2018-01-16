@@ -208,9 +208,12 @@
 											<div class="maincl ft14" style="margin-top: 5px;">
 												<%=list[i].content.content%>
 											</div>
-											<div class="maincl ft14" style="margin-top: 5px;">
-												<img src="<%=list[i].content.pic[0].picImg%>" style="width: 45px;"/>
-											</div>
+											<%if(list[i].content.pic && list[i].content.pic[0] && list[i].content.pic[0].picImg){%>
+												<div class="maincl ft14" style="margin-top: 5px;">
+													<img src="<%=list[i].content.pic[0].picImg%>" style="width: 45px;"/>
+												</div>
+											<%}%>
+											
 										</div>
 									</div>
 								</div>
@@ -421,7 +424,7 @@
 				if(typeNum == 0){
 					plus.nativeUI.showWaiting();//显示等待框
 					mui.ajax(serverUrl+'/api/index/message',{
-						data:{userid:myuserid,msgType:1},
+						data:{userid:myuserid,msgType:2},
 						dataType:'json',
 						type:'post',
 						timeout:10000,
