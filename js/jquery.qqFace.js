@@ -21,20 +21,19 @@
 		$(this).click(function(e){
 			var strFace, labFace;
 			if($('#'+id).length<=0){
-				strFace = '<div id="'+id+'" style="position:absolute;display:none;z-index:1000;" class="qqFace">' +
+				strFace = '<div id="'+id+'" style="position:fixed;display:none;z-index:1000;bottom:55px;height:200px;background:white" class="qqFace">' +
 							  '<table border="0" cellspacing="0" cellpadding="0"><tr>';
 				for(var i=1; i<=75; i++){
 					labFace = '['+tip+i+']';
 					strFace += '<td><img src="'+path+i+'.gif" onclick="$(\'#'+option.assign+'\').setCaret();$(\'#'+option.assign+'\').insertAtCaret(\'' + labFace + '\');$(\'#msg-type\').addClass(\'mui-icon-paperplane\')" /></td>';
-					if( i % 15 == 0 ) strFace += '</tr><tr>';
+					if( i % 13 == 0 ) strFace += '</tr><tr>';
 				}
 				strFace += '</tr></table></div>';
 			}
 			$(this).parent().append(strFace);
 			var offset = $(this).position();
 			var top = offset.top + $(this).outerHeight();
-			$('#'+id).css('top',top);
-			$('#'+id).css('left',offset.left);
+			$('#'+id).css({'padding':'10px','border-radius':'5px','left':'10px','right':'10px'}); 
 			$('#'+id).show();
 			
 			e.stopPropagation();

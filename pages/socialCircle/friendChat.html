@@ -135,7 +135,11 @@
 				float: left;
 				color: #ddd;
 			}
-
+			.mui-imageviewer .mui-imageviewer-header .mui-imageviewer-close{
+				z-index: 9999;
+				font-size: 40px;
+				top: 20px;
+			}
 			.msg-item .msg-content {
 				display: inline-block;
 				border-radius: 5px;
@@ -806,10 +810,7 @@
 								model: record
 							});*/
 							console.log('ddddd',record)
-							
-							ui.areaMsgList.innerHTML = template('msg-template', {
-								"record": record
-							}); 
+							 
 							var selfImg = ui.areaMsgList.querySelectorAll('.selfImg');
 							[].forEach.call(selfImg, function(item, index) {
 								item.src = myavatar;
@@ -936,7 +937,13 @@
 							}, 100)
 							clearTimeout(recordTimeOut2)
 						};
-
+						var record2 = record;
+							for(var i in record2){
+								record2[i].content = replace_em(record2[i].content)
+							}
+							ui.areaMsgList.innerHTML = template('msg-template', {
+								"record": record2
+							});
 						function msgTextFocus() {
 							$('.botChat').hide()
 
@@ -1464,6 +1471,7 @@
 								ui.boxMsgText.blur();
 							}
 						})
+						 
 						$('.emotion').qqFace({
 
 							id : 'facebox', 
@@ -1474,6 +1482,9 @@
 					
 						});
 					});
+					$('.mui-content,.emotion').click(function(){
+						$('.botChat').hide()
+					})
 				}(mui, document));
 				function replace_em(str){
 					str = str.replace(/\</g,'&lt;');

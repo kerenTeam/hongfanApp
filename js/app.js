@@ -646,12 +646,13 @@ mui.plusReady(function() {
 		 * 获取目标节点的tagName
 		 */
 		var name = event.target.tagName;
+		var parentname = event.target.parentNode.parentNode.className;
 		name = name.toLowerCase();
 		var className = event.target.className;
 		/**
 		 * 如果是图片，则弹出选择框决定是否下载；
 		 */
-		if(name === "img" && (className.indexOf('picOp')>-1 || className.indexOf('anImg')>-1 || className.indexOf('mui-zoom')>-1)) {
+		if((name === "img" && (className.indexOf('picOp')>-1 || className.indexOf('anImg')>-1 || className.indexOf('mui-zoom')>-1)) || parentname.indexOf('mui-imageviewer-item-center')>-1) {
 			var imgUrl = event.target.src;
 			console.log('图片地址：' + imgUrl);
 			var filename = imgUrl.substring(imgUrl.lastIndexOf("/") + 1, imgUrl.length);
@@ -659,7 +660,7 @@ mui.plusReady(function() {
 			/**
 			 * http://dev.dcloud.net.cn/mui/ui/#dialog
 			 */
-			mui.confirm("是否下载此图片", "确认下载？", ["下载", "取消"], function(event) {
+			mui.confirm("是否保存此图片", "确认保存？", ["保存", "取消"], function(event) {
 				/**
 				 * index从0开始
 				 */
