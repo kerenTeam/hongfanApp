@@ -524,9 +524,10 @@
 		</div>
 		<!--分享弹窗-->
 		<div id="maskInfo123" class="maskInfo" style="display: none;z-index:999;">
-			<img src="../../img/mainHtml/mclose.svg" class="closeMs" />
-			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
-				<img src="../../img/mainHtml/shareGift.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCouponFun()' />
+			<!--<img src="../../img/mainHtml/mclose.svg" class="closeMs" />-->
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;background: none;top: 13%;bottom: auto;">
+				<img src="../../img/limitTimeAct/19OrderShare/02_01-min.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCouponFun()' />
+				<img src="../../img/limitTimeAct/19OrderShare/02_03.png" class="closeMs2" style="display: block;margin: 0 auto;width: 12%;"/>
 			</div>
 		</div>
 	</body>
@@ -548,9 +549,9 @@
 			event.preventDefault()
 			$('#maskInfo1').fadeOut(200);
 		})
-		$('.closeMs').click(function() {
+		$('.closeMs2').click(function() {
 			event.stopPropagation();
-			$(this).parent().fadeOut(200);
+			$(this).parent().parent().fadeOut(200);
 		})
 		//跳转搜索
 		function gosearch() {
@@ -571,12 +572,12 @@
 				var msg = {
 					title: '快来下载HI集吧，优惠、好礼等着你！',
 					content: '快来下载HI集吧，优惠、好礼等着你！',
-					href: fxUrl + 'login.html?code=' + invitationCode,
+					href: fxUrl + 'login.html?code2=' + invitationCode,
 					thumbs: [thumbs],
 					pictures: [thumbs]
 				};
 				showSfun1(msg, function() {
-					//成功领劵
+					//分享成功  领劵
 					plus.nativeUI.showWaiting();
 					mui.ajax(serverUrl + '/api/index/sharegetcoupon', {
 						data: {
@@ -587,8 +588,7 @@
 						type: 'post',
 						timeout: 10000,
 						headers: {
-							"token": oldToken,
-							'city': cityNum
+							"token": oldToken,'city': cityNum
 						},
 						success: function(data, type, xhr) {
 							plus.nativeUI.closeWaiting();
@@ -625,10 +625,11 @@
 			function isShowShare(isnow) {
 				if(plus.storage.getItem('shareInfo')) {
 					var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
-					var nowdate = new Date;
+					var nowdate = new Date();
 					var newbeginDate = new Date(shareInfo.begin_date);
 					var newendDate = new Date(shareInfo.end_date);
 					var showShare = isnow || plus.webview.currentWebview().showShare;
+					console.log(nowdate > newbeginDate && nowdate < newendDate)
 					if(showShare && nowdate > newbeginDate && nowdate < newendDate) {
 						plus.nativeUI.closeWaiting();
 						$('#maskInfo123').css('display', 'block');
@@ -657,6 +658,11 @@
 						"token": oldToken
 					},
 					success: function(data, type, xhr) {
+						var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));//18年1月19号 支付订单后有个分享
+						if(shareInfo){
+							var newbeginDate = new Date(shareInfo.begin_date);
+							var newendDate = new Date(shareInfo.end_date);
+						}
 						plus.nativeUI.closeWaiting();
 						console.log('订单列表', data)
 						if(data.errno == 0) {
@@ -665,6 +671,22 @@
 									repayid = [],
 									ordermoney = [];
 								for(var i = 0; i < data.data.length; i++) {
+
+									//18年1月19号 支付订单后有个分享
+//									if(i == 0){
+//										data.data[0].pay_time = parseInt(1516406400000);
+//									}
+
+									if(shareInfo && data.data[i].pay_time){
+										data.data[i].pay_time = 1516406400000;
+										var nowdate19 = new Date(parseInt(data.data[i].pay_time));
+										console.error(nowdate19);
+										if(nowdate19 > newbeginDate && nowdate19 < newendDate && !data.data.isShared) {
+											data.data[i].canShare = true;
+										}
+									}
+
+
 									data.data[i].PriceCalculation = eval("(" + data.data[i].PriceCalculation + ")");
 									data.data[i].PriceCalculation.PriceCalculValue = parseFloat(data.data[i].PriceCalculation.PriceCalculValue).toFixed(2)
 
@@ -992,6 +1014,7 @@
 					error: function(xhr, type, errorThrown) {
 						plus.nativeUI.closeWaiting();
 						console.log('响应失败  !');
+						mui.toast('当前网络不好，请重试！');
 					}
 				});
 			}

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>抽奖活动</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/config.css" />
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/artTemplate-native.js"></script>
+		<style type="text/css">
+			.clear {
+				clear: both;
+			}
+			/* 大转盘样式 */
+
+			.banner {
+				display: block;
+				width: 80%;
+				margin-left: auto;
+				margin-right: auto;
+				margin-bottom: 20px;
+			}
+
+			.banner .turnplate {
+				display: block;
+				width: 100%;
+				position: relative;
+			}
+
+			.banner .turnplate canvas.item {
+				width: 100%;
+			}
+
+			.banner .turnplate img.pointer {
+				position: absolute;
+				width: 27%;
+				height: 37%;
+				left: 36.5%;
+				top: 26%;
+			}
+
+			.list_lh {
+				height: 300px;
+				overflow: hidden;
+			}
+
+			.list_lh ul {
+				padding: 10px 10px 0 10px;
+			}
+
+			.list_lh ul li {
+				padding: 10px;
+				margin-bottom: 5px;
+				border-radius: 3px;
+			}
+
+			.flexx {
+				display: flex;
+				align-items: center;
+				background-color: white;
+			}
+
+			.avtar {
+				width: 50px;
+				height: 50px;
+				margin-right: 10px;
+				overflow: hidden;
+			}
+
+			.avtar img {
+				border-radius: 50%;
+				width: 50px;
+				height: 50px;
+			}
+
+			#maskInfo {
+				z-index: 99999;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, .5)
+			}
+
+			.ruleCt {
+				position: absolute;
+				padding-right: 15px;
+				background-color: #fff;
+				top: 15%;
+				left: 7%;
+				width: 86%;
+				bottom: 15%;
+				padding: 15px 5px;
+				border-radius: 3px
+			}
+
+			.closemask {
+				position: absolute;
+				bottom: 10px;
+				left: 50%;
+				-webkit-transform: translateX(-50%)
+			}
+
+			.ruleol{
+				padding: 0 15px 0 15px;
+				margin-top: 25px;
+			}
+			#ruleol>*{
+				font-size: 14px;
+				line-height: 1.5;
+			}
+		</style>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../js/awardRotate.js"></script>
+
+		<script type="text/javascript">
+			var turnplate = {
+				restaraunts: [], //大转盘奖品名称
+				colors: [], //大转盘奖品区块对应背景颜色
+				outsideRadius: 192, //大转盘外圆的半径
+				textRadius: 155, //大转盘奖品位置距离圆心的距离
+				insideRadius: 68, //大转盘内圆的半径
+				startAngle: -0.032, //开始角度
+				bRotate: false //false:停止;ture:旋转
+			};
+
+			//动态添加大转盘的奖品与奖品区域背景颜色
+//			turnplate.restaraunts = ["2元现金券", "30HI豆", "50HI豆", "100HI豆", "5元现金劵", "5元现金劵", "2元现金劵 ", "谢谢参与"];
+//			turnplate.colors = ["#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF", "#FFF4D6", "#FFFFFF"];
+
+			var rotateTimeOut = function() {
+				$('#wheelcanvas').rotate({
+					angle: 0,
+					animateTo: 2160,
+					duration: 8000,
+					callback: function() {
+						mui.toast('网络超时，请检查您的网络设置！');
+					}
+				});
+			};
+
+			//旋转转盘 item:奖品位置; txt：提示语;
+			var rotateFn = function(item, txt) {
+				var angles = item * (360 / turnplate.restaraunts.length) - (360 / (turnplate.restaraunts.length * 2));
+				if(angles < 270) {
+					angles = 270 - angles;
+				} else {
+					angles = 360 - angles + 270;
+				}
+				$('#wheelcanvas').stopRotate();
+				$('#wheelcanvas').rotate({
+					angle: 0,
+					animateTo: angles + (360 - 75) / 8 * 10,
+					duration: 8000,
+					callback: function() {
+						if(txt.indexOf('加油') < 0) {
+
+							alert('恭喜你抽的' + txt)
+						} else {
+							alert(txt);
+						}
+						turnplate.bRotate = !turnplate.bRotate;
+					}
+				});
+			};
+			document.addEventListener('refresh', function() {
+				getAwd();
+			})
+			getAwd()
+			//获取奖品
+			function getAwd() {
+				mui.plusReady(function() {
+					var myuserid = plus.storage.getItem('userid');
+					var oldtoken = plus.storage.getItem('oldToken');
+					var cityNum = plus.storage.getItem('cityNum');
+					plus.nativeUI.showWaiting();
+
+					mui.ajax(serverUrl + '/api/index/gamedata', {
+                        data: { gameId:4},
+                        type: 'post',
+                        timeout: 10000,
+                        headers: { "token": oldtoken ,'city':cityNum},
+                        success: function(data, type, xhr) {
+                            console.log("游戏数据 ",data)
+                            if(data.errno == 0){
+                            	if(data.data.game){
+                            		if(data.data.game.PrizeGI){
+                            			$('#wheelcanvas').attr('src',JSON.parse(data.data.game.PrizeGI)[0].picImg)
+                            		}
+                            		if(data.data.game.FEI){
+                            			$('.pointer').attr('src',JSON.parse(data.data.game.FEI)[0].picImg)
+                            		}
+                            		if(data.data.game.BGI){
+                            			var s=".turnplate{ background-image:url(\""+JSON.parse(data.data.game.BGI)[0].picImg+"\")!important;background-size:100% 100%;}";
+ 									$("style").append(s);
+//                          			$('.turnplate').css('background-image','url('+JSON.parse(data.data.game.FEI)[0].picImg+')')
+                            		}
+                            		if(data.data.game.descrtipion){
+                            			$('#descrtipion').html(data.data.game.descrtipion)
+                            		}
+                            		if(data.data.game.name){
+                            			$('#gameName').html(data.data.game.name)
+                            		}
+                            		if(data.data.game.content){
+                            			$('#ruleol').html(data.data.game.content)
+                            		}
+                            	}
+                            	if(data.data.game_prize && data.data.game_prize.length){
+                            		turnplate.restaraunts = [],turnplate.colors = [];
+                            		mui.each(data.data.game_prize,function(index,item){
+                            			turnplate.restaraunts.push(item.title);
+                            			if(index%2 == 0 ){
+                            				turnplate.colors.push('#FFF4D6')
+                            			}else{
+                            				turnplate.colors.push('#FFFFFF')
+                            			}
+
+
+                            		})
+
+                            	}
+
+							drawRouletteWheel();
+                           //点击抽奖
+                            	$('.pointer').click(function() {
+								if(!plus.storage.getItem('myToken')) {
+									mui.toast('请登录');
+									openview({
+										view: 'login.html'
+									});
+								} else { //抽奖
+									plus.nativeUI.showWaiting();
+									mui.ajax(serverUrl + '/api/useraccount/userinfo', {
+										data: {
+											"userid": myuserid
+										},
+										type: 'post',
+										timeout: 10000,
+										headers: {
+											"token": oldtoken
+										},
+										success: function(data, type, xhr) {
+											console.log('获取用户数据返回', data);
+											if(data.errno == 0) {
+												plus.nativeUI.closeWaiting();
+												//判断是否填写号码
+												if(data.data[0].phone) {
+													var myPhone = data.data[0].phone;
+													$('.pointer').unbind('click');
+													$('#wheelcanvas').rotate({
+														angle: 0,
+														animateTo: 360 + (360) / 8 * 55,
+														duration: 10000,
+														callback: function() {
+
+														}
+													});
+													var imei = plus.device.uuid;
+
+													mui.ajax(serverUrl + '/api/index/iswining', {
+														data: {
+															//				                                	userId:'418',
+															//													phone:'13450983657',
+															//													macID:'dsrgertyryhgbfsrertytuyjr',
+															//													gameId:2
+															userId: myuserid,
+															phone: myPhone,
+															macID: imei,
+															gameId: 4
+														},
+														type: 'post',
+														timeout: 10000,
+														headers: {
+															"token": oldtoken,
+															'city': cityNum
+														},
+														success: function(data, type, xhr) {
+															console.log("中奖 ", JSON.stringify(data))
+															if(data.errno == 0) {
+																if(data.data.orderIndex && data.data.title) {
+																	plus.nativeUI.closeWaiting();
+																	//							                                    		alert('恭喜你抽得第 '+data.data.orderIndex+'个奖品'+data.data.title);
+																	//			                                    		rotateFn(item + 1, turnplate.restaraunts[item]);
+																	rotateFn(data.data.orderIndex, data.data.title);
+																	//抽奖缓存
+																	var date = new Date().getDate();
+																	plus.storage.setItem("$gameTime", JSON.stringify({
+																		gameData: date
+																	}));
+																	/*刷新个人中心hi豆显示*/
+																	mui.fire(plus.webview.getWebviewById('center.html'), 'refreshGift');
+																	/*刷新个人中心消息数量*/
+																	mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
+
+																}
+
+															} else if(data.errno == 1000) {
+																plus.nativeUI.closeWaiting();
+																//抽奖缓存
+																var date = new Date().getDate();
+																plus.storage.setItem("$gameTime", JSON.stringify({
+																	gameData: date
+																}));
+																$('#wheelcanvas').stopRotate();
+																plus.nativeUI.alert(data.errmsg);
+
+															} else {
+																$('#wheelcanvas').stopRotate();
+																plus.nativeUI.closeWaiting();
+																mui.toast('网络不好，请重试')
+															}
+														},
+														error: function(xhr, type, errorThrown) {
+															console.log('响应失败');
+															$('#wheelcanvas').stopRotate();
+															plus.nativeUI.closeWaiting();
+															mui.toast('网络不好，请重试')
+														}
+													});
+												} else {
+													plus.nativeUI.alert('请先填写电话号码哦')
+												}
+											}
+										},
+										error: function(xhr, type, errorThrown) {
+											console.log('获取用户数据,响应失败');
+										}
+									});
+
+								}
+							})
+                            }
+
+                        },
+                        error: function(xhr, type, errorThrown) {
+                            console.log('响应失败');
+                        }
+                    });
+
+				})
+			}
+
+			//页面所有元素加载完毕后执行drawRouletteWheel()方法对转盘进行渲染
+			//			window.onload=function(){
+			//
+			//			};
+
+			function drawRouletteWheel() {
+				var canvas = document.getElementById("wheelcanvas");
+				if(canvas.getContext) {
+					//根据奖品个数计算圆周角度
+					var arc = Math.PI / (turnplate.restaraunts.length / 2);
+					var ctx = canvas.getContext("2d");
+					//在给定矩形内清空一个矩形
+					ctx.clearRect(0, 0, 422, 422);
+					//strokeStyle 属性设置或返回用于笔触的颜色、渐变或模式
+					ctx.strokeStyle = "#FFBE04";
+					//font 属性设置或返回画布上文本内容的当前字体属性
+					ctx.font = '16px Microsoft YaHei';
+					for(var i = 0; i < turnplate.restaraunts.length; i++) {
+						var angle = turnplate.startAngle + i * arc;
+						ctx.fillStyle = turnplate.colors[i];
+						ctx.beginPath();
+						//arc(x,y,r,起始角,结束角,绘制方向) 方法创建弧/曲线（用于创建圆或部分圆）
+						ctx.arc(211, 211, turnplate.outsideRadius, angle, angle + arc, false);
+						ctx.arc(211, 211, turnplate.insideRadius, angle + arc, angle, true);
+						ctx.stroke();
+						ctx.fill();
+						//锁画布(为了保存之前的画布状态)
+						ctx.save();
+
+						//----绘制奖品开始----
+						ctx.fillStyle = "#E5302F";
+						var text = turnplate.restaraunts[i];
+						var line_height = 17;
+						//translate方法重新映射画布上的 (0,0) 位置
+						ctx.translate(211 + Math.cos(angle + arc / 2) * turnplate.textRadius, 211 + Math.sin(angle + arc / 2) * turnplate.textRadius);
+
+						//rotate方法旋转当前的绘图
+						ctx.rotate(angle + arc / 2 + Math.PI / 2);
+
+						/** 下面代码根据奖品类型、奖品名称长度渲染不同效果，如字体、颜色、图片效果。(具体根据实际情况改变) **/
+						if(text.indexOf("元") > 0) { //现金红包
+							var texts = text.split("元");
+							for(var j = 0; j < texts.length; j++) {
+								ctx.font = j == 0 ? 'bold 20px Microsoft YaHei' : '16px Microsoft YaHei';
+								if(j == 0) {
+									ctx.fillText(texts[j] + "元", -ctx.measureText(texts[j] + "元").width / 2, j * line_height);
+								} else {
+									ctx.fillText(texts[j], -ctx.measureText(texts[j]).width / 2, j * line_height);
+								}
+							}
+						} else if(text.indexOf("元") == -1 && text.length > 6) { //奖品名称长度超过一定范围
+							text = text.substring(0, 6) + "||" + text.substring(6);
+							var texts = text.split("||");
+							for(var j = 0; j < texts.length; j++) {
+								ctx.fillText(texts[j], -ctx.measureText(texts[j]).width / 2, j * line_height);
+							}
+						} else {
+							//在画布上绘制填色的文本。文本的默认颜色是黑色
+							//measureText()方法返回包含一个对象，该对象包含以像素计的指定字体宽度
+							ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+						}
+
+						//添加对应图标
+						//						if(text.indexOf("HI豆") > 0) {
+						//							var img = document.getElementById("shan-img");
+						//							img.onload = function() {
+						//								ctx.drawImage(img, -15, 10);
+						//							};
+						//							ctx.drawImage(img, -15, 10);
+						//						} else if(text.indexOf("谢谢参与") >= 0) {
+						//							var img = document.getElementById("sorry-img");
+						//							img.onload = function() {
+						//								ctx.drawImage(img, -15, 10);
+						//							};
+						//							ctx.drawImage(img, -15, 10);
+						//						}
+						//把当前画布返回（调整）到上一个save()状态之前
+						ctx.restore();
+						//----绘制奖品结束----
+						plus.nativeUI.closeWaiting();
+
+					}
+				}
+			}
+		</script>
+	</head>
+
+	<body style="background:#e62d2d;overflow:hidden!important;">
+		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
+			<!--<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+			<h1 id="centertitle" class="mui-title">免费抽现金券、HI豆</h1>
+			<span id="rightbtn" class="mui-action-back mui-pull-right" style="margin-top: 12px;font-size: 15px;">关闭</span>
+		</header>
+		<div style="margin-top: 80px">
+			<img src="../../img/center/1.png" id="shan-img" style="display:none;" />
+			<img src="../../img/center/2.png" id="sorry-img" style="display:none;" />
+			<div class="banner">
+				<div class="turnplate" style=""><!--background-image:url(../../img/center/turnplate-bg.png);-->
+					<canvas class="item" style="margin-bottom: -5px;" id="wheelcanvas" width="422px" height="422px"></canvas>
+					<img class="pointer" src="../../img/center/turnplate-pointer.png" />
+				</div>
+			</div>
+			<!--活动规则-->
+			<div class="ft14 maincl" style="padding: 10px;color: whitesmoke;">
+				<span id="descrtipion"></span>
+				<div class="Info" style="text-align: center;font-weight: 600;">点击查看详情</div>
+			</div>
+			<!--抽奖记录-->
+			<div id="crTit" style="padding: 10px 10px;color: white;">中奖纪录</div>
+			<div class="list_lh">
+				<ul id="recordList"></ul>
+			</div>
+			<script type="text/html" id="recordTpl">
+				<%for(var i= 0 ; i<list.length;i++){%>
+				<li class="flexx">
+					<div class="avtar">
+						<img src="<%= list[i].avatar%>" alt="" />
+					</div>
+					<div style="flex-grow: 1;">
+						<div class="flexx" style="justify-content: space-between;">
+							<div class="ft14 maincl">
+								恭喜用户 <span class="activecl"><%= list[i].nickname%></span>
+							</div>
+							<div class="disablecl ft12">
+								<%= list[i].createTime%>
+							</div>
+						</div>
+						<div class="ft14">
+							抽得
+							<%= list[i].title%>
+						</div>
+					</div>
+				</li>
+				<%}%>
+
+			</script>
+
+		</div>
+		<!--遮罩-->
+		<div id="maskInfo" style="display: none;">
+			<div class="ruleCt" style="padding-bottom: 50px;">
+				<div style="overflow-y: scroll;height: 100%;margin-bottom: 50px;">
+					<div class="ft18 fttc" style="text-align: center;margin-top: 25px;" id="gameName"></div>
+					<ol class="ft14 disablecl ruleol ft14" style="font-size: 14px!important;" id="ruleol">
+						<!--HI集上线豪礼大派送抽奖活动-->
+						<!--<div class="activecl">活动时间：10.08-11.13号。</div>
+						<div class="maincl">活动规则：期间每个用户每天限抽一次，抽中奖品会记录在HI集‘我的’-‘奖品’功能里。对应的奖品会发送至用户的HI集卡包以及直接累加到用户的HI豆数量上。如果您幸运的中得大奖，请至‘奖品’里查看记录并联系我方工作人员核实信息并发送奖品！</div>
+						<div class="maincl">奖品类别：本次活动提供各种丰富的奖品，包含：</div>
+						<div class="maincl">（1）2元、5元现金券</div>
+						<div class="maincl">（2）30、50、100HI豆</div>-->
+
+					</ol>
+				</div>
+				<button type="button" class="mui-btn mui-btn-danger mar10 closemask">我知道了</button>
+
+			</div>
+		</div>
+		<script type="text/javascript">
+			(function($) {
+				$.fn.myScroll = function(options) {
+					//默认配置
+					var defaults = {
+						speed: 40, //滚动速度,值越大速度越慢
+						rowHeight: 24 //每行的高度
+					};
+
+					var opts = $.extend({}, defaults, options),
+						intId = [];
+
+					function marquee(obj, step) {
+
+						obj.find("ul").animate({
+							marginTop: '-=1'
+						}, 0, function() {
+							var s = Math.abs(parseInt($(this).css("margin-top")));
+							if(s >= step) {
+								$(this).find("li").slice(0, 1).appendTo($(this));
+								$(this).css("margin-top", 0);
+							}
+						});
+					}
+
+					this.each(function(i) {
+						var sh = opts["rowHeight"],
+							speed = opts["speed"],
+							_this = $(this);
+						intId[i] = setInterval(function() {
+							if(_this.find("ul").height() <= _this.height()) {
+								clearInterval(intId[i]);
+							} else {
+								marquee(_this, sh);
+							}
+						}, speed);
+
+					});
+
+				}
+
+			})(jQuery);
+		</script>
+		<script type="text/javascript">
+			$('.ruleCt').click(function() {
+				event.stopPropagation()
+			})
+			$('#maskInfo,.closemask').click(function() {
+				event.preventDefault()
+				$('#maskInfo').fadeOut(200);
+			})
+			$('.Info').click(function() {
+				$('#maskInfo').fadeIn(200);
+			})
+
+			//获取中奖纪录
+			mui.plusReady(function() {
+				var myuserid = plus.storage.getItem('userid');
+				var oldtoken = plus.storage.getItem('oldToken');
+				var cityNum = plus.storage.getItem('cityNum');
+				mui.ajax(serverUrl + '/api/index/prizehistory', {
+					type: 'post',
+					timeout: 10000,
+					headers: {
+						"token": oldtoken,
+						'city': cityNum
+					},
+					success: function(data, type, xhr) {
+						console.log("中奖记录 ", data)
+						if(data.errno == 0) {
+							if(data.data && data.data.length) {
+								for(var i = 0; i < data.data.length; i++) {
+									if(!data.data[i].nickname) {
+										data.data[i].nickname = '匿名'
+									} else {
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(data.data[i].nickname)) {
+											data.data[i].nickname = data.data[i].nickname.substring(0, 3) + "****" + data.data[i].nickname.substring(7, 11)
+										}
+									}
+
+									if(data.data[i].avatar && data.data[i].avatar != 'null') {
+										if(JSON.parse(data.data[i].avatar)[0].picImg.indexOf('http') == -1) {
+											data.data[i].avatar = serverimgUrl + JSON.parse(data.data[i].avatar)[0].picImg;
+										} else {
+											data.data[i].avatar = JSON.parse(data.data[i].avatar)[0].picImg
+										}
+									} else {
+										data.data[i].avatar = '../../img/10.png'
+									}
+									data.data[i].createTime = getDateDiff(data.data[i].createTime);
+								}
+
+								$('#recordList').html(template('recordTpl', {
+									list: data.data
+								}));
+								//抽奖记录滚动
+								$("div.list_lh").myScroll({
+									speed: 40, //数值越大，速度越慢
+									rowHeight: 68 //li的高度
+								});
+							} else {
+								$('#crTit').css('display', 'none')
+							}
+
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log('响应失败');
+						plus.nativeUI.closeWaiting();
+					}
+				});
+			})
+
+			//发布时间判断
+			var minute = 1000 * 60;
+			var hour = minute * 60;
+			var day = hour * 24;
+			var halfamonth = day * 15;
+			var month = day * 30;
+
+			function getDateDiff(dateTimeStamp) {
+				var now = new Date().getTime();
+				var diffValue = now - dateTimeStamp;
+				var monthC = diffValue / month;
+				var weekC = diffValue / (7 * day);
+				var dayC = diffValue / day;
+				var hourC = diffValue / hour;
+				var minC = diffValue / minute;
+				if(monthC >= 1) {
+					result = parseInt(monthC) + "月前";
+				} else if(weekC >= 1) {
+					result = parseInt(weekC) + "周前";
+				} else if(dayC >= 1) {
+					result = parseInt(dayC) + "天前";
+				} else if(hourC >= 1) {
+					result = parseInt(hourC) + "小时前";
+				} else if(minC >= 1) {
+					result = parseInt(minC) + "分钟前";
+				} else {
+					result = "刚刚";
+				}
+				return result;
+			}
+			//滚动监听
+			$(window).scroll(function() {
+				var navBarHeight = 50;
+				var targetID = "#header";
+				var scrollTo = $(window).scrollTop();
+				if(scrollTo > navBarHeight) {
+					$(targetID).css({
+						//"background-image": "url(../../img/header.png)","background-size":"100%"
+					});
+					$('#leftbtn,#rightbtn').css({
+						'color': '#666'
+					});
+					$('#centertitle').css({
+						'color': '#666'
+					});
+				}
+				if(scrollTo < navBarHeight) {
+					$(targetID).css({
+						"background-image": "none"
+					});
+					$('#leftbtn,#rightbtn').css({
+						'color': '#fff'
+					});
+					$('#centertitle').css({
+						'color': '#fff'
+					});
+				}
+			}).trigger('scroll');
+		</script>
+
+	</body>
+
+</html>

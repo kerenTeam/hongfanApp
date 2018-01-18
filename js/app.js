@@ -1,6 +1,6 @@
 
 //var serverUrl='http://abcd.zlzmm.com:7200';
-var serverUrl='http://api.zlzmm.com';
+//var serverUrl='http://api.zlzmm.com';
 mui.plusReady(function(){
 	if(plus.storage.getItem('SURL')){
 		serverUrl = plus.storage.getItem('SURL');
@@ -8,7 +8,7 @@ mui.plusReady(function(){
 })
 
 //var serverUrl='http://hijiv2.zlzmm.com';
-//var serverUrl='http://192.168.43.170:7200';
+var serverUrl='http://192.168.1.113:7200';
 //var serverUrl='http://192.168.0.8:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
@@ -601,7 +601,7 @@ function formatDate(v, format) {
     return format;
 };
 
-//获取分享有礼 时间区间 和邀请码
+//获取分享有礼 时间区间 和邀请码(在商品详情页有调用)
 function sharecode(){
 	var myuserid = plus.storage.getItem('userid'),
 	    cityNum  = plus.storage.getItem('cityNum'),
@@ -614,11 +614,12 @@ function sharecode(){
 		timeout:10000,
 		headers: {"token": oldToken,'city': cityNum},
 		success:function(data,type,xhr){
-			console.log('获取分享有礼 时间区间 和邀请码'+data);
+			console.log('获取分享有礼 时间区间 和邀请码',data);
 			var shareInfo ={};
 			shareInfo.begin_date = data.data.begin_date;
 			shareInfo.end_date = data.data.end_date;
 			shareInfo.invitationCode = data.errmsg;
+			console.log(shareInfo);
 			plus.storage.setItem("shareInfo",JSON.stringify(shareInfo));
 		},
 		error:function(xhr,type,errorThrown){

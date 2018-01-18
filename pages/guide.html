@@ -317,6 +317,7 @@
 							clearInterval(Timetoken);
 							console.log('超时了');
 							plus.webview.currentWebview().hide();
+//							mui.fire(plus.webview.getWebviewById('main.html'),'openXianjing');
 						}
 						console.log('引导图循环加载');
 						if(plus.storage.getItem('oldToken')) {
@@ -342,7 +343,7 @@
 						success: function(data) {
 							console.log('引导banner ',data)
 							var dataobj = JSON.parse(data.data.banner);
-							
+
 							//缓存处理
 							console.log("dataobj ",dataobj);
 							function picCacheFun(){
@@ -413,7 +414,7 @@
 										}
 									});
 								}
-								
+
 							}
 							console.log("缓存",plus.storage.getItem('$picCache'))
 							//数组去重
@@ -438,6 +439,7 @@
 								if(!jumptime){
 									jumptime = 6;
 								}
+							var openXianjing = 0;
 							document.getElementsByTagName("small")[0].innerHTML = jumptime+"s";
 							var time = jumptime;
 						    var timereduce = setInterval(function(){
@@ -446,6 +448,11 @@
 						    	if(time == -1){
 						    		time = 0;
 									plus.webview.currentWebview().hide();
+									if(openXianjing == 0){
+										mui.fire(plus.webview.getWebviewById('main.html'),'openXianjing');
+										openXianjing ++;
+									}
+
 						    	};
 						    },1000)
 
@@ -458,6 +465,8 @@
 							document.getElementById("jump").addEventListener('tap', function(event) {
 								plus.navigator.setFullscreen(false);
 								plus.webview.currentWebview().hide();
+
+								mui.fire(plus.webview.getWebviewById('main.html'),'openXianjing');
 							}, false);
 							plus.nativeUI.closeWaiting();
 						},
@@ -466,6 +475,7 @@
 							document.getElementById("jump").addEventListener('tap', function(event) {
 								plus.navigator.setFullscreen(false);
 								plus.webview.currentWebview().hide();
+//								mui.fire(plus.webview.getWebviewById('main.html'),'openXianjing');
 							}, false);
 							var time = 6;
 							document.getElementsByTagName("small")[0].innerHTML = time+"s";
@@ -475,6 +485,7 @@
 						    	document.getElementsByTagName("small")[0].innerHTML = time+"s";
 						    	if(time == -1){
 									plus.webview.currentWebview().hide();
+//									mui.fire(plus.webview.getWebviewById('main.html'),'openXianjing');
 						    	};
 						    },1000)
 						}
@@ -486,7 +497,7 @@
 				}
 				plus.navigator.closeSplashscreen();
 			});
-			
+
 		</script>
 	</body>
 

@@ -26,7 +26,7 @@
 					text-align: center;}
 			.wan1In2 h3{color: #FAF263;font-size: 15px;margin-bottom: 5%;}
 			#part2{position: absolute;top: 0;left: 0;width: 100%;height: 100%;}
-			.wan1In2 p{ line-height: 1.2; margin: 0; font-size: 16px; color: #f0301f;}
+			.wan1In2 p{ line-height: 1.2; margin: 0; font-size: 15px; color: #f0301f;}
 			.wan1In2 p b{font-size: 20px;font-weight: 500;}
 			.caozuo22 img{width: 25%;}
 			.caozuo22{margin-top: 4%;}
@@ -46,45 +46,146 @@
 		<div id="part2">
 			<div class=" wan1In2">
 				<div>
-					<h3>狗蛋你是第12130位参与的用户</h3>
+					<h3>狗蛋你是第 <span id="dijiwei">0</span> 位参与的用户</h3>
 					<p>恭喜你获得</p>
-					<p><b>0.05</b>元现金</p>
+					<p><b id="oneXianjin">0</b>元现金 <b style="font-size: 10px;" id="allXianjin"></b> </p>
 					<div class="caozuo22">
-						<img src="../../img/limitTimeAct/03_06.png"/>
+						<img id="tixian" src="../../img/limitTimeAct/03_06.png"/>
 						<img id="butixian" style="margin-left: 1%;" src="../../img/limitTimeAct/03_08.png"/>
 					</div>
-					<div class="caozuo22" style="margin-top: 2%;">
+					<div class="caozuo22" id="fenxiang" style="margin-top: 2%;">
 						<img src="../../img/limitTimeAct/03_13.png"/>
 					</div>
-					<div class="jilu33">
-						<a>第一天获得0.01元</a>
-						<a>第二天获得0.022元</a>
-						<a>第二天获得0.022元</a>
-						<a>第二天获得0.022元</a>
-						<a>第二天获得0.022元</a>
-						<a>第二天获得0.022元</a>
-						<a>第二天获得0.022元</a>
-					</div>
+					<div class="jilu33" id="redJilu"></div>
+					<script type="text/html" id="redJiluS">
+						<% if(list.length){%>
+							<% for(var i=0;i<list.length;i++){%>
+								<a><%= list[i].createTime2%>获得<%= list[i].redPocket%>元</a>
+							<%}%>
+						<%}else{%>
+							<a>暂无记录</a>
+						<%}%>
+					</script>
 				</div>
 			</div>
 		</div>
 	</body>
+	<script src="../../js/artTemplate-native.js"></script>
 	<script type="text/javascript">
-		//不参与
-		$('#noPart ,#butixian').click(function(){
-			mui.back();
-		})
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken');
+			var myuserid = plus.storage.getItem('userid');
+			var cityNum = plus.storage.getItem('cityNum');
+			var imei = plus.device.uuid;
 
-		//参与
-		$('#yesPart').click(function(){
-			alert(1);
-			$('#part1').css('opacity','0').css('z-index','100');
-			$('#part2').css('opacity','1').css('z-index','200');
 
-		})
-		//兼容长屏幕手机显示
-		if(document.documentElement.clientHeight/document.documentElement.clientWidth>1.8){
-			$('.wan1In2').css('padding-top','76.5%');
-		}
+			//兼容长屏幕手机显示
+			if(document.documentElement.clientHeight/document.documentElement.clientWidth>1.8){
+				$('.wan1In2').css('padding-top','76.5%');
+			}
+			//不参与
+			$('#noPart').click(function(){
+				mui.back();
+			})
+			//不提现
+			$('#butixian').click(function(){
+				plus.webview.currentWebview().hide();
+			})
+			//提现
+			$('#tixian').click(function(){
+				openview({
+					view:'../personal/myAwards.html',
+					id:"myAwards",
+				});
+			})
+
+			//参与并抽奖
+			$('#yesPart').click(function(){
+				if(plus.storage.getItem('myToken')){
+					var myuserid = plus.storage.getItem('userid');
+					var phoneNum0 = JSON.parse(plus.storage.getItem('Acc_pass'))[0];//手机号
+					plus.nativeUI.showWaiting('抽奖中...');
+					$('#part1').css('opacity','0').css('z-index','100');
+					mui.ajax(serverUrl + '/api/index/iswining', {
+						data: {
+							userId: myuserid,
+							phone: phoneNum0,
+							macID: imei,
+							gameId: 3
+						},
+						type: 'post',
+						timeout: 30000,
+						headers: {
+							"token": oldToken, 'city': cityNum
+						},
+						success: function(data, type, xhr) {
+							console.log("中奖", data);
+							console.log("中奖"+ JSON.stringify(data));
+							if(data.errno == 0) {
+								if(data.data.orderIndex && data.data.title) {
+									//抽奖当前时间缓存
+									var dateDate = new Date().getDate();
+					  				plus.storage.setItem("xianjingTime",dateDate.toString());
+									$('#dijiwei').html(data.data.joinCount);
+									$('#oneXianjin').html(data.data.redPocket);
+									if(data.data.redPocketAll){
+										$('#allXianjin').html('(累计' + data.data.redPocketAll + '元)');
+									}
+									if(data.data.isWininged.length){
+										data.data.isWininged.forEach(function(ele,index){
+											var date = new Date(parseInt(ele.createTime));
+											Y = date.getFullYear() + '-';
+											M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+											D = date.getDate() + ' ';
+											ele.createTime2 = Y+M+D;
+										})
+									}
+									$('#redJilu').html(template('redJiluS',{list:data.data.isWininged}));
+
+								}
+
+
+								plus.nativeUI.closeWaiting();
+								$('#part2').css('opacity','1').css('z-index','200');
+							}else {
+								plus.nativeUI.closeWaiting();
+								mui.back();
+								mui.toast(data.errmsg);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.error('19现金响应失败');
+							plus.nativeUI.closeWaiting();
+							mui.back();
+							mui.toast('当前网络不好，请重试！');
+						}
+					});
+				}else{//没登陆直接打开登录页面
+					mui.toast('请登录');
+					openview({
+						view:'../login.html'
+					});
+				}
+
+			})
+
+			$('#fenxiang').click(function(){
+				goCouponFun();
+			})
+
+			function goCouponFun(){
+				var thumbs = '../img/logomifeng.png';
+				var msg = {
+					title:'打开HI集有礼，瓜分万元现金奖励',
+					content:'打开HI集有礼，瓜分万元现金奖励',
+					href:'http://abcd.zlzmm.com:6789/bannerUrl/pages/yi16fenxiangxianjing.html',
+					thumbs:[thumbs],
+					pictures:[thumbs]
+				};
+				showSfun1(msg);
+			}
+		});
+
+
 	</script>
 </html>

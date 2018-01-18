@@ -55,7 +55,9 @@
 		</header>
 		<div id="main">
 			<div class="list_lh">
-				<ul id="recordList"></ul>
+				<ul id="recordList">
+					<p style="text-align: center;font-size: 16px;color: #555;">加载中...</p>
+				</ul>
 			</div>
 			<script type="text/html" id="recordTpl">
 				<%for(var i= 0 ; i<list.length;i++){%>
@@ -74,9 +76,13 @@
 							</div>
 							<div class="ft14" style="margin-top: 8px;">
 								<%if(list[i].redPocket){%>
-									<img src="../../img/center/redpack.png" style="width: 15px;vertical-align: middle;"/>
-								<%}%>
-								<%= list[i].title%>
+									<img src="../../img/center/redpack.png" style="width: 15px;position: relative;top: 3px;"/>
+									<%= list[i].redPocket%> 元
+								<%}else{%>
+									<%= list[i].title%>
+								<% }%>
+
+
 								<%if(list[i].couponId && list[i].coupon){%>
 									<div class="lookInfo" onclick="lookInfo('<%= list[i].coupon.content%>','<%= list[i].coupon.begin_date%>','<%= list[i].coupon.end_date%>')" style="background-color: darkgray;margin-left: 5px;">
 										详情说明
@@ -130,7 +136,7 @@
 		<script src="../../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			mui.init()
+			mui.init();
 		</script>
 	</body>
 	<script type="text/javascript">
@@ -227,23 +233,24 @@
 				var cur = $(obj);
 	        	plus.nativeUI.showWaiting();
 	        	mui.ajax(serverUrl + '/api/index/withdrawals', {
-					data:{'gameId':gameid,'prizeId':prizeid,'userId':userid,'phone':phone,'macid':macid,'createTime':createtime,'aliPay':aliPay,'wxpay':wxpay},
+//					data:{'gameId':gameid,'prizeId':prizeid,'userId':userid,'phone':phone,'macid':macid,'createTime':createtime,'aliPay':aliPay,'wxpay':wxpay},
+					data:{'gameId':gameid,'userId':userid,'phone':phone,'macid':macid,'createTime':createtime,'aliPay':aliPay,'wxpay':wxpay},
 	                type: 'post',
 	                timeout: 10000,
 	                headers: { "token": plus.storage.getItem('oldToken') ,'city':plus.storage.getItem('cityNum')},
 	                success: function(data, type, xhr) {
 	                   	plus.nativeUI.closeWaiting();
-	                	console.log('提现'+JSON.stringify(data));
-	                	if(data.errno == 0){
-	                		if(data.data == 1 ){
-		                		mui.toast('申请成功');
-		                		cur.css('display','none');
-		                		cur.next().css('display','block')
-		                	}else{
-		                		mui.toast(data.errmsg)
+	                		console.log('提现'+JSON.stringify(data));
+		                	if(data.errno == 0){
+		                		if(data.data == 1 ){
+			                		mui.toast('申请成功');
+			                		cur.css('display','none');
+			                		cur.next().css('display','block')
+			                	}else{
+			                		mui.toast(data.errmsg)
+			                	}
 		                	}
-	                	}
-
+						location.reload();
 
 	                },
 	                error: function(xhr, type, errorThrown) {

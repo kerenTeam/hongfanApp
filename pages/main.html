@@ -97,7 +97,7 @@
 		.ruleol{padding: 0 15px 0 15px;}
 		#header{height: 75px !important;box-sizing: content-box;}
 
-		#fenxianjing19{position: fixed;width: 25%;right: 0;bottom: 10%;}
+		#fenxianjing19{position: fixed;width: 25%;right: 0;bottom: 10%;z-index: 200;}
 		#fenxianjing19 img{width: 100%;}
 		</style>
 	</head>
@@ -574,30 +574,124 @@
 		</div>
 		<script src="../js/shuangdan.js"></script>
 		<!--双旦活动结束-->
-		<div id="fenxianjing19">
+		<div id="fenxianjing19" style="display: none;">
 			<img src="../img/limitTimeAct/01_03.png"/>
 		</div>
 
 
 		</div>
 		<script type="text/javascript">
-
-			$('#fenxianjing19').click(function(){
-				mui.openWindow({
-				    url:'limitTimeAct/fenxianjing19.html',
-				    id:'fenxianjing19',
-				    styles:{
-				  	  	background:'transparent',
-				    },
-				    show:{
-				      aniShow:'slide-in-top',
-				      duration:300,//页面动画持续时间
-				    },
-				    waiting:{
-			      		autoShow:false,//自动显示等待框，默认为true
-				    }
+			//19号活动开始
+			var isOpenXianjing = 0;
+			mui.plusReady(function(){
+				if(plus.storage.getItem('hao19')){
+					$('.jiaoyou p').html('现金券');
+				}
+				document.addEventListener('openXianjing',function(){
+					if(isOpenXianjing == 0){
+						shijiuA18();
+					}
 				})
+				function shijiuA18(){
+					var oldToken = plus.storage.getItem('oldToken');
+					var myuserid = plus.storage.getItem('userid');
+					var cityNum = plus.storage.getItem('cityNum');
+					mui.ajax(serverUrl + '/api/index/gamedata', {
+	                    data: { gameId:3},
+	                    type: 'post',
+	                    timeout: 10000,
+	                    headers: { "token": oldToken ,'city':cityNum},
+	                    success: function(data, type, xhr) {
+	                     	isOpenXianjing = 1;
+	                    		console.log("18-19号游戏数据 ",data);
+	                    		if(data.errno == 0){
+			                    	if(data.data.game){
+			                    		var ele =data.data.game;
+			                    		if(ele.startTime && ele.endTime){
+			                    			var nowdate = Date.now();
+			                    			if(nowdate >= ele.startTime && nowdate<ele.endTime){
+			                    				//展示瓜分现金活动
+			                    				$('#fenxianjing19').css('display','block');
+			                    				plus.storage.setItem('hao19','hao19');
+			                    				var xianjingTime = plus.storage.getItem('xianjingTime');
+											if(!xianjingTime || new Date().getDate() != xianjingTime){
+												openFenxianjing19();
+											}
+											//展示 每日免费抽现金券、HI豆
+				                    			$('.jiaoyou p').html('现金券');
+			                    			}else{
+			                    				plus.storage.removeItem('hao19');
+			                    				$('.jiaoyou p').html('领HI豆');
+			                    			}
+
+			                    			//跳转 每日免费抽现金券、HI豆
+		                    				mui('.jiaoyou')[0].addEventListener('tap', function() {
+											if(!plus.storage.getItem('myToken')){
+												mui.toast('请登录');
+												openview({
+													view:'login.html'
+												});
+											}else{
+												if(plus.storage.getItem('hao19')){
+													openview({
+														view: 'limitTimeAct/lottery19.html',
+														id: 'lottery19',
+													});
+												}else{
+													openview({
+														view: 'hiVip.html',
+														id: "hiVip"
+													});
+												}
+
+											}
+										});
+			                    		}
+			                    	}
+	                    		}
+	                    },
+	                    error: function(xhr, type, errorThrown) {
+	                        console.error('18-19号分现金，响应失败');
+	                    }
+	                });
+				}
+
+				$('#fenxianjing19').click(function(){
+					var xianjingTime = plus.storage.getItem('xianjingTime');
+					if(!xianjingTime || new Date().getDate() != xianjingTime){
+						openFenxianjing19();
+					}else{
+						if(plus.webview.getWebviewById('fenxianjing19')){
+							plus.webview.getWebviewById('fenxianjing19').show()
+						}else{
+							mui.toast('今天已经抽奖。');
+							openview({
+								view:'personal/myAwards.html',
+								id:"myAwards",
+							});
+						}
+					}
+				})
+
+				function openFenxianjing19(){
+					mui.openWindow({
+					    url:'limitTimeAct/fenxianjing19.html',
+					    id:'fenxianjing19',
+					    styles:{
+					  	  	background:'transparent',
+					    },
+					    show:{
+					      aniShow:'slide-in-top',
+					      duration:300,//页面动画持续时间
+					    },
+					    waiting:{
+				      		autoShow:false,//自动显示等待框，默认为true
+					    }
+					})
+				}
 			})
+			//19号活动开始 结束
+
 
 			$('.ruleCt').click(function(){
 				event.stopPropagation()
@@ -831,22 +925,20 @@
 							id: "youpinhui-Center"
 						});
 					});
-					//交友
-					mui('.jiaoyou')[0].addEventListener('tap', function() {
-						if(!plus.storage.getItem('myToken')){
-							mui.toast('请登录');
-							openview({
-								view:'login.html'
-							});
-						}else{
-							openview({
-								view: 'hiVip.html',
-								id: "hiVip"
-							});
-						}
-
-
-					});
+					//领HI豆
+//					mui('.jiaoyou')[0].addEventListener('tap', function() {
+//						if(!plus.storage.getItem('myToken')){
+//							mui.toast('请登录');
+//							openview({
+//								view:'login.html'
+//							});
+//						}else{
+//							openview({
+//								view: 'hiVip.html',
+//								id: "hiVip"
+//							});
+//						}
+//					});
 					//打开搜索页面
 					mui('.openSearch')[0].addEventListener('tap', function() {
 						openview({

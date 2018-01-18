@@ -141,7 +141,7 @@
 		                    timeout: 10000,
 		                    headers: { "token": oldToken ,'city':cityNum},
 		                    success: function(data, type, xhr) {
-		                        console.log("游戏数据 ",data)
+		                        console.log("游戏数据 ",data);
 		                        if(data.errno == 0){
 		                        	if(data.data.game){
 		                        		var ele =data.data.game;
@@ -325,7 +325,7 @@
 				clearInterval(timeSign);
 				clearInterval(timeMsg);
 				timeSign = setInterval(Sign,3000000);//两小时自动更新一次token
-				timeMsg = setInterval(showMessage,3000);//两小时自动更新一次token
+				timeMsg = setInterval(showMessage,3000000);//两小时自动更新一次token
 				var timeSign2  =  setInterval(function(){
 					loadNum2++;
 					if(plus.storage.getItem('oldToken') || loadNum2==10){
@@ -406,7 +406,7 @@
 
 				//消息通知
 				function showMessage(){
-					
+
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
 					//显示消息条数
@@ -421,7 +421,7 @@
 							headers:{"token":oldToken},
 							success:function(data,type,xhr){
 								plus.nativeUI.closeWaiting();
-								console.log('消息hi'+JSON.stringify(data));
+								console.log('消息hi',data);
 						       	if(data.errno == 0){
 							       	if(data.data.length){
 							       		var hiInfoNums = plus.storage.getItem('hiInfoNums');
@@ -440,7 +440,7 @@
 							}
 						});
 					}
-					 
+
 				}
 
 				//首页webview预加载
