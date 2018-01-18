@@ -231,11 +231,11 @@
 
 							drawRouletteWheel();
                            //点击抽奖
-                            	$('.pointer').click(function() {
+                            	$('.pointer').unbind('click').click(function() {
 								if(!plus.storage.getItem('myToken')) {
 									mui.toast('请登录');
 									openview({
-										view: 'login.html'
+										view: '../login.html'
 									});
 								} else { //抽奖
 									plus.nativeUI.showWaiting();
@@ -255,7 +255,7 @@
 												//判断是否填写号码
 												if(data.data[0].phone) {
 													var myPhone = data.data[0].phone;
-													$('.pointer').unbind('click');
+//													$('.pointer').unbind('click');
 													$('#wheelcanvas').rotate({
 														angle: 0,
 														animateTo: 360 + (360) / 8 * 55,
@@ -398,8 +398,18 @@
 								} else {
 									ctx.fillText(texts[j], -ctx.measureText(texts[j]).width / 2, j * line_height);
 								}
+							} 
+						}else if(text.indexOf("HI") > 0) { //HI豆
+							var texts = text.split("HI");
+							for(var j = 0; j < texts.length; j++) {
+								ctx.font = j == 0 ? 'bold 20px Microsoft YaHei' : '16px Microsoft YaHei';
+								if(j == 0) {
+									ctx.fillText(texts[j], -ctx.measureText(texts[j]).width / 2, j * line_height);
+								} else {
+									ctx.fillText("HI"+texts[j], -ctx.measureText(texts[j] + "HI").width / 2, j * line_height);
+								}
 							}
-						} else if(text.indexOf("元") == -1 && text.length > 6) { //奖品名称长度超过一定范围
+						} else if(text.indexOf("元") == -1 && text.indexOf("HI") == -1 && text.length > 6) { //奖品名称长度超过一定范围
 							text = text.substring(0, 6) + "||" + text.substring(6);
 							var texts = text.split("||");
 							for(var j = 0; j < texts.length; j++) {
