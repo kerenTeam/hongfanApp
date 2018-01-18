@@ -654,7 +654,7 @@
 						<script type="text/html" id="couponTpl">
 							<%if(intergral!=0){%>
 							<dd class="dd-padding kv-line-r">
-								<h6>总HI豆<span id="totalJfen" style="color: #F14A43;" id="totalJfen"><%=intergral%></span>个<span id="itMinus" style="color: #ff5f32;display: none;"></span></h6>
+								<h6>总HI豆<span id="totalJfen" style="color: #F14A43;" id="totalJfen"><%=intergral%></span>个<span id="itMinus" style="color: #ff5f32;display:;"></span></h6>
 								<div id="changeJf" class="mui-checkbox"><input name="checkbox" class="groupCheck" type="checkbox"></div>
 							</dd>
 							<%}else{%>
@@ -672,6 +672,7 @@
 			<input type="hidden" name="hiddenValue" id="hiddenValue" value="" />
 			<input type="hidden" name="hiddenValue" id="hiddencouponid" value="" />
 			<input type="hidden" name="hiddenValue" id="hiddencuoponValue" value="" />
+			<input type="hidden" name="hiddenValue" id="noHidou" value="" />
 			<!--操作表   支付弹窗-->
 			<div id="payChoose" class=" mui-popover mui-popover-action mui-popover-bottom closePay">
 				<div class="paycontent">
@@ -898,8 +899,9 @@
 								intergral: intergral,
 								intergralreduce: ''
 							});
-							$('#changeJf').hide();
-							$('#itMinus').show().html(' '+'抢购商品不能使用HI豆')
+//							$('#changeJf').hide();
+//							$('#itMinus').show().html(' '+'抢购商品不能使用HI豆')
+//							$('#itMinus').show()
 						} else {
 							mui.toast('获取用户信息失败');
 							console.log(data.errmsg);
@@ -973,7 +975,8 @@
 							if(data.errno == 0) {
 								var dataObj = {};
 								if(data.data.nowIntergal && data.data.nowIntergal.intergral){
-										$('#itMinus').html('本次交易最多抵用'+data.data.nowIntergal.intergral + '元')
+									var jian = Math.floor(data.data.nowIntergal.intergral * 100) / 100
+										$('#itMinus').html('本次交易最多抵用'+jian + '元')
 								}
 								for(var i = 0; i < data.data.Params.goodsData.length; i++) {
 									data.data.Params.goodsData[i].actualPrice = Math.floor(data.data.Params.goodsData[i].actualPrice * 100) / 100;
@@ -1003,6 +1006,12 @@
 								dataObj.myurl = serverimgUrlE;
 								dataObj.PriceCalculValue = Math.floor(data.data.PriceCalculValue * 100) / 100;
 								var recommentType = dataObj.goodsList[0].goods_Data[0].recommentType;
+								if(recommentType == 1){
+									$('#noHidou').val(1);
+									$('#changeJf').hide(); 
+									$('#itMinus').show().html(' '+'抢购商品不能使用HI豆')
+									
+								}
 								if(dataObj.goodsList[0].goods_Data[0].youpin){
 									var igo = 1
 								}
@@ -1198,7 +1207,6 @@
 															$(this).parentsUntil("#orderTpl").find(".ztWrap input[type='checkbox']").removeAttr("checked")
 														}
 														$(this).parent().prev().find(".wlway").html($(this).html());
-														//									alert(parseFloat($(this).attr('data-charge')));
 
 														for(var i = 0; i < orderSubmitData.length; i++) {
 															if(orderSubmitData[i].storeid == businid) {
