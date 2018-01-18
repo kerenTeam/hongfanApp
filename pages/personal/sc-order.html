@@ -243,7 +243,7 @@
 				box-shadow: 0 0 2px rgba(175, 166, 166, 0.85) !important;
 			}
 			.waitpay,.forRedpk{position: relative;}
-			.canShare{position: absolute;top: 5px;right: 90px;width: 30px;}
+			.canShare{position: absolute;top: 5px;right: 90px;width: 30px;display: none;}
 		</style>
 	</head>
 
@@ -331,11 +331,9 @@
 											<%}%>
 
 										</dd>
-										
+
 										<%}%>
-										<%if(orderData[i].canShare){%>
-											<img class="canShare" data-id="<%=orderData[i].order_UUID%>" src="../../img/limitTimeAct/19OrderShare/redPak.png"/>
-										<%}%>
+
 										<%}%>
 										<div class="order-bottom clearfloat box-s tip" style="background-color: white;margin: 0;">
 											<p>
@@ -349,7 +347,7 @@
 										<div class="order-bottom clearfloat box-s" style="background-color：#fff;">
 											<a onclick="goOrder('<%=oduuid[m]%>','<%=repayid[m]%>')" class="fr confirm">付款</a>
 											<a onclick="delOrder(this,'<%=oduuid[m]%>','取消','<%=oduuid[m]%>','<%=repayid[m]%>',1)" class="fr">取消订单</a>
-											
+
 										</div>
 
 									</div>
@@ -370,7 +368,7 @@
 													<%}%>
 													<span style="font-size: 0.10rem;"><%=orderData[i].create_time%></span>
 											</span>
-											
+
 											<span class="fr state"><%=state[orderData[i].order_status]%></span>
 										</div>
 										<%for(var j =0;j<orderData[i].goods_data.goods_Data.length;j++){%>
@@ -404,7 +402,7 @@
 										</a>
 										<%}%>
 										<%if(orderData[i].canShare){%>
-											<img class="canShare" data-id="<%=orderData[i].order_UUID%>" src="../../img/limitTimeAct/19OrderShare/redPak.png"/>
+											<img class="canShare" onclick="isShowShare('true','<%=orderData[i].order_UUID%>')" data-id="<%=orderData[i].order_UUID%>" src="../../img/limitTimeAct/19OrderShare/redPak.png"/>
 										<%}%>
 										<div class="order-bottom clearfloat box-s tip">
 											<p>
@@ -427,7 +425,7 @@
 											<%=orderData[i].refuse_refund%>
 										</div>
 										<%}%>
-										 
+
 										<%if(orderData[i].order_status==2){%>
 										<div class="order-bottom clearfloat box-s">
 											<a class="fr confirm">等待发货</a>
@@ -503,7 +501,7 @@
 
 									</dd>
 									<%}%>
-										
+
 									<%}%>
 									<div id="noOrder" style="display: none;">
 										<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" />
@@ -537,7 +535,7 @@
 		<div id="maskInfo123" class="maskInfo" style="display: none;z-index:999;">
 			<!--<img src="../../img/mainHtml/mclose.svg" class="closeMs" />-->
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;background: none;top: 13%;bottom: auto;">
-				<img src="../../img/limitTimeAct/19OrderShare/02_01-min.png" style="border-radius: 3px;width: 100%;height: 100%;" onclick='goCouponFun()' />
+				<img id="fenxiangBtn2" src="../../img/limitTimeAct/19OrderShare/02_01-min.png" style="border-radius: 3px;width: 100%;height: 100%;" />
 				<img src="../../img/limitTimeAct/19OrderShare/02_03.png" class="closeMs2" style="display: block;margin: 0 auto;width: 12%;"/>
 			</div>
 		</div>
@@ -572,7 +570,7 @@
 			});
 		}
 
-		function goCouponFun() {
+		function goCouponFun(orderId) {
 			mui.plusReady(function() {
 				var oldToken = plus.storage.getItem('oldToken');
 				var myuserid = plus.storage.getItem('userid');
@@ -633,7 +631,7 @@
 				load();
 			})
 			//判断是否显示分享有礼
-			function isShowShare(isnow) {
+			window.isShowShare = function(isnow,orderId) {
 				if(plus.storage.getItem('shareInfo')) {
 					var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
 					var nowdate = new Date();
@@ -644,6 +642,9 @@
 					if(showShare && nowdate > newbeginDate && nowdate < newendDate) {
 						plus.nativeUI.closeWaiting();
 						$('#maskInfo123').css('display', 'block');
+						document.getElementById('fenxiangBtn2').onclick = function(){
+							goCouponFun(orderId);
+						}
 					}
 				}
 
@@ -682,21 +683,13 @@
 									repayid = [],
 									ordermoney = [];
 								for(var i = 0; i < data.data.length; i++) {
-
 									//18年1月19号 支付订单后有个分享
-//									if(i == 0){
-//										data.data[0].pay_time = parseInt(1516406400000);
+//									if(shareInfo && data.data[i].pay_time){
+//										var nowdate19 = new Date(parseInt(data.data[i].pay_time));
+//										if(nowdate19 > newbeginDate && nowdate19 < newendDate && !data.data.isShared) {
+//											data.data[i].canShare = true;
+//										}
 //									}
-
-									if(shareInfo && data.data[i].pay_time){
-										data.data[i].pay_time = 1516406400000;
-										var nowdate19 = new Date(parseInt(data.data[i].pay_time));
-										console.error(nowdate19);
-										if(nowdate19 > newbeginDate && nowdate19 < newendDate && !data.data.isShared) {
-											data.data[i].canShare = true;
-										}
-									}
-
 
 									data.data[i].PriceCalculation = eval("(" + data.data[i].PriceCalculation + ")");
 									data.data[i].PriceCalculation.PriceCalculValue = parseFloat(data.data[i].PriceCalculation.PriceCalculValue).toFixed(2)
