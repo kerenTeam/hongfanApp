@@ -243,7 +243,7 @@
 				box-shadow: 0 0 2px rgba(175, 166, 166, 0.85) !important;
 			}
 			.waitpay,.forRedpk{position: relative;}
-			.canShare{position: absolute;top: 5px;right: 90px;width: 30px;display: none;}
+			.canShare{position: absolute;top: 5px;right: 90px;width: 30px;}
 		</style>
 	</head>
 
@@ -570,68 +570,76 @@
 			});
 		}
 
-		function goCouponFun(orderId) {
-			mui.plusReady(function() {
-				var oldToken = plus.storage.getItem('oldToken');
-				var myuserid = plus.storage.getItem('userid');
-				var cityNum = plus.storage.getItem('cityNum');
-				var invitationCode = JSON.parse(plus.storage.getItem('shareInfo')).invitationCode;
 
-				var thumbs = '../../img/logomifeng.png';
-				var msg = {
-					title: '快来下载HI集吧，优惠、好礼等着你！',
-					content: '快来下载HI集吧，优惠、好礼等着你！',
-					href: fxUrl + 'login.html?code2=' + invitationCode,
-					thumbs: [thumbs],
-					pictures: [thumbs]
-				};
-				showSfun1(msg, function() {
-					//分享成功  领劵
-					plus.nativeUI.showWaiting();
-					mui.ajax(serverUrl + '/api/index/sharegetcoupon', {
-						data: {
-							"userId": myuserid,
-							'invitationCode': invitationCode
-						},
-						dataType: 'json',
-						type: 'post',
-						timeout: 10000,
-						headers: {
-							"token": oldToken,'city': cityNum
-						},
-						success: function(data, type, xhr) {
-							plus.nativeUI.closeWaiting();
-							$('#maskInfo123').css('display', 'none');
-							console.log('分享获劵' + data);
-							if(data.errno == 0) {
-								alert(data.errmsg || '操作成功');
-							} else {
-								alert(data.errmsg);
-							}
-						},
-						error: function(xhr, type, errorThrown) {
-							plus.nativeUI.closeWaiting();
-							$('#maskInfo123').css('display', 'none');
-							console.error('分享获劵  ---- 失败');
-						}
-					});
-				});
-			});
-		}
 
 		var pays = {}
 
 		mui.plusReady(function() {
+
 			//获取上一个页面 穿的 订单类型
 			var toOrder_status = plus.webview.currentWebview().status;
+			var SorderId1 = plus.webview.currentWebview().order_uuid;
+
 			if(plus.webview.getWebviewById("pay")) {
 				plus.webview.getWebviewById("pay").close();
 			}
 			window.addEventListener('refresh', function(event) {
 				load();
 			})
+			function goCouponFun(orderId) {
+				mui.plusReady(function() {
+					var oldToken = plus.storage.getItem('oldToken');
+					var myuserid = plus.storage.getItem('userid');
+					var cityNum = plus.storage.getItem('cityNum');
+					var invitationCode = JSON.parse(plus.storage.getItem('shareInfo')).invitationCode;
+
+					var thumbs = '../../img/logomifeng.png';
+					var msg = {
+						title: '快来下载HI集吧，优惠、好礼等着你！',
+						content: '快来下载HI集吧，优惠、好礼等着你！',
+						href: fxUrl + 'login.html?code2=' + invitationCode,
+						thumbs: [thumbs],
+						pictures: [thumbs]
+					};
+					function huidiao(){
+						//分享成功  领劵
+						plus.nativeUI.showWaiting();
+						mui.ajax(serverUrl + '/api/index/sharegetcoupon', {
+							data: {
+								"userId": myuserid,
+								'invitationCode': invitationCode,
+								'orderUUID':orderId
+							},
+							dataType: 'json',
+							type: 'post',
+							timeout: 10000,
+							headers: {
+								"token": oldToken,'city': cityNum
+							},
+							success: function(data, type, xhr) {
+								load();
+								plus.nativeUI.closeWaiting();
+								$('#maskInfo123').css('display', 'none');
+								console.log('分享获劵' + data);
+								if(data.errno == 0) {
+									alert(data.errmsg || '操作成功');
+								} else {
+									alert(data.errmsg);
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								plus.nativeUI.closeWaiting();
+								$('#maskInfo123').css('display', 'none');
+								console.error('分享获劵  ---- 失败');
+							}
+						});
+					}
+					showSfun1(msg,huidiao);
+				});
+			}
 			//判断是否显示分享有礼
 			window.isShowShare = function(isnow,orderId) {
+				sharecode();//重置邀请码
 				if(plus.storage.getItem('shareInfo')) {
 					var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
 					var nowdate = new Date();
@@ -649,7 +657,9 @@
 				}
 
 			}
-			isShowShare();
+			if(SorderId1){
+				isShowShare('',SorderId1);
+			}
 			//判断是否显示分享有礼	结束
 
 			var oldToken = plus.storage.getItem('oldToken');
@@ -684,12 +694,13 @@
 									ordermoney = [];
 								for(var i = 0; i < data.data.length; i++) {
 									//18年1月19号 支付订单后有个分享
-//									if(shareInfo && data.data[i].pay_time){
-//										var nowdate19 = new Date(parseInt(data.data[i].pay_time));
-//										if(nowdate19 > newbeginDate && nowdate19 < newendDate && !data.data.isShared) {
-//											data.data[i].canShare = true;
-//										}
-//									}
+//									data.data[i].pay_time = 1516406400000;
+									if(shareInfo && data.data[i].pay_time){
+										var nowdate19 = new Date(parseInt(data.data[i].pay_time));
+										if(nowdate19 > newbeginDate && nowdate19 < newendDate && !data.data[i].isShared) {
+											data.data[i].canShare = true;
+										}
+									}
 
 									data.data[i].PriceCalculation = eval("(" + data.data[i].PriceCalculation + ")");
 									data.data[i].PriceCalculation.PriceCalculValue = parseFloat(data.data[i].PriceCalculation.PriceCalculValue).toFixed(2)
