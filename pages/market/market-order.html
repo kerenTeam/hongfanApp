@@ -500,7 +500,7 @@
 								</div>
 							</dd>
 							<%}%>
-							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88 && !goodsList[i].postAge.postage) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0) || ((goodsList[i].postAge.maxNums == 1 || goodsList[i].postAge.maxMoney == 1) && goodsList[i].postAge.express_id != -2)){%>
+							<%if((goodsList[i].order_type==0 && goodsList[i].actualPrice>=88 && !goodsList[i].postAge.postage) || (goodsList[i].total_goods_weight == 0 && goodsList[i].order_type!=0 && goodsList[i].postAge.express_id != -2) || ((goodsList[i].postAge.maxNums == 1 || goodsList[i].postAge.maxMoney == 1) && goodsList[i].postAge.express_id != -2)){%>
 								<dd class="dd-padding kv-line-r postfeeWrap ddwl">
 									<h6>配送方式</h6>
 									<p class="jifen">包邮</p>
@@ -511,7 +511,12 @@
 									<p class="jifen">EMS ￥
 										<%=goodsList[i].postAge.postage%>
 									</p>
-									<%}else{%>
+									<%}else if((goodsList[i].postAge.maxNums == 1 || goodsList[i].postAge.maxMoney == 1 || goodsList[i].total_goods_weight == 0) && goodsList[i].postAge.express_id == -2){%>
+									<dd class="dd-padding kv-line-r postfeeWrap ddwl">
+										<h6>配送方式</h6>
+										<p class="jifen">自提
+										</p>
+										<%}else{%>
 									<dd class="dd-padding kv-line-r postfeeWrap ddwl" style="padding: 0.1rem 0.15rem;">
 										<li class="mui-table-view-cell mui-collapse choosewl">
 											<a class="mui-navigate-right getwl" data-id='0' data-weight='<%=goodsList[i].total_goods_weight%>' data-storeid="<%=goodsList[i].store_id%>" data-igetShopId="<%=goodsList[i].order_type%>" href="#">
@@ -998,8 +1003,13 @@
 										}
 										data.data.Params.goodsData[i].goods_Data[j].price = Math.floor(data.data.Params.goodsData[i].goods_Data[j].price * 100) / 100;
 									}
-
-//									 
+									 
+									if(data.data.Params.goodsData[i].postAge.maxMoney || data.data.Params.goodsData[i].postAge.maxNums){
+										orderSubmitData[i].express_id = '-1';
+									}
+									if(data.data.Params.goodsData[i].postAge.express_id){
+										orderSubmitData[i].express_id = data.data.Params.goodsData[i].postAge.express_id;
+									}
 								}
 								dataObj.shopaddress = shopaddress;
 								dataObj.goodsList = data.data.Params.goodsData;
@@ -1255,7 +1265,6 @@
 										} else {
 											var curPost = parseFloat($(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html());
 											$(this).parentsUntil("#orderTpl").find("dd.priceWrap .groupMoney").html(parseFloat(curPost + dataPostfee).toFixed(2));
-
 											for(var i = 0; i < orderSubmitData.length; i++) {
 												if(orderSubmitData[i].storeid == shopid) {
 
