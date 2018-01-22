@@ -23,7 +23,7 @@
 			    padding: 15px 0px !important;
    				margin: 0 14px;
 			}
-			
+
 			.boxs li img{
 				width: 8%;
 				margin-right: 5px;
@@ -39,6 +39,25 @@
 			.self-paybt a{font-size: 14px;}
 			body{background-color: #fff;}
 			.self-paybt a:last-child{padding: 0;color: #777;display: none;}
+			.closeMs {
+			    position: absolute;
+			    top: 23%;
+			    width: 32px;
+			    height: 32px;
+			    right: 16%;
+			    z-index: 99999;
+			}
+			.ruleCt {
+			    position: absolute;
+			    padding-right: 15px;
+			    background-color: #fff;
+			    top: 22%;
+			    left: 14%;
+			    width: 72%;
+			    bottom: 20%;
+			    padding: 15px 5px;
+			    border-radius: 3px;
+			}
 		</style>
 	</head>
 
@@ -48,27 +67,27 @@
 		    <h1 class="mui-title">充值缴费</h1>
 		</header>
 		<script src="../js/statusBar.js"></script><!--状态栏-->
-		<div id="container">		
+		<div id="container">
 			<div id="main">
 				<ul class="boxs self-paytop">
 					<li class="show_arrive_date aClick" onclick="prompt()">
 						<a href="alipays://platformapi/startapp?appId=20000193" class="date fineB">
 							<img src="../img/tickets/shuifei.png"/>
-							<strong>水费</strong>						 
-							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div> 
+							<strong>水费</strong>
+							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div>
 						</a>
 					</li>
 					<li class="show_arrive_date aClick" onclick="prompt()">
 						<a href="alipays://platformapi/startapp?appId=20000193" class="date fineB" >
 							<img src="../img/tickets/dianfei.png"/>
-							<strong>电费</strong>								
-							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div> 
+							<strong>电费</strong>
+							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div>
 						</a>
 					</li>
 					<li class="show_arrive_date aClick" onclick="prompt()">
 						<a href="alipays://platformapi/startapp?appId=20000193" class="date fineB">
 							<img src="../img/tickets/qifei.png"/>
-							<strong>气费</strong>								
+							<strong>气费</strong>
 							<div class="fr" style="text-align: right;"><img class="youjian" src="../img/youjiantou.svg"/></div>
 						</a>
 					</li>
@@ -92,26 +111,26 @@
 		<!--遮罩1-->
 		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"><div class="ruleCt" style="padding-bottom: 50px;padding: 0;"></div></div>
 		<script type="text/html" id="maskTpl">
-			
+
 			<img src="../img/mainHtml/mclose.svg" class="closeMs"/>
 			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
 			<%if(popdata.modelContent){%>
 			<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','one')"/>
-			<%}%> 
+			<%}%>
 			</div>
 		</script>
 	</body>
 	<script src="../js/app.js"></script>
 	<script type="text/javascript" src="../js/artTemplate-native.js"></script>
-	
+
 	<script type="text/javascript">
 		$('.ruleCt').click(function(){
 			event.stopPropagation()
 		})
-	
+
 		//流量充值
 		function dataflow(){
-			if(plus.storage.getItem('myToken')){ 
+			if(plus.storage.getItem('myToken')){
 				openview({
 					view:"tickets/dataflowRecharge.html",
 					id:"dataflowRecharge"
@@ -126,7 +145,7 @@
 		function prompt(){
 			mui.alert('如未成功跳转,请在手机上安装支付宝!')
 		}
-		
+
 		(function(){
 			//获取缓存
 			mui.plusReady(function(){
@@ -147,7 +166,7 @@
 	                			if(data.data && data.data.length){
 	                				mui.each(data.data,function(index,item){
 		                				if(item.typeName == 'rechargeIndex'){
-		                					if(item.modelState == 1){ 
+		                					if(item.modelState == 1){
 	                            			 	$('#maskInfo1').show();
 	                            			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
 	                            			 	$('#maskInfo1').click(function(){
@@ -157,8 +176,8 @@
 											$('.closeMs').click(function(){
 												event.stopPropagation();
 												$(this).parent().fadeOut(200);
-											}) 
-	                            			}else{ 
+											})
+	                            			}else{
 	                            			 	$('#maskInfo1').hide()
 	                            			}
 		                				}
@@ -174,8 +193,8 @@
 	            });
 				//点击固话充值跳转
 				window.phoneRecharge = function(){
-					 
-				 	if(plus.storage.getItem('myToken')){ 
+
+				 	if(plus.storage.getItem('myToken')){
 						 openview({
 						 	view:"tickets/phoneRecharge.html"
 						 })
@@ -186,7 +205,7 @@
 						});
 					}
 				}
-					
+
 			})
 		})();
 	</script>
@@ -197,25 +216,25 @@
 			var startTime, endTime, stayTime, flagback = 0;
 			startTime = new Date().getTime();
 			var old_back = mui.back;
-			//改写返回键返回的函数，返回时传页面停留时间 
+			//改写返回键返回的函数，返回时传页面停留时间
 			mui.back = function(){
 				endTime = new Date().getTime();//返回时间
-				stayTime = Math.ceil((endTime - startTime) / 1000);   
-				console.log('充值缴费'+stayTime); 
+				stayTime = Math.ceil((endTime - startTime) / 1000);
+				console.log('充值缴费'+stayTime);
 				plus.statistic.eventDuration( "payment", stayTime);
 				//计算事件，计算出返回时在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
-				old_back(); 
+				old_back();
 			}
 			plus.webview.currentWebview().addEventListener( "popGesture", function(){
 				flagback++;
 				if(flagback == 1){
 					endTime = new Date().getTime();
-					stayTime = Math.ceil((endTime - startTime) / 1000);   
+					stayTime = Math.ceil((endTime - startTime) / 1000);
 					plus.statistic.eventDuration( "payment", stayTime);
 					//计算事件，计算出苹果右滑返回后在该页面停留的时间差值，除以六万获得停留分钟数，发送给友盟后台
 				}
 			}, false );
 		});
-	</script> 
-	
+	</script>
+
 </html>

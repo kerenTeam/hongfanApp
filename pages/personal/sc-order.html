@@ -1220,6 +1220,7 @@
 									mui.toast('积分不足请重新生成订单')
 								}
 								var varpay;
+								var orderUUID2 = data.data.AccessToken;
 								mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 								if(id == 'wxpay') {
 									varpay = {
@@ -1253,9 +1254,8 @@
 												$("#payChoose").removeClass("mui-active");
 												mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 
-												//											关闭 订单页
-												load();
-												isShowShare(true,data.data.AccessToken); //分享得礼
+												load();//重载订单
+												isShowShare(true,orderUUID2); //分享得礼
 
 											},
 											error: function(xhr, type, errorThrown) {}
@@ -1293,9 +1293,9 @@
 												$("#payChoose").removeClass("mui-active");
 												mui.fire(plus.webview.getWebviewById('center.html'), 'refresh');
 
-												//											关闭 订单页
-												load();
-												isShowShare(true,data.data.AccessToken); //分享得礼
+
+												load();//重载订单
+												isShowShare(true,orderUUID2); //分享得礼
 											},
 											error: function(xhr, type, errorThrown) {
 												console.log("修改状态失败")

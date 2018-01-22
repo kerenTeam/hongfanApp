@@ -592,7 +592,13 @@
 						shijiuA18();
 					}
 				})
+				//兼容 手动切换城市
+				if(plus.storage.getItem("open19")){
+					shijiuA18();
+				}
+
 				function shijiuA18(){
+					plus.storage.removeItem("open19");
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
 					var cityNum = plus.storage.getItem('cityNum');
@@ -625,7 +631,7 @@
 			                    			}
 
 			                    			//跳转 每日免费抽现金券、HI豆
-		                    				mui('.jiaoyou')[0].addEventListener('tap', function() {
+		                    				mui('.jiaoyou')[0].onclick = function() {
 											if(!plus.storage.getItem('myToken')){
 												mui.toast('请登录');
 												openview({
@@ -645,7 +651,8 @@
 												}
 
 											}
-										});
+										};
+
 			                    		}
 			                    	}
 	                    		}
@@ -926,6 +933,27 @@
 						});
 					});
 					//领HI豆
+					mui('.jiaoyou')[0].onclick = function() {
+						if(!plus.storage.getItem('myToken')){
+							mui.toast('请登录');
+							openview({
+								view:'login.html'
+							});
+						}else{
+							if(plus.storage.getItem('hao19')){
+								openview({
+									view: 'limitTimeAct/lottery19.html',
+									id: 'lottery19',
+								});
+							}else{
+								openview({
+									view: 'hiVip.html',
+									id: "hiVip"
+								});
+							}
+
+						}
+					};
 //					mui('.jiaoyou')[0].addEventListener('tap', function() {
 //						if(!plus.storage.getItem('myToken')){
 //							mui.toast('请登录');
