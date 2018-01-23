@@ -326,7 +326,7 @@
 				clearInterval(timeSign);
 				clearInterval(timeMsg);
 				timeSign = setInterval(Sign,3000000);//两小时自动更新一次token
-				timeMsg = setInterval(showMessage,3000000);//两小时自动更新一次token
+				timeMsg = setInterval(showMessage,3000);//每3秒更新消息
 				var timeSign2  =  setInterval(function(){
 					loadNum2++;
 					if(plus.storage.getItem('oldToken') || loadNum2==10){
@@ -407,11 +407,10 @@
 
 				//消息通知
 				function showMessage(){
-
 					var oldToken = plus.storage.getItem('oldToken');
 					var myuserid = plus.storage.getItem('userid');
 					//显示消息条数
-					if(plus.storage.getItem('myToken')){
+					if(plus.storage.getItem('myToken')){ 
 						mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
 						mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
 						mui.ajax(serverUrl+'/api/index/message',{
@@ -437,6 +436,7 @@
 						       	plus.nativeUI.closeWaiting();
 							},
 							error:function(xhr,type,errorThrown){
+								console.error('消息 ',xhr)
 								plus.nativeUI.closeWaiting();
 							}
 						});
