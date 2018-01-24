@@ -71,9 +71,9 @@
 							
 						</div>
 						<div class="numberWidget">
-							<div class="mui-numbox" data-numbox-min='1'>
+							<div class="mui-numbox" data-numbox-min='1'  data-numbox-max="<%=goodsList[j].mostBuy%>">
 								<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
-								<input class="mui-input-numbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" value="<%=goodsList[j].goodsnum%>" readonly="" type="number" />
+								<input class="mui-input-numbox" data-id="<%=goodsList[j].goodsId%>" data-goodstext="<%=goodsList[j].goodText%>" data-mostBuy="<%=goodsList[j].mostBuy%>" value="<%=goodsList[j].goodsnum%>" type="number" />
 								<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
 							</div>
 							<!--<div class="extraBrief" style="margin-top: 10px;">
@@ -357,8 +357,13 @@ console.log('cartStorage',cartStorage)
 
 				})
 				//数量选择 
-			$('.mui-numbox input').on('change', function() {
+				$('.mui-numbox input').on('change', function() {
 					var number = $(this).val(); //当前数量
+					var mostBuy=$(this).attr('data-mostBuy');
+					if(parseInt(number) >= parseInt(mostBuy)){
+						alert("该商品最多买"+mostBuy+'个')
+					}
+					
 					var goodsid = $(this).attr("data-id");//当前视商品id
 					var goodstext = $(this).attr("data-goodstext");//当前商品属性
 					var curPrice = $(this).parentsUntil("dd").find(".price").html();

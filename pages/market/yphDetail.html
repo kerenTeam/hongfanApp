@@ -601,9 +601,9 @@
 									<!--<small class="gray fr">(限购:<%=choose.max_limit%>)</small></p>  data-numbox-max='<%=choose.max_limit%>' data-numbox-max='<%=choose.max_limit%>'   -->
 									<%}%>
 									<div class="you clearfloat fr">
-										<div class="mui-numbox margin-top" data-numbox-min="1">
+										<div class="mui-numbox margin-top" data-numbox-min="1" data-numbox-max="<%=choose.num%>">
 											<button class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
-											<input id="test" class="mui-input-numbox" data-max="" type="number" readonly="" value="0">
+											<input id="test" class="mui-input-numbox" data-max="" type="number"  value="0">
 											<button class="mui-btn mui-btn-numbox-plus add" type="button">+</button>
 										</div>
 									</div>
@@ -782,15 +782,22 @@
 								cartObj.goodsreduce = goodreduce;
 								cartObj.goodweight = goodsweight;
 								cartObj.goods_property = goodsproperty;
+								cartObj.mostBuy = data.data.num;
 								if(goNum == 1) {
 									if(cartStorage.length != 0) {
 										var flag = false;
 										for(var i = 0; i < cartStorage.length; i++) {
 											if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
 
-												cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
-												flag = false;
-												break;
+												if(parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum) > data.data.num){
+													alert('购物车里的该商品已经超出库存啦');
+													return false;
+												}else{
+													cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
+													flag = false;
+													break;
+												}
+											 
 											} else {
 												flag = true;
 											}

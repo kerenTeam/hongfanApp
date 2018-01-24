@@ -134,8 +134,13 @@
 
 							<div class="circleName">
 								<%=dataList[i].nickname%>
-								<a style="float: right;"><img style="width: 15px;vertical-align:middle;margin-right: 3px;" src="../../img/mainHtml/yizan.png" />
-									<%=dataList[i].likes%>
+								<a style="float: right;" onclick="zan(this,<%=dataList[i].user_id%>)" >
+									<%if(dataList[i].yizan == 1){%>
+										<img style="width: 20px;vertical-align:middle;margin-right: 3px;" src="../../img/mainHtml/yizan.png" />
+									<%}else{%>
+										<img style="width: 20px;vertical-align:middle;margin-right: 3px;" src="../../img/mainHtml/weizan.png" />
+									<%}%>
+									<span><%=dataList[i].likes%></span>
 								</a><br /> <span><%=dataList[i].age%></span> </div>
 						</div>
 						<%}%>
@@ -234,13 +239,16 @@
 
 			}
 			mui.plusReady(function() {
+				var cityNum = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken'),
+					myuserid = plus.storage.getItem('userid');
 				/*弹框*/
 				mui.ajax(serverUrl + '/api/index/showmodal', {
 					type: 'post',
 					timeout: 10000,
 					headers: {
-						"token": plus.storage.getItem('oldToken'),
-						'city': plus.storage.getItem('cityNum')
+						"token": oldToken,
+						'city': cityNum
 					},
 					success: function(data, type, xhr) {
 						plus.nativeUI.closeWaiting();
@@ -261,6 +269,36 @@
 						console.log('首页弹窗', type)
 						console.log('响应失败');
 						plus.nativeUI.closeWaiting();
+					}
+				});
+				
+				//获取已经点赞人数
+				mui.ajax(serverUrl + '/api/friends/likesforperson', {
+					data:{userId:myuserid,getLikes:1},
+					type: 'post',
+					timeout: 10000,
+					headers: {
+						"token": oldToken,
+						"city": cityNum
+					},
+					success: function(data, type, xhr) {
+						console.log('点赞列表', data);
+						
+						if(data.errno == 0) {
+							if(data.data.data && data.data.data.length){
+								plus.storage.setItem('zanList',JSON.stringify(data.data.data))			
+							}else{
+								plus.storage.removeItem('zanList')
+							}
+						console.log('缓存点赞',JSON.parse(plus.storage.getItem('zanList')))
+							
+						}else{
+							mui.toast(data.errmsg)
+						}
+
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('点赞他人,响应失败');
 					}
 				});
 			})
@@ -352,6 +390,7 @@
 					var cityNum = plus.storage.getItem('cityNum'),
 						oldToken = plus.storage.getItem('oldToken'),
 						myuserid = plus.storage.getItem('userid');
+						
 					mui.ajax(serverUrl + '/api/friends/friendslist', {
 						data: dataJson,
 						dataType: 'json',
@@ -368,6 +407,7 @@
 									mui("#upload")[0].innerHTML = "当前城市没有数据 !";
 								} else {
 									var dataObj = {};
+									var yizan = JSON.parse(plus.storage.getItem('zanList')) || [];
 									for(var i = 0; i < data.data.data.length; i++) { //整理头像格式
 										if(data.data.data[i].avatar) {
 											if(data.data.data[i].avatar.indexOf("[") > -1) {
@@ -405,6 +445,11 @@
 											data.data.data[i].age = '年龄保密'
 										} else {
 											data.data.data[i].age = data.data.data[i].age + '岁'
+										}
+										for(var j = 0 ;j < yizan.length;j++){
+											if(yizan[j].toUserId == data.data.data[i].user_id){
+												data.data.data[i].yizan=1;
+											}
 										}
 									}
 									dataObj.dataList = data.data.data;
@@ -474,6 +519,8 @@
 															console.error('交友列表续' + typeNum, data);
 															if(data.errno == 0) {
 																var dataObj = {};
+																var yizan = JSON.parse(plus.storage.getItem('zanList')) || [];
+																
 																for(var i = 0; i < data.data.data.length; i++) {
 																	if(data.data.data[i].avatar) {
 																		if(data.data.data[i].avatar.indexOf("[") > -1) {
@@ -511,6 +558,11 @@
 																		data.data.data[i].age = '年龄保密'
 																	} else {
 																		data.data.data[i].age = data.data.data[i].age + '岁'
+																	}
+																	for(var j = 0 ;j < yizan.length;j++){
+																		if(yizan[j].toUserId == data.data.data[i].user_id){
+																			data.data.data[i].yizan=1;
+																		}
 																	}
 																}
 																dataObj.dataList = data.data.data;
@@ -602,6 +654,46 @@
 							})
 						}
 
+					} else {
+						mui.toast('请登录');
+						openview({
+							view: '../login.html'
+						});
+					}
+				})
+			}
+			//点赞
+			function zan(obj,userId){
+				event.stopPropagation();
+				var cur = $(obj);
+				mui.plusReady(function() {
+					var myuserid = plus.storage.getItem('userid'),
+					    cityNum = plus.storage.getItem('cityNum'),
+						oldToken = plus.storage.getItem('oldToken');
+					if(plus.storage.getItem('myToken')) {
+						mui.ajax(serverUrl + '/api/friends/likesforperson', {
+							data:{userId:myuserid,toUserId:userId},
+							type: 'post',
+							timeout: 10000,
+							headers: {
+								"token": oldToken,
+								"city": cityNum
+							},
+							success: function(data, type, xhr) {
+								console.log('点赞他人', data);
+								if(data.errno == 0) {
+									var haszan = parseInt(cur.find('span').html())+1;
+									cur.find('span').html(haszan)
+									cur.find('img').attr('src','../../img/mainHtml/yizan.png')
+									 mui.toast(data.data.errmsg)
+								}else{
+									mui.toast(data.errmsg)
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								console.error('点赞他人,响应失败');
+							}
+						});
 					} else {
 						mui.toast('请登录');
 						openview({

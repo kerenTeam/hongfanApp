@@ -256,6 +256,21 @@
 		<div class="aClick" id="writeOff2" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/center/heixaojilu.svg"/>核销记录</div>
     	</div>
 
+		<!--遮罩1-->
+		<div id="maskInfo1" class="maskInfo" style="display: none;z-index:9999;"></div>
+		<script type="text/html" id="maskTpl">
+
+			<img src="../img/mainHtml/mclose.svg" class="closeMs"/>
+			<div class="ruleCt" style="padding-bottom: 50px;padding: 0;">
+
+			<%if(popdata.modelContent){%>
+				<img src="<%=popdata.modelContent%>" style="border-radius: 3px;width: 100%;height: 100%;" onclick="popGo('<%=popdata.id%>','<%=popdata.modelUrl%>','<%=popdata.name%>','one')"/>
+			<%}else{%>
+				<img src="../img/mainHtml/mask2.png" />
+			<%}%>
+			</div>
+		</script>
+		<script src="../js/jquery.min.js"></script>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
@@ -319,7 +334,7 @@
 				mui('.myCricle')[0].style.display = '';
 				mui('.friendShip')[0].style.display = '';
 			})
-
+			
 			mui.plusReady(function(){
 				var cityNum = plus.storage.getItem('cityNum');
 				var oldToken = plus.storage.getItem('oldToken');
@@ -330,7 +345,49 @@
 				document.addEventListener('refresh2', function() {
 					Refresh();
 				})
-
+				
+				var version = plus.storage.getItem('version');
+				var platform  = plus.storage.getItem('platform');
+				/*弹框*/
+				mui.ajax(serverUrl + '/api/index/showmodal', {
+					data:{version:version,platform:platform},
+	                type: 'post',
+	                timeout: 10000,
+	                headers: { "token": oldToken ,'city':cityNum},
+	                success: function(data, type, xhr) {
+	                   	plus.nativeUI.closeWaiting();
+	                		console.log('弹窗',data)
+	                		if(data.errno == 0){
+	                			if(data.data && data.data.length){
+	                				mui.each(data.data,function(index,item){
+		                				if(item.typeName == 'personCenter'){
+		                					if(item.modelState == 1){
+	                            			 	$('#maskInfo1').show();
+	                            			 	$('#maskInfo1').html(template('maskTpl',{popdata:item}))
+	                            			 	$('#maskInfo1').click(function(){
+													event.preventDefault()
+													$('#maskInfo1').fadeOut(200);
+												})
+												$('.closeMs').click(function(){
+													event.stopPropagation();
+													$(this).parent().fadeOut(200);
+												})
+	                            			}else{
+	                            			 	$('#maskInfo1').hide()
+	                            			}
+		                				}
+	                        		})
+	                			}
+	                		}
+	                },
+	                error: function(xhr, type, errorThrown) {
+	                	console.log('个人中心弹窗',type)
+	                    console.log('响应失败');
+	                   	plus.nativeUI.closeWaiting();
+	                }
+	            });
+				
+				
 				var Timetoken = null;
 
 				if(plus.storage.getItem('oldToken')){
