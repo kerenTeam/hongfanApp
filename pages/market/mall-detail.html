@@ -1368,21 +1368,33 @@
 									if(goodsnum <= buynum) {
 										if(cartStorage.length != 0) {
 											var flag = false;
+											var gidNum = 0;
 											for(var i = 0; i < cartStorage.length; i++) {
-												if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
-													//														cartStorage[i].goodsnum = parseInt(goodsnum);
-													if(parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum) > buynum) {
-														alert('购物车里的该商品已经超出库存啦');
+												if(cartStorage[i].goodsId == goodsId){
+													gidNum = gidNum + cartStorage[i].goodsnum;
+													if(gidNum >= buynum){
+														plus.nativeUI.alert('购物车里的该商品已经超出限购啦');
 														return false;
-													} else {
-														cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
-														flag = false;
-														break;
+													}else{
+														if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
+															//														cartStorage[i].goodsnum = parseInt(goodsnum);
+															if(parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum) > buynum) {
+																plus.nativeUI.alert('购物车里的该商品已经超出库存啦');
+																return false;
+															} else {
+																cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
+																flag = false;
+																break;
+															}
+		
+														} else {
+															flag = true;
+														}
 													}
-
-												} else {
+												}else {
 													flag = true;
 												}
+												
 											}
 											if(flag) {
 												cartStorage.push(cartObj);

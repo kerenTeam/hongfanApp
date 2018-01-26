@@ -158,7 +158,7 @@
 			}
 
 			.hidestep {
-				/*display: none;*/
+				display: none;
 			}
 			#imghead{width: 50px;height: 50px;border-radius: 50%;}
 		</style>
@@ -265,23 +265,46 @@
 			var myuserid = plus.storage.getItem('userid');
 			var cityNum = plus.storage.getItem('cityNum');
 			var oldToken = plus.storage.getItem('oldToken');
-			//任务提示
-			var title1 = '编辑炫酷昵称，完成即可获取:100Hi豆';
-			var title2 = '完成你的个性签名，即可获取:100Hi豆';
-			var title3 = '填写自己的性别，即可获取:100Hi豆';
-			var title4 = '你的星座快点告诉我吧！完善即可获取:100Hi豆';
-			var title5 = '年龄已不在是秘密，填写即可获取:100Hi豆';
-			var title6 = '装扮自己的空间有更多人能感受到你的品位喔,更换背景图片，完善即可获取：100Hi豆';
-			var title7 = '恭喜完成所有任务，您一共收获 1100Hi豆！快去参加购物狂欢吧!';
 //			plus.storage.removeItem('$steptit')
 //			plus.storage.removeItem('$step')
 //			plus.storage.removeItem('tipEnd')
+			//任务提示
+			var title1='请先上传您的交友头像，可获得丰富的hi豆奖励哟',title2='',title3='',title4='',title5='',title6='',title7='',title8='';
+			//获取任务奖励提示
+			mui.ajax(serverUrl + '/api/friends/userinfogame', { 
+				type: 'post',
+				timeout: 10000,
+				headers: {
+					"token":oldToken,
+					'city':cityNum
+				},
+				success: function(data, type, xhr) {
+					plus.nativeUI.closeWaiting();
+					console.log('任务奖励提示', data)
+					if(data.errno == 0) {
+						if(data.data && data.data.length){
+							title1=data.data[5].remarks;
+							title2=data.data[0].remarks;
+							title3=data.data[1].remarks;
+							title4=data.data[2].remarks;
+							title5=data.data[3].remarks;
+							title6=data.data[4].remarks;
+							title7=data.data[6].remarks;
+							title8=data.data[7].remarks;
+            				 
+            			} 
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					console.log('响应失败');
+					plus.nativeUI.closeWaiting();
+				}
+			}); 
+			
             var curli = 0 ;
 			var latest = plus.storage.getItem('$steptit') || 'title1';
-
 			var lateststep = plus.storage.getItem('$step') || '1';
-//			alert(lateststep)
-			if(lateststep != 7){
+			if(lateststep != 8){
 				stepConfirm(eval(latest))
 			}
 			var version = plus.storage.getItem('version');
@@ -372,14 +395,14 @@
 								mui('#Nextbtn')[0].getElementsByTagName('option')[0].selected = true;
 								break;
 						}
-//						var curli = 0;
-//						$('li.clearfloat').each(function(){
-//							if(($('li.clearfloat').eq(curli).find('input').length > 0 && !$('li.clearfloat').eq(curli).find('input').val()) || ($('li.clearfloat').eq(curli).find('select').length > 0 && !$('li.clearfloat').eq(curli).find('select').val())) {
-//								stepConfirm(eval(latest));
-//							} else if($('li.clearfloat').eq(curli).find('#preview').length > 0 && $('li.clearfloat').eq(curli).find('#preview img').attr('src') == '../../img/answer/editset.png') {
-//								stepConfirm(eval(latest));
-//							}
-//						})
+						var curli = 0;
+						$('li.clearfloat').each(function(){
+							if(($('li.clearfloat').eq(curli).find('input').length > 0 && !$('li.clearfloat').eq(curli).find('input').val()) || ($('li.clearfloat').eq(curli).find('select').length > 0 && !$('li.clearfloat').eq(curli).find('select').val())) {
+								stepConfirm(eval(latest));
+							} else if($('li.clearfloat').eq(curli).find('#preview').length > 0 && $('li.clearfloat').eq(curli).find('#preview img').attr('src') == '../../img/answer/editset.png') {
+								stepConfirm(eval(latest));
+							}
+						})
 					} else {
 						console.log(data.errmsg);
 					}
@@ -553,100 +576,57 @@
 						}
 					})
 
-					//					$('.diybut').click(function(){
-					//						if($('.diybuted').length>6){
-					//							mui.toast('最多只能添加6个标签哦')
-					//						}else{
-					//							mui.prompt('','请输入标签名','添加签名',['确认','取消'],function(e) {
-					//								if(e.index == 0) {
-					//									if(e.value=='' || e.value==' '){
-					//										return false;
-					//									}else{
-					//										//新增标签
-					//										mui.ajax(serverUrl+'/api/friends/userlable',{
-					//											data:{lableName:e.value,userId:myuserid},
-					//											type:'post',
-					//											timeout:8000,
-					//											headers:{"token":oldToken,"city":cityNum},
-					//											success:function(data,type,xhr){
-					//												console.log('获取用户数据返回',data);
-					//												if(data.errno == 0){
-					//													mui.toast('新增成功');
-					//													$('#psLabel').append('<div data-lableid="'+data.data.id+'" class="diybuted">'+e.value+'</div> ')
-					//
-					//												}else{
-					//													//mui.toast('获取用户信息失败');
-					//													console.log(data.errmsg);
-					//												}
-					//												$('#goLabel').click(function(){
-					//													openview({
-					//														view:'friendSet.html',
-					//														id:'friendSet'
-					//													})
-					//												})
-					//
-					//											},
-					//											error:function(xhr,type,errorThrown){
-					//												console.log('获取用户数据,响应失败');
-					//											}
-					//										});
-					//									}
-					//								}
-					//							},'div')
-					//						}
-					//					})
-
 				},
 				error: function(xhr, type, errorThrown) {
 					console.log('获取用户数据,响应失败');
 				}
 			});
 
-			function stepConfirm(title) {
-				var oldToken = plus.storage.getItem('oldToken'),
-					cityNum = plus.storage.getItem('cityNum'),
-					myuserid = plus.storage.getItem('userid');
-//				/*弹框*/
-//				mui.ajax(serverUrl + '/api/index/showmodal', {
-//					type: 'post',
-//					timeout: 10000,
-//					headers: {
-//						"token": plus.storage.getItem('oldToken'),
-//						'city': plus.storage.getItem('cityNum')
-//					},
-//					success: function(data, type, xhr) {
-//						plus.nativeUI.closeWaiting();
-//						console.log('弹窗', data)
-//						if(data.errno == 0) {
-//							if(data.data.saveProfile && data.data.saveProfile.length) {
-//								//	                				mui.each(data.data.saveProfile,function(index,item){
-//								if(data.data.saveProfile[0] == 1) {
-//									plus.storage.setItem('open','1')
-//									if(lateststep == 7) {
-//										var btn = ['完成'];
-//										plus.storage.setItem('tipEnd','1');
-//									} else {
-//										var btn = ['开始', '取消']
-//									}
-//									mui.confirm(title, '任务提示', btn, function(e) {
-//
-//									}, '')
-//								} else {
-//									plus.storage.removeItem('open')
-//
-//									$('li.clearfloat').removeClass('hidestep')
-//
-//								}
-//								//                          		})
-//							}
-//						}
-//					},
-//					error: function(xhr, type, errorThrown) {
-//						console.log('首页弹窗', type)
-//						console.log('响应失败');
-//						plus.nativeUI.closeWaiting();
-//					}
-//				});
+			function stepConfirm(title) { 
+				/*弹框*/
+				mui.ajax(serverUrl + '/api/index/showmodal', {
+					data:{version:version,platform:platform},
+					type: 'post',
+					timeout: 10000,
+					headers: {
+						"token": plus.storage.getItem('oldToken'),
+						'city': plus.storage.getItem('cityNum')
+					},
+					success: function(data, type, xhr) {
+						plus.nativeUI.closeWaiting();
+						console.log('弹窗', data)
+						if(data.errno == 0) {
+							if(data.data && data.data.length){
+	            				mui.each(data.data,function(index,item){
+	                				if(item.typeName == 'saveProfile'){
+	                					if(item.modelState == 1){
+	                        			  plus.storage.setItem('open','1')
+											if(lateststep == 8) {
+												var btn = ['完成'];
+												plus.storage.setItem('tipEnd','1');
+											} else {
+												var btn = ['开始', '取消']
+											}
+											mui.confirm(title, '任务提示', btn, function(e) {
+		
+											}, '')
+	                        			}else{ 
+	                        				plus.storage.removeItem('open')
+											$('li.clearfloat').removeClass('hidestep')
+	                        			}
+	                				}
+	                    		})
+	            			} 
+						}else{
+							$('li.clearfloat').removeClass('hidestep')
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log('首页弹窗', type)
+						console.log('响应失败');
+						plus.nativeUI.closeWaiting();
+					}
+				});
 
 			}
 
@@ -696,7 +676,7 @@
 										if(curli<6){
 											curli = curli + 1;
 										}
-										if(lateststep <7){
+										if(lateststep <8){
 											lateststep = parseInt(lateststep) + 1;
 										}
 										plus.storage.setItem('$step', lateststep.toString());
@@ -705,7 +685,7 @@
 										plus.nativeUI.closeWaiting(); //关闭等待框
 
 										mui.toast('修改成功');
-										plus.webview.currentWebview().close();
+										
 
 
 										if(!plus.storage.getItem('tipEnd')){
@@ -713,6 +693,8 @@
 												mui.toast('修改成功,恭喜你获得100HI豆');
 											}
 											stepConfirm(eval(plus.storage.getItem('$steptit')));
+										}else{
+											plus.webview.currentWebview().close();
 										}
 
 									} else {
