@@ -183,7 +183,7 @@
 							            </div>
 									</div>
 									<div class="DTcontent">
-										<p class="ft14 maincl overTwo"  style="-webkit-user-select: text;"><%=dataList[i].content%> </p><!--文字内容-->
+										<p class="ft14 maincl overTwo linkMore01"  style="-webkit-user-select: text;"><%=dataList[i].content%> </p><!--文字内容-->
 										<%if(dataList[i].picS){%>
 											<%for(var j=0;j<dataList[i].picS.length;j++){%>
 												<%if(dataList[i].picS.length == 1){ %>
@@ -348,6 +348,18 @@
 
 				};
 				showSfun1(msg);
+			}
+			//链接条状
+			function openUrlFun(that){
+				var openUrl = $(that).find('b').html();
+				event.stopPropagation();
+				openview({
+					view:'socialCircle/linkurl.html',
+					id: "linkurl",
+					extrasobj: {
+						bannerUrl:openUrl
+					}
+				})
 			}
 
 		</script>
@@ -959,22 +971,9 @@
 										return string;
 										}
 
-//									function linkfilter(msg) {
-//										var url = msg;
-//										var urlRegExp = new RegExp("((https|http|ftp|rtsp|mms|www)?:\/*\/*)[^\u4E00-\u9FA5]+");
-//										var newmsg = "";
-//										while(urlRegExp.exec(url) != null) {
-//											var pipeiurl = urlRegExp.exec(url);
-//											var newurl = '<a href="' + pipeiurl[0] + '" >"' + pipeiurl[0] + '"</a>';
-//											var urllength = pipeiurl[0].length;
-//											var start = url.indexOf(pipeiurl[0]);
-//											newmsg += url.substring(0, start) + newurl;
-//											url = url.substring(start + urllength);
-//										}
-//										return msg = newmsg + url;
-//									}
+//
 									nowArray[j].content = TransferString(nowArray[j].content)
-//									nowArray[j].content = linkfilter(nowArray[j].content)
+//									nowArray[j].content = linkfilter(nowArray[j].content);
 								}
 
 								dataObj.dataList = nowArray;
@@ -982,6 +981,24 @@
 								mui("#upload")[0].innerHTML = "";
 
 								lazyLoad(true,-100);
+
+								//加链接跳转（滚动加载下面也要加哦）
+								function changUrl(){
+									var linkMores = document.getElementsByClassName('linkMore01');
+									for (var i = 0; i < linkMores.length; i++) {
+										var textCon = linkMores[i].innerHTML;
+										var urlRegExp = new RegExp("((https|http|ftp|rtsp|mms|www)?:\/*\/*)[^\u4E00-\u9FA5]+");
+										if(urlRegExp.exec(textCon) != null){
+											var urlReplace = urlRegExp.exec(textCon)[0];
+											var endUrl = '<i style="color:#aa4848;text-decoration:underline;word-break: break-all;" onclick="openUrlFun(this)">(点击打开链接)<b style="font-weight: initial;">'+urlReplace+'</b></i>';
+											textCon = textCon.replace(urlReplace,endUrl);
+											linkMores[i].innerHTML = textCon;
+										}
+										linkMores[i].className = 'ft14 maincl overTwo';
+									}
+								}
+								changUrl();
+
 
 								$(window).scroll(function() {
 									if(document.getElementsByClassName("dyCon")[typeNum].style.display == 'block'){//判断是否是 当前显示的盒子
@@ -1095,6 +1112,7 @@
 																dataObj.dataList = nowArray;
 																document.getElementsByClassName("dyCon")[typeNum].innerHTML += template("listDataS", dataObj);
 																lazyLoad(false,10);//懒加载
+																changUrl();//链接跳转方法
 
 																//操作表
 																var jbuid='',junsid,nowThis = null;

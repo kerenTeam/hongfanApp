@@ -8,7 +8,7 @@ mui.plusReady(function(){
 })
 
 //var serverUrl='http://hijiv2.zlzmm.com';
-//var serverUrl='http://192.168.1.113:7200';
+//var serverUrl='http://192.168.199.191:7200';
 //var serverUrl='http://192.168.0.8:7200';
 
 //var serverimgUrl='http://192.168.0.128:6789';
