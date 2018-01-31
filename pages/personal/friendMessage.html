@@ -113,7 +113,7 @@
 						<span class="mui-icon mui-icon-arrowright mui-pull-right"></span>
 					</div>
 					<%for(var i=0;i<list.length;i++){%>
-						<div class="qashadow" onclick="chat(<%=list[i].toUserId%>,'<%=list[i].nickname%>','<%=list[i].loginPic%>')">
+						<div class="qashadow" data-id="<%=list[i].id%>" onclick="chat(<%=list[i].toUserId%>,'<%=list[i].nickname%>','<%=list[i].loginPic%>')">
 							<div class="qbot ft14 flexaa">
 								<div class="flexaa">
 									<div class="chatimg">
@@ -145,17 +145,24 @@
 				</script>
 				<script type="text/html" id="listinfo">
 					<%for(var i=0;i<list.length;i++){%>
-						<%if(list[i].messageType == 4 || list[i].messageType == 5 || list[i].messageType == 6 || list[i].messageType == 7 || list[i].messageType == 8 || list[i].messageType == 9 || list[i].messageType == 10 || list[i].messageType == 11){%>
-						<div class="qashadow"> 
+						<%if(list[i].messageType == 4 || list[i].messageType == 5 || list[i].messageType == 6 || list[i].messageType == 7 || list[i].messageType == 8 || list[i].messageType == 9 || list[i].messageType == 10 || list[i].messageType == 11 || list[i].title.indexOf('打赏')>0){%>
+						<div class="qashadow readcg" data-id="<%=list[i].id%>"> 
 						<!--2活动消息  3 系统提示 4HI 豆消息 5礼物 6评论 7点赞 8私信  9关注 11举报-->
 							<div class="qtop flexr">
 								<div class="ft14 activecl">
 										HI友圈消息 
 								</div>
 								<div class="">
-									<span class="disablecl"><%=list[i].create_time%></span>
+									<span class="disablecl">
+										<%=list[i].create_time%>
+										<%if(!list[i].isRead){%>
+										 <span style="width: 6px;height: 6px;border-radius: 50%;background-color: red;display: inline-block;"></span>
+										<%}%>
+									</span>
+									
 								</div>
 							</div>
+								
 							<%}%>
 							<%if(list[i].messageType ==5){%>
 								
@@ -272,8 +279,7 @@
 									</div>
 								</div>
 							<%}else if(list[i].title.indexOf('打赏')>0){%>
-								<div class="qashadow"> 
-								<!--2活动消息  3 系统提示 4HI 豆消息 5礼物 6评论 7点赞 8私信  9关注 11举报-->
+								<!--<div class="qashadow"> 
 									<div class="qtop flexr">
 										<div class="ft14 activecl">
 												HI友圈消息 
@@ -281,7 +287,7 @@
 										<div class="">
 											<span class="disablecl"><%=list[i].create_time%></span>
 										</div>
-									</div>
+									</div>-->
 								<div class="pad10 ft14">
 									<%=list[i].title%>
 								</div>
@@ -398,6 +404,7 @@
 					oldToken = plus.storage.getItem('oldToken');
 
 				mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
+				mui.fire(plus.webview.getLaunchWebview(),'refresh3');
 
 				window.elseCircleIndex = function(id){
 					event.stopPropagation();
@@ -497,6 +504,37 @@
 					     			dataobj.list = data.data;
 					     			var html = template("listinfo",dataobj);
 									document.getElementById("questions").innerHTML=html;
+									
+									var readAll = '';
+									$('.readcg').each(function(){
+										if($(this).index()+1 == $('.readcg').length){
+											readAll += $(this).attr('data-id');
+										}else{
+											readAll += $(this).attr('data-id')+',';
+										}
+									})
+									mui.ajax(serverUrl + '/api/index/readedmsg', {
+										data: {
+											id:readAll,
+											userid:myuserid,
+										},
+										dataType: 'json',
+										type: 'post',
+										headers: {
+											"token":oldToken,'city':cityNum
+										},
+										timeout: 10000,
+										success: function(data, type, xhr) {
+											console.log("已读", data);
+											
+										},
+										error: function(xhr, type, errorThrown) {
+											plus.nativeUI.closeWaiting();
+											mui.toast("网络不好请重试")
+										}
+									})
+									 
+									 
 								}else{
 									document.getElementById("questions").innerHTML='<div style="text-align: center;padding: 50px;">暂无通知消息</div>'
 								}

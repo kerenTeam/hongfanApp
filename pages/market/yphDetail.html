@@ -627,6 +627,7 @@
 			var shopId;
 			//获取token
 			var token = plus.storage.getItem("oldToken");
+			var myuserid = plus.storage.getItem('userid');
 			console.log(token)
 			//获取页面传值 商品id
 			var goodId = plus.webview.currentWebview().goodsId;
@@ -783,60 +784,55 @@
 								cartObj.goodweight = goodsweight;
 								cartObj.goods_property = goodsproperty;
 								cartObj.mostBuy = data.data.num;
-								if(goNum == 1) {
-									if(cartStorage.length != 0) {
-										var flag = false;
-										for(var i = 0; i < cartStorage.length; i++) {
-											if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
-
-												if(parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum) > data.data.num){
-													alert('购物车里的该商品已经超出库存啦');
-													return false;
-												}else{
-													cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
-													flag = false;
-													break;
+								if(plus.storage.getItem('myToken')) {
+									if(goNum == 1) {
+										if(cartStorage.length != 0) {
+											var flag = false;
+											for(var i = 0; i < cartStorage.length; i++) {
+												if(cartStorage[i].goodsId == goodsId && cartStorage[i].goodText == goodText) {
+	
+													if(parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum) > data.data.num){
+														alert('购物车里的该商品已经超出库存啦');
+														return false;
+													}else{
+														cartStorage[i].goodsnum = parseInt(cartStorage[i].goodsnum) + parseInt(goodsnum);
+														flag = false;
+														break;
+													}
+												 
+												} else {
+													flag = true;
 												}
-											 
-											} else {
-												flag = true;
 											}
-										}
-										if(flag) {
+											if(flag) {
+												cartStorage.push(cartObj);
+											}
+										} else {
 											cartStorage.push(cartObj);
 										}
+										plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage));
+										console.log('cart',JSON.parse(plus.storage.getItem("$cartStorage")))
+										//提交购物车到后台
+										addCart(JSON.stringify(cartStorage),plus.storage.getItem('userid'),1,token)
+										$(".am-share").removeClass("am-modal-active");
+										$(".sharebg ").removeClass("sharebg-active");
+										mui.toast("已成功加入购物车");  
 									} else {
-										cartStorage.push(cartObj);
-									}
-									plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage));
-									console.log('cart',JSON.parse(plus.storage.getItem("$cartStorage")))
-									$(".am-share").removeClass("am-modal-active");
-									$(".sharebg ").removeClass("sharebg-active");
-									mui.toast("已成功加入购物车");
-									//webview 购物车页面 刷新
-									//获得列表界面的webview
-									var list = plus.webview.getWebviewById('cart.html');
-									//触发列表界面的自定义事件（refresh）,从而进行数据刷新
-									mui.fire(list, 'refresh');
-
-								} else {
-
-									if(plus.storage.getItem('myToken')) {
 										orderStorage = [];
 										orderStorage.push(cartObj);
 										plus.storage.setItem("$orderStorage", JSON.stringify(orderStorage));
-
+	
 										openview({
 											view: "market-order.html",
 											id: "market-order"
 										})
-									} else { //没登陆直接打开登录页面
-										mui.toast('请登录');
-										openview({
-											view: '../login.html'
-										});
+										
 									}
-
+								} else { //没登陆直接打开登录页面
+									mui.toast('请登录');
+									openview({
+										view: '../login.html'
+									});
 								}
 
 							} else {

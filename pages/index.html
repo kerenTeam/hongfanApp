@@ -355,6 +355,7 @@
 								}else{
 									checkUpdate(true,true);
 								}
+								showMessage();
 							},
 							error:function(xhr,type,errorThrown){
 								loadNum ++;
@@ -392,7 +393,7 @@
 									//checkUpdateIos();
 									checkUpdate(true,true);
 								}
-
+								showMessage();
 							},
 							error:function(xhr,type,errorThrown){
 								loadNum ++;
@@ -424,11 +425,16 @@
 								plus.nativeUI.closeWaiting();
 								console.log('消息hi',data);
 						       	if(data.errno == 0){
-							       	if(data.data.length){
-							       		var hiInfoNums = plus.storage.getItem('hiInfoNums');
-							       		if(data.data.length - hiInfoNums > 0){
+							       	if(data.data && data.data.length){
+							       		var noread = 0 ;
+							       		for(var i =0;i<data.data.length;i++){
+							       			if(!data.data[i].isRead){
+							       				noread++;
+							       			}
+							       		}
+							       		if(noread > 0){
 							       			mui('#mmsg')[0].style.display = 'block';
-						     				mui('#mmsg')[0].innerHTML = data.data.length - hiInfoNums;
+						     				mui('#mmsg')[0].innerHTML = noread;
 							       		}else{
 							       			mui('#mmsg')[0].style.display = 'none';
 							       		}

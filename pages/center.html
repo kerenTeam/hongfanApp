@@ -511,9 +511,9 @@
 																	success:function(data,type,xhr){
 																		console.log('分享获劵',data);
 																		if(data.errno == 0){
-																			alert(data.errmsg || '操作成功');
+																			mui.alert(data.errmsg || '操作成功');
 																		}else{
-																			alert(data.errmsg);
+																			mui.alert(data.errmsg);
 																		}
 																	},
 																	error:function(xhr,type,errorThrown){
@@ -531,9 +531,9 @@
 																	success: function(data, type, xhr) {
 																		console.log('邀请码'+JSON.stringify(data));
 																		if(data.errno == 0){
-																			alert('操作成功');
+																			mui.alert('操作成功');
 																		}else{
-																			alert(data.errmsg);
+																			mui.alert(data.errmsg);
 																		}
 																	},
 																	error: function(xhr, type, errorThrown) {
@@ -638,11 +638,16 @@
 									plus.nativeUI.closeWaiting();
 									console.log('消息',data);
 							       	if(data.errno == 0){
-								       	if(data.data.length){
-								       		var infoNums = plus.storage.getItem('infoNums');
-								       		if(data.data.length - infoNums > 0){
+								       	if(data.data && data.data.length){
+								       		var noread = 0 ;
+								       		for(var i =0;i<data.data.length;i++){
+								       			if(!data.data[i].isRead){
+								       				noread++;
+								       			}
+								       		}
+								       		if(noread > 0){
 								       			mui('#mmsg')[0].style.display = 'block';
-							     				mui('#mmsg')[0].innerHTML = data.data.length - infoNums;
+							     				mui('#mmsg')[0].innerHTML = noread;
 								       		}else{
 								       			mui('#mmsg')[0].style.display = 'none';
 								       		}

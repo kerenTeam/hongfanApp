@@ -153,11 +153,8 @@
 
 				<script type="text/html" id="listinfo">
 					<%for(var i=0;i<list.length;i++){%>
-						<%if(list[i].sender && list[i].sender!='null'){%>
-						<div class="qashadow">
-						<%}else{%>
-						<div class="qashadow">
-						<%}%>
+						 
+						<div class="qashadow readcg" data-id="<%=list[i].id%>"> 
 						<!--2活动消息  3系统提示 4HI 豆消息 5礼物 6评论 7点赞 8私信  9关注 11举报-->
 							<div class="qtop flexr">
 								<div class="ft14 activecl">
@@ -174,7 +171,12 @@
 									<%}%>
 								</div>
 								<div class="">
-									<span class="disablecl"><%=list[i].create_time%></span>
+									<span class="disablecl">
+										<%=list[i].create_time%>
+										<%if(!list[i].isRead){%>
+										 <span style="width: 6px;height: 6px;border-radius: 50%;background-color: red;display: inline-block;"></span>
+										<%}%>
+									</span>
 								</div>
 							</div>
 							<%if(list[i].messageType == 1){%>
@@ -381,7 +383,7 @@
 					oldToken = plus.storage.getItem('oldToken');
 
 				mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
-
+				mui.fire(plus.webview.getLaunchWebview(),'refresh3');
 				window.elseCircleIndex = function(id){
 					event.stopPropagation();
 					if(plus.storage.getItem('myToken')){
@@ -481,6 +483,35 @@
 					     			dataobj.list = data.data;
 					     			var html = template("listinfo",dataobj);
 									document.getElementById("questions").innerHTML=html;
+									
+									var readAll = '';
+									$('.readcg').each(function(){
+										if($(this).index()+1 == $('.readcg').length){
+											readAll += $(this).attr('data-id');
+										}else{
+											readAll += $(this).attr('data-id')+',';
+										}
+									})
+									mui.ajax(serverUrl + '/api/index/readedmsg', {
+										data: {
+											id:readAll,
+											userid:myuserid,
+										},
+										dataType: 'json',
+										type: 'post',
+										headers: {
+											"token":oldToken,'city':cityNum
+										},
+										timeout: 10000,
+										success: function(data, type, xhr) {
+											console.log("已读", data);
+											
+										},
+										error: function(xhr, type, errorThrown) {
+											plus.nativeUI.closeWaiting();
+											mui.toast("网络不好请重试")
+										}
+									})
 								}else{
 									document.getElementById("questions").innerHTML='<div style="text-align: center;padding: 50px;">暂无通知消息</div>'
 								}
