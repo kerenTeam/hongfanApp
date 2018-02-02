@@ -402,9 +402,7 @@
 				var myuserid = plus.storage.getItem('userid'),
 				    cityNum = plus.storage.getItem('cityNum'),
 					oldToken = plus.storage.getItem('oldToken');
-
-				mui.fire(plus.webview.getWebviewById('circle.html'),'refresh3');
-				mui.fire(plus.webview.getLaunchWebview(),'refresh3');
+				plus.nativeUI.showWaiting();//显示等待框
 
 				window.elseCircleIndex = function(id){
 					event.stopPropagation();
@@ -429,7 +427,6 @@
 					}
 			    }
 				if(typeNum == 0){
-					plus.nativeUI.showWaiting();//显示等待框
 					mui.ajax(serverUrl+'/api/index/message',{
 						data:{userid:myuserid,msgType:2},
 						dataType:'json',
@@ -437,7 +434,7 @@
 						timeout:10000,
 						headers:{"token":oldToken,'city':cityNum},
 						success:function(data,type,xhr){
-							plus.nativeUI.closeWaiting();
+							
 							console.log('消息hi',data);
 					       	if(data.errno == 0){
 					       		/*记录已读消息数*/
@@ -504,7 +501,7 @@
 					     			dataobj.list = data.data;
 					     			var html = template("listinfo",dataobj);
 									document.getElementById("questions").innerHTML=html;
-									
+									plus.nativeUI.closeWaiting();
 									var readAll = '';
 									$('.readcg').each(function(){
 										if($(this).index()+1 == $('.readcg').length){
@@ -526,7 +523,7 @@
 										timeout: 10000,
 										success: function(data, type, xhr) {
 											console.log("已读", data);
-											
+											mui.fire(plus.webview.getLaunchWebview(),'refresh3');
 										},
 										error: function(xhr, type, errorThrown) {
 											plus.nativeUI.closeWaiting();
@@ -534,9 +531,10 @@
 										}
 									})
 									 
-									 
+									
 								}else{
 									document.getElementById("questions").innerHTML='<div style="text-align: center;padding: 50px;">暂无通知消息</div>'
+									plus.nativeUI.closeWaiting(); 
 								}
 					       	}
 					       	plus.nativeUI.closeWaiting();

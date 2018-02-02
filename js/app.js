@@ -293,6 +293,30 @@ function followBack(thisobj,likerId,curType){
 		});
 	})
 }
+
+											
+function addCart(cartdata,userid,token){
+	mui.ajax(serverUrl+'/api/mall/shpocar',{
+		data:{user_id:userid,shopCar:cartdata,isSave:1},
+		dataType:'json',
+		type:'post',
+		timeout:8000,
+		headers:{"token":token,"city":1},
+		success:function(data,type,xhr){
+			console.log('cart返回',data);
+			if(data.errno==0){
+				mui.fire(plus.webview.getWebviewById('cart.html'),'refresh');
+				mui.fire(plus.webview.getWebviewById('cart'),'refresh');
+			}else{
+				mui.toast('当前网络不好，请重试');
+			}
+		},
+		error:function(xhr,type,errorThrown){
+			mui.toast('当前网络不好，请重试');
+			console.error('cart返回响应失败');
+		}
+	});
+}
 var PAYSERVER='http://hiji.hifete.com:7200/api/alipay/payment';
 
 //系统分享
