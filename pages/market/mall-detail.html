@@ -594,9 +594,12 @@
 										<%}else{%>
 										<p class="jifen fl box-s"><sub>￥</sub><samp style="font-family: '微软雅黑' !important;">0</samp></p>
 										<%}%>
-										<div class="countDown fr" data-id="<%=brief.seconds%>" style="color: #F63D41!important;line-height: 40px;font-size: 14px;">
-											<%=brief.countDown%>
-										</div>
+										<%if(brief.countDown && brief.countDown != 'NULL' && brief.countDown != 'undefined'){%>
+											<div class="countDown fr" data-id="<%=brief.seconds%>" style="color: #F63D41!important;line-height: 40px;font-size: 14px;">
+												<%=brief.countDown%>
+											</div>
+										<%}%>
+										
 									</div>
 
 								</div>
@@ -935,8 +938,7 @@
 						var dataobj = eval("(" + data.data.goodsInfo.good_pic + ")");
 						var commentobj = data.data.comments;
 						    qq = data.data.goodsInfo.qq;
-
-					    if(data.data.goodsInfo.countDown){
+					    if(data.data.goodsInfo.countDown && data.data.goodsInfo.countDown!= 'NULL' && data.data.goodsInfo.countDown!= 'undefined'){
 					    		var endTime = new Date(data.data.goodsInfo.countDown.replace(/-/g,'/')).getTime();
 //							var endTime = new Date(data.data.goodsInfo.countDown).getTime();
 				    			var startTime = new Date().getTime();
@@ -1407,7 +1409,7 @@
 											//											alert(JSON.stringify(cartObj))
 											plus.storage.setItem("$cartStorage", JSON.stringify(cartStorage));
 											//提交购物车到后台
-											addCart(JSON.stringify(cartStorage),plus.storage.getItem('userid'),1,token)
+											addCart(JSON.stringify(cartStorage),plus.storage.getItem('userid'),token)
 											$(".am-share").removeClass("am-modal-active");
 											$(".sharebg ").removeClass("sharebg-active");
 											mui.toast("已成功加入购物车"); 

@@ -373,17 +373,12 @@
 	<script type="text/javascript">
 		shopData(0,0,false);//默认推荐
 
-		function shopData(typeNum,gender,refresh){
-			var Spagenum = 2; //实到页数
-			var Ypagenum = 1; //应到页数
-
+		function shopData(typeNum,gender,refresh){ 
 			mui.plusReady(function(){
+		        plus.nativeUI.showWaiting();//显示等待框
 				var myuserid = plus.storage.getItem('userid'),
 				    cityNum = plus.storage.getItem('cityNum'),
-					oldToken = plus.storage.getItem('oldToken');
-
-				mui.fire(plus.webview.getWebviewById('center.html'),'refresh3');
-				mui.fire(plus.webview.getLaunchWebview(),'refresh3');
+					oldToken = plus.storage.getItem('oldToken'); 
 				window.elseCircleIndex = function(id){
 					event.stopPropagation();
 					if(plus.storage.getItem('myToken')){
@@ -407,8 +402,6 @@
 					}
 			    }
 				if(typeNum == 0){
-
-					plus.nativeUI.showWaiting();//显示等待框
 					mui.ajax(serverUrl+'/api/index/message',{
 						data:{userid:myuserid,msgType:1},
 						dataType:'json',
@@ -416,7 +409,7 @@
 						timeout:10000,
 						headers:{"token":oldToken,'city':cityNum},
 						success:function(data,type,xhr){
-							plus.nativeUI.closeWaiting();
+							
 							console.log('消息',data);
 					       	if(data.errno == 0){
 					       		/*记录已读消息数*/
@@ -476,14 +469,12 @@
 											var date = [[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-')].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零
 											nowArray[j].content.create_time = date;
 										}
-										
-
 					     			}
 					     			dataobj.url = serverimgUrl;
 					     			dataobj.list = data.data;
 					     			var html = template("listinfo",dataobj);
 									document.getElementById("questions").innerHTML=html;
-									
+									plus.nativeUI.closeWaiting();
 									var readAll = '';
 									$('.readcg').each(function(){
 										if($(this).index()+1 == $('.readcg').length){
@@ -505,6 +496,7 @@
 										timeout: 10000,
 										success: function(data, type, xhr) {
 											console.log("已读", data);
+											mui.fire(plus.webview.getWebviewById('center.html'),'refreshCT');
 											
 										},
 										error: function(xhr, type, errorThrown) {
@@ -514,12 +506,14 @@
 									})
 								}else{
 									document.getElementById("questions").innerHTML='<div style="text-align: center;padding: 50px;">暂无通知消息</div>'
+									plus.nativeUI.closeWaiting(); 
 								}
 					       	}
 					       	plus.nativeUI.closeWaiting();
 						},
 						error:function(xhr,type,errorThrown){
 							plus.nativeUI.closeWaiting();
+							mui.toast('当前网络不好,请重试')
 							console.log('当前网络不好,请重试');
 						}
 					});
