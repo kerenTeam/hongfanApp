@@ -498,10 +498,10 @@
 								 	<div class="mui-row">
 										<div class="mui-col-sm-4 mui-col-xs-4 Mleft">
 											<%if(brief.tax_rate==0 || brief.tax_rate=='' ||brief.tax_rate==null){%>
-											<p class="box-s">税费：免税</p>
+											<p class="box-s">税率：免税</p>
 											<%}else{%>
-											<p class="box-s">税费：
-												<%=brief.ratemoney%>元</p>
+											<p class="box-s">税率：
+												<%=brief.ratemoney%></p>
 											<%}%>
 										</div>
 										<div class="mui-col-sm-4 mui-col-xs-4 Mcenter">
@@ -653,7 +653,7 @@
 					console.log(data)
 					if(data.errno == 0) {
 //						var d = data.data.imglist; //{img1:dd,img2:aa,img3,cc}
-						data.data.price = Math.floor(data.data.price*(1+0.05)*100)/100;
+						data.data.price = Math.floor(data.data.price*100)/100;
 						var bannerArray = [];
 //						if(d) {
 //							for(var t = 0; t < Object.keys(d).length; t++) {
@@ -685,7 +685,8 @@
 //						var rate = 0.17;
 						data.data.rate = rate;
 //						alertF(rate)
-						data.data.ratemoney = Math.floor(parseFloat(parseFloat(data.data.price) * rate)*100)/100;
+//						data.data.ratemoney = Math.floor(parseFloat(parseFloat(data.data.price) * rate/100)*100)/100;
+						data.data.ratemoney = rate+'%';
 						document.getElementById("gdBrief").innerHTML = template("briefTpl", {
 							brief: data.data
 						});
