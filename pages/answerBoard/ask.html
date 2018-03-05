@@ -508,6 +508,7 @@
 	});
 	mui.plusReady(function() {
 		var hidou = plus.webview.currentWebview().expertHI;
+		var isAct = plus.webview.currentWebview().isAct;
 		var diyHidou = 0;
 		// 添加send自定义事件监听
 
@@ -632,6 +633,7 @@
 		        expertId= plus.webview.currentWebview().expert,//专家id
 		        onlyExpert = plus.webview.currentWebview().onlyExpert, //是否是专家
 		        groupId= plus.webview.currentWebview().exGroup,//类别id
+		        isAct= plus.webview.currentWebview().isAct,//09问答活动
 			    price = $('.zhidou').attr('data-id'),
 				oldToken = plus.storage.getItem('oldToken'),
 			 	myuserid = plus.storage.getItem('userid');
@@ -656,9 +658,13 @@
 				 		mui.toast('至少输入10个字的提问哦');
 				 		return false;
 				 	}else{//(开始发布)
-				 		plus.nativeUI.showWaiting();
-				 		var content = mui('#textCon')[0].value;
-				 		releaseData();
+				 		if(isAct == 'yes09' && mui('#textCon')[0].value.length<15){//发帖送礼字数限制
+				 			mui.toast('本次活动要就填写字数不少于15字');
+				 		}else{
+				 			plus.nativeUI.showWaiting();
+					 		var content = mui('#textCon')[0].value;
+					 		releaseData();
+				 		}
 				 	}
 			 	}
 
@@ -677,21 +683,35 @@
 									mui.toast(dataobj.errmsg);
 								}else{
 									mui.toast('提问成功');
-								} 
+								}
 								plus.nativeUI.closeWaiting();
-								setTimeout(function(){
-									var page = plus.webview.getWebviewById('questionInfo');
-									mui.fire(page,'refreash');
-									plus.webview.currentWebview().close();
-								},500)
+								//09问答活动
+								if(isAct){
+									plus.storage.setItem("myNewsId",dataobj.data.toString());
+									//打开抽奖
+									openview({
+										view:'../limitTimeAct/09wenda/lottery09wenda.html',
+										id:"lottery09wenda",
+										extrasobj:{myNewsId:dataobj.data}
+									});
+									setTimeout(function(){
+										plus.webview.currentWebview().close();
+									},1000)
+								}else{
+									setTimeout(function(){
+										var page = plus.webview.getWebviewById('questionInfo');
+										mui.fire(page,'refreash');
+										plus.webview.currentWebview().close();
+									},500)
+								}
 							}else{
 								plus.nativeUI.closeWaiting();//关闭等待框
 								if(dataobj.errmsg){
 									mui.toast(dataobj.errmsg);
 								}else{
 									mui.toast('提问失败，请重试！');
-								} 
-								
+								}
+
 								plus.nativeUI.closeWaiting();
 							}
 						}else{

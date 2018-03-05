@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>答人榜---</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../../css/common.css">
+		<link href="../../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../../css/config.css"/>
+		<script src="../../../js/mui.min.js"></script>
+	</head>
+	<style type="text/css">
+		.baocun{text-align:right;margin:15px 8px 0;width:18px;vertical-align:middle;display: inline-block;}
+		.search{height:60px;background-color:#f3f3f3;}
+		.searchBox{position:relative;margin:auto;width:76%;height:100%;}
+		.searchBox img:first-child{width:100%;max-height:50px;}
+		.searchBox .searchIcon,.searchBox img:first-child{position:absolute;top:50%;z-index:1;-webkit-transform:translateY(-50%);}
+		.searchBox .searchIcon{left:10px;width:13px;}
+		.follow{position:relative;padding:18px 15px 15px;}
+		.follow,.followA{background-color:#fff;}
+		.followA{padding:5px 15px 0;padding-left: 20px;}
+		.follow:after{position:absolute;right:10px;bottom:0;left:10px;height:1px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
+		.follow:last-child:after{height:0!important;}
+		.noafter:after{position:absolute;right:10px;bottom:0;left:10px;height:0px;background:#cacaca;content:'';-webkit-transform:scaleY(.3);}
+		.fchidl{display:flex;align-items:center;justify-content:space-between;}
+		.Avator{margin-right:15px;width:40px;height:40px;}
+		.userAvator{margin-right:15px;width:2rem;height:2rem;}
+		.userAvator,.userAvator2{border-radius:50%;}
+		.userAvator2{margin-right:15px;width:1.5rem;height:1.5rem;}
+		.fchidl>div{display:flex;vertical-align:middle;text-align:left;font-size:15px;align-items:center;}
+		.text{color:#999;}
+		.diyButton{padding:3px 9pt;background:url(../../../img/answer/bouttonbr.png) no-repeat;background-position:left top;background-size:100% 100%;text-align:center;}
+  		.flexrr{display: flex;}
+		.QAhead{background-color:#f3f3f3;text-align:center;}
+		.QAhead span{position:relative;display:inline-block;margin:0 10px;padding:0 25px;height:38px;color:#343434;font-size:15px;line-height:38px}
+		.QAhead span.active{color:#f93a38}
+		.QAhead span:after{position:absolute;bottom:0;left:50%;width:0;height:1px;background-color:#f31414;content:""}
+		.QAhead span.active:after{left:0!important;width:100%!important;transition:all .3s}
+		.listCon{border-bottom:1px solid #ddd}
+		.listCon p{padding:10px 0 0}
+		.bottomop{display:flex;align-items:center}
+		.bottomop img{width:20px}
+		.flexr{justify-content:space-between}
+		.lookall{margin:10px 0;background:url(../../../img/answer/lookall.png) no-repeat;background-position:center;background-size:50%;text-align:center}
+		.answerImf{padding: 0 15px;}
+		.answerImf .anImg{width:calc((100vw - 50px) / 4);width:-webkit-calc((100vw - 50px) / 4);width:-moz-calc((100vw - 50px) / 4);height:calc((100vw - 50px) / 4);height:-webkit-calc((100vw - 50px) / 4);height:-moz-calc((100vw - 50px) / 4);border-radius:3px;display: inline-block;}
+		#listOldDiv{position: relative;}
+		#shortInfo{padding: 10px;border-bottom: 1px solid #eee;color: #555;font-size: 14px;text-align: center;}
+	</style>
+	<body style="background-color: white;padding-bottom: 0;">
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			<h1 class="mui-title" id="title0">答人榜</h1>
+		</header>
+		<script src="../../../js/statusBar.js"></script><!--状态栏-->
+		<!--轮播-->
+		<div id="main">
+			<div id="shortInfo">
+				说明
+			</div>
+			<!--分类-->
+			<div id="curExport"></div>
+			<script type="text/html" id="curExportTpl">
+				<%for(var i = 0;i<list.length;i++){%>
+					<div class="follow themeAsk" onclick="themeAsk(<%=list[i].id%>)">
+						<div class="fchidl">
+							<div>
+								<img src="<%=list[i].icon%>" class="Avator" />
+								<div>
+									<div><%=list[i].name%></div>
+									<div class="text ft13"><%=list[i].describe%></div>
+								</div>
+							</div>
+							<div class="butright">
+				            	<div class="diyButton activecl goask">
+				            		提问
+				            	</div>
+				            </div>
+						</div>
+					</div>
+				<%}%>
+			</script>
+		</div>
+		<div class="QandA" id="QandAWrap">
+			<div class="QAhead" style="display: none;">
+				<span class="active aClick">最新</span>
+				<span class="aClick">已解答</span>
+			</div>
+			<div id="listOldDiv">
+				<div id="listConW1" class="listSon" style="display: block;">
+					<span style="text-align: center;display: block;padding: 10px;">
+						拼命加载中。。。
+					</span>
+				</div><!--我要问 盒子1-->
+				<div id="listConW2" class="listSon" style="display: none;"></div><!-- 盒子2-->
+				<script type="text/html" id="listDataS">
+					<%for(var i=0;i<dataList.length;i++){%>
+						<div class="listCon" onclick="goAnswers('<%=dataList[i].onlyExpert%>','<%=dataList[i].assignedExpert%>',<%=dataList[i].userid%>,<%=dataList[i].id%>)" data-id="<%=dataList[i].assignedExpert%>" data-exper="<%=dataList[i].onlyExpert%>">
+							<div class="follow"> <!--问题-->
+								<div class="fchidl">
+									<div><img data-src="<%=dataList[i].avatar%>" src="" class="userAvator mr25 loadPics"/><div><%=dataList[i].nickname%></div></div>
+									<%if(qustType == 1){%>
+										<div class="butright"><div class="activecl">已解答</div> </div>
+									<%}else{%>
+										<div class="butright"><div class="diyButton activecl goanswer">抢答</div> </div>
+									<%}%>
+
+								</div>
+								<p class="ft15 maincl" style="-webkit-user-select: text;"><%=dataList[i].content%></p>
+
+								<%if(dataList[i].pic && dataList[i].pic.length){%>
+									<div class="answerImf" style="padding: 0;">
+										<%for(var j = 0 ;j<dataList[i].pic.length;j++){%>
+											<img class="anImg loadPics" src="<%=dataList[i].pic[j].picImg%>" data-preview-src="" data-preview-group="<%=i%>"/>
+										<%}%>
+								 	</div>
+								<%}%>
+							 	<div class="bottomop flexr">
+							 		<div class="activecl ft14">
+							 			<%if(dataList[i].onlyExpert == 1){%>
+								 			仅限特邀专家回答
+								 		<%}%>
+							 		</div>
+							 	</div>
+							</div>
+							<div class="commentsShow" data-id="<%=dataList[i].id%>"></div>
+						</div>
+					<%}%>
+				</script>
+
+			</div>
+		</div>
+	<script type="text/javascript" src="../../../js/jquery.min.js"></script>
+	<script src="../../../js/mui.zoom.js"></script>
+	<script src="../../../js/mui.previewimage.js"></script>
+	<script src="../../../js/app.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../../js/artTemplate-native.js" charset="utf-8"></script>
+	<script type="text/javascript">
+
+		//获取问答分类
+		mui.plusReady(function(){
+			var oldToken = plus.storage.getItem('oldToken'),
+		 		cityNum = plus.storage.getItem('cityNum'),
+		 		myuserid = plus.storage.getItem('userid');
+	 		var version = plus.storage.getItem('version');
+			var platform  = plus.storage.getItem('platform');
+			var goType  = plus.webview.currentWebview().goType;
+			if(goType == 'reply'){
+				mui("#title0")[0].innerHTML = '选择问题';
+				mui("#shortInfo")[0].innerHTML = '请任选一个问题';
+				$('#curExport').css('display','none');
+			}else{
+				mui("#title0")[0].innerHTML = '提问';
+				mui("#shortInfo")[0].innerHTML = '任选一个分类提问，让HI集的小伙伴为你解答疑惑。';
+				$('#QandAWrap').css('display','none');
+			}
+
+			//分类
+			mui.ajax(serverUrl+'/api/faqs/group',{
+				type:'get',
+				timeout:8000,
+				headers:{"token":oldToken,"city":cityNum},
+				success:function(data,type,xhr){
+					console.log('分类',data);
+					if(data.errno == 0){
+						if(data.data && data.data.length){
+							 var picObj = data.data;
+							 [].forEach.call(picObj,function(ele){
+							 	 if(ele.icon && ele.icon!='null'){
+									if(JSON.parse(ele.icon)[0].picImg.indexOf('http') == -1){
+										ele.icon = serverimgUrl + JSON.parse(ele.icon)[0].picImg;
+									}else{
+										ele.icon = JSON.parse(ele.icon)[0].picImg;
+									}
+								}else{
+									ele.icon ='../../../img/10.png'
+								}
+							 })
+							 $('#curExport').html(template('curExportTpl',{list:picObj}));
+
+						}else{
+							$('#curExport').html('<div id="addPic" style="text-align: center;padding: 15px;font-size: 13px;color: #888;padding-bottom: 20px;">暂无分类</div>')
+						}
+
+					}else{
+						console.log(data.errmsg);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					console.log('获取数据,响应失败');
+				}
+			});
+		})//获取问答分类结束
+
+
+
+		/*tab切换*/
+		var flag0 = 0,flag1 = 0,//是否   第一次点击
+	     	SH0 = 0,SH1  = 0;/*保存的状态栏高度*/
+		var listSon = document.getElementsByClassName('listSon');
+		shopData(0,0,false);//默认最新tab
+
+		function shopData(typeNum,gender,refresh){
+			var Spagenum = 2; //实到页数
+			var Ypagenum = 1; //应到页数
+			if(typeNum == 0){
+				flag0++;
+				if(flag0 == 2){
+					$(window).scrollTop(280);
+				}
+			}
+
+			mui.plusReady(function(){
+				var myuserid = plus.storage.getItem('userid'),
+				    cityNum = plus.storage.getItem('cityNum'),
+					oldToken = plus.storage.getItem('oldToken');
+
+				if(typeNum == 0){
+					var dataJson = {
+						'userId':myuserid,
+						'numsPerPage':50,
+						'currentPage':1,
+						'orderType':'DESC',
+						'orderField':'create_time',
+						'typeId':2,
+						'questionStates':0
+					}
+				}
+				mui.ajax(serverUrl + '/api/friends/newslist', {
+					data: dataJson,
+					dataType: 'json',
+					type: 'post',
+					timeout: 20000,
+					headers: {"token": oldToken,'city': cityNum},
+					success: function(data, type, xhr) {
+						console.log('问答动态'+typeNum, data);
+						if(data.errno == 0) {
+							var dataObj = {};
+							function getRandomArrayElements(arr, count) {
+							    var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
+							    while (i-- > min) {
+							        index = Math.floor((i + 1) * Math.random());
+							        temp = shuffled[index];
+							        shuffled[index] = shuffled[i];
+							        shuffled[i] = temp;
+							    }
+							    return shuffled.slice(min);
+							}
+							//随机取出三条数据
+							var nowArray = getRandomArrayElements(data.data.data,3);
+							if(nowArray.length){
+								for(var j = 0 ;j<nowArray.length;j++){//整理数据
+									if(nowArray[j].avatar && nowArray[j].avatar!='null'){//整理头像
+										if(JSON.parse(nowArray[j].avatar)[0].picImg.indexOf('http') == -1){
+											nowArray[j].avatar = serverimgUrl + JSON.parse(nowArray[j].avatar)[0].picImg;
+										}else{
+											nowArray[j].avatar = JSON.parse(nowArray[j].avatar)[0].picImg
+										}
+									}else{
+										nowArray[j].avatar = '../../../img/10.png'
+									}
+									if(nowArray[j].nickname && nowArray[j].nickname !='null'){
+										if(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(nowArray[j].nickname)){
+											nowArray[j].nickname = nowArray[j].nickname.substring(0,3)+"****"+nowArray[j].nickname.substring(7,11)
+										}
+									}else{
+										nowArray[j].nickname = '匿名'
+									}
+
+									if(!nowArray[j].answerNums){
+										nowArray[j].answerNums = 0
+									}else if((nowArray[j].answerNums / 1000)>1){
+										nowArray[j].answerNums = parseInt(nowArray[j].answerNums / 1000) +'K+'
+									}
+									if(!nowArray[j].likes || nowArray[j].likes<0){
+										nowArray[j].likes = 0
+									}
+									if(nowArray[j].pic && nowArray[j].pic!='null'){
+										nowArray[j].pic = JSON.parse(nowArray[j].pic);
+										for(var k = 0; k<nowArray[j].pic.length;k++){
+											if(nowArray[j].pic[k].picImg.indexOf('http') == -1){
+                                                nowArray[j].pic[k].picImg = serverimgUrl + nowArray[j].pic[k].picImg;
+                                            }
+										}
+									}
+								}
+
+								dataObj.dataList = nowArray;
+								dataObj.qustType = typeNum;
+								document.getElementsByClassName("listSon")[typeNum].innerHTML = template("listDataS", dataObj);
+								lazyLoad(true,-100);//懒加载
+
+							}else{
+								mui("#upload")[0].innerHTML = "没有数据";
+							}
+
+
+						}else{
+							mui.toast('当前网络不好,请重试');
+						}
+
+
+					},
+					error: function(xhr, type, errorThrown) {
+						console.error('交友列表,响应失败');
+						mui.toast('当前网络不好,请重试');
+					}
+				});
+
+				//回答问题
+				window.goAnswers = function(isExpert,expertId,qusid,infiId){
+					if(isExpert == 1){
+						if(expertId == myuserid){
+							openview({
+								view:'../../answerBoard/goAnswer.html',
+								id:'goAnswer',
+								extrasobj:{expertid:expertId,questionId:infiId,questionUserId:qusid,isAct:'yes09'}
+							})
+
+						}else{
+							mui.toast('仅特邀专家可以回答')
+						}
+					}else{
+						openview({
+							view:'../../answerBoard/goAnswer.html',
+							id:'goAnswer',
+							extrasobj:{expertid:expertId,questionId:infiId,questionUserId:qusid,isAct:'yes09'}
+						})
+					}
+
+					//测试
+//					openview({
+//						view:'lottery09wenda.html',
+//						id:"lottery09wenda",
+//						extrasobj:{askId:1}
+//					});
+				}
+
+			})
+		}
+
+		//主题提问，进入提问 页面
+		function themeAsk(id){
+			openview({
+				view:'../../answerBoard/ask.html',
+				id:'ask',
+				extrasobj:{exGroup:id,onlyExpert:2,isAct:'yes09'}
+			})
+		}
+
+		mui.previewImage();
+
+	</script>
+
+	</body>
+
+</html>

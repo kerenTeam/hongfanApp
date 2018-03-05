@@ -294,7 +294,7 @@ function followBack(thisobj,likerId,curType){
 	})
 }
 
-											
+
 function addCart(cartdata,userid,token){
 	mui.ajax(serverUrl+'/api/mall/shpocar',{
 		data:{user_id:userid,shopCar:cartdata,isSave:1},

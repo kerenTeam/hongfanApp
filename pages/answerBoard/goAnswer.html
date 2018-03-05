@@ -114,6 +114,7 @@
 		    oldToken = plus.storage.getItem('oldToken'),
 			myuserid = plus.storage.getItem('userid'),
 			infiId = plus.webview.currentWebview().questionId;
+			isAct = plus.webview.currentWebview().isAct;
 		mui.ajax(serverUrl + '/api/friends/newsinfo/newsId/'+infiId, {
 			dataType: 'json',
 			type: 'get',
@@ -234,6 +235,7 @@
 			oldToken = plus.storage.getItem('oldToken'),
 		 	myuserid = plus.storage.getItem('userid');
 			infiId = plus.webview.currentWebview().questionId;
+			isAct = plus.webview.currentWebview().isAct;
 		 	questionUserId = plus.webview.currentWebview().questionUserId;
 	 	var textCon = mui('#textCon')[0];
 	 	if(Apic.length){//要传图片
@@ -250,9 +252,13 @@
 		 		mui.toast('请填写内容或选择至少一张图片');
 		 		return false;
 		 	}else{//(开始发布)
-		 		plus.nativeUI.showWaiting();
-		 		var content = mui('#textCon')[0].value;
-		 		releaseData();
+		 		if(isAct == 'yes09' && mui('#textCon')[0].value.length<15){//发帖送礼字数限制
+		 			mui.toast('本次活动要就填写字数不少于15字');
+		 		}else{
+		 			plus.nativeUI.showWaiting();
+		 			var content = mui('#textCon')[0].value;
+		 			releaseData();
+		 		}
 		 	}
 	 	}
 
@@ -265,7 +271,7 @@
 						console.log(back);
 						var dataobj = JSON.parse(back.responseText);
 						console.log('回答',dataobj);
-						
+
 						if(dataobj.errno == 0){
 							plus.nativeUI.closeWaiting();
 							if(dataobj.errmsg){
@@ -273,9 +279,24 @@
 							}else{
 								mui.toast('回答成功');
 							}
-							
+
 							mui.fire(plus.webview.getWebviewById('answerInfo'),'refresh');
-							plus.webview.currentWebview().close();
+							//09问答活动
+							if(isAct){
+								plus.storage.setItem("aboutNewsId",dataobj.data.toString());
+								openview({
+									view:'../limitTimeAct/09wenda/answerWen1.html',
+									id:"answerWen2",
+									create:true,
+									extrasobj:{goType:'ask',aboutNewsId:dataobj.data}
+								});
+								setTimeout(function(){
+									plus.webview.currentWebview().close();
+								},1000)
+							}else{
+								//正常流程
+								plus.webview.currentWebview().close();
+							}
 						}else{
 							plus.nativeUI.closeWaiting();//关闭等待框
 							if(dataobj.errmsg){
@@ -283,7 +304,7 @@
 							}else{
 								mui.toast('发布失败，请重试！');
 							}
-							
+
 							plus.nativeUI.closeWaiting();
 						}
 					}else{

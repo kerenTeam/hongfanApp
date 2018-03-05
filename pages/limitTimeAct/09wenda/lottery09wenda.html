@@ -10,11 +10,11 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<meta name="format-detection" content="address=no">
-		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
-		<link rel="stylesheet" type="text/css" href="../../css/config.css" />
-		<script src="../../js/mui.min.js"></script>
-		<script src="../../js/app.js"></script>
-		<script src="../../js/artTemplate-native.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/config.css" />
+		<script src="../../../js/mui.min.js"></script>
+		<script src="../../../js/app.js"></script>
+		<script src="../../../js/artTemplate-native.js"></script>
 		<style type="text/css">
 			.clear {
 				clear: both;
@@ -119,10 +119,17 @@
 				line-height: 1.5;
 			}
 		</style>
-		<script type="text/javascript" src="../../js/jquery.min.js"></script>
-		<script type="text/javascript" src="../../js/awardRotate.js"></script>
+		<script type="text/javascript" src="../../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../../js/awardRotate.js"></script>
 
 		<script type="text/javascript">
+			mui.plusReady(function(){
+				//09问答活动,关闭上面的页面
+				plus.webview.getWebviewById('answerWen1') && plus.webview.getWebviewById('answerWen1').close();
+				plus.webview.getWebviewById('answerWen2') && plus.webview.getWebviewById('answerWen2').close();
+				plus.webview.getWebviewById('09wendaOne') && plus.webview.getWebviewById('09wendaOne').close();
+			})
+
 			var turnplate = {
 				restaraunts: [], //大转盘奖品名称
 				colors: [], //大转盘奖品区块对应背景颜色
@@ -149,7 +156,7 @@
 			};
 
 			//旋转转盘 item:奖品位置; txt：提示语;
-			var rotateFn = function(item, txt) {
+			var rotateFn = function(item, txt, id) {
 				var angles = item * (360 / turnplate.restaraunts.length) - (360 / (turnplate.restaraunts.length * 2));
 				if(angles < 270) {
 					angles = 270 - angles;
@@ -163,10 +170,19 @@
 					duration: 8000,
 					callback: function() {
 						if(txt.indexOf('加油') < 0) {
-
 							alert('恭喜你抽的' + txt)
 						} else {
 							alert(txt);
+						}
+						//09问答活动
+						if(txt.indexOf('豆')>-1){//抽中HI豆
+
+						}else{
+							openview({
+								view:'receiving09.html',
+								id:"receiving09",
+								extrasobj:{prizeId:id}
+							});
 						}
 						turnplate.bRotate = !turnplate.bRotate;
 					}
@@ -182,10 +198,12 @@
 					var myuserid = plus.storage.getItem('userid');
 					var oldtoken = plus.storage.getItem('oldToken');
 					var cityNum = plus.storage.getItem('cityNum');
+					var aboutNewsId = plus.storage.getItem("aboutNewsId");//回答id
+					var myNewsId = plus.storage.getItem("myNewsId");//问题id
 					plus.nativeUI.showWaiting();
 
 					mui.ajax(serverUrl + '/api/index/gamedata', {
-                        data: { gameId:4},
+                        data: { gameId:5},
                         type: 'post',
                         timeout: 10000,
                         headers: { "token": oldtoken ,'city':cityNum},
@@ -264,18 +282,18 @@
 
 														}
 													});
+													//正式开始抽奖
 													var imei = plus.device.uuid;
-
+													console.log('aboutNewsId======'+aboutNewsId);
+													console.log('myNewsId========='+myNewsId);
 													mui.ajax(serverUrl + '/api/index/iswining', {
 														data: {
-															//				                                	userId:'418',
-															//													phone:'13450983657',
-															//													macID:'dsrgertyryhgbfsrertytuyjr',
-															//													gameId:2
 															userId: myuserid,
 															phone: myPhone,
 															macID: imei,
-															gameId: 4
+															gameId: 5,
+															aboutNewsId:aboutNewsId || 1,
+															myNewsId:myNewsId || 1
 														},
 														type: 'post',
 														timeout: 10000,
@@ -284,13 +302,13 @@
 															'city': cityNum
 														},
 														success: function(data, type, xhr) {
-															console.log("中奖 ", JSON.stringify(data))
+															console.log("中奖 ", data)
 															if(data.errno == 0) {
+																plus.storage.setItem("end09wenda",'yes');
 																if(data.data.orderIndex && data.data.title) {
 																	plus.nativeUI.closeWaiting();
-																	//							                                    		alert('恭喜你抽得第 '+data.data.orderIndex+'个奖品'+data.data.title);
-																	//			                                    		rotateFn(item + 1, turnplate.restaraunts[item]);
-																	rotateFn(data.data.orderIndex, data.data.title);
+																	//获奖提示
+																	rotateFn(data.data.orderIndex, data.data.title, data.data.id);
 																	//抽奖缓存
 																	var date = new Date().getDate();
 																	plus.storage.setItem("$gameTime", JSON.stringify({
@@ -311,7 +329,7 @@
 																	gameData: date
 																}));
 																$('#wheelcanvas').stopRotate();
-																plus.nativeUI.alert(data.errmsg);
+																plus.nativeUI.alert('你已经参加过本次活动');
 
 															} else {
 																$('#wheelcanvas').stopRotate();
@@ -410,7 +428,7 @@
 								}
 							}
 						} else if(text.indexOf("元") == -1 && text.indexOf("HI") == -1 && text.length > 6) { //奖品名称长度超过一定范围
-							text = text.substring(0, 6) + "||" + text.substring(6);
+							text = text.substring(0, 4) + "||" + text.substring(5,12)+ "||" + text.substring(13,20)+ "||" + text.substring(20);
 							var texts = text.split("||");
 							for(var j = 0; j < texts.length; j++) {
 								ctx.fillText(texts[j], -ctx.measureText(texts[j]).width / 2, j * line_height);
@@ -449,16 +467,16 @@
 	<body style="background:#e62d2d;overflow:hidden!important;">
 		<header id="header" class="mui-bar mui-bar-transparent" style="padding-top: 19.5px;height: 70px;">
 			<!--<a id="leftbtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
-			<h1 id="centertitle" class="mui-title">免费抽现金券、HI豆</h1>
+			<h1 id="centertitle" class="mui-title">好运抽奖</h1>
 			<span id="rightbtn" class="mui-action-back mui-pull-right" style="margin-top: 12px;font-size: 15px;">关闭</span>
 		</header>
 		<div style="margin-top: 80px">
-			<img src="../../img/center/1.png" id="shan-img" style="display:none;" />
-			<img src="../../img/center/2.png" id="sorry-img" style="display:none;" />
+			<img src="../../../img/center/1.png" id="shan-img" style="display:none;" />
+			<img src="../../../img/center/2.png" id="sorry-img" style="display:none;" />
 			<div class="banner">
-				<div class="turnplate" style=""><!--background-image:url(../../img/center/turnplate-bg.png);-->
+				<div class="turnplate" style=""><!--background-image:url(../../../img/center/turnplate-bg.png);-->
 					<canvas class="item" style="margin-bottom: -5px;" id="wheelcanvas" width="422px" height="422px"></canvas>
-					<img class="pointer" src="../../img/center/turnplate-pointer.png" />
+					<img class="pointer" src="../../../img/center/turnplate-pointer.png" />
 				</div>
 			</div>
 			<!--活动规则-->
@@ -578,9 +596,7 @@
 				var cityNum = plus.storage.getItem('cityNum');
 				mui.ajax(serverUrl + '/api/index/prizehistory', {
 					type: 'post',
-					data: {
-						gameId: 4
-					},
+					data: {'gameId':5},
 					timeout: 10000,
 					headers: {
 						"token": oldtoken,
@@ -606,7 +622,7 @@
 											data.data[i].avatar = JSON.parse(data.data[i].avatar)[0].picImg
 										}
 									} else {
-										data.data[i].avatar = '../../img/10.png'
+										data.data[i].avatar = '../../../img/10.png'
 									}
 									data.data[i].createTime = getDateDiff(data.data[i].createTime);
 								}
@@ -669,7 +685,7 @@
 				var scrollTo = $(window).scrollTop();
 				if(scrollTo > navBarHeight) {
 					$(targetID).css({
-						//"background-image": "url(../../img/header.png)","background-size":"100%"
+						//"background-image": "url(../../../img/header.png)","background-size":"100%"
 					});
 					$('#leftbtn,#rightbtn').css({
 						'color': '#666'

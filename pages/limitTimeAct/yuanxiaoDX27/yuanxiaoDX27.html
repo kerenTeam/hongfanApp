@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>元宵灯谜</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../../../css/config.css"/>
+		<script type="text/javascript" src="../../../js/mui.min.js"></script>
+		<style type="text/css">
+			.mui-bar-nav.mui-bar .mui-icon{margin-left: 0;}
+			#isLogin{margin-top: 50px;padding: 10px;margin-top: 50%;text-align: center;}
+			#isLoginBtn{margin: 0 auto;display: block;margin-top: 15px;border: 1px solid #d97171;color: #d45252;font-size: 16px;}
+			.answerCon{margin-top: 50px;}
+			.timeOnly{text-align: center;padding: 10px;}
+			.timeOnly .p1{font-size: 14px;color: #777;}
+			.timeOnly .p2{font-size: 30px;color: #fff;}
+			body{background: url(../../../img/limitTimeAct/27yuanxiao/yuanxiaoBG.jpg) 0 50px no-repeat;background-size: 100%;}
+			.answerlists{position: relative; width: 90%;height: 90vw; margin: 0 auto;margin-top: 8%;background-color: #fdd45d;border-radius: 50%;
+			    overflow: hidden;padding: 13%;}
+			.answerlists .h41{font-size: 17px;color: #444;margin-bottom: 6%;line-height: 22px;}
+			.answerlists .mui-table-view{background-color: #fdd45d;}
+			.answerlists .mui-table-view:after, .answerlists .mui-table-view:before, .answerlists .mui-table-view-cell:after{background-color: #fff;}
+			.answerlists .mui-table-view-cell:after{left: 0px;}
+			.mui-table-view-radio .mui-table-view-cell .mui-navigate-right:after{font-size: 40px;right: -8px;color: #29337b;}
+			.mui-table-view-radio .mui-table-view-cell { padding-right: 0px; }
+			.mui-table-view-radio .mui-table-view-cell>a:not(.mui-btn) { margin-right: 0px;padding: 5px;}
+			.mui-table-view-cell>a:not(.mui-btn){white-space: initial;}
+			.ansBut{position: absolute;width: 100%;text-align: center;left: 0;bottom: 10%;}
+			.ansBut button{margin: 0 5%; background-color: #e62019; color: #fff; border: none; line-height: 1.3; padding: 6px 14px;  font-size: 15px;}
+			.aClick3:active{background-color: #e1adab;}
+		</style>
+	</head>
+
+	<body style="background-color: white;padding-bottom: 0;">
+		<header class="mui-bar mui-bar-nav" id="header">
+			<a class="goBack mui-action-back mui-icon mui-icon-left-nav mui-pull-left bigSize"></a>
+			<h1 class="mui-title">元宵灯谜</h1>
+		</header>
+		<script src="../../../js/statusBar.js"></script><!--状态栏-->
+		<div id="isLogin" style="display: none;">
+			<p>你还没有登录，登录之后才能进行猜灯谜活动！</p>
+			<button class="aClick" id="isLoginBtn">立即登录</button>
+		</div>
+		<div class="answerCon" style="display: none;">
+			<div class="timeOnly">
+				<p class="p1">当前题目剩余时间：</p>
+				<p class="p2"><b id="nowSec"></b>秒</p>
+			</div>
+			<div class="answerlists">
+				<div id="ansListD"></div>
+				<script type="text/html" id="ansListS">
+					<h4 class="h41"><%= indexNow%>. <%= data.title%></h4>
+					<ul id="ansUL" class="mui-table-view mui-table-view-radio">
+						<% for(var i=0;i<ansList.length;i++){%>
+							<li class="mui-table-view-cell aClick" name="<%= ansList[i].option%>" ansId="<%= data.id%>">
+								<a class="mui-navigate-right"><%= ansList[i].option%>. <%= ansList[i].content%></a>
+							</li>
+						<% }%>
+					</ul>
+				</script>
+				<div class="ansBut">
+					<button id="submitBtnS" class="aClick3">确认</button>
+					<button id="nextBtn" class="aClick3">跳过</button>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../../js/app.js"></script>
+	<script src="../../../js/artTemplate-native.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			// 关闭侧滑返回功能
+			var wv=plus.webview.currentWebview();
+			wv.setStyle({'popGesture':'none'});
+			//判断登录
+			if(plus.storage.getItem('myToken')){
+				if(!plus.storage.getItem('isDayYuanxiao') || plus.storage.getItem('isDayYuanxiao') != new Date().getDate()){
+					mui('.answerCon')[0].style.display = 'block';
+				}else{
+					plus.webview.currentWebview().close();
+					mui.alert('一天只能参加一次，明天再来吧！');
+				}
+				toAnswer();
+			}else{
+				//监听登录
+				clearInterval(time1);
+				var time1 = setInterval(function(){
+					if(plus.storage.getItem('myToken')){
+						clearInterval(time1);
+						location.reload();
+					}
+				},1000);
+
+				mui.toast('请登录');
+				openview({
+					view:'../../login.html'
+				});
+
+				mui('#isLogin')[0].style.display = 'block';
+				mui('#isLoginBtn')[0].onclick = function(){
+					openview({
+						view:'../../login.html'
+					});
+				}
+			}
+
+			//答题总方法
+			function toAnswer(){
+				var oldToken = plus.storage.getItem('oldToken'),
+		 			cityNum = plus.storage.getItem('cityNum'),
+		 			myuserid = plus.storage.getItem('userid');
+		 		var nowIndexAns = 1;//当前是第几题
+
+	 			//点返回键视为弃权
+	 			var old_back = mui.back;
+				mui.back = function(){
+					mui.confirm('当天题目还没答完，确认放弃？','提示',["确定","取消"],function(e){
+					    if(e.index==0){
+					    		old_back();
+					    		//存一个当天已经答题的缓存
+					    		plus.storage.setItem('isDayYuanxiao',new Date().getDate().toString());
+					    }
+				  	});
+				}
+
+				//15s倒计时，自动切换
+				var timeFuck;
+				var 	goTime = function(turn){
+					var secAll = 16;
+					clearTimeout(timeFuck);
+					setTimeoutFun1();
+					function setTimeoutFun1(){
+						clearTimeout(timeFuck);
+						console.log(timeFuck)
+						timeFuck = setTimeout(function(){
+							secAll--;
+							mui('#nowSec')[0].innerHTML = secAll;
+							if(secAll == 0){
+								clearTimeout(timeFuck);
+								if(nowIndexAns<10){
+									getAnsData('go');
+									mui.toast('当前题目时间到，切换下一题！');
+								}else if(nowIndexAns==10){
+									//存一个当天已经答题的缓存
+					    				plus.storage.setItem('isDayYuanxiao',new Date().getDate().toString());
+									mui.alert('恭喜答完所有题目，明天再来吧！');
+		                				mui('#ansListD')[0].innerHTML = '<p style="text-align: center;font-size:20px;margin-top:30%">恭喜答完所有题目，明天再来吧！</p>';
+		                				plus.webview.currentWebview().close();
+								}
+
+							}else{
+								clearTimeout(timeFuck);
+								setTimeoutFun1();
+							}
+						},1000)
+					}
+
+				}
+				goTime();
+
+
+				getAnsData();//加载第一道题目
+
+				//点跳过,获取下一题
+				mui('#nextBtn')[0].onclick = function(){
+					if(nowIndexAns<10){
+						mui.confirm('确认跳过，回答下一题？','提示',["确定","取消"],function(e){
+						    if(e.index==0){
+								getAnsData('go');
+						    }
+					  	});
+					}else{
+						mui.alert('每天只能答10道题！');
+					}
+
+				}
+				//点提交
+				mui('#submitBtnS')[0].onclick = function(){
+					var ansULS = document.getElementById('ansUL').getElementsByTagName('li');
+					for (var i=0;i<ansULS.length;i++) {
+						if(ansULS[i].className.indexOf('mui-selected')>-1){
+							mui.confirm('想好了，确认提交？','提示',["确定","取消"],function(e){
+							    if(e.index==0){
+									postAnsData(ansULS[i].getAttribute('ansId'),ansULS[i].getAttribute('name'),myuserid);
+							    }
+						  	});
+						  	break;
+						}
+						if(i == ansULS.length-1){
+							mui.alert('请勾选你的答案');
+						}
+
+					}
+
+				}
+
+				//获取题目数据
+				function getAnsData(go){
+					plus.nativeUI.showWaiting();
+					mui.ajax(serverUrl + '/api/index/guesslanternriddles', {
+		                type: 'get',
+		                timeout: 30000,
+		                headers: { "token": oldToken,'city':cityNum},
+		                success: function(data, type, xhr) {
+		                		console.log('获取题目数据',data);
+		                		plus.nativeUI.closeWaiting();
+		                		if(data.errno == 0 && data.data.length){
+		                			if(go){
+		                				nowIndexAns++;
+		                				goTime('turn');//重置倒计时
+		                			};
+								var ansArray = [];
+								var ansFlagA = ['A','B','C','D'];
+								ansFlagA.forEach(function(ele,index){
+									if(data.data[0][ele]){
+										ansArray.push({'option':ele,'content':data.data[0][ele]})
+									}
+								})
+								//console.log(ansArray);
+								mui('#ansListD')[0].innerHTML = template('ansListS',{data:data.data[0],ansList:ansArray,indexNow:nowIndexAns});
+		                		}else{
+		                			mui('#ansListD')[0].innerHTML = '<p style="text-align: center;font-size:20px;margin-top:30%">没有更多题目了</p>';
+		                		}
+		                },
+		                error: function(xhr, type, errorThrown) {
+		                    	console.log('获取题目数据响应失败');
+		                   	plus.nativeUI.closeWaiting();
+		                }
+		            });
+				}
+
+				//提交题目验证
+				function postAnsData(questionid,realAnswer,userid){
+					plus.nativeUI.showWaiting();
+					mui.ajax(serverUrl + '/api/index/guesslanternriddles', {
+						data:{
+							"question_id":questionid,
+							"realAnswer":realAnswer,
+							"userid":userid
+						},
+		                type: 'post',
+		                timeout: 30000,
+		                headers: { "token": oldToken,'city':cityNum},
+		                success: function(data, type, xhr) {
+		                		console.log('提交题目验证',data);
+		                		console.log('提交题目验证'+JSON.stringify(data));
+		                		plus.nativeUI.closeWaiting();
+		                		if(data.errno == 0){
+								mui.alert(data.data);
+		                		}else{
+		                			mui.alert(data.errmsg);
+		                		}
+		                		if(nowIndexAns<10){
+		                			getAnsData('go');
+		                		}else{
+		                			//存一个当天已经答题的缓存
+					    			plus.storage.setItem('isDayYuanxiao',new Date().getDate().toString());
+		                			mui.alert('恭喜答完所有题目，明天再来吧！');
+		                			mui('#ansListD')[0].innerHTML = '<p style="text-align: center;font-size:20px;margin-top:30%">恭喜答完所有题目，明天再来吧！</p>';
+		                			plus.webview.currentWebview().close();
+		                		}
+
+		                },
+		                error: function(xhr, type, errorThrown) {
+		                    	console.log('提交题目验证 响应失败');
+		                   	plus.nativeUI.closeWaiting();
+		                }
+		            });
+				}
+
+
+			}
+		})
+	</script>
+
+</html>
