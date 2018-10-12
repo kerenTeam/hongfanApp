@@ -271,7 +271,7 @@
 						plus.nativeUI.closeWaiting();
 					}
 				});
-				
+
 				//获取已经点赞人数
 				mui.ajax(serverUrl + '/api/friends/likesforperson', {
 					data:{userId:myuserid,getLikes:1},
@@ -283,15 +283,15 @@
 					},
 					success: function(data, type, xhr) {
 						console.log('点赞列表', data);
-						
+
 						if(data.errno == 0) {
 							if(data.data.data && data.data.data.length){
-								plus.storage.setItem('zanList',JSON.stringify(data.data.data))			
+								plus.storage.setItem('zanList',JSON.stringify(data.data.data))
 							}else{
 								plus.storage.removeItem('zanList')
 							}
 						console.log('缓存点赞',JSON.parse(plus.storage.getItem('zanList')))
-							
+
 						}else{
 							mui.toast(data.errmsg)
 						}
@@ -353,6 +353,7 @@
 			function shopData(typeNum, gender, suggest) {
 				var Spagenum = 2; //实到页数
 				var Ypagenum = 1; //应到页数
+				alert(Spagenum)
 				var currentPage = 1,
 					numsPerPage = 6;
 				if(typeNum == 0) {
@@ -390,7 +391,7 @@
 					var cityNum = plus.storage.getItem('cityNum'),
 						oldToken = plus.storage.getItem('oldToken'),
 						myuserid = plus.storage.getItem('userid');
-						
+
 					mui.ajax(serverUrl + '/api/friends/friendslist', {
 						data: dataJson,
 						dataType: 'json',
@@ -474,7 +475,7 @@
 
 													mui("#upload")[0].innerHTML = "<img src='../../img/balls.svg' />";
 													Ypagenum++; //满足加载情况,应到页数+1
-													console.log('发起请求,实到' + Spagenum + '页');
+													console.error('发起请求,实到' + Spagenum + '页');
 													console.log('发起请求,应到' + Ypagenum + '页');
 													if(typeNum == 0) {
 														flag0++;
@@ -520,7 +521,7 @@
 															if(data.errno == 0) {
 																var dataObj = {};
 																var yizan = JSON.parse(plus.storage.getItem('zanList')) || [];
-																
+
 																for(var i = 0; i < data.data.data.length; i++) {
 																	if(data.data.data[i].avatar) {
 																		if(data.data.data[i].avatar.indexOf("[") > -1) {

@@ -252,6 +252,7 @@
 		<div class="aClick yaoqinghaoyou"><img src="../img/center/yaoqinghaoyou.svg"/ style="width: 26px;padding-bottom: 8px;position: relative;top: 6px;">邀请好友</div>
 		<div class="aClick myCricle" style="display: none;"><img src="../img/center/wodequanzi.png"/>我的圈子</div>
 		<div class="aClick friendShip" style="display: none;"><img src="../img/center/jiaoyou.png"/>交友</div>
+		<div class="aClick SignDay" style="display: none;"><img style="width: 30%;margin-bottom: 8%;position: relative;top: 5px;" src="../img/center/qiandaoBtns.svg"/>签到领券</div>
 		<div class="aClick" id="writeOff1" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/hexiao1.svg"/>核销</div>
 		<div class="aClick" id="writeOff2" style="display: none;"><img style="width: 28px;padding-bottom: 5px;" src="../img/center/heixaojilu.svg"/>核销记录</div>
     	</div>
@@ -275,6 +276,11 @@
 		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/artTemplate-native.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			 
+			//测试推送
+			/*mui('#mypic')[0].onclick = function(){
+				plus.push.createMessage( "title", '{"banner": "page/personal/myOrderWL.html&CD_XN20180105165333296343","info": "推送跳转页面","type":"localIos"}', {cover:false} );
+			}*/
 			//推送
 			document.addEventListener( "plusready", function(){
 			    // 监听点击消息事件
@@ -315,6 +321,13 @@
 
 		</script>
 		<script type="text/javascript">
+			mui('.SignDay')[0].style.display = 'block';
+			mui('.SignDay')[0].onclick = function(){
+				openview({
+					view:'limitTimeAct/Sign327/Sign327.html'
+				})
+			}
+
 			//分类订单
 			function typeOrder(type){
 				if(plus.storage.getItem('myToken')){
@@ -334,7 +347,7 @@
 				mui('.myCricle')[0].style.display = '';
 				mui('.friendShip')[0].style.display = '';
 			})
-			
+
 			mui.plusReady(function(){
 				var cityNum = plus.storage.getItem('cityNum');
 				var oldToken = plus.storage.getItem('oldToken');
@@ -345,7 +358,7 @@
 				document.addEventListener('refresh2', function() {
 					Refresh();
 				})
-				
+
 				var version = plus.storage.getItem('version');
 				var platform  = plus.storage.getItem('platform');
 				/*弹框*/
@@ -386,8 +399,8 @@
 	                   	plus.nativeUI.closeWaiting();
 	                }
 	            });
-				
-				
+
+
 				var Timetoken = null;
 
 				if(plus.storage.getItem('oldToken')){
@@ -437,7 +450,7 @@
 						})
 						showMessage();
 						function showMessage(){
-							
+
 							//显示消息条数
 							mui.ajax(serverUrl+'/api/index/message',{
 								data:{userid:myuserid,msgType:1},
@@ -661,7 +674,7 @@
 								console.log('响应失败  !');
 							}
 						});
-						 
+
 					}else{//退出登录还原
 						mui('.denluzhuce')[0].innerHTML = '登录\注册';
 						mui('#numjifen')[0].innerHTML = '';

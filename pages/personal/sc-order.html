@@ -276,17 +276,17 @@
 						<div class="tab-bd">
 							<div class="tab-pal">
 								<dl class="list listtwo list-in">
-								 
-										
+
+
 										<%for(var i =0;i<orderData.length;i++){%>
-											<%if(orderData[i][0].order_status == 1){%> 
+											<%if(orderData[i][0].order_status == 1){%>
 											<%for(var j =0;j<orderData[i].length;j++){%>
-												<%if(j == 0){%>	
+												<%if(j == 0){%>
 													<div class="waitpay" style="margin-bottom: 10px!important;background: white;padding-bottom: 5px;">
 													<div class="orderbh box-s fineB" style="background-color: white;border-bottom: 1px solid coral;">
-			
+
 														<span class="fr state">等待买家付款</span>
-													</div> 
+													</div>
 												<%}%>
 												<dd id="<%=orderData[i][j].order_id%>" data-id="<%=orderData[i][j].order_status%>" style="margin-bottom: 0;">
 													<div class="orderbh box-s fineB">
@@ -332,10 +332,10 @@
 														</div>
 													</a>
 													<%}%>
-		
-												</dd> 
+
+												</dd>
 											<%}%>
-												
+
 												<%for(var m = 0; m<oduuid.length;m++){%>
 													<%if(oduuid[m] == orderData[i][0].order_UUID){%>
 														<div class="order-bottom clearfloat box-s tip" style="background-color: white;margin: 0;">
@@ -345,12 +345,12 @@
 																<%=ordermoney[m].PriceCalculValue%><sub>
 																		<%}%>
 																	</sub></p>
-				
+
 														</div>
 														<div class="order-bottom clearfloat box-s" style="background-color：#fff;">
 															<a onclick="goOrder('<%=oduuid[m]%>','<%=repayid[m]%>')" class="fr confirm">付款</a>
 															<a onclick="delOrder(this,'<%=oduuid[m]%>','取消','<%=oduuid[m]%>','<%=repayid[m]%>',1)" class="fr">取消订单</a>
-				
+
 														</div>
 													<%}%>
 												<%}%>
@@ -370,7 +370,7 @@
 																<%}%>
 																<span style="font-size: 0.10rem;"><%=orderData[i][j].create_time%></span>
 														</span>
-			
+
 														<span class="fr state"><%=state[orderData[i][j].order_status]%></span>
 													</div>
 													<%for(var l =0;l<orderData[i][j].goods_data.goods_Data.length;l++){%>
@@ -427,7 +427,7 @@
 														<%=orderData[i][j].refuse_refund%>
 													</div>
 													<%}%>
-			
+
 													<%if(orderData[i][j].order_status==2){%>
 													<div class="order-bottom clearfloat box-s">
 														<a class="fr confirm">等待发货</a>
@@ -455,14 +455,14 @@
 																	<a onclick="viewLogistics('<%=orderData[i][j].order_id%>','<%=orderData[i][j].logistic_code%>','<%=orderData[i][j].shipper_code%>')" class="fr confirm">查看物流</a>
 																</div>-->
 													<!--<%}%>-->
-			
+
 													<%}%>
 													<%if(orderData[i][j].order_status==4 && orderData[i][j].order_type== 0){%>
 													<div class="order-bottom clearfloat box-s">
 														<a onclick="delOrder(this,'<%=orderData[i][j].order_id%>','删除')" class="fr">删除订单</a>
 														<a onclick="viewLogistics('<%=orderData[i][j].order_id%>','<%=orderData[i][j].logistic_code%>','<%=orderData[i][j].shipper_code%>')" class="fr confirm">查看物流</a>
 													</div>
-			
+
 													<%}%>
 													<%if(orderData[i][j].order_status==5){%>
 													<div class="order-bottom clearfloat box-s">
@@ -483,7 +483,7 @@
 														<a onclick="cmtwl('<%=orderData[i][j].order_id%>','<%=orderData[i][j].order_UUID%>','<%=orderData[i][j].buyer%>')" class="fr confirm">填写退货物流</a>
 													</div>
 													<%}%>
-			
+
 													<%if(orderData[i][j].order_status==8){%>
 													<div class="order-bottom clearfloat box-s">
 														<a class="fr confirm">退款成功</a>
@@ -500,11 +500,11 @@
 														<a class="fr">等待退款</a>
 													</div>
 													<%}%>
-			
+
 												</dd>
-											<%}%> 
-										<%}%>  
-									<%}%> 
+											<%}%>
+										<%}%>
+									<%}%>
 									<div id="noOrder" style="display: none;">
 										<img src="../../img/market/order.png" style="margin: auto;display: block;width: 1rem;margin-top:1rem ;" alt="" />
 										<span style="display:block;text-align: center;padding: 20px;color: #777;">您还没有相关的订单</span>
@@ -641,6 +641,11 @@
 			}
 			//判断是否显示分享有礼
 			window.isShowShare = function(isnow,orderId) {
+				plus.nativeUI.closeWaiting();
+						$('#maskInfo123').css('display', 'block');
+						document.getElementById('fenxiangBtn2').onclick = function(){
+							goCouponFun(orderId);
+						}
 				sharecode();//重置邀请码
 				if(plus.storage.getItem('shareInfo')) {
 					var shareInfo = JSON.parse(plus.storage.getItem('shareInfo'));
@@ -707,7 +712,7 @@
 
 									data.data[i].PriceCalculation = eval("(" + data.data[i].PriceCalculation + ")");
 									data.data[i].PriceCalculation.PriceCalculValue = parseFloat(data.data[i].PriceCalculation.PriceCalculValue).toFixed(2)
-									 
+
 									//未付款的订单  提取uuid
 									if(data.data[i].order_status == 1 && data.data[i].order_UUID) {
 										orderuuid.push(data.data[i].order_UUID);
@@ -724,7 +729,7 @@
 										//									ordermoney.push(data.data[i].PriceCalculation.PriceCalculValue)
 
 									}else{
-										secondeBuild.push([data.data[i]]) 
+										secondeBuild.push([data.data[i]])
 									}
 									if(data.data[i].goods_data) {
 										data.data[i].goods_data = eval("(" + data.data[i].goods_data + ")");
@@ -754,7 +759,7 @@
 								if(orderuuid.length != 0) {
 									orderuuid = orderuuid.unique1(); //去重
 								}
-								
+
 								for(var i = 0; i < orderuuid.length; i++) {
 									var everTot = [];
 									for(var j = 0; j < data.data.length; j++) {
@@ -767,7 +772,7 @@
 											everTot.push(data.data[j])
 										}
 									}
-									secondeBuild.push(everTot) 
+									secondeBuild.push(everTot)
 								}
 								console.error('二次重组',secondeBuild)
 								secondeBuild = secondeBuild.sort(descend)
@@ -775,7 +780,7 @@
 								    return y[0].rePayID - x[0].rePayID;  //按照数组的第1个值降序排列
 								}
 								console.error('排序',secondeBuild)
-								
+
 								//json 数组去重
 								var arr = [];
 								var list = ordermoney;
@@ -796,9 +801,9 @@
 								}
 								ordermoney = arr;
 								repayid = repayid.unique1();
- 
+
 								var obj = {};
-								obj.orderData = secondeBuild; 
+								obj.orderData = secondeBuild;
 								obj.myUrl = serverimgUrlE;
 								obj.oduuid = orderuuid;
 								console.log('orderuuid', JSON.stringify(orderuuid))

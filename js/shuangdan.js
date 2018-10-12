@@ -1,8 +1,8 @@
 var nowDay = new Date();
 
 //18-01-22 年货节发帖
-var Sbegin = new Date('2018-01-22T00:00:01');
-var Send = new Date('2018-02-11T23:59:59');
+var Sbegin = new Date('2018-03-08T00:00:01');
+var Send = new Date('2018-03-08T23:59:59');
 
 // 2.9-2.15 达人榜 回答，提问 抽奖 送礼
 var Ybegin = new Date('2018-02-09T00:00:01');
@@ -36,11 +36,11 @@ if(mui('#fenxiangBtn2')[0]){//发帖送礼
 					extrasobj:{fromGo:'shuangdan'}
 				});
 				//测试环境
-	//			openview({
-	//				view:'shuangdan/shuangdan.html',
-	//				id:"shuangdan",
-	//				extrasobj:{newId:2345}
-	//			});
+				/*openview({
+					view:'shuangdan/shuangdan.html',
+					id:"shuangdan",
+					extrasobj:{newId:2345}
+				});*/
 			}
 
 		}else{

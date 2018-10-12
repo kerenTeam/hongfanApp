@@ -346,6 +346,14 @@ mui.plusReady(function(){
 	});
 })
 
+var time11 = setInterval(function(){
+	console.log(123456);
+	if(shares.qq && shares.sinaweibo && shares.tencentweibo && shares.weixin){
+		clearInterval(time11);
+	}
+	console.error('shares___',shares);
+},100)
+
 function showSfun1(msg,fun1,fun0){
 
 	if(document.getElementById('shareWrap10')){
@@ -638,7 +646,7 @@ function sharecode(){
 		timeout:10000,
 		headers: {"token": oldToken,'city': cityNum},
 		success:function(data,type,xhr){
-			console.log('获取分享有礼 时间区间 和邀请码',data);
+			console.error('获取分享有礼 时间区间 和邀请码',data);
 			var shareInfo ={};
 			shareInfo.begin_date = data.data.begin_date;
 			shareInfo.end_date = data.data.end_date;
